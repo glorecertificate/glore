@@ -1,12 +1,12 @@
 import { cache } from 'react'
 
-import { ArrowLeftIcon, ArrowRightIcon, CalendarIcon, LanguagesIcon } from 'lucide-react'
 import { type Locale } from 'next-intl'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { findDocArticle, listDocCategories } from '@/actions/docs'
 import { ArticleActions } from '@/components/features/docs/article-actions'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Link } from '@/components/ui/link'
@@ -71,13 +71,13 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
         </div>
         {excerpt && <p className="text-lg text-muted-foreground">{excerpt}</p>}
         <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <CalendarIcon className="size-3 shrink-0" />
+          <LucideIcon name="calendar" className="size-3 shrink-0" />
           {t('lastUpdated', { date: format.dateTime(new Date(article.updatedAt), { dateStyle: 'long' }) })}
         </p>
       </header>
       {translated && translated !== locale && (
         <Banner variant="info">
-          <LanguagesIcon className="mt-0.5 size-4 shrink-0" />
+          <LucideIcon name="languages" className="mt-0.5 size-4 shrink-0" />
           <p>{t('article.fallbackLanguage', { language: languageLabel ?? translated })}</p>
         </Banner>
       )}
@@ -94,7 +94,7 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
               className="flex min-w-0 items-center gap-2 rounded-lg border p-3 text-sm transition-colors hover:bg-muted/50"
               href={`/docs/articles/${previous.slug}`}
             >
-              <ArrowLeftIcon className="size-4 shrink-0" />
+              <LucideIcon name="arrow-left" className="size-4 shrink-0" />
               <span className="flex min-w-0 flex-col">
                 <span className="text-xs text-muted-foreground">{t('article.previous')}</span>
                 <span className="truncate font-medium">{pickLocale(previous.title, locale) ?? previous.slug}</span>
@@ -112,7 +112,7 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
                 <span className="text-xs text-muted-foreground">{t('article.next')}</span>
                 <span className="truncate font-medium">{pickLocale(next.title, locale) ?? next.slug}</span>
               </span>
-              <ArrowRightIcon className="size-4 shrink-0" />
+              <LucideIcon name="arrow-right" className="size-4 shrink-0" />
             </Link>
           )}
         </nav>

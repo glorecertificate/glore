@@ -1,9 +1,9 @@
-import { BookOpenIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { findDocCategory, listDocCategories } from '@/actions/docs'
 import { DocsSection } from '@/components/features/docs/docs-section'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Link } from '@/components/ui/link'
@@ -22,7 +22,7 @@ export const DocsCategoryView = async ({ slug }: { slug: string }) => {
       <Empty className="border">
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <BookOpenIcon />
+            <LucideIcon name="book-open" />
           </EmptyMedia>
           <EmptyTitle>{t('title')}</EmptyTitle>
           <EmptyDescription>{canEdit ? t('descriptionEditor', { slug }) : t('description')}</EmptyDescription>

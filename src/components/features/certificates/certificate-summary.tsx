@@ -1,9 +1,9 @@
 'use client'
 
-import { CalendarIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { formatActivityPeriod } from '@/components/features/certificates/rules'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LevelDots } from '@/components/ui/level-dots'
@@ -19,27 +19,27 @@ export const CertificateSummary = ({ certificate }: { certificate: Certificate }
 
   const meta = [
     {
-      icon: CalendarIcon,
+      icon: 'calendar',
       key: 'period',
       label: t('period'),
       value: formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values)),
     },
     {
-      icon: TimerIcon,
+      icon: 'timer',
       key: 'hours',
       label: t('hours'),
       value: tDetail('hoursValue', { hours: certificate.activityDuration }),
     },
-    { icon: MapPinIcon, key: 'location', label: t('location'), value: certificate.activityLocation },
-  ]
+    { icon: 'map-pin', key: 'location', label: t('location'), value: certificate.activityLocation },
+  ] as const
 
   return (
     <div className="flex flex-col gap-4">
       <Card>
         <CardContent className="grid gap-4 sm:grid-cols-3">
-          {meta.map(({ icon: Icon, key, label, value }) => (
+          {meta.map(({ icon, key, label, value }) => (
             <div className="flex items-start gap-2.5" key={key}>
-              <Icon className="mt-0.5 size-4 shrink-0 text-brand-text" />
+              <LucideIcon name={icon} className="mt-0.5 size-4 shrink-0 text-brand-text" />
               <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">{label}</p>
                 <p className="text-sm font-medium">{value}</p>

@@ -3,11 +3,11 @@
 import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
-import { FolderOpenIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { createDocCategory, deleteDocCategory } from '@/actions/docs'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
@@ -91,7 +91,7 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
             <Empty className="py-8">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
-                  <FolderOpenIcon />
+                  <LucideIcon name="folder-open" />
                 </EmptyMedia>
                 <EmptyTitle>{t('categories.empty')}</EmptyTitle>
               </EmptyHeader>
@@ -114,7 +114,7 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
                             size="icon"
                             variant="ghost"
                           >
-                            <Trash2Icon className="size-4" />
+                            <LucideIcon name="trash-2" className="size-4" />
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -181,7 +181,7 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
           </Tabs>
 
           <Button className="w-full" disabled={adding} size="sm" onClick={handleAdd}>
-            <PlusIcon className="size-4" />
+            <LucideIcon name="plus" className="size-4" />
             {t('categories.add')}
           </Button>
         </div>

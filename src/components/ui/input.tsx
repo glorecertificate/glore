@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 
 import { type VariantProps, cva } from 'class-variance-authority'
 
+import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName } from '@/components/icons/registry'
 import { Label } from '@/components/ui/label'
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { useMounted } from '@/hooks/use-mounted'
@@ -15,7 +17,7 @@ export interface InputProps
   blurOnEscape?: boolean
   defaultOpen?: boolean
   hotkey?: string
-  icon?: Icon
+  icon?: Icon | IconName
   open?: boolean
 }
 
@@ -45,13 +47,16 @@ export const inputVariants = cva(
   }
 )
 
+const ICON_CLASS_NAME =
+  'absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground peer-focus/input:text-foreground'
+
 export const Input = ({
   blurOnEscape,
   className,
   defaultOpen,
   disabled,
   hotkey,
-  icon: Icon,
+  icon,
   id,
   onKeyDown,
   open,
@@ -64,6 +69,7 @@ export const Input = ({
   const mounted = useMounted()
   const inputRef = useRef<HTMLInputElement>(null)
   const composedRef = useComposedRefs(inputRef, ref)
+  const IconComponent = typeof icon === 'function' ? icon : null
 
   useEffect(() => {
     if (!hotkey) return
@@ -122,9 +128,8 @@ export const Input = ({
       >
         {placeholder}
       </Label>
-      {Icon && (
-        <Icon className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground peer-focus/input:text-foreground" />
-      )}
+      {typeof icon === 'string' && <LucideIcon name={icon} className={ICON_CLASS_NAME} />}
+      {IconComponent && <IconComponent className={ICON_CLASS_NAME} />}
     </div>
   )
 }

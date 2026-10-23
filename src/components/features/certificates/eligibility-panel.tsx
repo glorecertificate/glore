@@ -1,9 +1,9 @@
 'use client'
 
-import { CircleCheckIcon, CircleDashedIcon, InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type CertificateEligibility } from '@/actions/certificates/queries'
+import { LucideIcon } from '@/components/icons/lucide'
 import { ArrowsMotif } from '@/components/ui/arrows-motif'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
@@ -77,11 +77,11 @@ export const EligibilityPanel = ({
             {requirements.map(requirement => (
               <li className="flex gap-3" key={requirement.key}>
                 {requirement.met === null ? (
-                  <InfoIcon className="mt-0.5 size-5 shrink-0 text-brand-text" />
+                  <LucideIcon name="info" className="mt-0.5 size-5 shrink-0 text-brand-text" />
                 ) : requirement.met ? (
-                  <CircleCheckIcon className="mt-0.5 size-5 shrink-0 text-success-text" />
+                  <LucideIcon name="circle-check" className="mt-0.5 size-5 shrink-0 text-success-text" />
                 ) : (
-                  <CircleDashedIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                  <LucideIcon name="circle-dashed" className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                 )}
                 <div className="min-w-0 flex-1 space-y-1.5">
                   <p className="text-sm font-medium">{requirement.title}</p>

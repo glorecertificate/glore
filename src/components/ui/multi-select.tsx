@@ -3,10 +3,10 @@
 import { createContext, use, useState } from 'react'
 
 import { CommandSeparator } from 'cmdk'
-import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { type ToastT, toast } from 'sonner'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -155,7 +155,7 @@ export const MultiSelectTrigger = ({
             disabled={disabled}
             type="button"
           >
-            <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" />
+            <LucideIcon name="chevrons-up-down" className="size-4 shrink-0 opacity-50" />
           </PopoverTrigger>
         </div>
       </div>
@@ -236,7 +236,8 @@ export const MultiSelectBadge = ({
             ]
           )}
         >
-          <XIcon
+          <LucideIcon
+            name="x"
             className={cn('size-2 stroke-foreground', !disabled && 'group-hover/multi-select-badge:stroke-white')}
           />
         </span>
@@ -314,7 +315,10 @@ export const MultiSelectItem = ({
       value={value}
       {...props}
     >
-      <CheckIcon className={cn('size-4', selected ? 'opacity-100' : 'opacity-0 group-hover/item:opacity-30')} />
+      <LucideIcon
+        name="check"
+        className={cn('size-4', selected ? 'opacity-100' : 'opacity-0 group-hover/item:opacity-30')}
+      />
       <div className="flex items-center gap-1.5">{children ?? label}</div>
     </CommandItem>
   )

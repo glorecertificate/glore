@@ -115,6 +115,10 @@
           {
             "name": "cnfast",
             "message": "Import from '@/lib/utils' instead."
+          },
+          {
+            "name": "lucide-react",
+            "message": "Render icons through LucideIcon from '@/components/icons/lucide' and register new ones in '@/components/icons/registry'."
           }
         ]
       }
@@ -789,6 +793,41 @@
               {
                 "name": "cnfast",
                 "message": "Import from '@/lib/utils' instead."
+              },
+              {
+                "name": "lucide-react",
+                "message": "Render icons through LucideIcon from '@/components/icons/lucide' and register new ones in '@/components/icons/registry'."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/components/icons/**", "src/components/ui/rich-text-editor/**"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["../**"],
+                "message": "Parent imports are not allowed, use an alias instead."
+              },
+              {
+                "group": ["@/components/features/**", "@/app/**", "@/actions/**"],
+                "message": "Shared layers (ui, icons, hooks, lib) must stay domain-free: do not import from features, app, or actions. Move domain-coupled code into a feature."
+              }
+            ],
+            "paths": [
+              {
+                "name": "next/headers",
+                "importNames": ["cookies"],
+                "message": "Import from '@/actions/cookies' instead."
+              },
+              {
+                "name": "cnfast",
+                "message": "Import from '@/lib/utils' instead."
               }
             ]
           }
@@ -816,6 +855,10 @@
                 "name": "next/headers",
                 "importNames": ["cookies"],
                 "message": "Import from '@/actions/cookies' instead."
+              },
+              {
+                "name": "lucide-react",
+                "message": "Render icons through LucideIcon from '@/components/icons/lucide' and register new ones in '@/components/icons/registry'."
               }
             ]
           }

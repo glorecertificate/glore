@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BanIcon, CheckIcon, MessageSquareWarningIcon, PlayIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -147,13 +146,7 @@ export const ReviewWorkspace = ({
           <p className="text-sm text-muted-foreground">{certificate.organization.name}</p>
         </div>
         {certificate.isSubmitted && (
-          <Button
-            icon={PlayIcon}
-            loading={busy === 'claim'}
-            onClick={() => void claim()}
-            type="button"
-            variant="outline"
-          >
+          <Button icon="play" loading={busy === 'claim'} onClick={() => void claim()} type="button" variant="outline">
             {t('startReview')}
           </Button>
         )}
@@ -205,7 +198,7 @@ export const ReviewWorkspace = ({
             <div className="sticky bottom-0 -mx-4 -mb-4 flex items-center justify-end gap-2 rounded-b-xl border-t bg-background/95 p-2 backdrop-blur-sm sm:-mx-6 sm:-mb-6 sm:flex-wrap sm:px-6 sm:py-4">
               <Button
                 disabled={busy !== null}
-                icon={BanIcon}
+                icon="ban"
                 onClick={() => setRejecting(true)}
                 type="button"
                 variant="ghost"
@@ -214,7 +207,7 @@ export const ReviewWorkspace = ({
               </Button>
               <Button
                 disabled={busy !== null || !canRequestChanges}
-                icon={MessageSquareWarningIcon}
+                icon="message-square-warning"
                 loading={busy === 'changes'}
                 onClick={() => void requestChanges()}
                 type="button"
@@ -225,7 +218,7 @@ export const ReviewWorkspace = ({
               <Button
                 className="max-sm:flex-1"
                 disabled={busy !== null || !canApprove}
-                icon={CheckIcon}
+                icon="check"
                 loading={busy === 'preview'}
                 onClick={() => void preview()}
                 type="button"

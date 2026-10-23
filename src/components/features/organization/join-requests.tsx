@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 
-import { MailIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { approveOrganizationJoinRequest, rejectOrganizationJoinRequest } from '@/actions/organizations/requests'
 import { useInvitationError } from '@/components/features/organization/use-invitation-error'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Badge } from '@/components/ui/badge'
@@ -154,7 +154,7 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
           <Empty className="border">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <MailIcon />
+                <LucideIcon name="mail" />
               </EmptyMedia>
               <EmptyTitle>{t('noJoinRequests')}</EmptyTitle>
               <EmptyDescription>{t('noJoinRequestsDescription')}</EmptyDescription>

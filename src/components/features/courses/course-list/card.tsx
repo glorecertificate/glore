@@ -2,17 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 
-import {
-  ArchiveIcon,
-  BookOpenIcon,
-  ClockIcon,
-  Edit3Icon,
-  LanguagesIcon,
-  LinkIcon,
-  StarIcon,
-  UserPenIcon,
-  UsersIcon,
-} from 'lucide-react'
 import { type Locale, useFormatter, useNow, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -171,7 +160,7 @@ export const CourseListCard = ({
                 </Link>
               </div>
               <div className="flex items-center gap-1.5">
-                <LinkIcon className="size-2.5" />
+                <LucideIcon name="link" className="size-2.5" />
                 <Link className="font-mono text-[11px] text-muted-foreground" href={coursePath} title={t('followLink')}>
                   {'/'}
                   <SearchHighlight query={search} value={course.slug} />
@@ -233,7 +222,7 @@ export const CourseListCard = ({
           {/* Drafts */}
           {user.canEdit && languageItems.length > 1 && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
-              <LanguagesIcon className="size-3.5 text-muted-foreground" />
+              <LucideIcon name="languages" className="size-3.5 text-muted-foreground" />
               <div className="flex items-center gap-2">
                 {languageItems.map(({ active, displayLabel, icon, published, value }) => (
                   <div className="flex flex-col items-center gap-0" key={value}>
@@ -268,19 +257,19 @@ export const CourseListCard = ({
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-normal text-muted-foreground">
               {course.durationMinutes ? (
                 <span className="flex items-center gap-1.5">
-                  <ClockIcon className="size-3.5" />
+                  <LucideIcon name="clock" className="size-3.5" />
                   <CourseDuration minutes={course.durationMinutes} />
                 </span>
               ) : null}
               {course.rating.average !== null && (
                 <span className="flex items-center gap-1.5">
-                  <StarIcon className="size-3.5" />
+                  <LucideIcon name="star" className="size-3.5" />
                   {tCatalog('rating', { count: course.rating.count, rating: course.rating.average })}
                 </span>
               )}
               {(course.languages ?? []).length > 0 && (
                 <span className="flex items-center gap-1.5">
-                  <LanguagesIcon className="size-3.5" />
+                  <LucideIcon name="languages" className="size-3.5" />
                   {(course.languages ?? []).join(' ').toUpperCase()}
                 </span>
               )}
@@ -294,12 +283,12 @@ export const CourseListCard = ({
                 : 'pointer-events-none text-muted-foreground/50 select-none'
             )}
           >
-            <BookOpenIcon className="size-3.5 text-muted-foreground" />
+            <LucideIcon name="book-open" className="size-3.5 text-muted-foreground" />
             {lessonsMessage}
           </div>
           {user.canEdit && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-              <UserPenIcon className="size-3.5 text-muted-foreground" />
+              <LucideIcon name="user-pen" className="size-3.5 text-muted-foreground" />
               <div className="flex items-center gap-1.5">
                 <span suppressHydrationWarning>{createdOn}</span>
                 {course.creator && (
@@ -329,13 +318,13 @@ export const CourseListCard = ({
           )}
           {user.canEdit && course.enrollmentCount > 0 && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-              <UsersIcon className="size-3.5 text-muted-foreground" />
+              <LucideIcon name="users" className="size-3.5 text-muted-foreground" />
               {t('enrolledStudents', { count: course.enrollmentCount })}
             </div>
           )}
           {course.contributors.length > 0 && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-              <Edit3Icon className="size-3.5 text-muted-foreground" />
+              <LucideIcon name="pen-line" className="size-3.5 text-muted-foreground" />
               <div className="flex items-center gap-1.5">
                 <span>{t('writtenBy')}</span>
                 <div className="flex -space-x-0.5 hover:space-x-1">
@@ -360,7 +349,7 @@ export const CourseListCard = ({
           )}
           {tab === 'archived' && course.archivedAt && course.archivedBy && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-              <ArchiveIcon className="size-3.5 text-muted-foreground" />
+              <LucideIcon name="archive" className="size-3.5 text-muted-foreground" />
               <div className="flex items-center gap-1.5">
                 <span suppressHydrationWarning>
                   {t('archivedOnBy', { date: relativeTime(new Date(course.archivedAt), now) })}

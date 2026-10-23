@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 
-import { BarChart2Icon, StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { getCourseAnalytics } from '@/actions/courses/analytics'
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName } from '@/components/icons/registry'
 import { useI18n } from '@/components/providers/i18n'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
@@ -55,25 +56,30 @@ const AnalyticsContent = ({
   const isSkill = course.type === 'skill'
   const empty = '-'
 
-  const statCards = [
-    { icon: UsersIcon, key: 'enrollments', label: t('analyticsEnrollments'), value: data.enrollmentCount },
-    { icon: TrendingUpIcon, key: 'completions', label: t('analyticsCompletions'), value: data.completionCount },
-    { icon: BarChart2Icon, key: 'rate', label: t('analyticsCompletionRate'), value: `${data.completionRate}%` },
+  const statCards: StatCard[] = [
+    { icon: 'users', key: 'enrollments', label: t('analyticsEnrollments'), value: data.enrollmentCount },
+    { icon: 'trending-up', key: 'completions', label: t('analyticsCompletions'), value: data.completionCount },
     {
-      icon: StarIcon,
+      icon: 'chart-no-axes-column',
+      key: 'rate',
+      label: t('analyticsCompletionRate'),
+      value: `${data.completionRate}%`,
+    },
+    {
+      icon: 'star',
       key: 'rating',
       label: t('analyticsAvgRating'),
       value: data.avgRating === null ? empty : `${data.avgRating} / 5`,
     },
     ...(isSkill
-      ? [
+      ? ([
           {
-            icon: StarIcon,
+            icon: 'star',
             key: 'selfAssessment',
             label: tEditor('analyticsSelfAssessment'),
             value: data.avgSelfAssessment === null ? empty : `${data.avgSelfAssessment} / 5`,
           },
-        ]
+        ] satisfies StatCard[])
       : []),
   ]
 
@@ -90,12 +96,12 @@ const AnalyticsContent = ({
   return (
     <div className="flex flex-col gap-6 p-6">
       <div className="grid grid-cols-2 gap-3">
-        {statCards.map(({ icon: Icon, key, label, value }) => (
+        {statCards.map(({ icon, key, label, value }) => (
           <Card key={key}>
             <CardHeader className="p-3 pb-1.5">
               <div className="flex items-center justify-between">
                 <CardDescription className="text-xs font-medium">{label}</CardDescription>
-                <Icon className="size-3 text-muted-foreground" />
+                <LucideIcon name={icon} className="size-3 text-muted-foreground" />
               </div>
             </CardHeader>
             <CardContent className="px-3 pt-0 pb-3">
@@ -146,6 +152,13 @@ const AnalyticsContent = ({
   )
 }
 
+interface StatCard {
+  icon: IconName
+  key: string
+  label: string
+  value: number | string
+}
+
 export const CourseAnalyticsSheet = () => {
   const { course } = useCourse()
   const t = useTranslations('Courses')
@@ -176,7 +189,7 @@ export const CourseAnalyticsSheet = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="xs" variant="outline">
-            <BarChart2Icon className="size-4" />
+            <LucideIcon name="chart-no-axes-column" className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent className="max-w-72 text-center" sideOffset={6}>
@@ -187,7 +200,7 @@ export const CourseAnalyticsSheet = () => {
         <SheetContent className="flex flex-col gap-0 overflow-y-auto p-0" side="right">
           <SheetHeader className="border-b px-6 py-4">
             <SheetTitle className="flex items-center gap-2 text-sm">
-              <BarChart2Icon className="size-4" />
+              <LucideIcon name="chart-no-axes-column" className="size-4" />
               {t('analyticsSheet')}
             </SheetTitle>
             <SheetDescription className="text-xs">{t('analyticsSheetDescription')}</SheetDescription>

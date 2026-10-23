@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 
-import { MailIcon, MoreHorizontalIcon, PencilIcon, ShieldUserIcon, Trash2Icon, UserIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName } from '@/components/icons/registry'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,7 +36,6 @@ import { LanguageSelect } from '@/components/ui/language-select'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
-import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export type TeamRole = 'admin' | 'editor'
@@ -49,12 +49,12 @@ const STAT_ACCENTS = {
 
 export const TeamStatCard = ({
   accent,
-  icon: StatIcon,
+  icon,
   label,
   value,
 }: {
   accent?: keyof typeof STAT_ACCENTS
-  icon: Icon
+  icon: IconName
   label: string
   value: number
 }) => (
@@ -65,7 +65,7 @@ export const TeamStatCard = ({
         accent && STAT_ACCENTS[accent]
       )}
     >
-      <StatIcon className="size-5" />
+      <LucideIcon className="size-5" name={icon} />
     </div>
     <div className="flex flex-col gap-1">
       <span className="text-2xl leading-none font-semibold tabular-nums">{value}</span>
@@ -110,7 +110,7 @@ export const TeamMemberRow = ({
           <Avatar className="size-10 rounded-full ring-2 ring-background">
             {user.avatarUrl && <AvatarImage alt={getDisplayName(user)} src={user.avatarUrl} />}
             <AvatarFallback className="rounded-full bg-muted text-sm font-medium">
-              {user.initials || <UserIcon className="size-4" />}
+              {user.initials || <LucideIcon name="user" className="size-4" />}
             </AvatarFallback>
           </Avatar>
         </div>
@@ -133,7 +133,11 @@ export const TeamMemberRow = ({
       </div>
       <div className="flex items-center gap-2 sm:gap-2.5">
         <Badge className={cn('gap-1 border')} variant="ghost">
-          {role === 'admin' ? <ShieldUserIcon className="size-3" /> : <PencilIcon className="size-3" />}
+          {role === 'admin' ? (
+            <LucideIcon name="shield-user" className="size-3" />
+          ) : (
+            <LucideIcon name="pencil" className="size-3" />
+          )}
           {t(`role_${role}`)}
         </Badge>
         {!isCurrentUser && (
@@ -145,22 +149,26 @@ export const TeamMemberRow = ({
                 size="icon"
                 variant="ghost"
               >
-                <MoreHorizontalIcon className="size-4" />
+                <LucideIcon name="ellipsis" className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
               <DropdownMenuItem className="text-[13px]" onClick={() => onChangeRole(user, targetRole)}>
-                {targetRole === 'admin' ? <ShieldUserIcon className="size-3" /> : <PencilIcon className="size-3" />}
+                {targetRole === 'admin' ? (
+                  <LucideIcon name="shield-user" className="size-3" />
+                ) : (
+                  <LucideIcon name="pencil" className="size-3" />
+                )}
                 {t('makeRole', { role: t(`role_${targetRole}`) })}
               </DropdownMenuItem>
               {status === 'pending' && user.invitationOpen && (
                 <DropdownMenuItem className="text-[13px]" onClick={() => onResend(user)}>
-                  <MailIcon className="size-3" />
+                  <LucideIcon name="mail" className="size-3" />
                   {t('resendInvite')}
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem className="text-[13px]" onClick={() => onDelete(user)} variant="destructive">
-                <Trash2Icon className="size-3" />
+                <LucideIcon name="trash-2" className="size-3" />
                 {t('removeMember')}
               </DropdownMenuItem>
             </DropdownMenuContent>

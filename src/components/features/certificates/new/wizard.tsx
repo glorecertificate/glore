@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { parseAsInteger, useQueryState } from 'nuqs'
 import { type Control, useForm, useWatch } from 'react-hook-form'
@@ -284,7 +283,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
             <div className="flex items-center gap-3">
               <Button
                 disabled={step === 0 || submitting}
-                icon={ArrowLeftIcon}
+                icon="arrow-left"
                 onClick={() => goTo(step - 1)}
                 type="button"
                 variant="outline"
@@ -303,7 +302,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
               {!resubmit && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button disabled={submitting || deleting} icon={Trash2Icon} type="button" variant="ghost">
+                    <Button disabled={submitting || deleting} icon="trash-2" type="button" variant="ghost">
                       {t('discard')}
                     </Button>
                   </AlertDialogTrigger>
@@ -321,7 +320,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
               )}
               {last ? (
                 <Button
-                  icon={CheckIcon}
+                  icon="check"
                   key="submit"
                   loading={submitting}
                   loadingText={t('submitting')}
@@ -332,7 +331,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                 </Button>
               ) : (
                 <Button
-                  icon={ArrowRightIcon}
+                  icon="arrow-right"
                   iconPlacement="right"
                   key="next"
                   onClick={() => void advance()}

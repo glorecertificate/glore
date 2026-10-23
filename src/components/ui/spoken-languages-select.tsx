@@ -2,9 +2,9 @@
 
 import React, { useId, useState } from 'react'
 
-import { CheckIcon, PlusIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
@@ -99,7 +99,7 @@ export const SpokenLanguagesSelect = ({
             variant="outline"
           >
             {value.length > 0 ? t('languagesSelected', { count: value.length }) : t('selectLanguages')}
-            <PlusIcon className="ml-2 size-4 shrink-0 opacity-50" />
+            <LucideIcon name="plus" className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0" id={contentId}>
@@ -121,7 +121,8 @@ export const SpokenLanguagesSelect = ({
                         value.includes(language) ? 'border-primary bg-primary text-primary-foreground' : 'border-input'
                       )}
                     >
-                      <CheckIcon
+                      <LucideIcon
+                        name="check"
                         className={cn(
                           'size-3 text-primary-foreground transition-opacity',
                           value.includes(language) ? 'opacity-100' : 'opacity-0'
@@ -157,7 +158,7 @@ export const SpokenLanguagesSelect = ({
                 onClick={() => toggle(language)}
                 type="button"
               >
-                <XIcon className="size-3" />
+                <LucideIcon name="x" className="size-3" />
               </button>
             </Badge>
           ))}

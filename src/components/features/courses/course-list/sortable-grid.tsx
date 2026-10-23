@@ -1,6 +1,5 @@
 'use client'
 
-import { GripVerticalIcon } from 'lucide-react'
 import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -8,6 +7,7 @@ import { toast } from 'sonner'
 import { reorderCourses } from '@/actions/courses/management'
 import { useCourses } from '@/components/features/courses/context'
 import { CourseListCard } from '@/components/features/courses/course-list/card'
+import { LucideIcon } from '@/components/icons/lucide'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import {
   Sortable,
@@ -82,7 +82,7 @@ export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListS
                       className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-100"
                       title={t('reorderCourse')}
                     >
-                      <GripVerticalIcon className="size-4 text-muted-foreground" />
+                      <LucideIcon name="grip-vertical" className="size-4 text-muted-foreground" />
                     </SortableItemHandle>
                   )}
                 </AnimatedListItem>

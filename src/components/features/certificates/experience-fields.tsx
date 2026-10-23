@@ -1,12 +1,12 @@
 'use client'
 
-import { PlusIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form'
 
 import { FieldError } from '@/components/features/certificates/field-error'
 import { meetsActivityRule } from '@/components/features/certificates/rules'
 import { MAX_CERTIFICATE_TASKS, MAX_TASK_LENGTH } from '@/components/features/certificates/schemas'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -165,7 +165,7 @@ export const TaskFields = () => {
                       type="button"
                       variant="ghost"
                     >
-                      <XIcon />
+                      <LucideIcon name="x" />
                     </Button>
                   </div>
                   <FieldError />
@@ -178,7 +178,7 @@ export const TaskFields = () => {
       <Button
         className="self-start"
         disabled={fields.length >= MAX_CERTIFICATE_TASKS}
-        icon={PlusIcon}
+        icon="plus"
         onClick={() => append({ text: '' })}
         size="sm"
         type="button"

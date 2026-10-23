@@ -1,8 +1,8 @@
 'use client'
 
-import { CalendarIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -41,7 +41,7 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
           <CardContent className="flex flex-col gap-2">
             {excerpt && <p className="line-clamp-2 text-sm text-muted-foreground">{excerpt}</p>}
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <CalendarIcon className="size-3 shrink-0" />
+              <LucideIcon name="calendar" className="size-3 shrink-0" />
               <span>{t('lastUpdated', { date: updatedAt })}</span>
             </div>
           </CardContent>

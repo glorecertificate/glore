@@ -3,10 +3,10 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 
-import { FilePlusCornerIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type Course } from '@/db/queries/course'
@@ -30,7 +30,7 @@ export const CourseDialog = ({
   const t = useTranslations('Courses')
 
   const isEdit = !!course
-  const Icon = isEdit ? SettingsIcon : FilePlusCornerIcon
+  const icon = isEdit ? 'settings' : 'file-plus-corner'
   const title = isEdit ? t('settings') : t('newCourse')
   const description = isEdit ? t('courseSettingsDescription') : t('newCourseDescription')
 
@@ -55,7 +55,7 @@ export const CourseDialog = ({
       >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Icon className="size-5" />
+            <LucideIcon name={icon} className="size-5" />
             {title}
           </DialogTitle>
           <DialogDescription>{description}</DialogDescription>

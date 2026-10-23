@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { ShieldAlertIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { verifyCertificate } from '@/actions/certificates/public'
 import { normalizeCertificateCode } from '@/components/features/certificates/rules'
 import { VerificationView } from '@/components/features/certificates/verify/verification-view'
 import { VerifyShell } from '@/components/features/certificates/verify/verify-shell'
+import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Banner } from '@/components/ui/banner'
 import { VERIFY_ROOT } from '@/lib/constants'
@@ -49,7 +49,7 @@ const VerifyCodeContent = async ({ params }: Pick<PageProps<'/verify/[code]'>, '
     <VerifyShell>
       {result.outcome === 'limited' ? (
         <Banner variant="warning">
-          <ShieldAlertIcon className="size-4 shrink-0" />
+          <LucideIcon name="shield-alert" className="size-4 shrink-0" />
           {t('tooManyRequests')}
         </Banner>
       ) : (

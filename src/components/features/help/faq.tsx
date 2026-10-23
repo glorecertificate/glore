@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 
-import { ChevronDownIcon } from 'lucide-react'
-
+import { LucideIcon } from '@/components/icons/lucide'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
 
@@ -24,7 +23,8 @@ export const Faq = ({ className, items, ...props }: React.ComponentProps<'div'> 
           <Collapsible key={question} onOpenChange={value => setOpen(value ? question : null)} open={isOpen}>
             <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-accent/50">
               <span className="text-sm font-medium">{question}</span>
-              <ChevronDownIcon
+              <LucideIcon
+                name="chevron-down"
                 className={cn(
                   'size-4 shrink-0 text-muted-foreground transition-transform duration-200',
                   isOpen && 'rotate-180'

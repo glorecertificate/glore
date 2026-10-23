@@ -1,11 +1,11 @@
 'use client'
 
-import { ShieldCheckIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useFormContext, useWatch } from 'react-hook-form'
 
 import { FieldError } from '@/components/features/certificates/field-error'
 import { MAX_RATING_COMMENT_LENGTH, type WizardValues } from '@/components/features/certificates/schemas'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { RatingGroup } from '@/components/ui/rating-group'
@@ -39,7 +39,7 @@ export const OrganizationStep = ({ organization }: { organization: string }) => 
   return (
     <div className="flex flex-col gap-5">
       <Banner>
-        <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-brand-text" />
+        <LucideIcon name="shield-check" className="mt-0.5 size-4 shrink-0 text-brand-text" />
         <p>{t('anonymousNote', { organization })}</p>
       </Banner>
       {SCORES.map(score => (

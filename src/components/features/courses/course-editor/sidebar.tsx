@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { CheckIcon, GripVerticalIcon, LoaderCircleIcon, PlusIcon, XIcon } from 'lucide-react'
 import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
@@ -188,7 +188,7 @@ const CourseSidebarItem = ({
                         size="text"
                         variant="transparent"
                       >
-                        <XIcon className="size-3" />
+                        <LucideIcon name="x" className="size-3" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side="top" size="sm">
@@ -227,8 +227,8 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
   const progressColor = course.progress === 100 ? 'success' : 'default'
 
   const indicators = {
-    completed: user.isLearner ? <CheckIcon className="size-4" /> : undefined,
-    loading: <LoaderCircleIcon className="size-4 animate-spin" />,
+    completed: user.isLearner ? <LucideIcon name="check" className="size-4" /> : undefined,
+    loading: <LucideIcon name="loader-circle" className="size-4 animate-spin" />,
   }
 
   const onReorder = (newLessons: Lesson[]) => {
@@ -302,7 +302,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                               aria-label={t('reorderLesson')}
                               className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50"
                             >
-                              <GripVerticalIcon className="size-4" />
+                              <LucideIcon name="grip-vertical" className="size-4" />
                             </SortableItemHandle>
                           )}
                           <CourseSidebarItem
@@ -361,7 +361,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button aria-label={t('addLesson')} className="z-1 size-6 rounded-full" onClick={() => addLesson()}>
-                  <PlusIcon className="size-4" />
+                  <LucideIcon name="plus" className="size-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={8}>

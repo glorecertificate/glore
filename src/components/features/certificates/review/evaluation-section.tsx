@@ -1,11 +1,11 @@
 'use client'
 
-import { EyeOffIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useFormContext } from 'react-hook-form'
 
 import { FieldError } from '@/components/features/certificates/field-error'
 import { type ReviewFormValues } from '@/components/features/certificates/schemas'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { RatingGroup } from '@/components/ui/rating-group'
@@ -37,7 +37,7 @@ export const EvaluationSection = () => {
         <p className="text-sm text-muted-foreground">{t('evaluationDescription')}</p>
       </div>
       <Banner>
-        <EyeOffIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+        <LucideIcon name="eye-off" className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
         <p>{t('blindNote')}</p>
       </Banner>
       {SCORES.map(score => (

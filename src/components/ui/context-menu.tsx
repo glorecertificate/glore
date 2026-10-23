@@ -1,8 +1,8 @@
 'use client'
 
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
-import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
 export const ContextMenu = ({ ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Root>) => (
@@ -47,7 +47,7 @@ export const ContextMenuSubTrigger = ({
     {...props}
   >
     {children}
-    <ChevronRightIcon className="ml-auto" />
+    <LucideIcon name="chevron-right" className="ml-auto" />
   </ContextMenuPrimitive.SubTrigger>
 )
 
@@ -119,7 +119,7 @@ export const ContextMenuCheckboxItem = ({
   >
     <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
-        <CheckIcon className="size-4" />
+        <LucideIcon name="check" className="size-4" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -141,7 +141,7 @@ export const ContextMenuRadioItem = ({
   >
     <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
-        <CircleIcon className="size-2 fill-current" />
+        <LucideIcon name="circle" className="size-2 fill-current" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}

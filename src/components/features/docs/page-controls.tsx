@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 
-import { Settings2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { CategoryManager } from '@/components/features/docs/category-manager'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { type DocCategory } from '@/db/queries/doc'
 
@@ -21,7 +21,7 @@ export const CategoryManagerTrigger = ({ categories }: CategoryManagerTriggerPro
     <>
       <div className="flex justify-end">
         <Button size="sm" variant="outline" onClick={() => setOpen(true)}>
-          <Settings2Icon className="size-4" />
+          <LucideIcon name="settings-2" className="size-4" />
           {t('categories.manage')}
         </Button>
       </div>

@@ -1,13 +1,13 @@
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { ShieldCheckIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { isLookupLimited } from '@/actions/certificates/public'
 import { normalizeCertificateCode } from '@/components/features/certificates/rules'
 import { LookupForm } from '@/components/features/certificates/verify/lookup-form'
 import { VerifyShell } from '@/components/features/certificates/verify/verify-shell'
+import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Banner } from '@/components/ui/banner'
 import { VERIFY_ROOT } from '@/lib/constants'
@@ -30,7 +30,7 @@ const VerifyContent = async ({ searchParams }: Pick<PageProps<'/verify'>, 'searc
     <VerifyShell>
       <div className="space-y-4 text-center">
         <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand-text">
-          <ShieldCheckIcon className="size-6" />
+          <LucideIcon name="shield-check" className="size-6" />
         </div>
         <h1 className="text-3xl font-semibold tracking-tight">{t('title')}</h1>
         <p className="mx-auto max-w-prose text-muted-foreground">{t('description')}</p>

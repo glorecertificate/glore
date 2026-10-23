@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 
-import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import {
@@ -11,6 +10,7 @@ import {
   type CourseListSortType,
 } from '@/components/features/courses/course-list/params'
 import { useCourseListSort, useCourseListTab } from '@/components/features/courses/course-list/use-params'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import {
@@ -42,10 +42,11 @@ export const CourseListSort = () => {
 
   const icon = (() => {
     if (!sort) {
-      return <ChevronsUpDownIcon className="size-3.5" />
+      return <LucideIcon name="chevrons-up-down" className="size-3.5" />
     }
-    const Icon = sortDirection === 'asc' ? ArrowUpIcon : ArrowDownIcon
-    return <Icon className="size-3 text-muted-foreground" />
+    return (
+      <LucideIcon name={sortDirection === 'asc' ? 'arrow-up' : 'arrow-down'} className="size-3 text-muted-foreground" />
+    )
   })()
 
   const handleSortChange = (type: CourseListSortType) => () => {
@@ -63,7 +64,7 @@ export const CourseListSort = () => {
     setSortDirection(null)
   }
 
-  const ArrowIcon = sortDirection === 'asc' ? ArrowUpIcon : ArrowDownIcon
+  const arrowIcon = sortDirection === 'asc' ? 'arrow-up' : 'arrow-down'
 
   return (
     <DropdownMenu onOpenChange={setOpen} open={open}>
@@ -101,7 +102,7 @@ export const CourseListSort = () => {
                   size="icon"
                   variant="ghost"
                 >
-                  <ArrowIcon className="size-3.5 transition-all" />
+                  <LucideIcon name={arrowIcon} className="size-3.5 transition-all" />
                 </Button>
               </DropdownMenuItem>
             )
@@ -110,7 +111,7 @@ export const CourseListSort = () => {
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={clearSort}>
-              <XIcon className="mr-1 size-4" />
+              <LucideIcon name="x" className="mr-1 size-4" />
               {tCommon('clearSort')}
             </DropdownMenuItem>
           </>

@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 
-import { CalendarIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 import { useFormContext } from 'react-hook-form'
 
 import { type OnboardingFormValues } from '@/components/features/onboarding/schema'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -37,7 +37,7 @@ export const BirthdayField = ({ disabled }: { disabled: boolean }) => {
                   disabled={disabled}
                   variant="outline"
                 >
-                  <CalendarIcon className="mr-2 size-4" />
+                  <LucideIcon name="calendar" className="mr-2 size-4" />
                   {field.value
                     ? format.dateTime(new Date(field.value), {
                         day: '2-digit',

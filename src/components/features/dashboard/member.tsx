@@ -2,7 +2,6 @@
 
 import { type Route } from 'next'
 
-import { ArrowRightIcon, BookOpenIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type MemberSummary } from '@/actions/dashboard/core'
@@ -33,7 +32,11 @@ const CourseIcon = ({ icon, type }: { icon: string | null; type: EnumType<'cours
       courseIconVariants({ background: true, type })
     )}
   >
-    {icon ? <LucideIcon className="size-4" name={icon as IconName} /> : <BookOpenIcon className="size-4" />}
+    {icon ? (
+      <LucideIcon className="size-4" name={icon as IconName} />
+    ) : (
+      <LucideIcon name="book-open" className="size-4" />
+    )}
   </span>
 )
 
@@ -152,7 +155,7 @@ export const MemberDashboard = ({
                     <p className="font-semibold text-brand-text">{t('certificate.readyTitle')}</p>
                     <p className="text-sm text-muted-foreground">{t('certificate.readyMessage')}</p>
                   </div>
-                  <Button asChild icon={PlusIcon} size="sm" variant="brand">
+                  <Button asChild icon="plus" size="sm" variant="brand">
                     <Link href="/certificates/new">{t('requestCertificate')}</Link>
                   </Button>
                 </Banner>
@@ -212,7 +215,7 @@ export const MemberDashboard = ({
                         </span>
                       </span>
                     </span>
-                    <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground" />
+                    <LucideIcon name="arrow-right" className="size-4 shrink-0 text-muted-foreground" />
                   </Link>
                 </li>
               ))}
@@ -243,7 +246,7 @@ export const MemberDashboard = ({
                         {course.goal ? t('recommended.goal') : t(`recommended.type.${course.type}`)}
                       </span>
                     </span>
-                    <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground" />
+                    <LucideIcon name="arrow-right" className="size-4 shrink-0 text-muted-foreground" />
                   </Link>
                 </li>
               ))}

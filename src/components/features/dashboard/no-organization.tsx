@@ -1,8 +1,8 @@
 'use client'
 
-import { BuildingIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Link } from '@/components/ui/link'
@@ -15,7 +15,7 @@ export const NoOrganization = ({ firstName }: { firstName: string }) => {
       <Empty className="border">
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <BuildingIcon />
+            <LucideIcon name="building" />
           </EmptyMedia>
           <EmptyTitle>{t('none.title', { name: firstName })}</EmptyTitle>
           <EmptyDescription>{t('none.description')}</EmptyDescription>

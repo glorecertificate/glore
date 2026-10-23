@@ -3,11 +3,11 @@
 import dynamic from 'next/dynamic'
 import { useEffect, useImperativeHandle, useState } from 'react'
 
-import { CameraIcon, Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { type FileRejection, useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -132,14 +132,17 @@ export const ImageCropper = ({
               !disabled && 'cursor-pointer group-hover:bg-foreground/40'
             )}
           >
-            <CameraIcon className="size-6 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+            <LucideIcon
+              name="camera"
+              className="size-6 text-white opacity-0 transition-opacity group-hover:opacity-100"
+            />
           </div>
           <input {...getInputProps({ 'aria-label': t('uploadAvatar') })} />
         </div>
 
         <div className="flex flex-col gap-2">
           <Button size="sm" type="button" variant="outline" {...buttonProps} className="w-fit" disabled={disabled}>
-            <UploadCloudIcon className="mr-2 size-4" />
+            <LucideIcon name="cloud-upload" className="mr-2 size-4" />
             {value ? t('changeAvatar') : t('uploadAvatar')}
           </Button>
 
@@ -152,7 +155,7 @@ export const ImageCropper = ({
               type="button"
               variant="ghost"
             >
-              <Trash2Icon className="mr-2 size-4" />
+              <LucideIcon name="trash-2" className="mr-2 size-4" />
               {t('remove')}
             </Button>
           ) : null}

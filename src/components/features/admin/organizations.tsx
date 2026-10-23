@@ -2,16 +2,6 @@
 
 import { useState } from 'react'
 
-import {
-  ArrowDownIcon,
-  ArrowUpDownIcon,
-  ArrowUpIcon,
-  Building2Icon,
-  CheckIcon,
-  PlusIcon,
-  SearchXIcon,
-  UserPlusIcon,
-} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -22,6 +12,7 @@ import {
   inviteOrganization,
   rejectOrganization,
 } from '@/actions/admin/organizations'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
@@ -200,11 +191,11 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         </Tabs>
         <div className="flex flex-wrap items-center gap-2">
           <Button className="gap-2" onClick={() => setCreateOpen(true)} size="sm" variant="brand">
-            <PlusIcon className="size-4" />
+            <LucideIcon name="plus" className="size-4" />
             {t('createOrg')}
           </Button>
           <Button className="gap-2" onClick={() => setInviteOpen(true)} size="sm" variant="outline">
-            <UserPlusIcon className="size-4" />
+            <LucideIcon name="user-plus" className="size-4" />
             {t('inviteOrg')}
           </Button>
         </div>
@@ -240,17 +231,21 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="h-8 gap-1.5 border-dashed" size="sm" variant="outline">
-                <ArrowUpDownIcon className="size-3.5" />
+                <LucideIcon name="arrow-up-down" className="size-3.5" />
                 {sortLabel}
                 {sort &&
-                  (sortDir === 'asc' ? <ArrowUpIcon className="size-3" /> : <ArrowDownIcon className="size-3" />)}
+                  (sortDir === 'asc' ? (
+                    <LucideIcon name="arrow-up" className="size-3" />
+                  ) : (
+                    <LucideIcon name="arrow-down" className="size-3" />
+                  ))}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               {(['name', 'country', 'members'] as SortField[]).map(field => (
                 <DropdownMenuItem key={field} onClick={() => handleSort(field)}>
                   {t(`sort_${field}`)}
-                  {sort === field && <CheckIcon className="ml-auto size-3.5" />}
+                  {sort === field && <LucideIcon name="check" className="ml-auto size-3.5" />}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -271,7 +266,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
           <Empty className="border">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <Building2Icon />
+                <LucideIcon name="building-2" />
               </EmptyMedia>
               <EmptyTitle>{t('emptyTitle')}</EmptyTitle>
               <EmptyDescription>{t('emptyMessage')}</EmptyDescription>
@@ -281,7 +276,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
           <Empty className="border">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <SearchXIcon />
+                <LucideIcon name="search-x" />
               </EmptyMedia>
               <EmptyTitle>{t('emptyFilteredTitle')}</EmptyTitle>
               <EmptyDescription>{t('emptyFilteredMessage')}</EmptyDescription>

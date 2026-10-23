@@ -3,19 +3,10 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-import {
-  CheckIcon,
-  ChevronRightIcon,
-  FileTextIcon,
-  MailIcon,
-  MapPinIcon,
-  MoreHorizontalIcon,
-  UsersIcon,
-  XIcon,
-} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
@@ -96,16 +87,16 @@ export const OrgRow = ({
         <div className="mt-1 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-xs text-muted-foreground">
           {location && (
             <span className="flex items-center gap-1">
-              <MapPinIcon className="size-3.5 shrink-0" />
+              <LucideIcon name="map-pin" className="size-3.5 shrink-0" />
               {location}
             </span>
           )}
           <span className="flex items-center gap-1">
-            <UsersIcon className="size-3.5 shrink-0" />
+            <LucideIcon name="users" className="size-3.5 shrink-0" />
             {t('memberCount', { count: org.memberCount })}
           </span>
           <span className="flex min-w-0 items-center gap-1">
-            <MailIcon className="size-3.5 shrink-0" />
+            <LucideIcon name="mail" className="size-3.5 shrink-0" />
             <span className="truncate">{org.email}</span>
           </span>
         </div>
@@ -116,32 +107,35 @@ export const OrgRow = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button aria-label={t('actions')} size="icon" variant="ghost">
-                <MoreHorizontalIcon className="size-4" />
+                <LucideIcon name="ellipsis" className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
               {org.registrationRequest && (
                 <DropdownMenuItem className="text-[13px]" onClick={() => onView(org)}>
-                  <FileTextIcon className="size-3" />
+                  <LucideIcon name="file-text" className="size-3" />
                   {t('app_view')}
                 </DropdownMenuItem>
               )}
               {org.isPending && (
                 <DropdownMenuItem className="text-[13px]" onClick={() => onApprove(org)}>
-                  <CheckIcon className="size-3" />
+                  <LucideIcon name="check" className="size-3" />
                   {t('approve')}
                 </DropdownMenuItem>
               )}
               {org.isPending && (
                 <DropdownMenuItem className="text-[13px]" onClick={() => onReject(org)} variant="destructive">
-                  <XIcon className="size-3" />
+                  <LucideIcon name="x" className="size-3" />
                   {t('reject')}
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-        <ChevronRightIcon className="size-4 text-muted-foreground/40 transition-colors group-hover:text-muted-foreground" />
+        <LucideIcon
+          name="chevron-right"
+          className="size-4 text-muted-foreground/40 transition-colors group-hover:text-muted-foreground"
+        />
       </div>
     </div>
   )

@@ -1,6 +1,5 @@
 'use client'
 
-import { SearchIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
@@ -27,7 +26,7 @@ export const LookupForm = ({ defaultValue }: { defaultValue?: string }) => {
         required
         spellCheck={false}
       />
-      <Button className="h-10" icon={SearchIcon} type="submit" variant="brand">
+      <Button className="h-10" icon="search" type="submit" variant="brand">
         {t('submit')}
       </Button>
     </form>

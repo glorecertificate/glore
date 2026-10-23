@@ -1,5 +1,4 @@
-import { CheckIcon, XIcon } from 'lucide-react'
-
+import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
 type StepState = 'current' | 'done' | 'failed' | 'upcoming'
@@ -42,9 +41,9 @@ export const StepList = ({
           )}
         >
           {item.state === 'done' ? (
-            <CheckIcon className="size-3.5" />
+            <LucideIcon className="size-3.5" name="check" />
           ) : item.state === 'failed' ? (
-            <XIcon className="size-3.5" />
+            <LucideIcon className="size-3.5" name="x" />
           ) : (
             index + 1
           )}

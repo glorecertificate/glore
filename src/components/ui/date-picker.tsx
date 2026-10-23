@@ -3,9 +3,9 @@
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
-import { CalendarIcon } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { FormControl } from '@/components/ui/form'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -86,7 +86,7 @@ export const DatePicker = ({
             type="button"
             variant="outline"
           >
-            <CalendarIcon className="mr-2 size-4" />
+            <LucideIcon name="calendar" className="mr-2 size-4" />
             {formatted ?? placeholder ?? t('selectDate')}
           </Button>
         </PopoverTrigger>

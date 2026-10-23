@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
-import { EyeIcon, ShieldOffIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -81,7 +80,7 @@ export const CertificateRowActions = ({
       {certificate.isApproved && (
         <Button
           disabled={pending || impersonating}
-          icon={ShieldOffIcon}
+          icon="shield-off"
           onClick={() => setRevoking(true)}
           size="sm"
           title={impersonating ? tCommon('impersonationLocked') : undefined}
@@ -90,7 +89,7 @@ export const CertificateRowActions = ({
           {tDetail('revoke')}
         </Button>
       )}
-      <Button asChild icon={EyeIcon} size="sm" variant="outline">
+      <Button asChild icon="eye" size="sm" variant="outline">
         <Link href={`/certificates/${certificate.id}`}>{t('view')}</Link>
       </Button>
 

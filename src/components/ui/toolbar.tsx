@@ -2,8 +2,8 @@
 
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import { type VariantProps, cva } from 'class-variance-authority'
-import { ChevronDownIcon } from 'lucide-react'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipPortal, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMounted } from '@/hooks/use-mounted'
@@ -72,7 +72,7 @@ export const ToolbarButton = ({
             <>
               <div className="flex flex-1 items-center gap-2 whitespace-nowrap">{children}</div>
               <div>
-                <ChevronDownIcon className="size-3.5 text-muted-foreground" data-icon />
+                <LucideIcon name="chevron-down" className="size-3.5 text-muted-foreground" data-icon />
               </div>
             </>
           ) : (
@@ -197,7 +197,7 @@ export const ToolbarSplitButtonSecondary = ({
     type="button"
     {...props}
   >
-    <ChevronDownIcon className="size-3.5 text-muted-foreground" data-icon />
+    <LucideIcon name="chevron-down" className="size-3.5 text-muted-foreground" data-icon />
   </button>
 )
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import { ArrowRightIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
@@ -60,7 +59,7 @@ export const SignupDialog = ({ loading }: { loading: boolean }) => {
           })}
         </div>
         <DialogFooter className="flex-col gap-2 pt-2 sm:flex-row sm:justify-between">
-          <Button asChild variant="success" effect="expandIcon" icon={ArrowRightIcon} iconPlacement="right">
+          <Button asChild variant="success" effect="expandIcon" icon="arrow-right" iconPlacement="right">
             <Link href={REGISTER_ROOT}>{t('signupDialogRegister')}</Link>
           </Button>
           <DialogClose asChild>

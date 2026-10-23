@@ -1,10 +1,10 @@
-import { BookOpenIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { listDocCategories } from '@/actions/docs'
 import { DocsList } from '@/components/features/docs/docs-list'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
+import { LucideIcon } from '@/components/icons/lucide'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
@@ -28,7 +28,7 @@ const DocsPageContent = async () => {
     <Empty className="border">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <BookOpenIcon />
+          <LucideIcon name="book-open" />
         </EmptyMedia>
         <EmptyTitle>{t('noCategories')}</EmptyTitle>
         <EmptyDescription>

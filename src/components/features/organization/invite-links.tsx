@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 
-import { LinkIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { copyOrganizationInviteLink, revokeOrganizationInviteLink } from '@/actions/organizations/invitations'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useInvitationError } from '@/components/features/organization/use-invitation-error'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
@@ -81,7 +81,7 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
             <p className="text-sm text-muted-foreground">{t('linksDescription')}</p>
           </div>
           <Button onClick={() => setCreateOpen(true)} size="sm" variant="outline">
-            <LinkIcon className="size-3.5" />
+            <LucideIcon name="link" className="size-3.5" />
             {t('createLink')}
           </Button>
         </div>

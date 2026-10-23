@@ -3,13 +3,13 @@
 import { type Route } from 'next'
 import { useState } from 'react'
 
-import { ArchiveIcon, ArchiveRestoreIcon, MoreHorizontalIcon, RocketIcon, SettingsIcon, Trash2Icon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { deleteCourse as deleteCourseAction, updateCourse as updateCourseAction } from '@/actions/courses/management'
 import { useCourses } from '@/components/features/courses/context'
 import { CourseDialog } from '@/components/features/courses/course-dialog'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
@@ -144,13 +144,13 @@ export const CourseCardActions = ({
         {archived ? (
           <>
             <Button className="flex-1" onClick={() => setArchiveDialogOpen(true)} variant="outline">
-              <ArchiveRestoreIcon />
+              <LucideIcon name="archive-restore" />
               {t('unarchive')}
             </Button>
             <AlertDialog onOpenChange={setDeleteDialogOpen} open={deleteDialogOpen}>
               <AlertDialogTrigger asChild>
                 <Button size="icon" title={t('delete')} variant="outline">
-                  <Trash2Icon className="text-destructive-text" />
+                  <LucideIcon name="trash-2" className="text-destructive-text" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -182,18 +182,18 @@ export const CourseCardActions = ({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button aria-label={t('moreActions')} size="icon" variant="outline">
-                  <MoreHorizontalIcon />
+                  <LucideIcon name="ellipsis" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
                 <DropdownMenuGroup>
                   <DropdownMenuItem onSelect={() => setEditOpen(true)}>
-                    <SettingsIcon />
+                    <LucideIcon name="settings" />
                     {t('settings')}
                   </DropdownMenuItem>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
-                      <RocketIcon className="size-4 text-muted-foreground" />
+                      <LucideIcon name="rocket" className="size-4 text-muted-foreground" />
                       {t('publishIn')}
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
@@ -231,7 +231,7 @@ export const CourseCardActions = ({
                   <AlertDialog onOpenChange={setArchiveDialogOpen} open={archiveDialogOpen}>
                     <AlertDialogTrigger className="w-full">
                       <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                        <ArchiveIcon />
+                        <LucideIcon name="archive" />
                         {t('archiveAction')}
                       </DropdownMenuItem>
                     </AlertDialogTrigger>
@@ -261,7 +261,7 @@ export const CourseCardActions = ({
                   <AlertDialog onOpenChange={setDeleteDialogOpen} open={deleteDialogOpen}>
                     <AlertDialogTrigger className="w-full">
                       <DropdownMenuItem onSelect={e => e.preventDefault()} variant="destructive">
-                        <Trash2Icon />
+                        <LucideIcon name="trash-2" />
                         {t('delete')}
                       </DropdownMenuItem>
                     </AlertDialogTrigger>

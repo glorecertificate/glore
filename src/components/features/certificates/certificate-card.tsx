@@ -1,11 +1,11 @@
 'use client'
 
-import { CalendarIcon, DownloadIcon, PencilIcon, StarIcon, TimerIcon, TriangleAlertIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { formatActivityPeriod } from '@/components/features/certificates/rules'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardFooter } from '@/components/ui/card'
@@ -45,23 +45,23 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <CalendarIcon className="size-3.5 shrink-0" />
+              <LucideIcon name="calendar" className="size-3.5 shrink-0" />
               {period}
             </span>
             <span className="flex items-center gap-1.5">
-              <TimerIcon className="size-3.5 shrink-0" />
+              <LucideIcon name="timer" className="size-3.5 shrink-0" />
               {tDetail('hoursValue', { hours: certificate.activityDuration })}
             </span>
             {certificate.isApproved && certificate.isDefault && (
               <span className="flex items-center gap-1.5 text-brand-text">
-                <StarIcon className="size-3.5 shrink-0" />
+                <LucideIcon name="star" className="size-3.5 shrink-0" />
                 {tDetail('featuredBadge')}
               </span>
             )}
           </div>
           {note && (
             <div className="flex gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3">
-              <TriangleAlertIcon className="mt-0.5 size-4 shrink-0 text-warning" />
+              <LucideIcon name="triangle-alert" className="mt-0.5 size-4 shrink-0 text-warning" />
               <p className="line-clamp-2 text-sm text-muted-foreground">{note}</p>
             </div>
           )}
@@ -71,14 +71,14 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
       {(canEdit || certificate.isApproved) && (
         <CardFooter className="flex flex-wrap items-center gap-2 border-t p-4">
           {canEdit && (
-            <Button asChild icon={PencilIcon} size="sm" variant={certificate.isDraft ? 'outline' : 'warning'}>
+            <Button asChild icon="pencil" size="sm" variant={certificate.isDraft ? 'outline' : 'warning'}>
               <Link href={`/certificates/new?draft=${certificate.id}`}>
                 {certificate.isDraft ? t('wizard.continueDraft') : t('resubmitButton')}
               </Link>
             </Button>
           )}
           {certificate.isApproved && certificate.documentUrl && (
-            <Button asChild icon={DownloadIcon} size="sm" variant="outline">
+            <Button asChild icon="download" size="sm" variant="outline">
               <a download href={certificate.documentUrl} rel="noopener noreferrer" target="_blank">
                 {t('download')}
               </a>

@@ -2,7 +2,6 @@
 
 import { type Route } from 'next'
 
-import { ClipboardCheckIcon, UserPlusIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type TutorQueueItem, type TutorSummary } from '@/actions/dashboard/core'
@@ -149,11 +148,11 @@ export const TutorDashboard = ({
           pageSize={5}
           rowActions={item =>
             item.source === 'assigned' ? (
-              <Button asChild icon={ClipboardCheckIcon} size="sm" variant="brand">
+              <Button asChild icon="clipboard-check" size="sm" variant="brand">
                 <Link href={`/certificates/${item.id}/review`}>{t('tutor.review')}</Link>
               </Button>
             ) : (
-              <Button asChild icon={UserPlusIcon} size="sm" variant="outline">
+              <Button asChild icon="user-plus" size="sm" variant="outline">
                 <Link href="/certificates?tab=pool">{t('tutor.claim')}</Link>
               </Button>
             )

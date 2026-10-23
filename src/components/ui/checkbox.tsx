@@ -1,8 +1,8 @@
 'use client'
 
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import { CheckIcon } from 'lucide-react'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
 export const Checkbox = ({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) => (
@@ -18,7 +18,7 @@ export const Checkbox = ({ className, ...props }: React.ComponentProps<typeof Ch
       className="flex items-center justify-center text-current transition-none"
       data-slot="checkbox-indicator"
     >
-      <CheckIcon className="size-3.5" />
+      <LucideIcon name="check" className="size-3.5" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 )

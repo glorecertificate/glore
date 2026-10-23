@@ -1,6 +1,5 @@
 'use client'
 
-import { DownloadIcon, ExternalLinkIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { linkedInProfileUrl } from '@/components/features/certificates/rules'
@@ -57,7 +56,7 @@ export const CertificateShare = ({
               <CopyButton copiedLabel={t('linkCopied')} label={t('copyLink')} size="sm" value={url} />
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button asChild icon={DownloadIcon} size="sm" variant="outline">
+              <Button asChild icon="download" size="sm" variant="outline">
                 <a href={pdfHref} rel="noopener noreferrer" target="_blank">
                   {t('downloadPdf')}
                 </a>
@@ -92,7 +91,7 @@ export const CertificateShare = ({
               <p className="text-sm font-medium">{t('linkedinTitle')}</p>
               <p className="text-xs text-muted-foreground">{t('linkedinHint')}</p>
             </div>
-            <Button asChild icon={ExternalLinkIcon} size="sm" variant="brand">
+            <Button asChild icon="external-link" size="sm" variant="brand">
               <a
                 href={linkedInProfileUrl({
                   code: certificate.code,

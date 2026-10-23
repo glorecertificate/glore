@@ -2,8 +2,7 @@
 
 import { useRef, useState } from 'react'
 
-import { SearchIcon, XIcon } from 'lucide-react'
-
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useSearch } from '@/hooks/use-search'
@@ -39,7 +38,7 @@ export const SearchInput = ({
 
   return (
     <div className="relative inline-flex items-center">
-      <SearchIcon className="pointer-events-none absolute left-2.5 size-3.5 text-muted-foreground" />
+      <LucideIcon name="search" className="pointer-events-none absolute left-2.5 size-3.5 text-muted-foreground" />
       <Input
         blurOnEscape={blurOnEscape}
         className={cn('pr-8 pl-7.5', className)}
@@ -73,7 +72,7 @@ export const SearchInput = ({
           type="button"
           variant="ghost"
         >
-          <XIcon className="size-3 text-muted-foreground" />
+          <LucideIcon name="x" className="size-3 text-muted-foreground" />
         </Button>
       )}
       {showHotkey && (

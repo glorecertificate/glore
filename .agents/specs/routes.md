@@ -82,3 +82,11 @@ Dashboard layout with an extra gate:
 - After a hot reload of the proxy or a module it imports, Next 16.3 dev can drop the proxy matcher, and guests then get 307 to `/login` on static assets.
 - To check, request `/_next/static/chunks/a.js` with a cookieless curl: 404 is healthy, 307 means the matcher is gone.
 - Another proxy recompile or a dev restart restores it. Signed-in probes and e2e logins hide the fault.
+
+## Content Security Policy
+
+- `next.config.ts` sets the CSP in `headers(isDevServer)`. Pages stay static shells, so there are no nonces.
+- `script-src` is `'self' 'unsafe-inline'`. The inline allowance is for Next's RSC payload scripts. `'unsafe-eval'` is added only for the dev server phase (React Refresh and Turbopack).
+- `experimental.sri` (`sha256`) adds `integrity` to the build-manifest scripts (bootstrap, polyfills, and entry chunks).
+- On Next 16.4 with Turbopack, lazily referenced client chunk scripts carry no `integrity`. They stay same-origin under `'self'`.
+- Never re-add `'unsafe-eval'` to production. If a dependency needs it at runtime, report it first.

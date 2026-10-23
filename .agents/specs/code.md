@@ -54,6 +54,7 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 
 - `eslint/no-restricted-imports` blocks everywhere: `cookies` from `next/headers` (use `@/actions/cookies`).
 - It also blocks `cnfast` (use `@/lib/utils`, which re-exports `cn`) and parent imports `../**` (use `@/` or `~/`).
+- It blocks `lucide-react` outside `src/components/icons/**` and the vendored `src/components/ui/rich-text-editor/**`, which a later override exempts (render through `LucideIcon`).
 - A scoped override for the shared layers (`src/components/ui/**`, `src/components/icons/**`, `src/hooks/**`, `src/lib/**`) also blocks `@/components/features/**`, `@/app/**`, and `@/actions/**`.
 - That override keeps those layers domain-free.
 - oxlint overrides REPLACE the base rule for matched files, so the override restates the base patterns.

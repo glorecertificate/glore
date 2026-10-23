@@ -1,10 +1,10 @@
 'use client'
 
-import { ChevronDownIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { useCourses } from '@/components/features/courses/context'
 import { useCourseListSkillGroups, useCourseListTypes } from '@/components/features/courses/course-list/use-params'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -54,7 +54,7 @@ export const CourseListGroupSelect = ({ ...props }: React.ComponentProps<typeof 
               {skillGroups.length}
             </span>
           </span>
-          <ChevronDownIcon className="size-3 text-muted-foreground" />
+          <LucideIcon name="chevron-down" className="size-3 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" onCloseAutoFocus={e => e.preventDefault()}>

@@ -3,9 +3,9 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useEffectEvent, useState, useSyncExternalStore } from 'react'
 
-import { ArrowLeftIcon, RefreshCwIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { ErrorFallback, type ErrorProps } from '@/components/layout/error-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
@@ -53,7 +53,7 @@ const AppError = ({ error, reset }: ErrorProps) => {
             size="lg"
             variant="outline"
             effect="expandIcon"
-            icon={ArrowLeftIcon}
+            icon="arrow-left"
             iconPlacement="left"
           >
             {t(canGoBack ? 'backToPrevious' : 'backToHome')}
@@ -70,7 +70,7 @@ const AppError = ({ error, reset }: ErrorProps) => {
           variant="outline"
         >
           {t('refreshPage')}
-          {retrying ? <Spinner /> : <RefreshCwIcon />}
+          {retrying ? <Spinner /> : <LucideIcon name="refresh-cw" />}
         </Button>
       </ErrorFallback>
     </>

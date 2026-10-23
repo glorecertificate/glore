@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
@@ -49,9 +49,9 @@ export const PasswordInput = ({
         variant="ghost"
       >
         {passwordVisible && !disabled ? (
-          <EyeIcon aria-hidden="true" className="size-4.5 stroke-foreground/80" />
+          <LucideIcon name="eye" aria-hidden="true" className="size-4.5 stroke-foreground/80" />
         ) : (
-          <EyeOffIcon aria-hidden="true" className="size-4.5 stroke-muted-foreground" />
+          <LucideIcon name="eye-off" aria-hidden="true" className="size-4.5 stroke-muted-foreground" />
         )}
         <span className="sr-only">{textToggle}</span>
       </Button>

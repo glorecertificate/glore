@@ -1,18 +1,6 @@
-import {
-  ArrowUpRightIcon,
-  AwardIcon,
-  CompassIcon,
-  HeartIcon,
-  HistoryIcon,
-  LockIcon,
-  NetworkIcon,
-  QrCodeIcon,
-  ShieldCheckIcon,
-  SparklesIcon,
-  UserCheckIcon,
-} from 'lucide-react'
 import { getMessages, getTranslations } from 'next-intl/server'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
@@ -23,28 +11,28 @@ interface TitledText {
 
 const SECTIONS = [
   {
-    icon: AwardIcon,
+    icon: 'award',
     key: 'mission',
     accent: 'text-brand-text',
     chip: 'bg-brand/10 text-brand-text',
     ring: 'border-brand/20 bg-brand/[0.03]',
   },
   {
-    icon: CompassIcon,
+    icon: 'compass',
     key: 'vision',
     accent: 'text-info-text',
     chip: 'bg-info/10 text-info-text',
     ring: 'border-info/20 bg-info/[0.03]',
   },
   {
-    icon: HeartIcon,
+    icon: 'heart',
     key: 'values',
     accent: 'text-brand-secondary-text',
     chip: 'bg-brand-secondary/15 text-brand-secondary-text',
     ring: 'border-brand-secondary/25 bg-brand-secondary/[0.04]',
   },
   {
-    icon: NetworkIcon,
+    icon: 'network',
     key: 'network',
     accent: 'text-brand-tertiary-text',
     chip: 'bg-brand-tertiary/10 text-brand-tertiary-text',
@@ -64,9 +52,9 @@ const SKILL_KEYS = [
 ] as const
 
 const TRUST_ITEMS = [
-  { icon: UserCheckIcon, key: 'validation', chip: 'bg-brand/10 text-brand-text' },
-  { icon: LockIcon, key: 'immutable', chip: 'bg-info/10 text-info-text' },
-  { icon: QrCodeIcon, key: 'verifiable', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
+  { icon: 'user-check', key: 'validation', chip: 'bg-brand/10 text-brand-text' },
+  { icon: 'lock', key: 'immutable', chip: 'bg-info/10 text-info-text' },
+  { icon: 'qr-code', key: 'verifiable', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
 ] as const
 
 export const AboutContent = async () => {
@@ -84,7 +72,7 @@ export const AboutContent = async () => {
       <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/8 via-card to-brand-tertiary/5 p-8 sm:p-10">
         <div className="flex flex-col items-start gap-4">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand-text">
-            <SparklesIcon className="size-3.5" />
+            <LucideIcon name="sparkles" className="size-3.5" />
             {content.intro.tagline}
           </span>
           <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h2>
@@ -94,7 +82,7 @@ export const AboutContent = async () => {
 
       <section className="flex items-start gap-4 rounded-xl border bg-card p-6 shadow-2xs">
         <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-tertiary/10 text-brand-tertiary">
-          <HistoryIcon className="size-4.5" />
+          <LucideIcon name="history" className="size-4.5" />
         </div>
         <div className="flex flex-col gap-1.5">
           <h2 className="text-base font-semibold tracking-tight">{content.story.title}</h2>
@@ -103,11 +91,11 @@ export const AboutContent = async () => {
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {SECTIONS.map(({ accent, chip, icon: Icon, key, ring }) => (
+        {SECTIONS.map(({ accent, chip, icon, key, ring }) => (
           <div key={key} className={cn('flex flex-col gap-3 rounded-xl border p-6 shadow-2xs', ring)}>
             <div className="flex items-center gap-3">
               <div className={cn('flex size-9 items-center justify-center rounded-lg', chip)}>
-                <Icon className="size-4.5" />
+                <LucideIcon name={icon} className="size-4.5" />
               </div>
               <h2 className={cn('text-base font-semibold tracking-tight', accent)}>{content.sections[key].title}</h2>
             </div>
@@ -142,13 +130,13 @@ export const AboutContent = async () => {
           <p className="text-sm text-muted-foreground">{content.trust.description}</p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {TRUST_ITEMS.map(({ chip, icon: Icon, key }) => {
+          {TRUST_ITEMS.map(({ chip, icon, key }) => {
             const item = content.trust.items[key]
 
             return (
               <div key={key} className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-2xs">
                 <div className={cn('flex size-9 items-center justify-center rounded-lg', chip)}>
-                  <Icon className="size-4.5" />
+                  <LucideIcon name={icon} className="size-4.5" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-sm font-semibold">{item.title}</p>
@@ -202,11 +190,11 @@ export const AboutContent = async () => {
               target="_blank"
             >
               {metadata.shortName}
-              <ArrowUpRightIcon className="size-3.5" />
+              <LucideIcon name="arrow-up-right" className="size-3.5" />
             </a>
           </div>
           <div className="flex items-center gap-2 border-t border-brand/15 pt-4 text-xs text-muted-foreground">
-            <ShieldCheckIcon className="size-3.5 shrink-0" />
+            <LucideIcon name="shield-check" className="size-3.5 shrink-0" />
             {content.contact.coordinator}
           </div>
         </div>

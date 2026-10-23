@@ -22,16 +22,16 @@ const RichTextEditor = dynamic(
   { loading: () => <ReaderSkeleton />, ssr: false }
 )
 
-const RichTextEditorProvider = dynamic(
+const ReaderProvider = dynamic(
   async () => {
-    const m = await import('@/components/ui/rich-text-editor/provider')
-    return { default: m.RichTextEditorProvider }
+    const m = await import('@/components/features/courses/course-player/reader-provider')
+    return { default: m.ReaderProvider }
   },
   { loading: () => <ReaderSkeleton />, ssr: false }
 )
 
 export const LessonReader = ({ content, version }: { content: unknown[]; version: string }) => (
-  <RichTextEditorProvider readOnly value={content as Value} version={version}>
+  <ReaderProvider value={content as Value} version={version}>
     <RichTextEditor variant="fullWidth" />
-  </RichTextEditorProvider>
+  </ReaderProvider>
 )

@@ -6,9 +6,9 @@ import { createContext, startTransition, use, useEffect, useEffectEvent, useRef,
 
 import { Slot } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
-import { PanelLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
@@ -291,7 +291,7 @@ export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) =>
       variant="ghost"
       {...props}
     >
-      <PanelLeftIcon className="size-4.5! text-foreground/64" />
+      <LucideIcon name="panel-left" className="size-4.5! text-foreground/64" />
       <span className="sr-only">{action}</span>
     </Button>
   )

@@ -70,7 +70,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 - Use `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. Use `await`, never `.then()` chains, and `Promise.all()` for independent work.
 - One component per file, `@/` and `~/` aliases, `cva` variants, `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components.
 - Order hook dependency arrays alphabetically.
-- Render icons through `LucideIcon` from `@/components/icons/lucide`. Add new icons to `icons/registry.ts`, never `lucide-react/dynamic`.
+- Render icons through `LucideIcon` from `@/components/icons/lucide`. Add new icons to `icons/registry.ts`. Lint blocks `lucide-react` imports outside `icons/` and the editor. Never `lucide-react/dynamic`.
 
 ## Gotchas: data and imports
 

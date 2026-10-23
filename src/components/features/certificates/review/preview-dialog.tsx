@@ -1,6 +1,5 @@
 'use client'
 
-import { CheckIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
@@ -46,7 +45,7 @@ export const PreviewDialog = ({
             {t('backToEditing')}
           </Button>
           <Button
-            icon={CheckIcon}
+            icon="check"
             loading={busy}
             loadingText={t('approving')}
             onClick={onConfirm}

@@ -2,7 +2,6 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react'
 
-import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, type Variants, m, useIsPresent } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { Values, useQueryStates } from 'nuqs'
@@ -152,7 +151,7 @@ const AuthContent = ({
         <Button
           className="mx-auto justify-center"
           effect="expandIcon"
-          icon={ArrowRightIcon}
+          icon="arrow-right"
           iconPlacement="right"
           onClick={() => setView('login')}
           size="lg"
@@ -166,7 +165,7 @@ const AuthContent = ({
         <Button
           className="mx-auto justify-center"
           effect="expandIcon"
-          icon={ArrowRightIcon}
+          icon="arrow-right"
           iconPlacement="right"
           onClick={() => setView('password_request')}
           size="lg"
@@ -180,7 +179,7 @@ const AuthContent = ({
         <Button
           className="mx-auto justify-center"
           effect="expandIcon"
-          icon={ArrowRightIcon}
+          icon="arrow-right"
           iconPlacement="right"
           onClick={() => setView('password_request')}
           size="lg"

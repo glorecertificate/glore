@@ -1,19 +1,9 @@
 'use client'
 
-import {
-  BadgeCheckIcon,
-  Building2Icon,
-  FileClockIcon,
-  GraduationCapIcon,
-  HandHeartIcon,
-  MailIcon,
-  ShieldUserIcon,
-  UserCheckIcon,
-  UsersIcon,
-} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { AvatarStack } from '@/components/ui/avatar-stack'
 import { Button } from '@/components/ui/button'
@@ -63,19 +53,19 @@ export const OrganizationOverview = ({
         </StatCard>
         <StatCard label={t('pendingJoinRequests')} value={data.pendingJoinRequestsCount}>
           <span className="flex items-center gap-2">
-            <MailIcon className="size-4" />
+            <LucideIcon name="mail" className="size-4" />
             {t('pendingJoinRequestsDescription')}
           </span>
         </StatCard>
         <StatCard label={t('pendingCertificates')} value={data.pendingCertificatesCount}>
           <span className="flex items-center gap-2">
-            <FileClockIcon className="size-4" />
+            <LucideIcon name="file-clock" className="size-4" />
             {t('pendingCertificatesDescription')}
           </span>
         </StatCard>
         <StatCard label={t('approvedCertificates')} value={data.approvedCertificatesCount}>
           <span className="flex items-center gap-2">
-            <BadgeCheckIcon className="size-4" />
+            <LucideIcon name="badge-check" className="size-4" />
             {t('approvedCertificatesDescription')}
           </span>
         </StatCard>
@@ -85,7 +75,7 @@ export const OrganizationOverview = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
-              <Building2Icon className="size-5" />
+              <LucideIcon name="building-2" className="size-5" />
               {data.organization.name}
             </CardTitle>
           </CardHeader>
@@ -143,42 +133,42 @@ export const OrganizationOverview = ({
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
               <div className="flex items-center gap-2">
-                <ShieldUserIcon className="size-4 text-muted-foreground" />
+                <LucideIcon name="shield-user" className="size-4 text-muted-foreground" />
                 {t('admins')}
               </div>
               <span className="font-medium">{data.stats.adminCount}</span>
             </div>
             <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
               <div className="flex items-center gap-2">
-                <UsersIcon className="size-4 text-muted-foreground" />
+                <LucideIcon name="users" className="size-4 text-muted-foreground" />
                 {t('representatives')}
               </div>
               <span className="font-medium">{data.stats.representativeCount}</span>
             </div>
             <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
               <div className="flex items-center gap-2">
-                <UserCheckIcon className="size-4 text-muted-foreground" />
+                <LucideIcon name="user-check" className="size-4 text-muted-foreground" />
                 {t('tutors')}
               </div>
               <span className="font-medium">{data.stats.tutorCount}</span>
             </div>
             <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
               <div className="flex items-center gap-2">
-                <HandHeartIcon className="size-4 text-muted-foreground" />
+                <LucideIcon name="hand-heart" className="size-4 text-muted-foreground" />
                 {t('volunteers')}
               </div>
               <span className="font-medium">{data.stats.volunteerCount}</span>
             </div>
             <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
               <div className="flex items-center gap-2">
-                <GraduationCapIcon className="size-4 text-muted-foreground" />
+                <LucideIcon name="graduation-cap" className="size-4 text-muted-foreground" />
                 {t('learners')}
               </div>
               <span className="font-medium">{data.stats.learnerCount}</span>
             </div>
             <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
               <div className="flex items-center gap-2">
-                <MailIcon className="size-4 text-muted-foreground" />
+                <LucideIcon name="mail" className="size-4 text-muted-foreground" />
                 {t('pendingAccounts')}
               </div>
               <span className="font-medium">{data.stats.pendingMemberCount}</span>

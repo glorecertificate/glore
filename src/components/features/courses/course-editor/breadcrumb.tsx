@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -193,7 +192,7 @@ export const CourseBreadcrumb = () => {
                   )}
                   type="button"
                 >
-                  <InfoIcon className="size-3.5" />
+                  <LucideIcon name="info" className="size-3.5" />
                 </button>
               </PopoverTrigger>
             </TooltipTrigger>

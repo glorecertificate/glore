@@ -1,10 +1,10 @@
 'use client'
 
-import { MessageSquareIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type CertificateReviewNotes } from '@/actions/certificates/queries'
 import { CERTIFICATE_SECTIONS } from '@/components/features/certificates/schemas'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { type Certificate } from '@/db/queries/certificate'
 
@@ -44,7 +44,7 @@ export const CertificateFeedback = ({
     <Card className="border-warning/40 bg-warning/5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-sm">
-          <MessageSquareIcon className="size-4" />
+          <LucideIcon name="message-square" className="size-4" />
           {t(`feedback.${kind}`)}
         </CardTitle>
       </CardHeader>

@@ -1,7 +1,6 @@
 'use client'
 
-import { ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
-
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Link, type LinkProps } from '@/components/ui/link'
 import { cn } from '@/lib/utils'
@@ -55,7 +54,7 @@ export const BreadcrumbSeparator = ({ children, className, ...props }: React.Com
     role="presentation"
     {...props}
   >
-    {children ?? <ChevronRightIcon />}
+    {children ?? <LucideIcon name="chevron-right" />}
   </li>
 )
 
@@ -67,7 +66,7 @@ export const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps
     role="presentation"
     {...props}
   >
-    <MoreHorizontalIcon className="size-4" />
+    <LucideIcon name="ellipsis" className="size-4" />
     <span className="sr-only">{'More'}</span>
   </span>
 )

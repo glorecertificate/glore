@@ -3,11 +3,11 @@
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
-import { UserCheckIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { assignCertificateTutor, unassignCertificate } from '@/actions/certificates/assignment'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -41,7 +41,7 @@ export const CertificateReviewer = ({ certificate, tutors }: { certificate: Cert
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-2.5">
       <div className="flex items-center gap-2 text-sm">
-        <UserCheckIcon className="size-4 shrink-0 text-muted-foreground" />
+        <LucideIcon name="user-check" className="size-4 shrink-0 text-muted-foreground" />
         <span className="text-muted-foreground">
           {t('reviewer')}
           {':'}

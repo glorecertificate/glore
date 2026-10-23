@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
-import { ClipboardCheckIcon, DownloadIcon, PencilIcon, ShieldOffIcon, StarIcon, Undo2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -75,38 +74,38 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
   return (
     <div className="flex flex-wrap items-center gap-2">
       {canEdit && (
-        <Button asChild icon={PencilIcon} size="sm" variant="brand">
+        <Button asChild icon="pencil" size="sm" variant="brand">
           <Link href={`/certificates/new?draft=${certificate.id}`}>
             {certificate.isDraft ? t('wizard.continueDraft') : t('resubmitButton')}
           </Link>
         </Button>
       )}
       {canReview && (
-        <Button asChild icon={ClipboardCheckIcon} size="sm" variant="brand">
+        <Button asChild icon="clipboard-check" size="sm" variant="brand">
           <Link href={`/certificates/${certificate.id}/review`}>{t('openReview')}</Link>
         </Button>
       )}
       {certificate.isApproved && (
-        <Button asChild icon={DownloadIcon} size="sm" variant="outline">
+        <Button asChild icon="download" size="sm" variant="outline">
           <a href={pdfHref} rel="noopener noreferrer" target="_blank">
             {t('download')}
           </a>
         </Button>
       )}
       {canFeature && (
-        <Button disabled={pending || impersonating} icon={StarIcon} onClick={feature} size="sm" variant="outline">
+        <Button disabled={pending || impersonating} icon="star" onClick={feature} size="sm" variant="outline">
           {tDetail('makeFeatured')}
         </Button>
       )}
       {canWithdraw && (
-        <Button disabled={pending} icon={Undo2Icon} onClick={() => setWithdrawing(true)} size="sm" variant="ghost">
+        <Button disabled={pending} icon="undo-2" onClick={() => setWithdrawing(true)} size="sm" variant="ghost">
           {tDetail('withdraw')}
         </Button>
       )}
       {canRevoke && (
         <Button
           disabled={pending || impersonating}
-          icon={ShieldOffIcon}
+          icon="shield-off"
           onClick={() => setRevoking(true)}
           size="sm"
           variant="ghost"

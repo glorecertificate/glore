@@ -1,10 +1,10 @@
 import Script from 'next/script'
 
-import { CalendarIcon, CircleCheckIcon, MapPinIcon, ShieldAlertIcon, TimerIcon } from 'lucide-react'
 import { type Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
 import { type ActiveVerification } from '@/actions/certificates/public'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -51,12 +51,12 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
       <div className="space-y-4 text-center">
         {revoked ? (
           <Badge className="gap-1.5 border-destructive/30 bg-destructive/5 text-destructive-text" variant="outline">
-            <ShieldAlertIcon className="size-3.5" />
+            <LucideIcon name="shield-alert" className="size-3.5" />
             {t('revoked')}
           </Badge>
         ) : (
           <Badge className="gap-1.5 border-success/30 bg-success/5 text-success-text" variant="outline">
-            <CircleCheckIcon className="size-3.5" />
+            <LucideIcon name="circle-check" className="size-3.5" />
             {t('valid')}
           </Badge>
         )}
@@ -105,7 +105,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CalendarIcon className="size-4 shrink-0" />
+                  <LucideIcon name="calendar" className="size-4 shrink-0" />
                   {t('period')}
                 </CardTitle>
               </CardHeader>
@@ -121,7 +121,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <TimerIcon className="size-4 shrink-0" />
+                  <LucideIcon name="timer" className="size-4 shrink-0" />
                   {t('hours')}
                 </CardTitle>
               </CardHeader>
@@ -132,7 +132,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPinIcon className="size-4 shrink-0" />
+                  <LucideIcon name="map-pin" className="size-4 shrink-0" />
                   {t('location')}
                 </CardTitle>
               </CardHeader>

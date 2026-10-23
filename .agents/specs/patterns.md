@@ -61,11 +61,12 @@ const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'>
 - Add new icons to `ICONS`.
 - Render with `<LucideIcon name={...} />`. A name from data that is not in the registry renders `circle-help`.
 - The icon picker offers the registry icons only.
-- Import icon TYPES from `lucide-react` but RENDER through `LucideIcon`. Only `registry.ts` imports icon components.
+- Nothing outside `src/components/icons/**` and the vendored `ui/rich-text-editor/` imports `lucide-react`, types included (`LucideProps` is re-exported from `registry.ts`). A lint rule blocks it (`code.md`).
 - Custom, non-lucide icons live as components in `src/components/icons/`.
 - The course `icon` field is stored as an `IconName` string.
 - Use a dynamic name (`icon?: IconName`, rendered `<LucideIcon name={icon} />`) when the icon comes from data.
-- Use a static component (`icon: Icon` from `@/lib/types`, rendered `<Icon />`) when a config object hardcodes the icon.
+- Config objects hardcode registry names too (`icon: 'award'` typed `IconName`, rendered `<LucideIcon name={icon} />`), never lucide components.
+- `Button` and `Input` take `icon?: Icon | IconName`: a registry name for Lucide icons, a component only for custom icons from `src/components/icons/` (Gmail, Outlook, and the like).
 
 ### URL state (nuqs)
 

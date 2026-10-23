@@ -1,9 +1,9 @@
 'use client'
 
-import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -19,7 +19,7 @@ export const CourseFooter = () => {
     <div className={cn('mt-6 flex', isFirst ? 'justify-end' : 'justify-between')}>
       {!isFirst && (
         <Button className="gap-1" onClick={previous} variant="outline">
-          <ArrowLeftIcon className="size-4" />
+          <LucideIcon name="arrow-left" className="size-4" />
           {t('previous')}
         </Button>
       )}

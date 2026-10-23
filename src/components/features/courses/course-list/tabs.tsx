@@ -1,6 +1,5 @@
 'use client'
 
-import { ArchiveIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { CourseLanguagesProvider } from '@/components/features/courses/course-languages'
@@ -11,6 +10,7 @@ import {
   useCourseListTab,
   useCourseListTabs,
 } from '@/components/features/courses/course-list/use-params'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { camelize, cn } from '@/lib/utils'
@@ -32,7 +32,7 @@ const CourseListTabsTrigger = ({
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <span className="inline-block px-3.5">
-              <ArchiveIcon aria-hidden />
+              <LucideIcon name="archive" aria-hidden />
             </span>
           </TooltipTrigger>
           <TooltipContent className="flex items-center gap-1 leading-[normal]" sideOffset={16}>

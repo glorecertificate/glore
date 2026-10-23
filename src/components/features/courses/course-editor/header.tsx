@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
-import { ChevronDownIcon, EyeIcon, SaveIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -165,7 +164,7 @@ export const CourseHeader = () => {
                   <TooltipTrigger asChild>
                     <DialogTrigger asChild>
                       <Button aria-label={t('settings')} size="xs" variant="outline">
-                        <SettingsIcon className="size-4" />
+                        <LucideIcon name="settings" className="size-4" />
                       </Button>
                     </DialogTrigger>
                   </TooltipTrigger>
@@ -246,7 +245,7 @@ export const CourseHeader = () => {
                     <Button
                       className="w-full transition-none md:w-auto"
                       disabled
-                      icon={SaveIcon}
+                      icon="save"
                       loading={saving}
                       spinner="size-4"
                       variant="brand"
@@ -260,7 +259,7 @@ export const CourseHeader = () => {
             ) : (
               <Button
                 className="w-full transition-none md:w-auto"
-                icon={SaveIcon}
+                icon="save"
                 loading={saving}
                 onClick={handleSave}
                 spinner="size-4"
@@ -290,7 +289,7 @@ export const CourseHeader = () => {
                       className="mr-2 cursor-help rounded-full border-muted-foreground/60 p-1.5 text-muted-foreground/90"
                       variant="outline"
                     >
-                      <EyeIcon className="size-4 text-muted-foreground" />
+                      <LucideIcon name="eye" className="size-4 text-muted-foreground" />
                     </Badge>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-72 text-center" side="bottom">
@@ -364,7 +363,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
                 <span className="font-medium">{t('noLessons')}</span>
               )}
             </div>
-            <ChevronDownIcon className="size-4 opacity-50" />
+            <LucideIcon name="chevron-down" className="size-4 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

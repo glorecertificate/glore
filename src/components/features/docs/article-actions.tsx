@@ -3,12 +3,12 @@
 import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
-import { PencilIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { deleteDocArticle } from '@/actions/docs'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
+import { LucideIcon } from '@/components/icons/lucide'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,13 +41,13 @@ export const ArticleActions = ({ article, categories }: { article: DocArticle; c
   return (
     <div className="flex shrink-0 gap-1.5">
       <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
-        <PencilIcon className="size-3.5" />
+        <LucideIcon name="pencil" className="size-3.5" />
         {t('editor.editArticle')}
       </Button>
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button aria-label={t('editor.delete')} className="text-destructive-text" size="sm" variant="outline">
-            <Trash2Icon className="size-3.5" />
+            <LucideIcon name="trash-2" className="size-3.5" />
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>

@@ -2,9 +2,9 @@
 
 import { useRef, useState } from 'react'
 
-import { ImageIcon, PencilIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,19 +78,19 @@ export const OrganizationAvatarMenu = ({
                   <AvatarFallback className="rounded-2xl bg-muted text-2xl font-semibold">{fallback}</AvatarFallback>
                 </Avatar>
                 <span className="absolute -right-1.5 -bottom-1.5 flex size-7 items-center justify-center rounded-full border border-border bg-background shadow-2xs transition-colors group-hover:bg-accent">
-                  <PencilIcon className="size-3.5 text-muted-foreground" />
+                  <LucideIcon name="pencil" className="size-3.5 text-muted-foreground" />
                 </span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
               <DropdownMenuGroup>
                 <DropdownMenuItem onSelect={() => pickerRef.current?.open()}>
-                  <ImageIcon className="text-muted-foreground" />
+                  <LucideIcon name="image" className="text-muted-foreground" />
                   {t('updateAvatar')}
                 </DropdownMenuItem>
                 {value && (
                   <DropdownMenuItem onSelect={() => setRemoveOpen(true)} variant="destructive">
-                    <Trash2Icon />
+                    <LucideIcon name="trash-2" />
                     {t('removeAvatar')}
                   </DropdownMenuItem>
                 )}

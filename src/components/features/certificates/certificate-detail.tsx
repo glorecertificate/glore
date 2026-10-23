@@ -1,6 +1,5 @@
 'use client'
 
-import { Building2Icon, StarIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type CertificateActivityEvent, type CertificateReviewNotes } from '@/actions/certificates/queries'
@@ -14,6 +13,7 @@ import { CertificateShare } from '@/components/features/certificates/certificate
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { CertificateSummary } from '@/components/features/certificates/certificate-summary'
 import { CertificateTimeline } from '@/components/features/certificates/certificate-timeline'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -58,7 +58,7 @@ export const CertificateDetail = ({
                 width={48}
               />
             ) : (
-              <Building2Icon className="size-5 text-brand-text" />
+              <LucideIcon name="building-2" className="size-5 text-brand-text" />
             )}
           </div>
           <div className="min-w-0 space-y-1">
@@ -71,7 +71,7 @@ export const CertificateDetail = ({
               {certificate.isHolderDeleted && <Badge variant="outline">{t('org.holderDeleted')}</Badge>}
               {certificate.isApproved && certificate.isDefault && (
                 <Badge className="gap-1" variant="outline">
-                  <StarIcon className="size-3" />
+                  <LucideIcon name="star" className="size-3" />
                   {tDetail('featuredBadge')}
                 </Badge>
               )}

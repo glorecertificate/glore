@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
-import { ClipboardCheckIcon, EyeIcon, UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -104,7 +103,7 @@ export const CertificateQueue = ({
           return (
             <Button
               disabled={pending}
-              icon={UserPlusIcon}
+              icon="user-plus"
               onClick={() => claim(certificate.id)}
               size="sm"
               variant="outline"
@@ -117,7 +116,7 @@ export const CertificateQueue = ({
         return (
           <Button
             asChild
-            icon={reviewable ? ClipboardCheckIcon : EyeIcon}
+            icon={reviewable ? 'clipboard-check' : 'eye'}
             size="sm"
             variant={reviewable ? 'brand' : 'outline'}
           >

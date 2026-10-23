@@ -2,9 +2,9 @@
 
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { type VariantProps, cva } from 'class-variance-authority'
-import { XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
 export const Dialog = (props: React.ComponentProps<typeof DialogPrimitive.Root>) => (
@@ -69,7 +69,7 @@ export const DialogContent = ({
         {children}
         {showClose && (
           <DialogClose className="absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
-            <XIcon />
+            <LucideIcon name="x" />
             <span className="sr-only">{t('close')}</span>
           </DialogClose>
         )}

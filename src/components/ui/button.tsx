@@ -3,6 +3,8 @@
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
 
+import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName } from '@/components/icons/registry'
 import { Spinner } from '@/components/ui/spinner'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -13,7 +15,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   disabledTitle?: string
-  icon?: Icon
+  icon?: Icon | IconName
   /** @default 'left' */
   iconPlacement?: 'left' | 'right'
   loading?: boolean
@@ -98,7 +100,7 @@ export const Button = ({
   disabled,
   disabledTitle,
   effect,
-  icon: Icon,
+  icon,
   iconPlacement = 'left',
   loading = false,
   loadingText,
@@ -112,6 +114,8 @@ export const Button = ({
 }: ButtonProps) => {
   const Component = asChild ? Slot : 'button'
   const label = loading ? loadingTitle : disabled ? disabledTitle : title
+  const IconComponent = typeof icon === 'function' ? icon : null
+  const iconNode = typeof icon === 'string' ? <LucideIcon name={icon} /> : IconComponent && <IconComponent />
 
   return (
     <Component
@@ -125,15 +129,15 @@ export const Button = ({
       type={type}
       {...props}
     >
-      {Icon &&
+      {icon &&
         iconPlacement === 'left' &&
         !loading &&
         (effect === 'expandIcon' ? (
           <div className="w-0 overflow-hidden pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:pr-2 group-hover:opacity-100">
-            <Icon />
+            {iconNode}
           </div>
         ) : (
-          <Icon />
+          iconNode
         ))}
       <Slottable>
         {loading ? (
@@ -145,15 +149,15 @@ export const Button = ({
           children
         )}
       </Slottable>
-      {Icon &&
+      {icon &&
         iconPlacement === 'right' &&
         !loading &&
         (effect === 'expandIcon' ? (
           <div className="w-0 overflow-hidden pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:pl-2 group-hover:opacity-100">
-            <Icon />
+            {iconNode}
           </div>
         ) : (
-          <Icon />
+          iconNode
         ))}
     </Component>
   )

@@ -2,10 +2,10 @@
 
 import { useId } from 'react'
 
-import { AwardIcon, BadgeCheckIcon, CalendarIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { formatActivityPeriod } from '@/components/features/certificates/rules'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Logo } from '@/components/ui/logo'
@@ -29,10 +29,10 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
   const sealText = `${t('sealTitle')} · ${t('sealSubtitle')}`
 
   const meta = [
-    { key: 'period', icon: CalendarIcon, label: t('period'), value: period },
-    { key: 'location', icon: MapPinIcon, label: t('location'), value: certificate.activityLocation },
-    { key: 'hours', icon: TimerIcon, label: t('hours'), value: `${certificate.activityDuration}h` },
-  ]
+    { key: 'period', icon: 'calendar', label: t('period'), value: period },
+    { key: 'location', icon: 'map-pin', label: t('location'), value: certificate.activityLocation },
+    { key: 'hours', icon: 'timer', label: t('hours'), value: `${certificate.activityDuration}h` },
+  ] as const
 
   return (
     <div className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand-tertiary/5 via-card to-brand/5 p-6 sm:p-8">
@@ -49,7 +49,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
         <div className="flex items-start justify-between gap-4">
           <Logo className="h-6 w-auto" />
           <Badge className="gap-1.5 border-success/30 bg-success/10 text-success-text" variant="outline">
-            <BadgeCheckIcon className="size-3.5" />
+            <LucideIcon name="badge-check" className="size-3.5" />
             {t('verifiedCredential')}
           </Badge>
         </div>
@@ -94,25 +94,22 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-brand/10 ring-1 ring-brand/20">
-                <AwardIcon className="size-6 text-brand-text" />
+                <LucideIcon name="award" className="size-6 text-brand-text" />
               </div>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3">
-          {meta.map(m => {
-            const Icon = m.icon
-            return (
-              <div className="flex items-center gap-3 bg-card p-4" key={m.key}>
-                <Icon className="size-4 shrink-0 text-brand-text" />
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground">{m.label}</p>
-                  <p className="truncate text-sm font-medium">{m.value}</p>
-                </div>
+          {meta.map(m => (
+            <div className="flex items-center gap-3 bg-card p-4" key={m.key}>
+              <LucideIcon name={m.icon} className="size-4 shrink-0 text-brand-text" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">{m.label}</p>
+                <p className="truncate text-sm font-medium">{m.value}</p>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </div>

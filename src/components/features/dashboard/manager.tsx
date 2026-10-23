@@ -2,7 +2,6 @@
 
 import { type Route } from 'next'
 
-import { FileClockIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type ManagerSummary } from '@/actions/dashboard/core'
@@ -12,6 +11,7 @@ import { DashboardHero } from '@/components/features/dashboard/hero'
 import { StatLink } from '@/components/features/dashboard/section'
 import { ActivityList } from '@/components/features/organization/activity-list'
 import { OrganizationPipeline } from '@/components/features/organization/pipeline'
+import { LucideIcon } from '@/components/icons/lucide'
 import { AvatarStack } from '@/components/ui/avatar-stack'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
@@ -60,7 +60,7 @@ export const ManagerDashboard = ({
       {waiting.count > 0 && waiting.oldest && (
         <Banner className="flex-wrap items-center justify-between" variant="warning">
           <div className="flex items-start gap-3">
-            <FileClockIcon className="mt-0.5 size-4 shrink-0" />
+            <LucideIcon name="file-clock" className="mt-0.5 size-4 shrink-0" />
             <div className="space-y-1">
               <p className="font-semibold">{t('manager.waitingTitle', { count: waiting.count })}</p>
               <p className="text-sm text-muted-foreground">{t('manager.waitingDescription')}</p>

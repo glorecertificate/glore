@@ -1,9 +1,9 @@
 'use client'
 
-import { CheckIcon, ClipboardListIcon, MessageCircleQuestionIcon, PlusIcon, StarIcon, TrashIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
@@ -50,7 +50,7 @@ const ActivityItem = ({
         type="button"
         variant="ghost"
       >
-        <TrashIcon className="size-4 text-destructive-text" />
+        <LucideIcon name="trash" className="size-4 text-destructive-text" />
       </Button>
     </div>
   )
@@ -108,7 +108,7 @@ const QuestionItem = ({
           type="button"
           variant="ghost"
         >
-          <TrashIcon className="size-4 text-destructive-text" />
+          <LucideIcon name="trash" className="size-4 text-destructive-text" />
         </Button>
       </div>
 
@@ -129,7 +129,7 @@ const QuestionItem = ({
                 onClick={() => onOptionCorrectToggle(option.id)}
                 type="button"
               >
-                {option.isCorrect && <CheckIcon className="size-3" strokeWidth={3} />}
+                {option.isCorrect && <LucideIcon name="check" className="size-3" strokeWidth={3} />}
               </button>
               <Input
                 className="h-9 flex-1 rounded-lg text-sm"
@@ -144,7 +144,7 @@ const QuestionItem = ({
                 type="button"
                 variant="ghost"
               >
-                <TrashIcon className="size-3.5 text-destructive-text" />
+                <LucideIcon name="trash" className="size-3.5 text-destructive-text" />
               </Button>
             </AnimatedListItem>
           ))}
@@ -156,7 +156,7 @@ const QuestionItem = ({
           type="button"
           variant="ghost"
         >
-          <PlusIcon className="size-3" />
+          <LucideIcon name="plus" className="size-3" />
           {t('addActivityOption')}
         </Button>
       </div>
@@ -445,7 +445,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
       {currentLesson.questions.length > 0 && (
         <div className="space-y-3">
           <h4 className="flex items-center gap-1.5 text-sm font-semibold">
-            <MessageCircleQuestionIcon className="size-4" />
+            <LucideIcon name="message-circle-question-mark" className="size-4" />
             {t('questionsTitle')}
           </h4>
           <div className="space-y-4">
@@ -471,7 +471,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             </AnimatedList>
           </div>
           <Button className="h-7 text-xs" onClick={addQuestion} size="sm" type="button" variant="outline">
-            <PlusIcon className="size-3" />
+            <LucideIcon name="plus" className="size-3" />
             {t('addActivityQuestion')}
           </Button>
         </div>
@@ -480,7 +480,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
       {currentLesson.evaluations.length > 0 && (
         <div className="space-y-3">
           <h4 className="flex items-center gap-1.5 text-sm font-semibold">
-            <ClipboardListIcon className="size-4" />
+            <LucideIcon name="clipboard-list" className="size-4" />
             {t('subskillEvaluationsTitle')}
           </h4>
           <div className="space-y-4">
@@ -505,7 +505,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             </AnimatedList>
           </div>
           <Button className="h-7 text-xs" onClick={addEvaluation} size="sm" type="button" variant="outline">
-            <PlusIcon className="size-3" />
+            <LucideIcon name="plus" className="size-3" />
             {t('addActivityEvaluation')}
           </Button>
         </div>
@@ -514,7 +514,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
       {currentLesson.assessment && (
         <div className="space-y-3">
           <h4 className="flex items-center gap-1.5 text-sm font-semibold">
-            <StarIcon className="size-4" />
+            <LucideIcon name="star" className="size-4" />
             {t('skillEvaluationTitle')}
           </h4>
           <ActivityItem
@@ -537,21 +537,21 @@ export const LessonActivities = ({ className }: { className?: string }) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button aria-label={t('addActivity')} className="rounded-full" size="icon" type="button" variant="brand">
-              <PlusIcon className="size-4" />
+              <LucideIcon name="plus" className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuItem onClick={() => onAddActivity('questions')}>
-              <MessageCircleQuestionIcon className="size-4" />
+              <LucideIcon name="message-circle-question-mark" className="size-4" />
               {t('addActivityQuestion')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onAddActivity('evaluations')}>
-              <ClipboardListIcon className="size-4" />
+              <LucideIcon name="clipboard-list" className="size-4" />
               {t('addActivityEvaluation')}
             </DropdownMenuItem>
             {!currentLesson.assessment && (
               <DropdownMenuItem onClick={() => onAddActivity('assessment')}>
-                <StarIcon className="size-4" />
+                <LucideIcon name="star" className="size-4" />
                 {t('addActivityAssessment')}
               </DropdownMenuItem>
             )}

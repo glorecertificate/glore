@@ -1,8 +1,8 @@
 'use client'
 
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
-import { CircleIcon } from 'lucide-react'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
 export const RadioGroup = ({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) => (
@@ -22,7 +22,7 @@ export const RadioGroupItem = ({ className, ...props }: React.ComponentProps<typ
       className="relative flex items-center justify-center"
       data-slot="radio-group-indicator"
     >
-      <CircleIcon className="absolute top-1/2 left-1/2 size-2 -translate-1/2 fill-brand-secondary" />
+      <LucideIcon name="circle" className="absolute top-1/2 left-1/2 size-2 -translate-1/2 fill-brand-secondary" />
     </RadioGroupPrimitive.Indicator>
   </RadioGroupPrimitive.Item>
 )

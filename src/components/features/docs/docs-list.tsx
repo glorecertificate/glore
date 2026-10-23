@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 
-import { SearchIcon, SearchXIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { DocsSection } from '@/components/features/docs/docs-section'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { type DocCategory } from '@/db/queries/doc'
@@ -39,7 +39,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Input
           className="sm:max-w-sm"
-          icon={SearchIcon}
+          icon="search"
           placeholder={tCommon('searchItems')}
           value={query}
           onChange={event => setQuery(event.target.value)}
@@ -51,7 +51,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
         <Empty className="py-12">
           <EmptyHeader>
             <EmptyMedia variant="icon">
-              <SearchXIcon />
+              <LucideIcon name="search-x" />
             </EmptyMedia>
             <EmptyTitle>{tSearch('noResults')}</EmptyTitle>
           </EmptyHeader>

@@ -1,8 +1,8 @@
 'use client'
 
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { XIcon } from 'lucide-react'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
 export const Sheet = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) => (
@@ -62,7 +62,7 @@ export const SheetContent = ({
     >
       {children}
       <DialogPrimitive.Close className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-brand">
-        <XIcon className="size-4" />
+        <LucideIcon name="x" className="size-4" />
         <span className="sr-only">{closeSrText}</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

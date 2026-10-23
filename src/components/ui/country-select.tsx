@@ -2,9 +2,9 @@
 
 import { useId, useState } from 'react'
 
-import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { useMessages, useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -61,7 +61,7 @@ export const CountrySelect = ({
           ) : (
             t('countryPlaceholder')
           )}
-          <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
+          <LucideIcon name="chevrons-up-down" className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0" id={contentId}>
@@ -81,7 +81,10 @@ export const CountrySelect = ({
                 >
                   <span className="pr-0.5">{countryCodeToFlag(code)}</span>
                   {translateCountry(code)}
-                  <CheckIcon className={cn('size-4', value?.toLowerCase() === code ? 'opacity-100' : 'opacity-0')} />
+                  <LucideIcon
+                    name="check"
+                    className={cn('size-4', value?.toLowerCase() === code ? 'opacity-100' : 'opacity-0')}
+                  />
                 </CommandItem>
               ))}
             </CommandGroup>

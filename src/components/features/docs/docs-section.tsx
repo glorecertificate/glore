@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 
-import { FileTextIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { ArticleCard } from '@/components/features/docs/article-card'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
@@ -33,7 +33,7 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
         <h2 className="text-lg font-semibold capitalize">{title}</h2>
         {canEdit && (
           <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
-            <PlusIcon className="size-4" />
+            <LucideIcon name="plus" className="size-4" />
             {t('editor.newArticle')}
           </Button>
         )}
@@ -43,14 +43,14 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
         <Empty className="py-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
-              <FileTextIcon />
+              <LucideIcon name="file-text" />
             </EmptyMedia>
             <EmptyTitle>{t('empty')}</EmptyTitle>
           </EmptyHeader>
           {canEdit && (
             <EmptyContent>
               <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
-                <PlusIcon className="size-4" />
+                <LucideIcon name="plus" className="size-4" />
                 {t('editor.newArticle')}
               </Button>
             </EmptyContent>

@@ -54,20 +54,9 @@ declare global {
 const hostname = URL.parse(process.env.R2_PUBLIC_URL ?? '')?.hostname
 const remotePatterns = hostname ? [{ protocol: 'https', hostname } as const] : []
 
-const nextConfig: TypedNextConfig = {
-  agentRules: false,
-  reactStrictMode: true,
-  cacheComponents: true,
-  partialPrefetching: true,
-  trailingSlash: false,
-  redirects: () => [
-    {
-      source: '/',
-      destination: '/dashboard',
-      permanent: true,
-    },
-  ],
-  headers: () => [
+const headers =
+  (isDevServer: boolean): NextConfig['headers'] =>
+  () => [
     {
       source: '/(.*)',
       headers: [
@@ -75,7 +64,7 @@ const nextConfig: TypedNextConfig = {
           key: 'Content-Security-Policy',
           value: [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            `script-src 'self' 'unsafe-inline'${isDevServer ? " 'unsafe-eval'" : ''}`,
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob: https:",
             "font-src 'self' data:",
@@ -114,6 +103,20 @@ const nextConfig: TypedNextConfig = {
         },
       ],
     },
+  ]
+
+const nextConfig: TypedNextConfig = {
+  agentRules: false,
+  reactStrictMode: true,
+  cacheComponents: true,
+  partialPrefetching: true,
+  trailingSlash: false,
+  redirects: () => [
+    {
+      source: '/',
+      destination: '/dashboard',
+      permanent: true,
+    },
   ],
   outputFileTracingIncludes: { '/**': ['./public/certificate/**', './public/fonts/roboto/**', './content/legal/**'] },
   serverExternalPackages: ['qrcode'],
@@ -134,6 +137,7 @@ const nextConfig: TypedNextConfig = {
     turbopackGc: true,
     turbopackMemoryEviction: 'auto',
     turbopackFileSystemCacheForBuild: true,
+    sri: { algorithm: 'sha256' },
   },
 }
 
@@ -160,9 +164,9 @@ const createNextConfig = (phase: PHASE_TYPE) => {
   return plugins.reduce<NextConfig>((config, next) => next(config), {
     ...nextConfig,
     allowedDevOrigins,
+    headers: headers(isDevServer),
     reactCompiler: !isDevServer,
     typescript: {
-      ignoreBuildErrors: true,
       tsconfigPath,
     },
   })

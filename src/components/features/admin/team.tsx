@@ -2,19 +2,6 @@
 
 import { useState } from 'react'
 
-import {
-  ArrowUpDownIcon,
-  CalendarIcon,
-  CheckIcon,
-  ClockIcon,
-  FilterIcon,
-  PencilIcon,
-  ShieldIcon,
-  ShieldUserIcon,
-  UserIcon,
-  UserPlusIcon,
-  UsersIcon,
-} from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -25,6 +12,7 @@ import {
   resendInvitation,
   updateTeamMemberRole,
 } from '@/actions/admin/team'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
@@ -159,10 +147,10 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   return (
     <div className="space-y-6 pt-1">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <TeamStatCard accent="brand" icon={UsersIcon} label={t('statMembers')} value={stats.total} />
-        <TeamStatCard icon={ShieldUserIcon} label={t('statAdmins')} value={stats.admins} />
-        <TeamStatCard icon={PencilIcon} label={t('statEditors')} value={stats.editors} />
-        <TeamStatCard accent="warning" icon={ClockIcon} label={t('statPending')} value={stats.pending} />
+        <TeamStatCard accent="brand" icon="users" label={t('statMembers')} value={stats.total} />
+        <TeamStatCard icon="shield-user" label={t('statAdmins')} value={stats.admins} />
+        <TeamStatCard icon="pencil" label={t('statEditors')} value={stats.editors} />
+        <TeamStatCard accent="warning" icon="clock" label={t('statPending')} value={stats.pending} />
       </div>
 
       <div className="overflow-hidden rounded-xl border bg-card shadow-2xs">
@@ -174,7 +162,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
             </Badge>
           </div>
           <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
-            <UserPlusIcon className="mr-1.5 size-3.5" />
+            <LucideIcon name="user-plus" className="mr-1.5 size-3.5" />
             {t('inviteMember')}
           </Button>
         </div>
@@ -183,32 +171,32 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <ArrowUpDownIcon className="mr-1.5 size-3.5" />
+                <LucideIcon name="arrow-up-down" className="mr-1.5 size-3.5" />
                 {t(`sort_${sortBy}`)}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem onClick={() => setSortBy('name')}>
-                <UserIcon className="mr-2 size-3.5" />
+                <LucideIcon name="user" className="mr-2 size-3.5" />
                 {t('sort_name')}
-                {sortBy === 'name' && <CheckIcon className="ml-auto size-3.5" />}
+                {sortBy === 'name' && <LucideIcon name="check" className="ml-auto size-3.5" />}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSortBy('role')}>
-                <ShieldIcon className="mr-2 size-3.5" />
+                <LucideIcon name="shield" className="mr-2 size-3.5" />
                 {t('sort_role')}
-                {sortBy === 'role' && <CheckIcon className="ml-auto size-3.5" />}
+                {sortBy === 'role' && <LucideIcon name="check" className="ml-auto size-3.5" />}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSortBy('date')}>
-                <CalendarIcon className="mr-2 size-3.5" />
+                <LucideIcon name="calendar" className="mr-2 size-3.5" />
                 {t('sort_date')}
-                {sortBy === 'date' && <CheckIcon className="ml-auto size-3.5" />}
+                {sortBy === 'date' && <LucideIcon name="check" className="ml-auto size-3.5" />}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           <Select onValueChange={v => setFilterRole(v as TeamRole | 'all')} value={filterRole}>
             <SelectTrigger aria-label={t('filterRoleLabel')} className="h-8 w-auto gap-1.5 border-dashed px-3 text-sm">
-              <FilterIcon className="size-3.5" />
+              <LucideIcon name="funnel" className="size-3.5" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -223,7 +211,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
               aria-label={t('filterStatusLabel')}
               className="h-8 w-auto gap-1.5 border-dashed px-3 text-sm"
             >
-              <FilterIcon className="size-3.5" />
+              <LucideIcon name="funnel" className="size-3.5" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -252,7 +240,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
           <Empty className="py-16">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <UserIcon />
+                <LucideIcon name="user" />
               </EmptyMedia>
               <EmptyTitle>{t('noMembers')}</EmptyTitle>
               {hasActiveFilters && <EmptyDescription>{t('tryAdjustingFilters')}</EmptyDescription>}

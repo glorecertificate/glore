@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 
-import { PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { CourseDialog } from '@/components/features/courses/course-dialog'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -20,7 +20,7 @@ export const CourseListDialog = (props: React.ComponentProps<typeof CourseDialog
         <TooltipTrigger asChild>
           <DialogTrigger asChild>
             <Button aria-label={t('createCourse')} className="size-8 rounded-full" size="icon" variant="brand">
-              <PlusIcon className="size-4" />
+              <LucideIcon name="plus" className="size-4" />
             </Button>
           </DialogTrigger>
         </TooltipTrigger>

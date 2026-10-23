@@ -142,6 +142,7 @@ src/
 - It stays in `ui/` so a CLI re-pull keeps working. Treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them.
 - The app touches it only through the `index.tsx` barrel and `provider.tsx`.
 - The AI wiring lives in `use-chat.ts` (`DefaultChatTransport` to `/api/v1/ai/command`, chat registered on `AIChatPlugin` from `plugins/ai.tsx` `useHooks`). Keep it when re-pulling.
+- Learner lessons never load the vendored `provider.tsx`: `features/courses/course-player/reader-provider.tsx` builds a read-only Plate editor from `reader-plugins.ts` (no AI, copilot, toolbar, dnd, slash, emoji, or autoformat kits), which keeps the AI SDK out of the learner route chunks.
 
 ## Server vs client components
 

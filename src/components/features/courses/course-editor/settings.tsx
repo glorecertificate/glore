@@ -3,7 +3,6 @@
 import { useEffect, useId, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2Icon, Link2Icon, LoaderCircleIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -210,7 +209,7 @@ export const CourseSettings = ({
                       variant="ghost"
                       onClick={() => form.setValue('icon', null, { shouldDirty: true })}
                     >
-                      <XIcon className="size-3.5" />
+                      <LucideIcon name="x" className="size-3.5" />
                     </Button>
                   )}
                 </div>
@@ -330,11 +329,11 @@ export const CourseSettings = ({
                     />
                     <InputGroupAddon align="inline-end">
                       {slugStatus === 'checking' ? (
-                        <LoaderCircleIcon className="animate-spin text-muted-foreground" />
+                        <LucideIcon name="loader-circle" className="animate-spin text-muted-foreground" />
                       ) : slugStatus === 'available' ? (
-                        <CheckCircle2Icon className="text-success-text" />
+                        <LucideIcon name="circle-check" className="text-success-text" />
                       ) : (
-                        <Link2Icon className="cursor-default" />
+                        <LucideIcon name="link-2" className="cursor-default" />
                       )}
                     </InputGroupAddon>
                   </InputGroup>

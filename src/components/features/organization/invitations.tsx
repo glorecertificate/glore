@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 
-import { UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -14,6 +13,7 @@ import {
 } from '@/actions/organizations/invitations'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useInvitationError } from '@/components/features/organization/use-invitation-error'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
@@ -140,7 +140,7 @@ export const OrganizationInvitations = ({
               <p className="text-sm text-muted-foreground">{t('description')}</p>
             </div>
             <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
-              <UserPlusIcon className="size-3.5" />
+              <LucideIcon name="user-plus" className="size-3.5" />
               {t('invitePeople')}
             </Button>
           </div>

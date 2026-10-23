@@ -1,38 +1,11 @@
 'use client'
 
-import {
-  ArrowUpRightIcon,
-  BadgeCheckIcon,
-  BellIcon,
-  BookMarkedIcon,
-  BuildingIcon,
-  ClipboardCheckIcon,
-  CompassIcon,
-  FileCheckIcon,
-  FilePlus2Icon,
-  GraduationCapIcon,
-  InboxIcon,
-  LayersIcon,
-  type LucideIcon,
-  MailIcon,
-  PencilRulerIcon,
-  RefreshCwIcon,
-  RocketIcon,
-  ScaleIcon,
-  ScrollTextIcon,
-  SearchCheckIcon,
-  SettingsIcon,
-  SmartphoneIcon,
-  SparklesIcon,
-  SquareStackIcon,
-  UserCogIcon,
-  UserPlusIcon,
-  UsersIcon,
-} from 'lucide-react'
 import { useMessages, useTranslations } from 'next-intl'
 
 import { Faq } from '@/components/features/help/faq'
 import { type HelpRole, useHelpRole } from '@/components/features/help/use-help-role'
+import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName } from '@/components/icons/registry'
 import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
@@ -48,27 +21,27 @@ const STEP_ACCENTS = [
   'bg-brand-tertiary text-brand-tertiary-foreground',
 ] as const
 
-const STEP_ICONS: Record<HelpRole, [LucideIcon, LucideIcon, LucideIcon, LucideIcon]> = {
-  volunteer: [UsersIcon, GraduationCapIcon, SparklesIcon, ClipboardCheckIcon],
-  learner: [UsersIcon, CompassIcon, BadgeCheckIcon, GraduationCapIcon],
-  tutor: [InboxIcon, SearchCheckIcon, PencilRulerIcon, FileCheckIcon],
-  manager: [UserPlusIcon, UsersIcon, ScaleIcon, BuildingIcon],
-  team: [FilePlus2Icon, LayersIcon, RocketIcon, SettingsIcon],
+const STEP_ICONS: Record<HelpRole, [IconName, IconName, IconName, IconName]> = {
+  volunteer: ['users', 'graduation-cap', 'sparkles', 'clipboard-check'],
+  learner: ['users', 'compass', 'badge-check', 'graduation-cap'],
+  tutor: ['inbox', 'search-check', 'pencil-ruler', 'file-check'],
+  manager: ['user-plus', 'users', 'scale', 'building'],
+  team: ['file-plus-corner', 'layers', 'rocket', 'settings'],
 }
 
 const CERTIFICATE_FACETS = [
-  { icon: BadgeCheckIcon, key: 'eligibility', chip: 'bg-brand/10 text-brand-text' },
-  { icon: RefreshCwIcon, key: 'lifecycle', chip: 'bg-info/10 text-info-text' },
-  { icon: ScrollTextIcon, key: 'verification', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
+  { icon: 'badge-check', key: 'eligibility', chip: 'bg-brand/10 text-brand-text' },
+  { icon: 'refresh-cw', key: 'lifecycle', chip: 'bg-info/10 text-info-text' },
+  { icon: 'scroll-text', key: 'verification', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
 ] as const
 
-const FEATURE_ICONS: Record<string, LucideIcon> = {
-  organizations: SquareStackIcon,
-  onboarding: UserCogIcon,
-  settings: BookMarkedIcon,
-  documentation: ScrollTextIcon,
-  notifications: BellIcon,
-  pwa: SmartphoneIcon,
+const FEATURE_ICONS: Record<string, IconName> = {
+  organizations: 'square-stack',
+  onboarding: 'user-cog',
+  settings: 'book-marked',
+  documentation: 'scroll-text',
+  notifications: 'bell',
+  pwa: 'smartphone',
 }
 
 export const HelpContent = () => {
@@ -85,7 +58,7 @@ export const HelpContent = () => {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-14 pt-8 pb-16">
       <section className="flex flex-col items-center gap-3 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand-text">
-          <BadgeCheckIcon className="size-3.5" />
+          <LucideIcon name="badge-check" className="size-3.5" />
           {roleContent.label}
         </span>
         <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h2>
@@ -96,7 +69,7 @@ export const HelpContent = () => {
         <h2 className="text-xl font-semibold tracking-tight">{content.gettingStartedTitle}</h2>
         <ol className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {steps.map((step, i) => {
-            const Icon = STEP_ICONS[role][i]
+            const icon = STEP_ICONS[role][i]
 
             return (
               <li
@@ -105,7 +78,7 @@ export const HelpContent = () => {
               >
                 <div className="flex flex-col items-center gap-2">
                   <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-xl', STEP_ACCENTS[i])}>
-                    <Icon className="size-5" />
+                    <LucideIcon name={icon} className="size-5" />
                   </span>
                   <span className="text-xs font-semibold text-muted-foreground tabular-nums">{`0${i + 1}`}</span>
                 </div>
@@ -125,13 +98,13 @@ export const HelpContent = () => {
           <p className="text-sm text-muted-foreground">{content.certificate.description}</p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {CERTIFICATE_FACETS.map(({ chip, icon: Icon, key }) => {
+          {CERTIFICATE_FACETS.map(({ chip, icon, key }) => {
             const facet = content.certificate[key]
 
             return (
               <div key={key} className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-2xs">
                 <div className={cn('flex size-9 items-center justify-center rounded-lg', chip)}>
-                  <Icon className="size-4.5" />
+                  <LucideIcon name={icon} className="size-4.5" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-sm font-semibold">{facet.title}</p>
@@ -158,11 +131,11 @@ export const HelpContent = () => {
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Object.entries(content.features.items).map(([key, item]) => {
-            const Icon = FEATURE_ICONS[key] ?? SquareStackIcon
+            const icon = FEATURE_ICONS[key] ?? 'square-stack'
 
             return (
               <div key={key} className="flex gap-3 rounded-xl border bg-card p-4 shadow-2xs">
-                <Icon className="mt-0.5 size-4.5 shrink-0 text-muted-foreground" />
+                <LucideIcon name={icon} className="mt-0.5 size-4.5 shrink-0 text-muted-foreground" />
                 <div className="flex flex-col gap-0.5">
                   <p className="text-sm font-medium">{item.title}</p>
                   <p className="text-xs leading-relaxed text-muted-foreground">{item.description}</p>
@@ -205,7 +178,7 @@ export const HelpContent = () => {
               className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground shadow-2xs transition-colors hover:bg-brand-accent"
               href={`mailto:${metadata.email}`}
             >
-              <MailIcon className="size-4" />
+              <LucideIcon name="mail" className="size-4" />
               {content.contact.emailLabel}
             </a>
             <a
@@ -215,7 +188,7 @@ export const HelpContent = () => {
               target="_blank"
             >
               {content.contact.websiteLabel}
-              <ArrowUpRightIcon className="size-3.5" />
+              <LucideIcon name="arrow-up-right" className="size-3.5" />
             </a>
           </div>
         </div>

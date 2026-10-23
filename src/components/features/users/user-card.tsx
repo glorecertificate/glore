@@ -1,6 +1,6 @@
-import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
@@ -77,7 +77,7 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
             {isVisible('isAdmin') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
-                  <ShieldUserIcon className="size-3.5" />
+                  <LucideIcon name="shield-user" className="size-3.5" />
                 </TooltipTrigger>
                 <TooltipContent sideOffset={8} size="sm">
                   <span className="text-xs">{t('admin')}</span>
@@ -87,7 +87,7 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
             {isVisible('isEditor') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
-                  <PencilIcon className="size-3" />
+                  <LucideIcon name="pencil" className="size-3" />
                 </TooltipTrigger>
                 <TooltipContent sideOffset={8} size="sm">
                   <span className="text-xs">{t('editor')}</span>
@@ -100,7 +100,7 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
         <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
           {(isVisible('country') || isVisible('city')) && location && (
             <div className="flex items-center gap-1.5">
-              <MapPinIcon className="size-3.5" />
+              <LucideIcon name="map-pin" className="size-3.5" />
               {locationUrl ? (
                 <Link className="text-xs" href={locationUrl} target="_blank" title={tCommon('showOnMaps')}>
                   {location}
@@ -112,13 +112,13 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
           )}
           {isVisible('languages') && languages && (
             <div className="flex items-start gap-1.5">
-              <LanguagesIcon className="size-3.5 pt-0.5" />
+              <LucideIcon name="languages" className="size-3.5 pt-0.5" />
               <span className="max-w-44 wrap-break-word">{languages}</span>
             </div>
           )}
           {isVisible('email') && (
             <div className="flex items-center gap-1.5">
-              <MailIcon className="size-3.5" />
+              <LucideIcon name="mail" className="size-3.5" />
               <Link className="text-xs" href={`mailto:${user.email}`} title={contactTitle} variant="underlined">
                 {user.email}
               </Link>

@@ -1,6 +1,5 @@
 'use client'
 
-import { AwardIcon, PlusIcon, SearchXIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type CertificateEligibility } from '@/actions/certificates/queries'
@@ -9,6 +8,7 @@ import { EligibilityPanel } from '@/components/features/certificates/eligibility
 import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
 import { CERT_LIST_STATUS_VALUES, type CertListStatus } from '@/components/features/certificates/params'
 import { useCertListSort, useCertListStatus } from '@/components/features/certificates/use-params'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
@@ -66,7 +66,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
             <p className="font-semibold text-brand-text">{t('requestCertificateTitle')}</p>
             <p className="text-sm text-muted-foreground">{t('requestCertificateMessage')}</p>
           </div>
-          <Button asChild icon={PlusIcon} size="sm" variant="brand">
+          <Button asChild icon="plus" size="sm" variant="brand">
             <Link href="/certificates/new">{t('requestCertificate')}</Link>
           </Button>
         </Banner>
@@ -118,7 +118,9 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
       ) : (
         <Empty className="border">
           <EmptyHeader>
-            <EmptyMedia variant="icon">{status ? <SearchXIcon /> : <AwardIcon />}</EmptyMedia>
+            <EmptyMedia variant="icon">
+              {status ? <LucideIcon name="search-x" /> : <LucideIcon name="award" />}
+            </EmptyMedia>
             <EmptyTitle>{status ? t('noFilteredCertificates') : t('noCertificates')}</EmptyTitle>
             <EmptyDescription>
               {status ? t('noFilteredCertificatesMessage') : t('noCertificatesMessage')}

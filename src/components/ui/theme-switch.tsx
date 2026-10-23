@@ -1,20 +1,21 @@
 'use client'
 
-import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName } from '@/components/icons/registry'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMounted } from '@/hooks/use-mounted'
 import { useTheme } from '@/hooks/use-theme'
-import { type Icon, type Theme } from '@/lib/types'
+import { type Theme } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export const ThemeSwitchButton = ({
   active,
   children,
   className,
-  icon: Icon,
+  icon,
   isFirst,
   isLast,
   label,
@@ -23,7 +24,7 @@ export const ThemeSwitchButton = ({
   ...props
 }: Omit<ButtonProps, 'icon' | 'title'> & {
   active: boolean
-  icon: Icon
+  icon: IconName
   isFirst: boolean
   isLast: boolean
   label: string
@@ -49,7 +50,7 @@ export const ThemeSwitchButton = ({
       {...props}
     >
       <div className="relative z-10 flex items-center gap-1.5">
-        <Icon className={cn('size-4 transition-none', active && 'text-foreground')} />
+        <LucideIcon name={icon} className={cn('size-4 transition-none', active && 'text-foreground')} />
         <span className="sr-only">{children}</span>
       </div>
     </Button>
@@ -84,19 +85,19 @@ export const ThemeSwitch = ({
 
   const items = [
     {
-      icon: SunIcon,
+      icon: 'sun',
       label: t('light'),
       name: 'light',
       title: t('lightTitle'),
     },
     {
-      icon: MoonIcon,
+      icon: 'moon',
       label: t('dark'),
       name: 'dark',
       title: t('darkTitle'),
     },
     {
-      icon: MonitorIcon,
+      icon: 'monitor',
       label: t('system'),
       name: 'system',
       title: t('systemTitle'),

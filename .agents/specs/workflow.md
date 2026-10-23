@@ -214,6 +214,6 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 - `vercel.json` pins functions to `fra1`, next to Neon (`eu-central-1`), and sets `git.deploymentEnabled.main: false`.
 - `.github/workflows/deploy.yml` runs `vercel pull`, `build`, and `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel only uploads.
 - `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` are non-secret workflow `env` IDs.
-- `typescript.ignoreBuildErrors: true` MUST stay, because `Check` already runs `tsc` and the in-build check cost 30 to 45 s.
+- `typescript.ignoreBuildErrors` is gone: `next build` type-checks with `tsconfig.build.json`, so a type error fails the build even when `Check` is skipped.
 - `experimental.turbopackFileSystemCacheForBuild: true` MUST stay, because it lets the restored cache speed up compile.
 - After adding a route handler, a stale typed-route error from `tsc` clears when `.next/.tsbuildinfo` is moved away.

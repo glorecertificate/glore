@@ -2,7 +2,6 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { type Locale, useLocale } from 'next-intl'
 import {
   CustomComponents,
@@ -13,6 +12,7 @@ import {
   getDefaultClassNames,
 } from 'react-day-picker'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -112,12 +112,12 @@ const Calendar = ({
   const calendarComponents: Partial<CustomComponents> = {
     Chevron: ({ className: chevronClassName, orientation, ...chevronProps }) => {
       if (orientation === 'left') {
-        return <ChevronLeftIcon className={cn('size-4', chevronClassName)} {...chevronProps} />
+        return <LucideIcon name="chevron-left" className={cn('size-4', chevronClassName)} {...chevronProps} />
       }
       if (orientation === 'right') {
-        return <ChevronRightIcon className={cn('size-4', chevronClassName)} {...chevronProps} />
+        return <LucideIcon name="chevron-right" className={cn('size-4', chevronClassName)} {...chevronProps} />
       }
-      return <ChevronDownIcon className={cn('size-4', chevronClassName)} {...chevronProps} />
+      return <LucideIcon name="chevron-down" className={cn('size-4', chevronClassName)} {...chevronProps} />
     },
     DayButton: CalendarDayButton,
     Root: ({ className: rootClassName, rootRef, ...rootProps }) => (

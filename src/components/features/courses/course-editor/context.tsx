@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useMemo, useRef, useState } from 'react'
+import { createContext, use, useRef, useState } from 'react'
 
 import { type Locale } from 'next-intl'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
@@ -125,7 +125,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   const [initialCourse] = useState(() => structuredClone(ensureLesson(options.course)))
   const courseRef = useRef(initialCourse)
   const [course, setCourse] = useState(() => ensureLesson(options.course))
-  const [saveVersion, setSaveVersion] = useState(0)
+  const [savedCourse, setSavedCourse] = useState(initialCourse)
 
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
@@ -137,110 +137,100 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     isLast: step === course.lessons.length,
   }
 
-  // eslint-disable-next-line react-compiler/exhaustive-deps
-  const savedCourse = useMemo(() => courseRef.current, [saveVersion])
+  const status = LOCALES.reduce(
+    (courseState, locale) => {
+      const published = !!course.languages?.includes(locale)
 
-  const status = useMemo(
-    () =>
-      LOCALES.reduce(
-        (courseState, locale) => {
-          const published = !!course.languages?.includes(locale)
+      const initialTitle = savedCourse.title[locale]
+      const title = course.title[locale]
+      const hasTitle = !!title && title.trim().length > 0
+      const hasTitleUpdates = hasTitle && initialTitle !== title
 
-          const initialTitle = savedCourse.title[locale]
-          const title = course.title[locale]
-          const hasTitle = !!title && title.trim().length > 0
-          const hasTitleUpdates = hasTitle && initialTitle !== title
+      const initialDescription = savedCourse.description?.[locale]
+      const currentDescription = course.description?.[locale]
+      const hasDescriptionUpdates = currentDescription !== initialDescription
 
-          const initialDescription = savedCourse.description?.[locale]
-          const currentDescription = course.description?.[locale]
-          const hasDescriptionUpdates = currentDescription !== initialDescription
+      const hasContent = course.lessons.every(lesson => {
+        const content = (lesson.content as IntlRecord)?.[locale]
+        const hasText =
+          Array.isArray(content) &&
+          content.some(block =>
+            block.children?.some((child: { text?: string }) => child.text && child.text.trim().length > 0)
+          )
 
-          const hasContent = course.lessons.every(lesson => {
-            const content = (lesson.content as IntlRecord)?.[locale]
-            const hasText =
-              Array.isArray(content) &&
-              content.some(block =>
-                block.children?.some((child: { text?: string }) => child.text && child.text.trim().length > 0)
-              )
+        return lesson.title?.[locale] && lesson.title[locale].trim().length > 0 && hasText
+      })
+      const hasRemovedLessons = course.lessons.length !== savedCourse.lessons.length
+      const hasContentUpdates = course.lessons.some((lesson, i) => {
+        const initialLesson = savedCourse.lessons[i] || {}
 
-            return lesson.title?.[locale] && lesson.title[locale].trim().length > 0 && hasText
-          })
-          const hasRemovedLessons = course.lessons.length !== savedCourse.lessons.length
-          const hasContentUpdates = course.lessons.some((lesson, i) => {
-            const initialLesson = savedCourse.lessons[i] || {}
+        if (lesson.title?.[locale] !== initialLesson.title?.[locale]) return true
 
-            if (lesson.title?.[locale] !== initialLesson.title?.[locale]) return true
+        const initialContent = (initialLesson.content as IntlRecord | undefined)?.[locale]
+        const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
+        if (stringifyContent(initialContent) !== stringifyContent(currentContent)) return true
 
-            const initialContent = (initialLesson.content as IntlRecord | undefined)?.[locale]
-            const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
-            if (stringifyContent(initialContent) !== stringifyContent(currentContent)) return true
-
-            const qs0 = (initialLesson.questions ?? []) as Lesson['questions']
-            const qs1 = lesson.questions ?? []
-            if (qs0.length !== qs1.length) return true
-            if (
-              qs1.some((q1, j) => {
-                const q0 = qs0[j]
-                if (!q0 || q0.id !== q1.id) return true
-                if ((q0.description as IntlRecord)?.[locale] !== (q1.description as IntlRecord)?.[locale]) return true
-                if ((q0.explanation?.[locale] ?? '') !== ((q1.explanation as IntlRecord | undefined)?.[locale] ?? '')) {
-                  return true
-                }
-                const os0 = q0.options ?? []
-                const os1 = q1.options ?? []
-                if (os0.length !== os1.length) return true
-                return os1.some((o1, k) => {
-                  const o0 = os0[k]
-                  if (!o0 || o0.id !== o1.id) return true
-                  if (((o0.content as IntlRecord)?.[locale] ?? '') !== ((o1.content as IntlRecord)?.[locale] ?? '')) {
-                    return true
-                  }
-                  return !!o0.isCorrect !== !!o1.isCorrect
-                })
-              })
-            ) {
+        const qs0 = (initialLesson.questions ?? []) as Lesson['questions']
+        const qs1 = lesson.questions ?? []
+        if (qs0.length !== qs1.length) return true
+        if (
+          qs1.some((q1, j) => {
+            const q0 = qs0[j]
+            if (!q0 || q0.id !== q1.id) return true
+            if ((q0.description as IntlRecord)?.[locale] !== (q1.description as IntlRecord)?.[locale]) return true
+            if ((q0.explanation?.[locale] ?? '') !== ((q1.explanation as IntlRecord | undefined)?.[locale] ?? '')) {
               return true
             }
-
-            const evs0 = (initialLesson.evaluations ?? []) as Array<{ id: number; description: IntlRecord }>
-            const evs1 = lesson.evaluations ?? []
-            if (evs0.length !== evs1.length) return true
-            if (
-              evs0.some(
-                (e, j) =>
-                  e.id !== evs1[j]?.id || e.description?.[locale] !== (evs1[j]?.description as IntlRecord)?.[locale]
-              )
-            ) {
-              return true
-            }
-
-            const initialAssessmentDesc = initialLesson.assessment?.description?.[locale]
-            const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
-            return (
-              initialLesson.assessment?.id !== lesson.assessment?.id || initialAssessmentDesc !== currentAssessmentDesc
-            )
+            const os0 = q0.options ?? []
+            const os1 = q1.options ?? []
+            if (os0.length !== os1.length) return true
+            return os1.some((o1, k) => {
+              const o0 = os0[k]
+              if (!o0 || o0.id !== o1.id) return true
+              if (((o0.content as IntlRecord)?.[locale] ?? '') !== ((o1.content as IntlRecord)?.[locale] ?? '')) {
+                return true
+              }
+              return !!o0.isCorrect !== !!o1.isCorrect
+            })
           })
+        ) {
+          return true
+        }
 
-          const hasUpdates = hasTitleUpdates || hasContentUpdates || hasDescriptionUpdates || hasRemovedLessons
-          const isFulfilled = hasTitle && hasContent
+        const evs0 = (initialLesson.evaluations ?? []) as Array<{ id: number; description: IntlRecord }>
+        const evs1 = lesson.evaluations ?? []
+        if (evs0.length !== evs1.length) return true
+        if (
+          evs0.some(
+            (e, j) => e.id !== evs1[j]?.id || e.description?.[locale] !== (evs1[j]?.description as IntlRecord)?.[locale]
+          )
+        ) {
+          return true
+        }
 
-          return {
-            ...courseState,
-            [locale]: {
-              published,
-              hasTitle,
-              hasTitleUpdates,
-              hasContent,
-              hasContentUpdates,
-              hasDescriptionUpdates,
-              hasUpdates,
-              isFulfilled,
-            } satisfies CourseStatus,
-          }
-        },
-        {} as Record<Locale, CourseStatus>
-      ),
-    [course, savedCourse]
+        const initialAssessmentDesc = initialLesson.assessment?.description?.[locale]
+        const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
+        return initialLesson.assessment?.id !== lesson.assessment?.id || initialAssessmentDesc !== currentAssessmentDesc
+      })
+
+      const hasUpdates = hasTitleUpdates || hasContentUpdates || hasDescriptionUpdates || hasRemovedLessons
+      const isFulfilled = hasTitle && hasContent
+
+      return {
+        ...courseState,
+        [locale]: {
+          published,
+          hasTitle,
+          hasTitleUpdates,
+          hasContent,
+          hasContentUpdates,
+          hasDescriptionUpdates,
+          hasUpdates,
+          isFulfilled,
+        } satisfies CourseStatus,
+      }
+    },
+    {} as Record<Locale, CourseStatus>
   )
 
   const languageStatus = status[language]
@@ -259,7 +249,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     const result = await updateCourse(courseSnapshotRef.current.id, payload)
     if (result && !('error' in result)) {
       courseRef.current = { ...courseRef.current, ...payload } as Course
-      setSaveVersion(version => version + 1)
+      setSavedCourse(courseRef.current)
     }
     return result
   }
@@ -660,7 +650,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       lessons: mergedLessons,
     }) as Course
 
-    setSaveVersion(version => version + 1)
+    setSavedCourse(courseRef.current)
   }
 
   const addLesson = (values: TableUpdate<'lessons'> = {}) => {

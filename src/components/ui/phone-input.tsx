@@ -2,9 +2,9 @@
 
 import { useId, useState } from 'react'
 
-import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { useMessages, useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { countryCodeToFlag } from '@/components/ui/country-select'
 import { type InputProps } from '@/components/ui/input'
@@ -62,7 +62,7 @@ export const PhoneInput = ({ defaultCountry = 'it', disabled, onChange, value, .
             >
               <span>{country ? countryCodeToFlag(country) : '🌐'}</span>
               <span>{code ?? ''}</span>
-              <ChevronsUpDownIcon className="size-3 shrink-0 opacity-50" />
+              <LucideIcon name="chevrons-up-down" className="size-3 shrink-0 opacity-50" />
             </InputGroupButton>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-72 p-0" id={contentId}>
@@ -80,7 +80,10 @@ export const PhoneInput = ({ defaultCountry = 'it', disabled, onChange, value, .
                       <span className="pr-0.5">{countryCodeToFlag(current)}</span>
                       <span className="flex-1 truncate">{translateCountry(current)}</span>
                       <span className="text-muted-foreground">{COUNTRY_CALLING_CODES[current]}</span>
-                      <CheckIcon className={cn('size-4', country === current ? 'opacity-100' : 'opacity-0')} />
+                      <LucideIcon
+                        name="check"
+                        className={cn('size-4', country === current ? 'opacity-100' : 'opacity-0')}
+                      />
                     </CommandItem>
                   ))}
                 </CommandGroup>

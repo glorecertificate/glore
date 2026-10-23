@@ -3,8 +3,7 @@
 import { Route } from 'next'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-import { InfoIcon } from 'lucide-react'
-
+import { LucideIcon } from '@/components/icons/lucide'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
 import { Link, LinkProps } from '@/components/ui/link'
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
@@ -67,7 +66,10 @@ export const HeaderBreadcrumb = ({
           {description && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <InfoIcon className="mt-px size-3.5 cursor-help text-foreground/60 not-data-[state=closed]:text-foreground hover:text-foreground" />
+                <LucideIcon
+                  name="info"
+                  className="mt-px size-3.5 cursor-help text-foreground/60 not-data-[state=closed]:text-foreground hover:text-foreground"
+                />
               </TooltipTrigger>
               <TooltipContent className="text-[13px]" showArrow>
                 {description}

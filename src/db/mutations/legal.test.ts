@@ -260,6 +260,7 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
       const pending = async (userId: string) =>
         await context.mutations.queryPendingLegal(userId, tx as unknown as typeof context.client.db)
 
+      await context.mutations.acceptCurrentLegal(tx, { locale: 'en', userId: actorId })
       const minor = await context.mutations.createLegalDraft(tx, { actorId, slug: 'terms' })
       await fillDraft(tx, actorId, minor.id)
       await publish(tx, actorId, minor.id)

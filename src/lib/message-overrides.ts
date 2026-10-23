@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 
-import { messageSignature } from '@/lib/icu'
-import { type RawCatalog, type StaleState, sameTokens, validateOverride } from '@/lib/message-validation'
+import { messageSignature } from './icu.ts'
+import { type RawCatalog, type StaleState, sameTokens, validateOverride } from './message-validation.ts'
 
 export type MessageTree = { [key: string]: MessageTree | string | unknown[] }
 

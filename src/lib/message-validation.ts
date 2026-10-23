@@ -1,6 +1,6 @@
 import compile from 'icu-minify/compile'
 
-import { messageSignature } from '@/lib/icu'
+import { messageSignature } from './icu.ts'
 
 const PROTECTED_NAMESPACES = ['CertificatePdf', 'CertificatePublic', 'Legal', 'Metadata'] as const
 

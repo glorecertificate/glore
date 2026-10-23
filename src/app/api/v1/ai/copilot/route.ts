@@ -26,10 +26,10 @@ export const POST = async (request: NextRequest) => {
   try {
     const { text } = await generateTextWithFallback({
       abortSignal: request.signal,
+      instructions: system,
       maxOutputTokens: 4096,
       models,
       prompt,
-      system,
       temperature: 0.7,
     })
     return NextResponse.json({ text })

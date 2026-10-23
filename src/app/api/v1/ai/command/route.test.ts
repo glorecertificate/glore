@@ -19,7 +19,7 @@ vi.mock('@/lib/api', () => ({
   },
 }))
 vi.mock('@ai-sdk/google', () => ({
-  createGoogleGenerativeAI: () => (id: string) => state.models.get(id),
+  createGoogle: () => (id: string) => state.models.get(id),
 }))
 
 const usage = {

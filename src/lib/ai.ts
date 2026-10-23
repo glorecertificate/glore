@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { type GoogleLanguageModelOptions, createGoogleGenerativeAI } from '@ai-sdk/google'
+import { type GoogleLanguageModelOptions, createGoogle } from '@ai-sdk/google'
 import {
   type LanguageModel,
   type StreamTextTransform,
@@ -23,8 +23,8 @@ interface GenerateOptions {
   prompt: string
   abortSignal?: AbortSignal
   firstTokenTimeoutMs?: number
+  instructions?: string
   maxOutputTokens?: number
-  system?: string
   temperature?: number
 }
 
@@ -38,7 +38,7 @@ const providerOptions = { google: googleOptions }
 export const resolveAiModels = (): LanguageModel[] | null => {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) return null
-  const gemini = createGoogleGenerativeAI({ apiKey })
+  const gemini = createGoogle({ apiKey })
   const ids = [process.env.GEMINI_MODEL, ...config.aiModels].filter((id): id is string => !!id)
   return [...new Set(ids)].map(id => gemini(id))
 }
@@ -73,7 +73,7 @@ export const streamTextWithFallback = ({
             providerOptions,
           })
           let started = false
-          for await (const part of result.fullStream) {
+          for await (const part of result.stream) {
             if (part.type === 'abort' || part.type === 'error') break
             if (part.type === 'text-delta') {
               attempt.clear()

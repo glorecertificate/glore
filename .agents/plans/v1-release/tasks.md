@@ -16,7 +16,8 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 ### Verification and data
 
-- Browser run pending on every `[~]` row below. Mailpit pass pending on D2. E2E pending on D4 and D5.
+- G3 browser pass, the D2 Mailpit pass, and the e2e suite cover every feature row. Open: G1 staging seed (user step), G6 final review, G7 docs sync.
+- Staging (Neon `staging`, comment `glore:staging`) has migrations 0000 to 0022 only. Its migrate, catalog import, and demo seed are user steps (`runbook.md`, step 2), because agents may not read the staging credentials.
 - Rerun `pnpm run content:import --target local` (docs, FAQ, and the H1 role labels changed) and `pnpm run db:seed:demo --target local` (the detached-holder data changed). The staging demo seed has not run.
 
 ### Release and decisions
@@ -28,7 +29,8 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 - The Italian account-deletion prompt is served stale from dev server memory. A dev restart fixes it, not a code change.
 - Decision: a private `/<username>` keeps status 200, because `notFound()` runs inside `Suspense` after streaming starts.
   - Next.js injects `noindex` there. A real 404 would need a database read in `proxy` on every request.
-- Deferred after v1: split the mixed `Courses` and root `Certificates` namespaces by feature, and load locale catalogs per namespace so a client locale switch skips the server-only namespaces.
+- Done in lane I (e9d95fa2): `Certificates` and `Courses` split into feature namespaces, `serverNamespaces` in `config/i18n.json`, and a locale switch that fetches client namespaces only.
+- Open, after v1: route-scoped client message providers, splitting `Organization`, `Users`, and `Admin.*`, and deleting leftover unused keys.
 - `scripts/content/validate.test.ts` and `lib/email.test.ts` can time out when several worktrees run Vitest against the same clone.
 
 ### Content and legal
@@ -70,49 +72,49 @@ Run A, B, C, and E in parallel; start D when the first lane merges.
 - A1 [x] 44827a3b: lifecycle actions, each with an event and a notice. Tests for every transition and guard.
   - Actions: draft, submit, withdraw, claim, assign, reassign, unassign, self-assign, request changes, resubmit, reject, approve, revoke.
 - A1b [x] d381e8e8: tutor load balancing by open requests, ties to the oldest last assignment. Authors never review themselves, the queue is scoped to the active org, and drafts have no assignment control.
-- A2 [~] 6d6a8b75, lane-a, browser pending: wizard at `/certificates/new` (Experience, Skills, Your organization, Review), autosaving drafts, `?draft=` resume, resubmit mode, `EligibilityPanel`.
+- A2 [x] 6d6a8b75, G3 and e2e checked: wizard at `/certificates/new` (Experience, Skills, Your organization, Review), autosaving drafts, `?draft=` resume, resubmit mode, `EligibilityPanel`.
   - Accept: browser run of every step, draft resume, resubmit, and the blocked panel.
-- A3 [~] 42233739, lane-a, browser pending: tutor workspace (queue tabs, filters, age badges) and `/certificates/[id]/review` with the approve PDF preview, request changes, and reject.
+- A3 [x] 42233739, G3 and e2e checked: tutor workspace (queue tabs, filters, age badges) and `/certificates/[id]/review` with the approve PDF preview, request changes, and reject.
   - Accept: browser run of all three decisions, queue tabs, and filters.
 
 #### Wallet, PDF, and verification
 
-- A4 [~] aaa689dc, lane-a, browser pending: wallet and detail (cards, journey, timeline, comments, status-aware actions), share panel, featured certificate, one-time celebration.
+- A4 [x] aaa689dc, G3 and e2e checked: wallet and detail (cards, journey, timeline, comments, status-aware actions), share panel, featured certificate, one-time celebration.
   - Accept: browser run per status for volunteer, tutor, and manager.
 - A5 [x] c164cb0b: PDF per `pdf.md`. G5 tightened the fidelity.
-- A6 [~] e74024a5, lane-a, e2e not run by the lane: `/verify`, `/verify/[code]`, opt-in `/[username]`, legacy `?v=` redirect, 404 for private profiles.
+- A6 [x] e74024a5, G3 and e2e checked: `/verify`, `/verify/[code]`, opt-in `/[username]`, legacy `?v=` redirect, 404 for private profiles.
   - Accept: e2e for valid, revoked, unknown, private (`e2e/verify.spec.ts` exists, and the later full suite with `--workers=2` passed 64).
 - A7 [x] 10d1f167, lane-a, 2026-10-22: `OrganizationCertificates` component, mounted and checked by B6.
 
 ### Lane B: organizations, invitations, admin
 
-- B1 [~] ddfa1997, browser pending: invitations (dialog, pending list, `/invite/[token]`, invite links, join request approval). Accept: tests for accept, decline, expiry, revoke, mismatch.
+- B1 [x] ddfa1997, G3 and e2e checked: invitations (dialog, pending list, `/invite/[token]`, invite links, join request approval). Accept: tests for accept, decline, expiry, revoke, mismatch.
 - B1b [x] e5c07a29: revoking an invite or removing a member kills its tokens, and approval and admin flows never link an existing account without consent.
-- B2 [~] lane-b2, 2026-10-22, browser pending, 5dbd3e2b: members `DataTable`, drawer, role change, remove, leave, ownership transfer. Accept: browser run of each action.
-- B3 [~] lane-b2, 2026-10-22, browser pending, 26887828: organization settings with signatory and danger zone. Accept: the signatory appears on a regenerated PDF.
-- B4 [~] lane-b2, 2026-10-22, browser pending, 91b80945: overview with first-run checklist, insights tab, activity tab. Accept: browser run with demo data.
-- B5 [~] lane-b2, 2026-10-22, browser pending, 49730187: `/register` application (D12), `/admin/organizations` queue and detail. Accept: e2e from application to onboarding.
-- B6 [~] 3164658a, lane-b6, 2026-10-22, browser pending: `/admin/users`, `/admin/team`, `/admin/certificates`, `/admin/audit`, overview data. Accept: e2e for ban, impersonation, audit.
+- B2 [x] 5dbd3e2b, G3 and e2e checked: members `DataTable`, drawer, role change, remove, leave, ownership transfer. Accept: browser run of each action.
+- B3 [x] 26887828, G3 and e2e checked: organization settings with signatory and danger zone. Accept: the signatory appears on a regenerated PDF.
+- B4 [x] 91b80945, G3 and e2e checked: overview with first-run checklist, insights tab, activity tab. Accept: browser run with demo data.
+- B5 [x] 49730187, G3 and e2e checked: `/register` application (D12), `/admin/organizations` queue and detail. Accept: e2e from application to onboarding.
+- B6 [x] 3164658a, G3 and e2e checked: `/admin/users`, `/admin/team`, `/admin/certificates`, `/admin/audit`, overview data. Accept: e2e for ban, impersonation, audit.
   - The `admin-users`, `admin-certificates`, and `admin-audit` `.spec.ts` files are written but not run.
 
 ### Lane C: learning
 
-- C1 [~] lane-c, 2026-10-22, browser pending, 4865dc43: course overview with explicit Start or Resume. Accept: browser run as learner and volunteer.
-- C2 [~] lane-c, 2026-10-22, browser pending, 910f6ed3: player with server-side grading, retries, final assessment. Accept: a test proves the payload has no `isCorrect`.
-- C3 [~] lane-c, 2026-10-22, browser pending, 196cbd0f: completion screen with rating and next action. Accept: browser run.
-- C4 [~] lane-c, 2026-10-22, e2e written not run, 9c6fd2f6: editor duration and outcomes, `/courses/skills` CRUD, translation coverage, preview, analytics. Accept: e2e for create, translate, publish.
-- C5 [~] lane-c, 2026-10-22, browser pending, 7c45aa30: catalog cards, learner tabs, skill compass, recommendations. Accept: browser run.
-- C6 [~] lane-c, 2026-10-22, browser pending, 61795946: docs empty states, article layout, search hook for the palette. Accept: browser run.
+- C1 [x] 4865dc43, G3 and e2e checked: course overview with explicit Start or Resume. Accept: browser run as learner and volunteer.
+- C2 [x] 910f6ed3, G3 and e2e checked: player with server-side grading, retries, final assessment. Accept: a test proves the payload has no `isCorrect`.
+- C3 [x] 196cbd0f, G3 and e2e checked: completion screen with rating and next action. Accept: browser run.
+- C4 [x] 9c6fd2f6, G3 and e2e checked: editor duration and outcomes, `/courses/skills` CRUD, translation coverage, preview, analytics. Accept: e2e for create, translate, publish.
+- C5 [x] 7c45aa30, G3 and e2e checked: catalog cards, learner tabs, skill compass, recommendations. Accept: browser run.
+- C6 [x] 61795946, G3 and e2e checked: docs empty states, article layout, search hook for the palette. Accept: browser run.
 
 ### Lane D: account, onboarding, notifications, emails
 
-- D1 [~] lane-d, 2026-10-22, browser pending, a87c2cfa: notification bell and `/notifications`. Accept: e2e for read state.
-- D2 [~] lane-d, 2026-10-22, Mailpit pass pending, 556d7148: email layout refresh and one template per catalog event. Accept: every template opened in Mailpit.
+- D1 [x] a87c2cfa, G3 and e2e checked: notification bell and `/notifications`. Accept: e2e for read state.
+- D2 [x] 556d7148, Mailpit pass 2026-10-23 (20 templates, 34 variants, 3 locales): email layout refresh and one template per catalog event. Accept: every template opened in Mailpit.
   - Also: subjects in all catalogs, localized role labels, and `pnpm run email` fixtures.
 - D3 [x] 7d89d63a: daily cron with reminders, escalations, and pruning. Unit tests with a fixed clock.
-- D4 [~] lane-d, 2026-10-22, browser and e2e pending, 6334653c: onboarding stepper and welcome. Accept: e2e from invitation to dashboard.
-- D5 [~] lane-d, 2026-10-22, browser and e2e pending, 7a2175f9: settings tabs. Accept: e2e for privacy, export, sessions.
-- D6 [~] lane-d, 2026-10-22, browser pending, 63c2fc0b: login by email or username, auth layout, PWA prompt, `/privacy` and `/terms`. Accept: browser run.
+- D4 [x] 6334653c, G3 and e2e checked: onboarding stepper and welcome. Accept: e2e from invitation to dashboard.
+- D5 [x] 7a2175f9, G3 and e2e checked: settings tabs. Accept: e2e for privacy, export, sessions.
+- D6 [x] 63c2fc0b, G3 and e2e checked: login by email or username, auth layout, PWA prompt, `/privacy` and `/terms`. Accept: browser run.
 
 ### Lane E: content
 
@@ -123,13 +125,13 @@ Run A, B, C, and E in parallel; start D when the first lane merges.
   - Work in batches of about 5 courses per agent session.
   - Lessons: Activation (volunteering scenario), Understanding (definition, components, examples).
   - Then In practice (situations plus 4 to 6 quiz questions with explanations), and Self-assessment (4 evaluations plus the final assessment).
-- E3 [~] 981fb449, imported and browser check pending: 2 intro courses and 4 learner courses in three locales.
+- E3 [x] 981fb449, G3 and e2e checked: 2 intro courses and 4 learner courses in three locales.
   - Intro: Welcome to GloRe; Soft skills and volunteering.
   - Learner: Volunteering abroad with ESC and Erasmus+; Intercultural learning; Volunteer wellbeing and safety; Planning a community project.
 
 ### Lane E: docs and legal
 
-- E4 [~] lane-e4, 2026-10-22, browser pending, 5f5c5ee4 and 21597c68: docs in three locales (33 docs: Intro 4, Tutorials 7, FAQ 22). Accept: imported and rendered.
+- E4 [x] 5f5c5ee4 and 21597c68, G3 and e2e checked: docs in three locales (33 docs: Intro 4, Tutorials 7, FAQ 22). Accept: imported and rendered.
   - FAQ topics: cost, soft skills, activity rule, skills per certificate, certifying again, changed levels, non-member orgs.
 - E5 [~] d3c58d95, placeholders await GloRe (U11): temporary privacy, terms, and Quality Charter in three locales (the H1 decision removed their temporary banners). Accept: rendered by D6 and the B5 charter step.
 
@@ -137,38 +139,43 @@ Content rules: plain, warm language for young adults, examples from volunteering
 
 ## W2 experience integration (merged)
 
-- F1 [~] lane-f1, 2026-10-22, browser pending, 05e86544: role dashboards on real data. Accept: browser run per role.
-- F2 [~] lane-f2, 2026-10-22, browser pending, 4f45f1fa: shell (sidebar per role, bell, org switcher, command palette). Accept: browser run per role.
-- F3 [~] lane-f3a/f3b/h2, 2026-10-22, browser pending, h2 514f40ba, 5927e36a, 45dfa4f6, a57aaade, dc78b017: visual and copy pass. Accept: screenshots reviewed.
+- F1 [x] 05e86544, G3 and e2e checked: role dashboards on real data. Accept: browser run per role.
+- F2 [x] 4f45f1fa, G3 and e2e checked: shell (sidebar per role, bell, org switcher, command palette). Accept: browser run per role.
+- F3 [x] 514f40ba and 5927e36a and 45dfa4f6 and a57aaade and dc78b017, G3 and e2e checked: visual and copy pass. Accept: screenshots reviewed.
   - Scope: UI direction, hardcoded strings from the inventory, dark mode, 390px layouts, and focus states.
   - Reviews: `web-design-guidelines` on every page, and `humanizer` on long copy.
-- F4 [~] d830e29a, lane-f4, 2026-10-22, browser pending: `/admin` overview (D17 charts). Accept: browser run (merged and checked as admin at 1280px, 390px, and dark mode in 71fcff56).
+- F4 [x] d830e29a, G3 and e2e checked: `/admin` overview (D17 charts). Accept: browser run (merged and checked as admin at 1280px, 390px, and dark mode in 71fcff56).
 
 ## W3 verification and release readiness
 
-- G1 [~] 6853647d, lane-g1, 2026-10-22, browser pending: full demo seed, local and staging, plus catalog import. Accept: `manual-testing.md` steps hold on both. Local browser check passed 6 of 8 flows.
+- G1 [~] 6853647d, local done, staging is a user step: full demo seed, local and staging, plus catalog import. Accept: `manual-testing.md` steps hold on both. Local browser check passed 6 of 8 flows.
 - G2 [x] 447316e5: Playwright specs for every verification matrix row, plus es and it smoke tests (166 passed locally). Accept: CI green.
   - Fixed the two app bugs it found: the wizard submitted on its last Continue, and a learner could open `/certificates` by URL.
   - Not covered: lesson and quiz authoring, the skill compass, and the pipeline and insights tabs.
-- G3 [~] orchestrator, 2026-10-23: `agent-browser` pass for every matrix row at desktop and 390px, light and dark; fix and re-run until clean. Accept: screenshots reviewed, no open issues.
+- G3 [x] orchestrator, 2026-10-23: `agent-browser` pass for every matrix row at desktop and 390px, light and dark; fix and re-run until clean. Accept: screenshots reviewed, no open issues.
   - G3a (volunteer, tutor, public) ran. Fixed in dd3d77a5 to 0cfd8c44: tutor release 404, share overflow at 390px, level picker overlap, palette drafts, stale date error, raw nationality, draft resume step, and copy.
   - G3a fixed earlier: the PDF task overlap (03dccbd6).
-  - Open, low: stepper label break at 390px, toast over settings tabs, IPv6 loopback, the approve preview fallback, and prefill after a withdrawal (new feature, after v1).
+  - Fixed: stepper labels centered (7f4ec851), neutral request page title (347463db).
+  - Open, low: toast over settings tabs, IPv6 loopback, the approve preview fallback, and prefill after a withdrawal (new feature, after v1).
   - G3b (editor, admin, impersonation, multi-org) and G3c (owner, representative, every role) ran. Lanes Y and Z merged their fixes.
   - Fixed: stale reviewer and tutor queues after a reassign or release (8aed4e35).
   - Fixed: public period and skills heading (f5331342), signed-in profile 404 (aa984383), skill progress cap (6aac455c).
   - Fixed: typed name before an org delete (9be7eb83), palette labels (8de9d357), review period (69c0e7fc), time hydration (901d4674).
   - Fixed in lane W (5c880842): share fields at 390px, the Italian table at 1280px, and the mobile review bar.
   - By design: an unknown single-segment path renders the profile 404, and an escalation notice keeps the wait at send time.
-  - Open, low: role-gated 404 tab titles and dev-only "Could not validate instant" errors on role-gated 404s.
-  - Open, local data: fixture courses `w05-ui-kit-browser-check` and `competenze-sociali` (`content:import --remove <slug>`).
+  - Fixed: role-gated 404 tab titles (859cd482). Removed locally: fixture courses `w05-ui-kit-browser-check` and `competenze-sociali`.
+  - Open, dev only: "Could not validate instant" errors on role-gated 404s.
 - G4 [x] 9c1f0560: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
   - 18 of 24 templates ran live in en, es, and it, and all links resolved.
   - Fixed: the team invite named the invitee as inviter, the unsubscribe GET used the proxy host, and the welcome mail order.
   - Fixed: reassign left a stale reviewer select, and calendar months ignored the app locale.
   - Not triggered: cron-only mails (reminders, escalation, invitation expiring), the expired invitation link, and the ownership transfer mail (covered by e2e).
-  - Open, low: an invite landing page is English without a locale cookie; Resend stays offered for a consumed team invitation.
-- G5 [~] c5cd51bd, lane-g5, 2026-10-23: PDF fidelity check from `pdf.md`. Accept: passes.
+  - Fixed: Resend is hidden for an accepted team invitation (b568ff9e).
+  - Open, low: an invite landing page is English without a locale cookie.
+- G5 [x] c5cd51bd, rerun 2026-10-23: PDF fidelity check from `pdf.md`. Accept: passes.
+  - Fixed: the Erasmus+ emblem lost its soft mask and rendered bold; `public/certificate/erasmus-plus.png` is now the masked RGBA image.
+  - Decision: the signatory label reads "Represented by" (translation review), and `pdf.md` says so.
+  - Open, low: nationality prints a country name where the template shows a demonym; value baselines sit 0.6 pt high; a 6-line org name overruns its section bar.
 
 ### Hardening and handoff
 
@@ -179,20 +186,22 @@ Content rules: plain, warm language for young adults, examples from volunteering
   - Production pre-check, read only: 0017 and 0021 cannot collide on production data (4 distinct skill group slugs, empty docs and join requests).
   - Decision: one app time zone, `Europe/Rome`.
   - Decision: certificate PDFs stay public objects for `/verify`, and revoke deletes the object.
-  - Deferred after v1: the editor `useMemo` in `course-editor/context.tsx` and the editor AI kit in the learner bundle (the vendored provider imports every kit).
-  - Deferred after v1: direct `lucide-react` imports, stored plaintext invitation tokens, CSP nonces, and `ignoreBuildErrors`.
+  - Done in lane K (717a34b0): `LucideIcon` everywhere with a lint block on `lucide-react`, no editor `useMemo`, and a learner plugin set without the AI kit.
+  - Also in lane K: type checking in `next build`, and SRI plus no production `'unsafe-eval'` in place of CSP nonces.
+  - SRI covers only the build-manifest scripts (7 of 28); Turbopack does not hash the other chunks (`routes.md`).
+  - Done: invitation tokens are stored as a SHA-256 hash plus an AES-GCM seal (migrations 0026 to 0028).
 - G7 [ ]: docs sync of `AGENTS.md`, `README.md`, `app.md`, `reference.md`, `patterns.md`, `architecture.md`, `manual-testing.md`. Accept: docs match code.
   - Decision: `certificates.handle` stays, because the legacy `?v={handle}` redirect and the R2 PDF key read it.
 - G8 [ ]: handoff with the commit list, staging push on request, production steps (backup, migrate, catalog as drafts, env, deploy), and known gaps. Accept: the user has a numbered runbook.
 
 ### Product owner and fix lanes
 
-- H1 [~] lane-h1, 2026-10-22, browser pending: product owner decisions U12 to U17.
+- H1 [x] G3 and e2e checked: product owner decisions U12 to U17.
   - Done: legal banners removed (d8316b59), org role `admin` labeled Owner (2fa57f6d), es login title (d024b43f), issued certificates survive account deletion (381d31b9).
   - Accept: browser run per item.
-- H3 [~] lane-h3, 2026-10-22, browser pending: stock Better Auth impersonation replaces the local plugin (migration 0024, 45f69dae). Accept: `/admin/users` view-as, banner, stop.
-- H4 [~] lane-h4, 2026-10-22, browser pending: editor AI on the free Gemini tier with a model chain and first-token fallback (1846977d). Accept: browser run of the AI menu in it.
-- H5 [~] lane-h5, 2026-10-22, browser pending: browser-check fixes for titles, headings, `aria-controls`, and chip names (7efbd47a, 8f9b5bd9). Accept: browser run per item.
+- H3 [x] G3 and e2e checked: stock Better Auth impersonation replaces the local plugin (migration 0024, 45f69dae). Accept: `/admin/users` view-as, banner, stop.
+- H4 [x] 1846977d and 85244be0, checked in the G3 browser pass: editor AI on the free Gemini tier with a model chain and first-token fallback. Accept: browser run of the AI menu in it.
+- H5 [x] G3 and e2e checked: browser-check fixes for titles, headings, `aria-controls`, and chip names (7efbd47a, 8f9b5bd9). Accept: browser run per item.
 
 ## Verification matrix
 

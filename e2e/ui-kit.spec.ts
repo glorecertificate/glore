@@ -14,10 +14,15 @@ test('keeps the roster inside a mobile viewport with its actions reachable', asy
   await expect(table).toBeVisible()
   const actions = table.getByRole('button', { name: /^Actions for /u })
   await expect(actions.first()).toBeVisible()
-  for (const action of await actions.all()) {
-    const box = await action.boundingBox()
-    expect(box?.x).toBeGreaterThanOrEqual(0)
-    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(390)
+  const boxes = await actions.evaluateAll(elements =>
+    elements.map(element => {
+      const { left, right } = element.getBoundingClientRect()
+      return { left, right }
+    })
+  )
+  for (const box of boxes) {
+    expect(box.left).toBeGreaterThanOrEqual(0)
+    expect(box.right).toBeLessThanOrEqual(390)
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
   const container = table.locator('..')

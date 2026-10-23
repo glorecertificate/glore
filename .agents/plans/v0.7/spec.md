@@ -8,7 +8,7 @@ Read `spec.md`, `plan.md`, `tasks.md`, and `pdf.md` before working on v0.7, and 
 
 ## Goal
 
-Ship v0.7 at `https://elearning.glorecertificate.net` for volunteers, learners, tutors, organizations, editors, and platform admins.
+Ship v0.7 at `https://glorecertificate.xyz` for volunteers, learners, tutors, organizations, editors, and platform admins.
 
 The product must be stable, complete for every role, and polished enough to replace the abandoned GloRe e-learning platform.
 

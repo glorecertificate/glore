@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { camelize, isValidUsername, keysOf, pluck } from '@/lib/utils'
+import { camelize, isValidUsername, keysOf, pluck, serializeJsonLd } from '@/lib/utils'
 
 describe('camelize', () => {
   it('joins separated words in camel case', () => {
@@ -10,6 +10,26 @@ describe('camelize', () => {
   it('keeps camel case input unchanged', () => {
     expect(camelize('notStarted')).toBe('notStarted')
     expect(camelize('in_progress')).toBe('inProgress')
+  })
+})
+
+describe('serializeJsonLd', () => {
+  const name = 'Eve </script><script>alert(1)</script> <!-- x -->'
+
+  it('never emits a character that can close the script element', () => {
+    const output = serializeJsonLd({ '@type': 'EducationalOccupationalCredential', name })
+    expect(output).not.toContain('<')
+    expect(output).not.toContain('</script')
+    expect(output).toContain('\\u003c/script')
+  })
+
+  it('round-trips to the original data', () => {
+    const data = { name, nested: { skills: ['a < b', 'c'] } }
+    expect(JSON.parse(serializeJsonLd(data))).toEqual(data)
+  })
+
+  it('leaves plain data unchanged', () => {
+    expect(serializeJsonLd({ name: 'Ada' })).toBe('{"name":"Ada"}')
   })
 })
 

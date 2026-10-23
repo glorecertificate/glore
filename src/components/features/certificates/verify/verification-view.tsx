@@ -13,7 +13,7 @@ import { LevelDots } from '@/components/ui/level-dots'
 import { QrCode } from '@/components/ui/qr-code'
 import { SKILL_LEVELS, VERIFY_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
-import { fullName } from '@/lib/utils'
+import { fullName, serializeJsonLd } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
 const structuredData = (verification: ActiveVerification, url: string, name: string) => ({
@@ -45,10 +45,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
   return (
     <>
       <Script id="verification-json-ld" type="application/ld+json">
-        {JSON.stringify(structuredData(verification, url, t('credentialName', { name: holderName }))).replace(
-          /</gu,
-          String.raw`<`
-        )}
+        {serializeJsonLd(structuredData(verification, url, t('credentialName', { name: holderName })))}
       </Script>
 
       <div className="space-y-4 text-center">

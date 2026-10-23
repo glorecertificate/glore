@@ -145,7 +145,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 ### Utilities
 
 - Check these before writing a new helper.
-- `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `defaultFormDisabled`, `publicFile`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce`, `throttle`, and `sleep`.
+- `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `defaultFormDisabled`, `publicFile`, `serializeJsonLd`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce`, `throttle`, and `sleep`.
 - `debounce` defaults to 500ms and has `.cancel()` and `.flush()`.
 - `tempId()` and `isTempId()` serve client-created records.
 - Course-tree primary keys are `integer` identity columns, so `tempId()` returns a negative placeholder. Never use `Date.now()`, which overflows `int4`.

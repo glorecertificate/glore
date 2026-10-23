@@ -18,7 +18,7 @@ import { ThemeProvider } from '@/components/providers/theme'
 import { Toaster } from '@/components/ui/toaster'
 import { DEFAULT_LOCALE, clientMessages } from '@/lib/i18n'
 import { APP_NAME, appTitle, metadata } from '@/lib/metadata'
-import { cn, publicFile } from '@/lib/utils'
+import { cn, publicFile, serializeJsonLd } from '@/lib/utils'
 
 export const generateMetadata = async () => {
   const t = await getTranslations('Metadata')
@@ -88,7 +88,7 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
           </>
         )}
         <Script id="jsonLd" type="application/ld+json">
-          {JSON.stringify(jsonLd)}
+          {serializeJsonLd(jsonLd)}
         </Script>
       </body>
     </html>

@@ -8,6 +8,8 @@ import { type Any, type AnyFunction, type AnyRecord, type CamelCase, type Rgb } 
 */
 export const publicFile = (file: PublicFile) => `${process.env.APP_URL ?? ''}${file}`
 
+export const serializeJsonLd = (data: unknown) => JSON.stringify(data).replace(/</gu, '\\u003c')
+
 /*
   Theme
 */

@@ -133,7 +133,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ## Public verification
 
 - `/verify` takes a code (any case, dashes optional, normalized by `normalizeCertificateCode`) and redirects to `/verify/<code>`.
-- `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with levels and statements, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD.
+- `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with levels and statements, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.
 - `findPublicCertificate` (the `/{username}` page, its metadata, and its image) is limited to 60 reads a minute per IP under `profile:<ip>`, deduped per request. The image answers 429 and the page answers not found.

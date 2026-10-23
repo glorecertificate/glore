@@ -34,7 +34,10 @@ const CourseCertificateNote = ({
         </p>
         {completedSkills !== null && (
           <p className="text-muted-foreground">
-            {t('certificateProgress', { completed: completedSkills, minSkills: settings.minSkills })}
+            {t('certificateProgress', {
+              completed: Math.min(completedSkills, settings.minSkills),
+              minSkills: settings.minSkills,
+            })}
           </p>
         )}
       </div>

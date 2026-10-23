@@ -326,6 +326,38 @@ describe.skipIf(!isLocalDatabase)('organization invitations', () => {
         code: 'ROLE_TAKEN',
       })
     })
+
+    it.each([
+      ['learner', 'tutor', 'tutor'],
+      ['learner', 'representative', 'representative'],
+      ['volunteer', 'tutor', 'tutor'],
+      ['tutor', 'representative', 'representative'],
+    ] as const)('upgrades an existing %s who accepts a %s invitation', async (current, invited, expected) => {
+      const { invitation } = await invite(email('stranger'), { role: invited })
+      await context.client.db
+        .insert(context.schema.memberships)
+        .values({ organizationId: context.organizationId, role: current, userId: context.ids.stranger })
+
+      await accept(invitation.token, user('stranger'))
+
+      expect((await membershipOf(context.ids.stranger))?.role).toBe(expected)
+    })
+
+    it.each([
+      ['tutor', 'volunteer'],
+      ['representative', 'tutor'],
+      ['volunteer', 'volunteer'],
+      ['tutor', 'tutor'],
+    ] as const)('keeps the role of an existing %s who accepts a %s invitation', async (current, invited) => {
+      const { invitation } = await invite(email('stranger'), { role: invited })
+      await context.client.db
+        .insert(context.schema.memberships)
+        .values({ organizationId: context.organizationId, role: current, userId: context.ids.stranger })
+
+      await accept(invitation.token, user('stranger'))
+
+      expect((await membershipOf(context.ids.stranger))?.role).toBe(current)
+    })
   })
 
   describe('decline', () => {

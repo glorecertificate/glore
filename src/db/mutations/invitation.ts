@@ -29,6 +29,14 @@ import { fullName } from '@/lib/utils'
 const DAY = 24 * 60 * 60 * 1000
 const RESEND_COOLDOWN = 60 * 1000
 
+const ROLE_RANK = {
+  admin: 4,
+  learner: 0,
+  representative: 3,
+  tutor: 2,
+  volunteer: 1,
+} satisfies Record<OrganizationMembershipRole, number>
+
 const ERROR_MESSAGES = {
   ACCEPTED: 'This invitation was already accepted',
   ACCOUNT_EXISTS: 'An account with this email already exists',
@@ -331,6 +339,20 @@ export const revokeInvitation = async (
   return { event, invitation }
 }
 
+const joinOrganization = async (
+  tx: Transaction,
+  { organizationId, role, userId }: { organizationId: number; role: OrganizationMembershipRole; userId: string }
+) => {
+  const where = and(eq(memberships.organizationId, organizationId), eq(memberships.userId, userId))
+  const [current] = await tx.select({ role: memberships.role }).from(memberships).where(where).for('update')
+  if (!current) {
+    await tx.insert(memberships).values({ organizationId, role, userId }).onConflictDoNothing()
+    return
+  }
+  if (ROLE_RANK[role] <= ROLE_RANK[current.role]) return
+  await tx.update(memberships).set({ role }).where(where)
+}
+
 const claimInvitation = async (
   tx: Transaction,
   invitation: { id: number; organizationId: number; role: OrganizationMembershipRole },
@@ -360,10 +382,7 @@ const claimInvitation = async (
     throw invitationError('INVALID')
   }
 
-  await tx
-    .insert(memberships)
-    .values({ organizationId: invitation.organizationId, role: invitation.role, userId })
-    .onConflictDoNothing()
+  await joinOrganization(tx, { organizationId: invitation.organizationId, role: invitation.role, userId })
 
   const event = {
     type: 'invitation.accepted',

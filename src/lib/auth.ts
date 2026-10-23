@@ -19,7 +19,7 @@ import { sessions } from '@/db/schema/sessions'
 import { teamInvitations } from '@/db/schema/teams'
 import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
-import { userTag } from '@/lib/cache'
+import { CacheTag, userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { impersonationGuard } from '@/lib/impersonation-guard'
@@ -91,6 +91,7 @@ const teamInvitationsPlugin = () => ({
           .where(and(eq(teamInvitations.id, invitation.id), isNull(teamInvitations.acceptedAt)))
           .returning({ id: teamInvitations.id })
         if (!accepted) return redirectTo(ONBOARDING_ERROR_ROOT)
+        revalidateTag(CacheTag.TeamMembers, { expire: 0 })
 
         const session = await ctx.context.internalAdapter.createSession(user.id)
         if (!session) return redirectTo(ONBOARDING_ERROR_ROOT)

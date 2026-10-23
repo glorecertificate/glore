@@ -33,6 +33,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -91,7 +92,7 @@ export const TeamMemberRow = ({
   onResend,
   user,
 }: {
-  user: User
+  user: TeamMember
   isCurrentUser: boolean
   onChangeRole: (user: User, role: TeamRole) => void
   onDelete: (user: User) => void
@@ -152,7 +153,7 @@ export const TeamMemberRow = ({
                 {targetRole === 'admin' ? <ShieldUserIcon className="size-3" /> : <PencilIcon className="size-3" />}
                 {t('makeRole', { role: t(`role_${targetRole}`) })}
               </DropdownMenuItem>
-              {status === 'pending' && (
+              {status === 'pending' && user.invitationOpen && (
                 <DropdownMenuItem className="text-[13px]" onClick={() => onResend(user)}>
                   <MailIcon className="size-3" />
                   {t('resendInvite')}

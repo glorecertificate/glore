@@ -33,6 +33,7 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
 
 import {
@@ -50,7 +51,7 @@ import { useAdminError } from './use-admin-error'
 
 type SortField = 'name' | 'role' | 'date'
 
-export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
+export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   const t = useTranslations('Admin.team')
   const { locale } = useI18n()
   const { user: currentUser } = useSession()

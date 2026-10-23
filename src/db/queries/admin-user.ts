@@ -1,7 +1,12 @@
 import { z } from 'zod'
 
 import { timestampMillis } from '@/db/queries/organization'
+import { type User } from '@/db/queries/user'
 import { type EnumType } from '@/db/types'
+
+export interface TeamMember extends User {
+  invitationOpen: boolean
+}
 
 export const ADMIN_USERS_PAGE_SIZE = 20
 export const MIN_ADMIN_REASON_LENGTH = 10

@@ -12,6 +12,10 @@ vi.mock('next/headers', async importOriginal => ({
   ...(await importOriginal<typeof import('next/headers')>()),
   headers: () => Promise.resolve(new Headers({ cookie: current.cookie })),
 }))
+vi.mock('next/server', async importOriginal => ({
+  ...(await importOriginal<typeof import('next/server')>()),
+  connection: () => Promise.resolve(),
+}))
 vi.mock('next/cache', async importOriginal => ({
   ...(await importOriginal<typeof import('next/cache')>()),
   cacheLife: vi.fn(),
@@ -292,6 +296,19 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
 
       expect((await actions.resendInvitation(userId)).error?.code).toBe('SEND_FAILED')
       expect((await pendingInvitation(userId)).token).not.toBe(before.token)
+    })
+
+    it('flags only members whose invitation is still open', async () => {
+      const open = (await invite('listed-open')).result.data?.id ?? ''
+      const accepted = (await invite('listed-accepted')).result.data?.id ?? ''
+      await fixture.client.db
+        .update(fixture.schema.teamInvitations)
+        .set({ acceptedAt: new Date().toISOString() })
+        .where(eq(fixture.schema.teamInvitations.userId, accepted))
+      as('admin')
+      const { data } = await actions.getTeamMembers({ cache: false })
+      expect(data?.find(({ id }) => id === open)).toMatchObject({ invitationOpen: true })
+      expect(data?.find(({ id }) => id === accepted)).toMatchObject({ invitationOpen: false })
     })
 
     it('finds nothing for accepted invitations and unknown users', async () => {

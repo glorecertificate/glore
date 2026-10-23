@@ -28,6 +28,7 @@ The schema is `envSchema` in `next.config.ts`.
 - `GEMINI_API_KEY`. Set `GEMINI_MODEL` only to override the default fallback chain.
 - `MAIL_TRANSPORT=smtp`, plus `SMTP_HOST`, `SMTP_PORT`, `SMTP_SENDER`, `SMTP_USER`, `SMTP_PASSWORD`.
 - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME` for the production bucket.
+- Vercel project settings: "Node.js Version" reads 24.x (`engines.node` also forces it).
 - `R2_PUBLIC_URL`: a custom domain on the bucket, not the `r2.dev` URL. Approval mails and `/verify` link to it.
 
 ## Migrate and deploy

@@ -209,7 +209,7 @@ Content rules: plain, warm language for young adults, examples from volunteering
 
 ## W4a platform upgrade
 
-- R1 [x] (lane r1, 2026-10-23, hash pending): update every dependency, pnpm, and Node.js to the latest compatible versions within the 24h release age, and fix breaking changes.
+- R1 [x] (lane r1, 2026-10-23, 69f76fa8 to 946eb889): update every dependency, pnpm, and Node.js to the latest compatible versions within the 24h release age, and fix breaking changes.
   - Accept: `pnpm run check`, `pnpm run test`, `pnpm run build`, and `pnpm run test:e2e` pass; Vercel supports the Node.js version; majors held back are listed with the reason.
   - Done: Node 24.22.1 (Vercel offers 24.x and 22.x only), pnpm 12.15.0, every direct dependency latest; check, 1078 unit tests, build, and e2e (156 passed) green.
   - Held: `@platejs/dnd` at 53.1.0 (53.3 breaks the vendored table node) and `@types/node` at 24 (runtime major).

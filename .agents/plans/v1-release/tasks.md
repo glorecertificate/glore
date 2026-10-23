@@ -21,8 +21,8 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 ### Release and decisions
 
-- G8 runbook: production has no database comment, lacks migrations 0013 to 0024 (includes 0023 `anonymize_deleted_holders` and 0024 `impersonated_by`), and holds 0 certificates.
-- Deferred after v1: an `activity_events (created_at, id)` index for `/admin/audit`, which filters by `action` and orders by `created_at, id`. The table is small, so v1 ships without it.
+- G8 runbook: production has no database comment, lacks migrations 0013 to 0025 (includes 0023 `anonymize_deleted_holders`, 0024 `impersonated_by`, and 0025 default certificate dedupe), and holds 0 certificates.
+- Migration 0025 adds the `activity_events` indexes `(created_at, id)` and `(organization_id, id)` for `/admin/audit`.
 - qa1 browser check not covered: the "Get started" card (the seed checklist is complete) and the pending badge after an approval.
 - `/admin/organizations` lists 4 pending fixtures that the overview counts as 0 and whose detail pages 404. The G1 reseed clears them.
 - The Italian account-deletion prompt is served stale from dev server memory. A dev restart fixes it, not a code change.
@@ -152,7 +152,11 @@ Content rules: plain, warm language for young adults, examples from volunteering
 - G2 [x] 447316e5: Playwright specs for every verification matrix row, plus es and it smoke tests (166 passed locally). Accept: CI green.
   - Fixed the two app bugs it found: the wizard submitted on its last Continue, and a learner could open `/certificates` by URL.
   - Not covered: lesson and quiz authoring, the skill compass, and the pipeline and insights tabs.
-- G3 [ ]: `agent-browser` pass for every matrix row at desktop and 390px, light and dark; fix and re-run until clean. Accept: screenshots reviewed, no open issues.
+- G3 [~] orchestrator, 2026-10-23: `agent-browser` pass for every matrix row at desktop and 390px, light and dark; fix and re-run until clean. Accept: screenshots reviewed, no open issues.
+  - G3a (volunteer, tutor, public) ran. Fixed in dd3d77a5 to 0cfd8c44: tutor release 404, share overflow at 390px, level picker overlap, palette drafts, stale date error, raw nationality, draft resume step, and copy.
+  - G3a fixed earlier: the PDF task overlap (03dccbd6).
+  - Open, low: stepper label break at 390px, toast over settings tabs, IPv6 loopback, the approve preview fallback, and prefill after a withdrawal (new feature, after v1).
+  - G3b (editor, admin, impersonation, multi-org) is running. Representative and owner rows need a reseed.
 - G4 [x] 9c1f0560: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
   - 18 of 24 templates ran live in en, es, and it, and all links resolved.
   - Fixed: the team invite named the invitee as inviter, the unsubscribe GET used the proxy host, and the welcome mail order.
@@ -165,7 +169,7 @@ Content rules: plain, warm language for young adults, examples from volunteering
 
 - G6 [~] orchestrator, 2026-10-23: `pnpm run build`, `pnpm run analyze`, `code-reviewer` over the full diff (two rounds max), `security-review`, rate limits on every public action. Accept: no unresolved high findings.
   - Build and analyze pass with no prerender warnings. The calendar loaded every date-fns locale (5b649f16).
-  - UI review fixes are in (9f507cc8 to 569c15d3). Lanes S (data integrity, migration 0025) and X (security) are open.
+  - UI review fixes are in (9f507cc8 to 569c15d3). Lane S (data integrity, migration 0025) merged in a5bb51b6. Lane X (security) is open.
   - Production pre-check, read only: 0017 and 0021 cannot collide on production data (4 distinct skill group slugs, empty docs and join requests).
   - Decision: one app time zone, `Europe/Rome`.
   - Decision: certificate PDFs stay public objects for `/verify`, and revoke deletes the object.

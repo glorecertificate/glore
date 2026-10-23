@@ -169,7 +169,8 @@ Content rules: plain, warm language for young adults, examples from volunteering
 
 - G6 [~] orchestrator, 2026-10-23: `pnpm run build`, `pnpm run analyze`, `code-reviewer` over the full diff (two rounds max), `security-review`, rate limits on every public action. Accept: no unresolved high findings.
   - Build and analyze pass with no prerender warnings. The calendar loaded every date-fns locale (5b649f16).
-  - UI review fixes are in (9f507cc8 to 569c15d3). Lane S (data integrity, migration 0025) merged in a5bb51b6. Lane X (security) is open.
+  - UI review fixes are in (9f507cc8 to 569c15d3). Lane S (data integrity, migration 0025) merged in a5bb51b6. Lane X (15 security fixes) merged in 037250a7, follow-ups in 5e1142d2 and 75cb6374. Build passes after both.
+  - Open, low: no server-side password regex on reset and change (length only), a signed-in `/login?next=` ignores `next`, and non-DB errors keep their message in `queryError`.
   - Production pre-check, read only: 0017 and 0021 cannot collide on production data (4 distinct skill group slugs, empty docs and join requests).
   - Decision: one app time zone, `Europe/Rome`.
   - Decision: certificate PDFs stay public objects for `/verify`, and revoke deletes the object.

@@ -9,7 +9,8 @@ import { LegalMarkdown } from '@/components/features/legal/legal-markdown'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Banner } from '@/components/ui/banner'
 import { Logo } from '@/components/ui/logo'
-import { type LegalDocument, loadLegalDocument } from '@/lib/legal'
+import { type LegalDocument } from '@/db/queries/legal'
+import { loadLegalDocument } from '@/lib/legal'
 
 const KEYS = { privacy: 'privacy', 'quality-charter': 'qualityCharter', terms: 'terms' } as const
 
@@ -30,9 +31,11 @@ const LegalDocumentContent = async ({ document }: { document: LegalDocument }) =
         {content?.title ?? t(KEYS[document])}
       </h1>
 
-      {content?.updated && (
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t('updated', { date: format.dateTime(new Date(content.updated), { dateStyle: 'long', timeZone: 'UTC' }) })}
+      {content?.effectiveAt && (
+        <p className="mt-2 text-sm text-muted-foreground" data-testid="legal-updated">
+          {t('updated', {
+            date: format.dateTime(new Date(content.effectiveAt), { dateStyle: 'long', timeZone: 'UTC' }),
+          })}
         </p>
       )}
 

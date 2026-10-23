@@ -12,12 +12,14 @@ export const useNavigationLabels = () => {
   const tInvitations = useTranslations('Invitations')
   const tEmails = useTranslations('AdminEmails')
   const tAdmin = useTranslations('Admin')
+  const tLegal = useTranslations('LegalAdmin')
 
   return {
     about: tLayout('about'),
     'admin-audit': tAdmin('audit.title'),
     'admin-certificates': tAdmin('certificates.title'),
     'admin-emails': tEmails('title'),
+    'admin-legal': tLegal('title'),
     'admin-organizations': tLayout('adminOrganizations'),
     'admin-overview': tAdmin('overview.title'),
     'admin-team': tLayout('adminTeam'),

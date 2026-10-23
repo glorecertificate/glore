@@ -2597,7 +2597,9 @@
     "error_email": "Enter a valid email address.",
     "error_url": "Enter a valid web address starting with http or https.",
     "error_number": "Enter a whole number greater than zero.",
-    "error_charter": "You need to accept the Quality Charter to apply."
+    "error_charter": "You need to accept the Quality Charter to apply.",
+    "termsAccept": "I accept the <terms>Terms of use</terms> on behalf of the organization.",
+    "error_terms": "You need to accept the terms of use to apply."
   },
   "Admin": {
     "team": {
@@ -2905,7 +2907,8 @@
         "certificates": "Certificates",
         "impersonation": "Impersonation",
         "moderation": "Moderation",
-        "organizations": "Organizations"
+        "organizations": "Organizations",
+        "legal": "Legal"
       },
       "detail": {
         "permanent": "No end date",
@@ -2919,7 +2922,9 @@
         "impersonation_stopped": "{actor} stopped viewing the platform as <link>{target}</link>",
         "organization_application_decided": "{actor} {approved, select, yes {approved} other {rejected}} <link>{target}</link>'s application",
         "team_invited": "{actor} invited <link>{target}</link> to the team as {role, select, admin {an admin} editor {an editor} other {a member}}",
-        "team_role_changed": "{actor} changed <link>{target}</link>'s role to {role, select, admin {admin} editor {editor} other {regular user}}"
+        "team_role_changed": "{actor} changed <link>{target}</link>'s role to {role, select, admin {admin} editor {editor} other {regular user}}",
+        "legal_accepted": "{actor} accepted <link>{target}</link>",
+        "legal_version_published": "{actor} published <link>{target}</link>"
       },
       "noResults": "No events found",
       "noResultsDescription": "Try a different search or clear the filters.",
@@ -3025,7 +3030,9 @@
     "next_catalog": "Browse the courses",
     "next_queue": "Open the review queue",
     "next_organization": "Set up your organization",
-    "goToDashboard": "Go to the dashboard"
+    "goToDashboard": "Go to the dashboard",
+    "termsAccept": "I accept the <terms>Terms of use</terms> and have read the <privacy>Privacy policy</privacy>.",
+    "termsRequired": "You need to accept the terms of use to continue."
   },
   "Email": {
     "auth/invite": {
@@ -3829,6 +3836,84 @@
     "updated": "Last updated {date}",
     "fallbackNotice": "This document is not available in your language yet. You are reading the English version.",
     "unavailable": "This document is not available yet."
+  },
+  "LegalAdmin": {
+    "title": "Legal documents",
+    "description": "Edit, translate, and publish the privacy policy, terms of use, and Quality Charter.",
+    "documents": {
+      "privacy": "Privacy policy",
+      "terms": "Terms of use",
+      "qualityCharter": "Quality Charter"
+    },
+    "current": "Current version",
+    "currentDescription": "The version that visitors read on the public page.",
+    "noVersion": "No version is published yet.",
+    "version": "Version {version}",
+    "versionStatus": "Version {version}, {status}",
+    "effective": "Effective {date}",
+    "material": "Material change",
+    "createDraft": "Create a draft",
+    "createDraftFrom": "Create a draft from version {version}",
+    "draftTitle": "Draft version {version}",
+    "draftDescription": "Edit each language, save it, then publish. A published version can never be changed.",
+    "status_draft": "Draft",
+    "status_published": "Published",
+    "status_superseded": "Replaced",
+    "titleLabel": "Title",
+    "bodyLabel": "Text (Markdown)",
+    "outdated": "The English text changed after this translation was saved. Check that it still matches.",
+    "save": "Save {language}",
+    "saved": "Saved",
+    "unsaved": "Save your changes before publishing.",
+    "adminOnly": "Only platform admins can publish a version.",
+    "discard": "Discard draft",
+    "discardTitle": "Discard this draft?",
+    "discardDescription": "Draft version {version} and its translations will be deleted. This cannot be undone.",
+    "discardConfirm": "Discard draft",
+    "discarded": "Draft discarded",
+    "cancel": "Cancel",
+    "publish": "Publish version",
+    "publishTitle": "Publish version {version}",
+    "publishDescription": "Publishing replaces the public text in every language and cannot be undone. Every language needs the same section structure as English.",
+    "effectiveAt": "Effective date",
+    "materialLabel": "Material change",
+    "materialHelp": "People who are signed in must accept this version before they continue.",
+    "changeNote": "Change note",
+    "changeNotePlaceholder": "What changed in this version?",
+    "publishConfirm": "Publish",
+    "publishing": "Publishing…",
+    "published": "Version {version} published",
+    "history": "History",
+    "historyDescription": "Every published version stays available and cannot be edited.",
+    "historyEmpty": "No version has been published yet.",
+    "publishedBy": "Published by {name}",
+    "view": "View",
+    "viewTitle": "Version {version}",
+    "viewDescription": "Read-only text of this version in each language.",
+    "noTranslation": "This language has no text.",
+    "errors": {
+      "DRAFT_EXISTS": "This document already has a draft.",
+      "FORBIDDEN": "Only platform admins can do this.",
+      "HEADINGS_DIFFER": "The headings of {locales} do not match the English text. Align the section titles and try again.",
+      "INCOMPLETE": "Add a title and a text for {locales} before publishing.",
+      "INVALID_INPUT": "Check the values and try again.",
+      "NOT_DRAFT": "Only a draft can be changed. Reload the page.",
+      "NOT_FOUND": "This version no longer exists.",
+      "RATE_LIMITED": "Too many attempts. Try again in a while.",
+      "UNAUTHORIZED": "Your session ended. Log in again.",
+      "UNKNOWN": "Something went wrong. Try again."
+    }
+  },
+  "LegalAccept": {
+    "title": "We updated our terms of use",
+    "description": "Read the new terms and accept them to keep using GloRe.",
+    "effective": "Effective {date}",
+    "fallbackNotice": "This document is not available in your language yet. You are reading the English version.",
+    "openFull": "Open the full text in a new tab",
+    "accept": "I have read and accept the terms of use",
+    "submit": "Accept and continue",
+    "logout": "Log out",
+    "error": "We could not save your acceptance. Try again."
   },
   "AdminEmails": {
     "title": "Email previews",

@@ -34,6 +34,8 @@ const EVENT_KEYS = {
   'certificate.revoked': 'events.certificate_revoked',
   'impersonation.started': 'events.impersonation_started',
   'impersonation.stopped': 'events.impersonation_stopped',
+  'legal.accepted': 'events.legal_accepted',
+  'legal.version_published': 'events.legal_version_published',
   'organization.application_decided': 'events.organization_application_decided',
   'team.invited': 'events.team_invited',
   'team.role_changed': 'events.team_role_changed',
@@ -43,6 +45,7 @@ const CATEGORY_VARIANTS = {
   access: 'info',
   certificates: 'muted',
   impersonation: 'warning',
+  legal: 'success',
   moderation: 'destructive',
   organizations: 'brand-soft',
 } as const satisfies Record<AuditCategory, React.ComponentProps<typeof Badge>['variant']>

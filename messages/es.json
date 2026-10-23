@@ -2597,7 +2597,9 @@
     "error_email": "Introduce un correo electrónico válido.",
     "error_url": "Introduce una dirección web válida que empiece por http o https.",
     "error_number": "Introduce un número entero mayor que cero.",
-    "error_charter": "Debes aceptar la Carta de Calidad para enviar la solicitud."
+    "error_charter": "Debes aceptar la Carta de Calidad para enviar la solicitud.",
+    "termsAccept": "Acepto las <terms>Condiciones de uso</terms> en nombre de la organización.",
+    "error_terms": "Debes aceptar las condiciones de uso para enviar la solicitud."
   },
   "Admin": {
     "team": {
@@ -2905,7 +2907,8 @@
         "certificates": "Certificados",
         "impersonation": "Sesiones de visualización",
         "moderation": "Moderación",
-        "organizations": "Organizaciones"
+        "organizations": "Organizaciones",
+        "legal": "Legal"
       },
       "detail": {
         "permanent": "Sin fecha de fin",
@@ -2919,7 +2922,9 @@
         "impersonation_stopped": "{actor} dejó de ver la plataforma como <link>{target}</link>",
         "organization_application_decided": "{actor} {approved, select, yes {aprobó} other {rechazó}} la solicitud de <link>{target}</link>",
         "team_invited": "{actor} invitó a <link>{target}</link> al equipo como {role, select, admin {admin} editor {editor} other {miembro}}",
-        "team_role_changed": "{actor} cambió el rol de <link>{target}</link> a {role, select, admin {admin} editor {editor} other {usuario}}"
+        "team_role_changed": "{actor} cambió el rol de <link>{target}</link> a {role, select, admin {admin} editor {editor} other {usuario}}",
+        "legal_accepted": "{actor} aceptó <link>{target}</link>",
+        "legal_version_published": "{actor} publicó <link>{target}</link>"
       },
       "noResults": "No se encontraron eventos",
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",
@@ -3025,7 +3030,9 @@
     "next_catalog": "Explora los cursos",
     "next_queue": "Abre la cola de revisión",
     "next_organization": "Configura tu organización",
-    "goToDashboard": "Ir al panel"
+    "goToDashboard": "Ir al panel",
+    "termsAccept": "Acepto las <terms>Condiciones de uso</terms> y he leído la <privacy>Política de privacidad</privacy>.",
+    "termsRequired": "Debes aceptar las condiciones de uso para continuar."
   },
   "Email": {
     "auth/invite": {
@@ -3829,6 +3836,84 @@
     "updated": "Última actualización: {date}",
     "fallbackNotice": "Este documento aún no está disponible en tu idioma. Estás leyendo la versión en inglés.",
     "unavailable": "Este documento todavía no está disponible."
+  },
+  "LegalAdmin": {
+    "title": "Documentos legales",
+    "description": "Edita, traduce y publica la política de privacidad, las condiciones de uso y la Carta de Calidad.",
+    "documents": {
+      "privacy": "Política de privacidad",
+      "terms": "Condiciones de uso",
+      "qualityCharter": "Carta de Calidad"
+    },
+    "current": "Versión actual",
+    "currentDescription": "La versión que leen los visitantes en la página pública.",
+    "noVersion": "Todavía no hay ninguna versión publicada.",
+    "version": "Versión {version}",
+    "versionStatus": "Versión {version}, {status}",
+    "effective": "En vigor desde {date}",
+    "material": "Cambio sustancial",
+    "createDraft": "Crear un borrador",
+    "createDraftFrom": "Crear un borrador a partir de la versión {version}",
+    "draftTitle": "Borrador de la versión {version}",
+    "draftDescription": "Edita cada idioma, guárdalo y luego publica. Una versión publicada no se puede modificar.",
+    "status_draft": "Borrador",
+    "status_published": "Publicada",
+    "status_superseded": "Sustituida",
+    "titleLabel": "Título",
+    "bodyLabel": "Texto (Markdown)",
+    "outdated": "El texto en inglés cambió después de guardar esta traducción. Comprueba que siga coincidiendo.",
+    "save": "Guardar {language}",
+    "saved": "Guardado",
+    "unsaved": "Guarda los cambios antes de publicar.",
+    "adminOnly": "Solo los administradores de la plataforma pueden publicar una versión.",
+    "discard": "Descartar borrador",
+    "discardTitle": "¿Descartar este borrador?",
+    "discardDescription": "Se eliminarán el borrador de la versión {version} y sus traducciones. No se puede deshacer.",
+    "discardConfirm": "Descartar borrador",
+    "discarded": "Borrador descartado",
+    "cancel": "Cancelar",
+    "publish": "Publicar versión",
+    "publishTitle": "Publicar la versión {version}",
+    "publishDescription": "Al publicar se sustituye el texto público en todos los idiomas y no se puede deshacer. Todos los idiomas necesitan la misma estructura de secciones que el inglés.",
+    "effectiveAt": "Fecha de entrada en vigor",
+    "materialLabel": "Cambio sustancial",
+    "materialHelp": "Las personas con sesión iniciada deben aceptar esta versión antes de continuar.",
+    "changeNote": "Nota de cambios",
+    "changeNotePlaceholder": "¿Qué cambió en esta versión?",
+    "publishConfirm": "Publicar",
+    "publishing": "Publicando…",
+    "published": "Versión {version} publicada",
+    "history": "Historial",
+    "historyDescription": "Todas las versiones publicadas siguen disponibles y no se pueden editar.",
+    "historyEmpty": "Todavía no se ha publicado ninguna versión.",
+    "publishedBy": "Publicada por {name}",
+    "view": "Ver",
+    "viewTitle": "Versión {version}",
+    "viewDescription": "Texto de solo lectura de esta versión en cada idioma.",
+    "noTranslation": "Este idioma no tiene texto.",
+    "errors": {
+      "DRAFT_EXISTS": "Este documento ya tiene un borrador.",
+      "FORBIDDEN": "Solo los administradores de la plataforma pueden hacerlo.",
+      "HEADINGS_DIFFER": "Los encabezados de {locales} no coinciden con el texto en inglés. Alinea los títulos de las secciones e inténtalo de nuevo.",
+      "INCOMPLETE": "Añade un título y un texto para {locales} antes de publicar.",
+      "INVALID_INPUT": "Revisa los valores e inténtalo de nuevo.",
+      "NOT_DRAFT": "Solo se puede modificar un borrador. Recarga la página.",
+      "NOT_FOUND": "Esta versión ya no existe.",
+      "RATE_LIMITED": "Demasiados intentos. Inténtalo de nuevo más tarde.",
+      "UNAUTHORIZED": "Tu sesión ha terminado. Inicia sesión de nuevo.",
+      "UNKNOWN": "Algo salió mal. Inténtalo de nuevo."
+    }
+  },
+  "LegalAccept": {
+    "title": "Hemos actualizado nuestras condiciones de uso",
+    "description": "Lee las nuevas condiciones y acéptalas para seguir usando GloRe.",
+    "effective": "En vigor desde {date}",
+    "fallbackNotice": "Este documento todavía no está disponible en tu idioma. Estás leyendo la versión en inglés.",
+    "openFull": "Abrir el texto completo en una pestaña nueva",
+    "accept": "He leído y acepto las condiciones de uso",
+    "submit": "Aceptar y continuar",
+    "logout": "Cerrar sesión",
+    "error": "No pudimos guardar tu aceptación. Inténtalo de nuevo."
   },
   "AdminEmails": {
     "title": "Vistas previas de correos",

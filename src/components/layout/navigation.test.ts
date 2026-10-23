@@ -51,7 +51,7 @@ describe('sidebar per role', () => {
 })
 
 describe('palette entries', () => {
-  it('lists admin pages for platform admins and email previews for editors', () => {
+  it('lists admin pages for platform admins and email previews and legal texts for editors', () => {
     expect(ids(viewer({ canEdit: true, isAdmin: true, role: null }), 'admin')).toEqual([
       'admin-overview',
       'admin-team',
@@ -60,8 +60,9 @@ describe('palette entries', () => {
       'admin-certificates',
       'admin-audit',
       'admin-emails',
+      'admin-legal',
     ])
-    expect(ids(viewer({ canEdit: true, role: null }), 'admin')).toEqual(['admin-emails'])
+    expect(ids(viewer({ canEdit: true, role: null }), 'admin')).toEqual(['admin-emails', 'admin-legal'])
     expect(ids(viewer({ role: 'admin' }), 'admin')).toEqual([])
   })
 

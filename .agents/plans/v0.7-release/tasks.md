@@ -244,7 +244,8 @@ Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 
   - Accept: e2e translate, review, publish `es`, outdated flag after an `en` edit.
 - T5 [ ]: `app_settings` editor, `i18n:overrides` and `i18n:pull` scripts, `rename-key.mts`.
   - Accept: a contact email edit reaches the email layout and footer.
-- T6 [ ]: remove `crowdin.yml` and the Crowdin docs, update specs, `AGENTS.md`, `README.md`, `manual-testing.md`, and `glore-followups.md`.
+- T6 [x]: remove `crowdin.yml` and the Crowdin docs, update specs, `AGENTS.md`, `README.md`, `manual-testing.md`, and `glore-followups.md`.
+  - Docs now describe the in-app model. `/sync-docs` and `/sync-agents --check` run in G8, after T5 lands.
   - Accept: docs match code, `/sync-docs` and `/sync-agents --check` clean.
 
 ## Verification matrix

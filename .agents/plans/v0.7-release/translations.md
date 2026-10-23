@@ -89,7 +89,7 @@ Nothing an editor saves can break a page.
 
 ### Translations and content
 
-- Translations page (`/admin/translations`):
+- Translations page (`/translations`, shipped outside the admin layout so editors can reach it):
   - a virtualized table with en, es, and it side by side, searchable by key, text, and namespace;
   - filters: missing, overridden, outdated, orphaned, unreviewed;
   - inline ICU validation and preview, reset to default, publish, history, and "Suggest with AI".

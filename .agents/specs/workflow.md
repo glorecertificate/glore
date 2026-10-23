@@ -58,26 +58,17 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 ## Translations
 
-- `en` is the source: `messages/en.json` and the legal seed fixtures `content/legal/*.en.md`.
-- `crowdin.yml` maps them to `messages/<locale>.json` and `content/legal/<doc>.<locale>.md` for `es` and `it`.
-- Courses and docs stay out of Crowdin because they use in-app editors.
-
-### Crowdin flow
-
-- Crowdin's GitHub integration (source and translation files mode) syncs `release/v0.7` and `main`.
-- A source change uploads, translators work in Crowdin, and Crowdin opens a PR from an `l10n_<branch>` branch titled `chore: sync translations from crowdin`.
-- Review that PR like code: `pnpm run check` MUST exit 0, then squash and merge.
-- Never edit a Crowdin PR branch by hand: fix the string in Crowdin and let it re-sync.
-- In feature work, add every new key to all three catalogs with real translations. Crowdin imports them and owns later `es` and `it` edits.
-- Never delete or rename a key in one catalog only.
+- `en` is the source: `messages/en.json` and the legal seed fixtures `content/legal/*.en.md`. Code owns keys, message structure, and default copy.
+- The team edits UI text at `/translations` (database overrides on top of the bundled catalogs), legal texts at `/legal`, and courses, docs, and skill groups in their editors (`translations.md` in the v0.7 plan).
+- In feature work, add every new key to all three catalogs with real translations. Never delete or rename a key in one catalog only.
+- A key rename or removal can orphan or disable published overrides; the translations page flags them as stale.
 
 ### i18n check
 
 - `pnpm run check:i18n` (`scripts/i18n/`) fails on a key missing from a locale and on an empty or non-string value.
 - It also checks `serverNamespaces` in `config/i18n.json` against the `'use client'` import graph (`scripts/i18n/namespaces.mts`).
 - It also fails on malformed ICU, and on an ICU argument, plural or select case, or tag (`{name}`, `<link>`) that differs from `en`. Plural categories may differ per language.
-- It also fails on a legal seed fixture that misses a locale, has broken front matter, or has different headings. Crowdin translates only the body and `title`.
-- The optional CLI (`npx @crowdin/cli`) reads `CROWDIN_PROJECT_ID` and `CROWDIN_PERSONAL_TOKEN` from the environment. The GitHub integration needs neither. Never commit them.
+- It also fails on a legal seed fixture that misses a locale, has broken front matter, or has different headings.
 
 ## Committing
 

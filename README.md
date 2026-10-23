@@ -140,9 +140,9 @@ To open a pull request:
 
 ### Translations
 
-`en` is the source language. UI messages (`messages/en.json`) and legal seed texts (`content/legal/*.en.md`) are translated into Spanish and Italian through [Crowdin](https://crowdin.com), configured in [`crowdin.yml`](crowdin.yml). Crowdin opens pull requests from `l10n_*` branches; review them like code and squash merge once `pnpm run check` passes. `pnpm run check:i18n` verifies that every locale has the same keys, ICU placeholders, and tags as `en`.
+`en` is the source language. UI messages (`messages/en.json`) ship with Spanish and Italian translations, and every new key needs real translations in all three catalogs. `pnpm run check:i18n` verifies that every locale has the same keys, ICU placeholders, and tags as `en`. Legal texts are versioned in the database and edited at `/legal`; `content/legal` only seeds a fresh database.
 
-Course, lesson, doc, and skill group content is translated in the editors, not through Crowdin. Each non-default locale shows a status (missing, machine translated, needs review, reviewed, or outdated when the English text changed), and editors can translate with AI and mark a locale as reviewed. Docs can be published per language.
+Course, lesson, doc, and skill group content is translated in their editors. Each non-default locale shows a status (missing, machine translated, needs review, reviewed, or outdated when the English text changed), and editors can translate with AI and mark a locale as reviewed. Docs can be published per language.
 
 Editors and platform admins can override any UI message at `/translations` without a deploy. The page checks ICU syntax and placeholders, previews the result, keeps a history, and suggests `es` and `it` drafts with AI. Nothing goes live until someone publishes it.
 

@@ -189,7 +189,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 - Namespaces match feature domains.
 - Certificate copy lives in `Certificate<Area>` namespaces: `Credential`, `Detail`, `Eligibility`, `Errors`, `List`, `Org`, `Public`, `Queue`, `Review`, `Share`, `Status`, `Verify`, and `Wizard`.
 - Course copy lives in `CourseCommon` (settings dialog and strings both screens use), `CourseEditor`, and `CourseList`. A string the tab bar builds from a value (`t(value)`) stays in `CourseList`.
-- Catalogs stay one file per locale. Per-namespace files would not shrink what the client receives, because `clientMessages()` and `getClientMessages` already filter by namespace, and they would split every Crowdin diff.
+- Catalogs stay one file per locale. Per-namespace files would not shrink what the client receives, because `clientMessages()` and `getClientMessages` already filter by namespace.
 - When a new namespace is used only in server code (route handlers, emails, metadata, server pages), add it to `serverNamespaces`.
 - `Components.<Name>` serves `src/components/ui/`, `Intl.*` serves country and language data, and `Email.*` serves templates.
 

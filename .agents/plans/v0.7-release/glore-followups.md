@@ -44,5 +44,5 @@ Production imports every course as a draft. GloRe editors review and publish eac
 
 ### 6. Translations
 
-- Name the GloRe editors who review translations in the app (`/admin/translations`, course and doc editors). Crowdin is no longer used (U18).
+- Name the GloRe editors who review translations in the app (`/translations`, `/legal`, course and doc editors).
 - Ask counsel whether only the terms need acceptance and which changes count as material (U20).

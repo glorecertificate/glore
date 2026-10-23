@@ -6,6 +6,7 @@ import { type SessionSummary } from '@/actions/account/sessions'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { formatIpAddress } from '@/lib/ip-address'
 import { describeUserAgent } from '@/lib/user-agent'
 
 export const SessionRow = ({
@@ -35,7 +36,7 @@ export const SessionRow = ({
         </p>
         <p className="truncate text-xs text-muted-foreground">
           {t('sessionActive', { time: format.relativeTime(new Date(session.updatedAt), now) })}
-          {session.ipAddress ? ` · ${session.ipAddress}` : ''}
+          {session.ipAddress ? ` · ${formatIpAddress(session.ipAddress)}` : ''}
         </p>
       </div>
       {!session.current && (

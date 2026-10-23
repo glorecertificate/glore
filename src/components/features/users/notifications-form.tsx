@@ -6,19 +6,21 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { updateNotificationPreferences } from '@/actions/account/preferences'
+import {
+  type NotificationCategory,
+  notificationCategoriesFor,
+} from '@/components/features/users/notification-categories'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-
-const CATEGORIES = ['learning', 'organization', 'reminders'] as const
 
 export const NotificationsForm = () => {
   const { setUser, user } = useSession()
   const t = useTranslations('Users')
   const [saving, setSaving] = useState<string | null>(null)
 
-  const handleChange = async (category: (typeof CATEGORIES)[number], enabled: boolean) => {
+  const handleChange = async (category: NotificationCategory, enabled: boolean) => {
     setSaving(category)
     const { error } = await updateNotificationPreferences({ [category]: enabled })
     setSaving(null)
@@ -36,7 +38,7 @@ export const NotificationsForm = () => {
   return (
     <SettingsSection description={t('notificationsDescription')} title={t('notificationsEmail')}>
       <ul className="divide-y rounded-lg border px-4">
-        {CATEGORIES.map(category => (
+        {notificationCategoriesFor(user.organizations.length > 0).map(category => (
           <li className="flex items-start justify-between gap-4 py-4" key={category}>
             <div className="space-y-1">
               <Label htmlFor={`notifications-${category}`}>{t(`notificationsCategory_${category}`)}</Label>

@@ -38,6 +38,7 @@ const badgeVariants = cva(
         outline: 'border border-input bg-background shadow-xs dark:bg-input/30',
         ghost: 'bg-transparent text-foreground',
         brand: 'bg-brand text-brand-foreground shadow-xs',
+        'brand-soft': 'bg-brand/10 text-brand-text',
         success: 'bg-success/10 text-success-text',
         warning: 'bg-warning/15 text-warning-text',
         destructive: 'bg-destructive/10 text-destructive-text',

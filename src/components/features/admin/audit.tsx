@@ -44,7 +44,7 @@ const CATEGORY_VARIANTS = {
   certificates: 'muted',
   impersonation: 'warning',
   moderation: 'destructive',
-  organizations: 'brand',
+  organizations: 'brand-soft',
 } as const satisfies Record<AuditCategory, React.ComponentProps<typeof Badge>['variant']>
 
 export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
@@ -99,7 +99,7 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
     return (
       <div className="flex min-w-0 flex-col gap-0.5">
         {text && (
-          <span className="line-clamp-2 text-sm" title={text}>
+          <span className="text-sm sm:line-clamp-2" title={text}>
             {text}
           </span>
         )}
@@ -122,7 +122,14 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
           id: 'date',
         },
         {
-          cell: row => <Badge variant={CATEGORY_VARIANTS[row.category]}>{t(`categories.${row.category}`)}</Badge>,
+          cell: row => (
+            <Badge
+              className="max-w-full max-sm:text-left max-sm:whitespace-normal"
+              variant={CATEGORY_VARIANTS[row.category]}
+            >
+              {t(`categories.${row.category}`)}
+            </Badge>
+          ),
           header: t('columns.category'),
           id: 'category',
         },

@@ -48,8 +48,13 @@ export const ReasonDialog = ({
   const [reason, setReason] = useState('')
   const trimmed = reason.trim()
 
+  const handleOpenChange = (next: boolean) => {
+    if (!next) setReason('')
+    onOpenChange(next)
+  }
+
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
+    <Dialog onOpenChange={handleOpenChange} open={open}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -69,7 +74,7 @@ export const ReasonDialog = ({
           <p className="text-xs text-muted-foreground">{hint}</p>
         </div>
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)} type="button" variant="outline">
+          <Button onClick={() => handleOpenChange(false)} type="button" variant="outline">
             {cancelLabel}
           </Button>
           <Button

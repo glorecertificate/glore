@@ -146,6 +146,16 @@ Course, lesson, doc, and skill group content is translated in their editors. Eac
 
 Editors and platform admins can override any UI message at `/translations` without a deploy. The page checks ICU syntax and placeholders, previews the result, keeps a history, and suggests `es` and `it` drafts with AI. Nothing goes live until someone publishes it.
 
+Developers keep the catalogs in sync with these edits through three scripts. `--target` is `local`, `staging`, or `production`, and only reads the database.
+
+```sh
+pnpm run i18n:overrides --target staging  # count overrides per locale and stale state
+pnpm run i18n:pull --target staging       # write published overrides into messages/*.json for a pull request
+pnpm run i18n:rename Old.key New.key      # rename a key in every catalog and print the SQL for its overrides
+```
+
+Platform admins edit the contact email, phone, website, social links, and legal entity at `/admin/settings`. They appear in emails, the help page, and the about page, and `config/metadata.json` supplies the defaults.
+
 ## AI and agents
 
 All coding conventions and architecture details are documented in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.

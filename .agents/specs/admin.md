@@ -68,6 +68,7 @@
   - organizations: `organization.application_decided`.
   - legal: `legal.version_published`, `legal.accepted`.
   - messages: `messages.published`, `messages.reset`. The target is the key and locale, linking to `/translations?q=<key>`.
+  - settings: `settings.updated`, linking to `/admin/settings`.
 - To audit a new action, add the event to `AUDIT_ACTIONS`, an `Admin.audit.events.<action with dots as underscores>` message, and an entry in `EVENT_KEYS` (`audit.tsx`).
 
 ### Search and rows
@@ -78,6 +79,15 @@
 - `toAuditRows` is pure. It resolves the actor, the target (user, certificate code, organization) with a link, the organization, and the reason, comment, role, or expiry from the payload.
 - A removed actor account renders as `unknownPerson`.
 - Payloads never hold emails, URLs, or tokens (`PRIVATE_KEYS`).
+
+## Settings
+
+- `/admin/settings` edits `app_settings` (`getSettings`, `saveSettings` in `actions/admin/settings.ts`). `saveSettings` takes `requireAdminWithLimit('settings', 60)`.
+- Keys: `email`, `phone` (international format), `website`, `social` (five optional http links), `legalEntity` (`name`, `address`). Schemas, defaults, and `parseSettings` are pure (`lib/app-settings.ts`).
+- Each key is validated alone. A missing or invalid stored value falls back to `config/metadata.json`.
+- `saveAppSettings` (`db/mutations/app-settings.ts`) stores only keys that differ from the effective value and records `settings.updated` with the changed keys. The action then calls `updateTag(CacheTag.Settings)`.
+- `loadSettings()` (`lib/settings.ts`) is a plain cached read with a defaults fallback, so emails and cron use it. The root layout feeds `SettingsProvider`, and client code calls `useSettings()`.
+- Emails take `settings` as a prop (`EmailBaseProps`) and default to the config values, so React Email previews work unchanged.
 
 ## Overview
 
@@ -167,6 +177,13 @@
 - `suggestMessage` drafts `es` and `it` text with the AI chain (`lib/message-suggestion.ts`). It needs `GEMINI_API_KEY`, allows 40 calls per hour per user, saves origin `machine`, and never publishes.
 - A suggestion that fails `validateOverride` is dropped with `AI_INCOMPATIBLE`, `AI_INVALID`, or `AI_EMPTY`.
 - All page copy is in the `Translations` namespace.
+
+### Override scripts
+
+- `pnpm run i18n:overrides --target <local|staging|production>` counts overrides per locale and stale state. It reads inside a read-only transaction.
+- `pnpm run i18n:pull --target <env>` writes published overrides in the `current` state into `messages/*.json` (`--include-outdated`, `--dry-run`) for a normal PR. It never touches the database.
+- `scripts/i18n/rename-key.mts <old> <new>` renames a key in every catalog and prints the SQL for `message_overrides` and `message_override_revisions`. It does not run it.
+- The scripts import `classifyOverride` through `#lib/*`, so `lib/message-overrides.ts` and `lib/message-validation.ts` use relative imports.
 
 ### Stale override notice
 

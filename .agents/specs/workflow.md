@@ -5,25 +5,27 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 ## Commands
 
 - Always run `pnpm run <script>`, never bare `pnpm <script>`, so nothing collides with a built-in pnpm command.
-- Exceptions: `pnpm install`, and the README's bare shorthand for human readers.
+- Exceptions: `pnpm install` and the README's bare shorthand.
 
-| Command                 | Description                                                                      |
-| ----------------------- | -------------------------------------------------------------------------------- |
-| `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)                   |
-| `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                           |
-| `pnpm run check`        | Parallel `check:types`, `check:lint`, `check:format`, `check:knip`, `check:i18n` |
-| `pnpm run test`         | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                   |
-| `pnpm run test:e2e`     | Playwright e2e against the running dev server, logged in as seeded users         |
-| `pnpm run build`        | Production build                                                                 |
-| `pnpm run typegen`      | Generate route and public-file types into `types/`                               |
-| `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                               |
-| `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                       |
-| `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                                      |
-| `pnpm run db:seed`      | Upsert one test user per role into the local DB (refuses non-local URLs)         |
-| `pnpm run db:seed:demo` | Full demo dataset on `TEST_EMAIL` plus-addresses (`--target local` or `staging`) |
-| `pnpm run mail:up`      | Local Mailpit inbox: SMTP on 1025, UI and API at `http://localhost:8025`         |
-| `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                       |
-| `pnpm run skills`       | Reinstall agent skills from `skills-lock.json`                                   |
+| Command                   | Description                                                                      |
+| ------------------------- | -------------------------------------------------------------------------------- |
+| `pnpm run dev`            | Dev server at `https://glore.localhost` (portless, port 45673)                   |
+| `pnpm run dev:clean`      | Wipe `.next`, then start dev (reclaims Turbopack disk)                           |
+| `pnpm run check`          | Parallel `check:types`, `check:lint`, `check:format`, `check:knip`, `check:i18n` |
+| `pnpm run test`           | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                   |
+| `pnpm run test:e2e`       | Playwright e2e against the running dev server, logged in as seeded users         |
+| `pnpm run build`          | Production build                                                                 |
+| `pnpm run i18n:overrides` | Count overrides per locale and stale state (`--target <env>`, read-only)         |
+| `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`)  |
+| `pnpm run typegen`        | Generate route and public-file types into `types/`                               |
+| `pnpm run db <command>`   | drizzle-kit (`migrate`, `generate`, `studio`, ...)                               |
+| `pnpm run db:up`          | Local Postgres in Docker on port 5433 (used by `next dev`)                       |
+| `pnpm run db:reset`       | Wipe and recreate the local Postgres volume                                      |
+| `pnpm run db:seed`        | Upsert one test user per role into the local DB (refuses non-local URLs)         |
+| `pnpm run db:seed:demo`   | Full demo dataset on `TEST_EMAIL` plus-addresses (`--target local` or `staging`) |
+| `pnpm run mail:up`        | Local Mailpit inbox: SMTP on 1025, UI and API at `http://localhost:8025`         |
+| `pnpm run email`          | Preview email templates at `https://email.glore.localhost`                       |
+| `pnpm run skills`         | Reinstall agent skills from `skills-lock.json`                                   |
 
 ## Seeds
 
@@ -40,8 +42,8 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 - `pnpm run db:seed:demo --target <local|staging>` (`scripts/seed-demo.mts`) builds the dataset of `.agents/references/manual-testing.md`.
 - Accounts sit at `<local>+glore-<key>@<domain>` of `TEST_EMAIL`, with usernames `demo.<key>`.
-- It creates three organizations (two approved in Italy and Spain, one pending applicant) and 28 accounts.
-- It creates 18 certificates in every status plus a deleted holder, learning progress, ratings, invitations, an invite link, join requests, activity events, and read and unread notifications.
+- It creates three organizations (two approved in Italy and Spain, one pending) and 28 accounts.
+- It creates 18 certificates in every status plus a deleted holder, learning progress, ratings, invitations, an invite link, join requests, events, and notifications.
 
 ### Demo seed behavior
 
@@ -49,7 +51,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - The seed is idempotent and resets what it owns in one transaction.
 - It upserts organizations and accounts, then deletes and rebuilds their certificates, invitations, links, requests, events, notifications, and progress.
 - Dates are relative to the run.
-- Approved certificates carry a snapshot but no stored PDF, because the download renders from the snapshot.
+- Approved certificates carry a snapshot and no stored PDF: the download renders from it.
 - Data and planning live in `scripts/seed-demo-data.ts` (organizations, accounts) and `seed-demo-story.ts` (certificates, progress, flows, events, notifications; pure and unit tested).
 - Localized text lives in `seed-demo-copy.ts`, SQL in `seed-demo-db.mts`, and shared upserts in `scripts/seed-db.mts`.
 - `local` needs a localhost `DATABASE_URL`.
@@ -60,7 +62,8 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 - `en` is the source: `messages/en.json` and the legal seed fixtures `content/legal/*.en.md`. Code owns keys, message structure, and default copy.
 - The team edits UI text at `/translations` (database overrides on top of the bundled catalogs), legal texts at `/legal`, and courses, docs, and skill groups in their editors (`translations.md` in the v0.7 plan).
-- In feature work, add every new key to all three catalogs with real translations. Never delete or rename a key in one catalog only.
+- In feature work, add every new key to all three catalogs with real translations. Never delete a key in one catalog only.
+- Rename a key with `pnpm run i18n:rename <old> <new>`, never in one catalog only. It prints SQL for the key's overrides.
 - A key rename or removal can orphan or disable published overrides; the translations page flags them as stale.
 
 ### i18n check
@@ -84,15 +87,13 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - History is linear. Never create a merge commit: no `git merge` without `--ff-only`, no merging `main` into a branch, no GitHub merge button.
 - Update a branch with `git rebase main`. Integrate it by rebase or fast-forward, or squash it into one commit when its commits do not stand alone.
 - On GitHub, merge commits are disabled in the repository settings, so pull requests use "Rebase and merge" or "Squash and merge".
-- Branch protection on `main` deliberately does not require linear history, because the maintainer may force-push `main`. The hooks and CI enforce the rule instead.
-- Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits.
+- Branch protection on `main` does not require linear history, because the maintainer may force-push `main`. Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits instead.
 - To clean up history that already holds merges, rebuild it on `main` and squash each merged branch whose commits no longer replay cleanly. Never push that rewrite without the user's approval.
 
 ## Dependencies
 
 - CI runs `pnpm install --frozen-lockfile`, and pnpm enforces a built-in `minimum-release-age` of 24h on every lockfile entry. Nothing in the repo overrides it.
-- Local `pnpm install` accepts a fresher package, so a bump can pass locally and fail CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`.
-- Never commit a dependency bump on the day its version was published.
+- Local `pnpm install` accepts a fresher package, so a bump can pass locally and fail CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`. Never commit a bump on the day its version was published.
 - When CI is already red, re-run the job once the package is 24h old, or add a scoped `minimumReleaseAgeExclude` entry to `pnpm-workspace.yaml` and delete it afterwards.
 - Never lower `minimumReleaseAge` or set `trustLockfile: true`: both disable the check for every future install.
 - Node.js follows Vercel Functions (24.x and 22.x, checked 2026-10-23). `.node-version`, `engines.node` (`24.x`), and `@types/node` (`^24`) move together, so `pnpm outdated` always lists `@types/node`.
@@ -104,8 +105,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - Third-party skills are vendored and tracked in `.agents/skills/`. `.claude/skills` symlinks to it, so read them through `.agents/skills/`.
 - Never hand-edit a vendored skill. Only `pnpm run skills` (the `skills` CLI) updates its files and `skills-lock.json`.
 - `pnpm run skills` pulls each source's default branch, so a run meant to restore one skill can rewrite every tracked skill.
-- After a run, review the `.agents/skills/` and `skills-lock.json` diff as a code change.
-- Then `git restore` and `git clean` any skill you did not mean to update.
+- After a run, review the `.agents/skills/` and `skills-lock.json` diff as a code change, then `git restore` and `git clean` any skill you did not mean to update.
 - `web-design-guidelines` fetches its rules at runtime from `vercel-labs/web-interface-guidelines` on `main`, so it can change with no lockfile change.
 - `agent-browser`, `sync-i18n`, `sync-docs`, and `sync-agents` are machine-wide skills invoked by name, not vendored here.
 
@@ -209,10 +209,10 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 - `knip.deferSession: true` keeps the knip extension idle.
 - Change one side of the editor and CLI lint pair only by deliberately changing the other.
 - `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. Never re-add `source.organizeImports` or `source.removeUnusedImports`.
-- `source.format.oxc` was removed because `editor.formatOnSave` already runs oxfmt, and `source.removeUnusedImports` calls the TypeScript language server on every save.
-- Those TypeScript actions re-print imports with semicolons and collapse oxfmt's groups, which causes a visible flash on save, and `editor.formatOnSave` already runs oxfmt.
+- `source.format.oxc` was removed because `editor.formatOnSave` already runs oxfmt.
+- The TypeScript import actions call the language server on every save, re-print imports with semicolons, and collapse oxfmt's groups, which flashes on save.
 - `js/ts.format.semicolons: "remove"` stays, because auto-import and quick fixes print imports outside oxfmt.
-- Duplicate imports no longer merge on save. `import/no-duplicates` has no autofix and `pnpm run check` still blocks them.
+- Duplicate imports no longer merge on save, but `pnpm run check` still blocks them.
 
 ### CI builds
 

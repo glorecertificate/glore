@@ -9,7 +9,7 @@ src/
 ├── actions/            # Server actions ('use server'): mutations + cached queries
 │   ├── messages.ts     # Override actions (guards in message-helpers.ts); translations.ts: page reads, history, AI suggest
 │   ├── account/        # delete.ts, export.ts, preferences.ts, sessions.ts ('use server'); deletion.ts (server-only core)
-│   ├── admin/          # audit.ts, certificates.ts, expire.ts, helpers.ts, impersonation.ts, impersonation-state.ts, options.ts, organizations.ts, overview.ts, pending.ts, team.ts, users.ts
+│   ├── admin/          # audit.ts, certificates.ts, expire.ts, helpers.ts, impersonation.ts, impersonation-state.ts, options.ts, organizations.ts, overview.ts, pending.ts, settings.ts, team.ts, users.ts
 │   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, preview, revoke), public.ts (verification),
 │   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), pdf.ts (server-only), queries.ts
 │   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses, listSessionCourses), compass.ts, data.ts (server-only: learner reads),
@@ -54,7 +54,7 @@ src/
 │   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
 │   │                   #   loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,
 │   │                   #   search-command (palette), navigation (pure per-role entries), use-navigation-labels
-│   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, theme
+│   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, settings, theme
 │   └── ui/             # shadcn/ui + release kit (ui.md); vendored rich-text-editor/
 ├── db/
 │   ├── client.ts       # Dual-driver Drizzle client + transaction() + Transaction type
@@ -68,12 +68,13 @@ src/
 │   │                   #   course, content-translation, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, message-override, notification, onboarding,
 │   │                   #   organization (flattens organization_profiles), organization-application (zod schema), organization-insights (checklist, pipeline, activity parsers), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   activity-event.ts, certificate.ts, content-translation.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, message-override.ts, moderation.ts, organization.ts, skill-group.ts, team-invitation.ts, user.ts
+│                       #   activity-event.ts, app-settings.ts, certificate.ts, content-translation.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, message-override.ts, moderation.ts, organization.ts, skill-group.ts, team-invitation.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, learning, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
 │   ├── ai.ts           # Editor AI model chain with first-token fallback (models from config/app.json aiModels)
 │   ├── api.ts          # API route helpers (authorizeEditorRequest)
+│   ├── app-settings.ts # App settings: zod schemas, defaults from config/metadata.json, parseSettings (pure, client-safe)
 │   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum, per-record tag helpers
 │   ├── constants.ts    # Route roots, regex validators
@@ -88,6 +89,7 @@ src/
 │   ├── message-overrides.ts # Override merge, stale states; message-validation.ts: client-safe validation, protected keys
 │   ├── message-*.ts    # entries, preview, suggestion (server-only AI); translation-table.ts: rows and filters
 │   ├── messages.ts     # loadMessages, resolveLocale: the one catalog loader (server-only)
+│   ├── settings.ts     # loadSettings: cached reader of app_settings with a defaults fallback
 │   ├── translate.ts    # Plate and plain text translation: walker, chunks, output validation
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata(), appTitle()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
@@ -170,7 +172,8 @@ src/
 ### Mail
 
 - `sendMail` (`src/lib/email.ts`) takes `template`, `category`, and `unsubscribeUrl`.
-- Every template forwards the `category` base prop (`EmailBaseProps`) to `EmailLayout`, which prints the reason and the preference link.
+- Every template forwards the `category` and `settings` base props (`EmailBaseProps`) to `EmailLayout`, which prints the reason and the preference link.
+- `EmailLayout` also prints the legal entity, website, and social links from `settings`. `renderEmail` loads it, and it defaults to the config values.
 - Mail renders in the RSC layer, which has no `createContext`, so templates never use React context.
 - Optional mail carries `List-Unsubscribe` headers. The POST at `/api/v1/mail-preferences` turns that category off for the user named in a signed token (`src/lib/unsubscribe.ts`).
 - A GET on that route opens `/settings?tab=notifications`.

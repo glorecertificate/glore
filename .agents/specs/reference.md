@@ -192,12 +192,18 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - A material `terms` version gates the dashboard until the user accepts it: `getPendingLegal` in the layout, `acceptLegal` on `/legal/accept`.
 - `db:seed` and `content:import` seed version 1 from `content/legal` only into an empty `legal_documents`.
 
+## App settings
+
+- `app_settings` (`key`, `value jsonb`, `updated_by_id`, `updated_at`) holds the team-edited contact email, phone, website, social links, and legal entity. The editor is in `admin.md`.
+- `loadSettings({ cache })` in `src/lib/settings.ts` reads it inside a `'use cache'` function tagged `CacheTag.Settings` with `cacheLife('max')`. A failed read logs and returns `DEFAULT_SETTINGS`.
+- It uses no request API, so emails and cron call it. Saving calls `updateTag(CacheTag.Settings)`.
+
 ## Static data
 
 - `config/app.json`: feature settings (`minSkills`, `minRating`, `maxAvatarSize`, and the rest).
 - `config/i18n.json`: locales.
 - `config/icons.json`: icon-picker metadata.
-- `config/metadata.json`: app metadata.
+- `config/metadata.json`: app metadata and the default for every app setting. Keep `name`, `url`, `slug`, `version`, and `themeColor` here only.
 - `config/theme.json`: breakpoints.
 
 ## Framework docs

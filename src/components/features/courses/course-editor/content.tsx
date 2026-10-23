@@ -47,10 +47,10 @@ const EditorSkeleton = () => (
   </div>
 )
 
-const RichTextEditor = dynamic(
+const LessonEditor = dynamic(
   async () => {
-    const m = await import('@/components/ui/rich-text-editor')
-    return { default: m.RichTextEditor }
+    const m = await import('@/components/features/courses/course-editor/lesson-editor')
+    return { default: m.LessonEditor }
   },
   { loading: () => <EditorSkeleton />, ssr: false }
 )
@@ -106,7 +106,7 @@ const CourseEditor = ({
 
   return (
     <RichTextEditorProvider onChange={setValue} readOnly={readOnly} value={initialValue} version={version}>
-      <RichTextEditor autoFocus variant="fullWidth" />
+      <LessonEditor variant="fullWidth" />
     </RichTextEditorProvider>
   )
 }

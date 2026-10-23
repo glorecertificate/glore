@@ -47,8 +47,11 @@ const CourseRow = ({
   const status = course.archivedAt ? 'archived' : languages.length === 0 ? 'draft' : 'published'
 
   return (
-    <li className="flex flex-wrap items-center gap-3 py-2">
-      <Link className="min-w-0 flex-1 truncate font-medium hover:underline" href={`/courses/${course.slug}`}>
+    <li className="flex flex-wrap items-center gap-x-3 gap-y-2 py-2">
+      <Link
+        className="min-w-0 basis-full font-medium wrap-break-word hover:underline sm:flex-1 sm:basis-0 sm:truncate"
+        href={`/courses/${course.slug}`}
+      >
         {title}
       </Link>
       <Badge variant={status === 'published' ? 'success' : 'muted'}>{t(status)}</Badge>

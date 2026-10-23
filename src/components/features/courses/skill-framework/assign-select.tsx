@@ -42,7 +42,10 @@ export const AssignSkillGroup = ({
 
   return (
     <Select disabled={busy} onValueChange={onChange} value={groupId ? String(groupId) : NONE}>
-      <SelectTrigger aria-label={t('assignLabel', { course: courseTitle })} className="w-48">
+      <SelectTrigger
+        aria-label={t('assignLabel', { course: courseTitle })}
+        className="w-full whitespace-nowrap sm:w-48"
+      >
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

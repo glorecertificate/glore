@@ -21,7 +21,7 @@ const LegalDocumentContent = async ({ document }: { document: LegalDocument }) =
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-10 md:py-16">
       <header className="flex flex-wrap items-center justify-between gap-4">
-        <Link aria-label={t('home')} href="/">
+        <Link title={t('home')} aria-label={t('home')} href="/">
           <Logo className="w-28" />
         </Link>
         <LegalLanguageSwitch locale={locale} />

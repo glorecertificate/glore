@@ -55,8 +55,8 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - Idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock.
 - Pruning removes `rate_limits` idle for 24h and expired `sessions` and `verifications`.
 - Pruning removes invitations expired, revoked, or declined for `invitationRetentionDays`. Accepted ones stay.
-- Pruning removes R2 avatars and certificate PDFs older than 24h that no row references. A revoked certificate keeps its PDF because its row stays.
-- Deleting a user, organization, or avatar removes the object at once.
+- Pruning removes R2 avatars and certificate PDFs older than 24h that no row references. A logo or signature URL stored in any certificate `snapshot` counts as referenced. A revoked certificate keeps its PDF because its row stays.
+- Deleting a user, organization, or avatar removes the object at once, except an organization logo or signature that a certificate `snapshot` still references.
 
 ## Data fetching
 

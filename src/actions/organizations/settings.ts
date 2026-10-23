@@ -7,6 +7,7 @@ import { revalidateTag } from 'next/cache'
 import { count, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { deleteOrganizationAsset } from '@/actions/certificates/snapshot-assets'
 import { deleteCookie, setCookie } from '@/actions/cookies'
 import {
   expireUserAccess,
@@ -22,7 +23,7 @@ import { certificates, organizationProfiles, organizations } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 import { SIGNATURE_CONTENT_TYPES } from '@/lib/constants'
 import { LOCALES } from '@/lib/i18n'
-import { r2DeleteQuietly, r2PresignAvatar, r2PresignSignature, r2VerifyAvatar } from '@/lib/storage'
+import { r2PresignAvatar, r2PresignSignature, r2VerifyAvatar } from '@/lib/storage'
 
 const optionalText = (max: number) =>
   z
@@ -107,7 +108,7 @@ export const confirmOrganizationAvatar = async (key: string, organizationId?: nu
       .insert(organizationProfiles)
       .values({ avatarUrl, organizationId: access.organizationId })
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl } })
-    if (current?.avatarUrl) await r2DeleteQuietly(current.avatarUrl)
+    if (current?.avatarUrl) await deleteOrganizationAsset(current.avatarUrl)
     return await settle(access)
   })
 
@@ -119,7 +120,7 @@ export const removeOrganizationAvatar = async (organizationId?: number) =>
       .insert(organizationProfiles)
       .values({ avatarUrl: null, organizationId: access.organizationId })
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl: null } })
-    if (current?.avatarUrl) await r2DeleteQuietly(current.avatarUrl)
+    if (current?.avatarUrl) await deleteOrganizationAsset(current.avatarUrl)
     return await settle(access)
   })
 
@@ -146,7 +147,7 @@ export const confirmOrganizationSignature = async (key: string, organizationId?:
       .insert(organizationProfiles)
       .values({ organizationId: access.organizationId, signatureUrl })
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { signatureUrl } })
-    if (current?.signatureUrl) await r2DeleteQuietly(current.signatureUrl)
+    if (current?.signatureUrl) await deleteOrganizationAsset(current.signatureUrl)
     revalidateTag(CacheTag.Organizations, 'max')
     return { signatureUrl }
   })
@@ -159,7 +160,7 @@ export const removeOrganizationSignature = async (organizationId?: number) =>
       .insert(organizationProfiles)
       .values({ organizationId: access.organizationId, signatureUrl: null })
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { signatureUrl: null } })
-    if (current?.signatureUrl) await r2DeleteQuietly(current.signatureUrl)
+    if (current?.signatureUrl) await deleteOrganizationAsset(current.signatureUrl)
     revalidateTag(CacheTag.Organizations, 'max')
     return { signatureUrl: null }
   })
@@ -180,8 +181,8 @@ export const deleteOrganization = async (organizationId?: number) =>
     await db.delete(organizations).where(eq(organizations.id, access.organizationId))
     expireUserAccess(memberIds)
     revalidateTag(CacheTag.Organizations, 'max')
-    if (profile?.avatarUrl) await r2DeleteQuietly(profile.avatarUrl)
-    if (profile?.signatureUrl) await r2DeleteQuietly(profile.signatureUrl)
+    if (profile?.avatarUrl) await deleteOrganizationAsset(profile.avatarUrl)
+    if (profile?.signatureUrl) await deleteOrganizationAsset(profile.signatureUrl)
 
     const user = await getFreshCurrentUser(access.user.id)
     if (access.platform) return { organizationId: access.organizationId, user }

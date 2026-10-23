@@ -2,6 +2,7 @@ import 'server-only'
 
 import { and, isNotNull, isNull, lt, or } from 'drizzle-orm'
 
+import { listSnapshotAssetUrls } from '@/actions/certificates/snapshot-assets'
 import { selectOrphanPdfKeys } from '@/actions/maintenance/plan'
 import { db } from '@/db/client'
 import {
@@ -47,16 +48,20 @@ export const pruneExpiredRecords = async (now = new Date()) => {
 }
 
 export const sweepOrphanAvatars = async (now = new Date()) => {
-  const [userAvatars, organizationAvatars, ...listings] = await Promise.all([
+  const [userAvatars, organizationAvatars, issuedAssets, ...listings] = await Promise.all([
     db.select({ url: users.avatarUrl }).from(users).where(isNotNull(users.avatarUrl)),
     db
       .select({ url: organizationProfiles.avatarUrl })
       .from(organizationProfiles)
       .where(isNotNull(organizationProfiles.avatarUrl)),
+    listSnapshotAssetUrls(),
     ...AVATAR_PREFIXES.map(r2List),
   ])
 
-  const referenced = [...userAvatars, ...organizationAvatars].flatMap(({ url }) => (url ? [url] : []))
+  const referenced = [
+    ...[...userAvatars, ...organizationAvatars].flatMap(({ url }) => (url ? [url] : [])),
+    ...issuedAssets,
+  ]
   const orphans = selectOrphanKeys(listings.flat(), referenced, new Date(now.getTime() - DAY))
   await Promise.all(orphans.map(r2Delete))
   return orphans.length

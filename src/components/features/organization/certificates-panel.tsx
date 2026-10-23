@@ -18,9 +18,9 @@ interface LoadedCertificates {
   tutors: OrgTutor[]
 }
 
-const fetchCertificates = async (organizationId: number): Promise<LoadedCertificates | null> => {
+const fetchCertificates = async (organizationId: number, cache = true): Promise<LoadedCertificates | null> => {
   const [certificates, tutors] = await Promise.all([
-    listOrganizationCertificates(organizationId),
+    listOrganizationCertificates(organizationId, { cache }),
     listOrgTutors(organizationId),
   ])
   if (certificates.data === null || certificates.error || tutors.error) return null
@@ -59,7 +59,7 @@ const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void;
   }, [organizationId])
 
   const reload = async () => {
-    const next = await fetchCertificates(organizationId)
+    const next = await fetchCertificates(organizationId, false)
     if (next) setLoaded(next)
   }
 

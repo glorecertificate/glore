@@ -30,8 +30,8 @@ const CertificatesPageContent = async () => {
 
   if (role === 'tutor') {
     const [{ data: assigned }, { data: unassigned }] = await Promise.all([
-      listTutorCertificates(),
-      listUnassignedOrgCertificates(),
+      listTutorCertificates({ cache: false }),
+      listUnassignedOrgCertificates({ cache: false }),
     ])
     return <TutorCertificatesContent assigned={assigned ?? []} unassigned={unassigned ?? []} />
   }

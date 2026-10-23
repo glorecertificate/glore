@@ -16,7 +16,7 @@ export const StepList = ({
   items,
   ...props
 }: Omit<React.ComponentProps<'ol'>, 'children'> & { items: StepItem[] }) => (
-  <ol className={cn('flex w-full items-start gap-2', className)} data-slot="step-list" {...props}>
+  <ol className={cn('flex w-full items-start gap-1 sm:gap-2', className)} data-slot="step-list" {...props}>
     {items.map((item, index) => (
       <li
         aria-current={item.state === 'current' ? 'step' : undefined}
@@ -45,10 +45,10 @@ export const StepList = ({
             <span aria-hidden className={cn('h-px flex-1 bg-border', item.state === 'done' && 'bg-primary')} />
           )}
         </div>
-        <div className="min-w-0 pr-2">
+        <div className="min-w-0 sm:pr-2">
           <p
             className={cn(
-              'text-xs leading-tight font-medium wrap-break-word sm:text-sm',
+              'text-[11px] leading-tight font-medium wrap-break-word hyphens-auto sm:text-sm',
               item.state === 'upcoming' ? 'text-muted-foreground' : 'text-foreground'
             )}
           >

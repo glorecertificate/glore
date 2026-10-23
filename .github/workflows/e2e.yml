@@ -68,9 +68,10 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Migrate and seed the database
+      - name: Migrate, import, and seed the database
         run: |
           pnpm run db migrate
+          pnpm run content:import --target local
           pnpm run db:seed
       - name: Build
         run: pnpm run build

@@ -46,3 +46,7 @@ Production imports every course as a draft. GloRe editors review and publish eac
 
 - Name the GloRe editors who review translations in the app (`/translations`, `/legal`, course and doc editors).
 - Ask counsel whether only the terms need acceptance and which changes count as material (U20).
+
+### 7. CI coverage
+
+- Run an S3-compatible server (MinIO) in `e2e.yml` behind an optional `R2_ENDPOINT` override in `src/lib/storage.ts`, so the PDF approval test in `certificate-lifecycle.spec.ts` stops skipping in CI.

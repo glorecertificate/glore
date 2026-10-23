@@ -122,6 +122,10 @@ test('tutor lowers a level, requests changes with a comment, and the volunteer r
 })
 
 test('tutor previews the PDF and approves, and the volunteer shares the certificate', async ({ browser }) => {
+  test.skip(
+    /^0+$/u.test(process.env.R2_ACCOUNT_ID ?? ''),
+    'Approval stores the PDF in R2, and this run has no real bucket'
+  )
   const { page } = tutor
   await page.goto(`/certificates/${certificateId}/review`)
   await page.getByRole('button', { name: 'Start review' }).click()

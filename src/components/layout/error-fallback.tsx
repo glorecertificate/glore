@@ -1,10 +1,12 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { useLayoutEffect } from 'react'
 
 import { useTranslations } from 'next-intl'
 
 import { ErrorIcon } from '@/components/icons/error'
+import { appTitle } from '@/lib/metadata'
 import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
@@ -33,6 +35,17 @@ export const ErrorFallback = ({
   const t = useTranslations('Common')
 
   const errorTitle = title ?? (type === 'not-found' ? t('notFound') : t('errorTitle'))
+  useLayoutEffect(() => {
+    const documentTitle = appTitle(errorTitle)
+    const apply = () => {
+      if (document.title !== documentTitle) document.title = documentTitle
+    }
+    apply()
+    const observer = new MutationObserver(apply)
+    observer.observe(document.head, { characterData: true, childList: true, subtree: true })
+    return () => observer.disconnect()
+  }, [errorTitle])
+
   const errorMessage = (() => {
     if (message) return message
     return type === 'not-found'

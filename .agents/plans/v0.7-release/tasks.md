@@ -1,4 +1,4 @@
-# GloRe v1 release: tasks
+# GloRe v0.7 release: tasks
 
 Executable checklist and live status. Rules and IDs come from `spec.md` and `plan.md`. History and per-task notes: `log.md`.
 
@@ -7,7 +7,7 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 - State: in progress, the user gave the go on 2026-10-22.
 - Current wave: W3 (verification and release readiness). W0 to W2 are merged.
 - Next up: G7 docs sync, then the G8 handoff in `runbook.md`. Production steps stay with the user.
-- Branch: local `release/v1` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
+- Branch: local `release/v0.7` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
 Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task is done when its acceptance holds and `pnpm run check` exits 0.
@@ -30,7 +30,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 - Decision: a private `/<username>` keeps status 200, because `notFound()` runs inside `Suspense` after streaming starts.
   - Next.js injects `noindex` there. A real 404 would need a database read in `proxy` on every request.
 - Done in lane I (e9d95fa2): `Certificates` and `Courses` split into feature namespaces, `serverNamespaces` in `config/i18n.json`, and a locale switch that fetches client namespaces only.
-- Open, after v1: route-scoped client message providers, splitting `Organization`, `Users`, and `Admin.*`, and deleting leftover unused keys.
+- Open, after v0.7: route-scoped client message providers, splitting `Organization`, `Users`, and `Admin.*`, and deleting leftover unused keys.
 - `scripts/content/validate.test.ts` and `lib/email.test.ts` can time out when several worktrees run Vitest against the same clone.
 
 ### Content and legal
@@ -43,7 +43,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 All done.
 
-- W0.1 [x] 366ddc5e: cut `release/v1`, reused Docker Postgres and Mailpit, baseline recorded (`check` exit 0, `test` 17 of 17, `test:e2e` 11 of 11, recovery mail reached Mailpit).
+- W0.1 [x] 366ddc5e: cut `release/v0.7`, reused Docker Postgres and Mailpit, baseline recorded (`check` exit 0, `test` 17 of 17, `test:e2e` 11 of 11, recovery mail reached Mailpit).
 - W0.2 [x] 2654156e: schema batch in 3 migrations with parsers, `src/db/schemas.ts`, relations, `CacheTag` entries. Migrates on `db:reset` and on current data.
 - W0.3 [x] 82d1db3d: `recordEvent(tx, event)` and `notify(event)` with the typed catalog, recipients, locale, preference gating, in-app rows, and mail when a template exists.
 - W0.4 [x] fde38ee1: `config/app.json` keys (`maxSkills` 4, `minActivityHours` 100, `minActivityMonths` 3, `invitationExpiryDays` 7, `reviewReminderDays` [3, 7], `maxBulkInvites` 50), `SKILL_LEVELS`, `fullName()`.
@@ -156,7 +156,7 @@ Content rules: plain, warm language for young adults, examples from volunteering
   - G3a (volunteer, tutor, public) ran. Fixed in dd3d77a5 to 0cfd8c44: tutor release 404, share overflow at 390px, level picker overlap, palette drafts, stale date error, raw nationality, draft resume step, and copy.
   - G3a fixed earlier: the PDF task overlap (03dccbd6).
   - Fixed: stepper labels centered (7f4ec851), neutral request page title (347463db).
-  - Open, low: toast over settings tabs, IPv6 loopback, the approve preview fallback, and prefill after a withdrawal (new feature, after v1).
+  - Open, low: toast over settings tabs, IPv6 loopback, the approve preview fallback, and prefill after a withdrawal (new feature, after v0.7).
   - G3b (editor, admin, impersonation, multi-org) and G3c (owner, representative, every role) ran. Lanes Y and Z merged their fixes.
   - Fixed: stale reviewer and tutor queues after a reassign or release (8aed4e35).
   - Fixed: public period and skills heading (f5331342), signed-in profile 404 (aa984383), skill progress cap (6aac455c).

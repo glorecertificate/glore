@@ -1,6 +1,6 @@
-# GloRe v1 release: log
+# GloRe v0.7 release: log
 
-Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks.md`. Entries are 2026-10-22 unless a date says otherwise.
+Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tasks.md`. Entries are 2026-10-22 unless a date says otherwise.
 
 ## Planning and W0
 
@@ -15,7 +15,7 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### W0.1
 
-- The orchestrator cut `release/v1`, reused Docker Postgres and Mailpit, and started dev.
+- The orchestrator cut `release/v0.7`, reused Docker Postgres and Mailpit, and started dev.
 - Baseline: `check` exit 0, `test` 17 of 17, `test:e2e` 11 of 11, recovery mail reached Mailpit.
 
 ### W0.2
@@ -74,13 +74,13 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### Orchestrator
 
-- Committed the UI kit, PDF, seed, org-cookie fix, and `.env.example` on `release/v1`, and fixed `typegen` for nested `public/` folders.
+- Committed the UI kit, PDF, seed, org-cookie fix, and `.env.example` on `release/v0.7`, and fixed `typegen` for nested `public/` folders.
 - Lane E1 started in `.claude/worktrees/lane-e` (branch `lane/e`).
 
 ### Orchestrator
 
-- Merged `lane/e` (E1) into `release/v1-next`.
-- After the demo, `release/v1` was fast-forwarded from `release/v1-next` and finished worktrees were removed.
+- Merged `lane/e` (E1) into `release/v0.7-next`.
+- After the demo, `release/v0.7` was fast-forwarded from `release/v0.7-next` and finished worktrees were removed.
 - Lane C leaked one commit's edits into the main checkout; they were restored because `lane/c` holds them.
 
 ## Lane A: certificates
@@ -268,7 +268,7 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### Orchestrator
 
-- E2 batch 5 and lanes B and C merged into `release/v1`.
+- E2 batch 5 and lanes B and C merged into `release/v0.7`.
 - All 25 skill courses are in `content/`.
 - E2 batches 1 to 3 had merged earlier (15 of 25).
 - Spanish and Italian skill names are standard terms except the few glorecertificate.net confirms.

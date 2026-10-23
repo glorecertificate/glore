@@ -1,4 +1,4 @@
-# GloRe v1 release: plan
+# GloRe v0.7 release: plan
 
 Architecture, sequence, and working protocol for v1. Decisions with IDs (U1, D3) live in `spec.md`; the checklist lives in `tasks.md`.
 
@@ -58,7 +58,7 @@ Lanes never change the schema. They append a request here (date, lane, change, r
 
 - None yet.
 
-## Routes after v1
+## Routes after v0.7
 
 | Area           | Routes                                                                                                                                                                        |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -136,12 +136,12 @@ Never revive variants or a preview widget.
 
 ### Orchestration
 
-- The orchestrator owns `release/v1`, W0, schema batches, merges, and W2 to W3 verification.
-- Lane agents run with `isolation: "worktree"` from the latest `release/v1`, never nested, at most four writers at once.
+- The orchestrator owns `release/v0.7`, W0, schema batches, merges, and W2 to W3 verification.
+- Lane agents run with `isolation: "worktree"` from the latest `release/v0.7`, never nested, at most four writers at once.
 - A lane agent commits one Conventional Commit per finished task, only after `pnpm run check` exits 0 and its tests pass. It never pushes.
 - Lanes touch only the files they own (listed in `tasks.md`).
 - Shared additions are append-only: own `messages/*.json` namespaces, new tags at the end of `src/lib/cache.ts`.
-- Merging: the orchestrator merges each lane into `release/v1`, unions `messages/*.json` keys on conflict, then reruns `pnpm run check` and `pnpm run test`.
+- Merging: the orchestrator merges each lane into `release/v0.7`, unions `messages/*.json` keys on conflict, then reruns `pnpm run check` and `pnpm run test`.
 - After each merge, the orchestrator checks the lane's flows on the single dev server at `https://glore.localhost`. Worktrees never start a dev server.
 
 ### Effort (Opus 5.5)
@@ -173,7 +173,7 @@ The user runs the orchestrator session at `xhigh`. The orchestrator passes `effo
 - Update `tasks.md` in the same commit as the work: status, commit hash, "Next up", and a line in `log.md`.
 - Record a changed decision in its row in `spec.md` as "Changed on date: ..." and log it.
 - Keep these files complete enough that a fresh agent can resume from them alone; link code paths instead of copying code.
-- Delete this folder once v1 ships, after moving durable facts into `.agents/specs/`.
+- Delete this folder once v0.7 ships, after moving durable facts into `.agents/specs/`.
 
 ## Risks
 

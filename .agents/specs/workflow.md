@@ -64,7 +64,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 ### Crowdin flow
 
-- Crowdin's GitHub integration (source and translation files mode) syncs `release/v1` and `main`.
+- Crowdin's GitHub integration (source and translation files mode) syncs `release/v0.7` and `main`.
 - A source change uploads, translators work in Crowdin, and Crowdin opens a PR from an `l10n_<branch>` branch titled `chore: sync translations from crowdin`.
 - Review that PR like code: `pnpm run check` MUST exit 0, then squash merge.
 - Never edit a Crowdin PR branch by hand: fix the string in Crowdin and let it re-sync.
@@ -129,7 +129,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 ## Worktrees and lanes
 
-- The orchestrator works on a branch (v1: `release/v1`) in the main checkout. Worktrees are only for spawned lane agents.
+- The orchestrator works on a branch (v0.7: `release/v0.7`) in the main checkout. Worktrees are only for spawned lane agents.
 - Merge a finished lane into that branch, then delete its worktree and branch.
 - Before merging lanes, run `git status` in the main checkout, because a lane once leaked a copy of its commit there. Compare unexplained changes with lane commits before restoring them.
 - Commit with explicit paths so stray staged changes never ride along.

@@ -1,14 +1,14 @@
-# GloRe v1 release: spec
+# GloRe v0.7 release: spec
 
 Goals, decisions, and acceptance for the first production release.
 
 Companion files: `plan.md` (architecture, protocol), `tasks.md` (checklist, status, follow-ups), `log.md` (history), `pdf.md` (certificate PDF).
 
-Read `spec.md`, `plan.md`, `tasks.md`, and `pdf.md` before working on v1, and keep `tasks.md` current as you go.
+Read `spec.md`, `plan.md`, `tasks.md`, and `pdf.md` before working on v0.7, and keep `tasks.md` current as you go.
 
 ## Goal
 
-Ship v1 at `https://elearning.glorecertificate.net` for volunteers, learners, tutors, organizations, editors, and platform admins.
+Ship v0.7 at `https://elearning.glorecertificate.net` for volunteers, learners, tutors, organizations, editors, and platform admins.
 
 The product must be stable, complete for every role, and polished enough to replace the abandoned GloRe e-learning platform.
 
@@ -45,12 +45,12 @@ Re-verify any claim against the code before acting on it.
 | U3  | The PDF matches the template, holds 3 to 4 skills, and adds a small QR, the certificate ID, and the verify URL in the empty bottom-left area.                                                                    |
 | U4  | No marketing landing. The app stays logged-in plus a public verification page; `/` keeps redirecting.                                                                                                            |
 | U5  | Test accounts are plus-addresses of `TEST_EMAIL` (set by the user in `.env.local`). The real address never appears in tracked files.                                                                             |
-| U6  | One Conventional Commit per finished task on local lane branches, merged into local `release/v1`. Nothing is pushed until the user asks.                                                                         |
+| U6  | One Conventional Commit per finished task on local lane branches, merged into local `release/v0.7`. Nothing is pushed until the user asks.                                                                       |
 | U7  | Plans live in `.agents/plans/`; `AGENTS.md` was updated from `.agents/plan/`.                                                                                                                                    |
 | U8  | Skills match glorecertificate.net: the 25 skills of the GloRe platform in 4 groups, listed in "Skill framework" below.                                                                                           |
 | U9  | The activity rule is 3 months or 100 hours.                                                                                                                                                                      |
 | U10 | The Erasmus+ emblem stays on every certificate for now.                                                                                                                                                          |
-| U11 | v1 ships temporary privacy, terms, and Quality Charter texts; the GloRe team supplies the final texts later.                                                                                                     |
+| U11 | v0.7 ships temporary privacy, terms, and Quality Charter texts; the GloRe team supplies the final texts later.                                                                                                   |
 | U12 | Changed on 2026-10-22 (D24, U11): legal pages drop the "Temporary text" banner, the `temporary` front matter flag, and the "temporary text" intro sentence before launch.                                        |
 | U13 | Organization role `admin` reads Owner (en), Administrador/a (es), Amministratore (it); platform admins read Admin in all three languages. Only labels change, the stored value `admin` stays.                    |
 | U14 | Changed on 2026-10-22 (c7a1c65b): issued certificates stay valid and keep every original detail after the holder deletes the account. The verify page may note that the holder left; managers can still revoke.  |
@@ -115,7 +115,7 @@ The user answered O1 to O3 and the legal texts of O4 on 2026-10-22 (U8 to U11).
 - O4: a GloRe LinkedIn Page ID for "Add to profile"; until then the link passes `organizationName`.
 - O5: the group and definition of Problem solving, Decision making, Initiative, and Work ethic and commitment (D1, "Skill framework").
 
-## Deferred beyond v1
+## Deferred beyond v0.7
 
 | Area          | Deferred items                                                                                  |
 | ------------- | ----------------------------------------------------------------------------------------------- |

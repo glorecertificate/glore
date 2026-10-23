@@ -1,4 +1,4 @@
-# GloRe v1 release: certificate PDF
+# GloRe v0.7 release: certificate PDF
 
 Layout reference for task A5, measured from `.agents/references/certificate-template.pdf` with PyMuPDF on 2026-10-22.
 

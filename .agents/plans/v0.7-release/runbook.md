@@ -1,19 +1,19 @@
-# v1 production runbook
+# v0.7 production runbook
 
 Handoff for G8. Every step that writes to staging or production is a user step. Agents prepare and verify, the user runs or approves.
 
 ## State
 
-- Branch `release/v1` holds the release. Nothing is pushed.
+- Branch `release/v0.7` holds the release. Nothing is pushed.
 - Production (`elearning.glorecertificate.net`, Neon branch `production` in project `old-base-10661180`) lacks migrations 0013 to 0028.
 - Production has no database comment and holds 0 certificates.
 - Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).
 
 ## Prepare
 
-1. Review `release/v1`, push it, and open a pull request into `main`. Do not merge yet.
-2. Optional staging pass: push `release/v1` to `staging`, run `DATABASE_URL='<staging url>' pnpm run db migrate` (staging has 23 of 29 migrations), then follow `manual-testing.md`, "Setup", steps 4 to 6.
-3. Back up production: in the Neon console create a branch `pre-v1-<date>` from `production`, or take a snapshot. The backup keeps the plaintext `team_invitations.token` column, so delete it once the release is stable.
+1. Review `release/v0.7`, push it, and open a pull request into `main`. Do not merge yet.
+2. Optional staging pass: push `release/v0.7` to `staging`, run `DATABASE_URL='<staging url>' pnpm run db migrate` (staging has 23 of 29 migrations), then follow `manual-testing.md`, "Setup", steps 4 to 6.
+3. Back up production: in the Neon console create a branch `pre-v0.7-<date>` from `production`, or take a snapshot. The backup keeps the plaintext `team_invitations.token` column, so delete it once the release is stable.
 4. Set the production env vars in Vercel, listed below.
 
 ## Production env vars
@@ -52,7 +52,7 @@ Migration notes: 0015 dedupes rows before 0016 adds unique indexes, 0018 and 002
 ## Rollback
 
 1. In Vercel, promote the previous production deployment.
-2. If data must go back, restore the `pre-v1-<date>` Neon branch or snapshot. Migrations have no down scripts.
+2. If data must go back, restore the `pre-v0.7-<date>` Neon branch or snapshot. Migrations have no down scripts.
 
 ## Known gaps
 

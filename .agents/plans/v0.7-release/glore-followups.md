@@ -1,6 +1,6 @@
 # GloRe team follow-ups
 
-Items the GloRe team owns before or soon after the v1 launch. Engineering cannot settle them.
+Items the GloRe team owns before or soon after the v0.7 launch. Engineering cannot settle them.
 
 ## Before launch
 

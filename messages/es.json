@@ -1027,7 +1027,7 @@
       "issued": "Tu certificado está emitido y se puede verificar en línea.",
       "view": "Ver certificado",
       "changes": "Tu tutor ha pedido cambios. Actualiza la solicitud y vuelve a enviarla.",
-      "waiting": "Un tutor está trabajando en tu solicitud. Te avisaremos cuando haya una decisión.",
+      "waiting": "Tu solicitud está pendiente de revisión. Te avisaremos cuando haya una decisión.",
       "continueDraft": "Continuar borrador",
       "readyTitle": "Ya puedes solicitar tu certificado",
       "readyMessage": "Has completado los cursos de habilidades. Añade tu experiencia de voluntariado para enviar la solicitud."
@@ -1650,8 +1650,8 @@
     "preview": "Vista previa del certificado",
     "skills": "Habilidades a incluir",
     "unknownVolunteer": "Voluntario desconocido",
-    "publicNotFound": "Certificado no encontrado",
-    "publicNotFoundMessage": "Este certificado no existe o ya no está disponible públicamente.",
+    "publicNotFound": "Perfil no encontrado",
+    "publicNotFoundMessage": "Este perfil no existe o no es público.",
     "publicVerified": "Certificado verificado",
     "verifiedCredential": "Credencial verificada",
     "credentialStatement": "ha desarrollado y demostrado las siguientes habilidades blandas durante el voluntariado con {organization}.",
@@ -1908,7 +1908,7 @@
     },
     "detail": {
       "previewLabel": "Vista previa del certificado de {organization}",
-      "periodValue": "Del {start} al {end}",
+      "periodValue": "{start} - {end}",
       "hoursValue": "{hours, plural, one {# hora} other {# horas}}",
       "tasks": "Tareas principales",
       "journey": "Progreso del certificado",
@@ -2021,7 +2021,7 @@
       "holderLeft": "La persona titular ya no tiene una cuenta de GloRe. Esto no afecta al certificado.",
       "downloadPdf": "Descargar PDF",
       "period": "Periodo",
-      "periodValue": "Del {start} al {end}",
+      "periodValue": "{start} - {end}",
       "hours": "Horas",
       "hoursValue": "{hours, plural, one {# hora} other {# horas}}",
       "location": "Lugar",
@@ -3733,7 +3733,7 @@
       },
       "course_completed": {
         "title": "Curso completado",
-        "body": "Bien hecho. Elige tu próximo curso o consulta tu certificado."
+        "body": "Bien hecho. Elige tu próximo curso para seguir aprendiendo."
       },
       "organization_application_received": {
         "title": "Nueva solicitud de organización",

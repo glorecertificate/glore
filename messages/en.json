@@ -1027,7 +1027,7 @@
       "issued": "Your certificate is issued and can be verified online.",
       "view": "View certificate",
       "changes": "Your tutor asked for changes. Update the request and send it again.",
-      "waiting": "A tutor is working on your request. We will notify you when it is decided.",
+      "waiting": "Your request is waiting for review. We will notify you when it is decided.",
       "continueDraft": "Continue draft",
       "readyTitle": "You can request your certificate",
       "readyMessage": "You completed the skill courses. Add your volunteering experience to send the request."
@@ -1650,8 +1650,8 @@
     "preview": "Certificate preview",
     "skills": "Skills to include",
     "unknownVolunteer": "Unknown volunteer",
-    "publicNotFound": "Certificate not found",
-    "publicNotFoundMessage": "This certificate does not exist or is no longer publicly available.",
+    "publicNotFound": "Profile not found",
+    "publicNotFoundMessage": "This profile does not exist or is not public.",
     "publicVerified": "Verified certificate",
     "verifiedCredential": "Verified credential",
     "credentialStatement": "has developed and demonstrated the following soft skills while volunteering with {organization}.",
@@ -3733,7 +3733,7 @@
       },
       "course_completed": {
         "title": "Course completed",
-        "body": "Well done. Pick your next course or check your certificate."
+        "body": "Well done. Pick your next course to keep learning."
       },
       "organization_application_received": {
         "title": "New organization application",

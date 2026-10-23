@@ -87,6 +87,7 @@ src/
 │   ├── storage.ts      # R2 helpers (r2Put, r2Delete, r2List, r2PresignAvatar, ...)
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, ...)
 │   ├── unsubscribe.ts  # Signed one-click unsubscribe tokens
+│   ├── url.ts          # isHttpUrl(), optionalHttpUrl() zod field for website addresses
 │   ├── user-agent.ts   # Session device labels
 │   ├── username.ts     # Reserved usernames and slug rules
 │   └── utils.ts        # cn(), debounce(), camelize(), tempId()/isTempId(), ...

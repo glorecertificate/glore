@@ -19,6 +19,7 @@ import { AvatarStack } from '@/components/ui/avatar-stack'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatCard } from '@/components/ui/stat-card'
+import { isHttpUrl } from '@/lib/url'
 
 import { ActivityList } from './activity-list'
 import { OrganizationChecklist } from './checklist'
@@ -99,7 +100,7 @@ export const OrganizationOverview = ({
                 <div className="space-y-1 text-sm">
                   <p>{data.organization.email}</p>
                   {data.organization.phone && <p>{data.organization.phone}</p>}
-                  {data.organization.url && (
+                  {data.organization.url && isHttpUrl(data.organization.url) && (
                     <a
                       className="text-link hover:underline"
                       href={data.organization.url}

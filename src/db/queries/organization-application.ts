@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { LOCALES } from '@/lib/i18n'
+import { isHttpUrl } from '@/lib/url'
 
 export const APPLICATION_MOTIVATION_MIN = 20
 
@@ -17,14 +18,6 @@ const optional = (max: number) =>
     .max(max, 'tooLong')
     .optional()
     .transform(value => value || null)
-
-const isHttpUrl = (value: string) => {
-  try {
-    return ['http:', 'https:'].includes(new URL(value).protocol)
-  } catch {
-    return false
-  }
-}
 
 const email = z.string().trim().toLowerCase().min(1, 'required').pipe(z.email('email').max(254, 'tooLong'))
 

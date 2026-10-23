@@ -111,4 +111,56 @@ describe.skipIf(!isLocalDatabase)('admin organization decisions', () => {
     expect(await context.actions.getAdminOrganizationName(id)).toBe(`Decision title ${suffix}`)
     expect(await context.actions.getAdminOrganizationName(2_000_000_000)).toBeNull()
   })
+
+  const findByEmail = async (email: string) => {
+    const rows = await context.client.db.query.organizations.findMany({
+      columns: { id: true },
+      where: eq(context.schema.organizations.email, email),
+    })
+    organizationIds.push(...rows.map(row => row.id))
+    return rows
+  }
+
+  it('refuses a website that is not an http or https address', async () => {
+    const email = `javascript-${suffix}@decisions.test`
+
+    const created = await context.actions.createOrganization({
+      city: 'Milan',
+      email,
+      name: `Script ${suffix}`,
+      url: ['javascript', 'alert(1)'].join(':'),
+    })
+    const invited = await context.actions.inviteOrganization({
+      city: 'Milan',
+      country: 'it',
+      email,
+      name: `Script invite ${suffix}`,
+      registrantEmail: `registrant-${suffix}@applicants.test`,
+      url: 'ftp://example.org',
+    })
+
+    const rows = await findByEmail(email)
+    expect(created.error).toBeTruthy()
+    expect(invited.error).toBeTruthy()
+    expect(rows).toHaveLength(0)
+  })
+
+  it('stores a valid website', async () => {
+    const email = `website-${suffix}@decisions.test`
+
+    const created = await context.actions.createOrganization({
+      city: 'Milan',
+      email,
+      name: `Website ${suffix}`,
+      url: ' https://example.org ',
+    })
+
+    const [organization] = await findByEmail(email)
+    expect(created.error).toBeFalsy()
+    const profile = await context.client.db.query.organizationProfiles.findFirst({
+      columns: { url: true },
+      where: eq(context.schema.organizationProfiles.organizationId, organization?.id ?? 0),
+    })
+    expect(profile?.url).toBe('https://example.org')
+  })
 })

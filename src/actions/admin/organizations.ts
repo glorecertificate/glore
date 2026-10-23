@@ -31,6 +31,7 @@ import {
   organizations,
 } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
+import { optionalHttpUrl } from '@/lib/url'
 import config from '~/config/app.json'
 
 const loadOrganizations = () =>
@@ -164,6 +165,9 @@ export const inviteOrganization = async ({
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can invite organizations' }
 
+  const website = optionalHttpUrl(500).safeParse(url ?? '')
+  if (!website.success) return { data: null, error: { code: 'INVALID_INPUT', message: 'Invalid website address' } }
+
   const result = await safeQuery(async () => {
     const handle = name
       .toLowerCase()
@@ -191,7 +195,7 @@ export const inviteOrganization = async ({
           email: orgEmail.trim().toLowerCase(),
           handle: existing ? `${handle}-${randomBytes(3).toString('hex')}` : handle,
           name: name.trim(),
-          url: url?.trim() || null,
+          url: website.data,
         },
       })
     )
@@ -221,6 +225,9 @@ export const createOrganization = async ({
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can create organizations' }
 
+  const website = optionalHttpUrl(500).safeParse(url ?? '')
+  if (!website.success) return { data: null, error: { code: 'INVALID_INPUT', message: 'Invalid website address' } }
+
   const result = await safeQuery(async () => {
     const handle = name
       .toLowerCase()
@@ -243,7 +250,7 @@ export const createOrganization = async ({
         email: orgEmail.trim().toLowerCase(),
         handle: finalHandle,
         name: name.trim(),
-        url: url?.trim() || null,
+        url: website.data,
       })
     )
   })

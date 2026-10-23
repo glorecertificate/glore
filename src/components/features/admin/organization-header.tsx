@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { countryCodeToFlag } from '@/components/ui/country-select'
 import { type Organization } from '@/db/queries/organization'
 import { type MessageKey } from '@/lib/i18n'
+import { isHttpUrl } from '@/lib/url'
 
 export const OrganizationHeader = ({ organization }: { organization: Organization }) => {
   const { dateTime } = useFormatter()
@@ -57,7 +58,7 @@ export const OrganizationHeader = ({ organization }: { organization: Organizatio
               <LucideIcon className="size-3.5 shrink-0" name="mail" />
               <span className="truncate">{organization.email}</span>
             </span>
-            {organization.url && (
+            {organization.url && isHttpUrl(organization.url) && (
               <a className="group flex items-center gap-1.25" href={organization.url} rel="noreferrer" target="_blank">
                 <LucideIcon className="size-3.5 shrink-0" name="globe" />
                 <span className="transition-colors group-hover:text-foreground group-hover:underline">

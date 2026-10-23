@@ -2126,6 +2126,7 @@
     "phonePlaceholder": "+39 02 1234 5678",
     "website": "Sitio web",
     "websitePlaceholder": "https://example.org",
+    "websiteInvalid": "Introduce una dirección web válida que empiece por http o https.",
     "description": "Descripción",
     "descriptionPlaceholder": "Describe tu organización y su misión",
     "contactDetails": "Datos de contacto",

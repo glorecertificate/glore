@@ -40,7 +40,7 @@ import { SignatureUpload } from './signature-upload'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
 
-type Values = z.infer<typeof organizationSettingsSchema>
+type Values = z.infer<ReturnType<typeof organizationSettingsSchema>>
 type Locale = keyof IntlRecord
 
 interface OrganizationSettingsProps {
@@ -72,7 +72,7 @@ export const OrganizationSettings = ({
   const candidates = members.filter(member => member.isRepresentative && !member.isPending)
 
   const form = useForm<Values>({
-    resolver: zodResolver(organizationSettingsSchema),
+    resolver: zodResolver(organizationSettingsSchema({ url: t('websiteInvalid') })),
     defaultValues: {
       address: organization.address ?? '',
       city: organization.city ?? '',

@@ -19,6 +19,21 @@ const t = (locale: keyof typeof catalogs, path: string, values?: Values) => {
   return translator(path.slice(index + 1), values)
 }
 
+describe('Courses quiz validation messages', () => {
+  const keys = ['quizQuestionEmpty', 'quizMinOptions', 'quizOptionEmpty', 'quizNoCorrect']
+  const values = { number: 2, position: 3, title: 'Active listening' }
+
+  it('names the lesson position, its title, and the question in every locale', () => {
+    for (const locale of ['en', 'es', 'it'] as const) {
+      for (const key of keys) {
+        const message = t(locale, `Courses.${key}`, values)
+        expect(message).toContain('3 (Active listening)')
+        expect(message).toContain('2')
+      }
+    }
+  })
+})
+
 describe('Learning.player quiz hints', () => {
   it('gates continuing in the gated hint and not in the open hint', () => {
     expect(t('en', 'Learning.player.quizHint', { count: 1 })).toContain('to continue')

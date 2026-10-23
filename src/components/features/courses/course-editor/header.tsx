@@ -81,15 +81,17 @@ export const CourseHeader = () => {
   const saveDisabled = !languageStatus.hasUpdates && publishTarget === languageStatus.published
 
   const validateQuiz = () => {
-    for (const lesson of course.lessons) {
+    for (const [lessonIndex, lesson] of course.lessons.entries()) {
+      const position = lessonIndex + 1
+      const title = lesson.title?.[language] || t('untitledLesson')
       for (const [index, question] of (lesson.questions ?? []).entries()) {
-        const number = index + 1
-        if (!((question.description as IntlRecord)?.[language] ?? '').trim()) return t('quizQuestionEmpty', { number })
-        if (question.options.length < 2) return t('quizMinOptions', { number })
+        const values = { number: index + 1, position, title }
+        if (!((question.description as IntlRecord)?.[language] ?? '').trim()) return t('quizQuestionEmpty', values)
+        if (question.options.length < 2) return t('quizMinOptions', values)
         if (question.options.some(option => !((option.content as IntlRecord)?.[language] ?? '').trim())) {
-          return t('quizOptionEmpty', { number })
+          return t('quizOptionEmpty', values)
         }
-        if (!question.options.some(option => option.isCorrect)) return t('quizNoCorrect', { number })
+        if (!question.options.some(option => option.isCorrect)) return t('quizNoCorrect', values)
       }
     }
     return null

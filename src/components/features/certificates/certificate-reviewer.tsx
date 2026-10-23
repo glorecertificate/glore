@@ -22,18 +22,19 @@ export interface OrgTutor {
 
 export const CertificateReviewer = ({ certificate, tutors }: { certificate: Certificate; tutors?: OrgTutor[] }) => {
   const t = useTranslations('Certificates')
-  const { refresh } = useRouter()
+  const { push, refresh } = useRouter()
   const { user } = useSession()
   const [pending, startTransition] = useTransition()
 
   const canAssign = Array.isArray(tutors) && certificate.isOpen
   const canRelease = user.isTutor && certificate.reviewerId === user.id && certificate.isOpen && !canAssign
 
-  const run = (work: () => ReturnType<typeof unassignCertificate>, success: string) =>
+  const run = (work: () => ReturnType<typeof unassignCertificate>, success: string, released = false) =>
     startTransition(async () => {
       const { error } = await work()
       if (error) return void toast.error(t('assignTutorError'))
       toast.success(success)
+      if (released) return push('/certificates')
       return refresh()
     })
 
@@ -79,7 +80,7 @@ export const CertificateReviewer = ({ certificate, tutors }: { certificate: Cert
       {canRelease && (
         <Button
           disabled={pending}
-          onClick={() => run(() => unassignCertificate(certificate.id), t('selfReleaseSuccess'))}
+          onClick={() => run(() => unassignCertificate(certificate.id), t('selfReleaseSuccess'), true)}
           size="sm"
           variant="ghost"
         >

@@ -225,6 +225,13 @@
       "when": 1792764252484,
       "tag": "0031_content_translations",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1792765259349,
+      "tag": "0032_app_settings",
+      "breakpoints": true
     }
   ]
 }

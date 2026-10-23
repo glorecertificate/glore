@@ -1,5 +1,6 @@
 export * from './accounts'
 export * from './activity-events'
+export * from './app-settings'
 export * from './assessments'
 export * from './certificates'
 export * from './content-translations'

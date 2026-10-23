@@ -1,5 +1,6 @@
 import { type DefaultValues } from 'react-hook-form'
 
+import { type PersonalField } from '@/components/features/certificates/rules'
 import {
   type CertificateEditValues,
   MAX_CERTIFICATE_TASKS,
@@ -8,6 +9,7 @@ import {
   MAX_RATING_COMMENT_LENGTH,
   MAX_TASK_LENGTH,
   type WizardValues,
+  wizardSchema,
 } from '@/components/features/certificates/schemas'
 import { type Certificate } from '@/db/queries/certificate'
 import { type IntlRecord } from '@/lib/i18n'
@@ -123,4 +125,18 @@ export const toEditValues = (values: WizardDraft): CertificateEditValues => {
       })
       .slice(0, MAX_CERTIFICATE_TASKS),
   }
+}
+
+export const WIZARD_STEP_FIELDS = [
+  ['activityStartDate', 'activityEndDate', 'activityDuration', 'activityLocation', 'tasks'],
+  ['skills'],
+  ['rating'],
+  ['language', 'personal'],
+] as const
+
+export const resumeStep = (values: WizardDraft, missing: readonly PersonalField[] = []) => {
+  const issues = wizardSchema(missing).safeParse(values).error?.issues ?? []
+  const fields = new Set(issues.map(issue => String(issue.path[0])))
+  const index = WIZARD_STEP_FIELDS.findIndex(step => step.some(field => fields.has(field)))
+  return index === -1 ? WIZARD_STEP_FIELDS.length - 1 : index
 }

@@ -24,9 +24,11 @@ import { SkillsStep } from '@/components/features/certificates/new/skills-step'
 import {
   type HolderProfile,
   type SkillOption,
+  WIZARD_STEP_FIELDS,
   type WizardDraft,
   certificateWizardValues,
   emptyWizardValues,
+  resumeStep,
   toEditValues,
 } from '@/components/features/certificates/new/values'
 import { missingPersonalData } from '@/components/features/certificates/rules'
@@ -52,13 +54,6 @@ import { useDebounce } from '@/hooks/use-debounce'
 import appConfig from '~/config/app.json'
 
 const STEPS = ['experience', 'skills', 'organization', 'review'] as const
-
-const STEP_FIELDS = [
-  ['activityStartDate', 'activityEndDate', 'activityDuration', 'activityLocation', 'tasks'],
-  ['skills'],
-  ['rating'],
-  ['language', 'personal'],
-] as const
 
 type SaveState = 'error' | 'idle' | 'saved' | 'saving'
 
@@ -100,7 +95,6 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const [, setDraftParam] = useQueryState('draft', parseAsInteger)
   const resubmit = certificate?.isChangesRequested ?? false
   const missing = missingPersonalData(holder)
-  const [step, setStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [saveState, setSaveState] = useState<SaveState>('idle')
@@ -112,8 +106,10 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const moved = useRef(false)
 
   const base = emptyWizardValues(locale, holder)
+  const defaultValues = certificate ? certificateWizardValues(certificate, base, skills) : base
+  const [step, setStep] = useState(() => (certificate?.isDraft ? resumeStep(defaultValues, missing) : 0))
   const form = useForm<WizardValues>({
-    defaultValues: certificate ? certificateWizardValues(certificate, base, skills) : base,
+    defaultValues,
     mode: 'onTouched',
     resolver: zodResolver(wizardSchema(missing)),
   })
@@ -165,7 +161,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   }
 
   const advance = async () => {
-    if (await form.trigger([...STEP_FIELDS[step]!])) goTo(step + 1)
+    if (await form.trigger([...WIZARD_STEP_FIELDS[step]!])) goTo(step + 1)
   }
 
   const submitError = (code: string) => {

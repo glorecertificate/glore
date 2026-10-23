@@ -5,6 +5,7 @@ import {
   type WizardDraft,
   certificateWizardValues,
   emptyWizardValues,
+  resumeStep,
   toEditValues,
 } from '@/components/features/certificates/new/values'
 import { wizardSchema } from '@/components/features/certificates/schemas'
@@ -135,5 +136,21 @@ describe('certificateWizardValues', () => {
       { courseId: 1, evidence: 'a', selfLevel: 5 },
       { courseId: 2, evidence: '', selfLevel: 4 },
     ])
+  })
+})
+
+describe('resumeStep', () => {
+  it('opens a draft on the first step with missing data', () => {
+    expect(resumeStep(emptyWizardValues('en', holder))).toBe(0)
+    expect(resumeStep(complete({ skills: [] }))).toBe(1)
+    expect(resumeStep(complete({ rating: {} }))).toBe(2)
+  })
+
+  it('opens a complete draft on the review step', () => {
+    expect(resumeStep(complete())).toBe(3)
+  })
+
+  it('opens on the review step when only personal data is missing', () => {
+    expect(resumeStep(complete(), ['nationality'])).toBe(3)
   })
 })

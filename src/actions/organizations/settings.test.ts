@@ -170,4 +170,33 @@ describe.skipIf(!isLocalDatabase)('organization branding assets', () => {
 
     expect(storage.deleteQuietly.mock.calls.map(([url]) => url)).toEqual([logo, signature])
   })
+
+  it('accepts only http and https website addresses', async () => {
+    const blank = [
+      'address',
+      'country',
+      'legalName',
+      'legalRepresentative',
+      'phone',
+      'postcode',
+      'region',
+      'registryId',
+    ]
+    const input = {
+      ...Object.fromEntries(blank.map(field => [field, ''])),
+      city: 'Milan',
+      description: {},
+      email: `branding-${suffix}@settings.test`,
+      name: 'Branding',
+    } as Omit<Parameters<typeof context.actions.updateOrganization>[0], 'url'>
+    const website = async () => (await profile())?.url
+
+    const rejected = await context.actions.updateOrganization({ ...input, url: ['javascript', 'alert(1)'].join(':') })
+    expect(rejected.error?.code).toBe('INVALID')
+    expect(await website()).toBeNull()
+
+    const accepted = await context.actions.updateOrganization({ ...input, url: 'https://example.org' })
+    expect(accepted.error).toBeNull()
+    expect(await website()).toBe('https://example.org')
+  })
 })

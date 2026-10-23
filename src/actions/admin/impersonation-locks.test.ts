@@ -52,6 +52,9 @@ describe.skipIf(!isLocalDatabase)('actions locked while impersonating', () => {
   let userActions: typeof import('@/actions/user')
   let members: typeof import('@/actions/organizations/members')
   let requests: typeof import('@/actions/certificates/requests')
+  let review: typeof import('@/actions/certificates/review')
+  let settings: typeof import('@/actions/organizations/settings')
+  let preferences: typeof import('@/actions/account/preferences')
 
   const as = (jar: Jar | null) => {
     current.jar = jar
@@ -79,12 +82,15 @@ describe.skipIf(!isLocalDatabase)('actions locked while impersonating', () => {
   beforeAll(async () => {
     vi.stubEnv('APP_URL', 'http://localhost:3000')
     fixture = await createAdminFixture(KEYS, { admins: ['admin'] })
-    ;[impersonation, authActions, userActions, members, requests] = await Promise.all([
+    ;[impersonation, authActions, userActions, members, requests, review, settings, preferences] = await Promise.all([
       import('@/actions/admin/impersonation'),
       import('@/actions/auth'),
       import('@/actions/user'),
       import('@/actions/organizations/members'),
       import('@/actions/certificates/requests'),
+      import('@/actions/certificates/review'),
+      import('@/actions/organizations/settings'),
+      import('@/actions/account/preferences'),
     ])
   }, 60_000)
 
@@ -165,5 +171,39 @@ describe.skipIf(!isLocalDatabase)('actions locked while impersonating', () => {
     as(await fixture.signIn('user'))
     const control = await requests.featureCertificate(-1)
     expect(control.error?.code).not.toBe(LOCKED.code)
+  })
+
+  it('refuses to delete an organization', async () => {
+    const jar = await impersonate()
+
+    expect(await settings.deleteOrganization()).toMatchObject({ error: LOCKED })
+
+    await stop(jar)
+    as(await fixture.signIn('user'))
+    const control = await settings.deleteOrganization()
+    expect(control.error?.code).not.toBe(LOCKED.code)
+  })
+
+  it('refuses to revoke a certificate', async () => {
+    const jar = await impersonate()
+
+    expect(await review.revokeCertificate(1, { reason: 'Revoked during a support session' })).toMatchObject({
+      error: LOCKED,
+    })
+
+    await stop(jar)
+    as(await fixture.signIn('user'))
+    const control = await review.revokeCertificate(-1, { reason: 'Revoked during a support session' })
+    expect(control.error?.code).not.toBe(LOCKED.code)
+  })
+
+  it('refuses a privacy change and keeps the profile setting', async () => {
+    const jar = await impersonate()
+    const before = await findUser()
+
+    expect(await preferences.updatePrivacy({ publicProfile: !before?.publicProfile })).toMatchObject({ error: LOCKED })
+    expect(await findUser()).toMatchObject({ publicProfile: before?.publicProfile })
+
+    await stop(jar)
   })
 })

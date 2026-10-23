@@ -7,6 +7,7 @@ import { updateTag } from 'next/cache'
 import { and, desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
 import { getAuthUser } from '@/actions/auth'
 import { expireCertificateCaches } from '@/actions/certificates/helpers'
 import { db, transaction } from '@/db/client'
@@ -58,6 +59,7 @@ export const updatePrivacy = async (values: z.input<typeof privacySchema>) => {
   const { featuredCertificateId, publicProfile } = parsed.data
 
   try {
+    await assertNotImpersonating()
     const featured = await transaction(async tx => {
       if (publicProfile !== undefined) await tx.update(users).set({ publicProfile }).where(eq(users.id, user.id))
       if (featuredCertificateId === undefined) return null

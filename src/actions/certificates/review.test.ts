@@ -19,6 +19,10 @@ vi.mock('@/actions/auth', async () => (await import('@/actions/certificates/test
 vi.mock('@/actions/user', async () => (await import('@/actions/certificates/test-harness')).mocks.user)
 vi.mock('@/actions/courses/queries', async () => (await import('@/actions/certificates/test-harness')).mocks.courses)
 vi.mock(
+  '@/actions/admin/impersonation-state',
+  async () => (await import('@/actions/certificates/test-harness')).mocks.impersonation
+)
+vi.mock(
   '@/actions/notifications/notify',
   async () => (await import('@/actions/certificates/test-harness')).mocks.notify
 )

@@ -5,6 +5,7 @@ import 'server-only'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
 import {
   buildEvent,
   certificateAction,
@@ -132,6 +133,7 @@ export const rejectCertificate = async (id: number, input: CertificateReasonValu
 
 export const revokeCertificate = async (id: number, input: CertificateReasonValues) =>
   await certificateAction(async () => {
+    await assertNotImpersonating()
     const authUser = await requireRateLimitedUser('revoke', 20)
     const certificateId = parse(idSchema, id)
     const { reason } = parse(certificateReasonSchema, input)

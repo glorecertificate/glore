@@ -7,6 +7,7 @@ import { revalidateTag } from 'next/cache'
 import { count, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
 import { deleteOrganizationAsset } from '@/actions/certificates/snapshot-assets'
 import { deleteCookie, setCookie } from '@/actions/cookies'
 import {
@@ -24,6 +25,7 @@ import { CacheTag } from '@/lib/cache'
 import { SIGNATURE_CONTENT_TYPES } from '@/lib/constants'
 import { LOCALES } from '@/lib/i18n'
 import { r2PresignAvatar, r2PresignSignature, r2VerifyAvatar } from '@/lib/storage'
+import { optionalHttpUrl } from '@/lib/url'
 
 const optionalText = (max: number) =>
   z
@@ -45,7 +47,7 @@ const organizationSchema = z.object({
   postcode: optionalText(20),
   region: optionalText(100),
   registryId: optionalText(100),
-  url: optionalText(500),
+  url: optionalHttpUrl(500),
 })
 
 const requireOwner = async (organizationId?: number) => {
@@ -167,6 +169,7 @@ export const removeOrganizationSignature = async (organizationId?: number) =>
 
 export const deleteOrganization = async (organizationId?: number) =>
   await guarded(async () => {
+    await assertNotImpersonating()
     const access = await requireOwner(organizationId)
     const [certificateCount] = await db
       .select({ total: count() })

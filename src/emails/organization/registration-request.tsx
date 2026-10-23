@@ -48,7 +48,7 @@ const OrganizationRegistrationRequestEmail = ({
     namespace: 'Intl.Countries',
   })
 
-  const countryKey = country as MessageKey<'Intl.Countries'>
+  const countryKey = country?.toLowerCase() as MessageKey<'Intl.Countries'>
   const countryName = countries.has(countryKey) ? countries(countryKey) : country?.toUpperCase()
   const location = [city, countryName].filter(Boolean).join(', ')
   const footer = <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('footer')}</Text>

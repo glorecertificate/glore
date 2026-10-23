@@ -38,7 +38,7 @@ export const CountrySelect = ({
   )
 
   const translateCountry = (code: string) => {
-    const key = code as MessageKey<'Intl.Countries'>
+    const key = code.toLowerCase() as MessageKey<'Intl.Countries'>
     return tCountries.has(key) ? tCountries(key) : key.toUpperCase()
   }
 
@@ -81,7 +81,7 @@ export const CountrySelect = ({
                 >
                   <span className="pr-0.5">{countryCodeToFlag(code)}</span>
                   {translateCountry(code)}
-                  <CheckIcon className={cn('size-4', value === code ? 'opacity-100' : 'opacity-0')} />
+                  <CheckIcon className={cn('size-4', value?.toLowerCase() === code ? 'opacity-100' : 'opacity-0')} />
                 </CommandItem>
               ))}
             </CommandGroup>

@@ -38,10 +38,11 @@ export const RequestPanel = ({
 
   const date = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
   const format = (value: string | null) => (value ? date.format(new Date(value)) : '-')
-  const nationality = holder.nationality
-    ? tCountries.has(holder.nationality as never)
-      ? tCountries(holder.nationality as never)
-      : holder.nationality.toUpperCase()
+  const nationalityKey = holder.nationality?.toLowerCase()
+  const nationality = nationalityKey
+    ? tCountries.has(nationalityKey as never)
+      ? tCountries(nationalityKey as never)
+      : nationalityKey.toUpperCase()
     : '-'
   const rule = meetsActivityRule(certificate)
   const sectionLabels = {

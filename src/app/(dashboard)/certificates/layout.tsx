@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { getCurrentUser } from '@/actions/user'
+import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -11,8 +11,11 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const CertificatesLayoutContent = async ({ children }: React.PropsWithChildren) => {
-  const user = await getCurrentUser()
-  if (user.canEdit && !user.isAdmin) return notFound()
+  const [user, organizationId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  if (user.isAdmin) return children
+  if (user.canEdit) return notFound()
+  const role = user.organizations.find(({ id }) => id === organizationId)?.role
+  if (role === 'learner') return notFound()
   return children
 }
 

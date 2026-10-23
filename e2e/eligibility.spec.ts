@@ -72,9 +72,7 @@ test.describe('learner', () => {
     await expect(page.getByRole('link', { name: 'Certificates', exact: true })).toBeHidden()
   })
 
-  test.fixme('cannot open the certificates area by URL (app bug: certificates layout only blocks editors)', async ({
-    page,
-  }) => {
+  test('cannot open the certificates area by URL', async ({ page }) => {
     for (const path of ['/certificates', '/certificates/new']) {
       await page.goto(path)
       await expect(page.getByRole('heading', { name: 'Not found' }), path).toBeVisible()

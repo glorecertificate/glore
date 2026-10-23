@@ -63,6 +63,14 @@ export const AccountForm = () => {
 
     try {
       const result = await updateAccount(updates)
+      if (result.error?.code === 'USERNAME_TAKEN') {
+        form.setError('username', { message: t('usernameTaken') })
+        return
+      }
+      if (result.error?.code === 'USERNAME_RESERVED') {
+        form.setError('username', { message: t('usernameReserved') })
+        return
+      }
       if (result.error) {
         toast.error(actionError(result.error, t('accountUpdateError')))
         return
@@ -75,15 +83,6 @@ export const AccountForm = () => {
       form.reset(defaults(data))
       toast.success(pendingEmail ? t('emailChangeRequested', { email: pendingEmail }) : t('accountUpdated'))
     } catch (error) {
-      const message = error instanceof Error ? error.message : ''
-      if (message === 'USERNAME_TAKEN') {
-        form.setError('username', { message: t('usernameTaken') })
-        return
-      }
-      if (message === 'USERNAME_RESERVED') {
-        form.setError('username', { message: t('usernameReserved') })
-        return
-      }
       console.error(error)
       toast.error(t('accountUpdateError'))
     }

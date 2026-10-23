@@ -134,12 +134,14 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
   }
 
   if (fields.username && fields.username !== currentUser.username) {
-    if (isReservedUsername(fields.username)) throw new Error('USERNAME_RESERVED')
+    if (isReservedUsername(fields.username)) {
+      return { error: { code: 'USERNAME_RESERVED', message: 'Username is reserved' } }
+    }
     const taken = await db.query.users.findFirst({
       columns: { id: true },
       where: and(eq(users.username, fields.username), ne(users.id, currentUser.id)),
     })
-    if (taken) throw new Error('USERNAME_TAKEN')
+    if (taken) return { error: { code: 'USERNAME_TAKEN', message: 'Username is taken' } }
   }
 
   if (pendingEmail) {
@@ -161,8 +163,8 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
     try {
       await db.update(users).set(fields).where(eq(users.id, currentUser.id))
     } catch (error) {
-      if (fields.username && isUniqueViolation(error)) throw new Error('USERNAME_TAKEN', { cause: error })
-      throw error
+      if (!(fields.username && isUniqueViolation(error))) throw error
+      return { error: { code: 'USERNAME_TAKEN', message: 'Username is taken' } }
     }
     updateTag(userTag(currentUser.id))
   }

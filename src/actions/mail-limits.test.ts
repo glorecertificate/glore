@@ -45,7 +45,7 @@ vi.mock('@/lib/email', async importOriginal => ({
   },
 }))
 
-const KEYS = ['owner'] as const
+const KEYS = ['owner', 'other'] as const
 
 describe.skipIf(!isLocalDatabase)('per-user limits on actions that send mail', () => {
   let fixture: Awaited<ReturnType<typeof createAdminFixture<(typeof KEYS)[number]>>>
@@ -144,5 +144,18 @@ describe.skipIf(!isLocalDatabase)('per-user limits on actions that send mail', (
 
     expect(result.error).toBeUndefined()
     expect(limiter.keys.some(key => key.startsWith('email-change:'))).toBe(false)
+  })
+
+  it('returns username conflicts as error codes instead of throwing', async () => {
+    const taken = `taken${fixture.suffix}`.toLowerCase()
+    await fixture.client.db
+      .update(fixture.schema.users)
+      .set({ username: taken })
+      .where(eq(fixture.schema.users.id, fixture.ids.other))
+
+    expect(await userActions.updateAccount({ username: taken })).toMatchObject({ error: { code: 'USERNAME_TAKEN' } })
+    expect(await userActions.updateAccount({ username: 'api' })).toMatchObject({
+      error: { code: 'USERNAME_RESERVED' },
+    })
   })
 })

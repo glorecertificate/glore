@@ -5,7 +5,7 @@ import { Logo } from '@/components/ui/logo'
 import { AUTH_ROOT } from '@/lib/constants'
 
 export const VerifyShell = async ({ children }: { children: React.ReactNode }) => {
-  const t = await getTranslations('Certificates')
+  const t = await getTranslations('CertificatePublic')
 
   return (
     <div className="min-h-screen bg-background">

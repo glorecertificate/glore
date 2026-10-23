@@ -18,7 +18,7 @@ describe('parseLesson', () => {
 
   it.each(LOCALES)('labels every lesson type in %s', async locale => {
     const { default: messages } = await import(`~/messages/${locale}.json`)
-    const t = createTranslator({ locale, messages, namespace: 'Courses' })
+    const t = createTranslator({ locale, messages, namespace: 'CourseEditor' })
     const fallback = t('lessonType', { type: 'unknown' })
     const labels = Object.values(lessons).map(lesson => t('lessonType', { type: parseLesson(lesson).type }))
     expect(labels).not.toContain(fallback)

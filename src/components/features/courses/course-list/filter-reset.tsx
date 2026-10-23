@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const CourseListFilterReset = (props: React.ComponentProps<typeof Button>) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
   const { resetFilters, hasFilters } = useCourseListFilters()
   if (!hasFilters) return null
 

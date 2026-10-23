@@ -31,7 +31,7 @@ interface CertificateStatusBadgeProps {
 }
 
 export const CertificateStatusBadge = ({ className, status }: CertificateStatusBadgeProps) => {
-  const t = useTranslations('Certificates')
+  const t = useTranslations('CertificateStatus')
   const { className: statusClassName, icon, labelKey } = STATUS_CONFIG[status]
 
   return (

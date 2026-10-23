@@ -49,7 +49,8 @@ export const CourseCardActions = ({
   coursePath: string
 }) => {
   const archived = !!course.archivedAt
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
+  const tCommon = useTranslations('CourseCommon')
   const { localeItems } = useI18n()
   const { setCourses } = useCourses()
 
@@ -149,7 +150,7 @@ export const CourseCardActions = ({
             </Button>
             <AlertDialog onOpenChange={setDeleteDialogOpen} open={deleteDialogOpen}>
               <AlertDialogTrigger asChild>
-                <Button size="icon" title={t('delete')} variant="outline">
+                <Button size="icon" title={tCommon('delete')} variant="outline">
                   <LucideIcon name="trash-2" className="text-destructive-text" />
                 </Button>
               </AlertDialogTrigger>
@@ -189,7 +190,7 @@ export const CourseCardActions = ({
                 <DropdownMenuGroup>
                   <DropdownMenuItem onSelect={() => setEditOpen(true)}>
                     <LucideIcon name="settings" />
-                    {t('settings')}
+                    {tCommon('settings')}
                   </DropdownMenuItem>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
@@ -262,7 +263,7 @@ export const CourseCardActions = ({
                     <AlertDialogTrigger className="w-full">
                       <DropdownMenuItem onSelect={e => e.preventDefault()} variant="destructive">
                         <LucideIcon name="trash-2" />
-                        {t('delete')}
+                        {tCommon('delete')}
                       </DropdownMenuItem>
                     </AlertDialogTrigger>
                     <AlertDialogContent>

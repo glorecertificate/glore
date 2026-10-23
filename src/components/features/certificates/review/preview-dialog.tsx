@@ -23,7 +23,7 @@ export const PreviewDialog = ({
   onOpenChange: (open: boolean) => void
   url: string | null
 }) => {
-  const t = useTranslations('Certificates.review')
+  const t = useTranslations('CertificateReview')
 
   return (
     <Dialog onOpenChange={onOpenChange} open={url !== null}>

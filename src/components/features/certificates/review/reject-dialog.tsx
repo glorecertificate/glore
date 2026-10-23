@@ -15,7 +15,7 @@ export const RejectDialog = ({
   onOpenChange: (open: boolean) => void
   open: boolean
 }) => {
-  const t = useTranslations('Certificates.review')
+  const t = useTranslations('CertificateReview')
 
   return (
     <ReasonDialog

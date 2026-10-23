@@ -31,7 +31,7 @@ const StatementLength = ({ index }: { index: number }) => {
 }
 
 const SkillsError = () => {
-  const t = useTranslations('Certificates.errors')
+  const t = useTranslations('CertificateErrors')
   const { errors } = useFormState<ReviewFormValues>({ name: 'skills' })
   const code = errors.skills?.root?.message ?? errors.skills?.message
   if (!code) return null
@@ -44,7 +44,7 @@ const SkillsError = () => {
 }
 
 export const SkillsSection = ({ certificate }: { certificate: Certificate }) => {
-  const t = useTranslations('Certificates.review')
+  const t = useTranslations('CertificateReview')
   const tLevels = useTranslations('Common.skillLevels')
   const { localize } = useI18n()
   const { control } = useFormContext<ReviewFormValues>()

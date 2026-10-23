@@ -17,7 +17,8 @@ import { cn } from '@/lib/utils'
 
 export const CourseListHeader = ({ className, ...props }: React.ComponentProps<typeof Header>) => {
   const { user } = useSession()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
+  const tCommon = useTranslations('CourseCommon')
   const description = t(user.isAdmin ? 'descriptionAdmin' : user.isEditor ? 'descriptionEditor' : 'description')
 
   return (
@@ -25,7 +26,7 @@ export const CourseListHeader = ({ className, ...props }: React.ComponentProps<t
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
         <div className="flex items-center gap-2.5">
           <HeaderTrigger />
-          <HeaderBreadcrumb description={description} title={t('courses')} />
+          <HeaderBreadcrumb description={description} title={tCommon('courses')} />
         </div>
         <div className="flex items-center gap-3 max-sm:min-w-0 max-sm:flex-wrap">
           {user.canEdit && <CourseListFrameworkLink />}

@@ -36,8 +36,8 @@ export const CertificateDetail = ({
   tutors?: OrgTutor[]
   verifyUrl: string | null
 }) => {
-  const t = useTranslations('Certificates')
-  const tDetail = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateOrg')
+  const tDetail = useTranslations('CertificateDetail')
   const { user } = useSession()
   const isOwner = certificate.userId === user.id
 
@@ -68,7 +68,7 @@ export const CertificateDetail = ({
             )}
             <div className="flex flex-wrap items-center gap-2">
               <CertificateStatusBadge status={certificate.status} />
-              {certificate.isHolderDeleted && <Badge variant="outline">{t('org.holderDeleted')}</Badge>}
+              {certificate.isHolderDeleted && <Badge variant="outline">{t('holderDeleted')}</Badge>}
               {certificate.isApproved && certificate.isDefault && (
                 <Badge className="gap-1" variant="outline">
                   <LucideIcon name="star" className="size-3" />
@@ -96,7 +96,7 @@ export const CertificateDetail = ({
           <CertificateSummary certificate={certificate} />
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">{t('timeline')}</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{tDetail('timeline')}</CardTitle>
             </CardHeader>
             <CardContent>
               <CertificateTimeline certificate={certificate} events={events} />

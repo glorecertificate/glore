@@ -62,7 +62,7 @@ export const MemberDrawer = ({
   const { localize } = useI18n()
   const { dateTime, number } = useFormatter()
   const t = useTranslations('Organization')
-  const tCertificates = useTranslations('Certificates')
+  const tCertificates = useTranslations('CertificateStatus')
   const tCommon = useTranslations('Common')
 
   const formatDate = (value: string) => dateTime(new Date(timestampMillis(value)), { dateStyle: 'medium' })

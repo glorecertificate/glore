@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { VERIFY_ROOT } from '@/lib/constants'
 
 export const LookupForm = ({ defaultValue }: { defaultValue?: string }) => {
-  const t = useTranslations('Certificates.verify')
+  const t = useTranslations('CertificateVerify')
 
   return (
     <form action={VERIFY_ROOT} className="flex flex-col gap-3 sm:flex-row" method="get">

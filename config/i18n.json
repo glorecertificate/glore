@@ -15,6 +15,7 @@
   },
   "defaultLocale": "en",
   "titleizedLocales": ["en"],
+  "serverNamespaces": ["About", "CertificatePublic", "Email", "Legal", "Metadata"],
   "spokenLanguages": [
     "en",
     "es",

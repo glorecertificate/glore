@@ -29,7 +29,8 @@ const ActivityItem = ({
   onRemove: () => void
 }) => {
   const tLang = useTranslations('Intl.Languages')
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
+  const tCommon = useTranslations('CourseCommon')
 
   return (
     <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
@@ -43,7 +44,7 @@ const ActivityItem = ({
         />
       </div>
       <Button
-        aria-label={t('delete')}
+        aria-label={tCommon('delete')}
         className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
         onClick={onRemove}
         size="icon"
@@ -84,7 +85,8 @@ const QuestionItem = ({
   options: QuestionOption[]
 }) => {
   const tLang = useTranslations('Intl.Languages')
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
+  const tCommon = useTranslations('CourseCommon')
 
   return (
     <div className="group/question space-y-4 rounded-xl border bg-card p-4">
@@ -101,7 +103,7 @@ const QuestionItem = ({
           </div>
         </div>
         <Button
-          aria-label={t('delete')}
+          aria-label={tCommon('delete')}
           className="opacity-0 transition-opacity group-hover/question:opacity-100 focus-visible:opacity-100"
           onClick={onRemove}
           size="icon"
@@ -177,7 +179,7 @@ const QuestionItem = ({
 }
 
 export const LessonActivities = ({ className }: { className?: string }) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
 
   const { course, currentLesson, language, setCourse, step } = useCourse()
   const { user } = useSession()

@@ -39,7 +39,7 @@ const CourseRow = ({
   groupId: number | null
   groups: { id: number; name: string }[]
 }) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
   const tFramework = useTranslations('Learning.framework')
   const locale = useLocale() as keyof IntlRecord
   const title = pickCourseTitle(course.title ?? undefined, locale, course.slug)

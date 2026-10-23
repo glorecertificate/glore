@@ -26,7 +26,9 @@ const MAX_TITLE_LENGTH = 100
 const DEBOUNCE_DELAY = 400
 
 export const CourseBreadcrumb = () => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
+  const tCommon = useTranslations('CourseCommon')
+  const tList = useTranslations('CourseList')
   const { user } = useSession()
   const { localeItems } = useI18n()
   const { course, languageStatus, language, editCourse, setCourse } = useCourse()
@@ -109,7 +111,7 @@ export const CourseBreadcrumb = () => {
   }
 
   return (
-    <HeaderBreadcrumb title={t('courses')} backHref="/courses">
+    <HeaderBreadcrumb title={tCommon('courses')} backHref="/courses">
       <BreadcrumbSeparator />
 
       <BreadcrumbItem className="min-w-0 flex-1 gap-3 pr-6 max-sm:pr-0">
@@ -120,20 +122,20 @@ export const CourseBreadcrumb = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <IconPicker
-                    aria-label={t('updateIcon')}
+                    aria-label={tCommon('updateIcon')}
                     className={cn('size-4 shrink-0 [&>svg]:size-4.5!', courseIconVariants({ type: course.type }))}
                     defaultValue={(course.icon ?? undefined) as IconName | undefined}
                     onValueChange={async icon => {
                       const result = await editCourse({ icon })
                       if ('error' in result) return
-                      toast.success(t('iconUpdateSuccess'))
+                      toast.success(tCommon('iconUpdateSuccess'))
                     }}
                     size="text"
                     variant="transparent"
                   />
                 </TooltipTrigger>
                 <TooltipContent side="bottom" sideOffset={10} size="sm">
-                  {t('updateIcon')}
+                  {tCommon('updateIcon')}
                 </TooltipContent>
               </Tooltip>
             )}
@@ -173,7 +175,7 @@ export const CourseBreadcrumb = () => {
             {title}
             {course.archivedAt && (
               <Badge size="sm" variant="muted">
-                {t('archived')}
+                {tList('archived')}
               </Badge>
             )}
           </>

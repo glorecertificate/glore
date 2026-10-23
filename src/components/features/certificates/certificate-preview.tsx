@@ -8,7 +8,7 @@ import { useI18n } from '@/components/providers/i18n'
 import { type Certificate } from '@/db/queries/certificate'
 
 export const CertificatePreview = ({ certificate, className }: { certificate: Certificate; className?: string }) => {
-  const t = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateDetail')
   const { localize } = useI18n()
 
   return (

@@ -15,7 +15,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 export const CourseListGroupSelect = ({ ...props }: React.ComponentProps<typeof DropdownMenu>) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseCommon')
+  const tList = useTranslations('CourseList')
 
   const { skillGroups } = useCourses()
   const { activeTypes, setActiveTypes } = useCourseListTypes()
@@ -77,7 +78,7 @@ export const CourseListGroupSelect = ({ ...props }: React.ComponentProps<typeof 
               onCheckedChange={selectAll}
               onSelect={e => e.preventDefault()}
             >
-              {t('selectAllGroups')}
+              {tList('selectAllGroups')}
             </DropdownMenuCheckboxItem>
           </>
         )}

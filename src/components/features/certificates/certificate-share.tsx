@@ -23,7 +23,7 @@ export const CertificateShare = ({
   className?: string
   url: string
 }) => {
-  const t = useTranslations('Certificates.share')
+  const t = useTranslations('CertificateShare')
   const { locale } = useI18n()
 
   if (!(certificate.code && certificate.isApproved)) return null

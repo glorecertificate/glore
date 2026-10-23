@@ -1,6 +1,6 @@
 import { type NamespaceKeys, type NestedKeyOf, type createTranslator } from 'next-intl'
 
-import { defaultLocale, locales, titleizedLocales } from '~/config/i18n.json'
+import { defaultLocale, locales, serverNamespaces, titleizedLocales } from '~/config/i18n.json'
 import type messages from '~/messages/en.json'
 
 type Locale = keyof typeof locales
@@ -45,13 +45,12 @@ export const LOCALE_ITEMS = Object.entries(locales).map(([locale, item]) => ({ .
 export const TITLEIZED_LOCALES = titleizedLocales as Locale[]
 export const INTL_PLACEHOLDER = LOCALES.reduce((record, locale) => ({ ...record, [locale]: '' }), {} as IntlRecord<''>)
 
-export const clientMessages = ({
-  About: _about,
-  Email: _email,
-  Legal: _legal,
-  Metadata: _metadata,
-  ...messages
-}: Messages) => messages as Messages
+const SERVER_NAMESPACES = serverNamespaces as string[]
+
+export const clientMessages = (messages: Messages) =>
+  Object.fromEntries(
+    Object.entries(messages).filter(([namespace]) => !SERVER_NAMESPACES.includes(namespace))
+  ) as Messages
 
 export const localizeRecord = <T>(record: IntlRecord<T>, locale: Locale, fallback?: Locale) => {
   if (!record || typeof record !== 'object') return ''

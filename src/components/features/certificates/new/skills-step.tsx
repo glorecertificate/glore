@@ -31,7 +31,7 @@ const EvidenceLength = ({ index }: { index: number }) => {
 }
 
 const SkillsError = () => {
-  const t = useTranslations('Certificates.errors')
+  const t = useTranslations('CertificateErrors')
   const { errors } = useFormState<WizardValues>({ name: 'skills' })
   const code = errors.skills?.root?.message ?? errors.skills?.message
   if (!code) return null
@@ -44,7 +44,7 @@ const SkillsError = () => {
 }
 
 export const SkillsStep = ({ comment, options }: { comment?: string; options: SkillOption[] }) => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const tLevels = useTranslations('Common.skillLevels')
   const { localize } = useI18n()
   const { control } = useFormContext<WizardValues>()

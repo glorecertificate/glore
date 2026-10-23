@@ -28,7 +28,7 @@ const CommentLength = () => {
 const SCORES = ['experience', 'support', 'certificationSupport'] as const
 
 export const OrganizationStep = ({ organization }: { organization: string }) => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<WizardValues>()
   const labels = {
     certificationSupport: t('ratingCertificationSupport'),

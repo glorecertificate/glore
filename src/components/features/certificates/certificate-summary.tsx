@@ -11,8 +11,8 @@ import { type Certificate } from '@/db/queries/certificate'
 import { SKILL_LEVELS } from '@/lib/constants'
 
 export const CertificateSummary = ({ certificate }: { certificate: Certificate }) => {
-  const t = useTranslations('Certificates')
-  const tDetail = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateCredential')
+  const tDetail = useTranslations('CertificateDetail')
   const tLevels = useTranslations('Common.skillLevels')
   const { locale, localize } = useI18n()
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })

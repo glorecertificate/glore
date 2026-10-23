@@ -13,7 +13,7 @@ const TONE_CLASSES = {
 } as const satisfies Record<AgeTone, string>
 
 export const AgeBadge = ({ className, days, tone }: { className?: string; days: number; tone: AgeTone }) => {
-  const t = useTranslations('Certificates.queue')
+  const t = useTranslations('CertificateQueue')
 
   return (
     <Badge className={cn('gap-1', TONE_CLASSES[tone], className)} variant="ghost">

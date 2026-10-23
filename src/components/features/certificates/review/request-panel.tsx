@@ -31,8 +31,8 @@ export const RequestPanel = ({
   previous: CertificateReviewNotes | null
   results: Record<number, HolderCourseResult>
 }) => {
-  const t = useTranslations('Certificates.review')
-  const tDetail = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateReview')
+  const tDetail = useTranslations('CertificateDetail')
   const tLevels = useTranslations('Common.skillLevels')
   const tCountries = useTranslations('Intl.Countries')
   const { locale, localize } = useI18n()

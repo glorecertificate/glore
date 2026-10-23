@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 
 const CoursesNotFound = () => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
 
   return (
     <ErrorFallback message={t('notFoundMessage')} title={t('notFound')} type="not-found">

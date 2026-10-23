@@ -17,12 +17,14 @@ interface FeaturedCredentialCardProps {
 }
 
 export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardProps) => {
-  const t = useTranslations('Certificates')
+  const t = useTranslations('CertificateCredential')
+  const tDetail = useTranslations('CertificateDetail')
+  const tList = useTranslations('CertificateList')
   const { locale, localize } = useI18n()
   const sealId = useId()
 
   const formatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short' })
-  const period = formatActivityPeriod(certificate, formatter, values => t('detail.periodValue', values))
+  const period = formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values))
 
   const recipientName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
 
@@ -57,7 +59,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex-1 space-y-4">
             <div className="space-y-1.5">
-              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('title')}</p>
+              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{tList('title')}</p>
               <h2 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">{recipientName}</h2>
               <p className="max-w-prose text-sm text-muted-foreground">
                 {t('credentialStatement', { organization: certificate.organization.name })}

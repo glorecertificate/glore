@@ -17,7 +17,7 @@ import config from '~/config/metadata.json'
 const ROBOTS = { follow: false, index: false } as const
 
 export const generateMetadata = async ({ params }: PageProps<'/verify/[code]'>) => {
-  const [{ code }, t] = await Promise.all([params, getTranslations('Certificates.verify')])
+  const [{ code }, t] = await Promise.all([params, getTranslations('CertificateVerify')])
   const normalized = normalizeCertificateCode(code)
   const result = normalized ? await verifyCertificate(normalized) : null
 
@@ -38,7 +38,7 @@ export const generateMetadata = async ({ params }: PageProps<'/verify/[code]'>) 
 }
 
 const VerifyCodeContent = async ({ params }: Pick<PageProps<'/verify/[code]'>, 'params'>) => {
-  const [{ code }, t] = await Promise.all([params, getTranslations('Certificates.verify')])
+  const [{ code }, t] = await Promise.all([params, getTranslations('CertificateVerify')])
   const normalized = normalizeCertificateCode(code)
   if (!normalized) notFound()
 

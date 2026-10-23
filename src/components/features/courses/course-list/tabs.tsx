@@ -24,7 +24,7 @@ const CourseListTabsTrigger = ({
   count: number
   value: CourseListTab
 }) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
 
   if (value === 'archived') {
     return (

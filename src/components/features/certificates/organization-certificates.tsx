@@ -53,8 +53,9 @@ export const OrganizationCertificates = ({
   onChanged?: () => void
   tutors: OrgTutor[]
 }) => {
-  const t = useTranslations('Certificates.org')
-  const tCertificates = useTranslations('Certificates')
+  const t = useTranslations('CertificateOrg')
+  const tCredential = useTranslations('CertificateCredential')
+  const tCertificates = useTranslations('CertificateStatus')
   const { locale } = useI18n()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState(ALL)
@@ -100,7 +101,7 @@ export const OrganizationCertificates = ({
           {
             cell: certificate => (
               <div className="flex flex-col gap-0.5">
-                <span className="font-medium">{holderName(certificate) || tCertificates('unknownVolunteer')}</span>
+                <span className="font-medium">{holderName(certificate) || tCredential('unknownVolunteer')}</span>
                 <span className="text-xs text-muted-foreground">
                   {certificate.isHolderDeleted ? t('holderDeleted') : certificate.user?.email}
                 </span>

@@ -41,7 +41,8 @@ export const CourseListCard = ({
   course: Course
 }) => {
   const { locale, localeItems } = useI18n()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
+  const tCommon = useTranslations('CourseCommon')
   const tCatalog = useTranslations('Learning.catalog')
   const { relativeTime } = useFormatter()
   const now = useNow({ updateInterval: 60_000 })
@@ -60,7 +61,7 @@ export const CourseListCard = ({
   const updateCourseIcon = async (icon: IconName) => {
     const result = await updateCourseRef.current(course.id, { icon })
     if ('error' in result) return
-    toast.success(t('iconUpdateSuccess'))
+    toast.success(tCommon('iconUpdateSuccess'))
   }
 
   const language = resolveCourseLanguage(cardLanguages, course.id, { activeLanguages, fallback: locale })
@@ -147,7 +148,7 @@ export const CourseListCard = ({
                     />
                   </TooltipTrigger>
                   <span className="peer-data-[state=open]:invisible">
-                    <TooltipContent size="sm">{course.icon ? t('updateIcon') : t('addIcon')}</TooltipContent>
+                    <TooltipContent size="sm">{course.icon ? tCommon('updateIcon') : t('addIcon')}</TooltipContent>
                   </span>
                 </Tooltip>
                 <Link

@@ -13,7 +13,7 @@ import { RatingGroup } from '@/components/ui/rating-group'
 const SCORES = ['engagement', 'evidence', 'reflection', 'growth'] as const
 
 export const EvaluationSection = () => {
-  const t = useTranslations('Certificates.review')
+  const t = useTranslations('CertificateReview')
   const { control } = useFormContext<ReviewFormValues>()
   const labels = {
     engagement: t('scoreEngagement'),

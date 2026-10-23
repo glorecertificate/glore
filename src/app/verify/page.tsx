@@ -13,12 +13,12 @@ import { Banner } from '@/components/ui/banner'
 import { VERIFY_ROOT } from '@/lib/constants'
 
 export const generateMetadata = async () => {
-  const t = await getTranslations('Certificates.verify')
+  const t = await getTranslations('CertificateVerify')
   return { description: t('description'), robots: { follow: false, index: false }, title: t('title') }
 }
 
 const VerifyContent = async ({ searchParams }: Pick<PageProps<'/verify'>, 'searchParams'>) => {
-  const [t, { code }] = await Promise.all([getTranslations('Certificates.verify'), searchParams])
+  const [t, { code }] = await Promise.all([getTranslations('CertificateVerify'), searchParams])
   const input = typeof code === 'string' ? code : code?.[0]
 
   const normalized = input ? normalizeCertificateCode(input) : null

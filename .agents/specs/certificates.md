@@ -118,7 +118,7 @@ draft -> submitted -> in_review -> approved -> revoked
 
 ### Forms
 
-- Form errors are `Certificates.errors.*` codes set as zod messages and rendered by `FieldError`.
+- Form errors are `CertificateErrors` codes set as zod messages and rendered by `FieldError`.
 - `new/values.ts` maps form values to `CertificateEditValues` and back, and drops blank tasks.
 - Show unset activity dates as `-` through `formatActivityDate` and `formatActivityPeriod` (`certificates/rules.ts`), because a draft can store `""` dates.
 

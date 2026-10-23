@@ -14,12 +14,13 @@ import { type Certificate } from '@/db/queries/certificate'
 import { cn } from '@/lib/utils'
 
 export const CertificateCard = ({ certificate }: { certificate: Certificate }) => {
-  const t = useTranslations('Certificates')
-  const tDetail = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateDetail')
+  const tWizard = useTranslations('CertificateWizard')
+
   const { locale } = useI18n()
 
   const formatter = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' })
-  const period = formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values))
+  const period = formatActivityPeriod(certificate, formatter, values => t('periodValue', values))
   const note = certificate.isChangesRequested ? certificate.reviewerComment : null
   const canEdit = certificate.isDraft || certificate.isChangesRequested
 
@@ -50,12 +51,12 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
             </span>
             <span className="flex items-center gap-1.5">
               <LucideIcon name="timer" className="size-3.5 shrink-0" />
-              {tDetail('hoursValue', { hours: certificate.activityDuration })}
+              {t('hoursValue', { hours: certificate.activityDuration })}
             </span>
             {certificate.isApproved && certificate.isDefault && (
               <span className="flex items-center gap-1.5 text-brand-text">
                 <LucideIcon name="star" className="size-3.5 shrink-0" />
-                {tDetail('featuredBadge')}
+                {t('featuredBadge')}
               </span>
             )}
           </div>
@@ -73,7 +74,7 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
           {canEdit && (
             <Button asChild icon="pencil" size="sm" variant={certificate.isDraft ? 'outline' : 'warning'}>
               <Link href={`/certificates/new?draft=${certificate.id}`}>
-                {certificate.isDraft ? t('wizard.continueDraft') : t('resubmitButton')}
+                {certificate.isDraft ? tWizard('continueDraft') : t('resubmitButton')}
               </Link>
             </Button>
           )}

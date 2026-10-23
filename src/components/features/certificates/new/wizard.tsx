@@ -88,7 +88,7 @@ interface CertificateWizardProps {
 }
 
 export const CertificateWizard = ({ certificate, holder, notes, organization, skills }: CertificateWizardProps) => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const { locale } = useI18n()
   const { push } = useRouter()
   const [, setDraftParam] = useQueryState('draft', parseAsInteger)

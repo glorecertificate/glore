@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export const CourseFooter = () => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
   const { course, currentLesson, next, previous } = useCourse()
 
   const index = course.lessons.findIndex(lesson => lesson.id === currentLesson.id)

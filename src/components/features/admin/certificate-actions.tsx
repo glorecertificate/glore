@@ -15,7 +15,7 @@ import { type AdminCertificateRow } from '@/db/queries/admin-certificate'
 
 export const AdminCertificateActions = ({ certificate }: { certificate: AdminCertificateRow }) => {
   const t = useTranslations('Admin.certificates')
-  const tDetail = useTranslations('Certificates.detail')
+  const tDetail = useTranslations('CertificateDetail')
   const { refresh } = useRouter()
   const [pending, startTransition] = useTransition()
   const [revoking, setRevoking] = useState(false)

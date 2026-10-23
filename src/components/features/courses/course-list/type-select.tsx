@@ -62,7 +62,7 @@ export const courseIconVariants = cva('', {
 export const CourseListTypeSelect = (
   props: Omit<React.ComponentProps<typeof MultiSelect>, 'onChange' | 'options' | 'value'>
 ) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseCommon')
   const { activeTypes, setActiveTypes } = useCourseListTypes()
   const { setActiveSkillGroups } = useCourseListSkillGroups()
 

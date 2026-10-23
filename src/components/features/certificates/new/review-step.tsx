@@ -27,7 +27,7 @@ interface ReviewStepProps {
 }
 
 const Thumbnail = ({ firstName, lastName, options, organization }: Omit<ReviewStepProps, 'comment' | 'missing'>) => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<WizardValues>()
   const values = useWatch({ control })
   const language = values.language ?? DEFAULT_LOCALE
@@ -59,7 +59,7 @@ const Thumbnail = ({ firstName, lastName, options, organization }: Omit<ReviewSt
 }
 
 export const ReviewStep = ({ comment, missing, ...thumbnail }: ReviewStepProps) => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<WizardValues>()
 
   return (

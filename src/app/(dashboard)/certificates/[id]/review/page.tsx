@@ -34,7 +34,7 @@ const ReviewPageContent = async ({ params }: { params: PageProps<'/certificates/
 }
 
 const ReviewPage = ({ params }: PageProps<'/certificates/[id]/review'>) => (
-  <DashboardPage backHref="/certificates" title={<PageTitle name="reviewTitle" namespace="Certificates" />}>
+  <DashboardPage backHref="/certificates" title={<PageTitle name="reviewTitle" namespace="CertificateList" />}>
     <ReviewPageContent params={params} />
   </DashboardPage>
 )

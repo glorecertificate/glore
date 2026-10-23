@@ -35,9 +35,10 @@ const STATUS_LABEL_KEYS: Record<CertListStatus, string> = {
 }
 
 export const CertificatesContent = ({ certificates, eligibility }: CertificatesContentProps) => {
-  const t = useTranslations('Certificates')
+  const t = useTranslations('CertificateList')
+  const tStatus = useTranslations('CertificateStatus')
   const tCommon = useTranslations('Common')
-  const tDetail = useTranslations('Certificates.detail')
+  const tDetail = useTranslations('CertificateDetail')
   const { setStatus, status } = useCertListStatus()
   const { setSort, sort } = useCertListSort()
 
@@ -93,7 +94,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
             <SegmentedControlItem value="all">{t('filterAll')}</SegmentedControlItem>
             {CERT_LIST_STATUS_VALUES.map(s => (
               <SegmentedControlItem key={s} value={s}>
-                {t(STATUS_LABEL_KEYS[s] as Parameters<typeof t>[0])}
+                {tStatus(STATUS_LABEL_KEYS[s] as Parameters<typeof tStatus>[0])}
               </SegmentedControlItem>
             ))}
           </SegmentedControl>

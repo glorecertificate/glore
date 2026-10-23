@@ -44,7 +44,7 @@ export const AdminCertificates = ({
   page: AdminCertificatePage | null
 }) => {
   const t = useTranslations('Admin.certificates')
-  const tCertificates = useTranslations('Certificates')
+  const tCertificates = useTranslations('CertificateStatus')
   const { dateTime } = useFormatter()
   const [pending, startTransition] = useTransition()
   const [params, setParams] = useQueryStates(adminCertificatesParsers, {

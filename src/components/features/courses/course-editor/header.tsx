@@ -42,7 +42,9 @@ export const CourseHeader = () => {
   const { scrolled } = useScroll()
   const { localeItems } = useI18n()
   const tCommon = useTranslations('Common')
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
+  const tCourseCommon = useTranslations('CourseCommon')
+  const tList = useTranslations('CourseList')
   const tEditor = useTranslations('Learning.editor')
   const { user } = useSession()
   const { course, language, languageStatus, status, step, saveCourse } = useCourse()
@@ -163,13 +165,13 @@ export const CourseHeader = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <DialogTrigger asChild>
-                      <Button aria-label={t('settings')} size="xs" variant="outline">
+                      <Button aria-label={tCourseCommon('settings')} size="xs" variant="outline">
                         <LucideIcon name="settings" className="size-4" />
                       </Button>
                     </DialogTrigger>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-72 text-center" sideOffset={6}>
-                    {t('settings')}
+                    {tCourseCommon('settings')}
                   </TooltipContent>
                 </Tooltip>
               </CourseDialog>
@@ -302,7 +304,7 @@ export const CourseHeader = () => {
                 {'%'}
               </span>
               <Progress
-                aria-label={t('completed')}
+                aria-label={tList('completed')}
                 className="md:max-w-sm"
                 color={progressColor}
                 value={course.progress}
@@ -339,7 +341,8 @@ export const CourseHeader = () => {
 export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const { course, currentLesson, language, setStep, step } = useCourse()
   const { scrolled } = useScroll()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
+  const tList = useTranslations('CourseList')
 
   const progressColor = course.progress === 100 ? 'success' : 'default'
   const lessonType = (lesson: Lesson) => t('lessonType', { type: lesson.type })
@@ -398,7 +401,12 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
             {course.progress}
             {'%'}
           </span>
-          <Progress aria-label={t('completed')} className="md:max-w-sm" color={progressColor} value={course.progress} />
+          <Progress
+            aria-label={tList('completed')}
+            className="md:max-w-sm"
+            color={progressColor}
+            value={course.progress}
+          />
         </div>
       )}
     </div>

@@ -30,7 +30,7 @@ const structuredData = (verification: ActiveVerification, url: string, name: str
 
 export const VerificationView = async ({ verification }: { verification: ActiveVerification }) => {
   const [t, tCommon, locale] = await Promise.all([
-    getTranslations('Certificates.verify'),
+    getTranslations('CertificateVerify'),
     getTranslations('Common'),
     getLocale(),
   ])

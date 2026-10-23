@@ -21,7 +21,7 @@ export interface OrgTutor {
 }
 
 export const CertificateReviewer = ({ certificate, tutors }: { certificate: Certificate; tutors?: OrgTutor[] }) => {
-  const t = useTranslations('Certificates')
+  const t = useTranslations('CertificateDetail')
   const { push, refresh } = useRouter()
   const { user } = useSession()
   const [pending, startTransition] = useTransition()

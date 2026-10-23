@@ -7,7 +7,7 @@ import { StepList } from '@/components/features/certificates/step-list'
 import { type CertificateStatus } from '@/db/queries/certificate'
 
 export const CertificateJourney = ({ status }: { status: CertificateStatus }) => {
-  const t = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateDetail')
 
   return (
     <StepList

@@ -4,13 +4,17 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { checkCatalogs, checkLegal, formatProblems } from './catalogs.mts'
+import { checkNamespaces } from './namespaces.mts'
 
 const ROOT = join(import.meta.dirname, '..', '..')
 
 const run = () => {
-  const { defaultLocale, locales } = JSON.parse(readFileSync(join(ROOT, 'config', 'i18n.json'), 'utf8')) as {
+  const { defaultLocale, locales, serverNamespaces } = JSON.parse(
+    readFileSync(join(ROOT, 'config', 'i18n.json'), 'utf8')
+  ) as {
     defaultLocale: string
     locales: Record<string, unknown>
+    serverNamespaces: string[]
   }
   const codes = Object.keys(locales)
   const catalogs = Object.fromEntries(
@@ -19,6 +23,7 @@ const run = () => {
   const problems = [
     ...checkCatalogs(catalogs, defaultLocale),
     ...checkLegal(join(ROOT, 'content', 'legal'), codes, defaultLocale),
+    ...checkNamespaces(ROOT, Object.keys(catalogs[defaultLocale] as object), serverNamespaces),
   ]
   if (problems.length > 0) {
     console.error(formatProblems(problems))

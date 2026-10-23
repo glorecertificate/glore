@@ -34,7 +34,7 @@ export const CertificateTimeline = ({
   certificate: Certificate
   events: CertificateActivityEvent[]
 }) => {
-  const t = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateDetail')
   const { locale } = useI18n()
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' })
 

@@ -63,7 +63,7 @@ const CourseSidebarItem = ({
   step: number
 }) => {
   const { user } = useSession()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
   const { isCompleted, isCurrent, isReachable } = lessonStatus
 
   const title = lesson.title ? localizeRecord(lesson.title, language) : t('untitledLesson')
@@ -217,7 +217,8 @@ const CourseSidebarItem = ({
 }
 
 export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
+  const tList = useTranslations('CourseList')
   const { user } = useSession()
   const { course, courseRef, language, step, setCourse, setLesson, setStep, addLesson, removeLesson } = useCourse()
   const reducedMotion = useReducedMotion()
@@ -254,7 +255,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
     <div {...props}>
       {isStudent && (
         <div className="flex items-center gap-2 py-2 pr-2 pl-3">
-          <Progress aria-label={t('completed')} className="h-1.5" color={progressColor} value={course.progress} />
+          <Progress aria-label={tList('completed')} className="h-1.5" color={progressColor} value={course.progress} />
           <span className="shrink-0 text-xs text-muted-foreground">
             {course.progress}
             {'%'}

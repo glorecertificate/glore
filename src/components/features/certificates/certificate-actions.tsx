@@ -27,8 +27,9 @@ import { type Certificate } from '@/db/queries/certificate'
 import { useActionError } from '@/hooks/use-action-error'
 
 export const CertificateActions = ({ canManage, certificate }: { canManage: boolean; certificate: Certificate }) => {
-  const t = useTranslations('Certificates')
-  const tDetail = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateDetail')
+  const tWizard = useTranslations('CertificateWizard')
+
   const actionError = useActionError()
   const { refresh, push } = useRouter()
   const { impersonating, user } = useSession()
@@ -49,16 +50,16 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
     startTransition(async () => {
       const { error } = await withdrawCertificate(certificate.id)
       setWithdrawing(false)
-      if (error) return void toast.error(tDetail('withdrawError'))
-      toast.success(tDetail('withdrawn'))
+      if (error) return void toast.error(t('withdrawError'))
+      toast.success(t('withdrawn'))
       return push('/certificates')
     })
 
   const feature = () =>
     startTransition(async () => {
       const { error } = await featureCertificate(certificate.id)
-      if (error) return void toast.error(actionError(error, tDetail('featureError')))
-      toast.success(tDetail('featured'))
+      if (error) return void toast.error(actionError(error, t('featureError')))
+      toast.success(t('featured'))
       return refresh()
     })
 
@@ -66,8 +67,8 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
     startTransition(async () => {
       const { error } = await revokeCertificate(certificate.id, { reason })
       setRevoking(false)
-      if (error) return void toast.error(actionError(error, tDetail('revokeError')))
-      toast.success(tDetail('revoked'))
+      if (error) return void toast.error(actionError(error, t('revokeError')))
+      toast.success(t('revoked'))
       return refresh()
     })
 
@@ -76,7 +77,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
       {canEdit && (
         <Button asChild icon="pencil" size="sm" variant="brand">
           <Link href={`/certificates/new?draft=${certificate.id}`}>
-            {certificate.isDraft ? t('wizard.continueDraft') : t('resubmitButton')}
+            {certificate.isDraft ? tWizard('continueDraft') : t('resubmitButton')}
           </Link>
         </Button>
       )}
@@ -94,12 +95,12 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
       )}
       {canFeature && (
         <Button disabled={pending || impersonating} icon="star" onClick={feature} size="sm" variant="outline">
-          {tDetail('makeFeatured')}
+          {t('makeFeatured')}
         </Button>
       )}
       {canWithdraw && (
         <Button disabled={pending} icon="undo-2" onClick={() => setWithdrawing(true)} size="sm" variant="ghost">
-          {tDetail('withdraw')}
+          {t('withdraw')}
         </Button>
       )}
       {canRevoke && (
@@ -110,7 +111,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
           size="sm"
           variant="ghost"
         >
-          {tDetail('revoke')}
+          {t('revoke')}
         </Button>
       )}
       {(canFeature || canRevoke) && <ImpersonationLockNote className="basis-full" />}
@@ -118,13 +119,13 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
       <AlertDialog onOpenChange={setWithdrawing} open={withdrawing}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{tDetail('withdrawTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>{tDetail('withdrawDescription')}</AlertDialogDescription>
+            <AlertDialogTitle>{t('withdrawTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('withdrawDescription')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{tDetail('cancel')}</AlertDialogCancel>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
             <AlertDialogAction disabled={pending} onClick={withdraw}>
-              {tDetail('withdrawConfirm')}
+              {t('withdrawConfirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -132,18 +133,18 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
 
       <ReasonDialog
         busy={pending}
-        cancelLabel={tDetail('cancel')}
-        confirmLabel={tDetail('revokeConfirm')}
-        description={tDetail('revokeDescription')}
-        hint={tDetail('revokeHint', { min: MIN_REASON_LENGTH })}
+        cancelLabel={t('cancel')}
+        confirmLabel={t('revokeConfirm')}
+        description={t('revokeDescription')}
+        hint={t('revokeHint', { min: MIN_REASON_LENGTH })}
         id="revoke-reason"
-        label={tDetail('revokeReason')}
-        loadingLabel={tDetail('revoking')}
+        label={t('revokeReason')}
+        loadingLabel={t('revoking')}
         onConfirm={revoke}
         onOpenChange={setRevoking}
         open={revoking}
-        placeholder={tDetail('revokePlaceholder')}
-        title={tDetail('revokeTitle')}
+        placeholder={t('revokePlaceholder')}
+        title={t('revokeTitle')}
       />
     </div>
   )

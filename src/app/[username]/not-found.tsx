@@ -11,7 +11,7 @@ import appConfig from '~/config/metadata.json'
 const UserNotFound = async () => {
   const [user, t, tCommon] = await Promise.all([
     getAuthUser(),
-    getTranslations('Certificates'),
+    getTranslations('CertificatePublic'),
     getTranslations('Common'),
   ])
 

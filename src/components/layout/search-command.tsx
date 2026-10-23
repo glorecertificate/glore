@@ -50,7 +50,7 @@ interface RemoteResults extends WorkspaceSearchResult {
 export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentProps<typeof Dialog>) => {
   const t = useTranslations('Search')
   const tOrganization = useTranslations('Organization')
-  const tCertificates = useTranslations('Certificates')
+  const tCertificates = useTranslations('CertificateStatus')
   const { push } = useRouter()
   const { localize } = useI18n()
   const { organization: active, setOrganization, user } = useSession()

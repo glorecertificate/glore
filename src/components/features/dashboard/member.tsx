@@ -52,7 +52,7 @@ export const MemberDashboard = ({
   view: 'learner' | 'volunteer'
 }) => {
   const t = useTranslations('Dashboard')
-  const tDetail = useTranslations('Certificates.detail')
+  const tDetail = useTranslations('CertificateDetail')
   const { certificate, checklist, courses, eligibility, journey, notifications } = member
   const isVolunteer = view === 'volunteer'
   const hasOpenRequest = certificate?.isOpen ?? false

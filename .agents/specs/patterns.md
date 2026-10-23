@@ -171,13 +171,20 @@ The two layers stay separate because UI shapes diverge from table columns.
 
 ## Internationalization
 
-- Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix. `login` and `signInToAcceptInvitation` call `applyUserLocale` (`actions/cookies.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
-- Pass messages to `I18nProvider` through `clientMessages()`, which drops the server-only `About`, `Email`, `Legal`, and `Metadata` namespaces.
+- Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix.
+- `login` and `signInToAcceptInvitation` call `applyUserLocale` (`actions/cookies.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
+- Pass messages to `I18nProvider` through `clientMessages()`, which drops the namespaces listed in `serverNamespaces` (`config/i18n.json`).
+- A client locale switch calls the `getClientMessages` action (`actions/i18n.ts`), which returns the target locale without the server-only namespaces.
+- `pnpm run check:i18n` fails when a server-only namespace is used from a module reachable from a `'use client'` file, or when a namespace used only on the server is missing from the list.
 - Write copy in sentence case (never CSS `capitalize`) with `…`.
 - Use US English in `en`, Peninsular informal "tú" in `es`, and informal "tu" in `it`.
 - Use "Log in" and "Log out" (es "Iniciar sesión", "Cerrar sesión"; it "Accedi", "Esci").
 - Show roles through `formatRoleLabel`.
 - Namespaces match feature domains.
+- Certificate copy lives in `Certificate<Area>` namespaces: `Credential`, `Detail`, `Eligibility`, `Errors`, `List`, `Org`, `Public`, `Queue`, `Review`, `Share`, `Status`, `Verify`, and `Wizard`.
+- Course copy lives in `CourseCommon` (settings dialog and strings both screens use), `CourseEditor`, and `CourseList`. A string the tab bar builds from a value (`t(value)`) stays in `CourseList`.
+- Catalogs stay one file per locale. Per-namespace files would not shrink what the client receives, because `clientMessages()` and `getClientMessages` already filter by namespace, and they would split every Crowdin diff.
+- When a new namespace is used only in server code (route handlers, emails, metadata, server pages), add it to `serverNamespaces`.
 - `Components.<Name>` serves `src/components/ui/`, `Intl.*` serves country and language data, and `Email.*` serves templates.
 
 ## Forms

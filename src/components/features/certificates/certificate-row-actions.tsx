@@ -29,8 +29,8 @@ export const CertificateRowActions = ({
   onChanged?: () => void
   tutors: OrgTutor[]
 }) => {
-  const t = useTranslations('Certificates.org')
-  const tDetail = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateOrg')
+  const tDetail = useTranslations('CertificateDetail')
   const tCommon = useTranslations('Common')
   const actionError = useActionError()
   const { impersonating } = useSession()

@@ -23,7 +23,7 @@ export interface ExperienceFormValues {
 }
 
 const ActivityRule = () => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<ExperienceFormValues>()
   const [activityDuration, activityEndDate, activityStartDate] = useWatch({
     control,
@@ -56,7 +56,7 @@ const TaskLength = ({ index }: { index: number }) => {
 }
 
 export const ExperienceFields = () => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<ExperienceFormValues>()
 
   return (
@@ -126,7 +126,7 @@ export const ExperienceFields = () => {
 }
 
 export const TaskFields = () => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<ExperienceFormValues>()
   const { append, fields, remove } = useFieldArray({ control, name: 'tasks' })
 

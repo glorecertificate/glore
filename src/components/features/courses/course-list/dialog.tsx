@@ -11,7 +11,7 @@ import { DialogTrigger } from '@/components/ui/dialog'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const CourseListDialog = (props: React.ComponentProps<typeof CourseDialog>) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseCommon')
   const [open, setOpen] = useState(false)
 
   return (

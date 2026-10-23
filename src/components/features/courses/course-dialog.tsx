@@ -27,7 +27,7 @@ export const CourseDialog = ({
   onSuccess?: (course: Course) => void
 }) => {
   const { push } = useRouter()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseCommon')
 
   const isEdit = !!course
   const icon = isEdit ? 'settings' : 'file-plus-corner'

@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils'
 
 export const CourseListSort = () => {
   const tCommon = useTranslations('Common')
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
 
   const { user } = useSession()
   const { sort, sortDirection, setSort, setSortDirection } = useCourseListSort()

@@ -4,12 +4,12 @@ import { LookupForm } from '@/components/features/certificates/verify/lookup-for
 import { VerifyShell } from '@/components/features/certificates/verify/verify-shell'
 
 export const generateMetadata = async () => {
-  const t = await getTranslations('Certificates.verify')
+  const t = await getTranslations('CertificateVerify')
   return { robots: { follow: false, index: false }, title: t('unknownTitle') }
 }
 
 const VerifyNotFound = async () => {
-  const t = await getTranslations('Certificates.verify')
+  const t = await getTranslations('CertificateVerify')
 
   return (
     <VerifyShell>

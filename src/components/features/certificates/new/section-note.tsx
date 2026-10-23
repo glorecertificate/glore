@@ -6,7 +6,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 
 export const SectionNote = ({ comment }: { comment?: string | null }) => {
-  const t = useTranslations('Certificates.wizard')
+  const t = useTranslations('CertificateWizard')
   if (!comment) return null
 
   return (

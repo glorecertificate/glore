@@ -32,18 +32,18 @@ const ROLE_PAGES = {
   editor: [
     { path: '/dashboard', text: m => m.Dashboard.editor.healthTitle },
     { path: '/courses/skills', text: m => m.Learning.framework.title },
-    { path: '/courses', text: m => m.Courses.courses },
+    { path: '/courses', text: m => m.CourseCommon.courses },
   ],
   learner: [
     { path: '/dashboard', text: m => m.Dashboard.continue.title },
-    { path: '/courses', text: m => m.Courses.courses },
+    { path: '/courses', text: m => m.CourseCommon.courses },
     { path: '/notifications', text: m => m.Notifications.title },
   ],
   owner: [
     { path: '/dashboard', text: m => m.Dashboard.manager.invitations },
     { path: '/organization', text: m => m.Organization.overview },
     { path: '/organization?tab=members', text: m => m.Organization.membersTitle },
-    { path: '/organization?tab=certificates', text: m => m.Certificates.org.title },
+    { path: '/organization?tab=certificates', text: m => m.CertificateOrg.title },
   ],
   representative: [
     { path: '/dashboard', text: m => m.Dashboard.manager.invitations },
@@ -51,11 +51,11 @@ const ROLE_PAGES = {
   ],
   tutor: [
     { path: '/dashboard', text: m => m.Dashboard.tutor.reviewTime },
-    { partial: true, path: '/certificates', text: m => m.Certificates.queue.tabs.assigned },
+    { partial: true, path: '/certificates', text: m => m.CertificateQueue.tabs.assigned },
   ],
   volunteer: [
     { path: '/dashboard', text: m => m.Dashboard.journey.title },
-    { path: '/courses', text: m => m.Courses.courses },
+    { path: '/courses', text: m => m.CourseCommon.courses },
     { path: '/certificates', text: m => m.Layout.certificates },
     { path: '/notifications', text: m => m.Notifications.title },
     { path: '/settings', text: m => m.Layout.settings },
@@ -117,7 +117,7 @@ for (const locale of Object.keys(CATALOGS) as SmokeLocale[]) {
     })
 
     test('renders the verification lookup in the chosen language', async ({ page }) => {
-      await expectLocalized(page, { expected: catalog.Certificates.verify.title, locale, path: '/verify' })
+      await expectLocalized(page, { expected: catalog.CertificateVerify.title, locale, path: '/verify' })
     })
 
     test('renders the legal pages with a translated title', async ({ page }) => {

@@ -28,7 +28,7 @@ export const EligibilityPanel = ({
   eligibility: CertificateEligibility
   openRequestId?: number | null
 }) => {
-  const t = useTranslations('Certificates.eligibility')
+  const t = useTranslations('CertificateEligibility')
   const { avgRating, completedSkillCount, hasLowRatings, minRating, minSkills } = eligibility
 
   const requirements: Requirement[] = [

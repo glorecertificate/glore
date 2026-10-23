@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 
 const CertificatesNotFound = () => {
-  const t = useTranslations('Certificates')
+  const t = useTranslations('CertificateList')
 
   return (
     <ErrorFallback message={t('notFoundMessage')} title={t('notFound')} type="not-found">

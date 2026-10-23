@@ -15,7 +15,7 @@ export const CertificateFeedback = ({
   certificate: Certificate
   notes: CertificateReviewNotes | null
 }) => {
-  const t = useTranslations('Certificates.detail')
+  const t = useTranslations('CertificateDetail')
 
   const kind = certificate.isChangesRequested
     ? 'changes'

@@ -27,7 +27,7 @@ const STATUS_VARIANTS = {
 
 export const AdminOverviewPipeline = ({ pipeline, total }: { pipeline: Pipeline; total: number }) => {
   const t = useTranslations('Admin.overview')
-  const tCertificates = useTranslations('Certificates')
+  const tCertificates = useTranslations('CertificateStatus')
 
   return (
     <Card>

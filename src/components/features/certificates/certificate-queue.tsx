@@ -30,7 +30,7 @@ export const CertificateQueue = ({
   rows: Certificate[]
   tab: TutorQueueTab
 }) => {
-  const t = useTranslations('Certificates.queue')
+  const t = useTranslations('CertificateQueue')
   const { refresh } = useRouter()
   const { locale } = useI18n()
   const [pending, startTransition] = useTransition()

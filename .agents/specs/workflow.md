@@ -74,6 +74,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 ### i18n check
 
 - `pnpm run check:i18n` (`scripts/i18n/`) fails on a key missing from a locale and on an empty or non-string value.
+- It also checks `serverNamespaces` in `config/i18n.json` against the `'use client'` import graph (`scripts/i18n/namespaces.mts`).
 - It also fails on malformed ICU, and on an ICU argument, plural or select case, or tag (`{name}`, `<link>`) that differs from `en`. Plural categories may differ per language.
 - It also fails on a legal document that misses a locale, has broken front matter, or has different headings.
 - Legal front matter (`title`, `updated`) must survive a round trip: the Crowdin Markdown parser excludes `updated`, so only the body and `title` are translated.

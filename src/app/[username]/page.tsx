@@ -12,7 +12,7 @@ import config from '~/config/metadata.json'
 
 export const generateMetadata = async ({ params }: PageProps<'/[username]'>) => {
   const { username } = await params
-  const [{ data: cert }, t] = await Promise.all([findPublicCertificate(username), getTranslations('Certificates')])
+  const [{ data: cert }, t] = await Promise.all([findPublicCertificate(username), getTranslations('CertificatePublic')])
 
   if (!cert) return { robots: { follow: false, index: false }, title: t('publicNotFound') }
 

@@ -15,7 +15,7 @@ import { LOCALES } from '@/lib/i18n'
 
 export const CourseListLanguageSelect = () => {
   const { localeItems } = useI18n()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
   const { activeLanguages, setActiveLanguages } = useCourseListLanguages()
 
   const activeLanguageItems = localeItems.filter(item => activeLanguages.includes(item.value))

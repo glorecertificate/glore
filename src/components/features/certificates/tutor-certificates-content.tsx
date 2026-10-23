@@ -38,7 +38,8 @@ export const TutorCertificatesContent = ({
   assigned: Certificate[]
   unassigned: Certificate[]
 }) => {
-  const t = useTranslations('Certificates')
+  const t = useTranslations('CertificateQueue')
+  const tStatus = useTranslations('CertificateStatus')
   const { setTab, tab } = useTutorQueueTab()
   const { setStatus, status } = useTutorQueueStatus()
   const { age, setAge } = useTutorQueueAge()
@@ -66,17 +67,17 @@ export const TutorCertificatesContent = ({
 
   const filters = (
     <div className="flex flex-wrap items-center gap-2">
-      <SearchInput aria-label={t('queue.search')} placeholder={t('queue.search')} />
+      <SearchInput aria-label={t('search')} placeholder={t('search')} />
       {statusOptions.length > 0 && (
         <Select onValueChange={value => setStatus(value === ALL ? null : value)} value={status ?? ALL}>
-          <SelectTrigger aria-label={t('queue.status')} className="w-44">
+          <SelectTrigger aria-label={t('status')} className="w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={ALL}>{t('queue.allStatuses')}</SelectItem>
+            <SelectItem value={ALL}>{t('allStatuses')}</SelectItem>
             {statusOptions.map(option => (
               <SelectItem key={option} value={option}>
-                {t(STATUS_LABEL_KEYS[option as keyof typeof STATUS_LABEL_KEYS])}
+                {tStatus(STATUS_LABEL_KEYS[option as keyof typeof STATUS_LABEL_KEYS])}
               </SelectItem>
             ))}
           </SelectContent>
@@ -84,14 +85,14 @@ export const TutorCertificatesContent = ({
       )}
       {tab !== 'completed' && (
         <Select onValueChange={value => setAge(value === ALL ? null : (value as TutorQueueAge))} value={age ?? ALL}>
-          <SelectTrigger aria-label={t('queue.age')} className="w-44">
+          <SelectTrigger aria-label={t('age')} className="w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={ALL}>{t('queue.allAges')}</SelectItem>
+            <SelectItem value={ALL}>{t('allAges')}</SelectItem>
             {TUTOR_QUEUE_AGES.map(option => (
               <SelectItem key={option} value={option}>
-                {t(`queue.age_${option}`)}
+                {t(`age_${option}`)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -113,7 +114,7 @@ export const TutorCertificatesContent = ({
       <TabsList>
         {TUTOR_QUEUE_TABS.map(key => (
           <TabsTrigger key={key} value={key}>
-            {t(`queue.tabs.${key}`)}
+            {t(`tabs.${key}`)}
             <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">{counts[key]}</span>
           </TabsTrigger>
         ))}

@@ -9,7 +9,7 @@ import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/for
 import { Textarea } from '@/components/ui/textarea'
 
 export const SectionComment = ({ section }: { section: keyof ReviewFormValues['sectionComments'] }) => {
-  const t = useTranslations('Certificates.review')
+  const t = useTranslations('CertificateReview')
   const { control } = useFormContext<ReviewFormValues>()
 
   return (

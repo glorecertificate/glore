@@ -23,7 +23,7 @@ const CourseListSortableGrid = dynamic(
 )
 
 export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<typeof TabsContent>, 'value'>) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
   const { user } = useSession()
   const { tab } = useCourseListTab()
   const { activeLanguages } = useCourseListLanguages()

@@ -49,7 +49,7 @@ const AnalyticsContent = ({
   course: ReturnType<typeof useCourse>['course']
   data: CourseAnalyticsStats
 }) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
   const tEditor = useTranslations('Learning.editor')
   const { localize } = useI18n()
 
@@ -161,7 +161,7 @@ interface StatCard {
 
 export const CourseAnalyticsSheet = () => {
   const { course } = useCourse()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
   const tEditor = useTranslations('Learning.editor')
 
   const [open, setOpen] = useState(false)

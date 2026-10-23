@@ -21,7 +21,7 @@ export const PublishSwitch = ({
   published: boolean
 }) => {
   const id = useId()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
   const label = published ? t('publishSwitchPublished') : t('publishSwitchDraft')
 
   return (

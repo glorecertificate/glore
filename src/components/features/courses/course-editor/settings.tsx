@@ -62,7 +62,8 @@ export const CourseSettings = ({
   const { skillGroups, createCourse, updateCourse } = useCourses()
 
   const { localeItems, localize } = useI18n()
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseEditor')
+  const tCommon = useTranslations('CourseCommon')
   const tEditor = useTranslations('Learning.editor')
 
   const formSchema = courseSettingsSchema.extend({
@@ -140,7 +141,7 @@ export const CourseSettings = ({
   const submitMessage = (() => {
     if (course && !form.formState.isDirty) return t('noChangesToSave')
     if (form.formState.isSubmitting) return course ? t('savingChange') : t('creatingCourse')
-    return course ? t('saveChanges') : t('createCourse')
+    return course ? t('saveChanges') : tCommon('createCourse')
   })()
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
@@ -196,7 +197,7 @@ export const CourseSettings = ({
                         </div>
                       )}
                       <span className="transition-colors duration-100">
-                        {field.value ? t('updateIcon') : t('iconPlaceholder')}
+                        {field.value ? tCommon('updateIcon') : t('iconPlaceholder')}
                       </span>
                     </Button>
                   </IconPicker>
@@ -222,7 +223,7 @@ export const CourseSettings = ({
             render={({ field }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col gap-y-1">
-                  <FormLabel className="text-[15px]">{t('courseType')}</FormLabel>
+                  <FormLabel className="text-[15px]">{tCommon('courseType')}</FormLabel>
                   <FormDescription>{t('courseTypeDescription')}</FormDescription>
                 </div>
                 <div className="space-y-1.5">
@@ -236,7 +237,7 @@ export const CourseSettings = ({
                     <TabsList className="grid min-w-1/3 grid-cols-3">
                       {COURSE_TYPES.map(type => (
                         <TabsTrigger className="h-8 py-0" key={type} size="sm" value={type}>
-                          {t(`courseType-${type}`)}
+                          {tCommon(`courseType-${type}`)}
                         </TabsTrigger>
                       ))}
                     </TabsList>
@@ -255,7 +256,7 @@ export const CourseSettings = ({
               render={({ field }) => (
                 <FormItem className="space-y-1">
                   <div className="flex flex-col gap-y-1">
-                    <FormLabel className="text-[15px]">{t('skillGroup')}</FormLabel>
+                    <FormLabel className="text-[15px]">{tCommon('skillGroup')}</FormLabel>
                     <FormDescription>{t('skillGroupDescription')}</FormDescription>
                   </div>
                   <Select

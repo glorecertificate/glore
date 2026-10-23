@@ -26,6 +26,7 @@ src/
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── docs.ts         # Doc category + article CRUD, cached queries
 │   ├── guards.ts       # requireEditor and other action guards
+│   ├── i18n.ts         # getClientMessages: client-safe catalog for a locale switch
 │   ├── onboarding.ts   # Complete onboarding: password, profile, username, welcome event
 │   ├── session.ts      # getSessionUser: render-only private-cached session (server-only, no 'use server')
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2

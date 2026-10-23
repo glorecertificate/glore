@@ -83,14 +83,14 @@ describe('Spanish and Italian count agreement', () => {
     expect(load('it', 1, 1)).toBe('1 aperta, 1 conclusa')
     expect(load('it', 2, 0)).toBe('2 aperte, 0 concluse')
 
-    expect(t('es', 'Certificates.org.closedCount', { count: 1 })).toBe('1 cerrado sin emitir')
-    expect(t('es', 'Certificates.org.closedCount', { count: 2 })).toBe('2 cerrados sin emitir')
-    expect(t('it', 'Certificates.org.closedCount', { count: 1 })).toBe('1 chiuso senza emissione')
-    expect(t('it', 'Certificates.org.closedCount', { count: 2 })).toBe('2 chiusi senza emissione')
-    expect(t('es', 'Courses.enrolledStudents', { count: 1 })).toBe('1 inscrito')
-    expect(t('es', 'Courses.enrolledStudents', { count: 2 })).toBe('2 inscritos')
-    expect(t('it', 'Courses.enrolledStudents', { count: 1 })).toBe('1 iscritto')
-    expect(t('it', 'Courses.enrolledStudents', { count: 2 })).toBe('2 iscritti')
+    expect(t('es', 'CertificateOrg.closedCount', { count: 1 })).toBe('1 cerrado sin emitir')
+    expect(t('es', 'CertificateOrg.closedCount', { count: 2 })).toBe('2 cerrados sin emitir')
+    expect(t('it', 'CertificateOrg.closedCount', { count: 1 })).toBe('1 chiuso senza emissione')
+    expect(t('it', 'CertificateOrg.closedCount', { count: 2 })).toBe('2 chiusi senza emissione')
+    expect(t('es', 'CourseList.enrolledStudents', { count: 1 })).toBe('1 inscrito')
+    expect(t('es', 'CourseList.enrolledStudents', { count: 2 })).toBe('2 inscritos')
+    expect(t('it', 'CourseList.enrolledStudents', { count: 1 })).toBe('1 iscritto')
+    expect(t('it', 'CourseList.enrolledStudents', { count: 2 })).toBe('2 iscritti')
   })
 })
 
@@ -119,7 +119,7 @@ describe('Courses quiz validation messages', () => {
   it('names the lesson position, its title, and the question in every locale', () => {
     for (const locale of ['en', 'es', 'it'] as const) {
       for (const key of keys) {
-        const message = t(locale, `Courses.${key}`, values)
+        const message = t(locale, `CourseEditor.${key}`, values)
         expect(message).toContain('3 (Active listening)')
         expect(message).toContain('2')
       }

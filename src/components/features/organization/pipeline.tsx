@@ -28,7 +28,7 @@ const STATUS_VARIANTS = {
 
 export const OrganizationPipeline = ({ pipeline }: { pipeline: Pipeline }) => {
   const t = useTranslations('Organization')
-  const tCertificates = useTranslations('Certificates')
+  const tCertificates = useTranslations('CertificateStatus')
   const total = PIPELINE_STATUSES.reduce((sum, status) => sum + pipeline[status], 0)
 
   return (

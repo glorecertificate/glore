@@ -25,7 +25,7 @@ interface CourseListSortableGridProps {
 }
 
 export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListSortableGridProps) => {
-  const t = useTranslations('Courses')
+  const t = useTranslations('CourseList')
   const tEditor = useTranslations('Learning.editor')
   const { courses: allCourses, setCourses } = useCourses()
   const reducedMotion = useReducedMotion()

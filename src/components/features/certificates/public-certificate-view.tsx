@@ -22,9 +22,12 @@ interface PublicCertificateViewProps {
 }
 
 export const PublicCertificateView = async ({ certificate, username }: PublicCertificateViewProps) => {
-  const [t, tCommon, locale] = await Promise.all([
-    getTranslations('Certificates'),
+  const [t, tCommon, tCredential, tDetail, tVerify, locale] = await Promise.all([
+    getTranslations('CertificatePublic'),
     getTranslations('Common'),
+    getTranslations('CertificateCredential'),
+    getTranslations('CertificateDetail'),
+    getTranslations('CertificateVerify'),
     getLocale(),
   ])
 
@@ -35,7 +38,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
   const certLocale = certificate.language as Locale
 
-  const volunteerName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
+  const volunteerName = certificate.user ? fullName(certificate.user) : tCredential('unknownVolunteer')
 
   const verificationUrl = certificate.code
     ? `${process.env.APP_URL}${VERIFY_ROOT}/${certificate.code}`
@@ -66,7 +69,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <Button asChild size="sm" variant="brand">
               <a download href={certificate.documentUrl} rel="noopener noreferrer" target="_blank">
                 <LucideIcon name="download" />
-                {t('download')}
+                {tDetail('download')}
               </a>
             </Button>
           )}
@@ -77,11 +80,11 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
                 <LucideIcon name="calendar" className="size-4 shrink-0" />
-                {t('period')}
+                {tCredential('period')}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{t('detail.periodValue', { end, start })}</p>
+              <p className="text-sm">{tDetail('periodValue', { end, start })}</p>
             </CardContent>
           </Card>
 
@@ -89,7 +92,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
                 <LucideIcon name="timer" className="size-4 shrink-0" />
-                {t('activityDuration')}
+                {tCredential('activityDuration')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -104,7 +107,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
                 <LucideIcon name="map-pin" className="size-4 shrink-0" />
-                {t('activityLocation')}
+                {tCredential('activityLocation')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -114,7 +117,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">{t('verify.skills')}</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{tVerify('skills')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-1">
@@ -138,7 +141,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">{t('activityDescription')}</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground">{tCredential('activityDescription')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm whitespace-pre-wrap">{certificate.activityDescription}</p>

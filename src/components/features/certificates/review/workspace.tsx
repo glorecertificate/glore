@@ -57,7 +57,7 @@ export const ReviewWorkspace = ({
   previous: CertificateReviewNotes | null
   results: Record<number, HolderCourseResult>
 }) => {
-  const t = useTranslations('Certificates.review')
+  const t = useTranslations('CertificateReview')
   const { push, refresh } = useRouter()
   const [busy, setBusy] = useState<Busy>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)

@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
+  "buildCommand": "pnpm run typegen && pnpm run build",
   "regions": ["fra1"],
   "ignoreCommand": "if [[ $VERCEL_GIT_COMMIT_AUTHOR_LOGIN == 'dependabot[bot]' ]] || [[ $VERCEL_GIT_COMMIT_MESSAGE == 'chore(release)'* ]]; then exit 0; else exit 1; fi",
   "cleanUrls": true,

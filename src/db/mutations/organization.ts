@@ -40,6 +40,9 @@ const MEMBER_ERROR_MESSAGES = {
 
 export const memberError = (code: MemberErrorCode) => Object.assign(new Error(MEMBER_ERROR_MESSAGES[code]), { code })
 
+const applicationDecided = () =>
+  Object.assign(new Error('A decision for this application already exists'), { code: 'CONFLICT' })
+
 export const isMemberError = (error: unknown): error is Error & { code: MemberErrorCode } =>
   error instanceof Error && 'code' in error && typeof error.code === 'string' && error.code in MEMBER_ERROR_MESSAGES
 
@@ -393,8 +396,7 @@ export const approveOrganizationApplication = async (
   if (!request) throw new Error('Registration request not found')
 
   const nowIso = new Date().toISOString()
-  await tx.update(organizations).set({ approvedAt: nowIso }).where(eq(organizations.id, organizationId))
-  await tx
+  const [accepted] = await tx
     .update(organizationJoinRequests)
     .set({
       acceptedAt: nowIso,
@@ -403,7 +405,15 @@ export const approveOrganizationApplication = async (
       reviewerComment: comment,
       status: 'accepted',
     })
-    .where(eq(organizationJoinRequests.id, request.id))
+    .where(and(eq(organizationJoinRequests.id, request.id), eq(organizationJoinRequests.status, 'pending')))
+    .returning({ id: organizationJoinRequests.id })
+  if (!accepted) throw applicationDecided()
+  const [approved] = await tx
+    .update(organizations)
+    .set({ approvedAt: nowIso })
+    .where(and(eq(organizations.id, organizationId), isNull(organizations.approvedAt)))
+    .returning({ id: organizations.id })
+  if (!approved) throw applicationDecided()
 
   const { event: invitationEvent, invitation } = await createInvitation(tx, {
     email: request.email,
@@ -506,7 +516,7 @@ export const rejectOrganizationApplication = async (
   if (!request) throw new Error('Registration request not found')
 
   const nowIso = new Date().toISOString()
-  await tx
+  const [rejected] = await tx
     .update(organizationJoinRequests)
     .set({
       rejectedAt: nowIso,
@@ -515,7 +525,9 @@ export const rejectOrganizationApplication = async (
       reviewerComment: comment,
       status: 'rejected',
     })
-    .where(eq(organizationJoinRequests.id, request.id))
+    .where(and(eq(organizationJoinRequests.id, request.id), eq(organizationJoinRequests.status, 'pending')))
+    .returning({ id: organizationJoinRequests.id })
+  if (!rejected) throw applicationDecided()
 
   const event = {
     type: 'organization.application_decided',

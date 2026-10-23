@@ -124,6 +124,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 
 - Platform admins review in `/admin/organizations`: the row menu opens an application sheet with all submitted data.
 - Approving sends the representative an invitation to `/invite/[token]`. No account is created or linked before they accept.
+- Both decisions update the request only while it is `pending`, and approving also requires an unapproved organization. A simultaneous second decision fails with a `CONFLICT` and sends no second mail.
 - Rejecting is a mutation (`rejectOrganizationApplication`) that keeps the organization, marks the request rejected, and records `organization.application_decided` with `approved: false`.
 - The `organization/application-decision` template (own subject, intro, and buttons) mails approved and declined decisions.
 - `/admin/organizations/[id]` reuses the organization components with `organizationId`.

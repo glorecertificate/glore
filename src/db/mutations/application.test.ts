@@ -192,4 +192,78 @@ describe.skipIf(!isLocalDatabase)('organization applications', () => {
     })
     expect(memberRows).toHaveLength(0)
   })
+
+  describe('concurrent decisions', () => {
+    const approve = (organizationId: number) =>
+      context.client.transaction(tx =>
+        context.mutations.approveOrganizationApplication(tx, {
+          comment: null,
+          expiryDays: 7,
+          organizationId,
+          reviewerId,
+        })
+      )
+
+    const reject = (organizationId: number) =>
+      context.client.transaction(tx =>
+        context.mutations.rejectOrganizationApplication(tx, { comment: null, organizationId, reviewerId })
+      )
+
+    const decisions = async (organizationId: number) =>
+      await context.client.db.query.activityEvents.findMany({
+        where: and(
+          eq(context.schema.activityEvents.organizationId, organizationId),
+          eq(context.schema.activityEvents.action, 'organization.application_decided')
+        ),
+      })
+
+    it('lets only one of two simultaneous approvals through', async () => {
+      const { organization } = await submit('race-approve')
+
+      const results = await Promise.allSettled([approve(organization.id), approve(organization.id)])
+
+      expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1)
+      expect(await decisions(organization.id)).toHaveLength(1)
+    })
+
+    it('lets only one of two simultaneous rejections through', async () => {
+      const { organization } = await submit('race-reject')
+
+      const results = await Promise.allSettled([reject(organization.id), reject(organization.id)])
+
+      expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1)
+      expect(await decisions(organization.id)).toHaveLength(1)
+    })
+
+    it('lets only one of a simultaneous approval and rejection through', async () => {
+      const { organization } = await submit('race-mixed')
+
+      const results = await Promise.allSettled([approve(organization.id), reject(organization.id)])
+
+      expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1)
+      expect(await decisions(organization.id)).toHaveLength(1)
+    })
+
+    it('reports the lost race with a conflict code', async () => {
+      const { organization } = await submit('race-code')
+      const stale = await context.client.db.query.organizationJoinRequests.findFirst({
+        where: eq(context.schema.organizationJoinRequests.organizationId, organization.id),
+      })
+      await approve(organization.id)
+      await context.client.db
+        .update(context.schema.organizationJoinRequests)
+        .set({ status: 'pending' })
+        .where(eq(context.schema.organizationJoinRequests.id, stale?.id ?? 0))
+      await context.client.db
+        .update(context.schema.organizations)
+        .set({ approvedAt: null })
+        .where(eq(context.schema.organizations.id, organization.id))
+
+      const results = await Promise.allSettled([approve(organization.id), approve(organization.id)])
+
+      expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1)
+      const lost = results.find(({ status }) => status === 'rejected')
+      expect(lost?.status === 'rejected' && lost.reason).toMatchObject({ code: 'CONFLICT' })
+    })
+  })
 })

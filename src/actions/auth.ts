@@ -12,6 +12,7 @@ import { hashPassword } from 'better-auth/crypto'
 import { eq, or } from 'drizzle-orm'
 
 import { impersonationLocked } from '@/actions/admin/impersonation-state'
+import { applyUserLocale } from '@/actions/cookies'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
@@ -66,6 +67,15 @@ const isAuthRateLimited = async (scope: string, identifier: string, max: number)
   return byAddress || byIdentifier
 }
 
+const signIn = async (email: string, password: string) => {
+  try {
+    const result = await auth.api.signInEmail({ body: { email, password }, headers: await headers() })
+    return result?.user ?? null
+  } catch {
+    return null
+  }
+}
+
 export const login = async ({ password, username }: { password: string; username: string }) => {
   if (await isAuthRateLimited('login', username, 10)) {
     return { error: { code: 'RATE_LIMITED', message: 'Too many attempts' } }
@@ -77,13 +87,10 @@ export const login = async ({ password, username }: { password: string; username
     return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
   }
 
-  try {
-    const result = await auth.api.signInEmail({ body: { email, password }, headers: await headers() })
-    if (!result?.user) return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
-  } catch {
-    return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
-  }
+  const user = await signIn(email, password)
+  if (!user) return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
 
+  await applyUserLocale(user.locale)
   redirect(APP_ROOT)
 }
 

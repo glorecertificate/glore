@@ -81,3 +81,9 @@ export const getLocaleCookie = async () => {
 }
 
 export const setLocaleCookie = async (locale: Locale) => await setCookie(LOCALE_COOKIE, locale, { prefix: false })
+
+export const applyUserLocale = async (stored: string | null | undefined) => {
+  const locale = LOCALES.find(item => item === stored)
+  if (!locale || locale === (await getLocaleCookie())) return
+  await setLocaleCookie(locale)
+}

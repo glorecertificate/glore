@@ -169,7 +169,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 
 ## Internationalization
 
-- Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix.
+- Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix. `login` and `signInToAcceptInvitation` call `applyUserLocale` (`actions/cookies.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
 - Pass messages to `I18nProvider` through `clientMessages()`, which drops the server-only `About`, `Email`, `Legal`, and `Metadata` namespaces.
 - Write copy in sentence case (never CSS `capitalize`) with `…`.
 - Use US English in `en`, Peninsular informal "tú" in `es`, and informal "tu" in `it`.

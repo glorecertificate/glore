@@ -7,9 +7,10 @@ import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
 
 const signInEmail = vi.hoisted(() =>
   vi.fn((_options: { body: { email: string; password: string }; headers?: Headers }) =>
-    Promise.resolve({ user: { id: 'x' } })
+    Promise.resolve({ user: { id: 'x', locale: 'it' as null | string } })
   )
 )
+const cookieJar = vi.hoisted(() => new Map<string, string>())
 
 const hashPassword = vi.hoisted(() => vi.fn((_password: string) => Promise.resolve('hash')))
 
@@ -23,6 +24,12 @@ vi.mock('@/lib/rate-limit', () => ({
   isRateLimited: () => Promise.resolve(false),
 }))
 vi.mock('next/headers', () => ({
+  cookies: () =>
+    Promise.resolve({
+      delete: (name: string) => cookieJar.delete(name),
+      get: (name: string) => (cookieJar.has(name) ? { name, value: cookieJar.get(name) } : undefined),
+      set: (name: string, value: string) => cookieJar.set(name, value),
+    }),
   headers: () => Promise.resolve(new Headers({ 'user-agent': 'Mozilla/5.0 Chrome/130.0 Safari/537.36' })),
 }))
 vi.mock('next/navigation', () => ({
@@ -62,6 +69,7 @@ describe.skipIf(!isLocalDatabase)('login by email or username', () => {
   beforeEach(() => {
     signInEmail.mockClear()
     hashPassword.mockClear()
+    cookieJar.clear()
   })
 
   afterAll(async () => {
@@ -99,6 +107,46 @@ describe.skipIf(!isLocalDatabase)('login by email or username', () => {
   it('hashes the password for an unknown user so the answer takes as long as a wrong password', async () => {
     await context.actions.login({ password: 'Password1!', username: 'nobody-here' })
     expect(hashPassword).toHaveBeenCalledWith('Password1!')
+  })
+
+  it('switches the interface to the language stored on the account', async () => {
+    cookieJar.set('NEXT_LOCALE', 'en')
+
+    await expect(context.actions.login({ password: 'Password1!', username: email })).rejects.toThrow(
+      'REDIRECT:/dashboard'
+    )
+
+    expect(cookieJar.get('NEXT_LOCALE')).toBe('it')
+  })
+
+  it('sets the language cookie in a fresh browser too', async () => {
+    await expect(context.actions.login({ password: 'Password1!', username: email })).rejects.toThrow(
+      'REDIRECT:/dashboard'
+    )
+
+    expect(cookieJar.get('NEXT_LOCALE')).toBe('it')
+  })
+
+  it('keeps the browser language when the account has none or an unknown one', async () => {
+    cookieJar.set('NEXT_LOCALE', 'es')
+
+    for (const locale of [null, 'xx']) {
+      signInEmail.mockResolvedValueOnce({ user: { id: 'x', locale } })
+      await expect(context.actions.login({ password: 'Password1!', username: email })).rejects.toThrow(
+        'REDIRECT:/dashboard'
+      )
+    }
+
+    expect(cookieJar.get('NEXT_LOCALE')).toBe('es')
+  })
+
+  it('leaves the language alone when the sign-in fails', async () => {
+    signInEmail.mockRejectedValueOnce(new Error('INVALID_EMAIL_OR_PASSWORD'))
+
+    const result = await context.actions.login({ password: 'wrong', username: email })
+
+    expect(result).toEqual({ error: { code: 'AUTH_ERROR', message: 'Login failed' } })
+    expect(cookieJar.has('NEXT_LOCALE')).toBe(false)
   })
 
   it('leaves hashing to the sign-in for a known user', async () => {

@@ -11,7 +11,7 @@ import { redirect } from 'next/navigation'
 import { eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { setCookie } from '@/actions/cookies'
+import { applyUserLocale, setCookie } from '@/actions/cookies'
 import { notify } from '@/actions/notifications/notify'
 import { expireUserAccess } from '@/actions/organizations/helpers'
 import { failure, guarded } from '@/actions/organizations/invite-core'
@@ -141,11 +141,10 @@ export const signInToAcceptInvitation = async ({ password, token }: { password: 
 
   return await guarded(async () => {
     assertPending(invitation)
-    try {
-      await auth.api.signInEmail({ body: { email, password }, headers: await headers() })
-    } catch {
-      throw invitationError('AUTH_ERROR')
-    }
+    const result = await auth.api.signInEmail({ body: { email, password }, headers: await headers() }).catch(() => null)
+    if (!result) throw invitationError('AUTH_ERROR')
+
+    await applyUserLocale(result.user.locale)
     return { signedIn: true }
   })
 }

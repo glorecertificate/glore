@@ -12,15 +12,16 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 ## Deploy model
 
 - A push to `main` runs `ci.yml`: check and e2e, then `deploy.yml` deploys `main` with the Vercel Preview env vars to the preview domain.
-- Every other branch gets a Vercel Git preview. The Neon integration gives it a `preview/<branch>` database copied from production, so these builds fail until production is migrated.
-- The `Main` ruleset requires that `Vercel` check and `Check / Check`. Admins can bypass it, which this release needs because of the previous point.
+- Every other branch gets a Vercel Git preview. The Neon Vercel integration is disconnected, so every preview uses the unscoped Preview `DATABASE_URL` (Neon `staging`). Never add a branch-scoped `DATABASE_URL`.
+- The `Main` ruleset requires the `Vercel` check and `Check / Check`. Admins can bypass it.
 - A `v*` tag runs `release.yml`, which deploys production with `vercel deploy --target=production`. A push to `main` never reaches production.
 - The production build prerenders against the production database, so production must be migrated before the tag.
 - `deploy.yml` builds on the runner from `vercel pull`, which cannot read Secret variables. Every variable the build validates must use the Config type.
 
 ## State
 
-- `release/v0.7` is open as pull request #20 into `main`. The repository only allows "Rebase and merge", which recreates the commits with new hashes and without their local signatures.
+- Pull request #20 is merged. GitHub refused "Rebase and merge" (`rebaseable: false` without conflicts), so `main` was fast-forwarded to `10f627ed` by a push, which kept the hashes and signatures.
+- The preview domain serves `10f627ed`.
 - Neon `staging` has all 33 migrations. Preview `DATABASE_URL` points to it (no branch scope) and Preview `APP_URL` is the preview domain.
 - Production lacks migrations 0013 to 0032, has no database comment, and holds 0 certificates.
 - Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).
@@ -28,7 +29,7 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 ## Preview
 
 1. Wait for `Check / Check` and `E2E` to pass on pull request #20.
-2. Merge pull request #20 with "Rebase and merge" (the failing `Vercel` check needs the admin bypass), then run `git switch main && git pull`.
+2. Merge pull request #20. When GitHub refuses the rebase and `main` is an ancestor, fast-forward with `git push origin release/v0.7:main`, then run `git switch main && git pull --ff-only`.
 3. CI deploys the preview domain once check and e2e pass on `main`.
 4. Import the catalog and seed the demo data per `manual-testing.md`, "Setup", step 6.
 5. Validate the preview with `manual-testing.md`, then run "Verify" below against the preview domain.

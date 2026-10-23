@@ -1,9 +1,8 @@
 import { notFound, redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { getCookie } from '@/actions/cookies'
 import { getOrganizationPanel } from '@/actions/organizations/queries'
-import { getCurrentUser } from '@/actions/user'
+import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { OrganizationPanel } from '@/components/features/organization/panel'
 import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -17,11 +16,11 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const OrganizationContent = async () => {
-  const user = await getCurrentUser()
-  if (user.canEdit) redirect('/admin')
+  const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  if (user.isAdmin) redirect('/admin')
+  if (user.canEdit) notFound()
 
-  const activeOrgId = await getCookie('org')
-  const activeOrganization = user.organizations.find(({ id }) => id === activeOrgId) ?? user.organizations[0] ?? null
+  const activeOrganization = user.organizations.find(({ id }) => id === activeOrgId)
 
   if (!(activeOrganization?.role === 'admin' || activeOrganization?.role === 'representative')) {
     notFound()

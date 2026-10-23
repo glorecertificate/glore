@@ -6,7 +6,7 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 
 - State: in progress, the user gave the go on 2026-10-22.
 - Current wave: W3 (verification and release readiness). W0 to W2 are merged.
-- Next up: browser and e2e passes for every `[~]` row, then G2 to G8 in order.
+- Next up: G7 docs sync, then the G8 handoff in `runbook.md`. Production steps stay with the user.
 - Branch: local `release/v1` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
@@ -156,7 +156,14 @@ Content rules: plain, warm language for young adults, examples from volunteering
   - G3a (volunteer, tutor, public) ran. Fixed in dd3d77a5 to 0cfd8c44: tutor release 404, share overflow at 390px, level picker overlap, palette drafts, stale date error, raw nationality, draft resume step, and copy.
   - G3a fixed earlier: the PDF task overlap (03dccbd6).
   - Open, low: stepper label break at 390px, toast over settings tabs, IPv6 loopback, the approve preview fallback, and prefill after a withdrawal (new feature, after v1).
-  - G3b (editor, admin, impersonation, multi-org) is running. Representative and owner rows need a reseed.
+  - G3b (editor, admin, impersonation, multi-org) and G3c (owner, representative, every role) ran. Lanes Y and Z merged their fixes.
+  - Fixed: stale reviewer and tutor queues after a reassign or release (8aed4e35).
+  - Fixed: public period and skills heading (f5331342), signed-in profile 404 (aa984383), skill progress cap (6aac455c).
+  - Fixed: typed name before an org delete (9be7eb83), palette labels (8de9d357), review period (69c0e7fc), time hydration (901d4674).
+  - Fixed in lane W (5c880842): share fields at 390px, the Italian table at 1280px, and the mobile review bar.
+  - By design: an unknown single-segment path renders the profile 404, and an escalation notice keeps the wait at send time.
+  - Open, low: role-gated 404 tab titles and dev-only "Could not validate instant" errors on role-gated 404s.
+  - Open, local data: fixture courses `w05-ui-kit-browser-check` and `competenze-sociali` (`content:import --remove <slug>`).
 - G4 [x] 9c1f0560: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
   - 18 of 24 templates ran live in en, es, and it, and all links resolved.
   - Fixed: the team invite named the invitee as inviter, the unsubscribe GET used the proxy host, and the welcome mail order.

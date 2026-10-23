@@ -135,6 +135,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - Put `'use cache'` (with `cacheLife('max')` for long-lived data) on the inner fetch function, never on the exported one.
 - The exported function takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
 - In a server action whose caller must see its own write, use `updateTag(tag)`. `updateTag` throws outside server actions.
+- A read in a later request (a client reload after a mutation, or a live work queue) passes `{ cache: false }`: dev can serve that request the pre-write entry.
 - Elsewhere use `revalidateTag(tag, 'max')`.
 - Role and membership writes call `expireUserAccess` (org actions) or `revalidateUserAccess` (admin actions).
 - Progress writes expire `progressUserTag(userId)`.

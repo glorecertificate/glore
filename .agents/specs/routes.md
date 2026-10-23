@@ -15,7 +15,7 @@ Route groups, route gates, API routes, and the proxy lifecycle. Authentication d
 - `/register`: organization application (`organizations.md`).
 - `/invite/[token]` and `/join/[token]`: token pages (`organizations.md`).
 - `/verify` and `/verify/[code]`: certificate verification.
-- `/[username]`: opt-in public profile.
+- `/[username]`: opt-in public profile. Its 404 offers guests join and login links and signed-in users the dashboard.
 - `/privacy`, `/terms`, `/quality-charter`: Markdown from `content/legal/<doc>.<locale>.md`, with an `en` fallback notice.
 - `LEGAL_ROOTS` feeds the proxy and the reserved usernames.
 - `/offline`: PWA fallback.

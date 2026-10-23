@@ -76,7 +76,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - The PDF also reads `avatarUrl` as the logo. `pdfImage` skips `.webp`.
 - A certificate with a stored `snapshot` regenerates with the snapshot's signatory, so changes reach only new approvals.
 - Replacing or removing a logo or signature deletes the old R2 object only when no certificate `snapshot` references its URL (`deleteOrganizationAsset`).
-- Deleting an organization is refused with `HAS_CERTIFICATES` once any certificate exists.
+- Deleting an organization asks for its name and is refused with `HAS_CERTIFICATES` once any certificate exists.
 - Otherwise deleting removes the row, expires member access caches, and deletes the logo.
 - Org identity lives in `organizations`. Sparse fields live in `organization_profiles`.
 

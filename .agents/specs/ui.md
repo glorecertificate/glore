@@ -64,7 +64,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Brand roles: blue for primary actions, active navigation, focus, and links.
 - Brand roles: olive for achievement and secondary data. Navy (`brand-tertiary-text` as text) for tertiary data.
 - Status colors mark state only, never decoration.
-- Never use raw Tailwind palette colors (`amber-500`, `green-500`) for state. Use the `Badge` status variants (`success`, `warning`, `destructive`, `info`) or `bg-<status>/10 text-<status>-text`.
+- Never use raw Tailwind palette colors (`amber-500`) for state. Use the `Badge` variants (`success`, `warning`, `destructive`, `info`, `brand-soft`) or `bg-<status>/10 text-<status>-text`.
 - Fonts are variables on `<html>`: Geist (`--font-geist-sans`) for UI text and Bricolage Grotesque (`font-display`).
 - `globals.css` applies `font-display` to `h1` to `h3` and every `[data-slot$='-title']`.
 - `HeaderBreadcrumb` renders the page `h1` unless `backHref` is set. Then the content owns the only `h1`.

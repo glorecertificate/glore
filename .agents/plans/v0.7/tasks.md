@@ -35,7 +35,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 ### Content and legal
 
-- GloRe review items (legal texts, O5 definitions, skill names, course publishing, docs) live in `glore-followups.md`.
+- GloRe review items (legal texts, O5 definitions, skill names, course publishing, docs) live in `followups.md`.
 - `/api/v1/ai/copilot` has no client in the app and never had one.
 - Decision: `impersonatedBy` stays out of event metadata, because `recordEvent` is a transaction primitive with no request context.
 
@@ -245,7 +245,7 @@ Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 
 - T5 [x] (lane t5, a62f378b to eaf17f70, migration 0032): `app_settings` editor, `i18n:overrides` and `i18n:pull` scripts, `rename-key.mts`.
   - The editor is `/admin/settings`. The legal entity has a `country` code, so es and it emails print "Italia". The scripts are `i18n:overrides`, `i18n:pull`, and `i18n:rename`; the first two accept `--target production` because they only read.
   - Accept: a contact email edit reaches the email layout and footer.
-- T6 [x]: remove `crowdin.yml` and the Crowdin docs, update specs, `AGENTS.md`, `README.md`, `manual-testing.md`, and `glore-followups.md`.
+- T6 [x]: remove `crowdin.yml` and the Crowdin docs, update specs, `AGENTS.md`, `README.md`, `manual-testing.md`, and `followups.md`.
   - Docs now describe the in-app model. `/sync-docs` and `/sync-agents --check` run in G8, after T5 lands.
   - Accept: docs match code, `/sync-docs` and `/sync-agents --check` clean.
 

@@ -120,7 +120,7 @@ Nothing an editor saves can break a page.
 
 - `content/` stays as seed fixtures for local, staging, and e2e. `content:import --target production` refuses once any course or doc exists, unless `--bootstrap` is passed.
 - `content/legal` seeds the legal tables on a fresh database only.
-- `crowdin.yml` and the Crowdin sections of `workflow.md` and `README.md` are deleted, and the Crowdin item leaves `glore-followups.md`.
+- `crowdin.yml` and the Crowdin sections of `workflow.md` and `README.md` are deleted, and the Crowdin item leaves `followups.md`.
 
 ## New locales
 

@@ -128,7 +128,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - `/api/v1/certificates/<id>/pdf` re-renders on demand for signed-in users and is limited to 30 requests a minute per IP (`certificate-pdf:<ip>`, answers 429).
 - It follows the A4 template (Roboto, navy and green tokens, vector logo, `DD.MM.YYYY` dates).
 - It holds a QR code and short URL pointing to `/verify/<code>`, plus the signatory block.
-- The template reference and fidelity checks are in `.agents/plans/v0.7-release/pdf.md`.
+- The template reference and fidelity checks are in `.agents/plans/v0.7/pdf.md`.
 
 ## Public verification
 

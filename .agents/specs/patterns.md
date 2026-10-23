@@ -155,6 +155,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 
 - `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-metadata`, `use-mounted`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
 - `use-action-error`: returns `(error, fallback)`, which resolves the impersonation lock code to `Common.impersonationLocked` and otherwise the fallback message.
+- `use-country-name`: returns `(code)`, which resolves a country code of any case to its `Intl.Countries` name (`countryName` in `lib/country.ts`) and falls back to the upper-cased code.
 - `use-file-upload`: presigned R2 PUT flow.
 - `use-navigation-guard`: blocks navigation on unsaved changes.
 - `use-poll`: visible-tab polling with `refresh`.

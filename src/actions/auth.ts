@@ -7,6 +7,7 @@ import { redirect, unstable_rethrow } from 'next/navigation'
 import { connection } from 'next/server'
 import { cache } from 'react'
 
+import { hashPassword } from 'better-auth/crypto'
 import { eq, or } from 'drizzle-orm'
 
 import { impersonationLocked } from '@/actions/admin/impersonation-state'
@@ -56,7 +57,10 @@ export const login = async ({ password, username }: { password: string; username
   }
 
   const email = await findLoginEmail(username)
-  if (!email) return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
+  if (!email) {
+    await hashPassword(password)
+    return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
+  }
 
   try {
     const result = await auth.api.signInEmail({ body: { email, password }, headers: await headers() })

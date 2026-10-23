@@ -11,7 +11,13 @@ const signInEmail = vi.hoisted(() =>
   )
 )
 
+const hashPassword = vi.hoisted(() => vi.fn((_password: string) => Promise.resolve('hash')))
+
 vi.mock('@/lib/auth', () => ({ auth: { api: { signInEmail } } }))
+vi.mock('better-auth/crypto', async importOriginal => ({
+  ...(await importOriginal<typeof import('better-auth/crypto')>()),
+  hashPassword,
+}))
 vi.mock('@/lib/rate-limit', () => ({
   clientAddress: () => Promise.resolve('127.0.0.1'),
   isRateLimited: () => Promise.resolve(false),
@@ -55,6 +61,7 @@ describe.skipIf(!isLocalDatabase)('login by email or username', () => {
 
   beforeEach(() => {
     signInEmail.mockClear()
+    hashPassword.mockClear()
   })
 
   afterAll(async () => {
@@ -87,5 +94,17 @@ describe.skipIf(!isLocalDatabase)('login by email or username', () => {
     const result = await context.actions.login({ password: 'Password1!', username: 'nobody-here' })
     expect(result).toEqual({ error: { code: 'AUTH_ERROR', message: 'Login failed' } })
     expect(signInEmail).not.toHaveBeenCalled()
+  })
+
+  it('hashes the password for an unknown user so the answer takes as long as a wrong password', async () => {
+    await context.actions.login({ password: 'Password1!', username: 'nobody-here' })
+    expect(hashPassword).toHaveBeenCalledWith('Password1!')
+  })
+
+  it('leaves hashing to the sign-in for a known user', async () => {
+    await expect(context.actions.login({ password: 'Password1!', username: email })).rejects.toThrow(
+      'REDIRECT:/dashboard'
+    )
+    expect(hashPassword).not.toHaveBeenCalled()
   })
 })

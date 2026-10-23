@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { after } from 'next/server'
+
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { createAuthEndpoint, getSessionFromCtx } from 'better-auth/api'
@@ -21,6 +23,14 @@ import { sendMail } from '@/lib/email'
 import { impersonationGuard } from '@/lib/impersonation-guard'
 import appConfig from '~/config/app.json'
 import metadata from '~/config/metadata.json'
+
+const afterResponse = async (task: () => Promise<void>) => {
+  try {
+    after(task)
+  } catch {
+    await task()
+  }
+}
 
 const teamInvitationsPlugin = () => ({
   id: 'team-invitations',
@@ -95,15 +105,21 @@ export const auth = betterAuth({
     resetPasswordTokenExpiresIn: AUTH_LINK_EXPIRY_SECONDS,
     revokeSessionsOnPasswordReset: true,
     async sendResetPassword({ user, url }) {
-      await sendMail({
-        to: user.email,
-        template: {
-          name: 'auth/recovery',
-          props: {
-            url,
-            userName: user.name || undefined,
-          },
-        },
+      await afterResponse(async () => {
+        try {
+          await sendMail({
+            to: user.email,
+            template: {
+              name: 'auth/recovery',
+              props: {
+                url,
+                userName: user.name || undefined,
+              },
+            },
+          })
+        } catch (e) {
+          console.error('[auth] failed to send recovery email', e instanceof Error ? e.message : e)
+        }
       })
     },
   },

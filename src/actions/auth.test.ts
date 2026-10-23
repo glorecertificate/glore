@@ -7,6 +7,7 @@ import { type Jar } from '@/lib/test-jar'
 const current = vi.hoisted(() => ({ jar: null as null | { headers: () => Headers } }))
 const sent = vi.hoisted(() => [] as { template: { name: string; props: { url?: string } }; to: string }[])
 const limiter = vi.hoisted(() => ({ limited: new Set<string>(), keys: [] as string[] }))
+const deferred = vi.hoisted(() => [] as (() => Promise<void> | void)[])
 
 vi.mock('next/headers', async importOriginal => ({
   ...(await importOriginal<typeof import('next/headers')>()),
@@ -14,6 +15,9 @@ vi.mock('next/headers', async importOriginal => ({
 }))
 vi.mock('next/server', async importOriginal => ({
   ...(await importOriginal<typeof import('next/server')>()),
+  after: (task: () => Promise<void> | void) => {
+    deferred.push(task)
+  },
   connection: () => Promise.resolve(),
 }))
 vi.mock('@/lib/rate-limit', () => ({
@@ -51,6 +55,11 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
       })
     ).map(row => row.id)
 
+  const flush = async () => {
+    const tasks = deferred.splice(0)
+    await Promise.all(tasks.map(task => task()))
+  }
+
   beforeAll(async () => {
     vi.stubEnv('APP_URL', 'http://localhost:3000')
     fixture = await createAdminFixture(KEYS)
@@ -61,6 +70,7 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     sent.length = 0
     limiter.limited.clear()
     limiter.keys.length = 0
+    deferred.length = 0
     as(null)
   })
 
@@ -98,6 +108,22 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     ).resolves.toBeDefined()
   })
 
+  it('sends the recovery mail after the response so known and unknown users answer alike', async () => {
+    const requested = await actions.resetPassword(fixture.emails.resetter)
+    expect(requested.error).toBeNull()
+    expect(sent).toHaveLength(0)
+
+    await flush()
+    expect(sent.map(mail => mail.template.name)).toEqual(['auth/recovery'])
+  })
+
+  it('does not defer anything for an unknown user', async () => {
+    const requested = await actions.resetPassword(`nobody-${fixture.suffix}@admin-lane.test`)
+    expect(requested.error).toBeNull()
+    expect(deferred).toHaveLength(0)
+    expect(sent).toHaveLength(0)
+  })
+
   it('revokes every session when the password is reset', async () => {
     await fixture.signIn('resetter')
     await fixture.signIn('resetter')
@@ -105,6 +131,7 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
 
     const requested = await actions.resetPassword(fixture.emails.resetter)
     expect(requested.error).toBeNull()
+    await flush()
     const url = sent.find(mail => mail.template.name === 'auth/recovery')?.template.props.url
     const token = url ? new URL(url).pathname.split('/').pop() : undefined
     expect(token).toBeTruthy()

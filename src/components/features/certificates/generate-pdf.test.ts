@@ -19,7 +19,7 @@ const TEMPLATE_BASELINES: Record<number, number[]> = {
 }
 
 const textBaselines = (pdf: Buffer) => {
-  const runs: { baseline: number; size: number }[] = []
+  const runs: { baseline: number; size: number; x: number }[] = []
   for (const [, body] of pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/gu)) {
     const content = (() => {
       try {
@@ -28,24 +28,26 @@ const textBaselines = (pdf: Buffer) => {
         return ''
       }
     })()
-    const stack: number[] = []
+    const stack: [number, number][] = []
+    let x = 0
     let y = 0
     for (const line of content.split('\n')) {
       if (line === 'q') {
-        stack.push(y)
+        stack.push([x, y])
         continue
       }
       if (line === 'Q') {
-        y = stack.pop() ?? 0
+        ;[x, y] = stack.pop() ?? [0, 0]
         continue
       }
-      const move = /^1 0 0 1 \S+ (\S+) cm$/u.exec(line)
+      const move = /^1 0 0 1 (\S+) (\S+) cm$/u.exec(line)
       if (move) {
-        y += Number(move[1])
+        x += Number(move[1])
+        y += Number(move[2])
         continue
       }
       const font = /^\/F\d+ (\S+) Tf$/u.exec(line)
-      if (font) runs.push({ baseline: y, size: Number(font[1]) })
+      if (font) runs.push({ baseline: y, size: Number(font[1]), x })
     }
   }
   return runs
@@ -126,6 +128,17 @@ describe('generateCertificatePdf', () => {
     expect((await certificatePdfLabels('it')).title).toBe('Certificato di soft skill')
     expect((await certificatePdfLabels('fr')).title).toBe('Soft skills certificate')
     expect((await certificatePdfLabels('es')).levels).toHaveLength(5)
+  })
+
+  it('keeps four long tasks above the representative line', async () => {
+    const longTask = `${task}, and kept the shared stock register up to date`.slice(0, 110)
+    const tasks = [1, 2, 3, 4].map(number => `${number} ${longTask}`.slice(0, 110))
+    const runs = textBaselines(
+      await generateCertificatePdf({ ...input(4), activity: { ...input(4).activity, tasks } }, 'en')
+    )
+    const taskBaselines = runs.filter(run => run.size < 10 && run.x < 220 && run.baseline > 548 && run.baseline < 735)
+    expect(taskBaselines.length).toBeGreaterThanOrEqual(8)
+    expect(Math.max(...taskBaselines.map(run => run.baseline))).toBeLessThanOrEqual(672)
   })
 
   it('lands every template text baseline within 1 pt', async () => {

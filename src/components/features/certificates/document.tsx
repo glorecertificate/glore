@@ -131,6 +131,40 @@ const LEVEL_OFFSET = 86.25
 const LEVEL_RIGHT = 595.28 - 544.4
 const TASK_TOP = 550.6
 const TASK_PITCH = 40
+const TASK_BOTTOM = 672
+const TASK_SIGNED_BOTTOM = 643
+const TASK_GAP = 3
+const TASK_WIDTH = 158.7
+const TASK_LINE_HEIGHT = 1.2
+const TASK_CHAR_WIDTH = 0.45
+const TASK_FONT_SIZES = [10, 9.5, 9, 8.5, 8, 7.5, 7]
+
+const taskLines = (task: string, fontSize: number) => {
+  const limit = Math.max(1, Math.floor(TASK_WIDTH / (fontSize * TASK_CHAR_WIDTH)))
+  return `\u2022 ${task}`
+    .split(/\s+/u)
+    .reduce(
+      ({ length, lines }, word) =>
+        length === 0 || length + 1 + word.length > limit
+          ? { length: word.length, lines: lines + 1 }
+          : { length: length + 1 + word.length, lines },
+      { length: 0, lines: 0 }
+    ).lines
+}
+
+const taskHeight = (task: string, fontSize: number) => taskLines(task, fontSize) * fontSize * TASK_LINE_HEIGHT
+
+const flowHeight = (tasks: string[], fontSize: number) =>
+  tasks.reduce((height, task) => height + taskHeight(task, fontSize), TASK_GAP * Math.max(0, tasks.length - 1))
+
+const fitsPitch = (tasks: string[], bottom: number) =>
+  tasks.every(
+    (task, index) =>
+      taskHeight(task, 10) <= TASK_PITCH - TASK_GAP && TASK_TOP + index * TASK_PITCH + taskHeight(task, 10) <= bottom
+  )
+
+const flowFontSize = (tasks: string[], bottom: number) =>
+  TASK_FONT_SIZES.find(size => flowHeight(tasks, size) <= bottom - TASK_TOP) ?? 7
 
 const styles = StyleSheet.create({
   page: { backgroundColor: '#ffffff', color: NAVY, fontFamily: 'Roboto', fontSize: 10, fontWeight: 400 },
@@ -172,6 +206,8 @@ const styles = StyleSheet.create({
   partnerPlaceholder: { backgroundColor: GRAY, height: 54.6, left: 119.2, position: 'absolute', top: 418, width: 90.7 },
   tasksIntro: { left: 46.3, lineHeight: 1.3, position: 'absolute', width: 172 },
   task: { left: 46.3, lineHeight: 1.2, position: 'absolute', width: 158.7 },
+  taskFlow: { left: 46.3, position: 'absolute', rowGap: 3, width: 158.7 },
+  taskFlowItem: { lineHeight: 1.2 },
   bullet: { color: GREEN, fontWeight: 900 },
   signatureImage: { height: 28, left: 112, objectFit: 'contain', position: 'absolute', top: 646, width: 100 },
   date: { fontWeight: 900, left: 46.1, position: 'absolute', textTransform: 'uppercase' },
@@ -273,6 +309,8 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
   const { activity, holder, organization } = data
   const lastName = holder.lastName ?? ''
   const tasks = activity.tasks.filter(Boolean).slice(0, 4)
+  const tasksBottom = organization.signatureUrl ? TASK_SIGNED_BOTTOM : TASK_BOTTOM
+  const flowSize = flowFontSize(tasks, tasksBottom)
   const skills = data.skills.slice(0, 4)
   const titleSize = Math.min(15.9, (15.9 * 23) / Math.max(labels.title.length, 1))
 
@@ -343,12 +381,23 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         <View style={[styles.bar, { height: 184.4, top: 503.3 }]} />
         <Text style={[styles.heading, placed(499, 13.2)]}>{labels.mainTasks}</Text>
         <Text style={[styles.tasksIntro, placed(521.6, 10)]}>{labels.tasksIntro}</Text>
-        {tasks.map((task, index) => (
-          <Text key={task} style={[styles.task, placed(TASK_TOP + index * TASK_PITCH, 10)]}>
-            <Text style={styles.bullet}>{'• '}</Text>
-            {task}
-          </Text>
-        ))}
+        {fitsPitch(tasks, tasksBottom) ? (
+          tasks.map((task, index) => (
+            <Text key={task} style={[styles.task, placed(TASK_TOP + index * TASK_PITCH, 10)]}>
+              <Text style={styles.bullet}>{'• '}</Text>
+              {task}
+            </Text>
+          ))
+        ) : (
+          <View style={[styles.taskFlow, { top: placed(TASK_TOP, flowSize).top }]}>
+            {tasks.map(task => (
+              <Text key={task} style={[styles.taskFlowItem, { fontSize: flowSize }]}>
+                <Text style={styles.bullet}>{'• '}</Text>
+                {task}
+              </Text>
+            ))}
+          </View>
+        )}
         {organization.signatureUrl ? <Image src={organization.signatureUrl} style={styles.signatureImage} /> : null}
         <View style={[styles.row, { top: 676.8, width: 172.8 }]}>
           <Text style={styles.rowLabel}>{labels.representedBy}</Text>

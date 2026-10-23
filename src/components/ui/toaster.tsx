@@ -6,11 +6,14 @@ import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
 
 const DEFAULT_HOTKEY = ['Escape']
+const DEFAULT_OFFSET = { top: '5rem' }
 
 export const Toaster = ({
   className,
   duration = 2500,
   hotkey = DEFAULT_HOTKEY,
+  mobileOffset = DEFAULT_OFFSET,
+  offset = DEFAULT_OFFSET,
   position = 'top-center',
   style,
   toastOptions,
@@ -22,6 +25,8 @@ export const Toaster = ({
     <Sonner
       duration={duration}
       hotkey={hotkey}
+      mobileOffset={mobileOffset}
+      offset={offset}
       position={position}
       style={
         {

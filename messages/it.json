@@ -3751,6 +3751,10 @@
         "title": "Un invito è stato accettato",
         "body": "Una nuova persona è entrata nella tua organizzazione."
       },
+      "invitation_accepted_platform": {
+        "title": "Un invito è stato accettato",
+        "body": "La persona che hai invitato è entrata nell'organizzazione."
+      },
       "invitation_declined": {
         "title": "Un invito è stato rifiutato",
         "body": "Guarda la scheda degli inviti per i dettagli."

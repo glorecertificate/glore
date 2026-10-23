@@ -3751,6 +3751,10 @@
         "title": "Se aceptó una invitación",
         "body": "Una persona nueva se unió a tu organización."
       },
+      "invitation_accepted_platform": {
+        "title": "Se aceptó una invitación",
+        "body": "La persona que invitaste se unió a la organización."
+      },
       "invitation_declined": {
         "title": "Se rechazó una invitación",
         "body": "Consulta la pestaña de invitaciones para ver los detalles."

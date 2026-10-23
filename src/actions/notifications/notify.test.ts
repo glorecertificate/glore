@@ -197,6 +197,31 @@ describe.skipIf(!isLocalDatabase)('notify', () => {
     expect(variants).toEqual({ [ids.owner]: 'left', [ids.representative]: 'gained' })
   })
 
+  it('words an accepted invitation for a platform admin inviter', async () => {
+    const { client, ids, notify, organizationId, schema } = context
+    const [before] = await client.db.select({ id: max(schema.notifications.id) }).from(schema.notifications)
+    for (const inviterId of [ids.admin, ids.owner]) {
+      await notify.notify({
+        actorId: ids.volunteer,
+        data: { invitationId: -1, inviterId, userId: ids.volunteer },
+        organizationId,
+        type: 'invitation.accepted',
+      })
+    }
+    const where = and(
+      inArray(schema.notifications.userId, [ids.admin, ids.owner]),
+      eq(schema.notifications.type, 'invitation.accepted'),
+      gt(schema.notifications.id, before?.id ?? 0)
+    )
+    const rows = await client.db.query.notifications.findMany({ where })
+    await client.db.delete(schema.notifications).where(where)
+
+    const variants = Object.fromEntries(
+      rows.map(({ data, userId }) => [userId, (data as { variant?: string }).variant])
+    )
+    expect(variants).toEqual({ [ids.admin]: 'platform', [ids.owner]: undefined })
+  })
+
   it('records sent mail on the in-app row', async () => {
     const { client, ids, notify, organizationId, schema } = context
     const result = await notify.notify({

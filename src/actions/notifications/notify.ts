@@ -47,15 +47,17 @@ const deliver = async <K extends EventType>(event: AppEvent<K>) => {
 
   const url = definition.url?.(event) ?? null
   const data = eventMetadata(event)
-  const variantOf = (userId: string) => {
-    const variant = definition.variant?.(event, userId)
+  const variantOf = async (userId: string) => {
+    const variant = await definition.variant?.(event, userId)
     return variant ? { ...data, variant } : data
   }
+  const payloads = await Promise.all(plan.inAppIds.map(async userId => [userId, await variantOf(userId)] as const))
+  const payloadOf = new Map(payloads)
   const rows =
     plan.inAppIds.length > 0
       ? await db
           .insert(notifications)
-          .values(plan.inAppIds.map(userId => ({ data: variantOf(userId), type: event.type, url, userId })))
+          .values(plan.inAppIds.map(userId => ({ data: payloadOf.get(userId) ?? data, type: event.type, url, userId })))
           .returning({ id: notifications.id, userId: notifications.userId })
       : []
 

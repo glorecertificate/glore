@@ -60,6 +60,7 @@ export const messageVariant = (type: string, data: Record<string, unknown>) => {
   if (type === 'organization.ownership_transferred' && (data.variant === 'gained' || data.variant === 'left')) {
     return data.variant
   }
+  if (type === 'invitation.accepted' && data.variant === 'platform') return 'platform'
   return null
 }
 

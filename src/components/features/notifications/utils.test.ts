@@ -54,6 +54,11 @@ describe('message helpers', () => {
     expect(messageVariant('certificate.approved', {})).toBeNull()
   })
 
+  it('words an accepted invitation for platform admins apart from organization managers', () => {
+    expect(messageVariant('invitation.accepted', { variant: 'platform' })).toBe('platform')
+    expect(messageVariant('invitation.accepted', {})).toBeNull()
+  })
+
   it('labels team roles apart from organization roles', () => {
     expect(roleGroup('team.role_changed')).toBe('teamRoles')
     expect(roleGroup('team.invited')).toBe('teamRoles')

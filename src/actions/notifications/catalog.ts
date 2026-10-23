@@ -18,7 +18,7 @@ interface EventDefinition<K extends EventType> {
     template?: (event: AppEvent<K>, mail: PlannedMail, link: string | null) => EmailTemplate | Promise<EmailTemplate>
   }
   notifyActor?: boolean
-  variant?: (event: AppEvent<K>, userId: string) => string
+  variant?: (event: AppEvent<K>, userId: string) => Promise<string | undefined> | string | undefined
   url?: (event: AppEvent<K>) => string | null
 }
 
@@ -278,6 +278,7 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
   'invitation.accepted': {
     inApp: event => (event.data.inviterId ? [event.data.inviterId] : []),
     url: () => '/organization?tab=members',
+    variant: async (_event, userId) => ((await platformAdminIds()).includes(userId) ? 'platform' : undefined),
   },
   'invitation.declined': {
     inApp: event => (event.data.inviterId ? [event.data.inviterId] : []),

@@ -3751,6 +3751,10 @@
         "title": "An invitation was accepted",
         "body": "A new member joined your organization."
       },
+      "invitation_accepted_platform": {
+        "title": "An invitation was accepted",
+        "body": "The person you invited joined the organization."
+      },
       "invitation_declined": {
         "title": "An invitation was declined",
         "body": "Check the invitations tab for details."

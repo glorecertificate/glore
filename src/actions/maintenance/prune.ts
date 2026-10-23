@@ -21,6 +21,14 @@ const DAY = 24 * 60 * 60 * 1000
 
 const AVATAR_PREFIXES = ['avatars/', 'organizations/']
 
+const DELETE_BATCH_SIZE = 20
+
+const deleteObjects = async (keys: string[]): Promise<void> => {
+  if (keys.length === 0) return
+  await Promise.all(keys.slice(0, DELETE_BATCH_SIZE).map(r2Delete))
+  await deleteObjects(keys.slice(DELETE_BATCH_SIZE))
+}
+
 export const pruneExpiredRecords = async (now = new Date()) => {
   const iso = now.toISOString()
   const retained = new Date(now.getTime() - config.invitationRetentionDays * DAY).toISOString()
@@ -63,7 +71,7 @@ export const sweepOrphanAvatars = async (now = new Date()) => {
     ...issuedAssets,
   ]
   const orphans = selectOrphanKeys(listings.flat(), referenced, new Date(now.getTime() - DAY))
-  await Promise.all(orphans.map(r2Delete))
+  await deleteObjects(orphans)
   return orphans.length
 }
 
@@ -75,7 +83,7 @@ export const sweepOrphanCertificatePdfs = async (now = new Date()) => {
     r2List('certificates/'),
   ])
   const orphans = selectOrphanPdfKeys(objects, rows, new Date(now.getTime() - DAY))
-  await Promise.all(orphans.map(r2Delete))
+  await deleteObjects(orphans)
   return orphans.length
 }
 

@@ -11,14 +11,19 @@ const OLD = new Date('2030-01-01T00:00:00.000Z')
 
 const storage = vi.hoisted(() => ({
   deleted: [] as string[],
+  inFlight: 0,
   listings: {} as Record<string, { key: string; lastModified: Date }[]>,
+  maxInFlight: 0,
 }))
 
 vi.mock('@/lib/storage', async importOriginal => ({
   ...(await importOriginal<typeof import('@/lib/storage')>()),
-  r2Delete: vi.fn((key: string) => {
+  r2Delete: vi.fn(async (key: string) => {
+    storage.inFlight += 1
+    storage.maxInFlight = Math.max(storage.maxInFlight, storage.inFlight)
+    await new Promise(resolve => setTimeout(resolve, 1))
+    storage.inFlight -= 1
     storage.deleted.push(key)
-    return Promise.resolve()
   }),
   r2List: vi.fn((prefix: string) => Promise.resolve(storage.listings[prefix] ?? [])),
 }))
@@ -90,6 +95,8 @@ describe.skipIf(!isLocalDatabase)('orphan sweeps', () => {
   beforeEach(async () => {
     storage.deleted.length = 0
     storage.listings = {}
+    storage.inFlight = 0
+    storage.maxInFlight = 0
     await clearCertificates()
   })
 
@@ -114,6 +121,31 @@ describe.skipIf(!isLocalDatabase)('orphan sweeps', () => {
 
       expect(removed).toBe(1)
       expect(storage.deleted).toEqual([unused])
+    })
+  })
+
+  describe('batching', () => {
+    const strays = (prefix: string) =>
+      Array.from({ length: 45 }, (_, index) => ({ key: `${prefix}${suffix}-stray-${index}.bin`, lastModified: OLD }))
+
+    it('deletes orphan avatars in batches of at most 20', async () => {
+      storage.listings['organizations/'] = strays('organizations/')
+
+      expect(await context.prune.sweepOrphanAvatars(NOW)).toBe(45)
+
+      expect(storage.deleted).toHaveLength(45)
+      expect(storage.maxInFlight).toBeGreaterThan(1)
+      expect(storage.maxInFlight).toBeLessThanOrEqual(20)
+    })
+
+    it('deletes orphan certificate PDFs in batches of at most 20', async () => {
+      storage.listings['certificates/'] = strays('certificates/')
+
+      expect(await context.prune.sweepOrphanCertificatePdfs(NOW)).toBe(45)
+
+      expect(storage.deleted).toHaveLength(45)
+      expect(storage.maxInFlight).toBeGreaterThan(1)
+      expect(storage.maxInFlight).toBeLessThanOrEqual(20)
     })
   })
 

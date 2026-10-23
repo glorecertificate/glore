@@ -30,7 +30,7 @@ const LegalAcceptContent = async () => {
   if (!content) redirect(APP_ROOT)
 
   return (
-    <main className="mx-auto w-full max-w-3xl space-y-8 px-6 py-10 md:py-16">
+    <main className="mx-auto w-full max-w-3xl space-y-6 px-6 pt-8 md:space-y-8 md:py-16">
       <Logo className="w-28" />
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight" data-testid="legal-accept-title">
@@ -48,7 +48,7 @@ const LegalAcceptContent = async () => {
       {content.locale !== locale && <Banner variant="info">{t('fallbackNotice')}</Banner>}
       <section
         aria-label={content.title}
-        className="max-h-[50vh] overflow-y-auto rounded-lg border p-6"
+        className="rounded-lg border p-6 md:max-h-[50vh] md:overflow-y-auto"
         data-testid="legal-accept-body"
         tabIndex={0}
       >
@@ -60,7 +60,9 @@ const LegalAcceptContent = async () => {
           {t('openFull')}
         </Link>
       </p>
-      <LegalAcceptForm />
+      <div className="sticky bottom-0 -mx-6 border-t bg-background px-6 py-4 md:static md:mx-0 md:border-0 md:p-0">
+        <LegalAcceptForm />
+      </div>
     </main>
   )
 }

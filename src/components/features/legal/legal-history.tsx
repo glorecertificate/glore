@@ -27,12 +27,23 @@ export const LegalHistory = ({ versions }: { versions: LegalVersionRow[] }) => {
         <CardContent>
           <ul className="divide-y" data-testid="legal-history">
             {versions.map(version => (
-              <li className="flex flex-wrap items-center gap-3 py-3" key={version.id}>
-                <Badge variant={STATUS_VARIANTS[version.status]}>
-                  {t('versionStatus', { status: t(`status_${version.status}`), version: version.version })}
-                </Badge>
-                {version.material && <Badge variant="warning">{t('material')}</Badge>}
-                <div className="min-w-0 flex-1 text-sm">
+              <li className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3" key={version.id}>
+                <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:flex-none">
+                  <Badge variant={STATUS_VARIANTS[version.status]}>
+                    {t('versionStatus', { status: t(`status_${version.status}`), version: version.version })}
+                  </Badge>
+                  {version.material && <Badge variant="warning">{t('material')}</Badge>}
+                </div>
+                <Button
+                  className="ml-auto shrink-0 sm:order-last"
+                  onClick={() => setSelected(version)}
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                >
+                  {t('view')}
+                </Button>
+                <div className="min-w-0 basis-full text-sm sm:flex-1 sm:basis-0">
                   {version.effectiveAt && (
                     <p>
                       {t('effective', {
@@ -45,9 +56,6 @@ export const LegalHistory = ({ versions }: { versions: LegalVersionRow[] }) => {
                   )}
                   {version.changeNote && <p className="text-muted-foreground">{version.changeNote}</p>}
                 </div>
-                <Button onClick={() => setSelected(version)} size="sm" type="button" variant="ghost">
-                  {t('view')}
-                </Button>
               </li>
             ))}
           </ul>

@@ -261,7 +261,7 @@ export const CourseSettings = ({
                   </div>
                   <Select
                     onValueChange={value => form.setValue('skillGroupId', value ? Number(value) : null)}
-                    value={field.value ? String(field.value) : undefined}
+                    value={field.value ? String(field.value) : ''}
                   >
                     <SelectTrigger className="w-fit" disabled={isIntro}>
                       <SelectValue placeholder={t('selectSkillGroup')} />

@@ -41,7 +41,7 @@ const record = (overrides: Partial<AuditRecord> & Pick<AuditRecord, 'action'>): 
 describe('audit categories', () => {
   it('lists every audited action once', () => {
     expect(AUDITED_ACTIONS).toHaveLength(new Set(AUDITED_ACTIONS).size)
-    expect(AUDITED_ACTIONS).toHaveLength(16)
+    expect(AUDITED_ACTIONS).toHaveLength(17)
   })
 
   it('maps each action back to its category', () => {
@@ -278,6 +278,15 @@ describe('toAuditRows', () => {
       kind: 'message',
       label: 'Dashboard.greeting (es)',
     })
+  })
+
+  it('links a settings update to the settings page', () => {
+    const [row] = toAuditRows(
+      [record({ action: 'settings.updated', metadata: { keys: ['email'] }, subjectId: 'app' })],
+      lookups()
+    )
+    expect(row?.category).toBe('settings')
+    expect(row?.target).toEqual({ href: '/admin/settings', kind: 'settings', label: 'settings' })
   })
 
   it('drops actions that are not audited', () => {

@@ -23,6 +23,7 @@ export const useNavigationLabels = () => {
     'admin-legal': tLegal('title'),
     'admin-organizations': tLayout('adminOrganizations'),
     'admin-overview': tAdmin('overview.title'),
+    'admin-settings': tAdmin('settings.title'),
     'admin-team': tLayout('adminTeam'),
     'admin-translations': tTranslations('title'),
     'admin-users': tLayout('adminUsers'),

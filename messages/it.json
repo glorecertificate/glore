@@ -2951,7 +2951,8 @@
         "moderation": "Moderazione",
         "organizations": "Organizzazioni",
         "legal": "Legale",
-        "content": "Contenuti"
+        "content": "Contenuti",
+        "settings": "Impostazioni"
       },
       "detail": {
         "permanent": "Senza data di fine",
@@ -2973,13 +2974,42 @@
         "content_translation_reviewed": "{actor} ha segnato come rivista la traduzione ({locale}) di <link>{target}</link>",
         "course_locale_published": "{actor} ha {published, select, yes {pubblicato} other {ritirato}} <link>{target}</link> in {locale}",
         "doc_locale_published": "{actor} ha {published, select, yes {pubblicato} other {ritirato}} <link>{target}</link> in {locale}",
-        "skill_group_updated": "{actor} ha aggiornato il gruppo di competenze <link>{target}</link> ({locale})"
+        "skill_group_updated": "{actor} ha aggiornato il gruppo di competenze <link>{target}</link> ({locale})",
+        "settings_updated": "{actor} ha aggiornato le <link>impostazioni del sito</link>"
       },
       "noResults": "Nessun evento trovato",
       "noResultsDescription": "Prova con un'altra ricerca o rimuovi i filtri.",
       "noEvents": "Ancora nessun evento",
       "noEventsDescription": "Qui compariranno sospensioni, cambi di ruolo, visualizzazioni come utente, certificati revocati e decisioni sulle candidature.",
       "clearFilters": "Rimuovi filtri"
+    },
+    "settings": {
+      "title": "Impostazioni",
+      "description": "Contatti ed ente legale mostrati nelle email, nella pagina di aiuto e nella pagina informativa.",
+      "contactTitle": "Contatti",
+      "contactDescription": "Come le persone raggiungono il team.",
+      "email": "Email di contatto",
+      "emailPlaceholder": "info@example.org",
+      "phone": "Telefono",
+      "phonePlaceholder": "+390256568779",
+      "phoneHelp": "Usa il formato internazionale, con il prefisso del paese.",
+      "website": "Sito web",
+      "websitePlaceholder": "https://example.org",
+      "socialTitle": "Link social",
+      "socialDescription": "Lascia un campo vuoto per nascondere quel link.",
+      "socialPlaceholder": "https://",
+      "entityTitle": "Ente legale",
+      "entityDescription": "Indicato nel piè di pagina di ogni email.",
+      "entityName": "Nome",
+      "entityAddress": "Indirizzo",
+      "restore": "Ripristina i valori predefiniti",
+      "save": "Salva modifiche",
+      "saving": "Salvataggio…",
+      "saved": "Impostazioni salvate",
+      "required": "Questo campo è obbligatorio.",
+      "invalidEmail": "Inserisci un indirizzo email valido.",
+      "invalidPhone": "Inserisci un numero in formato internazionale, come +390256568779.",
+      "invalidUrl": "Inserisci un indirizzo web valido che inizi con http o https."
     },
     "overview": {
       "title": "Panoramica",

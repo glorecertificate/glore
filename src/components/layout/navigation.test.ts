@@ -59,6 +59,7 @@ describe('palette entries', () => {
       'admin-users',
       'admin-certificates',
       'admin-audit',
+      'admin-settings',
       'admin-translations',
       'admin-emails',
       'admin-legal',

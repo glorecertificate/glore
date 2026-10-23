@@ -2951,7 +2951,8 @@
         "moderation": "Moderation",
         "organizations": "Organizations",
         "legal": "Legal",
-        "content": "Content"
+        "content": "Content",
+        "settings": "Settings"
       },
       "detail": {
         "permanent": "No end date",
@@ -2973,13 +2974,42 @@
         "content_translation_reviewed": "{actor} marked the {locale} translation of <link>{target}</link> as reviewed",
         "course_locale_published": "{actor} {published, select, yes {published} other {unpublished}} <link>{target}</link> in {locale}",
         "doc_locale_published": "{actor} {published, select, yes {published} other {unpublished}} <link>{target}</link> in {locale}",
-        "skill_group_updated": "{actor} updated the skill group <link>{target}</link> ({locale})"
+        "skill_group_updated": "{actor} updated the skill group <link>{target}</link> ({locale})",
+        "settings_updated": "{actor} updated the <link>site settings</link>"
       },
       "noResults": "No events found",
       "noResultsDescription": "Try a different search or clear the filters.",
       "noEvents": "No events yet",
       "noEventsDescription": "Bans, role changes, impersonation, revoked certificates, and application decisions will appear here.",
       "clearFilters": "Clear filters"
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Contact details and legal entity shown in emails, the help page, and the about page.",
+      "contactTitle": "Contact",
+      "contactDescription": "How people reach the team.",
+      "email": "Contact email",
+      "emailPlaceholder": "info@example.org",
+      "phone": "Phone",
+      "phonePlaceholder": "+390256568779",
+      "phoneHelp": "Use the international format, with the country code.",
+      "website": "Website",
+      "websitePlaceholder": "https://example.org",
+      "socialTitle": "Social links",
+      "socialDescription": "Leave a field empty to hide that link.",
+      "socialPlaceholder": "https://",
+      "entityTitle": "Legal entity",
+      "entityDescription": "Named in the footer of every email.",
+      "entityName": "Name",
+      "entityAddress": "Address",
+      "restore": "Restore defaults",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Settings saved",
+      "required": "This field is required.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidPhone": "Enter a phone number in international format, like +390256568779.",
+      "invalidUrl": "Enter a valid web address starting with http or https."
     },
     "overview": {
       "title": "Overview",

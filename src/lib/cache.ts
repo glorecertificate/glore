@@ -10,6 +10,7 @@ export enum CacheTag {
   Notifications = 'notifications',
   Organizations = 'organizations',
   Progress = 'progress',
+  Settings = 'settings',
   SkillGroups = 'skill-groups',
   TeamMembers = 'team-members',
   User = 'user',

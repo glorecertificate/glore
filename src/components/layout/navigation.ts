@@ -18,6 +18,7 @@ export type NavigationId =
   | 'admin-legal'
   | 'admin-organizations'
   | 'admin-overview'
+  | 'admin-settings'
   | 'admin-team'
   | 'admin-translations'
   | 'admin-users'
@@ -200,6 +201,7 @@ const NAVIGATION: NavigationEntry[] = [
   { group: 'admin', href: '/admin/users' as Route, icon: 'users', id: 'admin-users', visible: isAdmin },
   { group: 'admin', href: '/admin/certificates', icon: 'badge-check', id: 'admin-certificates', visible: isAdmin },
   { group: 'admin', href: '/admin/audit', icon: 'clipboard-list', id: 'admin-audit', visible: isAdmin },
+  { group: 'admin', href: '/admin/settings', icon: 'settings-2', id: 'admin-settings', visible: isAdmin },
   {
     group: 'admin',
     href: '/translations' as Route,

@@ -14,6 +14,7 @@ export const AUDIT_CATEGORIES = [
   'legal',
   'content',
   'messages',
+  'settings',
 ] as const
 
 export type AuditCategory = (typeof AUDIT_CATEGORIES)[number]
@@ -27,6 +28,7 @@ export const AUDIT_ACTIONS = {
   messages: ['messages.published', 'messages.reset'],
   moderation: ['account.suspended', 'account.reinstated'],
   organizations: ['organization.application_decided'],
+  settings: ['settings.updated'],
 } as const satisfies Record<AuditCategory, readonly EventType[]>
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[AuditCategory][number]
@@ -69,7 +71,7 @@ interface AuditPerson {
 
 interface AuditTarget {
   href: string | null
-  kind: 'certificate' | 'content' | 'legal' | 'message' | 'organization' | 'user'
+  kind: 'certificate' | 'content' | 'legal' | 'message' | 'organization' | 'settings' | 'user'
   label: string
 }
 
@@ -210,6 +212,8 @@ const auditTarget = (record: AuditRecord, lookups: AuditLookups): AuditTarget | 
     if (!name) return null
     return { href: id ? `/admin/organizations/${id}` : null, kind: 'organization', label: name }
   }
+
+  if (action === 'settings.updated') return { href: '/admin/settings', kind: 'settings', label: 'settings' }
 
   if (action.startsWith('messages.')) {
     const key = stringOf(metadata.key)

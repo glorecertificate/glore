@@ -9,6 +9,17 @@
   "website": "https://glorecertificate.net",
   "email": "info@glorecertificate.net",
   "phone": "+390256568779",
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "linkedin": "",
+    "x": "",
+    "youtube": ""
+  },
+  "legalEntity": {
+    "name": "Associazione Joint",
+    "address": "Via Giovanola 25/c, 20139 Milano (MI), Italy"
+  },
   "category": "E-Learning",
   "themeColor": "#fefefe",
   "authors": [

@@ -42,6 +42,7 @@ const EVENT_KEYS = {
   'messages.published': 'events.messages_published',
   'messages.reset': 'events.messages_reset',
   'organization.application_decided': 'events.organization_application_decided',
+  'settings.updated': 'events.settings_updated',
   'skill_group.updated': 'events.skill_group_updated',
   'team.invited': 'events.team_invited',
   'team.role_changed': 'events.team_role_changed',
@@ -56,6 +57,7 @@ const CATEGORY_VARIANTS = {
   messages: 'outline',
   moderation: 'destructive',
   organizations: 'brand-soft',
+  settings: 'muted',
 } as const satisfies Record<AuditCategory, React.ComponentProps<typeof Badge>['variant']>
 
 export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {

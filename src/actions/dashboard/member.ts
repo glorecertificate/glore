@@ -45,23 +45,21 @@ const findMemberCourses = async (userId: string, role: 'learner' | 'volunteer', 
       userCourses: { columns: { completedAt: true, updatedAt: true }, where: eq(userCourses.userId, userId) },
     },
   })
-  return rows.map(
-    (row): MemberCourseRow => ({
-      completedAt: row.userCourses[0]?.completedAt ?? null,
-      done: row.lessons.filter(lesson => lesson.userLessons.length > 0).length,
-      enrolled: row.userCourses.length > 0,
-      icon: row.icon,
-      id: row.id,
-      languages: row.languages,
-      skillGroupId: row.skillGroupId,
-      slug: row.slug,
-      sortOrder: row.sortOrder,
-      title: pickLocale(row.title, language) ?? row.slug,
-      total: row.lessons.length,
-      type: (row.type ?? 'intro') as EnumType<'course_type'>,
-      updatedAt: row.userCourses[0]?.updatedAt ?? null,
-    })
-  )
+  return rows.map((row): MemberCourseRow => ({
+    completedAt: row.userCourses[0]?.completedAt ?? null,
+    done: row.lessons.filter(lesson => lesson.userLessons.length > 0).length,
+    enrolled: row.userCourses.length > 0,
+    icon: row.icon,
+    id: row.id,
+    languages: row.languages,
+    skillGroupId: row.skillGroupId,
+    slug: row.slug,
+    sortOrder: row.sortOrder,
+    title: pickLocale(row.title, language) ?? row.slug,
+    total: row.lessons.length,
+    type: (row.type ?? 'intro') as EnumType<'course_type'>,
+    updatedAt: row.userCourses[0]?.updatedAt ?? null,
+  }))
 }
 
 export const loadMemberSummary = async ({

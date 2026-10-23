@@ -72,10 +72,8 @@ const CourseSidebarItem = ({
   const lessonRef = useRef(lesson)
   lessonRef.current = lesson
 
-  // eslint-disable-next-line react-doctor/no-reset-all-state-on-prop-change
   useEffect(() => {
     if (document.activeElement !== inputRef.current) {
-      // eslint-disable-next-line react-doctor/no-derived-state
       setDraftTitle(title)
     }
   }, [title])
@@ -127,7 +125,7 @@ const CourseSidebarItem = ({
         className={cn(
           'relative flex w-full cursor-pointer items-start rounded-md p-3',
           isCurrent && 'cursor-default bg-accent/50 dark:bg-accent/30',
-          isReachable && !isCurrent && 'hover:bg-accent/40 hover:dark:bg-accent/20',
+          isReachable && !isCurrent && 'hover:bg-accent/40 dark:hover:bg-accent/20',
           !isReachable && 'cursor-not-allowed text-muted-foreground'
         )}
         onClick={onLessonClick}

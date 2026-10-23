@@ -88,13 +88,11 @@ const searchCertificates = async (query: string, scopes: CertificateScope[], vie
     .orderBy(desc(certificates.updatedAt))
     .limit(SEARCH_LIMIT)
 
-  return rows.map(
-    ({ firstName, lastName, userId, ...row }): CertificateHit => ({
-      ...row,
-      holderName: fullName({ firstName, lastName }),
-      isOwn: userId === viewerId,
-    })
-  )
+  return rows.map(({ firstName, lastName, userId, ...row }): CertificateHit => ({
+    ...row,
+    holderName: fullName({ firstName, lastName }),
+    isOwn: userId === viewerId,
+  }))
 }
 
 const searchMembers = async (query: string, organizationId: number) => {

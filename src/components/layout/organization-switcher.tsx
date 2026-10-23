@@ -76,7 +76,7 @@ export const OrganizationSwitcher = () => {
         <DropdownMenu onOpenChange={isOpen => isOpen && refresh()}>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="overflow-hidden rounded-lg border bg-popover py-7 shadow-2xs transition-all duration-150 hover:bg-popover/50 data-[state=open]:bg-popover/30 data-[state=open]:text-foreground data-[state=open]:shadow-inner"
+              className="overflow-hidden rounded-lg border bg-popover py-7 shadow-2xs transition-[background-color,color,box-shadow] duration-150 hover:bg-popover/50 data-[state=open]:bg-popover/30 data-[state=open]:text-foreground data-[state=open]:shadow-inner"
               size="lg"
               tooltip={organization?.name ?? t('noOrganization')}
               variant="outline"
@@ -84,7 +84,7 @@ export const OrganizationSwitcher = () => {
               <div className="relative">
                 <Avatar
                   className={cn(
-                    'flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border border-transparent bg-muted transition-all duration-150',
+                    'flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border border-transparent bg-muted transition-colors duration-150',
                     !organization?.avatarUrl && 'border-border'
                   )}
                 >

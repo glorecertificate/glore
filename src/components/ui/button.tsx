@@ -30,7 +30,7 @@ export const buttonVariants = cva(
   [
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale] duration-150 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
-    'active:not-disabled:scale-[0.985] active:motion-reduce:not-disabled:scale-100',
+    'active:not-disabled:scale-[0.985] motion-reduce:active:not-disabled:scale-100',
     'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none focus-visible:disabled:ring-0',
   ],
   {
@@ -44,20 +44,20 @@ export const buttonVariants = cva(
         primary: 'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90',
         secondary: 'bg-secondary text-secondary-foreground hover:not-disabled:bg-secondary/80',
         destructive:
-          'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent focus-visible:not-disabled:ring-destructive/20 focus-visible:dark:not-disabled:ring-destructive/40',
+          'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent focus-visible:not-disabled:ring-destructive/20 dark:focus-visible:not-disabled:ring-destructive/40',
         warning:
-          'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent focus-visible:not-disabled:ring-warning/20 focus-visible:dark:not-disabled:ring-warning/40',
+          'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent focus-visible:not-disabled:ring-warning/20 dark:focus-visible:not-disabled:ring-warning/40',
         success:
-          'bg-success text-success-foreground hover:not-disabled:bg-success-accent focus-visible:not-disabled:ring-success/20 focus-visible:dark:not-disabled:ring-success/40',
+          'bg-success text-success-foreground hover:not-disabled:bg-success-accent focus-visible:not-disabled:ring-success/20 dark:focus-visible:not-disabled:ring-success/40',
         brand:
-          'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90 focus-visible:not-disabled:ring-brand/20 focus-visible:dark:not-disabled:ring-brand/40',
+          'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90 focus-visible:not-disabled:ring-brand/20 dark:focus-visible:not-disabled:ring-brand/40',
         'brand-secondary':
-          'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent focus-visible:not-disabled:ring-brand-secondary/20 focus-visible:dark:not-disabled:ring-brand-secondary/40',
+          'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent focus-visible:not-disabled:ring-brand-secondary/20 dark:focus-visible:not-disabled:ring-brand-secondary/40',
         'brand-tertiary':
-          'bg-brand-tertiary text-brand-tertiary-foreground hover:not-disabled:bg-brand-tertiary-accent focus-visible:not-disabled:ring-brand-tertiary/20 focus-visible:dark:not-disabled:ring-brand-tertiary/40',
+          'bg-brand-tertiary text-brand-tertiary-foreground hover:not-disabled:bg-brand-tertiary-accent focus-visible:not-disabled:ring-brand-tertiary/20 dark:focus-visible:not-disabled:ring-brand-tertiary/40',
         outline:
-          'border border-input bg-background text-foreground hover:not-disabled:bg-accent/60 dark:bg-input/30 hover:dark:not-disabled:bg-input/50',
-        ghost: `${BORDERLESS_FOCUS} text-foreground hover:not-disabled:bg-accent/80 hover:dark:not-disabled:bg-accent/50`,
+          'border border-input bg-background text-foreground hover:not-disabled:bg-accent/60 dark:bg-input/30 dark:hover:not-disabled:bg-input/50',
+        ghost: `${BORDERLESS_FOCUS} text-foreground hover:not-disabled:bg-accent/80 dark:hover:not-disabled:bg-accent/50`,
         link: `${BORDERLESS_FOCUS} hover:underline hover:underline-offset-2`,
         transparent: `${BORDERLESS_FOCUS} bg-transparent text-current`,
       },
@@ -71,7 +71,7 @@ export const buttonVariants = cva(
       },
       effect: {
         expandIcon: 'group relative gap-0',
-        gooeyLeft: `relative z-0 overflow-hidden from-white/40 transition-all duration-500 after:absolute after:inset-0 after:-z-10 after:translate-x-[-150%] after:translate-y-[150%] after:scale-[2.5] after:rounded-[100%] after:bg-linear-to-l after:transition-transform after:duration-1000 hover:after:translate-x-[0%] hover:after:translate-y-[0%]`,
+        gooeyLeft: `relative z-0 overflow-hidden from-white/40 transition-all duration-500 after:absolute after:inset-0 after:-z-10 after:translate-x-[-150%] after:translate-y-[150%] after:scale-[2.5] after:rounded-[100%] after:bg-linear-to-l after:transition-transform after:duration-1000 hover:after:translate-[0%]`,
       },
     },
     compoundVariants: [
@@ -133,7 +133,7 @@ export const Button = ({
         iconPlacement === 'left' &&
         !loading &&
         (effect === 'expandIcon' ? (
-          <div className="w-0 overflow-hidden pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:pr-2 group-hover:opacity-100">
+          <div className="w-0 overflow-hidden pr-0 opacity-0 transition-[width,padding,opacity] duration-200 group-hover:w-5 group-hover:pr-2 group-hover:opacity-100">
             {iconNode}
           </div>
         ) : (
@@ -153,7 +153,7 @@ export const Button = ({
         iconPlacement === 'right' &&
         !loading &&
         (effect === 'expandIcon' ? (
-          <div className="w-0 overflow-hidden pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:pl-2 group-hover:opacity-100">
+          <div className="w-0 overflow-hidden pl-0 opacity-0 transition-[width,padding,opacity] duration-200 group-hover:w-5 group-hover:pl-2 group-hover:opacity-100">
             {iconNode}
           </div>
         ) : (

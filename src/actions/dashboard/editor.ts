@@ -64,24 +64,22 @@ const queryEditorSummary = async (language: Locale): Promise<Omit<EditorSummary,
   const enrollmentBy = new Map(enrollmentRows.map(row => [row.courseId, row]))
   const ratingBy = new Map(ratingRows.map(row => [row.courseId, row]))
 
-  const editorRows = rows.map(
-    (row): EditorCourseRow => ({
-      archived: row.archivedAt !== null,
-      completions: enrollmentBy.get(row.id)?.completions ?? 0,
-      enrollments: enrollmentBy.get(row.id)?.enrollments ?? 0,
-      hasAssessment: row.lessons.some(lesson => lesson.assessments.length > 0),
-      icon: row.icon,
-      id: row.id,
-      languages: row.languages,
-      lessonCount: row.lessons.length,
-      ratingAverage: ratingBy.get(row.id)?.average ? Number(ratingBy.get(row.id)?.average) : null,
-      ratingCount: ratingBy.get(row.id)?.total ?? 0,
-      skillGroupId: row.skillGroupId,
-      slug: row.slug,
-      title: pickLocale(row.title, language) ?? row.slug,
-      type: row.type ?? 'intro',
-    })
-  )
+  const editorRows = rows.map((row): EditorCourseRow => ({
+    archived: row.archivedAt !== null,
+    completions: enrollmentBy.get(row.id)?.completions ?? 0,
+    enrollments: enrollmentBy.get(row.id)?.enrollments ?? 0,
+    hasAssessment: row.lessons.some(lesson => lesson.assessments.length > 0),
+    icon: row.icon,
+    id: row.id,
+    languages: row.languages,
+    lessonCount: row.lessons.length,
+    ratingAverage: ratingBy.get(row.id)?.average ? Number(ratingBy.get(row.id)?.average) : null,
+    ratingCount: ratingBy.get(row.id)?.total ?? 0,
+    skillGroupId: row.skillGroupId,
+    slug: row.slug,
+    title: pickLocale(row.title, language) ?? row.slug,
+    type: row.type ?? 'intro',
+  }))
 
   return {
     engagement: toEngagementSeries(

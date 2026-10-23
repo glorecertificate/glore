@@ -117,7 +117,7 @@ export const CertificateThumbnail = ({
                 <p className="text-[2.4cqw] font-black uppercase">{t('mainTasks')}</p>
                 <ul className="flex flex-col gap-[0.8cqw]">
                   {tasks.slice(0, 4).map(task => (
-                    <li className="line-clamp-2 flex gap-[1cqw] leading-tight" key={task}>
+                    <li className="flex gap-[1cqw] overflow-hidden leading-tight" key={task}>
                       <span className="font-black text-(--leaf)">{'•'}</span>
                       {task}
                     </li>

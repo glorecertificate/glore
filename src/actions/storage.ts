@@ -25,8 +25,10 @@ export const confirmAvatar = async (key: string) => {
   if (!user) throw new Error('Unauthorized')
   if (!key.startsWith(`avatars/${user.id}-`)) throw new Error('Invalid key')
 
-  const avatarUrl = await r2VerifyAvatar(key)
-  const current = await db.query.users.findFirst({ columns: { avatarUrl: true }, where: eq(users.id, user.id) })
+  const [avatarUrl, current] = await Promise.all([
+    r2VerifyAvatar(key),
+    db.query.users.findFirst({ columns: { avatarUrl: true }, where: eq(users.id, user.id) }),
+  ])
 
   await db.update(users).set({ avatarUrl }).where(eq(users.id, user.id))
   if (current?.avatarUrl && current.avatarUrl !== avatarUrl) await r2DeleteQuietly(current.avatarUrl)

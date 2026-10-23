@@ -147,7 +147,7 @@ const DashboardSidebarItem = ({
           'select-none',
           subItem
             ? 'border-transparent px-2.75 py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:text-sidebar-foreground data-active:text-stroke'
-            : 'px-2.25 py-3 font-medium data-active:bg-brand/10 hover:data-active:bg-brand/12',
+            : 'px-2.25 py-3 font-medium data-active:bg-brand/10 data-active:hover:bg-brand/12',
           isActivePath && 'pointer-events-none',
           badge > 0 && 'relative',
           className
@@ -329,13 +329,13 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user overflow-visible rounded-lg border bg-popover py-7 shadow-2xs transition-all duration-150',
+                'group/sidebar-user overflow-visible rounded-lg border bg-popover py-7 shadow-2xs transition-[background-color,color,box-shadow] duration-150',
                 'hover:bg-popover/50 data-[state=open]:bg-popover/30 data-[state=open]:text-foreground data-[state=open]:shadow-inner'
               )}
               size="lg"
               variant="outline"
             >
-              <div className="relative ml-0 transition-all duration-150">
+              <div className="relative ml-0 transition-[margin] duration-150">
                 <Avatar
                   className={cn(
                     'aspect-square size-8 rounded-lg border border-transparent',

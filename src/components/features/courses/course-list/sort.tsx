@@ -102,7 +102,7 @@ export const CourseListSort = () => {
                   size="icon"
                   variant="ghost"
                 >
-                  <LucideIcon name={arrowIcon} className="size-3.5 transition-all" />
+                  <LucideIcon name={arrowIcon} className="size-3.5 transition-colors" />
                 </Button>
               </DropdownMenuItem>
             )

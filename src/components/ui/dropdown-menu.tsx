@@ -72,7 +72,7 @@ export const DropdownMenuItem = <T extends React.ElementType = typeof DropdownMe
       "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive-text!",
       variant !== 'flat' && [
         'cursor-pointer focus:bg-accent/50 focus:text-accent-foreground',
-        'focus:data-[variant=destructive]:bg-destructive/5 focus:data-[variant=destructive]:text-destructive-text focus:dark:data-[variant=destructive]:bg-destructive/20',
+        'data-[variant=destructive]:focus:bg-destructive/5 data-[variant=destructive]:focus:text-destructive-text dark:data-[variant=destructive]:focus:bg-destructive/20',
       ],
       active && 'bg-accent shadow-xs hover:bg-accent! dark:shadow-sm',
       className

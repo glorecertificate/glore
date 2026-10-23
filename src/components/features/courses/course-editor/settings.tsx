@@ -100,13 +100,11 @@ export const CourseSettings = ({
       !SLUG_REGEX.test(debouncedSlug) ||
       course?.slug === debouncedSlug
     ) {
-      // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change
       setSlugStatus('idle')
       return
     }
 
     let cancelled = false
-    // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change
     setSlugStatus('checking')
 
     const doCheck = async () => {

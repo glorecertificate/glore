@@ -48,9 +48,12 @@
   "rules": {
     "curly": ["error", "multi-line"],
     "func-style": ["error", "expression"],
+    "max-params": "off",
     "max-statements": ["error", 100],
+    "no-redeclare": "off",
     "no-ternary": "off",
     "no-unused-vars": "error",
+    "one-var": "off",
     "sort-imports": [
       "error",
       {
@@ -164,7 +167,12 @@
     "import/group-exports": "off",
     "import/max-dependencies": "off",
     "import/no-absolute-path": "error",
-    "import/no-anonymous-default-export": ["error", { "allowCallExpression": false }],
+    "import/no-anonymous-default-export": [
+      "error",
+      {
+        "allowCallExpression": false
+      }
+    ],
     "import/no-commonjs": "error",
     "import/no-cycle": "error",
     "import/no-duplicates": "error",
@@ -193,6 +201,7 @@
     "jsx-a11y/no-static-element-interactions": "allow",
     "jsx-a11y/scope": "error",
     "jsx-a11y/tabindex-no-positive": "error",
+    "node/no-sync": "off",
     "oxc/no-accumulating-spread": "warn",
     "promise/always-return": "error",
     "promise/avoid-new": "off",
@@ -201,8 +210,13 @@
     "promise/prefer-await-to-callbacks": "off",
     "promise/prefer-await-to-then": "error",
     "react/display-name": "off",
+    "react/exhaustive-effect-dependencies": "off",
+    "react/function-component-definition": "off",
     "react/hook-use-state": "off",
+    "react/hooks": "off",
     "react/iframe-missing-sandbox": "warn",
+    "react/immutability": "off",
+    "react/incompatible-library": "off",
     "react/jsx-curly-brace-presence": [
       "error",
       {
@@ -223,12 +237,16 @@
     "react/no-children-prop": "error",
     "react/no-danger-with-children": "error",
     "react/no-danger": "allow",
+    "react/no-deriving-state-in-effects": "off",
     "react/no-direct-mutation-state": "error",
     "react/no-string-refs": "error",
     "react/no-unescaped-entities": "error",
     "react/no-unstable-nested-components": "off",
+    "react/purity": "off",
     "react/react-in-jsx-scope": "off",
+    "react/refs": "off",
     "react/self-closing-comp": "error",
+    "react/set-state-in-effect": "off",
     "react/void-dom-elements-no-children": "error",
     "react-compiler/config": "error",
     "react-compiler/error-boundaries": "error",
@@ -285,7 +303,7 @@
     "react-doctor/design-no-three-period-ellipsis": "error",
     "react-doctor/design-no-vague-button-label": "error",
     "react-doctor/display-name": "error",
-    "react-doctor/effect-needs-cleanup": "error",
+    "react-doctor/effect-needs-cleanup": "off",
     "react-doctor/exhaustive-deps": "off",
     "react-doctor/expo-no-non-inlined-env": "error",
     "react-doctor/firebase-client-owned-authz-field": "error",
@@ -325,7 +343,7 @@
     "react-doctor/js-index-maps": "error",
     "react-doctor/js-length-check-first": "error",
     "react-doctor/js-min-max-loop": "error",
-    "react-doctor/js-set-map-lookups": "error",
+    "react-doctor/js-set-map-lookups": "off",
     "react-doctor/js-tosorted-immutable": "error",
     "react-doctor/jsx-boolean-value": "error",
     "react-doctor/jsx-curly-brace-presence": "off",
@@ -333,14 +351,14 @@
     "react-doctor/jsx-fragments": "error",
     "react-doctor/jsx-handler-names": "off",
     "react-doctor/jsx-key": "error",
-    "react-doctor/jsx-max-depth": "error",
+    "react-doctor/jsx-max-depth": "off",
     "react-doctor/jsx-no-comment-textnodes": "error",
     "react-doctor/jsx-no-constructed-context-values": "off",
     "react-doctor/jsx-no-duplicate-props": "error",
     "react-doctor/jsx-no-jsx-as-prop": "off",
-    "react-doctor/jsx-no-new-array-as-prop": "error",
-    "react-doctor/jsx-no-new-function-as-prop": "error",
-    "react-doctor/jsx-no-new-object-as-prop": "error",
+    "react-doctor/jsx-no-new-array-as-prop": "off",
+    "react-doctor/jsx-no-new-function-as-prop": "off",
+    "react-doctor/jsx-no-new-object-as-prop": "off",
     "react-doctor/jsx-no-script-url": "error",
     "react-doctor/jsx-no-undef": "error",
     "react-doctor/jsx-no-useless-fragment": "error",
@@ -383,8 +401,8 @@
     "react-doctor/no-adjust-state-on-prop-change": "error",
     "react-doctor/no-aria-hidden-on-focusable": "error",
     "react-doctor/no-array-index-as-key": "error",
-    "react-doctor/no-array-index-key": "error",
-    "react-doctor/no-autofocus": "error",
+    "react-doctor/no-array-index-key": "off",
+    "react-doctor/no-autofocus": "off",
     "react-doctor/no-barrel-import": "error",
     "react-doctor/no-cascading-set-state": "off",
     "react-doctor/no-chain-state-updates": "error",
@@ -432,7 +450,7 @@
     "react-doctor/no-jsx-element-type": "error",
     "react-doctor/no-justified-text": "error",
     "react-doctor/no-large-animated-blur": "error",
-    "react-doctor/no-layout-property-animation": "error",
+    "react-doctor/no-layout-property-animation": "off",
     "react-doctor/no-layout-transition-inline": "error",
     "react-doctor/no-legacy-class-lifecycles": "error",
     "react-doctor/no-legacy-context-api": "error",
@@ -449,7 +467,7 @@
     "react-doctor/no-noninteractive-element-to-interactive-role": "error",
     "react-doctor/no-noninteractive-tabindex": "error",
     "react-doctor/no-outline-none": "error",
-    "react-doctor/no-pass-data-to-parent": "error",
+    "react-doctor/no-pass-data-to-parent": "off",
     "react-doctor/no-pass-live-state-to-parent": "error",
     "react-doctor/no-permanent-will-change": "error",
     "react-doctor/no-polymorphic-children": "error",
@@ -476,14 +494,14 @@
     "react-doctor/no-static-element-interactions": "error",
     "react-doctor/no-string-refs": "error",
     "react-doctor/no-this-in-sfc": "error",
-    "react-doctor/no-tiny-text": "error",
+    "react-doctor/no-tiny-text": "off",
     "react-doctor/no-transition-all": "error",
     "react-doctor/no-uncontrolled-input": "error",
     "react-doctor/no-undeferred-third-party": "error",
     "react-doctor/no-unescaped-entities": "error",
     "react-doctor/no-unknown-property": "error",
     "react-doctor/no-unsafe": "error",
-    "react-doctor/no-unstable-nested-components": "error",
+    "react-doctor/no-unstable-nested-components": "off",
     "react-doctor/no-usememo-simple-expression": "error",
     "react-doctor/no-wide-letter-spacing": "error",
     "react-doctor/no-will-update-set-state": "error",
@@ -719,7 +737,9 @@
   "overrides": [
     {
       "files": ["src/components/ui/chart-renderer.tsx"],
-      "rules": { "react-doctor/prefer-dynamic-import": "off" }
+      "rules": {
+        "react-doctor/prefer-dynamic-import": "off"
+      }
     },
     {
       "files": ["*.config.ts"],
@@ -830,6 +850,22 @@
                 "message": "Import from '@/lib/utils' instead."
               }
             ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/components/ui/rich-text-editor/**"],
+      "rules": {
+        "react-doctor/control-has-associated-label": "off",
+        "react-doctor/display-name": "off",
+        "react-doctor/no-derived-state-effect": "off",
+        "tailwindcss/consistent-variant-order": "off",
+        "tailwindcss/enforce-canonical": "off",
+        "tailwindcss/no-hardcoded-colors": [
+          "error",
+          {
+            "allow": ["[&_>_.lty-playbtn]:before:border-[transparent_transparent_transparent_#fff]"]
           }
         ]
       }

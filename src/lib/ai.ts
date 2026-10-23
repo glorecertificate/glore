@@ -110,7 +110,6 @@ export const generateTextWithFallback = async ({
   for (const [index, model] of models.entries()) {
     const attempt = attemptSignal(index === models.length - 1, firstTokenTimeoutMs, options.abortSignal)
     try {
-      // eslint-disable-next-line react-doctor/async-await-in-loop
       return await generateText({ ...options, abortSignal: attempt.signal, maxRetries: 0, model, providerOptions })
     } catch (error) {
       if (isAbort(error, options.abortSignal) && options.abortSignal?.aborted) throw error

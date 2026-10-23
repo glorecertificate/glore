@@ -91,3 +91,5 @@ Dashboard layout with an extra gate:
 - `experimental.sri` (`sha256`) adds `integrity` to the build-manifest scripts (bootstrap, polyfills, and entry chunks).
 - On Next 16.4 with Turbopack, lazily referenced client chunk scripts carry no `integrity`. They stay same-origin under `'self'`.
 - Never re-add `'unsafe-eval'` to production. If a dependency needs it at runtime, report it first.
+- `object-src` allows only `blob:`, for the review PDF preview (`<object>` on a `blob:` URL). Chrome refuses PDFs in sandboxed iframes, and lint requires `sandbox` on iframes.
+- `frame-src` also lists the video hosts Plate's `parseVideoUrl` embeds (YouTube, Vimeo, Dailymotion, Youku, Coub). `media-src` allows `blob:` and `https:` for R2 audio and video.

@@ -202,7 +202,7 @@ export const ReviewWorkspace = ({
               )}
             />
 
-            <div className="sticky bottom-0 -mx-4 -mb-4 flex flex-wrap items-center justify-end gap-2 rounded-b-xl border-t bg-background/95 p-4 backdrop-blur-sm sm:-mx-6 sm:-mb-6 sm:px-6">
+            <div className="sticky bottom-0 -mx-4 -mb-4 flex items-center justify-end gap-2 rounded-b-xl border-t bg-background/95 p-2 backdrop-blur-sm sm:-mx-6 sm:-mb-6 sm:flex-wrap sm:px-6 sm:py-4">
               <Button
                 disabled={busy !== null}
                 icon={BanIcon}
@@ -210,7 +210,7 @@ export const ReviewWorkspace = ({
                 type="button"
                 variant="ghost"
               >
-                {t('reject')}
+                <span className="max-sm:sr-only">{t('reject')}</span>
               </Button>
               <Button
                 disabled={busy !== null || !canRequestChanges}
@@ -220,9 +220,10 @@ export const ReviewWorkspace = ({
                 type="button"
                 variant="outline"
               >
-                {t('requestChanges')}
+                <span className="max-sm:sr-only">{t('requestChanges')}</span>
               </Button>
               <Button
+                className="max-sm:flex-1"
                 disabled={busy !== null || !canApprove}
                 icon={CheckIcon}
                 loading={busy === 'preview'}

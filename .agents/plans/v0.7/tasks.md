@@ -17,7 +17,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 ### Verification and data
 
 - G3 browser pass, the D2 Mailpit pass, and the e2e suite cover every feature row. Open: G1 staging seed (user step).
-- Staging (Neon `staging`, comment `glore:staging`) has migrations 0000 to 0022 only. Its migrate, catalog import, and demo seed are user steps (`runbook.md`, step 2), because agents may not read the staging credentials.
+- Staging (Neon `staging`, comment `glore:staging`) has migrations 0000 to 0022 only. Its migrate, catalog import, and demo seed are user steps (`runbook.md`, "Prepare", steps 1 and 3), because agents may not read the staging credentials.
 - Rerun `pnpm run content:import --target local` (docs, FAQ, and the H1 role labels changed) and `pnpm run db:seed:demo --target local` (the detached-holder data changed). The staging demo seed has not run.
 
 ### Release and decisions

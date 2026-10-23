@@ -13,8 +13,8 @@ They describe the target behavior in `.agents/plans/v0.7/`, so a step passes onl
 3. Re-run `pnpm run db:seed:demo --target local` at any time to reset everything it owns to the state below.
    - It owns the demo accounts, both approved organizations and the applicant, their invitations, links, requests, certificates, events, notifications, and the learning progress of demo accounts.
    - Accounts created by creation flows (`new-*`) stay, and their memberships in the demo organizations are removed.
-4. Staging: open the Vercel preview of the `staging` branch; email reaches the real `TEST_EMAIL` inbox.
-5. Staging needs preview env vars scoped to git branch `staging`: `DATABASE_URL` (Neon `staging`) and `APP_URL` (the preview URL).
+4. Staging: open `https://glorecertificate.vercel.app`, the preview CI deploys from `main`; email reaches the real `TEST_EMAIL` inbox.
+5. Staging uses the Vercel Preview env vars: `DATABASE_URL` (Neon `staging`) and `APP_URL` (`https://glorecertificate.vercel.app`).
 6. Seed staging with its `DATABASE_URL` and `TEST_EMAIL` in front of `pnpm run content:import --target staging` and then `pnpm run db:seed:demo --target staging`.
    - The demo script refuses any database whose comment is not `glore:staging`. Both are user-approved steps.
 7. Dates in the seed are relative to the run (for example "9 days ago"), so re-seed before a test day if you need ages, invitation expiry, or unread notifications to match this page.

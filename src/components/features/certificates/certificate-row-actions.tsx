@@ -65,7 +65,7 @@ export const CertificateRowActions = ({
     <div className="flex items-center justify-end gap-2">
       {certificate.isOpen && (
         <Select disabled={pending} onValueChange={reassign} value={certificate.reviewerId ?? UNASSIGNED}>
-          <SelectTrigger aria-label={t('reassign')} className="h-8 w-44">
+          <SelectTrigger aria-label={t('reassign')} className="h-8 w-36">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

@@ -100,7 +100,7 @@ export const createTenant = async (label: string, members: TenantMember[]): Prom
       )
       await pool.query(
         `insert into accounts (id, account_id, provider_id, user_id, password, created_at, updated_at)
-         values ($1, $1, 'credential', $2, $3, now(), now())`,
+         values ($1, $2, 'credential', $2, $3, now(), now())`,
         [randomUUID(), id, passwordHash]
       )
       if (member.role) {

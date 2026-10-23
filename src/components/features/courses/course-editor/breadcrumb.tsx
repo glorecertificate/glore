@@ -113,7 +113,7 @@ export const CourseBreadcrumb = () => {
     <HeaderBreadcrumb title={t('courses')} backHref="/courses">
       <BreadcrumbSeparator />
 
-      <BreadcrumbItem className="grow gap-3 pr-6">
+      <BreadcrumbItem className="min-w-0 flex-1 gap-3 pr-6 max-sm:pr-0">
         <h1 className="sr-only">{title}</h1>
         {canEdit ? (
           <>
@@ -144,7 +144,7 @@ export const CourseBreadcrumb = () => {
                   aria-label={t('renameCourse')}
                   autoWidth
                   className={cn(
-                    'mb-0.5 px-1 py-0.5 text-[14.5px] text-foreground/90 hover:text-foreground focus:text-foreground',
+                    'mb-0.5 px-1 py-0.5 text-[14.5px] whitespace-nowrap text-foreground/90 hover:text-foreground focus:text-foreground',
                     !titleFocused &&
                       languageStatus.hasTitleUpdates &&
                       'decoration-warning decoration-dotted decoration-2 underline-offset-4'
@@ -186,7 +186,7 @@ export const CourseBreadcrumb = () => {
                 <button
                   aria-label={t('updateDescription')}
                   className={cn(
-                    '-ml-1 rounded-sm',
+                    '-ml-1 shrink-0 rounded-sm',
                     languageStatus.hasDescriptionUpdates
                       ? 'text-warning-text hover:text-warning-text/80 data-[state=open]:text-warning-text/80'
                       : 'text-muted-foreground/80 hover:text-foreground data-[state=open]:text-foreground'

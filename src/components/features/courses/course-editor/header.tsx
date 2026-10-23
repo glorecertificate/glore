@@ -193,7 +193,10 @@ export const CourseHeader = () => {
                 const isPublished = status[value].published
                 return (
                   <TabsTrigger
-                    className={cn('relative flex', status[value].hasUpdates && 'text-warning-text!')}
+                    className={cn(
+                      'relative flex',
+                      status[value].hasUpdates && 'text-warning-text/70 data-[state=active]:text-warning-text!'
+                    )}
                     key={value}
                     size="sm"
                     value={value}
@@ -210,11 +213,11 @@ export const CourseHeader = () => {
                           <span className="absolute inset-0 z-0 animate-ping rounded-full bg-success opacity-60" />
                         )}
                       </span>
-                      <span className="flex items-center justify-between">
-                        {label} {icon}
+                      <span className="flex items-center justify-between gap-1">
+                        {label} <span className="max-sm:hidden">{icon}</span>
                       </span>
                       <span
-                        className="ml-1.5 text-[10px] text-muted-foreground tabular-nums"
+                        className="ml-1.5 text-[10px] text-muted-foreground tabular-nums group-data-[state=active]/tabs-trigger:text-stroke group-data-[state=inactive]/tabs-trigger:opacity-70 max-sm:sr-only"
                         title={tEditor('coverage', {
                           done: coverage[value].done,
                           language: label,

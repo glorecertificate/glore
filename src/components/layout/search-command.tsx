@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl'
 import { listCourses } from '@/actions/courses/queries'
 import { MIN_QUERY_LENGTH } from '@/actions/shell/scope'
 import { type WorkspaceSearchResult, searchWorkspace } from '@/actions/shell/search'
+import { isListedCourse } from '@/components/features/courses/visibility'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
 import { formatRoleLabel } from '@/components/features/organization/utils'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -130,7 +131,9 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
     group,
   }))
 
-  const searchableCourses = courses.map(c => ({ ...c, localTitle: localize(c.title) }))
+  const searchableCourses = courses.flatMap(course =>
+    isListedCourse(course, user) ? [{ ...course, localTitle: localize(course.title) }] : []
+  )
   const courseResults =
     searching && fuse
       ? new fuse(searchableCourses, { ignoreLocation: true, keys: ['localTitle', 'slug'], threshold: 0.4 })

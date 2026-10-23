@@ -19,6 +19,7 @@ import {
   type CourseListSortType,
   type CourseListTab,
 } from '@/components/features/courses/course-list/params'
+import { isListedCourse } from '@/components/features/courses/visibility'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
 import { COURSE_TYPES, type Course } from '@/db/queries/course'
@@ -166,9 +167,7 @@ export const useCourseList = () => {
         continue
       }
 
-      if (course.publicationStatus === 'draft' || course.publicationStatus === 'archived') continue
-      if (user.isLearner && course.type === 'skill') continue
-      if (user.isVolunteer && course.type === 'learner') continue
+      if (!isListedCourse(course, user)) continue
 
       list.all.push(course)
 

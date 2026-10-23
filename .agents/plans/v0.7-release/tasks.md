@@ -214,6 +214,7 @@ Content rules: plain, warm language for young adults, examples from volunteering
   - Done: Node 24.22.1 (Vercel offers 24.x and 22.x only), pnpm 12.15.0, every direct dependency latest; check, 1078 unit tests, build, and e2e (156 passed) green.
   - Held: `@platejs/dnd` at 53.1.0 (53.3 breaks the vendored table node) and `@types/node` at 24 (runtime major).
   - Fixed: better-auth 1.7 needs `account_id` equal to the user id for credentials (e2e fixtures), and new oxlint rules were configured off in `.oxlintrc.json`.
+  - Checked 2026-10-23: production and staging have 0 credential accounts with `account_id` different from `user_id`, so no data migration is needed.
   - Open: the 4 mail specs fail in production mode (SMTP forced), and the Vercel "Node.js Version" project setting should read 24.x.
 
 ## W4 translations and team content

@@ -39,10 +39,11 @@ src/
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
 │   ├── (auth)/         # Unauthenticated: invite/[token], join/[token], login, onboarding, register
 │   ├── (dashboard)/    # Authenticated (sidebar layout): about, admin, certificates,
-│   │                   #   courses, dashboard, docs, emails, help, notifications, organization, settings
+│   │                   #   courses, dashboard, docs, emails, help, legal, notifications, organization, settings
 │   ├── [username]/     # Public profile page (page, opengraph-image, not-found)
 │   ├── api/            # API routes (auth catch-all + v1/)
 │   ├── offline/        # Offline fallback page
+│   ├── legal/accept/   # Re-accept gate (outside the dashboard group)
 │   ├── privacy/, terms/, quality-charter/   # Public legal pages
 │   └── verify/         # Public certificate verification (page, [code])
 ├── components/
@@ -82,9 +83,9 @@ src/
 │   ├── impersonation-guard.ts # Better Auth plugin: blocks security changes while impersonating, drops the admin cookie on sign out
 │   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), localizeRecord()
 │   ├── icu.ts          # messageSignature(): ICU arguments, tags, and select cases (scripts import it as #lib/icu.ts)
-│   ├── legal.ts        # Legal document loader (content/legal)
-│   ├── message-overrides.ts # Override merge, validation, stale states, protected keys
-│   ├── messages.ts     # loadMessages(locale), resolveLocale(): the one loader, with cached overrides (server-only)
+│   ├── legal.ts        # Legal reader: loadLegalDocument, getPendingLegal
+│   ├── message-overrides.ts # Override merge, validation, stale states
+│   ├── messages.ts     # loadMessages, resolveLocale: the one catalog loader (server-only)
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata(), appTitle()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
 │   ├── phone.ts        # Phone number helpers

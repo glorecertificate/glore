@@ -58,7 +58,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 ## Translations
 
-- `en` is the source: `messages/en.json` and `content/legal/*.en.md`.
+- `en` is the source: `messages/en.json` and the legal seed fixtures `content/legal/*.en.md`.
 - `crowdin.yml` maps them to `messages/<locale>.json` and `content/legal/<doc>.<locale>.md` for `es` and `it`.
 - Courses and docs stay out of Crowdin because they use in-app editors.
 
@@ -76,8 +76,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - `pnpm run check:i18n` (`scripts/i18n/`) fails on a key missing from a locale and on an empty or non-string value.
 - It also checks `serverNamespaces` in `config/i18n.json` against the `'use client'` import graph (`scripts/i18n/namespaces.mts`).
 - It also fails on malformed ICU, and on an ICU argument, plural or select case, or tag (`{name}`, `<link>`) that differs from `en`. Plural categories may differ per language.
-- It also fails on a legal document that misses a locale, has broken front matter, or has different headings.
-- Legal front matter (`title`, `updated`) must survive a round trip: the Crowdin Markdown parser excludes `updated`, so only the body and `title` are translated.
+- It also fails on a legal seed fixture that misses a locale, has broken front matter, or has different headings. Crowdin translates only the body and `title`.
 - The optional CLI (`npx @crowdin/cli`) reads `CROWDIN_PROJECT_ID` and `CROWDIN_PERSONAL_TOKEN` from the environment. The GitHub integration needs neither. Never commit them.
 
 ## Committing
@@ -179,10 +178,11 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 ### End-to-end tests
 
 - `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`).
+- The `legal` project runs last. Target it with `--project=setup --project=legal --no-deps`.
 - The `setup` project logs in every `AUTH_ROLES` seed user and stores their state in `.playwright/.auth/`. Specs pick one with `test.use({ storageState: authFile(role) })`.
 - Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs. Setup clears local `rate_limits` first.
 - `e2e/mail.ts` reads Mailpit (`MAILPIT_URL`). `recovery.spec.ts` resets the `recovery` seed user's password through the emailed link, and `db:seed` restores it.
-- Run Playwright with `--workers=2`: at 4 workers the dev server answers 502 on static chunks.
+- Run Playwright with `--workers=2`: 4 workers make the dev server answer 502.
 
 ### CI workflows
 

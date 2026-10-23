@@ -131,7 +131,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 ### Cache strategy
 
-- Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `certificates*Tag`, `messagesTag`) in `src/lib/cache.ts`. Read it for the current set and owners.
+- Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `legalTag`, `certificates*Tag`, `messagesTag`) in `src/lib/cache.ts`. Read it for the current set and owners.
 - Put `'use cache'` (with `cacheLife('max')` for long-lived data) on the inner fetch function, never on the exported one.
 - The exported function takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
 - In a server action whose caller must see its own write, use `updateTag(tag)`. `updateTag` throws outside server actions.
@@ -184,6 +184,13 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - A direct browser PUT requires bucket CORS that allows PUT from the app origin (`https://glore.localhost` in dev, the production domain).
 - The R2 API token is object-scoped: it can PUT, GET, and DELETE objects but gets 403 on bucket-admin calls such as `PutBucketCors`. Set CORS in the Cloudflare dashboard or with an admin token.
 - The avatar cap comes from `maxAvatarSize` in `config/app.json` and is enforced on the selected file in the `ImageCropper` dropzone.
+
+## Legal documents
+
+- Tables: `legal_documents` (slug, `requiresAcceptance`, current version), `legal_versions`, `legal_translations`, and `legal_acceptances` (one per user and version).
+- `loadLegalDocument(slug, locale, { cache })` in `src/lib/legal.ts` reads the current version, tagged `legalTag(slug)`, with an `en` fallback.
+- A material `terms` version gates the dashboard until the user accepts it: `getPendingLegal` in the layout, `acceptLegal` on `/legal/accept`.
+- `db:seed` and `content:import` seed version 1 from `content/legal` only into an empty `legal_documents`.
 
 ## Static data
 

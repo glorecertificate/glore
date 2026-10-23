@@ -16,13 +16,14 @@ Route groups, route gates, API routes, and the proxy lifecycle. Authentication d
 - `/invite/[token]` and `/join/[token]`: token pages (`organizations.md`).
 - `/verify` and `/verify/[code]`: certificate verification.
 - `/[username]`: opt-in public profile. Its 404 offers guests join and login links and signed-in users the dashboard.
-- `/privacy`, `/terms`, `/quality-charter`: Markdown from `content/legal/<doc>.<locale>.md`, with an `en` fallback notice.
+- `/privacy`, `/terms`, `/quality-charter`: the published version from the database (`reference.md`), with an `en` fallback notice.
 - `LEGAL_ROOTS` feeds the proxy and the reserved usernames.
 - `/offline`: PWA fallback.
 
 ## Authenticated routes
 
 - Pre-onboarding: `/onboarding`, `/onboarding/error`.
+- `/legal/accept`: the dashboard layout (never the proxy) redirects here until a material terms version is accepted, except when impersonating.
 - Dashboard layout, no extra gate: `/dashboard`, `/about`, `/help`, `/settings`.
 - `/notifications`: inbox with status and topic filters.
 - `/courses`.
@@ -43,6 +44,7 @@ Dashboard layout with an extra gate:
 | `/admin/users`              | `isAdmin`   | User moderation and view as user (`admin.md`)                                                                                                                       |
 | `/admin/certificates`       | `isAdmin`   | Certificate lookup and revocation (`admin.md`)                                                                                                                      |
 | `/admin/audit`              | `isAdmin`   | Audit log (`admin.md`)                                                                                                                                              |
+| `/legal`                    | `canEdit`   | Legal documents (`?document=`); only admins publish; outside the admin layout                                                                                       |
 | `/emails`                   | `canEdit`   | Email previews (`?template=`, `?lang=`, `?category=`), outside the admin layout; `loadEmailPreview` checks `isAdmin` or `canEdit` itself                            |
 | `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; application sheet, approve (invites), reject (soft), create, invite                                                               |
 | `/admin/organizations/[id]` | `isAdmin`   | `?tab=` application, members, invitations, certificates, activity, settings (shared with `/organization`)                                                           |

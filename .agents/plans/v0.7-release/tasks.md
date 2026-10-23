@@ -227,9 +227,9 @@ Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 
   - `src/emails/translate.ts` keeps the bundled `en` default for React Email previews, which run outside the app.
   - The cache tags move to T1 and T2, where they are first used, because knip rejects unused enum members.
   - `icu-minify` moves to T2, after R1 settles the lockfile. `content:import --target production` needs `--bootstrap` once content exists.
-- T1 [ ]: legal tables, seed from `content/legal`, cached reader, admin draft, publish, and history UI, audit events.
+- T1 [x] hash pending: legal tables, seed from `content/legal`, cached reader, admin draft, publish, and history UI, audit events.
   - Accept: legal pages render from the database, published versions are immutable, e2e publishes v2 and the date changes.
-- T1b [ ]: `legal_acceptances`, terms checkbox at registration and onboarding, material re-accept gate in the dashboard layout.
+- T1b [x] hash pending: `legal_acceptances`, terms checkbox at registration and onboarding, material re-accept gate in the dashboard layout.
   - Accept: e2e for a material v2.
 - T2 [x]: override tables, cached loader with compile and signature filter, protected namespaces, publish with `updateTag`, PDF labels frozen in the approval snapshot (lane t2, dbea0fda to 68a6cf41).
   - Accept: Vitest for merge and stale states, `@prod` e2e interpolates `{name}`, Mailpit shows an overridden subject.

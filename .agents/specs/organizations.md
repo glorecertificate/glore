@@ -120,6 +120,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Organization fields: name, legal name, registry ID, country, city, email, website, volunteers per year.
 - Every organization website (application, settings, admin create and invite) accepts only `http` and `https` addresses through `optionalHttpUrl` from `@/lib/url`. Pages render the link only when `isHttpUrl` holds, so an older value with another scheme shows no link.
 - The review step has the required Quality Charter checkbox (link to `/quality-charter` in a new tab).
+- It also has a required terms checkbox. No user exists yet, so the current `terms` version id goes into the event payload as `termsVersionId`.
 - The zod schema in `src/db/queries/organization-application.ts` is shared by the form and the server. Its messages are error codes that the form translates.
 - `requestOrganizationRegistration` rate limits by IP and email, then calls `submitOrganizationApplication`.
 - `submitOrganizationApplication` creates the unapproved organization and fills the profile (`legalName`, `registryId`, `legalRepresentative`, contact, `volunteersPerYear`, `motivation`, `charterAcceptedAt`).

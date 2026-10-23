@@ -18,7 +18,7 @@ content/
     <category>/<slug>/           one directory per doc article
       doc.json
       <locale>.md                en.md, es.md, it.md
-  legal/                         privacy, terms, and charter texts, read from files and not imported by this script
+  legal/                         seed texts for the legal tables, inserted by `db:seed` and this script only into an empty database
 ```
 
 The directory name is the course slug. Lesson numbers start at 1 and have no gaps. A lesson needs all three locale files.

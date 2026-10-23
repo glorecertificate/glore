@@ -70,6 +70,7 @@ Three domain facts shape recurring decisions:
 - Rejection is soft: the admin join request moves to `rejected` and the org record stays visible to platform admins.
 - On first login with a null `onboardedAt`, the proxy redirects to `/onboarding`.
 - `/onboarding` is a four-step stepper: names, birthday with nationality and place of birth, optional phone with language, and password.
+- The password step has a required terms checkbox. Completion records it with `acceptCurrentLegal` in the same transaction.
 - A welcome screen follows with the generated username and a role-aware next step.
 - Next step by role: tutor to the review queue, admin or representative to `/organization`, learner or volunteer to the skill compass, otherwise the catalog.
 - Completion saves the profile, the chosen credential password (`setCredentialPassword`), and `account.welcome` in one transaction, so a failed or lost submission never changes the password. The event mails the username.

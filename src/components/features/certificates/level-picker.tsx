@@ -23,7 +23,7 @@ export const LevelPicker = ({
   const selected = SKILL_LEVELS[(value ?? 0) - 1]
 
   return (
-    <div className={cn('flex flex-col gap-2', className)} data-slot="level-picker">
+    <div className={cn('@container flex flex-col gap-2', className)} data-slot="level-picker">
       <SegmentedControl
         className="w-full"
         onValueChange={next => onValueChange(Number(next))}
@@ -32,7 +32,7 @@ export const LevelPicker = ({
       >
         {SKILL_LEVELS.map((name, index) => (
           <SegmentedControlItem
-            className="min-w-0 flex-1 px-1.5 text-xs sm:px-3 sm:text-sm"
+            className="flex-auto px-1.5 text-xs @md:px-3 @md:text-sm"
             disabled={index + 1 < min}
             key={name}
             value={String(index + 1)}

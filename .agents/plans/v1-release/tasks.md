@@ -22,8 +22,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 ### Release and decisions
 
 - G8 runbook: production has no database comment, lacks migrations 0013 to 0024 (includes 0023 `anonymize_deleted_holders` and 0024 `impersonated_by`), and holds 0 certificates.
-- G6: run a `next build` check for the `checkRateLimit` fix (`await connection()`), which stopped the "unstable value `Date.now()` while prerendering" logs on `/verify`.
-- G6 optional: an index on `activity_events (action, id)` would help `/admin/audit` once the table grows.
+- Deferred after v1: an `activity_events (created_at, id)` index for `/admin/audit`, which filters by `action` and orders by `created_at, id`. The table is small, so v1 ships without it.
 - qa1 browser check not covered: the "Get started" card (the seed checklist is complete) and the pending badge after an approval.
 - `/admin/organizations` lists 4 pending fixtures that the overview counts as 0 and whose detail pages 404. The G1 reseed clears them.
 - The Italian account-deletion prompt is served stale from dev server memory. A dev restart fixes it, not a code change.
@@ -154,13 +153,26 @@ Content rules: plain, warm language for young adults, examples from volunteering
   - Fixed the two app bugs it found: the wizard submitted on its last Continue, and a learner could open `/certificates` by URL.
   - Not covered: lesson and quiz authoring, the skill compass, and the pipeline and insights tabs.
 - G3 [ ]: `agent-browser` pass for every matrix row at desktop and 390px, light and dark; fix and re-run until clean. Accept: screenshots reviewed, no open issues.
-- G4 [ ]: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
+- G4 [x] 9c1f0560: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
+  - 18 of 24 templates ran live in en, es, and it, and all links resolved.
+  - Fixed: the team invite named the invitee as inviter, the unsubscribe GET used the proxy host, and the welcome mail order.
+  - Fixed: reassign left a stale reviewer select, and calendar months ignored the app locale.
+  - Not triggered: cron-only mails (reminders, escalation, invitation expiring), the expired invitation link, and the ownership transfer mail (covered by e2e).
+  - Open, low: an invite landing page is English without a locale cookie; Resend stays offered for a consumed team invitation.
 - G5 [~] c5cd51bd, lane-g5, 2026-10-23: PDF fidelity check from `pdf.md`. Accept: passes.
 
 ### Hardening and handoff
 
-- G6 [ ]: `pnpm run build`, `pnpm run analyze`, `code-reviewer` over the full diff (two rounds max), `security-review`, rate limits on every public action. Accept: no unresolved high findings.
-- G7 [ ]: docs sync of `AGENTS.md`, `README.md`, `app.md`, `reference.md`, `patterns.md`, `architecture.md`, `manual-testing.md`; drop `certificates.handle` once redirects are verified. Accept: docs match code.
+- G6 [~] orchestrator, 2026-10-23: `pnpm run build`, `pnpm run analyze`, `code-reviewer` over the full diff (two rounds max), `security-review`, rate limits on every public action. Accept: no unresolved high findings.
+  - Build and analyze pass with no prerender warnings. The calendar loaded every date-fns locale (5b649f16).
+  - UI review fixes are in (9f507cc8 to 569c15d3). Lanes S (data integrity, migration 0025) and X (security) are open.
+  - Production pre-check, read only: 0017 and 0021 cannot collide on production data (4 distinct skill group slugs, empty docs and join requests).
+  - Decision: one app time zone, `Europe/Rome`.
+  - Decision: certificate PDFs stay public objects for `/verify`, and revoke deletes the object.
+  - Deferred after v1: the editor `useMemo` in `course-editor/context.tsx` and the editor AI kit in the learner bundle (the vendored provider imports every kit).
+  - Deferred after v1: direct `lucide-react` imports, stored plaintext invitation tokens, CSP nonces, and `ignoreBuildErrors`.
+- G7 [ ]: docs sync of `AGENTS.md`, `README.md`, `app.md`, `reference.md`, `patterns.md`, `architecture.md`, `manual-testing.md`. Accept: docs match code.
+  - Decision: `certificates.handle` stays, because the legacy `?v={handle}` redirect and the R2 PDF key read it.
 - G8 [ ]: handoff with the commit list, staging push on request, production steps (backup, migrate, catalog as drafts, env, deploy), and known gaps. Accept: the user has a numbered runbook.
 
 ### Product owner and fix lanes

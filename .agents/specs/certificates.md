@@ -142,6 +142,8 @@ draft -> submitted -> in_review -> approved -> revoked
 - A revoked certificate reads `revoked` with its date and shows only the holder, organization, code, and issue date.
 - A revoked certificate never exposes its reason, PDF link, location, dates, duration, tasks, skills, signatory, or QR. `/api/v1/certificates/<id>/pdf` answers 410.
 - The page reads the issued `snapshot`, so later profile edits never change it.
+- Approval freezes the `CertificatePdf` labels in `snapshot.labels`, so later message overrides never change an issued PDF.
+- A snapshot without `labels` renders with the current messages.
 - `/{username}` is opt-in (`users.publicProfile`, default off) and shows the featured certificate.
 - A private profile renders the not-found page. It streams with status 200 and `noindex`, so it looks like an unknown user.
 - The legacy `/{username}?v={handle}` permanently redirects to `/verify/<code>`.

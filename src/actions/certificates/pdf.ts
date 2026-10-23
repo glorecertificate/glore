@@ -27,7 +27,11 @@ export const findCertificatePdfSource = async (id: number) => {
 
 type CertificatePdfSource = NonNullable<Awaited<ReturnType<typeof findCertificatePdfSource>>>
 
-export const certificateSnapshot = (cert: CertificatePdfSource, issuedAt: string): CertificateSnapshot => ({
+export const certificateSnapshot = (
+  cert: CertificatePdfSource,
+  issuedAt: string,
+  labels?: CertificateSnapshot['labels']
+): CertificateSnapshot => ({
   holder: {
     birthPlace: cert.user.birthPlace,
     birthday: cert.user.birthday,
@@ -59,6 +63,7 @@ export const certificateSnapshot = (cert: CertificatePdfSource, issuedAt: string
       statement: skill.statement,
     })),
   issuedAt,
+  ...(labels && { labels }),
   language: cert.language,
 })
 
@@ -90,7 +95,8 @@ export const renderCertificatePdf = async (snapshot: CertificateSnapshot, code: 
         statement: skill.statement,
       })),
     },
-    locale
+    locale,
+    snapshot.labels
   )
 }
 

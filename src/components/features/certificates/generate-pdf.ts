@@ -55,10 +55,14 @@ const render = async (data: CertificatePdfData, labels: CertificatePdfLabels) =>
   )
 }
 
-export const generateCertificatePdf = async (input: PdfInput, language: string) => {
+export const generateCertificatePdf = async (
+  input: PdfInput,
+  language: string,
+  frozenLabels?: CertificatePdfLabels
+) => {
   const verifyUrl = verifyUrlOf(input.code)
   const [labels, qr] = await Promise.all([
-    certificatePdfLabels(language),
+    frozenLabels ?? certificatePdfLabels(language),
     qrOf(input.code ? `${process.env.APP_URL ?? ''}/verify/${input.code}` : null),
   ])
   const data: CertificatePdfData = {

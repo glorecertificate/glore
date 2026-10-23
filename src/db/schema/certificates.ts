@@ -13,6 +13,8 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core'
 
+import { type CertificatePdfLabels } from '@/components/features/certificates/document'
+
 import { courses } from './courses'
 import { certificateReviewDecisionEnum, certificateStatusEnum } from './enums'
 import { type IntlJsonb } from './helpers'
@@ -49,6 +51,7 @@ export interface CertificateSnapshot {
     statement: string | null
   }[]
   issuedAt: string
+  labels?: CertificatePdfLabels
   language: string
 }
 

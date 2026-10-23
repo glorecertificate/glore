@@ -19,6 +19,7 @@ import {
 } from '@/actions/certificates/helpers'
 import { certificateSnapshot, findCertificatePdfSource, renderCertificatePdf } from '@/actions/certificates/pdf'
 import { notify } from '@/actions/notifications/notify'
+import { certificatePdfLabels } from '@/components/features/certificates/generate-pdf'
 import { generateCertificateCode, meetsActivityRule } from '@/components/features/certificates/rules'
 import {
   type CertificateApprovalValues,
@@ -214,7 +215,8 @@ const prepareApproval = async (certificateId: number, values: CertificateApprova
   const skills = issuedSkills(source, values.skills)
   const issuedAt = new Date().toISOString()
   const code = source.code ?? generateCertificateCode()
-  const snapshot = certificateSnapshot({ ...source, ...experience, skills }, issuedAt)
+  const labels = await certificatePdfLabels(source.language)
+  const snapshot = certificateSnapshot({ ...source, ...experience, skills }, issuedAt, labels)
   return { code, experience, issuedAt, skills, snapshot, source }
 }
 

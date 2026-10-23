@@ -144,6 +144,8 @@ To open a pull request:
 
 Course, lesson, doc, and skill group content is translated in the editors, not through Crowdin. Each non-default locale shows a status (missing, machine translated, needs review, reviewed, or outdated when the English text changed), and editors can translate with AI and mark a locale as reviewed. Docs can be published per language.
 
+Editors and platform admins can override any UI message at `/translations` without a deploy. The page checks ICU syntax and placeholders, previews the result, keeps a history, and suggests `es` and `it` drafts with AI. Nothing goes live until someone publishes it.
+
 ## AI and agents
 
 All coding conventions and architecture details are documented in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.

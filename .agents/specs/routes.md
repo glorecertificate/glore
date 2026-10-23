@@ -37,19 +37,20 @@ Route groups, route gates, API routes, and the proxy lifecycle. Authentication d
 
 Dashboard layout with an extra gate:
 
-| Route                       | Gate        | Notes                                                                                                                                                               |
-| --------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/admin`                    | `isAdmin`   | Overview, the panel landing (`admin.md`)                                                                                                                            |
-| `/admin/team`               | `isAdmin`   | Team management (`admin.md`)                                                                                                                                        |
-| `/admin/users`              | `isAdmin`   | User moderation and view as user (`admin.md`)                                                                                                                       |
-| `/admin/certificates`       | `isAdmin`   | Certificate lookup and revocation (`admin.md`)                                                                                                                      |
-| `/admin/audit`              | `isAdmin`   | Audit log (`admin.md`)                                                                                                                                              |
-| `/legal`                    | `canEdit`   | Legal documents (`?document=`); only admins publish; outside the admin layout                                                                                       |
-| `/emails`                   | `canEdit`   | Email previews (`?template=`, `?lang=`, `?category=`), outside the admin layout; `loadEmailPreview` checks `isAdmin` or `canEdit` itself                            |
-| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; application sheet, approve (invites), reject (soft), create, invite                                                               |
-| `/admin/organizations/[id]` | `isAdmin`   | `?tab=` application, members, invitations, certificates, activity, settings (shared with `/organization`)                                                           |
-| `/organization`             | org manager | `?tab=` overview, members, invitations, requests, certificates, insights, activity, settings                                                                        |
-| `/certificates`             | non-editor  | List (tutors: queue tabs; org owners and representatives: pipeline); `/certificates/new`, `/certificates/[id]`, and `/certificates/[id]/review` share the same gate |
+| Route                       | Gate        | Notes                                                                                                                                                                                      |
+| --------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/admin`                    | `isAdmin`   | Overview, the panel landing (`admin.md`)                                                                                                                                                   |
+| `/admin/team`               | `isAdmin`   | Team management (`admin.md`)                                                                                                                                                               |
+| `/admin/users`              | `isAdmin`   | User moderation and view as user (`admin.md`)                                                                                                                                              |
+| `/admin/certificates`       | `isAdmin`   | Certificate lookup and revocation (`admin.md`)                                                                                                                                             |
+| `/admin/audit`              | `isAdmin`   | Audit log (`admin.md`)                                                                                                                                                                     |
+| `/translations`             | `canEdit`   | Interface text editor (`?key=`, `?filter=`, `?namespace=`, `?q=`), outside the admin layout; `loadTranslations` checks `canEdit` itself. `/admin/translations` redirects here (`admin.md`) |
+| `/legal`                    | `canEdit`   | Legal documents (`?document=`); only admins publish; outside the admin layout                                                                                                              |
+| `/emails`                   | `canEdit`   | Email previews (`?template=`, `?lang=`, `?category=`), outside the admin layout; `loadEmailPreview` checks `isAdmin` or `canEdit` itself                                                   |
+| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; application sheet, approve (invites), reject (soft), create, invite                                                                                      |
+| `/admin/organizations/[id]` | `isAdmin`   | `?tab=` application, members, invitations, certificates, activity, settings (shared with `/organization`)                                                                                  |
+| `/organization`             | org manager | `?tab=` overview, members, invitations, requests, certificates, insights, activity, settings                                                                                               |
+| `/certificates`             | non-editor  | List (tutors: queue tabs; org owners and representatives: pipeline); `/certificates/new`, `/certificates/[id]`, and `/certificates/[id]/review` share the same gate                        |
 
 ## API routes
 

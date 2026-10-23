@@ -67,6 +67,7 @@
   - certificates: `certificate.revoked`.
   - organizations: `organization.application_decided`.
   - legal: `legal.version_published`, `legal.accepted`.
+  - messages: `messages.published`, `messages.reset`. The target is the key and locale, linking to `/translations?q=<key>`.
 - To audit a new action, add the event to `AUDIT_ACTIONS`, an `Admin.audit.events.<action with dots as underscores>` message, and an entry in `EVENT_KEYS` (`audit.tsx`).
 
 ### Search and rows
@@ -147,3 +148,27 @@
 - Impersonation is not read-only. Only the locked actions above refuse. Everything else the user can do stays open (profile edits, notification preferences, course progress, certificate drafts and requests, member and invitation management for an org admin), so the support reason in the start event is the control.
 - The Better Auth cookie cache (5 minutes) keeps serving a session deleted in the database, so a closed impersonation can linger in the browser for up to 5 minutes. The expiry is embedded in the cache and exact.
 - Events written while impersonating name the impersonated user as actor. Only start and stop carry the admin.
+
+## Translations
+
+- `/translations` (`app/(dashboard)/translations/page.tsx`) edits interface text. It sits outside the admin layout because editors reach it, as `/emails` does.
+- `/admin/translations` redirects to it (`next.config.ts`). The nav entry `admin-translations` (group `admin`, `visible: isTeam`) sits before `admin-emails`.
+- `loadTranslations` (`actions/translations.ts`) calls `authorizeEditor`, then returns the three bundled catalogs and every override. `maxDuration` is 60.
+- The table (`features/translations/`) is a real `<table>` virtualized with `@tanstack/react-virtual`: one row per `en` key, a cell per locale, and state badges.
+- URL params (`translations-params.ts`): `filter`, `key` (opens the editor sheet), `namespace`, `q`.
+- Filters (`TRANSLATION_STATES`): missing, overridden, outdated, incompatible, orphaned, unreviewed. Rows, filters, and counts are pure helpers in `lib/translation-table.ts`.
+
+### Editing
+
+- `LocaleEditor` validates as you type with `validateOverride` (`lib/message-validation.ts`, client-safe) and previews ICU through `lib/message-preview.ts`.
+- Save draft, publish, discard, and reset live in `actions/messages.ts`, with shared guards in `actions/message-helpers.ts`. `listMessageHistory` returns 30 revisions.
+- Protected namespaces (`PROTECTED_NAMESPACES`) need `requireAdmin` on the server and show "Admins only" to editors.
+- Deleting an override whose key left the `en` bundle (orphaned) is admin only.
+- `suggestMessage` drafts `es` and `it` text with the AI chain (`lib/message-suggestion.ts`). It needs `GEMINI_API_KEY`, allows 40 calls per hour per user, saves origin `machine`, and never publishes.
+- A suggestion that fails `validateOverride` is dropped with `AI_INCOMPATIBLE`, `AI_INVALID`, or `AI_EMPTY`.
+- All page copy is in the `Translations` namespace.
+
+### Stale override notice
+
+- Daily maintenance runs `notifyStaleOverrides` (`actions/maintenance/stale-overrides.ts`). It counts incompatible and orphaned overrides and records `messages.stale` for platform admins, in-app only.
+- It repeats only when the counts change or after 7 days, and links to `/translations?filter=orphaned` or `incompatible`.

@@ -10,6 +10,7 @@ interface MailpitSearch {
 }
 
 interface MailpitMessage {
+  Subject: string
   Text: string
 }
 
@@ -33,16 +34,26 @@ const latestMessageId = async (request: APIRequestContext, to: string) => {
   return messages[0]?.ID ?? ''
 }
 
-export const latestMailText = async (request: APIRequestContext, to: string) => {
+const waitForLatestMessage = async (request: APIRequestContext, to: string) => {
   await expect
     .poll(() => latestMessageId(request, to), {
       message: `No email to ${to} reached Mailpit: run the app with MAIL_TRANSPORT=mailpit, or clear the auth rate limit (3 resets per account per 15 min) with pnpm run db:seed`,
       timeout: 15_000,
     })
     .not.toBe('')
-  const response = await request.get(`${MAILPIT_URL}/api/v1/message/${await latestMessageId(request, to)}`)
+  return await latestMessageId(request, to)
+}
+
+export const latestMailText = async (request: APIRequestContext, to: string) => {
+  const response = await request.get(`${MAILPIT_URL}/api/v1/message/${await waitForLatestMessage(request, to)}`)
   const { Text } = (await response.json()) as MailpitMessage
   return Text
+}
+
+export const latestMailSubject = async (request: APIRequestContext, to: string) => {
+  const response = await request.get(`${MAILPIT_URL}/api/v1/message/${await waitForLatestMessage(request, to)}`)
+  const { Subject } = (await response.json()) as MailpitMessage
+  return Subject
 }
 
 export const mailLinkPath = (text: string, marker: string) => {

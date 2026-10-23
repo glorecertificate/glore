@@ -58,7 +58,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - Reminders: `certificate.review_reminder` goes to the assigned tutor at the `reviewReminderDays` marks of `config/app.json`.
 - `certificate.review_escalated` goes out at the same marks, also for unassigned requests.
 - `invitation.expiring` goes out once per send after `invitationReminderDay`, with a token-only link rebuilt from the sealed token (`revealInvitationToken`).
-- Idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock.
+- Idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock. `messages.stale` notices are in `admin.md`.
 - Pruning removes `rate_limits` idle for 24h and expired `sessions` and `verifications`.
 - Pruning removes invitations expired, revoked, or declined for `invitationRetentionDays`. Accepted ones stay.
 - Pruning removes R2 avatars and certificate PDFs older than 24h that no row references. A logo or signature URL stored in any certificate `snapshot` counts as referenced. The PDF of a revoked certificate counts as unreferenced, even when its row still holds a `documentUrl`.

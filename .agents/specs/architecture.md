@@ -7,7 +7,7 @@ Source tree and structural conventions. Provider hierarchy and component authori
 ```
 src/
 ├── actions/            # Server actions ('use server'): mutations + cached queries
-│   ├── messages.ts     # Message override actions: save draft, publish, reset, discard
+│   ├── messages.ts     # Override actions (guards in message-helpers.ts); translations.ts: page reads, history, AI suggest
 │   ├── account/        # delete.ts, export.ts, preferences.ts, sessions.ts ('use server'); deletion.ts (server-only core)
 │   ├── admin/          # audit.ts, certificates.ts, expire.ts, helpers.ts, impersonation.ts, impersonation-state.ts, options.ts, organizations.ts, overview.ts, pending.ts, team.ts, users.ts
 │   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, preview, revoke), public.ts (verification),
@@ -18,7 +18,7 @@ src/
 │   ├── dashboard/      # Read-only, server-only (no 'use server', so per-user cached reads are safe): core.ts (pure types and builders, Vitest),
 │   │                   #   load.ts (loadDashboard: role dispatch), member.ts, tutor.ts, manager.ts, editor.ts (cached, tag Courses)
 │   ├── emails/         # preview.ts (loadEmailPreview for /emails)
-│   ├── maintenance/    # daily.ts (runDailyMaintenance), plan.ts (pure planners), prune.ts, reminders.ts
+│   ├── maintenance/    # daily.ts (runDailyMaintenance), plan.ts (pure planners), prune.ts, reminders.ts, stale-overrides.ts
 │   ├── notifications/  # catalog.ts, notify.ts, plan.ts, recipients.ts (server-only); inbox.ts ('use server': list, count, mark read)
 │   ├── organizations/  # activity.ts (+ server-only activity-core.ts), helpers.ts, insights.ts, invitations.ts, invite-core.ts,
 │   │                   #   invitee.ts, join-links.ts, members.ts, previews.ts, queries.ts, requests.ts, settings.ts
@@ -85,7 +85,8 @@ src/
 │   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), localizeRecord()
 │   ├── icu.ts          # messageSignature(): ICU arguments, tags, and select cases (scripts import it as #lib/icu.ts)
 │   ├── legal.ts        # Legal reader: loadLegalDocument, getPendingLegal
-│   ├── message-overrides.ts # Override merge, validation, stale states
+│   ├── message-overrides.ts # Override merge, stale states; message-validation.ts: client-safe validation, protected keys
+│   ├── message-*.ts    # entries, preview, suggestion (server-only AI); translation-table.ts: rows and filters
 │   ├── messages.ts     # loadMessages, resolveLocale: the one catalog loader (server-only)
 │   ├── translate.ts    # Plate and plain text translation: walker, chunks, output validation
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata(), appTitle()
@@ -115,21 +116,21 @@ src/
 - `db/queries/<table>.ts` exports `parse*` functions and MUST stay pure: importing `@/db/client` there leaks `server-only` into client bundles through parser chains.
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`).
 - `db/schema/<table>.ts` holds Drizzle table definitions.
-- `features/docs/use-docs-search.ts` is the docs search hook (`load`, `search`, results carry `href`) for the command palette.
+- `features/docs/use-docs-search.ts` is the docs search hook for the command palette.
+- `features/translations/` holds the `/translations` table and editor sheet.
 
 ## Layer boundaries (lint-enforced)
 
 - Dependencies flow one way: shared > features > app.
 - The shared layers (`components/ui/`, `components/icons/`, `hooks/`, `lib/`) are domain-free and MUST NOT import from `@/components/features/**`, `@/app/**`, or `@/actions/**`.
-- The `no-restricted-imports` overrides that enforce this are documented in `code.md`.
 - Placement test: a component belongs in `ui/` only if you could ship it in a generic component library.
 - When a component knows the GloRe domain (binds to the data model, a feature enum, or a feature i18n namespace), it belongs in `features/<domain>/`.
-- Cross-feature imports are not yet blocked and a few exist (`admin -> organization`, `dashboard -> courses`). Prefer composing siblings at the route or page level.
+- Cross-feature imports are not blocked and a few exist (`admin -> organization`, `dashboard -> courses`). Compose siblings in the route.
 - `ui/rich-text-editor/` is the vendored Plate.js editor, installed through the shadcn/Plate registry CLI and domain-free.
 - It stays in `ui/` so a CLI re-pull keeps working. Treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them.
 - The app touches it only through the `index.tsx` barrel and `provider.tsx`.
 - The AI wiring lives in `use-chat.ts` (`DefaultChatTransport` to `/api/v1/ai/command`, chat registered on `AIChatPlugin` from `plugins/ai.tsx` `useHooks`). Keep it when re-pulling.
-- Learner lessons never load the vendored `provider.tsx`: `features/courses/course-player/reader-provider.tsx` builds a read-only Plate editor from `reader-plugins.ts` (no AI, copilot, toolbar, dnd, slash, emoji, or autoformat kits), which keeps the AI SDK out of the learner route chunks.
+- Learner lessons never load the vendored `provider.tsx`: `features/courses/course-player/reader-provider.tsx` builds a read-only Plate editor from `reader-plugins.ts` (no AI, copilot, toolbar, dnd, slash, emoji, or autoformat kits), keeping the AI SDK out of learner chunks.
 
 ## Server vs client components
 
@@ -140,7 +141,7 @@ src/
 - `next dev` logs a blocking-route error when a navigation would wait on uncached data.
 - Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so never pass `prefetch` to a `Link`.
 - Content joins the shell only behind `'use cache'` with a stale time of at least 5 minutes or behind `'use cache: private'`. Uncached reads, `params`, and `searchParams` stream in after the click.
-- Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache with the 5 minute stale time of the Better Auth cookie cache), which keeps `CoursesProvider` in the shell.
+- Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache, 5 minute stale time), which keeps `CoursesProvider` in the shell.
 
 ### Session and caching
 
@@ -163,7 +164,7 @@ src/
 - Optional categories (`learning`, `organization`, `reminders`) honor `users.notification_preferences`. `mandatory` mail always goes.
 - Settings show `organization` only to org admins and representatives (`notificationCategoriesFor`).
 - The bell, popover, and `/notifications` render each row from `type` and `data` with `Notifications.events.<type with dots as underscores>` copy in all catalogs.
-- A new in-app event needs that copy, and a Vitest test enforces it. A per-recipient `variant` on the event definition stores the variant in the notification data.
+- A new in-app event needs that copy (Vitest enforces it). A per-recipient `variant` on the event definition is stored in the notification data.
 - Every event type an organization can record needs activity copy in all catalogs (`activity_*` messages), enforced by a Vitest test.
 
 ### Mail
@@ -174,7 +175,7 @@ src/
 - Optional mail carries `List-Unsubscribe` headers. The POST at `/api/v1/mail-preferences` turns that category off for the user named in a signed token (`src/lib/unsubscribe.ts`).
 - A GET on that route opens `/settings?tab=notifications`.
 - `renderEmail({ template, locale, category })` returns `{ html, subject, text }` and `sendMail` calls it.
-- The `/emails` preview (`loadEmailPreview`, `previewTemplate(name)` using each template's `PreviewProps`) therefore cannot drift from what is sent.
+- The `/emails` preview (`loadEmailPreview`, `previewTemplate(name)` with `PreviewProps`) cannot drift from what is sent.
 - Copy states real expiries: recovery and verify links last 1 hour (`AUTH_LINK_EXPIRY_SECONDS` in `src/lib/constants.ts`, set on both Better Auth options).
 - Invitations and team invites use `invitationExpiryDays`.
 

@@ -236,7 +236,9 @@ Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 
   - `messages.published` and `messages.reset` are recorded but not yet in `AUDIT_ACTIONS`; T3 adds the audit category and copy.
   - The `@prod` e2e covers the subject through the `/emails` preview, because a direct DB insert skips `updateTag` on a warm server. T3 adds the Mailpit check through a real publish.
   - T3 reads classification from `classifyOverride` in `src/lib/message-overrides.ts` and writes through `src/actions/messages.ts`.
-- T3 [ ]: `/admin/translations` with filters, ICU validation, preview, reset, history, AI suggest, and the stale override cron notice.
+- T3 [x]: `/translations` with filters, ICU validation, preview, reset, history, AI suggest, and the stale override cron notice (lane t3, hash pending).
+  - The route is `/translations`, not `/admin/translations`: the admin layout hides it from editors. `/admin/translations` redirects.
+  - Adds the `messages` audit category, `messages.stale` notice, and the `incompatible` filter.
   - Accept: e2e override, invalid ICU blocked, reset, editors blocked from protected namespaces.
 - T4 [x] (hash pending): `content_translations`, per-locale status in the course, doc, and skill group editors, AI translate for Plate content, `doc_articles.languages`, dashboard coverage, audit events.
   - Accept: e2e translate, review, publish `es`, outdated flag after an `en` edit.

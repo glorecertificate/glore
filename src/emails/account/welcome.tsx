@@ -17,7 +17,6 @@ const AccountWelcomeEmail = ({ url, userName, username, ...base }: AccountWelcom
     <Notice
       {...base}
       action={{ href: url, label: t('button') }}
-      details={[t('details')]}
       footer={t('footer')}
       intro={t('intro')}
       preview={t('preview')}
@@ -26,6 +25,7 @@ const AccountWelcomeEmail = ({ url, userName, username, ...base }: AccountWelcom
       <Text className="my-4 rounded-lg bg-[#f4f4f5] px-4 py-3 text-center font-mono text-[16px] font-semibold text-[#0a0a0a]">
         {username}
       </Text>
+      <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('details')}</Text>
     </Notice>
   )
 }

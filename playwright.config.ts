@@ -24,8 +24,15 @@ const playwrightConfig = defineConfig({
     { name: 'setup', testMatch: /auth\.setup\.ts/u },
     {
       name: 'chromium',
+      testIgnore: /legal\.spec\.ts/u,
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
+    },
+    {
+      name: 'legal',
+      testMatch: /legal\.spec\.ts/u,
+      use: { ...devices['Desktop Chrome'] },
+      dependencies: ['chromium'],
     },
   ],
 })

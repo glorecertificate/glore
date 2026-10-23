@@ -229,3 +229,39 @@ export const listSubjectEvents = async (action: string, subjectId: string) => {
     await pool.end()
   }
 }
+
+export const legalAcceptancesOf = async (email: string) => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  try {
+    const result = await pool.query<{ slug: string }>(
+      `select v.document_slug as slug
+       from legal_acceptances a
+       join legal_versions v on v.id = a.version_id
+       join users u on u.id = a.user_id
+       where lower(u.email) = lower($1)
+       order by v.document_slug`,
+      [email]
+    )
+    return result.rows.map(({ slug }) => slug)
+  } finally {
+    await pool.end()
+  }
+}
+
+export const resetLegal = async () => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  try {
+    await pool.query(
+      `update legal_documents d
+       set current_version_id = (select id from legal_versions v where v.document_slug = d.slug and v.version = 1)`
+    )
+    await pool.query(
+      'delete from legal_acceptances where version_id in (select id from legal_versions where version > 1)'
+    )
+    await pool.query('delete from legal_versions where version > 1')
+    await pool.query("update legal_versions set status = 'published' where version = 1")
+    await pool.query("delete from activity_events where action like 'legal.%'")
+  } finally {
+    await pool.end()
+  }
+}

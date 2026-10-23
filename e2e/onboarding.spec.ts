@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { createSeedInvitation, deleteUserByEmail } from './db'
+import { createSeedInvitation, deleteUserByEmail, legalAcceptancesOf } from './db'
 import { hydrated } from './helpers'
 import { clearMail, isMailpitUp, latestMailText, mailLinkPath } from './mail'
 
@@ -56,8 +56,12 @@ test('takes an invited volunteer from the invitation to the dashboard', async ({
   await page.getByLabel('Password', { exact: true }).fill(password)
   await page.getByLabel('Confirm password').fill(password)
   await page.getByRole('button', { name: 'Finish' }).click()
+  await expect(page.getByText('You need to accept the terms of use to continue.')).toBeVisible()
+  await page.getByRole('checkbox', { name: /I accept the Terms of use/u }).check()
+  await page.getByRole('button', { name: 'Finish' }).click()
 
   await expect(page.getByTestId('onboarding-welcome')).toBeVisible()
+  expect(await legalAcceptancesOf(email)).toEqual(['terms'])
   await expect(page.getByTestId('onboarding-username')).toHaveText(`ada.${lastName.toLowerCase()}`)
   await expect(page.getByRole('link', { name: 'Open your skill compass' })).toBeVisible()
 

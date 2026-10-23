@@ -93,6 +93,7 @@ test('rejects an application with a comment and lists it as rejected', async ({ 
   await form.getByLabel('Motivation', { exact: true }).fill('We certify the skills of our volunteers.')
   await form.getByRole('button', { name: 'Continue' }).click()
   await form.getByRole('checkbox', { name: 'I accept the Quality Charter' }).check()
+  await form.getByRole('checkbox', { name: /I accept the Terms of use/u }).check()
   await form.getByRole('button', { name: 'Send application' }).click()
   await expect(form.getByRole('heading', { name: 'Application received' })).toBeVisible()
   await guest.close()

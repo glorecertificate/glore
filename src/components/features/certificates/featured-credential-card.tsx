@@ -22,7 +22,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
   const sealId = useId()
 
   const formatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short' })
-  const period = formatActivityPeriod(certificate, formatter, ({ end, start }) => `${start} – ${end}`)
+  const period = formatActivityPeriod(certificate, formatter, values => t('detail.periodValue', values))
 
   const recipientName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
 

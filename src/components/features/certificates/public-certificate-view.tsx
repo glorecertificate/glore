@@ -77,15 +77,11 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
                 <LucideIcon name="calendar" className="size-4 shrink-0" />
-                {t('activityStartDate')} {'– '}
-                {t('activityEndDate')}
+                {t('period')}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">
-                {start} {'– '}
-                {end}
-              </p>
+              <p className="text-sm">{t('detail.periodValue', { end, start })}</p>
             </CardContent>
           </Card>
 
@@ -118,7 +114,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{t('verify.skills')}</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-1">

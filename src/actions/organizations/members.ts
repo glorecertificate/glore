@@ -7,6 +7,7 @@ import { revalidateTag } from 'next/cache'
 import { and, avg, desc, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
 import { deleteCookie, getCookie, setCookie } from '@/actions/cookies'
 import { notify } from '@/actions/notifications/notify'
 import {
@@ -114,6 +115,7 @@ export const leaveOrganization = async (organizationId: number) =>
 
 export const transferOrganizationOwnership = async (input: z.input<typeof transferSchema>) =>
   await guarded(async () => {
+    await assertNotImpersonating()
     const access = await getOrganizationAccess()
     if (access.role !== 'admin' || access.platform) throw memberError('FORBIDDEN')
     const parsed = transferSchema.safeParse(input)

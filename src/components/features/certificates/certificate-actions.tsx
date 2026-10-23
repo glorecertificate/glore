@@ -24,10 +24,12 @@ import {
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { type Certificate } from '@/db/queries/certificate'
+import { useActionError } from '@/hooks/use-action-error'
 
 export const CertificateActions = ({ canManage, certificate }: { canManage: boolean; certificate: Certificate }) => {
   const t = useTranslations('Certificates')
   const tDetail = useTranslations('Certificates.detail')
+  const actionError = useActionError()
   const { refresh, push } = useRouter()
   const { user } = useSession()
   const [pending, startTransition] = useTransition()
@@ -55,7 +57,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
   const feature = () =>
     startTransition(async () => {
       const { error } = await featureCertificate(certificate.id)
-      if (error) return void toast.error(tDetail('featureError'))
+      if (error) return void toast.error(actionError(error, tDetail('featureError')))
       toast.success(tDetail('featured'))
       return refresh()
     })
@@ -64,7 +66,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
     startTransition(async () => {
       const { error } = await revokeCertificate(certificate.id, { reason })
       setRevoking(false)
-      if (error) return void toast.error(tDetail('revokeError'))
+      if (error) return void toast.error(actionError(error, tDetail('revokeError')))
       toast.success(tDetail('revoked'))
       return refresh()
     })

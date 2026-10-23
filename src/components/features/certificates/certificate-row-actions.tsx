@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
+import { useActionError } from '@/hooks/use-action-error'
 import { fullName } from '@/lib/utils'
 
 const UNASSIGNED = 'unassigned'
@@ -30,6 +31,7 @@ export const CertificateRowActions = ({
 }) => {
   const t = useTranslations('Certificates.org')
   const tDetail = useTranslations('Certificates.detail')
+  const actionError = useActionError()
   const { refresh } = useRouter()
   const [pending, startTransition] = useTransition()
   const [revoking, setRevoking] = useState(false)
@@ -50,7 +52,7 @@ export const CertificateRowActions = ({
     startTransition(async () => {
       const { error } = await revokeCertificate(certificate.id, { reason })
       setRevoking(false)
-      if (error) return void toast.error(tDetail('revokeError'))
+      if (error) return void toast.error(actionError(error, tDetail('revokeError')))
       toast.success(tDetail('revoked'))
       onChanged?.()
       return refresh()

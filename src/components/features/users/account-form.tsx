@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Separator } from '@/components/ui/separator'
 import { type User } from '@/db/queries/user'
+import { useActionError } from '@/hooks/use-action-error'
 import { USERNAME_REGEX } from '@/lib/constants'
 import { type Any } from '@/lib/types'
 import { isReservedUsername } from '@/lib/username'
@@ -31,6 +32,7 @@ export const AccountForm = () => {
   const { user, setUser } = useSession()
   const { setLocale } = useI18n()
   const t = useTranslations('Users')
+  const actionError = useActionError()
 
   const accountSchema = z.object({
     email: z.email(),
@@ -60,7 +62,12 @@ export const AccountForm = () => {
     if (Object.keys(updates).length === 0) return
 
     try {
-      const { pendingEmail, user: data } = await updateAccount(updates)
+      const result = await updateAccount(updates)
+      if (result.error) {
+        toast.error(actionError(result.error, t('accountUpdateError')))
+        return
+      }
+      const { pendingEmail, user: data } = result
 
       if (updates.locale && updates.locale !== user.locale) setLocale(updates.locale)
 

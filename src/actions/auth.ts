@@ -9,6 +9,7 @@ import { cache } from 'react'
 
 import { eq, or } from 'drizzle-orm'
 
+import { impersonationLocked } from '@/actions/admin/impersonation-state'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
@@ -116,6 +117,9 @@ export const updatePassword = async (token: string, password: string) => {
 export const changePassword = async (currentPassword: string, newPassword: string) => {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) throw new Error('User not found')
+
+  const locked = await impersonationLocked()
+  if (locked) return { error: locked }
 
   try {
     await auth.api.changePassword({

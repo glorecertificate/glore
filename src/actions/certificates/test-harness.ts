@@ -57,6 +57,7 @@ export const mocks = {
   auth: { getAuthUser: () => Promise.resolve(session.authUser) },
   cache: { cacheLife: vi.fn(), cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() },
   courses: { listCourses: () => Promise.resolve({ data: session.courses, error: null }) },
+  impersonation: { assertNotImpersonating: () => Promise.resolve(), impersonationLocked: () => Promise.resolve(null) },
   notify: { notify: notifyMock },
   rateLimit: {
     checkRateLimit: () => Promise.resolve({ limited: false, remaining: 100 }),

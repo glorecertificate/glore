@@ -7,6 +7,7 @@ import { updateTag } from 'next/cache'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
 import {
   buildEvent,
   certificateAction,
@@ -258,6 +259,7 @@ export const withdrawCertificate = async (id: number) =>
 
 export const featureCertificate = async (id: number) =>
   await certificateAction(async () => {
+    await assertNotImpersonating()
     const authUser = await requireRateLimitedUser('feature', 30)
     const certificateId = parseId(id)
 

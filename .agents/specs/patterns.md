@@ -154,6 +154,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 ### Hooks
 
 - `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-metadata`, `use-mounted`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
+- `use-action-error`: returns `(error, fallback)`, which resolves the impersonation lock code to `Common.impersonationLocked` and otherwise the fallback message.
 - `use-file-upload`: presigned R2 PUT flow.
 - `use-navigation-guard`: blocks navigation on unsaved changes.
 - `use-poll`: visible-tab polling with `refresh`.

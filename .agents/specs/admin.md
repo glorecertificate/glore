@@ -123,6 +123,9 @@
 - While `session.impersonatedBy` is set, the `impersonationGuard` plugin (`lib/impersonation-guard.ts`) answers `NOT_ALLOWED_WHILE_IMPERSONATING`.
 - It blocks change email, change password, delete user, link and unlink account, set password, and session revocation.
 - `deleteAccount`, `revokeSession`, and `revokeOtherSessions` check `isImpersonating()`.
+- These actions are locked too: `changePassword`, `updateAccount` (a username or email change, locale stays open), `updatePrivacy`, `featureCertificate`, `transferOrganizationOwnership`, `deleteOrganization`, and `revokeCertificate`.
+- They call `impersonationLocked()` (returns the error) or `assertNotImpersonating()` (throws it) from `actions/admin/impersonation-state.ts`. `queryError` turns the thrown error into the `NOT_ALLOWED_WHILE_IMPERSONATING` code (`IMPERSONATION_LOCKED`), and `useActionError` (`hooks/use-action-error.ts`) shows `Common.impersonationLocked`.
+- A new action that changes credentials, identity, public exposure, ownership, or issued certificates MUST call one of them first.
 - `/admin` answers not found because the target is not an admin.
 - `ImpersonationBanner` (server, mounted once in `(dashboard)/layout.tsx`) reads `getImpersonation()` from `actions/admin/impersonation-state.ts`.
 - That read returns the session's `impersonatedBy`, the expiry, and the reason from the start event.
@@ -131,5 +134,6 @@
 
 ### Limits
 
+- Impersonation is not read-only. Only the locked actions above refuse. Everything else the user can do stays open (profile edits, notification preferences, course progress, certificate drafts and requests, member and invitation management for an org admin), so the support reason in the start event is the control.
 - The Better Auth cookie cache (5 minutes) keeps serving a session deleted in the database, so a closed impersonation can linger in the browser for up to 5 minutes. The expiry is embedded in the cache and exact.
 - Events written while impersonating name the impersonated user as actor. Only start and stop carry the admin.

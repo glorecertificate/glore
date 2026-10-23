@@ -10,6 +10,7 @@ import { cache } from 'react'
 import { and, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { impersonationLocked } from '@/actions/admin/impersonation-state'
 import { getAuthUser } from '@/actions/auth'
 import { getCookie } from '@/actions/cookies'
 import { db } from '@/db/client'
@@ -116,6 +117,14 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
   if (!parsed.success) throw new Error('Invalid account data')
 
   const { email, ...fields } = parsed.data
+
+  const changesIdentity =
+    Boolean(email && email !== currentUser.email) ||
+    Boolean(fields.username && fields.username !== currentUser.username)
+  if (changesIdentity) {
+    const locked = await impersonationLocked()
+    if (locked) return { error: locked }
+  }
 
   if (fields.username && fields.username !== currentUser.username) {
     if (isReservedUsername(fields.username)) throw new Error('USERNAME_RESERVED')

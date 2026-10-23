@@ -8,6 +8,7 @@ import { and, eq, sql } from 'drizzle-orm'
 import { db } from '@/db/client'
 import { activityEvents } from '@/db/schema/activity-events'
 import { auth } from '@/lib/auth'
+import { IMPERSONATION_LOCKED } from '@/lib/constants'
 
 const findReason = async (adminId: string, sessionId: string) => {
   const [started] = await db
@@ -53,3 +54,11 @@ export const getImpersonation = cache(async () => await read(false))
 export const readImpersonation = async () => await read(true)
 
 export const isImpersonating = async () => (await currentSession(true)) !== null
+
+export const impersonationLocked = async () =>
+  (await isImpersonating()) ? { code: IMPERSONATION_LOCKED, message: 'Not allowed while impersonating' } : null
+
+export const assertNotImpersonating = async () => {
+  const locked = await impersonationLocked()
+  if (locked) throw Object.assign(new Error(locked.message), { code: locked.code })
+}

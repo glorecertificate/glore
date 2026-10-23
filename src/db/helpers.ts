@@ -2,6 +2,8 @@ import { unstable_rethrow } from 'next/navigation'
 
 import { DrizzleQueryError } from 'drizzle-orm/errors'
 
+import { IMPERSONATION_LOCKED } from '@/lib/constants'
+
 type QueryErrorCode =
   | 'CONFLICT'
   | 'CONNECTION_ERROR'
@@ -56,7 +58,8 @@ const databaseCode = (error: Error): QueryErrorCode => {
   return messageCode(field(databaseCause(error), 'message') ?? '') ?? 'QUERY_ERROR'
 }
 
-const errorCode = (error: Error): QueryErrorCode => {
+const errorCode = (error: Error): QueryErrorCode | typeof IMPERSONATION_LOCKED => {
+  if (field(error, 'code') === IMPERSONATION_LOCKED) return IMPERSONATION_LOCKED
   const message = error.message.toLowerCase()
   if (message.includes('not found') || message.includes('no rows')) return 'NOT_FOUND'
   if (message.includes('unique') || message.includes('duplicate') || message.includes('already exists')) {

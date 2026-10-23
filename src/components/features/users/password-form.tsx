@@ -11,10 +11,12 @@ import { SettingsSection } from '@/components/features/users/settings-section'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
+import { useActionError } from '@/hooks/use-action-error'
 import { PASSWORD_REGEX } from '@/lib/constants'
 
 export const PasswordForm = () => {
   const t = useTranslations('Users')
+  const actionError = useActionError()
 
   const schema = z
     .object({
@@ -44,7 +46,7 @@ export const PasswordForm = () => {
           form.setError('currentPassword', { message: t('currentPasswordIncorrect') })
           return
         }
-        toast.error(t('passwordChangeError'))
+        toast.error(actionError(result.error, t('passwordChangeError')))
         return
       }
 

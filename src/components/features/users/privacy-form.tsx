@@ -14,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { timestampMillis } from '@/db/queries/organization'
+import { useActionError } from '@/hooks/use-action-error'
 import { usePoll } from '@/hooks/use-poll'
 
 const REFRESH_INTERVAL = 5 * 60_000
@@ -22,6 +23,7 @@ export const PrivacyForm = () => {
   const { setUser, user } = useSession()
   const t = useTranslations('Users')
   const format = useFormatter()
+  const actionError = useActionError()
   const [saving, setSaving] = useState(false)
   const { data, refresh } = usePoll(listFeaturableCertificates, { interval: REFRESH_INTERVAL })
 
@@ -33,7 +35,7 @@ export const PrivacyForm = () => {
     const { error } = await updatePrivacy(values)
     setSaving(false)
     if (error) {
-      toast.error(t('privacyError'))
+      toast.error(actionError(error, t('privacyError')))
       return false
     }
     toast.success(t('privacySaved'))

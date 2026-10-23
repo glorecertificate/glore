@@ -577,10 +577,11 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     }
 
     if (Object.keys(coursePayload).length > 0) {
-      await updateCourse(id, {
+      const result = await updateCourse(id, {
         ...coursePayload,
         updatedAt: new Date().toISOString(),
       } as TableUpdate<'courses'>)
+      if (result && 'error' in result) throw result.error
     }
 
     if (nextLanguages !== undefined) {

@@ -13,6 +13,7 @@ import { getAuthUser, refreshAuthSession } from '@/actions/auth'
 import { notify } from '@/actions/notifications/notify'
 import { db, transaction } from '@/db/client'
 import { recordEvent } from '@/db/mutations/activity-event'
+import { acceptCurrentLegal } from '@/db/mutations/legal'
 import { completeOnboardingProfile, setCredentialPassword } from '@/db/mutations/user'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { onboardingNextStep } from '@/db/queries/onboarding'
@@ -20,7 +21,7 @@ import { memberships, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { userTag } from '@/lib/cache'
 import { AUTH_ROOT, PASSWORD_REGEX } from '@/lib/constants'
-import { LOCALES } from '@/lib/i18n'
+import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { pickUsername, usernameBase } from '@/lib/username'
 import { fullName } from '@/lib/utils'
 
@@ -39,6 +40,7 @@ const onboardingSchema = z.object({
     .toLowerCase(),
   password: z.string().min(8).max(128).regex(PASSWORD_REGEX),
   phone: z.string().trim().max(40),
+  termsAccepted: z.boolean().refine(value => value),
 })
 
 export type OnboardingValues = z.input<typeof onboardingSchema>
@@ -98,6 +100,7 @@ export const completeOnboarding = async (values: OnboardingValues) => {
       if (!row) return false
       await setCredentialPassword(tx, authUser.id, passwordHash)
       await recordEvent(tx, event)
+      await acceptCurrentLegal(tx, { locale: locale ?? DEFAULT_LOCALE, userId: authUser.id })
       return true
     })
     if (!completed) return failure('ALREADY_ONBOARDED')

@@ -5,7 +5,16 @@ import { isHttpUrl } from '@/lib/url'
 
 export const APPLICATION_MOTIVATION_MIN = 20
 
-export const APPLICATION_ERROR_CODES = ['charter', 'email', 'number', 'required', 'tooLong', 'tooShort', 'url'] as const
+export const APPLICATION_ERROR_CODES = [
+  'charter',
+  'email',
+  'number',
+  'required',
+  'terms',
+  'tooLong',
+  'tooShort',
+  'url',
+] as const
 
 export type ApplicationErrorCode = (typeof APPLICATION_ERROR_CODES)[number]
 
@@ -42,6 +51,7 @@ export const applicationSchema = z.object({
   name: required(150),
   registrantEmail: email,
   registryId: required(60),
+  termsAccepted: z.boolean().refine(value => value, 'terms'),
   url: z
     .string()
     .trim()
@@ -66,7 +76,7 @@ export const APPLICATION_STEPS = ['organization', 'representative', 'motivation'
 export type ApplicationStep = (typeof APPLICATION_STEPS)[number]
 
 export const APPLICATION_STEP_FIELDS = {
-  charter: ['charterAccepted'],
+  charter: ['charterAccepted', 'termsAccepted'],
   motivation: ['motivation'],
   organization: ['name', 'legalName', 'registryId', 'country', 'city', 'email', 'url', 'volunteersPerYear'],
   representative: ['firstName', 'lastName', 'registrantEmail', 'contactName', 'contactEmail'],

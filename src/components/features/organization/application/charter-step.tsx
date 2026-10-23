@@ -115,6 +115,42 @@ export const CharterStep = ({ form, onEdit }: { form: ApplicationForm; onEdit: (
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="termsAccepted"
+        render={({ field }) => (
+          <FormItem className="rounded-lg border p-4">
+            <div className="flex items-start gap-3">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  className="mt-0.5"
+                  onBlur={field.onBlur}
+                  onCheckedChange={checked => field.onChange(checked === true)}
+                />
+              </FormControl>
+              <div className="space-y-1">
+                <FormLabel className="leading-5">
+                  {t.rich('termsAccept', {
+                    terms: chunks => (
+                      <Link
+                        className="font-medium text-link underline underline-offset-4"
+                        href="/terms"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {chunks}
+                      </Link>
+                    ),
+                  })}
+                </FormLabel>
+              </div>
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   )
 }

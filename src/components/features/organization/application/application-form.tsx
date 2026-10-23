@@ -43,6 +43,7 @@ const DEFAULT_VALUES: ApplicationInput = {
   name: '',
   registrantEmail: '',
   registryId: '',
+  termsAccepted: false,
   url: '',
   volunteersPerYear: '',
 }

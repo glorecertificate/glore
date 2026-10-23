@@ -50,6 +50,7 @@ describe.skipIf(!isLocalDatabase)('admin organization decisions', () => {
       name: `Decision ${label} ${suffix}`,
       registrantEmail: `${label}-${suffix}@applicants.test`,
       registryId: 'IT-123',
+      termsAccepted: true,
       volunteersPerYear: '40',
     })
     const result = await context.client.transaction(tx =>

@@ -7,6 +7,7 @@ import { mapSequential } from '@/db/helpers'
 import { recordEvent } from '@/db/mutations/activity-event'
 import { assignCertificate } from '@/db/mutations/certificate'
 import { createInvitation } from '@/db/mutations/invitation'
+import { currentLegalVersionId } from '@/db/mutations/legal'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
 import { type MemberErrorCode, type OrganizationMembershipRole, mergeDescription } from '@/db/queries/organization'
@@ -480,6 +481,7 @@ export const submitOrganizationApplication = async (
     role: 'admin',
   })
 
+  const termsVersionId = await currentLegalVersionId(tx, 'terms')
   const event = {
     type: 'organization.application_received',
     actorId: null,
@@ -492,6 +494,7 @@ export const submitOrganizationApplication = async (
       locale: application.locale ?? null,
       message: application.motivation,
       organizationName: organization.name,
+      termsVersionId,
     },
   } satisfies AppEvent<'organization.application_received'>
   await recordEvent(tx, event)

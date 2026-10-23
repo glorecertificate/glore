@@ -62,6 +62,7 @@ export const OnboardingForm = ({
       password: '',
       phone: '',
       preferredLanguage: locale,
+      termsAccepted: false,
     },
     mode: 'onTouched',
     resolver: zodResolver(createOnboardingSchema(t)),
@@ -84,6 +85,7 @@ export const OnboardingForm = ({
         nationality: values.nationality,
         password: values.password,
         phone: values.phone,
+        termsAccepted: values.termsAccepted,
       })
       if (error || !data) {
         toast.error(t(error?.code === 'ALREADY_ONBOARDED' ? 'alreadyOnboarded' : 'error'))

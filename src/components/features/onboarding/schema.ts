@@ -11,12 +11,13 @@ type ErrorKey =
   | 'nationalityRequired'
   | 'passwordMismatch'
   | 'passwordRequirements'
+  | 'termsRequired'
 
 export const STEP_FIELDS = [
   ['firstName', 'lastName'],
   ['birthday', 'nationality', 'birthPlace'],
   ['phone', 'preferredLanguage'],
-  ['password', 'confirmPassword'],
+  ['password', 'confirmPassword', 'termsAccepted'],
 ] as const
 
 export const STEP_NAMES = ['name', 'about', 'contact', 'password'] as const
@@ -42,6 +43,7 @@ export const createOnboardingSchema = (t: (key: ErrorKey) => string) =>
       password: z.string().regex(PASSWORD_REGEX, { message: t('passwordRequirements') }),
       phone: z.string(),
       preferredLanguage: z.enum(LOCALES),
+      termsAccepted: z.boolean().refine(value => value, { message: t('termsRequired') }),
     })
     .refine(data => data.password === data.confirmPassword, {
       message: t('passwordMismatch'),

@@ -42,6 +42,7 @@ const values = (overrides: Record<string, string> = {}) => ({
   nationality: 'it',
   password: 'NewPassword1!',
   phone: '',
+  termsAccepted: true,
   ...overrides,
 })
 

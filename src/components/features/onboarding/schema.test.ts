@@ -14,6 +14,7 @@ const valid = {
   password: 'Password1!',
   phone: '',
   preferredLanguage: 'en',
+  termsAccepted: true,
 }
 
 const messages = (values: Record<string, unknown>) => {

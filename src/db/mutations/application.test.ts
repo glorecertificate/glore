@@ -22,6 +22,7 @@ const valid = {
   name: 'Example',
   registrantEmail: 'maria@example.org',
   registryId: 'IT-123',
+  termsAccepted: true,
   volunteersPerYear: '40',
 }
 

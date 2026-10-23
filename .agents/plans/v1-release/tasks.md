@@ -33,9 +33,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 ### Content and legal
 
-- E2 skill names and the 3 drafted definitions await GloRe review (O5).
-- E5 legal texts keep `[... to be confirmed]` placeholders (U11). GloRe supplies the final texts.
-  - Placeholders: contact, address, SMTP provider, legal bases, transfers, retention, DPO, liability, governing law, review time, charter breach.
+- GloRe review items (legal texts, O5 definitions, skill names, course publishing, docs, Crowdin owner) live in `glore-followups.md`.
 - `/api/v1/ai/copilot` has no client in the app and never had one.
 - Decision: `impersonatedBy` stays out of event metadata, because `recordEvent` is a transaction primitive with no request context.
 

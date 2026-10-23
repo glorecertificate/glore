@@ -21,7 +21,7 @@ test.describe('notifications', () => {
     await expect(bell).toBeVisible()
 
     await bell.click()
-    await expect(page.getByText('Course completed')).toBeVisible()
+    await expect(page.getByText('Course completed', { exact: true }).first()).toBeVisible()
     await page.getByRole('button', { name: 'Mark all as read' }).click()
     await expect(page.getByRole('button', { name: 'Notifications', exact: true })).toBeVisible()
   })

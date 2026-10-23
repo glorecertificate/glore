@@ -64,7 +64,8 @@ export const seedPublicCertificate = async ({
         (handle, code, user_id, organization_id, language, activity_start_date, activity_end_date, activity_duration,
          activity_location, activity_description, tasks, status, issued_at, revoked_at, revoked_reason, is_default)
        values ($1, $2, $3, $4, 'en', '2026-01-10', '2026-06-30', 120, 'Milan', 'E2E experience',
-         array['Welcomed new volunteers'], $5, now(), $6, $7, $8)
+         array['Welcomed new volunteers'], $5, now(), $6, $7,
+         $8 and not exists (select 1 from certificates where user_id = $3 and is_default))
        returning id`,
       [
         handle,

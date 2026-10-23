@@ -47,6 +47,7 @@ test('volunteer resumes an autosaved draft and submits the request', async () =>
 
   await page.goto('/certificates')
   await page.getByRole('link', { name: 'Continue editing' }).first().click()
+  await page.getByRole('button', { name: 'Back' }).click()
   await expect(page.getByLabel('Total hours')).toHaveValue('120')
   await expect(page.getByLabel('Where did it take place?')).toHaveValue('Milan, Italy')
 

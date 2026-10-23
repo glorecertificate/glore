@@ -63,7 +63,7 @@ test.describe('certificate verification', () => {
 
   test('hides a private profile and redirects legacy links to the verify page', async ({ page }) => {
     await page.goto(`/${USERNAME}`)
-    await expect(page.getByText('This certificate does not exist or is no longer publicly available.')).toBeVisible()
+    await expect(page.getByText('This profile does not exist or is not public.')).toBeVisible()
     await expect(page.getByText('Verified certificate')).toBeHidden()
 
     await page.goto(`/${USERNAME}?v=e2e-${VALID.toLowerCase()}`)

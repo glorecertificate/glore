@@ -12,9 +12,10 @@ export const usePoll = <T>(read: () => Promise<T>, { enabled = true, interval, k
   const [data, setData] = useState<T | null>(null)
   const [version, setVersion] = useState(0)
 
-  const load = useEffectEvent(async () => {
+  const load = useEffectEvent(async (isActive: () => boolean) => {
     try {
-      setData(await read())
+      const next = await read()
+      if (isActive()) setData(next)
     } catch (error) {
       console.error('Polling failed', error)
     }
@@ -22,13 +23,15 @@ export const usePoll = <T>(read: () => Promise<T>, { enabled = true, interval, k
 
   useEffect(() => {
     if (!enabled) return undefined
+    let active = true
     const tick = () => {
-      if (document.visibilityState === 'visible') void load()
+      if (document.visibilityState === 'visible') void load(() => active)
     }
     tick()
     const timer = setInterval(tick, interval)
     document.addEventListener('visibilitychange', tick)
     return () => {
+      active = false
       clearInterval(timer)
       document.removeEventListener('visibilitychange', tick)
     }

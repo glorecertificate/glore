@@ -1,8 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-
-import { useFormatter, useTranslations } from 'next-intl'
+import { useFormatter, useNow, useTranslations } from 'next-intl'
 
 import { NotificationItem } from '@/components/features/notifications/notification-item'
 import { groupByDay } from '@/components/features/notifications/utils'
@@ -18,7 +16,7 @@ interface NotificationListProps extends React.ComponentProps<'div'> {
 export const NotificationList = ({ className, notifications, onNavigate, onRead, ...props }: NotificationListProps) => {
   const t = useTranslations('Notifications')
   const format = useFormatter()
-  const [now] = useState(() => new Date())
+  const now = useNow({ updateInterval: 60_000 })
   const groups = groupByDay(notifications, now)
 
   const label = (group: (typeof groups)[number]) => {

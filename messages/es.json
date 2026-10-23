@@ -47,6 +47,8 @@
     "members": "Miembros",
     "noResults": "No se encontraron resultados.",
     "placeholder": "Busca páginas, cursos, documentación, certificados y miembros…",
+    "placeholderBasic": "Busca páginas, cursos y documentación…",
+    "placeholderCertificates": "Busca páginas, cursos, documentación y certificados…",
     "trigger": "Buscar",
     "pages": "Páginas",
     "settings": "Ajustes",

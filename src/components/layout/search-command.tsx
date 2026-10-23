@@ -8,7 +8,7 @@ import { type default as Fuse } from 'fuse.js'
 import { useTranslations } from 'next-intl'
 
 import { listCourses } from '@/actions/courses/queries'
-import { MIN_QUERY_LENGTH } from '@/actions/shell/scope'
+import { MIN_QUERY_LENGTH, searchPlaceholderKey } from '@/actions/shell/scope'
 import { type WorkspaceSearchResult, searchWorkspace } from '@/actions/shell/search'
 import { isListedCourse } from '@/components/features/courses/visibility'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
@@ -59,6 +59,10 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
   const [remote, setRemote] = useState<RemoteResults | null>(null)
   const debouncedQuery = useDebounce(query, 200)
   const loaded = useRef(false)
+
+  const placeholder = t(
+    searchPlaceholderKey({ canEdit: user.canEdit, id: user.id, organizationId: active?.id ?? null, role: user.role })
+  )
 
   const term = debouncedQuery.trim()
   const searching = term.length >= MIN_QUERY_LENGTH
@@ -168,14 +172,14 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
     <Dialog onOpenChange={handleOpenChange} open={open} {...props}>
       <DialogHeader className="sr-only">
         <DialogTitle>{t('trigger')}</DialogTitle>
-        <DialogDescription>{t('placeholder')}</DialogDescription>
+        <DialogDescription>{placeholder}</DialogDescription>
       </DialogHeader>
       <DialogContent className="overflow-hidden p-0" showClose={false}>
         <Command
           className="**:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-item]_svg]:size-5 **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground **:[[cmdk-group]]:px-2 **:[[cmdk-input]]:h-12 **:[[cmdk-item]]:px-2 **:[[cmdk-item]]:py-3"
           shouldFilter={false}
         >
-          <CommandInput onValueChange={setQuery} placeholder={t('placeholder')} value={query} />
+          <CommandInput onValueChange={setQuery} placeholder={placeholder} value={query} />
           <CommandList>
             {!hasResults && searching && !pendingRemote && <CommandEmpty>{t('noResults')}</CommandEmpty>}
             {pendingRemote && <p className="px-4 py-3 text-sm text-muted-foreground">{t('searching')}</p>}

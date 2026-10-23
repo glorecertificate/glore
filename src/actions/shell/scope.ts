@@ -35,6 +35,11 @@ export const memberScope = ({ canEdit, organizationId, role }: ScopeViewer): Mem
   return null
 }
 
+export const searchPlaceholderKey = (viewer: ScopeViewer) => {
+  if (memberScope(viewer)) return 'placeholder'
+  return certificateScopes(viewer).length > 0 ? 'placeholderCertificates' : 'placeholderBasic'
+}
+
 export const normalizeQuery = (query: string) => {
   const trimmed = query.trim().slice(0, MAX_QUERY_LENGTH)
   return trimmed.length >= MIN_QUERY_LENGTH ? trimmed : null

@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
-import { type ScopeViewer, certificateScopes, likePattern, memberScope, normalizeQuery } from '@/actions/shell/scope'
+import {
+  type ScopeViewer,
+  certificateScopes,
+  likePattern,
+  memberScope,
+  normalizeQuery,
+  searchPlaceholderKey,
+} from '@/actions/shell/scope'
 
 const viewer = (overrides: Partial<ScopeViewer> = {}): ScopeViewer => ({
   canEdit: false,
@@ -53,6 +60,23 @@ describe('memberScope', () => {
     }
     expect(memberScope(viewer({ canEdit: true, role: 'admin' }))).toBeNull()
     expect(memberScope(viewer({ organizationId: null, role: null }))).toBeNull()
+  })
+})
+
+describe('searchPlaceholderKey', () => {
+  it('offers pages, courses, and docs only to team members', () => {
+    expect(searchPlaceholderKey(viewer({ canEdit: true, organizationId: null, role: null }))).toBe('placeholderBasic')
+  })
+
+  it('adds certificates for members who cannot search people', () => {
+    expect(searchPlaceholderKey(viewer())).toBe('placeholderCertificates')
+    expect(searchPlaceholderKey(viewer({ role: 'tutor' }))).toBe('placeholderCertificates')
+    expect(searchPlaceholderKey(viewer({ organizationId: null, role: null }))).toBe('placeholderCertificates')
+  })
+
+  it('adds members for owners and representatives', () => {
+    expect(searchPlaceholderKey(viewer({ role: 'admin' }))).toBe('placeholder')
+    expect(searchPlaceholderKey(viewer({ role: 'representative' }))).toBe('placeholder')
   })
 })
 

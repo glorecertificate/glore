@@ -21,26 +21,31 @@ interface I18nContextValue {
   timeZone?: string
 }
 
+interface LocaleOverride {
+  base: Locale
+  locale: Locale
+}
+
 const useI18nContext = (value: I18nContextValue) => {
-  const [localeState, setLocaleState] = useState<Locale>(value.locale ?? DEFAULT_LOCALE)
-  const [messageStore, setMessageStore] = useState<Partial<Record<Locale, Messages>>>(
-    value.messages ? { [localeState]: value.messages } : {}
-  )
-  const messages = messageStore[localeState]
+  const serverLocale = value.locale ?? DEFAULT_LOCALE
+  const [override, setOverride] = useState<LocaleOverride | null>(null)
+  const [messageStore, setMessageStore] = useState<Partial<Record<Locale, Messages>>>({})
+  const localeState = override?.base === serverLocale ? override.locale : serverLocale
+  const messages = (localeState === serverLocale ? value.messages : undefined) ?? messageStore[localeState]
   const timeZone = value.timeZone ?? TIME_ZONE
 
   const localeItems = LOCALE_ITEMS.map(item => {
-    const label = messageStore[localeState]?.Intl.Languages?.[item.value] ?? item.label
+    const label = messages?.Intl.Languages?.[item.value] ?? item.label
     const displayLabel = TITLEIZED_LOCALES.includes(localeState) ? label : label.toLowerCase()
     return { ...item, displayLabel, label }
   })
 
   const setLocale = async (locale: Locale) => {
-    if (!messageStore[locale]) {
+    if (locale !== serverLocale && !messageStore[locale]) {
       const messagesModule = await import(`~/messages/${locale}`)
       setMessageStore(prev => ({ ...prev, [locale]: clientMessages(messagesModule.default) }))
     }
-    setLocaleState(locale)
+    setOverride({ base: serverLocale, locale })
     await setLocaleCookie(locale)
   }
 

@@ -9,7 +9,7 @@ import { cacheTag } from 'next/cache'
 import { eq, or } from 'drizzle-orm'
 import { z } from 'zod'
 
-import { settleDeletedUser } from '@/actions/account/deletion'
+import { eraseAccount } from '@/actions/account/deletion'
 import { adminAction, requireAdminWithLimit, revalidateUserAccess } from '@/actions/admin/helpers'
 import { notify } from '@/actions/notifications/notify'
 import { getCurrentUser } from '@/actions/user'
@@ -17,7 +17,7 @@ import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { adminError, setPlatformRole } from '@/db/mutations/moderation'
 import { createTeamInvitation, refreshTeamInvitation } from '@/db/mutations/team-invitation'
-import { deleteUser } from '@/db/mutations/user'
+import { platformRoleOf } from '@/db/queries/admin-user'
 import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
@@ -153,8 +153,14 @@ export const deleteTeamMember = async (userId: string) =>
     const actor = await requireAdminWithLimit('team-delete', 30)
     if (actor.id === userId) throw adminError('SELF')
 
-    const deleted = await transaction(tx => deleteUser(tx, userId, { actorId: actor.id, reassignTo: actor.id }))
-    await settleDeletedUser(deleted)
+    const target = await db.query.users.findFirst({
+      columns: { email: true, firstName: true, id: true, isEditor: true, locale: true, role: true },
+      where: eq(users.id, userId),
+    })
+    if (!target || platformRoleOf(target) === 'user') throw adminError('NOT_FOUND')
+
+    const result = await eraseAccount(target, { actorId: actor.id, reassignTo: actor.id })
+    if (!result.deleted) throw adminError('SOLE_ORG_ADMIN')
 
     revalidateUserAccess(userId)
     return { id: userId }

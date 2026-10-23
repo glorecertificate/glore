@@ -2830,6 +2830,7 @@
       "NO_CHANGE": "Non è cambiato nulla.",
       "RATE_LIMITED": "Troppi tentativi. Riprova tra un po'.",
       "SELF": "Non puoi farlo sul tuo account.",
+      "SOLE_ORG_ADMIN": "Questa persona è l'unico amministratore di un'organizzazione. Deve prima trasferire la proprietà.",
       "TARGET_BANNED": "Non puoi visualizzare come un utente sospeso.",
       "TARGET_IS_ADMIN": "Gli admin della piattaforma non si possono sospendere. Rimuovi prima il ruolo di admin.",
       "UNAUTHORIZED": "La tua sessione è terminata. Accedi di nuovo.",

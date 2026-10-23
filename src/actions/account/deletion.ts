@@ -59,12 +59,20 @@ export const settleDeletedUser = async (deleted: Awaited<ReturnType<typeof delet
   await settleEvents(deleted.events)
 }
 
-export const eraseAccount = async (user: { email: string; firstName: string; id: string; locale: string | null }) => {
+interface EraseOptions {
+  actorId?: string
+  reassignTo?: string
+}
+
+export const eraseAccount = async (
+  user: { email: string; firstName: string; id: string; locale: string | null },
+  { actorId, reassignTo }: EraseOptions = {}
+) => {
   const blockers = await soleAdminOrganizations(user.id)
   if (blockers.length > 0) return { blockers, deleted: false }
 
   const event = {
-    actorId: user.id,
+    actorId: actorId ?? user.id,
     data: { email: user.email, firstName: user.firstName, locale: user.locale, userId: user.id },
     organizationId: null,
     type: 'account.deleted',
@@ -72,10 +80,10 @@ export const eraseAccount = async (user: { email: string; firstName: string; id:
 
   const deleted = await transaction(async tx => {
     await recordEvent(tx, event)
-    return await deleteUser(tx, user.id)
+    return await deleteUser(tx, user.id, { actorId: event.actorId, reassignTo })
   })
   await settleDeletedUser(deleted)
-  await notify(event)
+  if (!actorId) await notify(event)
 
   return { blockers: [], deleted: true }
 }

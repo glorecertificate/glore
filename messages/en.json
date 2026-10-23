@@ -2830,6 +2830,7 @@
       "NO_CHANGE": "Nothing changed.",
       "RATE_LIMITED": "Too many attempts. Try again in a while.",
       "SELF": "You cannot do this to your own account.",
+      "SOLE_ORG_ADMIN": "This person is the only owner of an organization. They must transfer ownership first.",
       "TARGET_BANNED": "You cannot view as a banned user.",
       "TARGET_IS_ADMIN": "Platform admins cannot be banned. Remove the admin role first.",
       "UNAUTHORIZED": "Your session ended. Log in again.",

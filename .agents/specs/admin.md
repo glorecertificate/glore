@@ -31,6 +31,7 @@
 - Zero delivered emails raise `SEND_FAILED` and keep the refreshed token.
 - Tokens never reach payloads: `url` and `email` are in `PRIVATE_KEYS`, and the actions return only the email and the expiry.
 - Role changes reuse `setPlatformRole`. Removal refuses the acting admin.
+- `deleteTeamMember` accepts only a platform admin or editor (`NOT_FOUND` otherwise) and runs `eraseAccount` with the acting admin: the `SOLE_ORG_ADMIN` guard applies and `account.deleted` is recorded with the admin as actor. The removed person gets no "as you asked" mail.
 
 ## Certificates
 

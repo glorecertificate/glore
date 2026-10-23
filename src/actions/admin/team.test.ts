@@ -338,4 +338,116 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
       expect((await fixture.findUser('admin')).role).toBe('admin')
     })
   })
+
+  describe('deleting a team member', () => {
+    const organizationIds: number[] = []
+    const holderIds: string[] = []
+
+    const createOrganization = async (label: string) => {
+      const [organization] = await fixture.client.db
+        .insert(fixture.schema.organizations)
+        .values({
+          city: 'Milan',
+          email: `${label}-${fixture.suffix}@team-lane.test`,
+          handle: `${label}-${fixture.suffix}`,
+          name: label,
+        })
+        .returning({ id: fixture.schema.organizations.id })
+      if (!organization) throw new Error('Failed to create the organization')
+      organizationIds.push(organization.id)
+      return organization.id
+    }
+
+    afterAll(async () => {
+      const { db } = fixture.client
+      const { activityEvents, certificates, memberships, organizations, users } = fixture.schema
+      await db.delete(activityEvents).where(inArray(activityEvents.organizationId, organizationIds))
+      await db.delete(certificates).where(inArray(certificates.organizationId, organizationIds))
+      await db.delete(memberships).where(inArray(memberships.organizationId, organizationIds))
+      await db.delete(organizations).where(inArray(organizations.id, organizationIds))
+      await db.delete(users).where(inArray(users.id, holderIds))
+    })
+
+    it('refuses an account that is not on the team', async () => {
+      as('admin')
+      const result = await actions.deleteTeamMember(fixture.ids.plain)
+      expect(result.error?.code).toBe('NOT_FOUND')
+      expect(await fixture.findUser('plain')).toBeDefined()
+    })
+
+    it('refuses a team member who is the only admin of an organization', async () => {
+      const { result } = await invite('sole-admin')
+      const userId = result.data?.id ?? ''
+      const organizationId = await createOrganization('sole-admin')
+      await fixture.client.db.insert(fixture.schema.memberships).values({ organizationId, role: 'admin', userId })
+
+      as('admin')
+      expect((await actions.deleteTeamMember(userId)).error?.code).toBe('SOLE_ORG_ADMIN')
+      expect(
+        await fixture.client.db.query.users.findFirst({ where: eq(fixture.schema.users.id, userId) })
+      ).toBeDefined()
+    })
+
+    it('erases the account, records the event and returns open reviews to the pool', async () => {
+      const { result } = await invite('tutor-editor')
+      const userId = result.data?.id ?? ''
+      const organizationId = await createOrganization('tutor-editor')
+      const holderId = `holder-${fixture.suffix}`
+      holderIds.push(holderId)
+      await fixture.client.db.insert(fixture.schema.users).values({
+        email: `${holderId}@team-lane.test`,
+        firstName: 'Holder',
+        id: holderId,
+        name: 'Holder',
+      })
+      await fixture.client.db.insert(fixture.schema.memberships).values([
+        { organizationId, role: 'tutor', userId },
+        { organizationId, role: 'volunteer', userId: holderId },
+      ])
+      const [certificate] = await fixture.client.db
+        .insert(fixture.schema.certificates)
+        .values({
+          activityDescription: 'Helped',
+          activityDuration: 120,
+          activityEndDate: '2026-02-01',
+          activityLocation: 'Milan',
+          activityStartDate: '2026-01-01',
+          handle: `team-removal-${fixture.suffix}`,
+          language: 'en',
+          organizationId,
+          reviewerId: userId,
+          status: 'in_review',
+          userId: holderId,
+        })
+        .returning({ id: fixture.schema.certificates.id })
+      notifyMock.mockClear()
+
+      as('admin')
+      const deleted = await actions.deleteTeamMember(userId)
+
+      expect(deleted.error).toBeNull()
+      expect(
+        await fixture.client.db.query.users.findFirst({ where: eq(fixture.schema.users.id, userId) })
+      ).toBeUndefined()
+      expect(
+        await fixture.client.db.query.certificates.findFirst({
+          where: eq(fixture.schema.certificates.id, certificate?.id ?? 0),
+        })
+      ).toMatchObject({ reviewerId: null, status: 'submitted' })
+
+      const events = await fixture.client.db.query.activityEvents.findMany({
+        where: and(
+          eq(fixture.schema.activityEvents.action, 'account.deleted'),
+          eq(fixture.schema.activityEvents.subjectId, userId)
+        ),
+      })
+      expect(events).toHaveLength(1)
+      expect(events[0]).toMatchObject({ actorId: fixture.ids.admin })
+      expect(JSON.stringify(events[0]?.metadata)).not.toContain('@team-lane.test')
+
+      const notified = notifyMock.mock.calls.map(([event]) => (event as { type: string }).type)
+      expect(notified).toContain('certificate.unassigned')
+      expect(notified).not.toContain('account.deleted')
+    })
+  })
 })

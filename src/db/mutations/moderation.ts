@@ -19,6 +19,7 @@ const ADMIN_ERROR_MESSAGES = {
   RATE_LIMITED: 'Too many attempts. Try again later.',
   SELF: 'You cannot do this to your own account',
   SEND_FAILED: 'The email could not be sent',
+  SOLE_ORG_ADMIN: 'This person is the only admin of an organization. Transfer the ownership first.',
   TARGET_IS_ADMIN: 'Platform admins cannot be banned. Remove the admin role first.',
   TOO_SOON: 'The invitation was sent a moment ago',
   UNAUTHORIZED: 'Not authenticated',

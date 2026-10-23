@@ -9,6 +9,7 @@ import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
 
 const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => {
   const [user, { get }, pending, impersonation] = await Promise.all([
@@ -26,7 +27,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
     <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
       <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
         <DashboardSidebar pending={pending} />
-        <SidebarInset>{children}</SidebarInset>
+        <SidebarInset className={cn(impersonation && 'pb-32 sm:pb-24')}>{children}</SidebarInset>
         <ImpersonationBanner />
       </SessionProvider>
     </SidebarProvider>

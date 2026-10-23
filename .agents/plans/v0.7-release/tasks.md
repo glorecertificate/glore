@@ -6,7 +6,7 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 
 - State: in progress, the user gave the go on 2026-10-22.
 - Current wave: W3 (verification and release readiness). W0 to W2 are integrated, and the history is linear (no merge commits).
-- Next up: R1 platform upgrade, then W4 translations and team content (`translations.md`, U18 to U21), then the G8 handoff in `runbook.md`. Production steps stay with the user.
+- Next up: W4 translations and team content (`translations.md`, U18 to U21), then the G8 handoff in `runbook.md`. Production steps stay with the user.
 - Branch: local `release/v0.7` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
@@ -209,8 +209,12 @@ Content rules: plain, warm language for young adults, examples from volunteering
 
 ## W4a platform upgrade
 
-- R1 [ ]: update every dependency (`pnpm update --latest` within pnpm's 24h minimum release age), pnpm (`packageManager`), and Node.js (`.node-version`, `engines`, Vercel runtime) to the latest compatible versions, and fix breaking changes.
+- R1 [x] (lane r1, 2026-10-23, hash pending): update every dependency, pnpm, and Node.js to the latest compatible versions within the 24h release age, and fix breaking changes.
   - Accept: `pnpm run check`, `pnpm run test`, `pnpm run build`, and `pnpm run test:e2e` pass; Vercel supports the Node.js version; majors held back are listed with the reason.
+  - Done: Node 24.22.1 (Vercel offers 24.x and 22.x only), pnpm 12.15.0, every direct dependency latest; check, 1078 unit tests, build, and e2e (156 passed) green.
+  - Held: `@platejs/dnd` at 53.1.0 (53.3 breaks the vendored table node) and `@types/node` at 24 (runtime major).
+  - Fixed: better-auth 1.7 needs `account_id` equal to the user id for credentials (e2e fixtures), and new oxlint rules were configured off in `.oxlintrc.json`.
+  - Open: the 4 mail specs fail in production mode (SMTP forced), and the Vercel "Node.js Version" project setting should read 24.x.
 
 ## W4 translations and team content
 

@@ -68,6 +68,11 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 
 - Categories `correctness`, `pedantic`, `perf`, `style`, and `suspicious` are all `error`. `nursery` and `restriction` are `allow`.
 - `denyWarnings: true`, so warnings fail CLI runs.
+- oxlint, `oxlint-tsgolint`, and `oxfmt` upgrade together, because oxlint needs a matching `oxlint-tsgolint` peer.
+- A new oxlint or `oxlint-plugin-react-doctor` can switch rules on through the categories, so run `oxlint` after a bump and decide per rule.
+- Switched off on purpose: `one-var`, `react/function-component-definition`, `max-params`, `no-redeclare`, `node/no-sync`, and the native `react/*` compiler rules, which duplicate `react-compiler/*`.
+- Also off: the `react-doctor` ports of the `react-perf`, `jsx-max-depth`, `no-autofocus`, and `no-unstable-nested-components` rules that were already off, plus `js-set-map-lookups`, `no-tiny-text`, `no-layout-property-animation`, `no-pass-data-to-parent`, and `effect-needs-cleanup`.
+- The vendored editor gets a scoped override instead of source edits, and its one hardcoded color class sits in the `tailwindcss/no-hardcoded-colors` allow list.
 
 | Rule                                     | Setting                                        |
 | ---------------------------------------- | ---------------------------------------------- |

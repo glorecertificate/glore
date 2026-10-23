@@ -100,11 +100,15 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 ## Dependencies
 
-- CI runs `pnpm install --frozen-lockfile`, and pnpm 11 enforces a built-in `minimum-release-age` of 24h on every lockfile entry. Nothing in the repo overrides it.
+- CI runs `pnpm install --frozen-lockfile`, and pnpm (11 and 12) enforces a built-in `minimum-release-age` of 24h on every lockfile entry. Nothing in the repo overrides it.
 - Local `pnpm install` accepts a fresher package, so a bump can pass locally and fail CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`.
 - Never commit a dependency bump on the day its version was published.
 - When CI is already red, re-run the job once the package is 24h old, or add a scoped `minimumReleaseAgeExclude` entry to `pnpm-workspace.yaml` and delete it afterwards.
 - Never lower `minimumReleaseAge` or set `trustLockfile: true`: both disable the check for every future install.
+- Node.js follows Vercel Functions, which offer only 24.x and 22.x (checked 2026-10-23). `.node-version`, `engines.node` (`24.x`), and `@types/node` (`^24`) move together.
+- The Vercel "Node.js Version" project setting should read 24.x, and `engines.node` overrides it. `@types/node` stays on the runtime major, so `pnpm outdated` always lists it.
+- `@platejs/dnd` is pinned to `53.1.0`: 53.3 types `dragEntry` as possibly undefined, which breaks the vendored `table-node.tsx`. Lift the pin when the editor block is re-pulled.
+- `pnpm run bump` upgrades pnpm and runs `pnpm update -Li`. Commit pnpm and Node, each major, and the lint toolchain as separate steps.
 
 ## Skills
 
@@ -143,6 +147,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - Before integrating lanes, run `git status` in the main checkout, because a lane once leaked a copy of its commit there. Compare unexplained changes with lane commits before restoring them.
 - Commit with explicit paths so stray staged changes never ride along.
 - A lane worktree gets `node_modules` as a symlink to the main checkout. Never run `pnpm install` inside a lane worktree.
+- A lane that changes the lockfile replaces the symlink with a real directory and installs with `pnpm install --ignore-scripts`, because the `prepare` script rewrites the shared git hooks.
 - An install writes through the symlink, rewrites the main links to the worktree path, and breaks the main dev server and `pnpm run` when the worktree is removed.
 - In a lane, run tools directly from `node_modules/.bin`. Only a lane that changes the lockfile replaces the symlink with a real directory first.
 - If an install already happened, run `CI=true pnpm install --frozen-lockfile` in the main checkout before removing the worktree, then confirm `readlink node_modules/next` starts with `.pnpm/`.

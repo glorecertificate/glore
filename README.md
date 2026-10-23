@@ -21,7 +21,7 @@ Shared UI components live in `src/components/ui/`; the kit and its conventions a
 
 ### Prerequisites
 
-- Node.js version specified in [`.node-version`](.node-version)
+- Node.js version specified in [`.node-version`](.node-version) (24.x, the Vercel runtime), and the pnpm version pinned in `package.json` (`corepack enable`)
 - Docker (for the local Postgres and Mailpit used in development)
 
 ### Setup and run

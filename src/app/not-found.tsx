@@ -6,6 +6,9 @@ import { ErrorFallback } from '@/components/layout/error-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { generateIntlMetadata } from '@/lib/metadata'
+
+export const generateMetadata = generateIntlMetadata({ namespace: 'Common', title: 'notFound' })
 
 const AppNotFound = async () => {
   const [user, t] = await Promise.all([getAuthUser(), getTranslations('Common')])

@@ -8,6 +8,7 @@ import { z } from 'zod'
 
 import { changePassword } from '@/actions/auth'
 import { SettingsSection } from '@/components/features/users/settings-section'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
@@ -17,6 +18,7 @@ import { PASSWORD_REGEX } from '@/lib/constants'
 export const PasswordForm = () => {
   const t = useTranslations('Users')
   const actionError = useActionError()
+  const { impersonating: locked } = useSession()
 
   const schema = z
     .object({
@@ -70,7 +72,7 @@ export const PasswordForm = () => {
                 <FormControl>
                   <PasswordInput
                     autoComplete="current-password"
-                    disabled={form.formState.isSubmitting}
+                    disabled={locked || form.formState.isSubmitting}
                     placeholder={t('currentPasswordPlaceholder')}
                     {...field}
                   />
@@ -88,7 +90,7 @@ export const PasswordForm = () => {
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
-                    disabled={form.formState.isSubmitting}
+                    disabled={locked || form.formState.isSubmitting}
                     placeholder={t('newPasswordPlaceholder')}
                     {...field}
                   />
@@ -107,7 +109,7 @@ export const PasswordForm = () => {
                 <FormControl>
                   <PasswordInput
                     autoComplete="new-password"
-                    disabled={form.formState.isSubmitting}
+                    disabled={locked || form.formState.isSubmitting}
                     placeholder={t('confirmPasswordPlaceholder')}
                     {...field}
                   />
@@ -118,7 +120,7 @@ export const PasswordForm = () => {
           />
           <div className="flex justify-end">
             <Button
-              disabled={!form.formState.isDirty || form.formState.isSubmitting}
+              disabled={locked || !form.formState.isDirty || form.formState.isSubmitting}
               loading={form.formState.isSubmitting}
               type="submit"
               variant="brand"

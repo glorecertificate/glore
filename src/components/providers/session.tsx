@@ -6,6 +6,7 @@ import { type User } from '@/db/queries/user'
 import { useCookies } from '@/hooks/use-cookies'
 
 interface SessionContextValue {
+  impersonating?: boolean
   user: User
   organizationId?: number
 }
@@ -65,6 +66,7 @@ const useSessionContext = (value: SessionContextValue) => {
   }
 
   return {
+    impersonating: value.impersonating ?? false,
     user,
     setUser,
     organization,

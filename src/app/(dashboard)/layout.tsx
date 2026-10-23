@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 
+import { getImpersonation } from '@/actions/admin/impersonation-state'
 import { getPendingCounts } from '@/actions/admin/pending'
 import { cookies } from '@/actions/cookies'
 import { getCurrentUser } from '@/actions/user'
@@ -10,7 +11,12 @@ import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
 const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => {
-  const [user, { get }, pending] = await Promise.all([getCurrentUser(), cookies(), getPendingCounts()])
+  const [user, { get }, pending, impersonation] = await Promise.all([
+    getCurrentUser(),
+    cookies(),
+    getPendingCounts(),
+    getImpersonation(),
+  ])
   const org = get('org')
   const organizationId = user.organizations.find(({ id }) => id === org)?.id ?? user.organizations[0]?.id
   const sidebarOpen = get('sidebarOpen')
@@ -18,7 +24,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
 
   return (
     <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
-      <SessionProvider user={user} organizationId={organizationId}>
+      <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
         <DashboardSidebar pending={pending} />
         <SidebarInset>{children}</SidebarInset>
         <ImpersonationBanner />

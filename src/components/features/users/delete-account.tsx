@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { deleteAccount, getDeletionBlockers } from '@/actions/account/delete'
+import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import {
@@ -29,7 +30,7 @@ import { usePoll } from '@/hooks/use-poll'
 const REFRESH_INTERVAL = 5 * 60_000
 
 export const DeleteAccount = () => {
-  const { user } = useSession()
+  const { impersonating, user } = useSession()
   const t = useTranslations('Users')
   const [open, setOpen] = useState(false)
   const [confirmation, setConfirmation] = useState('')
@@ -62,6 +63,7 @@ export const DeleteAccount = () => {
           <CardDescription>{t('deleteAccountDescription')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <ImpersonationLockNote />
           {blockers.length > 0 && (
             <Banner data-testid="delete-blocked" role="alert" variant="warning">
               <div className="space-y-1">
@@ -78,7 +80,7 @@ export const DeleteAccount = () => {
             </Banner>
           )}
           <Button
-            disabled={blockers.length > 0}
+            disabled={blockers.length > 0 || impersonating}
             onClick={() => handleOpenChange(true)}
             type="button"
             variant="destructive"

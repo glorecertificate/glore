@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { listSessions, revokeOtherSessions, revokeSession } from '@/actions/account/sessions'
 import { SessionRow } from '@/components/features/users/session-row'
 import { SettingsSection } from '@/components/features/users/settings-section'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { usePoll } from '@/hooks/use-poll'
@@ -16,6 +17,7 @@ const REFRESH_INTERVAL = 60_000
 
 export const SessionsList = () => {
   const t = useTranslations('Users')
+  const { impersonating } = useSession()
   const [busy, setBusy] = useState(false)
   const { data, refresh } = usePoll(listSessions, { interval: REFRESH_INTERVAL })
 
@@ -53,13 +55,13 @@ export const SessionsList = () => {
       {sessions.length > 0 && (
         <ul className="divide-y rounded-lg border px-4" data-testid="sessions-list">
           {sessions.map(session => (
-            <SessionRow busy={busy} key={session.id} onRevoke={handleRevoke} session={session} />
+            <SessionRow busy={busy || impersonating} key={session.id} onRevoke={handleRevoke} session={session} />
           ))}
         </ul>
       )}
       {others.length > 0 && (
         <div className="flex justify-end">
-          <Button disabled={busy} onClick={handleRevokeOthers} type="button" variant="outline">
+          <Button disabled={busy || impersonating} onClick={handleRevokeOthers} type="button" variant="outline">
             {t('sessionsRevokeOthers')}
           </Button>
         </div>

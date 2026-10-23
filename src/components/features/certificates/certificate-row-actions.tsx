@@ -11,6 +11,7 @@ import { assignCertificateTutor, unassignCertificate } from '@/actions/certifica
 import { revokeCertificate } from '@/actions/certificates/review'
 import { type OrgTutor } from '@/components/features/certificates/certificate-reviewer'
 import { MIN_REASON_LENGTH, ReasonDialog } from '@/components/features/certificates/reason-dialog'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -31,7 +32,9 @@ export const CertificateRowActions = ({
 }) => {
   const t = useTranslations('Certificates.org')
   const tDetail = useTranslations('Certificates.detail')
+  const tCommon = useTranslations('Common')
   const actionError = useActionError()
+  const { impersonating } = useSession()
   const { refresh } = useRouter()
   const [pending, startTransition] = useTransition()
   const [revoking, setRevoking] = useState(false)
@@ -76,7 +79,14 @@ export const CertificateRowActions = ({
         </Select>
       )}
       {certificate.isApproved && (
-        <Button disabled={pending} icon={ShieldOffIcon} onClick={() => setRevoking(true)} size="sm" variant="ghost">
+        <Button
+          disabled={pending || impersonating}
+          icon={ShieldOffIcon}
+          onClick={() => setRevoking(true)}
+          size="sm"
+          title={impersonating ? tCommon('impersonationLocked') : undefined}
+          variant="ghost"
+        >
           {tDetail('revoke')}
         </Button>
       )}

@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
+import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { ProfileForm } from '@/components/features/users/profile-form'
 import { useUserSettingsTab } from '@/components/features/users/user-settings-tabs'
 import { Separator } from '@/components/ui/separator'
@@ -25,6 +26,7 @@ export const UserSettings = () => {
   if (tab === 'security') {
     return (
       <div className="space-y-0">
+        <ImpersonationLockNote className="mb-6" />
         <PasswordForm />
         <Separator className="my-10" />
         <SessionsList />

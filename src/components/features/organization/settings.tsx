@@ -17,6 +17,7 @@ import {
   removeOrganizationAvatar,
   updateOrganization,
 } from '@/actions/organizations/settings'
+import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -59,7 +60,7 @@ export const OrganizationSettings = ({
   organizationId,
 }: OrganizationSettingsProps) => {
   const { push } = useRouter()
-  const { organization: sessionOrg } = useSession()
+  const { impersonating, organization: sessionOrg } = useSession()
   const t = useTranslations('Organization')
   const tLanguages = useTranslations('Intl.Languages')
   const memberError = useMemberError()
@@ -418,6 +419,7 @@ export const OrganizationSettings = ({
       <Separator className="my-8" />
 
       <SettingsSection description={t('dangerDescription')} title={t('dangerZone')}>
+        <ImpersonationLockNote />
         {!platform && (
           <Card className="border-destructive/20 bg-destructive/5">
             <CardHeader>
@@ -425,7 +427,12 @@ export const OrganizationSettings = ({
               <CardDescription>{t('transferHelp')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => setTransferOpen(true)} type="button" variant="destructive">
+              <Button
+                disabled={impersonating}
+                onClick={() => setTransferOpen(true)}
+                type="button"
+                variant="destructive"
+              >
                 {t('transferOwnership')}
               </Button>
             </CardContent>
@@ -437,7 +444,7 @@ export const OrganizationSettings = ({
             <CardDescription>{t('deleteOrganizationHelp')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => setDeleteOpen(true)} type="button" variant="destructive">
+            <Button disabled={impersonating} onClick={() => setDeleteOpen(true)} type="button" variant="destructive">
               {t('deleteOrganization')}
             </Button>
           </CardContent>

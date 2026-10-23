@@ -126,6 +126,7 @@
 - `deleteAccount`, `revokeSession`, and `revokeOtherSessions` check `isImpersonating()`.
 - These actions are locked too: `changePassword`, `updateAccount` (a username or email change, locale stays open), `updatePrivacy`, `featureCertificate`, `transferOrganizationOwnership`, `deleteOrganization`, and `revokeCertificate`.
 - They call `impersonationLocked()` (returns the error) or `assertNotImpersonating()` (throws it) from `actions/admin/impersonation-state.ts`. `queryError` turns the thrown error into the `NOT_ALLOWED_WHILE_IMPERSONATING` code (`IMPERSONATION_LOCKED`), and `useActionError` (`hooks/use-action-error.ts`) shows `Common.impersonationLocked`.
+- The UI mirrors every lock. `(dashboard)/layout.tsx` passes `impersonating` (from `getImpersonation()`) to `SessionProvider`, and `useSession().impersonating` disables the triggers: password form, email and username fields, session revoke buttons, privacy switches, featured and revoke certificate buttons, ownership transfer, organization deletion, and account deletion. `ImpersonationLockNote` shows `Common.impersonationLocked` once per surface. The server locks stay the source of truth.
 - A new action that changes credentials, identity, public exposure, ownership, or issued certificates MUST call one of them first.
 - `/admin` answers not found because the target is not an admin.
 - `ImpersonationBanner` (server, mounted once in `(dashboard)/layout.tsx`) reads `getImpersonation()` from `actions/admin/impersonation-state.ts`.

@@ -7,6 +7,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { listFeaturableCertificates, updatePrivacy } from '@/actions/account/preferences'
+import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import { Label } from '@/components/ui/label'
@@ -20,7 +21,7 @@ import { usePoll } from '@/hooks/use-poll'
 const REFRESH_INTERVAL = 5 * 60_000
 
 export const PrivacyForm = () => {
-  const { setUser, user } = useSession()
+  const { impersonating, setUser, user } = useSession()
   const t = useTranslations('Users')
   const format = useFormatter()
   const actionError = useActionError()
@@ -52,6 +53,7 @@ export const PrivacyForm = () => {
 
   return (
     <div className="space-y-0">
+      <ImpersonationLockNote className="mb-6" />
       <SettingsSection description={t('publicProfileDescription')} title={t('publicProfile')}>
         <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
           <div className="space-y-1">
@@ -67,7 +69,7 @@ export const PrivacyForm = () => {
           </div>
           <Switch
             checked={user.publicProfile}
-            disabled={saving}
+            disabled={saving || impersonating}
             id="public-profile"
             onCheckedChange={handlePublicProfile}
           />
@@ -84,7 +86,7 @@ export const PrivacyForm = () => {
         {certificates.length > 0 && (
           <RadioGroup
             className="gap-2"
-            disabled={saving}
+            disabled={saving || impersonating}
             onValueChange={handleFeatured}
             value={featured ? String(featured.id) : ''}
           >

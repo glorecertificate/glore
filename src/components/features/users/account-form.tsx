@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { updateAccount } from '@/actions/user'
+import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
@@ -29,7 +30,7 @@ const defaults = (source: Pick<User, 'email' | 'locale' | 'username'>) => ({
 })
 
 export const AccountForm = () => {
-  const { user, setUser } = useSession()
+  const { impersonating, user, setUser } = useSession()
   const { setLocale } = useI18n()
   const t = useTranslations('Users')
   const actionError = useActionError()
@@ -115,6 +116,7 @@ export const AccountForm = () => {
         <Separator className="my-8" />
 
         <SettingsSection description={t('accountDescription')} title={t('account')}>
+          <ImpersonationLockNote />
           <FormField
             control={form.control}
             name="email"
@@ -122,7 +124,12 @@ export const AccountForm = () => {
               <FormItem>
                 <FormLabel>{t('email')}</FormLabel>
                 <FormControl>
-                  <Input {...field} autoComplete="email" disabled={form.formState.isSubmitting} type="email" />
+                  <Input
+                    {...field}
+                    autoComplete="email"
+                    disabled={impersonating || form.formState.isSubmitting}
+                    type="email"
+                  />
                 </FormControl>
                 <FormDescription>{t('emailDescription')}</FormDescription>
                 <FormMessage />
@@ -140,7 +147,7 @@ export const AccountForm = () => {
                     {...field}
                     autoCapitalize="none"
                     autoComplete="username"
-                    disabled={form.formState.isSubmitting}
+                    disabled={impersonating || form.formState.isSubmitting}
                     placeholder={t('usernamePlaceholder')}
                     spellCheck={false}
                   />

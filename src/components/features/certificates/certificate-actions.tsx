@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 
 import { featureCertificate, withdrawCertificate } from '@/actions/certificates/requests'
 import { revokeCertificate } from '@/actions/certificates/review'
+import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { MIN_REASON_LENGTH, ReasonDialog } from '@/components/features/certificates/reason-dialog'
 import { useSession } from '@/components/providers/session'
 import {
@@ -31,7 +32,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
   const tDetail = useTranslations('Certificates.detail')
   const actionError = useActionError()
   const { refresh, push } = useRouter()
-  const { user } = useSession()
+  const { impersonating, user } = useSession()
   const [pending, startTransition] = useTransition()
   const [withdrawing, setWithdrawing] = useState(false)
   const [revoking, setRevoking] = useState(false)
@@ -93,7 +94,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
         </Button>
       )}
       {canFeature && (
-        <Button disabled={pending} icon={StarIcon} onClick={feature} size="sm" variant="outline">
+        <Button disabled={pending || impersonating} icon={StarIcon} onClick={feature} size="sm" variant="outline">
           {tDetail('makeFeatured')}
         </Button>
       )}
@@ -103,10 +104,17 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
         </Button>
       )}
       {canRevoke && (
-        <Button disabled={pending} icon={ShieldOffIcon} onClick={() => setRevoking(true)} size="sm" variant="ghost">
+        <Button
+          disabled={pending || impersonating}
+          icon={ShieldOffIcon}
+          onClick={() => setRevoking(true)}
+          size="sm"
+          variant="ghost"
+        >
           {tDetail('revoke')}
         </Button>
       )}
+      {(canFeature || canRevoke) && <ImpersonationLockNote className="basis-full" />}
 
       <AlertDialog onOpenChange={setWithdrawing} open={withdrawing}>
         <AlertDialogContent>

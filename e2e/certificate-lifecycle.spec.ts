@@ -12,6 +12,7 @@ import {
   submitFromLastStep,
   tenantNames,
 } from './actors'
+import { hydrated } from './helpers'
 import { type Tenant, certificateRow, createTenant, draftHours, removeTenant } from './tenant'
 
 test.describe.configure({ mode: 'serial', timeout: 180_000 })
@@ -40,13 +41,18 @@ test.afterAll(async () => {
 test('volunteer resumes an autosaved draft and submits the request', async () => {
   const { page } = volunteer
   await page.goto('/certificates')
-  await page.getByRole('link', { name: 'Request certificate' }).click()
+  const request = page.getByRole('link', { name: 'Request certificate' })
+  await hydrated(request)
+  await request.click()
   await expect(page).toHaveURL(/\/certificates\/new/u)
   await fillExperience(page)
   await expect.poll(() => draftHours(tenant.users.volunteer!.id)).toBe(120)
 
   await page.goto('/certificates')
-  await page.getByRole('link', { name: 'Continue editing' }).first().click()
+  const resume = page.getByRole('link', { name: 'Continue editing' }).first()
+  await hydrated(resume)
+  await resume.click()
+  await expect(page).toHaveURL(/\/certificates\/new\?draft=\d+/u)
   await page.getByRole('button', { name: 'Back' }).click()
   await expect(page.getByLabel('Total hours')).toHaveValue('120')
   await expect(page.getByLabel('Where did it take place?')).toHaveValue('Milan, Italy')
@@ -70,7 +76,9 @@ test('volunteer withdraws the request and submits a new one', async () => {
   await expect.poll(async () => (await certificateRow(certificateId))?.status).toBe('withdrawn')
 
   await page.goto('/certificates')
-  await page.getByRole('link', { name: 'Request certificate' }).click()
+  const request = page.getByRole('link', { name: 'Request certificate' })
+  await hydrated(request)
+  await request.click()
   await expect(page).toHaveURL(/\/certificates\/new/u)
   await completeWizard(page)
   certificateId = certificateIdFromUrl(page)
@@ -84,7 +92,9 @@ test('tutor sees the request in the queue and starts the review', async () => {
   await expect(row).toBeVisible()
   await expect(row.getByText('Submitted', { exact: true })).toBeVisible()
   await expect(row.getByText('Today')).toBeVisible()
-  await row.getByRole('link', { name: 'Review' }).click()
+  const review = row.getByRole('link', { name: 'Review' })
+  await hydrated(review)
+  await review.click()
   await expect(page).toHaveURL(new RegExp(`/certificates/${certificateId}/review$`, 'u'))
   await page.getByRole('button', { name: 'Start review' }).click()
   await expect(page.getByText('Review started.')).toBeVisible()

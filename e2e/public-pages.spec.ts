@@ -18,7 +18,9 @@ test.describe('anonymous visitor', () => {
   test('links the legal pages from the login screen', async ({ page }) => {
     await page.goto('/login')
     await expect(page.getByRole('link', { name: 'Privacy policy' })).toBeVisible()
-    await page.getByRole('link', { name: 'Terms of use' }).click()
+    const terms = page.getByRole('link', { name: 'Terms of use' })
+    await hydrated(terms)
+    await terms.click()
     await expect(page).toHaveURL(/\/terms$/u)
     await expect(page.getByTestId('legal-title')).toBeVisible()
   })

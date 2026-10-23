@@ -140,6 +140,8 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 - `safeQuery()` wraps a query in try/catch and returns `{ data, error: null }` or `{ data: null, error: { code, message } }`.
 - `queryError()` normalizes unknown errors into that `{ code, message }` shape.
+- Database errors (`DrizzleQueryError` and raw Postgres errors) are classified by SQLSTATE: `23505` is `CONFLICT`, other `23xxx` is `CONSTRAINT_VIOLATION`, `42501` is `UNAUTHORIZED`, `57014` is `TIMEOUT`, `08xxx`, `53300`, and `57Pxx` are `CONNECTION_ERROR`, the rest is `QUERY_ERROR`.
+- They return a fixed message per code and log the SQLSTATE, constraint, table, driver message, and statement (never the bound values) with `console.error('[db] query failed')`. Errors the app throws itself keep their message.
 - Server actions return `{ data, error }` or `{ error }`, and callers MUST check.
 - Mutations that fail throw. Queries that fail return error objects.
 - The global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, and refresh.

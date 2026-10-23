@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { revalidateTag } from 'next/cache'
 import { after } from 'next/server'
 
 import { betterAuth } from 'better-auth'
@@ -18,6 +19,7 @@ import { sessions } from '@/db/schema/sessions'
 import { teamInvitations } from '@/db/schema/teams'
 import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
+import { userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { impersonationGuard } from '@/lib/impersonation-guard'
@@ -29,6 +31,16 @@ const afterResponse = async (task: () => Promise<void>) => {
     after(task)
   } catch {
     await task()
+  }
+}
+
+const expireUserCache = (user: unknown) => {
+  const id = typeof user === 'object' && user !== null && 'id' in user ? user.id : null
+  if (typeof id !== 'string') return
+  try {
+    revalidateTag(userTag(id), { expire: 0 })
+  } catch (e) {
+    console.warn('[auth] could not expire the cached user', e instanceof Error ? e.message : e)
   }
 }
 
@@ -121,6 +133,13 @@ export const auth = betterAuth({
           console.error('[auth] failed to send recovery email', e instanceof Error ? e.message : e)
         }
       })
+    },
+  },
+  databaseHooks: {
+    user: {
+      update: {
+        after: user => Promise.resolve(expireUserCache(user)),
+      },
     },
   },
   user: {

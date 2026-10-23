@@ -149,6 +149,20 @@ describe.skipIf(!isLocalDatabase)('login by email or username', () => {
     expect(cookieJar.has('NEXT_LOCALE')).toBe(false)
   })
 
+  it('returns to the page the visitor came from', async () => {
+    await expect(
+      context.actions.login({ next: '/certificates/16911/review?tab=a', password: 'Password1!', username: email })
+    ).rejects.toThrow('REDIRECT:/certificates/16911/review?tab=a')
+  })
+
+  it('ignores a return address that leaves the site or points at the sign-in', async () => {
+    for (const next of ['//evil.example', 'https://evil.example', '/login', '/api/auth/sign-out', '/\\evil.example']) {
+      await expect(context.actions.login({ next, password: 'Password1!', username: email })).rejects.toThrow(
+        'REDIRECT:/dashboard'
+      )
+    }
+  })
+
   it('leaves hashing to the sign-in for a known user', async () => {
     await expect(context.actions.login({ password: 'Password1!', username: email })).rejects.toThrow(
       'REDIRECT:/dashboard'

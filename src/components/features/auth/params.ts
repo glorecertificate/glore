@@ -4,5 +4,6 @@ export const authParsers = {
   error: parseAsString,
   expired: parseAsBoolean.withDefault(false),
   loggedOut: parseAsBoolean.withDefault(false),
+  next: parseAsString,
   token: parseAsString,
 }

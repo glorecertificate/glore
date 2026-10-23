@@ -71,6 +71,8 @@ Dashboard layout with an extra gate:
 
 1. `auth.api.getSession()` validates the session from signed HTTP-only cookies.
 2. An unauthenticated or banned user redirects to `/login`, with `?expired=true` when a session cookie was present.
+   - A guest who loads a page with GET also gets `?next=<path and query>` so sign-in returns there. Banned users, non-GET requests, `/`, and `/dashboard` get none.
+   - `safeNextPath` (`src/lib/next-path.ts`) is the only reader of `next`. It accepts one same-site path starting with a single `/`, normalizes dot segments, and answers null for other origins, `//`, backslashes, control characters, `/login`, `/register`, and `/api`. `login` redirects to the result or `/dashboard`.
 3. An authenticated user with a null `onboardedAt` redirects to `/onboarding`.
 4. An onboarded user on `/onboarding` redirects to `/dashboard`.
 5. An authenticated user on `/login` redirects to `/dashboard`.

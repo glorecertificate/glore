@@ -16,6 +16,7 @@ import {
   VERIFY_ROOT,
 } from '@/lib/constants'
 import { prefixCookieName } from '@/lib/cookies'
+import { safeNextPath } from '@/lib/next-path'
 
 export const config: ProxyConfig = {
   matcher: [
@@ -34,11 +35,19 @@ const isPublicPath = (pathname: string) =>
   pathname.startsWith(`${VERIFY_ROOT}/`) ||
   (!DASHBOARD_ROOTS.some(root => pathname.startsWith(root)) && /^\/[a-zA-Z0-9.]+$/u.test(pathname))
 
-const expireSession = (request: Request) => {
+const returnPath = (request: NextRequest) => {
+  if (request.method !== 'GET') return null
+  const next = safeNextPath(`${request.nextUrl.pathname}${request.nextUrl.search}`)
+  return next === '/' || next === APP_ROOT ? null : next
+}
+
+const expireSession = (request: NextRequest, { returnTo = false }: { returnTo?: boolean } = {}) => {
   const url = new URL(AUTH_ROOT, request.url)
   if (request.headers.get('cookie')?.includes('session_token')) {
     url.searchParams.set('expired', 'true')
   }
+  const next = returnTo ? returnPath(request) : null
+  if (next) url.searchParams.set('next', next)
   return NextResponse.redirect(url)
 }
 
@@ -62,7 +71,7 @@ export const proxy: NextProxy = async request => {
   try {
     const session = await auth.api.getSession({ headers })
 
-    if (!session?.user) return isPublic ? response : expireSession(request)
+    if (!session?.user) return isPublic ? response : expireSession(request, { returnTo: true })
     if (session.user.banned) return expireSession(request)
     if (nextUrl.pathname === AUTH_ROOT) return NextResponse.redirect(new URL(APP_ROOT, request.url))
     if (!(session.user.onboardedAt || isOnboarding)) return NextResponse.redirect(new URL(ONBOARDING_ROOT, request.url))
@@ -71,6 +80,6 @@ export const proxy: NextProxy = async request => {
     return restoreCourseListParams(request) ?? response
   } catch {
     if (isPublic) return response
-    return expireSession(request)
+    return expireSession(request, { returnTo: true })
   }
 }

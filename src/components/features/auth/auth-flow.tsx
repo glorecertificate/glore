@@ -101,6 +101,7 @@ const AuthHeader = ({
 const AuthContent = ({
   errored,
   loggedOut,
+  next,
   resetToken,
   username,
   view,
@@ -110,6 +111,7 @@ const AuthContent = ({
 }: {
   errored: boolean
   loggedOut: boolean
+  next: string | null
   resetToken: string | null
   username?: string
   view: Enum<AuthView>
@@ -125,6 +127,7 @@ const AuthContent = ({
         <LoginForm
           errored={errored}
           loggedOut={loggedOut}
+          next={next}
           setErrored={setErrored}
           setUsername={setUsername}
           setView={setView}
@@ -263,7 +266,7 @@ export const AuthFlow = ({
 
   useLayoutEffect(() => {
     const expired = params.expired
-    setParams(null)
+    setParams({ error: null, expired: null, loggedOut: null, token: null })
     if (!expired) return
     toast.error(t('sessionExpired'))
   }, [params, setParams, t])
@@ -316,6 +319,7 @@ export const AuthFlow = ({
                     <AuthContent
                       errored={errored}
                       loggedOut={params.loggedOut}
+                      next={params.next}
                       resetToken={params.token}
                       setErrored={setErrored}
                       setUsername={setUsername}

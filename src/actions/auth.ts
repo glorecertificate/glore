@@ -2,6 +2,7 @@
 
 import 'server-only'
 
+import { type Route } from 'next'
 import { headers } from 'next/headers'
 import { redirect, unstable_rethrow } from 'next/navigation'
 import { connection } from 'next/server'
@@ -18,6 +19,7 @@ import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
+import { safeNextPath } from '@/lib/next-path'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 
 const AUTH_RATE_LIMIT_WINDOW = 15 * 60 * 1000
@@ -76,7 +78,15 @@ const signIn = async (email: string, password: string) => {
   }
 }
 
-export const login = async ({ password, username }: { password: string; username: string }) => {
+export const login = async ({
+  next,
+  password,
+  username,
+}: {
+  next?: string | null
+  password: string
+  username: string
+}) => {
   if (await isAuthRateLimited('login', username, 10)) {
     return { error: { code: 'RATE_LIMITED', message: 'Too many attempts' } }
   }
@@ -91,7 +101,7 @@ export const login = async ({ password, username }: { password: string; username
   if (!user) return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
 
   await applyUserLocale(user.locale)
-  redirect(APP_ROOT)
+  redirect((safeNextPath(next) ?? APP_ROOT) as Route)
 }
 
 export const logout = async () => {

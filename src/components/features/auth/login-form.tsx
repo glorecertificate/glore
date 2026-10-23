@@ -21,6 +21,7 @@ import { cn, isValidUsername } from '@/lib/utils'
 export const LoginForm = ({
   errored,
   loggedOut,
+  next,
   setErrored,
   setUsername,
   setView,
@@ -28,6 +29,7 @@ export const LoginForm = ({
 }: {
   errored: boolean
   loggedOut?: boolean
+  next?: string | null
   setErrored: (errored: boolean) => void
   setUsername: (username?: string) => void
   setView: (view: AuthView) => void
@@ -87,7 +89,7 @@ export const LoginForm = ({
       return
     }
 
-    const { error } = await login({ password, username: schema.username.trim() })
+    const { error } = await login({ next, password, username: schema.username.trim() })
     setLoading(false)
 
     if (error.code === 'AUTH_ERROR') {

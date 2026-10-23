@@ -2192,6 +2192,7 @@
     "leftOrganization": "Hai lasciato l'organizzazione",
     "leaveTitle": "Esci dall'organizzazione",
     "leaveDescription": "Perderai l'accesso a {name}. I tuoi certificati restano tuoi.",
+    "leaveTutorNote": "Le revisioni assegnate a te verranno disassegnate e restituite agli altri tutor.",
     "leaving": "Uscita in corso…",
     "leaveOrganization": "Esci dall'organizzazione",
     "removeMemberNamed": "{name} perderà l'accesso all'organizzazione. Il suo account e i suoi certificati verranno mantenuti.",

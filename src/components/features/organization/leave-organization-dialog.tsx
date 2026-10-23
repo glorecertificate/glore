@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { leaveOrganization } from '@/actions/organizations/members'
+import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,8 +35,10 @@ export const LeaveOrganizationDialog = ({
   organizationName: string
 }) => {
   const t = useTranslations('Organization')
+  const { user } = useSession()
   const memberError = useMemberError()
   const [leaving, setLeaving] = useState(false)
+  const isTutor = user.organizations.some(({ id, role }) => id === organizationId && role === 'tutor')
 
   const handleLeave = async () => {
     setLeaving(true)
@@ -61,6 +64,7 @@ export const LeaveOrganizationDialog = ({
         <AlertDialogHeader>
           <AlertDialogTitle>{t('leaveTitle')}</AlertDialogTitle>
           <AlertDialogDescription>{t('leaveDescription', { name: organizationName })}</AlertDialogDescription>
+          {isTutor && <p className="text-sm text-muted-foreground">{t('leaveTutorNote')}</p>}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={leaving}>{t('cancel')}</AlertDialogCancel>

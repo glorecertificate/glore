@@ -2192,6 +2192,7 @@
     "leftOrganization": "You left the organization",
     "leaveTitle": "Leave organization",
     "leaveDescription": "You will lose access to {name}. Your own certificates stay yours.",
+    "leaveTutorNote": "Reviews assigned to you will be unassigned and returned to the other tutors.",
     "leaving": "Leaving…",
     "leaveOrganization": "Leave organization",
     "removeMemberNamed": "{name} will lose access to the organization. Their account and certificates are kept.",

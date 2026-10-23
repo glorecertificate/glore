@@ -51,7 +51,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Role changes, removals, leaving, and ownership transfers live in `db/mutations/organization.ts` and return `memberError` codes.
 - Only the owner changes roles, and never to or from `admin`. The owner role moves through an ownership transfer.
 - Managers remove members. A representative removes only learners, tutors, and volunteers.
-- Nobody removes themselves. A member leaves through `leaveOrganization`, which also moves the active org cookie.
+- Nobody removes themselves. A member leaves through `leaveOrganization`, which also moves the active org cookie. A tutor who leaves or is removed has their open reviews unassigned, and the leave dialog says so.
 
 ### Ownership transfer
 

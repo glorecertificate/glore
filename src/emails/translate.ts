@@ -1,5 +1,6 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 
+import { TIME_ZONE } from '@/lib/i18n'
 import defaultMessages from '~/messages/en.json'
 
 type EmailValues = Record<string, Date | number | string>
@@ -24,5 +25,5 @@ export const emailTranslator = (
     locale: locale as Locale,
     messages: messages as unknown as typeof defaultMessages,
     namespace: namespace as never,
-    timeZone: 'Europe/Rome',
+    timeZone: TIME_ZONE,
   }) as unknown as EmailTranslator

@@ -9,6 +9,7 @@ import {
   DEFAULT_LOCALE,
   type IntlRecord,
   LOCALE_ITEMS,
+  TIME_ZONE,
   TITLEIZED_LOCALES,
   clientMessages,
   localizeRecord,
@@ -26,7 +27,7 @@ const useI18nContext = (value: I18nContextValue) => {
     value.messages ? { [localeState]: value.messages } : {}
   )
   const messages = messageStore[localeState]
-  const timeZone = value.timeZone ?? Intl.DateTimeFormat(localeState).resolvedOptions().timeZone
+  const timeZone = value.timeZone ?? TIME_ZONE
 
   const localeItems = LOCALE_ITEMS.map(item => {
     const label = messageStore[localeState]?.Intl.Languages?.[item.value] ?? item.label

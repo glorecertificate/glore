@@ -38,6 +38,7 @@ export type MessageKey<T extends Namespace> = T extends Namespace
 export type IntlRecord<T = string> = Record<Locale, T>
 
 export const LOCALE_COOKIE = 'NEXT_LOCALE'
+export const TIME_ZONE = 'Europe/Rome'
 export const DEFAULT_LOCALE = defaultLocale as Locale
 export const LOCALES = Object.keys(locales) as Locale[]
 export const LOCALE_ITEMS = Object.entries(locales).map(([locale, item]) => ({ ...item, value: locale as Locale }))

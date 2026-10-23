@@ -7,7 +7,7 @@ import { type Page, expect, test } from '@playwright/test'
 import { seedEmail } from '~/scripts/seed-data'
 
 import { clearMessageOverride, setMessageOverride } from './db'
-import { authFile, hydrated } from './helpers'
+import { authFile, hydrated, localAuthState } from './helpers'
 import { clearMail, isMailpitUp, latestMailSubject } from './mail'
 
 const GREETING_KEY = 'Dashboard.greeting'
@@ -64,7 +64,7 @@ test.describe('published overrides on a production build @prod', () => {
   })
 
   test('interpolates the placeholders of a compiled override', async ({ browser }) => {
-    const context = await browser.newContext({ baseURL: BASE_URL, storageState: authFile('volunteer') })
+    const context = await browser.newContext({ baseURL: BASE_URL, storageState: await localAuthState('volunteer') })
     const page = await context.newPage()
     await page.goto('/dashboard')
     await expect(page.getByRole('heading', { name: 'Hi again, Valentina!' })).toBeVisible()
@@ -73,7 +73,7 @@ test.describe('published overrides on a production build @prod', () => {
   })
 
   test('renders the overridden email subject', async ({ browser }) => {
-    const context = await browser.newContext({ baseURL: BASE_URL, storageState: authFile('admin') })
+    const context = await browser.newContext({ baseURL: BASE_URL, storageState: await localAuthState('admin') })
     const page = await context.newPage()
     await page.goto('/emails?template=auth/recovery')
     await expect(page.getByText('Subject: Reset your GloRe password now', { exact: true })).toBeVisible()
@@ -88,7 +88,7 @@ test.describe('published overrides on a production build @prod', () => {
       stdio: 'ignore',
     })
     await waitForServer(server)
-    const context = await browser.newContext({ baseURL: BASE_URL, storageState: authFile('volunteer') })
+    const context = await browser.newContext({ baseURL: BASE_URL, storageState: await localAuthState('volunteer') })
     const page = await context.newPage()
     await page.goto('/dashboard')
     await expect(page.getByRole('heading', { name: 'Welcome back, Valentina' })).toBeVisible()

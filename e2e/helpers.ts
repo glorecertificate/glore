@@ -1,4 +1,6 @@
-import { type Locator, type Page, expect } from '@playwright/test'
+import { readFile } from 'node:fs/promises'
+
+import { type BrowserContextOptions, type Locator, type Page, expect } from '@playwright/test'
 
 import { SEED_PASSWORD, seedEmail } from '~/scripts/seed-data'
 
@@ -7,6 +9,13 @@ export const AUTH_ROLES = ['admin', 'editor', 'learner', 'owner', 'representativ
 export type AuthRole = (typeof AUTH_ROLES)[number]
 
 export const authFile = (role: AuthRole) => `.playwright/.auth/${role}.json`
+
+type StorageState = Exclude<BrowserContextOptions['storageState'], string | undefined>
+
+export const localAuthState = async (role: AuthRole) => {
+  const state = JSON.parse(await readFile(authFile(role), 'utf8')) as StorageState
+  return { ...state, cookies: state.cookies.map(cookie => ({ ...cookie, domain: 'localhost' })) }
+}
 
 export const loginWithEmail = async (page: Page, email: string) => {
   await page.goto('/login')

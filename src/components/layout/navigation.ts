@@ -229,6 +229,8 @@ export const entriesFor = (viewer: NavigationViewer, group?: NavigationGroup) =>
 export const sidebarEntriesFor = (viewer: NavigationViewer) =>
   NAVIGATION.filter(entry => entry.sidebar && entry.visible(viewer))
 
+export const adminSectionHref = (viewer: NavigationViewer) => entriesFor(viewer, 'admin')[0]?.href ?? null
+
 export const showsOrganizationSwitcher = ({ canEdit }: Pick<NavigationViewer, 'canEdit'>) => !canEdit
 
 export const matchesEntry = (label: string, query: string) => {

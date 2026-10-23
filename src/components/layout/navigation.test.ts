@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   type NavigationId,
   type NavigationViewer,
+  adminSectionHref,
   entriesFor,
   matchesEntry,
   showsOrganizationSwitcher,
@@ -87,6 +88,20 @@ describe('palette entries', () => {
     expect(ids(viewer({ role: 'tutor' }), 'actions')).toEqual(['register-organization'])
     expect(ids(viewer({ role: 'representative' }), 'actions')).toEqual(['invite-members', 'register-organization'])
     expect(ids(viewer({ canEdit: true, role: null }), 'actions')).toEqual(['skills-framework'])
+  })
+})
+
+describe('adminSectionHref', () => {
+  it('points platform admins at the admin overview', () => {
+    expect(adminSectionHref(viewer({ canEdit: true, isAdmin: true, role: null }))).toBe('/admin')
+  })
+
+  it('points editors at the only page they can open', () => {
+    expect(adminSectionHref(viewer({ canEdit: true, role: null }))).toBe('/emails')
+  })
+
+  it('is null without admin entries', () => {
+    expect(adminSectionHref(viewer({ role: 'admin' }))).toBeNull()
   })
 })
 

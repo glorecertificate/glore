@@ -14,6 +14,7 @@ import { DashboardIcon } from '@/components/icons/dashboard'
 import { LucideIcon } from '@/components/icons/lucide'
 import {
   type NavigationViewer,
+  adminSectionHref,
   entriesFor,
   showsOrganizationSwitcher,
   sidebarEntriesFor,
@@ -212,6 +213,7 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
   const t = useTranslations('Layout')
   const viewer: NavigationViewer = { canEdit: user.canEdit, isAdmin: user.isAdmin, role: user.role }
   const adminEntries = entriesFor(viewer, 'admin')
+  const adminHref = adminSectionHref(viewer)
 
   return (
     <SidebarGroup>
@@ -224,12 +226,12 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
           <DashboardSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
           <DashboardSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
         </DashboardSidebarCollapsible> */}
-        {adminEntries.length > 0 && (
+        {adminHref && (
           <DashboardSidebarCollapsible
             badge={pending.organizations + pending.team}
             icon="cog"
             label={t('admin')}
-            route="/admin"
+            route={adminHref}
           >
             {adminEntries.map(({ href, id }) => (
               <DashboardSidebarItem

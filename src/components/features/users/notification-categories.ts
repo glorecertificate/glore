@@ -2,5 +2,9 @@ const NOTIFICATION_CATEGORIES = ['learning', 'organization', 'reminders'] as con
 
 export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number]
 
-export const notificationCategoriesFor = (hasOrganizations: boolean) =>
-  NOTIFICATION_CATEGORIES.filter(category => hasOrganizations || category !== 'organization')
+const ORGANIZATION_MANAGER_ROLES: readonly string[] = ['admin', 'representative']
+
+export const notificationCategoriesFor = (roles: readonly string[]) => {
+  const managesOrganization = roles.some(role => ORGANIZATION_MANAGER_ROLES.includes(role))
+  return NOTIFICATION_CATEGORIES.filter(category => managesOrganization || category !== 'organization')
+}

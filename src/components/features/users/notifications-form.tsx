@@ -38,7 +38,7 @@ export const NotificationsForm = () => {
   return (
     <SettingsSection description={t('notificationsDescription')} title={t('notificationsEmail')}>
       <ul className="divide-y rounded-lg border px-4">
-        {notificationCategoriesFor(user.organizations.length > 0).map(category => (
+        {notificationCategoriesFor(user.organizations.map(({ role }) => role)).map(category => (
           <li className="flex items-start justify-between gap-4 py-4" key={category}>
             <div className="space-y-1">
               <Label htmlFor={`notifications-${category}`}>{t(`notificationsCategory_${category}`)}</Label>

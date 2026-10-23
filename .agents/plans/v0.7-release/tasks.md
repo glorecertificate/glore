@@ -5,8 +5,8 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 ## Status
 
 - State: in progress, the user gave the go on 2026-10-22.
-- Current wave: W3 (verification and release readiness). W0 to W2 are integrated, and the history is linear (no merge commits).
-- Next up: W4 translations and team content (`translations.md`, U18 to U21), then the G8 handoff in `runbook.md`. Production steps stay with the user.
+- Current wave: G8 handoff. W0 to W4 are integrated, and the history is linear (no merge commits).
+- Next up: the user runs `runbook.md`. Production steps stay with the user.
 - Branch: local `release/v0.7` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
@@ -22,7 +22,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 ### Release and decisions
 
-- G8 runbook: production has no database comment, lacks migrations 0013 to 0025 (includes 0023 `anonymize_deleted_holders`, 0024 `impersonated_by`, and 0025 default certificate dedupe), and holds 0 certificates.
+- G8 runbook: production has no database comment, lacks migrations 0013 to 0032 (includes 0023 `anonymize_deleted_holders`, 0024 `impersonated_by`, 0025 default certificate dedupe, and the W4 tables), and holds 0 certificates.
 - Migration 0025 adds the `activity_events` indexes `(created_at, id)` and `(organization_id, id)` for `/admin/audit`.
 - qa1 browser check not covered: the "Get started" card (the seed checklist is complete) and the pending badge after an approval.
 - `/admin/organizations` lists 4 pending fixtures that the overview counts as 0 and whose detail pages 404. The G1 reseed clears them.
@@ -194,9 +194,10 @@ Content rules: plain, warm language for young adults, examples from volunteering
   - SRI covers only the build-manifest scripts (7 of 28); Turbopack does not hash the other chunks (`routes.md`).
   - Done: invitation tokens are stored as a SHA-256 hash plus an AES-GCM seal (migrations 0026 to 0028).
 - G7 [x] 7be8543d: docs sync of `AGENTS.md`, `README.md`, `app.md`, `reference.md`, `patterns.md`, `architecture.md`, `manual-testing.md`. Accept: docs match code.
-  - Done per change: token hashing, CSP, form hooks, linear history, and the v0.7 rename. A full `/sync-docs` and `/sync-agents --check` pass has not run since lanes I and K.
+  - Done per change: token hashing, CSP, form hooks, linear history, and the v0.7 rename. A full `/sync-docs` and `/sync-agents --check` pass ran after W4 (9cdc4331).
   - Decision: `certificates.handle` stays, because the legacy `?v={handle}` redirect and the R2 PDF key read it.
-- G8 [ ]: handoff with the commit list, staging push on request, production steps (backup, migrate, catalog as drafts, env, deploy), and known gaps. Accept: the user has a numbered runbook.
+- G8 [x]: handoff with the commit list, staging push on request, production steps (backup, migrate, catalog as drafts, env, deploy), and known gaps. Accept: the user has a numbered runbook.
+  - Verified on 2026-10-23: `pnpm run check`, 1322 unit tests (3 runs), 192 e2e tests including `@prod`, and browser checks of `/legal`, `/legal/accept`, `/admin/settings`, `/translations`, and the course translation popover at 1440 and 390, light and dark, es and it.
 
 ### Product owner and fix lanes
 

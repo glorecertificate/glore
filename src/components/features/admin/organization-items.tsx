@@ -158,7 +158,7 @@ export const ApproveDialog = ({
   open,
   org,
 }: {
-  org: AdminOrganization | null
+  org: Pick<AdminOrganization, 'name'> | null
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirm: (comment?: string) => Promise<boolean>
@@ -227,7 +227,7 @@ export const RejectDialog = ({
   open,
   org,
 }: {
-  org: AdminOrganization | null
+  org: Pick<AdminOrganization, 'name'> | null
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirm: (comment?: string) => Promise<boolean>

@@ -210,6 +210,7 @@ import {
   WalletIcon,
   WavesIcon,
   WrenchIcon,
+  XIcon,
   ZapIcon,
 } from 'lucide-react'
 
@@ -424,6 +425,7 @@ export const ICONS = {
   wallet: WalletIcon,
   waves: WavesIcon,
   wrench: WrenchIcon,
+  x: XIcon,
   zap: ZapIcon,
 } satisfies Record<string, LucideIconComponent>
 

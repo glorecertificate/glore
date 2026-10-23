@@ -10,7 +10,15 @@ import { type Organization } from '@/db/queries/organization'
 import { type MessageKey } from '@/lib/i18n'
 import { isHttpUrl } from '@/lib/url'
 
-export const OrganizationHeader = ({ organization }: { organization: Organization }) => {
+import { OrganizationReviewActions } from './organization-review-actions'
+
+export const OrganizationHeader = ({
+  onReviewed,
+  organization,
+}: {
+  onReviewed: () => void
+  organization: Organization
+}) => {
   const { dateTime } = useFormatter()
   const t = useTranslations('Admin.organizations')
   const tCountries = useTranslations('Intl.Countries')
@@ -29,6 +37,7 @@ export const OrganizationHeader = ({ organization }: { organization: Organizatio
     organization.joinRequests.some(request => request.role === 'admin' && request.isRejected)
   const statusLabel = organization.approvedAt ? 'filter_active' : isRejected ? 'statusRejected' : 'statusPending'
   const statusVariant = organization.approvedAt ? 'success' : isRejected ? 'destructive' : 'warning'
+  const isPending = !(organization.approvedAt || isRejected)
 
   return (
     <div className="overflow-hidden rounded-xl border bg-card">
@@ -76,6 +85,9 @@ export const OrganizationHeader = ({ organization }: { organization: Organizatio
             </span>
           </div>
         </div>
+        {isPending && (
+          <OrganizationReviewActions id={organization.id} name={organization.name} onReviewed={onReviewed} />
+        )}
       </div>
     </div>
   )

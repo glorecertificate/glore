@@ -61,7 +61,7 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
 
   return (
     <div className="space-y-6 pb-12">
-      <OrganizationHeader organization={initialData} />
+      <OrganizationHeader onReviewed={refresh} organization={initialData} />
       <Tabs onValueChange={value => setTab(value as AdminOrganizationTab)} value={tab}>
         <TabsList className="max-w-full overflow-x-auto">
           {hasApplication && <TabsTrigger value="application">{tAdmin('app_tab')}</TabsTrigger>}

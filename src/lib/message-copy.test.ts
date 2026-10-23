@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import { type Locale, createTranslator } from 'next-intl'
 import { describe, expect, it } from 'vitest'
 
@@ -89,6 +91,24 @@ describe('Spanish and Italian count agreement', () => {
     expect(t('es', 'Courses.enrolledStudents', { count: 2 })).toBe('2 inscritos')
     expect(t('it', 'Courses.enrolledStudents', { count: 1 })).toBe('1 iscritto')
     expect(t('it', 'Courses.enrolledStudents', { count: 2 })).toBe('2 iscritti')
+  })
+})
+
+describe('Italian euphonic conjunction', () => {
+  it('uses "ed" before words that start with e in catalogs and skill groups', () => {
+    const texts = [JSON.stringify(itMessages), readFileSync('content/skill-groups.json', 'utf8')]
+    for (const text of texts) {
+      expect(text.match(/ e (?=[eèé][a-zàèéìòù]*)/gu)).toBeNull()
+    }
+  })
+})
+
+describe('Italian notification labels', () => {
+  it('uses "non letta" and "non lette" instead of "da leggere"', () => {
+    expect(t('it', 'Notifications.unread')).toBe('Non letta')
+    expect(t('it', 'Notifications.filter_unread')).toBe('Non lette')
+    expect(t('it', 'Notifications.bellUnread', { count: 1 })).toBe('Notifiche, 1 non letta')
+    expect(t('it', 'Notifications.bellUnread', { count: 3 })).toBe('Notifiche, 3 non lette')
   })
 })
 

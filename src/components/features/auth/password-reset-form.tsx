@@ -12,7 +12,7 @@ import { logout, updatePassword } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
-import { useFormDisabled } from '@/hooks/use-form-disabled'
+import { useFormDisabled, useFormErrored } from '@/hooks/use-form-disabled'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { AuthView } from '@/lib/types'
 
@@ -48,7 +48,7 @@ export const PasswordResetForm = ({
   })
 
   const disabled = useFormDisabled(form.control)
-  const errored = Object.keys(form.formState.errors).length > 0
+  const errored = useFormErrored(form.control)
   const prevErrored = useRef(errored)
 
   if (prevErrored.current !== errored) {

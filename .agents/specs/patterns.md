@@ -190,7 +190,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 ## Forms
 
 - Use react-hook-form with `@hookform/resolvers` and zod.
-- Disable the submit button with `useFormDisabled(form.control)`.
+- Disable the submit button with `useFormDisabled(form.control)`, and read the error state with `useFormErrored(form.control)`. Both opt out of the compiler with `'use no memo'`, because RHF mutates `errors` in place.
 - Never pass `form` to a helper that reads its state in render: the build-only React Compiler memoizes the call and freezes the value.
 - Call the server action from `onSubmit` and surface the result with sonner (`toast.success`, `toast.error`).
 

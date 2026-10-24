@@ -101,7 +101,7 @@ Comment out the `DATABASE_URL` line in `.env.local`. Next.js will then fall thro
 
 The app is hosted on [Vercel](https://vercel.com):
 
-- The [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) deploys a preview on every push and pull request to `main`, once the checks and e2e tests pass. Vercel's own Git deployments are disabled for `main`
+- The [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) deploys a preview on every push and pull request to `main`, once the checks and e2e tests pass. Vercel's own Git deployments are disabled, so each commit deploys once
 - The preview of `main` is served at [preview.glorecertificate.xyz](https://preview.glorecertificate.xyz), and production at the `url` in `config/metadata.json`
 - The [Release workflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml) deploys to production when a `v*` tag is pushed
 

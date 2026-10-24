@@ -85,14 +85,12 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 ## Git history
 
-- History is linear. Never create a merge commit: no `git merge` without `--ff-only`, no merging `main` into a branch, no GitHub merge button.
-- Update a branch with `git rebase main`. GitHub allows only "Rebase and merge", so each PR commit lands on `main` as is.
-- Avoid new commits. A PR holds only the essential commits that compose its result, never an implementation timeline.
-- Fold each fix, adjustment, and review follow-up into the commit that it changes: `git commit --fixup=<sha>`, then `git rebase -i --autosquash main`.
-- Make a new commit only for a change that must stay apart. Push a rewrite of your own PR branch with `git push --force-with-lease`.
-- Branch protection on `main` does not require linear history, because the maintainer may force-push `main`. Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits instead.
-- The CI "Linear history" job also rejects `fixup!`, `squash!`, and `amend!` commits, so a PR merges only after the autosquash.
-- To clean up history that already holds merges, rebuild it on `main` and squash each merged branch whose commits no longer replay cleanly. Never push that rewrite without the user's approval.
+- History on `main` is linear. PRs merge by squash through the merge queue, so each PR lands as one commit.
+- The PR title becomes the commit header, so it MUST be a Conventional Commit header. The `Title` check runs commitlint on it.
+- One PR holds one logical task, because it lands as one commit. Split unrelated work into separate PRs.
+- Push each fix and review follow-up as a new commit. The squash removes them, so never rewrite a pushed PR branch.
+- Never create a merge commit on a branch: no `git merge` without `--ff-only`, and no merge of `main` into a branch. Update a branch with `git rebase main`.
+- Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits. The ruleset blocks force-pushes to `main`.
 
 ## Dependencies
 

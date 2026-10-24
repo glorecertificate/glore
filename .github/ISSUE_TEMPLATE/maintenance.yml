@@ -1,8 +1,7 @@
 name: Maintenance
 description: Dependency updates, refactoring, or technical debt
 title: 'chore: '
-labels:
-  - maintenance
+type: Task
 body:
   - type: markdown
     attributes:

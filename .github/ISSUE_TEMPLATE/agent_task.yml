@@ -1,12 +1,11 @@
 name: Agent task
 description: A self-contained spec ready for a coding agent to implement
 title: 'feat: '
-labels:
-  - agent
+type: Task
 body:
   - type: markdown
     attributes:
-      value: 'Use this for work you intend to hand to a coding agent. Fill every required field so the issue is self-contained: the agent acts on it cold, with no memory of any prior conversation.'
+      value: 'Use this for work you intend to hand to a coding agent. Fill every required field so the issue is self-contained: the agent acts on it cold, with no memory of any prior conversation. To start the agent, set the issue Status to Ready, set Effort, and add the `agent` label.'
   - type: dropdown
     id: type
     attributes:

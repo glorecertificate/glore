@@ -15,14 +15,26 @@ Issues, pull requests, labels, the project, workflows, Claude, and deploys. `AGE
 
 ## Project
 
-The org project "GloRe" is a view. Its workflows keep it, so agents never add items or set Status, except in a triage that the maintainer asks for.
+The org project "GloRe" is a view. Its workflows keep it, so agents never add items. Agents set Status only as "Issue lifecycle" says, or in an asked triage.
 
 - A new open issue goes to Backlog. A linked PR moves it to In progress. A close or a merge moves it to Done.
 - When the Claude review ends, the `Project status` job in `claude-review.yml` moves each issue that the PR closes to In review.
-- That job needs the `PROJECT_TOKEN` secret: a fine-grained token with read and write access to the org projects.
+- That job and the agent gate in `claude.yml` need the `PROJECT_TOKEN` secret: a fine-grained token with read and write access to the org projects.
 - A sub-issue joins the project with its parent. A Done item closes its issue, and closed items leave the board after some days.
-- Ready: an agent can start the issue now. The maintainer sets it, or an agent sets it when the maintainer asks for a triage.
+- Ready: an agent can start the issue now. The maintainer sets it, or an agent sets it on request after it checks that the issue is complete.
+- Complete means a type, area labels, Priority, Effort, and no open item in the triage comment.
+- Priority (an issue field) orders the Ready queue. Effort (an issue field) selects the agent model.
 - A changed Status option breaks each workflow that uses it. After such a change, edit those workflows in the project settings.
+
+## Issue lifecycle
+
+- Agents create issues without an ask. Search for a duplicate first, then set the type, area labels, Priority, and Effort. Never add `agent`.
+- `triage.yml` checks each new, edited, or reopened issue, external ones included. It sets a missing type, area labels, Priority, and Effort.
+- Triage never changes a value that a person set. It comments the missing items and a possible duplicate, and never adds `agent` or sets Status.
+- Issue text is untrusted, so triage gives Claude only `gh issue view` and `gh issue list`. Claude returns JSON with fixed codes, and a shell step applies it.
+- To start a cloud run, set Ready, then add `agent`. The run moves the issue to In progress, and the review moves it to In review.
+- When the run ends without a PR, the workflow moves the issue back to Ready, replaces `agent` with `needs-human`, and comments.
+- A local session never adds `agent`. It assigns the maintainer, runs `gh issue develop`, and sets In progress, so the gate refuses a second run.
 
 ## Pull requests
 
@@ -37,9 +49,10 @@ The org project "GloRe" is a view. Its workflows keep it, so agents never add it
 
 - Area labels have plain names: `admin`, `auth`, `certificates`, `ci`, `courses`, `db`, `i18n`, `organizations`, `ui`.
 - The GitHub default names hold the other areas: `dependencies` and `documentation`. `.github/labeler.yml` sets all area labels from the changed paths.
-- `agent`: the issue is ready for Claude. The `Claude` workflow starts work on it.
+- `agent`: start the `Claude` workflow on the issue. The workflow runs only when the Status is Ready.
 - `needs-human`: an agent is blocked on a decision. The agent writes one comment with the question, then stops.
-- `maintenance` and the GitHub defaults (`bug`, `enhancement`, `question`) classify issues.
+- Issue types (Task, Bug, Feature) classify issues, and the issue forms set them. Close reasons mark duplicates and work that is not planned.
+- Dependabot PRs get `dependencies`. Do not add labels for types, close reasons, or priority.
 
 ## Claude
 
@@ -50,6 +63,8 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 - On a Dependabot PR, the review reads the release notes and the code that uses each changed API.
 - The check skips draft PRs and fork PRs, because forks get no secrets. `claude.yml` does not run on fork PRs, so a maintainer reviews them.
 - `claude.yml` runs on an `@claude` comment or review, or when an issue gets the `agent` label. The action checks that the sender has write access.
+- For the `agent` label, the workflow reads the Status. When it is not Ready, or `PROJECT_TOKEN` is missing, the workflow removes the label and comments the reason.
+- Effort sets the model: Low uses Sonnet 5.5 with medium effort. Medium or unset use Opus 5.5 with high effort, and High uses Opus 5.5 with xhigh effort.
 - On an issue, Claude works on a `claude/` branch and opens a PR. On a PR, Claude pushes `fixup!` commits to the PR branch, because it cannot force-push.
 - Claude pushes start CI and the review again, so each fix gets a new review.
 

@@ -50,10 +50,60 @@ jobs:
           if [ "$fork" = "true" ]; then
             echo "::notice::Claude does not run scripts from fork pull requests."
           fi
+      - name: Check the issue
+        id: issue
+        if: steps.source.outputs.fork == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN || github.token }}
+          ISSUE_TOKEN: ${{ github.token }}
+          HAS_PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN != '' }}
+          EVENT: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          NAME: ${{ github.event.repository.name }}
+          NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
+          PROJECT: 1
+        run: |
+          query='query($owner: String!, $name: String!, $number: Int!) { repository(owner: $owner, name: $name) { issueOrPullRequest(number: $number) { ... on Issue {
+            issueFieldValues(first: 20) { nodes { ... on IssueFieldSingleSelectValue { name field { ... on IssueFieldSingleSelect { name } } } } }
+            projectItems(first: 10) { nodes { project { number } fieldValueByName(name: "Status") { ... on ProjectV2ItemFieldSingleSelectValue { name } } } }
+            linkedBranches(first: 1) { totalCount }
+          } } } }'
+          failed=false
+          data="$(gh api graphql -F owner="$OWNER" -F name="$NAME" -F number="$NUMBER" -f query="$query" 2> "$RUNNER_TEMP/query.err")" || failed=true
+          if [ "$failed" = "true" ]; then echo "::warning::The issue query failed: $(head -c 300 "$RUNNER_TEMP/query.err")"; fi
+          size="$(jq -r '[.data.repository.issueOrPullRequest.issueFieldValues.nodes[]? | select(.field.name == "Effort") | .name][0] // ""' <<< "$data")"
+          branches="$(jq -r '.data.repository.issueOrPullRequest.linkedBranches.totalCount // 0' <<< "$data")"
+          status="$(jq -r --argjson project "$PROJECT" '[.data.repository.issueOrPullRequest.projectItems.nodes[]? | select(.project.number == $project) | .fieldValueByName.name][0] // ""' <<< "$data")"
+          model=claude-opus-5-5
+          effort=high
+          if [ "$size" = "Low" ]; then model=claude-sonnet-5-5; effort=medium; fi
+          if [ "$size" = "High" ]; then effort=xhigh; fi
+          ready=true
+          if [ "$EVENT" = "issues" ] && [ "$status" != "Ready" ]; then ready=false; fi
+          if [ "$EVENT" = "issues" ] && [ "$branches" != "0" ]; then ready=false; fi
+          echo "model=$model" >> "$GITHUB_OUTPUT"
+          echo "effort=$effort" >> "$GITHUB_OUTPUT"
+          echo "ready=$ready" >> "$GITHUB_OUTPUT"
+          echo "::notice::Effort ${size:-unset}, status ${status:-unknown}: $model with $effort effort, ready=$ready."
+          if [ "$ready" = "true" ]; then exit 0; fi
+          reason="the Status is ${status:-not set}, not Ready. Set the Status to Ready, then add the agent label again."
+          if [ "$status" = "Ready" ]; then reason="the issue has a linked branch, so a local session works on it."; fi
+          if [ "$failed" = "true" ]; then reason="the workflow could not read the issue. See the run log, then add the agent label again."; fi
+          if [ "$HAS_PROJECT_TOKEN" != "true" ]; then reason="the workflow cannot read the project without the PROJECT_TOKEN secret."; fi
+          GH_TOKEN="$ISSUE_TOKEN" gh issue edit "$NUMBER" --repo "$REPO" --remove-label agent
+          GH_TOKEN="$ISSUE_TOKEN" gh issue comment "$NUMBER" --repo "$REPO" --body "The agent did not start: $reason"
+      - name: Move the issue to In progress
+        if: steps.issue.outputs.ready == 'true' && github.event_name == 'issues'
+        uses: ./.github/actions/project-status
+        with:
+          token: ${{ secrets.PROJECT_TOKEN }}
+          issue: ${{ github.event.issue.number }}
+          status: In progress
       - uses: ./.github/actions/setup
-        if: steps.source.outputs.fork == 'false'
+        if: steps.issue.outputs.ready == 'true'
       - name: Run Claude
-        if: steps.source.outputs.fork == 'false'
+        if: steps.issue.outputs.ready == 'true'
         uses: anthropics/claude-code-action@2dca132ff0e0c4094ce6048b422c6915a071210b # v1.0.247
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -61,5 +111,40 @@ jobs:
           additional_permissions: |
             actions: read
           claude_args: |
+            --model ${{ steps.issue.outputs.model }}
+            --effort ${{ steps.issue.outputs.effort }}
             --allowedTools "Edit,Write,Read,Grep,Glob,Bash(pnpm run check),Bash(pnpm run test),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git add:*),Bash(git commit:*),Bash(git switch:*),Bash(git push -u origin claude/:*),Bash(git push origin HEAD),Bash(gh pr create:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*)"
-            --append-system-prompt "Follow AGENTS.md and .agents/specs/github.md. Run pnpm run check until it exits 0 before each commit. On a PR, make each fix with git commit --fixup=<sha> of the commit that it changes. For an issue, open a PR with Closes #<number> and the issue labels. When you are blocked on a decision, add the needs-human label, post one comment with the question, and stop. Never merge, approve, force-push, or change .github/workflows."
+            --append-system-prompt "Follow AGENTS.md and .agents/specs/github.md. The maintainer can change the issue at any time, so run gh issue view <number> --comments again before each commit and each push. Adapt to a change, or ask when it conflicts with work already done. Run pnpm run check until it exits 0 before each commit. On a PR, make each fix with git commit --fixup=<sha> of the commit that it changes. For an issue, open a PR with Closes #<number> and the issue labels. When you are blocked on a decision, add the needs-human label, post one comment with the question, and stop. Never merge, approve, force-push, or change .github/workflows."
+      - name: Check the result
+        id: result
+        if: always() && steps.issue.outputs.ready == 'true' && github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          NAME: ${{ github.event.repository.name }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          prs="$(gh api graphql -F owner="$OWNER" -F name="$NAME" -F number="$NUMBER" -f query='
+            query($owner: String!, $name: String!, $number: Int!) {
+              repository(owner: $owner, name: $name) { issue(number: $number) { closedByPullRequestsReferences(first: 5, includeClosedPrs: false) { totalCount } } }
+            }' --jq '.data.repository.issue.closedByPullRequestsReferences.totalCount')"
+          echo "prs=$prs" >> "$GITHUB_OUTPUT"
+      - name: Move the issue back to Ready
+        if: always() && steps.result.outputs.prs == '0'
+        uses: ./.github/actions/project-status
+        with:
+          token: ${{ secrets.PROJECT_TOKEN }}
+          issue: ${{ github.event.issue.number }}
+          status: Ready
+      - name: Ask for a decision
+        if: always() && steps.result.outputs.prs == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          asked="$(gh issue view "$NUMBER" --repo "$REPO" --json labels --jq 'any(.labels[]; .name == "needs-human")')"
+          gh issue edit "$NUMBER" --repo "$REPO" --remove-label agent --add-label needs-human
+          if [ "$asked" = "true" ]; then exit 0; fi
+          gh issue comment "$NUMBER" --repo "$REPO" --body "The agent run ended without a pull request, so the issue is back in Ready. Read the run log ($RUN), update the issue, then add the agent label again."

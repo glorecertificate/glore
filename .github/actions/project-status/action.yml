@@ -1,0 +1,60 @@
+name: Project status
+description: Set the Status of an issue on the org project. Skip with a notice when the token is empty.
+
+inputs:
+  token:
+    description: A token with read and write access to the org projects.
+    required: true
+  issue:
+    description: The issue number.
+    required: true
+  status:
+    description: The Status option name.
+    required: true
+  project:
+    description: The org project number.
+    required: false
+    default: '1'
+
+runs:
+  using: composite
+  steps:
+    - name: Set the status
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        OWNER: ${{ github.repository_owner }}
+        REPO: ${{ github.event.repository.name }}
+        ISSUE: ${{ inputs.issue }}
+        STATUS: ${{ inputs.status }}
+        PROJECT_NUMBER: ${{ inputs.project }}
+      run: |
+        if [ -z "$GH_TOKEN" ]; then
+          echo "::notice::Set the PROJECT_TOKEN secret to move issue #$ISSUE to $STATUS."
+          exit 0
+        fi
+        data="$(gh api graphql -F num="$PROJECT_NUMBER" -F issue="$ISSUE" -f org="$OWNER" -f repo="$REPO" -f query='
+          query($org: String!, $repo: String!, $num: Int!, $issue: Int!) {
+            organization(login: $org) {
+              projectV2(number: $num) {
+                id
+                field(name: "Status") { ... on ProjectV2SingleSelectField { id options { id name } } }
+              }
+            }
+            repository(owner: $org, name: $repo) {
+              issue(number: $issue) { projectItems(first: 10) { nodes { id project { number } } } }
+            }
+          }')"
+        project_id="$(jq -r '.data.organization.projectV2.id' <<< "$data")"
+        field_id="$(jq -r '.data.organization.projectV2.field.id' <<< "$data")"
+        option_id="$(jq -r --arg status "$STATUS" '.data.organization.projectV2.field.options[] | select(.name == $status) | .id' <<< "$data")"
+        item_id="$(jq -r --argjson num "$PROJECT_NUMBER" '[.data.repository.issue.projectItems.nodes[] | select(.project.number == $num) | .id][0] // ""' <<< "$data")"
+        if [ -z "$option_id" ] || [ -z "$item_id" ]; then
+          echo "::warning::Issue #$ISSUE has no item on project $PROJECT_NUMBER, or the project has no $STATUS option."
+          exit 0
+        fi
+        gh api graphql -f project="$project_id" -f item="$item_id" -f field="$field_id" -f option="$option_id" -f query='
+          mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+            updateProjectV2ItemFieldValue(input: { projectId: $project, itemId: $item, fieldId: $field, value: { singleSelectOptionId: $option } }) { clientMutationId }
+          }' > /dev/null
+        echo "Moved issue #$ISSUE to $STATUS." >> "$GITHUB_STEP_SUMMARY"

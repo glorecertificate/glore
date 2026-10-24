@@ -11,7 +11,7 @@ updates:
       semver-major-days: 7
     open-pull-requests-limit: 10
     labels:
-      - maintenance
+      - dependencies
     groups:
       deps:
         applies-to: version-updates
@@ -42,7 +42,7 @@ updates:
     cooldown:
       default-days: 2
     labels:
-      - maintenance
+      - dependencies
     groups:
       actions:
         patterns:

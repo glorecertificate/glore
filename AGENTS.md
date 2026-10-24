@@ -43,8 +43,8 @@ References live in `.agents/references/`: the certificate PDF template and the p
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first, and one logical task is one commit.
 - Commit headers are Conventional Commits with a lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 - Never create a merge commit: rebase and fast-forward, and squash commits that do not stand alone (`workflow.md`, "Git history").
-- Run the Claude review on each new PR (`workflow.md`, "Pull requests").
-- Never run `pnpm install` in a lane worktree, since its `node_modules` links to the main checkout (`workflow.md`, "Worktrees and lanes").
+- Run the Claude review on PRs you open (`workflow.md`, "Pull requests").
+- Never run `pnpm install` in a lane worktree, since `node_modules` links to the main checkout (`workflow.md`, "Worktrees and lanes").
 
 ## Skills
 

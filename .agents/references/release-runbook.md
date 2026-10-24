@@ -13,7 +13,7 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 
 - A push to `main` runs `ci.yml`: check and e2e, then `deploy.yml` deploys `main` with the Vercel Preview env vars to the preview domain.
 - Every other branch gets a Vercel Git preview. The Neon Vercel integration is disconnected, so every preview uses the unscoped Preview `DATABASE_URL` (Neon `staging`). Never add a branch-scoped `DATABASE_URL`.
-- The `Main` ruleset requires the `Vercel` check and `Check / Check`. Admins can bypass it.
+- The `Default branch` ruleset and its required checks are in `github.md`, "Deploys". Admins can bypass it.
 - A `v*` tag runs `release.yml`, which deploys production with `vercel deploy --target=production`. A push to `main` never reaches production.
 - The production build prerenders against the production database, so production must be migrated before the tag.
 - `deploy.yml` builds on the runner from `vercel pull`, which cannot read Secret variables. Every variable the build validates must use the Config type.

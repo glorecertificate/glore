@@ -41,9 +41,10 @@ The org project "GloRe" is a view. Its workflows keep it, so agents never add it
 - Write the PR body in Simplified Technical English with the sections of `.github/pull_request_template.md`. Pass it with `--body-file`.
 - Open the PR with `--assignee @me` and the labels of its issue, but not `--project`. The labeler adds the area labels.
 - Do not run a local Claude review. The `Claude review` check reviews each PR as `claude[bot]`.
-- When the check fails, fold each fix into the commit that it changes and push with lease. Or comment `@claude` with the fix request.
+- When the check fails, push a fix commit, or comment `@claude` with the fix request. The squash merge removes the follow-up commits.
 - An ask to open a PR includes the fixes and the push. `pnpm run check` MUST exit 0 before each commit.
-- Claude pushes `fixup!` commits. Run `git pull --ff-only`, then `git rebase -i --autosquash main` and `git push --force-with-lease` before the merge.
+- The maintainer merges with `gh pr merge --squash --auto`. The queue runs CI on the squash commit and merges it when each required check passes.
+- `dependabot.yml` turns on auto-merge for npm updates that are not major. Action updates stay manual, because they change workflows.
 
 ## Labels
 
@@ -65,22 +66,25 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 - `claude.yml` runs on an `@claude` comment or review, or when an issue gets the `agent` label. The action checks that the sender has write access.
 - For the `agent` label, the workflow reads the Status. When it is not Ready, or `PROJECT_TOKEN` is missing, the workflow removes the label and comments the reason.
 - Effort sets the model: Low uses Sonnet 5.5 with medium effort. Medium or unset use Opus 5.5 with high effort, and High uses Opus 5.5 with xhigh effort.
-- On an issue, Claude works on a `claude/` branch and opens a PR. On a PR, Claude pushes `fixup!` commits to the PR branch, because it cannot force-push.
+- On an issue, Claude works on a `claude/` branch and opens a PR. On a PR, Claude pushes fix commits to the PR branch.
 - Claude pushes start CI and the review again, so each fix gets a new review.
 
 ## Workflows
 
-- `ci.yml` (push and PR to `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`, then the preview `deploy.yml` after both pass.
+- `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then the preview `deploy.yml` runs, except in the queue.
+- Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
 - `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
 - CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.
 - `release.yml` deploys production after `check.yml` only.
-- `tasks.yml` fails while the PR body has an open task. Check each template item, or delete it when it does not apply.
+- `tasks.yml` fails while the PR body has an open task, or when the PR title fails commitlint. Check each template item, or delete it.
+- `claude-review.yml` and `tasks.yml` skip their jobs in the merge queue, and a skipped required check passes. An empty review result fails, except on a PR that changes a Claude workflow.
 - `labeler.yml` runs on `pull_request_target` with no checkout. It reads `.github/labeler.yml` from `main`, so a new rule works only after merge.
 
 ## Deploys
 
 - Only CI deploys. `vercel.json` sets `git.deploymentEnabled: false`, so Vercel makes no Git builds and no `Vercel` check.
-- The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, CodeQL, and the `preview` deployment.
-- The ruleset also requires a PR with all conversations resolved, and the rebase merge method. Admins can bypass it.
+- Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails and auto-merge waits.
+- The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, CodeQL, and the `preview` deployment.
+- The ruleset also requires a PR with all conversations resolved, squash merges through the merge queue, and no force-push. Admins can bypass it on request.
 - Build detail and the flags that MUST stay: `workflow.md`, "CI builds".

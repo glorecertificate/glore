@@ -41,9 +41,9 @@ References live in `.agents/references/`: product decisions, the certificate PDF
 
 - Always run `pnpm run <script>`, never bare `pnpm <script>`, except `pnpm install`. Full table: `workflow.md`.
 - Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
-- Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first, and one logical task is one commit.
+- Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first.
 - Commit headers are Conventional Commits with a lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
-- Never create a merge commit, and fold each fix into the commit it changes, not a new commit (`workflow.md`, "Git history").
+- One PR is one logical task. It merges by squash, with its title as the commit header. Never create a merge commit (`workflow.md`, "Git history").
 - Fix the blocking findings of the `Claude review` check (`github.md`).
 - Never run `pnpm install` in a lane worktree, since `node_modules` links to the main checkout (`workflow.md`, "Worktrees and lanes").
 

@@ -3,17 +3,20 @@ name: Claude review
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
 
 permissions: {}
 
 concurrency:
-  group: claude-review-${{ github.event.pull_request.number }}
+  group: claude-review-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   review:
     name: Claude review
-    if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      github.event_name == 'pull_request' && github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -51,8 +54,20 @@ jobs:
             --json-schema '{"type":"object","properties":{"blocking":{"type":"integer","minimum":0},"summary":{"type":"string"}},"required":["blocking","summary"]}'
       - name: Block the merge on blocking findings
         env:
+          GH_TOKEN: ${{ github.token }}
           RESULT: ${{ steps.review.outputs.structured_output }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
         run: |
+          if [ -z "$RESULT" ]; then
+            changed="$(gh pr diff "$PR" --repo "$REPO" --name-only | grep -cE '^\.github/workflows/claude' || true)"
+            if [ "$changed" = "0" ]; then
+              echo "::error::The Claude review did not return a result. Run the check again, or comment @claude on the PR."
+              exit 1
+            fi
+            echo "::warning::The PR changes a Claude workflow, so the action skips the review. Review the PR by hand."
+            exit 0
+          fi
           blocking="$(jq -r '.blocking' <<< "$RESULT")"
           jq -r '.summary' <<< "$RESULT" >> "$GITHUB_STEP_SUMMARY"
           if [ "$blocking" != "0" ]; then

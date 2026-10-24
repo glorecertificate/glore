@@ -3,16 +3,18 @@ name: Tasks
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened, ready_for_review]
+  merge_group:
 
 permissions: {}
 
 concurrency:
-  group: tasks-${{ github.event.pull_request.number }}
+  group: tasks-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   tasks:
     name: Tasks
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     permissions: {}
@@ -28,3 +30,29 @@ jobs:
             exit 1
           fi
           echo "All tasks in the PR body are done." >> "$GITHUB_STEP_SUMMARY"
+
+  title:
+    name: Title
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          dev-only: true
+          ignore-scripts: true
+      - name: Lint the PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if grep -qE '^(Merge|Revert|Initial commit|fixup!|squash!|amend!)' <<< "$TITLE" || ! printf '%s\n' "$TITLE" | pnpm exec commitlint; then
+            echo "::error::The PR title becomes the squash commit header. Write it as a Conventional Commit header."
+            exit 1
+          fi
+          echo "The PR title is a valid commit header." >> "$GITHUB_STEP_SUMMARY"

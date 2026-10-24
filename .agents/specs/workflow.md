@@ -224,7 +224,7 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 
 ### CI builds
 
-- `vercel.json` pins functions to `fra1`, next to Neon (`eu-central-1`), and sets `git.deploymentEnabled.main: false`.
+- `vercel.json` pins functions to `fra1`, next to Neon (`eu-central-1`), and sets `git.deploymentEnabled: false`, so only CI deploys.
 - Its `buildCommand` runs `typegen` first: Vercel's cached install skips `prepare`.
 - `.github/workflows/deploy.yml` runs `vercel pull`, `build`, and `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel only uploads.
 - `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` are non-secret workflow `env` IDs.

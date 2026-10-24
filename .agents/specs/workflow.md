@@ -95,6 +95,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 - Write the PR body in Simplified Technical English with the sections of `.github/pull_request_template.md`. Pass it with `--body-file`.
 - After you open a PR, run the Claude review: `/code-review <number> --fix`, one commit for each accepted fix, a push, and one summary comment.
+- An ask to open a PR includes these commits and the push. `pnpm run check` MUST exit 0 before each commit.
 - Dependabot PRs get no Claude review. CI and the pnpm release-age gate (`code.md`) cover them.
 - After the review pushes, run `git pull --ff-only` before more work on the branch.
 

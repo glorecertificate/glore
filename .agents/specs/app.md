@@ -88,6 +88,7 @@ Three domain facts shape recurring decisions:
 - Ordered lessons hold rich text, multiple-choice questions, evaluations (self-assessment prompts), and one final assessment per lesson (skill courses only, last step).
 - Members see an overview and enroll with an explicit Start, which records the locale. Progress is binary per lesson.
 - Volunteers keep a skill compass (up to 3 strengths, 5 goals) that drives course recommendations.
+- The server grades quizzes and returns the explanation of each answer. There are no streaks or leaderboards (D15).
 - Publication states: archived, draft, partial, published.
 - Course types: `intro` (all members, not skill-linked, no assessment), `skill` (volunteers, counts toward certification, has assessment), `learner` (learners, not skill-linked, no assessment).
 
@@ -190,6 +191,7 @@ Rules not already stated above or in `certificates.md`:
 7. App cookies use the `gl_` prefix (`COOKIE_PREFIX` in `src/lib/cookies.ts`). Better Auth uses `gl` through `advanced.cookiePrefix`. The locale cookie `NEXT_LOCALE` has no prefix.
 8. A course becomes `published`, meaning visible to learners, once all its lessons have content.
 9. Non-editors never see draft, archived, or off-track courses. The course list and the command palette share `isListedCourse` (`features/courses/visibility.ts`).
+10. The app sets only essential cookies and uses cookieless Vercel Analytics, so it shows no cookie banner (D24).
 
 ## Data model
 

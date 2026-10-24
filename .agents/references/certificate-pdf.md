@@ -1,6 +1,6 @@
 # GloRe v0.7 release: certificate PDF
 
-Layout reference for task A5, measured from `.agents/references/certificate-template.pdf` with PyMuPDF on 2026-10-22.
+Layout reference for the certificate PDF, measured from `.agents/references/certificate-template.pdf` with PyMuPDF on 2026-10-22.
 
 The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coordinates are points from the top-left corner; "top" is the top of the text box.
 
@@ -80,7 +80,7 @@ The English values match the template text exactly, including "Recognizes". The 
 - Extract the Erasmus+ emblem with `extract_image` (xref 31 in the template) and store it next to the other PDF assets.
 - Keep extracted assets under one folder owned by Lane A, and never ship the template PDF itself.
 
-## Fidelity check (G5)
+## Fidelity check
 
 1. Generate a PDF from the template's lorem data: Oliver Matthews, BRITISH, 01.01.2022, MANCHESTER, Associazione JOINT, 3 tasks, 4 skills at 4 dots ("good").
 2. Render the template and the generated file at 150 dpi with PyMuPDF.

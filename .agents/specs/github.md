@@ -13,11 +13,13 @@ Issues, pull requests, labels, the project, workflows, Claude, and deploys. `AGE
 
 ## Project
 
-The org project "GloRe" is a view. Its built-in workflows keep it, so agents never add items or set Status.
+The org project "GloRe" is a view. Its workflows keep it, so agents never add items or set Status, except in a triage that the maintainer asks for.
 
 - A new open issue goes to Backlog. A linked PR moves it to In progress. A close or a merge moves it to Done.
+- When the Claude review ends, the `Project status` job in `claude-review.yml` moves each issue that the PR closes to In review.
+- That job needs the `PROJECT_TOKEN` secret: a fine-grained token with read and write access to the org projects.
 - A sub-issue joins the project with its parent. A Done item closes its issue, and closed items leave the board after some days.
-- Ready and In review are for the maintainer to set by hand.
+- Ready: an agent can start the issue now. The maintainer sets it, or an agent sets it when the maintainer asks for a triage.
 - A changed Status option breaks each workflow that uses it. After such a change, edit those workflows in the project settings.
 
 ## Pull requests

@@ -27,7 +27,7 @@ jobs:
   deploy:
     name: Deploy
     needs: [check, e2e]
-    if: github.event_name != 'push'
+    if: github.event_name != 'merge_group'
     permissions:
       contents: read
       deployments: write

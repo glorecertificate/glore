@@ -71,18 +71,20 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 
 ## Workflows
 
-- `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then the preview `deploy.yml` runs, except on a push.
+- `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then the preview `deploy.yml` runs, except in the queue.
+- Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
 - `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
 - CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.
 - `release.yml` deploys production after `check.yml` only.
 - `tasks.yml` fails while the PR body has an open task, or when the PR title fails commitlint. Check each template item, or delete it.
-- `claude-review.yml` and `tasks.yml` skip their jobs in the merge queue, and a skipped required check passes. An empty review result passes with a warning.
+- `claude-review.yml` and `tasks.yml` skip their jobs in the merge queue, and a skipped required check passes. An empty review result fails, except on a PR that changes a Claude workflow.
 - `labeler.yml` runs on `pull_request_target` with no checkout. It reads `.github/labeler.yml` from `main`, so a new rule works only after merge.
 
 ## Deploys
 
 - Only CI deploys. `vercel.json` sets `git.deploymentEnabled: false`, so Vercel makes no Git builds and no `Vercel` check.
+- Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails and auto-merge waits.
 - The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, CodeQL, and the `preview` deployment.
 - The ruleset also requires a PR with all conversations resolved, squash merges through the merge queue, and no force-push. Admins can bypass it on request.
 - Build detail and the flags that MUST stay: `workflow.md`, "CI builds".

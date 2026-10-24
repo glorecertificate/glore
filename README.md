@@ -134,7 +134,7 @@ The scope is optional and limited to `release`, `deps`, `deps-dev`, and `securit
 To open a pull request:
 
 1. Fork the repository, create a new branch and implement your changes
-2. Keep the branch free of merge commits: update it with `git rebase main` (hooks and CI reject merge commits). The PR merges as one squash commit, so write its title as a Conventional Commit header
+2. Keep the branch free of merge commits: when it has a conflict with `main`, rebase it (hooks and CI reject merge commits). The PR merges as one squash commit, so write its title as a Conventional Commit header
 3. Run `pnpm run check` and `pnpm run test` locally and make sure they pass (`check` covers types, lint, format, unused code, and translations; the pre-push hook runs the first four)
 4. [Open a pull request](https://github.com/glorecertificate/glore/compare) with the default template, and fill in each section with short, plain sentences (maintainers use [Simplified Technical English](https://www.asd-ste100.org/))
 5. Make sure all CI checks pass and wait for a maintainer to review your PR

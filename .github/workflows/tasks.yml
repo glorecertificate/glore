@@ -51,7 +51,7 @@ jobs:
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          if ! printf '%s\n' "$TITLE" | pnpm exec commitlint; then
+          if grep -qE '^(Merge|Revert|Initial commit|fixup!|squash!|amend!)' <<< "$TITLE" || ! printf '%s\n' "$TITLE" | pnpm exec commitlint; then
             echo "::error::The PR title becomes the squash commit header. Write it as a Conventional Commit header."
             exit 1
           fi

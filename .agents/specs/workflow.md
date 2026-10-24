@@ -78,7 +78,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 - Commit only when the current prompt asks for it.
 - `pnpm run check` MUST exit 0 first, no exceptions.
-- One logical task is one commit. Never split a task into partial commits.
+- One logical task is one PR, and the PR lands as one squash commit. Follow-up commits on the PR branch are allowed.
 - Use Conventional Commits with a lower-case subject (commitlint rejects sentence case) and a header of at most 100 characters.
 - Allowed scopes: `release`, `deps`, `deps-dev`, `security`.
 - Hook mechanics (lefthook pre-commit, commit-msg, pre-push): `code.md`.
@@ -88,8 +88,9 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - History on `main` is linear. PRs merge by squash through the merge queue, so each PR lands as one commit.
 - The PR title becomes the commit header, so it MUST be a Conventional Commit header. The `Title` check runs commitlint on it.
 - One PR holds one logical task, because it lands as one commit. Split unrelated work into separate PRs.
-- Push each fix and review follow-up as a new commit. The squash removes them, so never rewrite a pushed PR branch.
-- Never create a merge commit on a branch: no `git merge` without `--ff-only`, and no merge of `main` into a branch. Update a branch with `git rebase main`.
+- Push each fix and review follow-up as a new commit. The squash removes them, so a fold is not necessary.
+- The queue tests each PR on the current `main`, so a branch needs no update. Rebase only to resolve a conflict, then push with `--force-with-lease`.
+- Never create a merge commit on a branch: no `git merge` without `--ff-only`, no merge of `main` into a branch, and no "Update branch" button with a merge.
 - Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits. The ruleset blocks force-pushes to `main`.
 
 ## Dependencies

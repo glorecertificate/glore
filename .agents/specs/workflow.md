@@ -91,12 +91,16 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - Branch protection on `main` does not require linear history, because the maintainer may force-push `main`. Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits instead.
 - To clean up history that already holds merges, rebuild it on `main` and squash each merged branch whose commits no longer replay cleanly. Never push that rewrite without the user's approval.
 
+## Pull requests
+
+- Write the PR body in Simplified Technical English with the sections of `.github/pull_request_template.md`. Pass it with `--body-file`.
+- After you open a PR, run the Claude review: `/code-review <number> --fix`, one commit for each accepted fix, a push, and one summary comment.
+- Dependabot PRs get no Claude review. CI and the pnpm release-age gate (`code.md`) cover them.
+- After the review pushes, run `git pull --ff-only` before more work on the branch.
+
 ## Dependencies
 
-- CI runs `pnpm install --frozen-lockfile`, and pnpm enforces a built-in `minimum-release-age` of 24h on every lockfile entry. Nothing in the repo overrides it.
-- Local `pnpm install` accepts a fresher package, so a bump can pass locally and fail CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`. Never commit a bump on the day its version was published.
-- When CI is already red, re-run the job once the package is 24h old, or add a scoped `minimumReleaseAgeExclude` entry to `pnpm-workspace.yaml` and delete it afterwards.
-- Never lower `minimumReleaseAge` or set `trustLockfile: true`: both disable the check for every future install.
+- CI installs with the pnpm release-age gate in `code.md`, "Release age". Never commit a bump on the day its version was published.
 - Node.js follows Vercel Functions (24.x and 22.x, checked 2026-10-23). `.node-version`, `engines.node` (`24.x`), and `@types/node` (`^24`) move together, so `pnpm outdated` always lists `@types/node`.
 - `@platejs/dnd` is pinned to `53.1.0`: 53.3 types `dragEntry` as possibly undefined, which breaks the vendored `table-node.tsx`. Lift the pin when the editor block is re-pulled.
 - `pnpm run bump` upgrades pnpm and runs `pnpm update -Li`. Commit pnpm and Node, each major, and the lint toolchain separately.

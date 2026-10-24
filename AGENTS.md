@@ -12,7 +12,7 @@ Libraries to use, not guess: Better Auth, Cloudflare R2, Plate.js, next-intl, re
 
 Tooling: oxlint + oxfmt, lefthook, portless.
 
-This file governs agents here, and `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
+This file governs agents here. `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
 
 Budget: this file stays under 2,000 estimated tokens and each spec under 4,500. Over budget means moving detail into a spec, never dropping a fact.
 
@@ -29,21 +29,22 @@ Load only the spec you need from `.agents/specs/`:
 - `architecture.md`: `src/` tree, naming, layers, server vs client, events and email.
 - `patterns.md`: components, types, hooks, utils, i18n, forms.
 - `ui.md`: release UI kit, shell, theming, motion.
-- `code.md`: formatter, imports, lint rules, git hooks.
-- `workflow.md`: commands, seeds, translations, commits, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
+- `code.md`: formatter, imports, lint rules, git hooks, release age.
+- `workflow.md`: commands, seeds, translations, commits, PRs, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
 
 Plans live in tracked `.agents/plans/`, one file or folder per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
 
-References live in `.agents/references/`: the certificate PDF template and the per-role manual testing flows.
+References live in `.agents/references/`: the certificate PDF template and the per-role manual test flows.
 
 ## Commands and commits
 
-- Always run `pnpm run <script>`, never bare `pnpm <script>`. `pnpm install` is the exception. Full table: `workflow.md`.
+- Always run `pnpm run <script>`, never bare `pnpm <script>`, except `pnpm install`. Full table: `workflow.md`.
 - Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first, and one logical task is one commit.
 - Commit headers are Conventional Commits with a lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 - Never create a merge commit: rebase and fast-forward, and squash commits that do not stand alone (`workflow.md`, "Git history").
-- Never run `pnpm install` in a lane worktree, because its `node_modules` links to the main checkout (`workflow.md`, "Worktrees and lanes").
+- Run the Claude review on each new PR (`workflow.md`, "Pull requests").
+- Never run `pnpm install` in a lane worktree, since its `node_modules` links to the main checkout (`workflow.md`, "Worktrees and lanes").
 
 ## Skills
 

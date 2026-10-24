@@ -3,17 +3,20 @@ name: Claude review
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
 
 permissions: {}
 
 concurrency:
-  group: claude-review-${{ github.event.pull_request.number }}
+  group: claude-review-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   review:
     name: Claude review
-    if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      github.event_name == 'pull_request' && github.event.pull_request.draft == false &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -53,6 +56,10 @@ jobs:
         env:
           RESULT: ${{ steps.review.outputs.structured_output }}
         run: |
+          if [ -z "$RESULT" ]; then
+            echo "::warning::The Claude review did not return a result. A PR that changes a Claude workflow skips the review, so review it by hand."
+            exit 0
+          fi
           blocking="$(jq -r '.blocking' <<< "$RESULT")"
           jq -r '.summary' <<< "$RESULT" >> "$GITHUB_STEP_SUMMARY"
           if [ "$blocking" != "0" ]; then

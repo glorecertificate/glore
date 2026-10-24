@@ -5,7 +5,7 @@ updates:
     directory: /
     versioning-strategy: increase
     schedule:
-      interval: monthly
+      interval: weekly
     cooldown:
       default-days: 2
       semver-major-days: 7
@@ -38,7 +38,7 @@ updates:
       - /
       - /.github/actions/*
     schedule:
-      interval: monthly
+      interval: weekly
     cooldown:
       default-days: 2
     labels:

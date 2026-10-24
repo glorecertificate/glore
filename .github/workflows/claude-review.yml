@@ -59,3 +59,53 @@ jobs:
             echo "::error::The Claude review found $blocking blocking findings. Fix them, or comment @claude on the PR."
             exit 1
           fi
+
+  status:
+    name: Project status
+    needs: review
+    if: always() && (needs.review.result == 'success' || needs.review.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Move the linked issues to In review
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          PR: ${{ github.event.pull_request.number }}
+          PROJECT_NUMBER: 1
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::notice::Set the PROJECT_TOKEN secret to move the linked issues to In review."
+            exit 0
+          fi
+          project="$(gh api graphql -F num="$PROJECT_NUMBER" -f org="$OWNER" -f query='
+            query($org: String!, $num: Int!) {
+              organization(login: $org) {
+                projectV2(number: $num) {
+                  id
+                  field(name: "Status") { ... on ProjectV2SingleSelectField { id options { id name } } }
+                }
+              }
+            }')"
+          project_id="$(jq -r '.data.organization.projectV2.id' <<< "$project")"
+          field_id="$(jq -r '.data.organization.projectV2.field.id' <<< "$project")"
+          option_id="$(jq -r '.data.organization.projectV2.field.options[] | select(.name == "In review") | .id' <<< "$project")"
+          items="$(gh api graphql -F pr="$PR" -f owner="$OWNER" -f repo="$REPO" -f query='
+            query($owner: String!, $repo: String!, $pr: Int!) {
+              repository(owner: $owner, name: $repo) {
+                pullRequest(number: $pr) {
+                  closingIssuesReferences(first: 10) {
+                    nodes { number projectItems(first: 10) { nodes { id project { number } } } }
+                  }
+                }
+              }
+            }' --jq ".data.repository.pullRequest.closingIssuesReferences.nodes[].projectItems.nodes[] | select(.project.number == $PROJECT_NUMBER) | .id")"
+          for item in $items; do
+            gh api graphql -f project="$project_id" -f item="$item" -f field="$field_id" -f option="$option_id" -f query='
+              mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+                updateProjectV2ItemFieldValue(input: { projectId: $project, itemId: $item, fieldId: $field, value: { singleSelectOptionId: $option } }) { clientMutationId }
+              }' > /dev/null
+            echo "Moved project item $item to In review." >> "$GITHUB_STEP_SUMMARY"
+          done

@@ -1,0 +1,79 @@
+admin:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/**/admin/**
+          - e2e/admin-*.spec.ts
+
+auth:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/app/(auth)/**
+          - src/app/api/auth/**
+          - src/components/features/auth/**
+          - src/lib/auth*.ts
+          - src/proxy.ts
+
+certificates:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/**/certificates/**
+          - src/app/verify/**
+          - e2e/certificate-*.spec.ts
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**
+          - lefthook.yml
+          - vercel.json
+
+courses:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/**/courses/**
+          - src/components/ui/rich-text-editor/**
+          - content/courses/**
+          - e2e/course-editor.spec.ts
+          - e2e/learning.spec.ts
+
+db:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/db/**
+          - drizzle/**
+          - drizzle.config.ts
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - package.json
+          - pnpm-lock.yaml
+          - pnpm-workspace.yaml
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - content/docs/**
+
+i18n:
+  - changed-files:
+      - any-glob-to-any-file:
+          - messages/**
+          - src/i18n.ts
+          - src/**/translations/**
+
+organizations:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/**/organization/**
+          - src/**/organizations/**
+          - e2e/organization-*.spec.ts
+          - e2e/invitations.spec.ts
+
+ui:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/components/ui/**
+          - src/components/layout/**
+          - src/app/globals.css

@@ -9,7 +9,10 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Invitations never create memberships or accounts for an existing person. Accepting one does (`src/db/mutations/invitation.ts`).
 - Never call `signUpEmail` or insert a membership for an invitee outside that mutation.
 - A person who already holds a membership (for example through an invite link sent after the invitation) is upgraded when the invited role outranks the current one (`learner`, `volunteer`, `tutor`, `representative`, `admin`). A lower or equal invited role keeps the current role.
-- Inviting issues a token and records its hash, a role, an optional message, and an expiry of `invitationExpiryDays`, and mails `/invite/[token]?proof=...`.
+- Inviting issues a token and records its hash, a role, an optional message, and an expiry of `invitationExpiryDays` (7), and mails `/invite/[token]?proof=...`.
+  - The daily cron sends a reminder on `invitationReminderDay` (5). `pruneExpiredRecords` deletes expired or revoked rows after `invitationRetentionDays` (30).
+  - `org_invitations_open_email_key` allows one open invitation per organization and `lower(email)`.
+  - Invitation copy never names a role as the sender: it says "someone from your organization" (U16).
 - The row carries `userId` when an account with that email exists, still without a membership.
 - Invitation and invite-link tokens are never stored in plaintext. `tokenHash` (SHA-256) serves lookups.
 - `tokenCipher` (AES-256-GCM, key derived from `BETTER_AUTH_SECRET`, `src/lib/secret-token.ts`) lets copy and reminder links be rebuilt.
@@ -63,6 +66,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - The notification shows `_gained` for the new owner and `_left` for the previous one through the event `variant`.
 - The last owner can neither leave nor be removed (`LAST_OWNER`).
 - Demoting, removing, or losing a tutor returns their open reviews (`submitted`, `in_review`, `changes_requested`) to the pool through `certificate.unassigned`. Approved certificates keep their reviewer.
+- A removed member keeps their certificates.
 - Role changes record `member.role_changed`. Leaving records `member.left`.
 - Every org action takes an optional `organizationId`, resolved by `getOrganizationAccess`.
 - Members act on orgs they belong to. Platform admins act as owner on any org, never on ownership transfers.

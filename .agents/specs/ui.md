@@ -21,7 +21,8 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `CopyButton` handles clipboard failures and ignores stale completions after its value changes.
 - `QrCode` imports the QR encoder on demand and provides loading and error states.
 - `AvatarStack` lives in `avatar-stack.tsx`, requires stable avatar IDs and labels, and always renders a fallback.
-- Personal skills use the AA-checked `brand-quaternary` teal tokens. Chart colors use text variants to keep contrast in both themes.
+- Skill groups map to brand tones in `features/courses/skill-group.ts`: Communication `brand`, Personal `brand-quaternary` (AA-checked teal), Social `brand-secondary`, Work `brand-tertiary`.
+- Chart colors use text variants to keep contrast in both themes.
 - The organization roster uses `DataTable`, and its overview uses `StatCard` and `AvatarStack`.
 - Certificate views consume the sharing, timeline, and level primitives.
 

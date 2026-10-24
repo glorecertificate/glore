@@ -137,3 +137,8 @@ node -e "import('oxlint-plugin-react-doctor').then(m => console.log(Object.keys(
 - `src/emails/**` allows hardcoded colors.
 - `src/db/helpers.ts` and `src/db/mutations/**` relax the react-doctor async rules.
 - `src/lib/utils.ts` may import `cnfast`.
+
+## Change order
+
+- Land schema changes in this order: additive changes, then data moves, then drops.
+- Add a zod schema, parser, or `CacheTag` with its first consumer, because knip fails on unused exports.

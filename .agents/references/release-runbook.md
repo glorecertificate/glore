@@ -1,6 +1,6 @@
 # v0.7 production runbook
 
-Handoff for G8. Every step that writes to preview or production is a user step. Agents prepare and verify, the user runs or approves.
+Release steps for v0.7 (#33). Every step that writes to preview or production is a user step. Agents prepare and verify, the user runs or approves.
 
 ## Flow
 
@@ -88,4 +88,4 @@ Run these on the preview domain before the release and on the production domain 
 
 ## Known gaps
 
-Open items live in `tasks.md` under G3, G4, and G6, and in `followups.md`. None is high severity.
+Open items are the sub-issues of #31. None is high severity.

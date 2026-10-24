@@ -66,9 +66,13 @@
   - impersonation: `impersonation.started`, `impersonation.stopped`.
   - certificates: `certificate.revoked`.
   - organizations: `organization.application_decided`.
+  - content: `content.translation_reviewed`, `course.locale_published`, `doc.locale_published`, `skill_group.updated`.
   - legal: `legal.version_published`, `legal.accepted`.
   - messages: `messages.published`, `messages.reset`. The target is the key and locale, linking to `/translations?q=<key>`.
   - settings: `settings.updated`, linking to `/admin/settings`.
+
+### New audit actions
+
 - To audit a new action, add the event to `AUDIT_ACTIONS`, an `Admin.audit.events.<action with dots as underscores>` message, and an entry in `EVENT_KEYS` (`audit.tsx`).
 
 ### Search and rows

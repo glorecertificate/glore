@@ -31,7 +31,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Submit also validates the activity rule: 100 hours, or an end date three months after the start (error `ACTIVITY_TOO_SHORT`).
 - Submit also validates the personal data: last name, birthday, birth place, nationality. The volunteer may fill them inline (error `PERSONAL_DATA_MISSING`).
 - A missing `selfLevel` comes from the course assessment average.
-- Submit generates the public `code` and keeps it on resubmit.
+- Submit generates the public `code` and keeps it on resubmit. The code is Crockford base32 `XXXX-XXXX-XXXX` (`rules.ts`), and certificates never expire.
 
 ### Reviewer assignment
 
@@ -49,7 +49,7 @@ draft -> submitted -> in_review -> approved -> revoked
 
 - The assigned tutor claims the request (`in_review`), requests changes (section comments stored on the review row), rejects, or approves.
 - Reject needs a reason of 10 or more characters and works from any open status.
-- Approval merges the tutor's edits, requires levels 2 to 5 on 3 to 4 skills, rechecks the activity rule, and renders the PDF.
+- Approval merges the tutor's edits, requires levels 2 (Basic) to 5 (Advanced) on 3 to 4 skills, rechecks the activity rule, and renders the PDF.
 - Approval commits the status, review row, and event in one transaction, then uploads to R2.
 - An upload failure reverts the whole approval and returns `STORAGE_FAILED`. The certificate caches expire even when the revert fails too.
 - The first approved certificate becomes the default on the public profile.
@@ -67,6 +67,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Experience: dates, hours, location, 1 to 4 tasks of 110 characters.
 - Skills: 3 to 4 completed skill courses. Self-level is prefilled from the course assessment and adjustable, and the reflection is prefilled as evidence.
 - Your organization: anonymous rating, shown to the org only as an aggregate of 3 or more.
+  - Fields: `experience`, `support`, `certificationSupport` (1 to 5), `wouldRecommend`, and a `comment` of up to 400 characters.
 - Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
 - Drafts autosave through `saveCertificateDraft`. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
 - A `changes_requested` id opens the same wizard in resubmit mode with the tutor's comments.
@@ -126,9 +127,10 @@ draft -> submitted -> in_review -> approved -> revoked
 
 - The PDF is generated on approval and stored at `certificates/{handle}.pdf` in R2, public through `documentUrl`.
 - `/api/v1/certificates/<id>/pdf` re-renders on demand for signed-in users and is limited to 30 requests a minute per IP (`certificate-pdf:<ip>`, answers 429).
-- It follows the A4 template (Roboto, navy and green tokens, vector logo, `DD.MM.YYYY` dates).
+- `@react-pdf/renderer` renders it from the A4 template (Roboto, navy and green tokens, vector logo, `DD.MM.YYYY` dates).
+- Every certificate keeps the Erasmus+ footer in every language. The labels follow the certificate language.
 - It holds a QR code and short URL pointing to `/verify/<code>`, plus the signatory block.
-- The template reference and fidelity checks are in `.agents/plans/v0.7/pdf.md`.
+- The template reference and fidelity checks are in `.agents/references/certificate-pdf.md`.
 
 ## Public verification
 

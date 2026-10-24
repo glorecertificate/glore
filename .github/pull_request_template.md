@@ -20,6 +20,8 @@
 
 ## Checklist
 
+<!-- Check each item, or delete it when it does not apply. The Tasks check fails while an item is open. -->
+
 - [ ] `pnpm run check` passes locally (types, lint, format, unused code, translations)
 - [ ] `pnpm run test` passes locally
 - [ ] The branch is rebased on `main` and has no merge commits

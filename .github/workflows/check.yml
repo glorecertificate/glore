@@ -47,3 +47,13 @@ jobs:
             echo "Merge commits are not allowed. Rebase the branch: $merges"
             exit 1
           fi
+      - name: Reject fixup commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          fixups="$(git log --format='%h %s' "$BASE_SHA..HEAD" | grep -E '^[0-9a-f]+ (fixup|squash|amend)! ' || true)"
+          if [ -n "$fixups" ]; then
+            echo "Fold the fixup commits first: git rebase -i --autosquash main"
+            echo "$fixups"
+            exit 1
+          fi

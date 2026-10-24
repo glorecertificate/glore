@@ -30,6 +30,13 @@ Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt)
 - `pre-push` runs in parallel: commitlint over `origin/HEAD..HEAD`, `tsc`, knip, a merge-commit check over the same range, plus oxlint and `oxfmt --check` on pushed files only.
 - CI's `pnpm run check` stays the full gate. It catches type-aware lint errors that a pushed change causes in files the push did not touch.
 
+## Release age
+
+- CI runs `pnpm install --frozen-lockfile`, and pnpm enforces a built-in `minimum-release-age` of 24h on every lockfile entry. Nothing in the repo overrides it.
+- Local `pnpm install` accepts a fresher package, so a bump can pass locally and fail CI with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`.
+- When CI is already red, re-run the job after the package is 24h old. Or add a scoped `minimumReleaseAgeExclude` entry to `pnpm-workspace.yaml`, and delete it after the run.
+- Never lower `minimumReleaseAge` or set `trustLockfile: true`: both disable the check for every future install.
+
 ## Import order (oxfmt `sortImports`)
 
 Groups are separated by blank lines (`newlinesBetween: true`):

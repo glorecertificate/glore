@@ -1,18 +1,22 @@
 ## Summary
 
-Brief description of what this PR does and why.
+<!-- Write one or two sentences in Simplified Technical English: what the PR changes and why. -->
 
 ## Changes
 
+<!-- Write one item for each change. Start each item with a verb in the simple present tense. -->
+
 -
 
-## Type of change
+## Verification
 
-- [ ] Bug fix (`fix:`)
-- [ ] Feature (`feat:`)
-- [ ] Refactor (`refactor:`)
-- [ ] Documentation (`docs:`)
-- [ ] Build / CI / configuration (`build:`, `ci:`, `chore:`)
+<!-- Write one item for each check: the command or the screen, and the result. -->
+
+-
+
+## Linked issue
+
+<!-- Write "Closes #<number>" or "Refs #<number>", or "None". -->
 
 ## Checklist
 
@@ -22,4 +26,3 @@ Brief description of what this PR does and why.
 - [ ] No new warnings or errors introduced
 - [ ] Translation keys added or updated in all three `messages/` files (if applicable)
 - [ ] `README.md`, `AGENTS.md`, and the specs in `.agents/specs/` updated if routes, commands, env vars, or structure changed
-- [ ] Linked to a related issue (if applicable)

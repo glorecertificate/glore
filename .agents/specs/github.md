@@ -4,17 +4,26 @@ Issues, pull requests, labels, the project, workflows, Claude, and deploys. `AGE
 
 ## Work model
 
-- An issue is the unit of work. The org project "GloRe" holds its Status: Backlog, Ready, In progress, In review, Done.
-- One PR delivers one issue and links it with `Closes #<number>` in the body. Agents never merge, and never close issues by hand.
-- Start an issue with `gh issue develop <number> --checkout`, then set its project Status to In progress.
+- An issue is the unit of work. One PR delivers one issue and links it with `Closes #<number>` in the body.
+- Agents never merge, and never close issues by hand.
+- Start an issue with `gh issue develop <number> --checkout`, so that the branch links to the issue.
 - One-PR effort: open a draft PR early with the plan file as its first commit. Delete the plan in the last commit, then mark the PR ready.
 - Multi-PR effort: a parent issue holds the plan summary, and one sub-issue tracks each PR. The plan file links the parent issue.
-- The built-in project workflows add new issues and PRs, and move closed or merged items to Done.
+- Before you delete a plan, move each open item to a sub-issue of its parent issue. Never leave open work only in chat.
+
+## Project
+
+The org project "GloRe" is a view. Its built-in workflows keep it, so agents never add items or set Status.
+
+- A new open issue goes to Backlog. A linked PR moves it to In progress. A close or a merge moves it to Done.
+- A sub-issue joins the project with its parent. A Done item closes its issue, and closed items leave the board after some days.
+- Ready and In review are for the maintainer to set by hand.
+- A changed Status option breaks each workflow that uses it. After such a change, edit those workflows in the project settings.
 
 ## Pull requests
 
 - Write the PR body in Simplified Technical English with the sections of `.github/pull_request_template.md`. Pass it with `--body-file`.
-- Open the PR with `--assignee @me`, `--project GloRe`, and the labels of its issue. The labeler adds the area labels.
+- Open the PR with `--assignee @me` and the labels of its issue, but not `--project`. The labeler adds the area labels.
 - Do not run a local Claude review. The `Claude review` check reviews each PR as `claude[bot]`.
 - When the check fails, fold each fix into the commit that it changes and push with lease. Or comment `@claude` with the fix request.
 - An ask to open a PR includes the fixes and the push. `pnpm run check` MUST exit 0 before each commit.

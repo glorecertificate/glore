@@ -30,7 +30,8 @@ Load only the spec you need from `.agents/specs/`:
 - `patterns.md`: components, types, hooks, utils, i18n, forms.
 - `ui.md`: release UI kit, shell, theming, motion.
 - `code.md`: formatter, imports, lint rules, git hooks, release age.
-- `workflow.md`: commands, seeds, translations, commits, PRs, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
+- `github.md`: issues, PRs, labels, Claude workflows, CI, deploys.
+- `workflow.md`: commands, seeds, translations, commits, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
 
 Plans live in tracked `.agents/plans/`, one file or folder per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
 
@@ -42,8 +43,8 @@ References live in `.agents/references/`: the certificate PDF template and the p
 - Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first, and one logical task is one commit.
 - Commit headers are Conventional Commits with a lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
-- Never create a merge commit: rebase and fast-forward, and squash commits that do not stand alone (`workflow.md`, "Git history").
-- Run the Claude review on PRs you open (`workflow.md`, "Pull requests").
+- Never create a merge commit, and fold each fix into the commit it changes, not a new commit (`workflow.md`, "Git history").
+- Fix the blocking findings of the `Claude review` check (`github.md`).
 - Never run `pnpm install` in a lane worktree, since `node_modules` links to the main checkout (`workflow.md`, "Worktrees and lanes").
 
 ## Skills
@@ -77,8 +78,8 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 ## Gotchas: data and imports
 
 1. Never import `cookies` from `next/headers` (use `@/actions/cookies`), `cnfast` (use `@/lib/utils`), or `../**`.
-2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel, because `proxy.ts` calls `getSession` on every request.
-3. `db/queries/<table>.ts` parsers MUST stay pure: importing `@/db/client` there leaks `server-only` into client bundles.
+2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel (`reference.md`, "Authentication").
+3. `db/queries/<table>.ts` parsers MUST stay pure and never import `@/db/client` (`architecture.md`).
 4. A cached query wraps the DB call in an inner `'use cache'` + `cacheTag` function, and the outer takes `{ cache: boolean }`.
 5. Multi-statement writes use `transaction(fn)` from `@/db/client` with `(tx, ...args)` units in `src/db/mutations/`, and statements inside run sequentially.
 6. Client-created course-tree records use negative `tempId()` ids, never `Date.now()`. Never send a placeholder id or foreign key to the DB; resolve the real parent id first.
@@ -87,7 +88,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 ## Gotchas: runtime and domain
 
 8. The app uses `NextProxy` (`src/proxy.ts`), not `middleware.ts`.
-9. `emailAndPassword.autoSignIn` MUST stay `false`, or an invitee's session lands on the inviter's response.
+9. `emailAndPassword.autoSignIn` MUST stay `false` (`reference.md`, "Sign-up guard").
 10. Every env var MUST be in the Zod schema in `next.config.ts`, which MUST never import from `src/` (that restarts dev on every edit).
 11. Never edit `types/*.generated.d.ts` or `drizzle/`. Regenerate with `pnpm run typegen`, `pnpm run db generate`, `pnpm run db migrate`.
 12. Never add manual `useMemo` or `useCallback`: the React Compiler runs in builds.

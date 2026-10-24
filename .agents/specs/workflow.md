@@ -86,18 +86,13 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 ## Git history
 
 - History is linear. Never create a merge commit: no `git merge` without `--ff-only`, no merging `main` into a branch, no GitHub merge button.
-- Update a branch with `git rebase main`. Integrate it by rebase or fast-forward, or squash it into one commit when its commits do not stand alone.
-- On GitHub, merge commits are disabled in the repository settings, so pull requests use "Rebase and merge" or "Squash and merge".
+- Update a branch with `git rebase main`. GitHub allows only "Rebase and merge", so each PR commit lands on `main` as is.
+- Avoid new commits. A PR holds only the essential commits that compose its result, never an implementation timeline.
+- Fold each fix, adjustment, and review follow-up into the commit that it changes: `git commit --fixup=<sha>`, then `git rebase -i --autosquash main`.
+- Make a new commit only for a change that must stay apart. Push a rewrite of your own PR branch with `git push --force-with-lease`.
 - Branch protection on `main` does not require linear history, because the maintainer may force-push `main`. Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits instead.
+- The CI "Linear history" job also rejects `fixup!`, `squash!`, and `amend!` commits, so a PR merges only after the autosquash.
 - To clean up history that already holds merges, rebuild it on `main` and squash each merged branch whose commits no longer replay cleanly. Never push that rewrite without the user's approval.
-
-## Pull requests
-
-- Write the PR body in Simplified Technical English with the sections of `.github/pull_request_template.md`. Pass it with `--body-file`.
-- After you open a PR, run the Claude review: `/code-review <number> --fix`, one commit for each accepted fix, a push, and one summary comment.
-- An ask to open a PR includes these commits and the push. `pnpm run check` MUST exit 0 before each commit.
-- Dependabot PRs get no Claude review. CI and the pnpm release-age gate (`code.md`) cover them.
-- After the review pushes, run `git pull --ff-only` before more work on the branch.
 
 ## Dependencies
 
@@ -181,14 +176,6 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 - `e2e/mail.ts` reads Mailpit (`MAILPIT_URL`). `recovery.spec.ts` resets the `recovery` seed user's password through the emailed link, and `db:seed` restores it.
 - Run Playwright with `--workers=2`: 4 workers make the dev server answer 502.
 
-### CI workflows
-
-- `ci.yml` (push) runs `check.yml` (`check` and `test`) and `e2e.yml`, then the preview `deploy.yml` after both pass.
-- `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
-- CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
-- CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.
-- `release.yml` deploys production after `check.yml` only.
-
 ## Browser verification
 
 - Drive the running dev server at `https://glore.localhost` with the machine-wide `agent-browser` skill. Never start a second app stack or preview server.
@@ -224,7 +211,7 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 
 ### CI builds
 
-- `vercel.json` pins functions to `fra1`, next to Neon (`eu-central-1`), and sets `git.deploymentEnabled: false`, so only CI deploys.
+- `vercel.json` pins functions to `fra1`, next to Neon (`eu-central-1`), and sets `git.deploymentEnabled: false`, so only CI deploys (`github.md`, "Deploys").
 - Its `buildCommand` runs `typegen` first: Vercel's cached install skips `prepare`.
 - `.github/workflows/deploy.yml` runs `vercel pull`, `build`, and `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel only uploads.
 - `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` are non-secret workflow `env` IDs.

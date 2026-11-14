@@ -5,11 +5,15 @@ updates:
     directory: /
     versioning-strategy: increase
     schedule:
-      interval: weekly
+      interval: monthly
     cooldown:
       default-days: 2
       semver-major-days: 7
     open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: '@types/node'
+        versions:
+          - '>=25'
     labels:
       - dependencies
     groups:
@@ -38,7 +42,7 @@ updates:
       - /
       - /.github/actions/*
     schedule:
-      interval: weekly
+      interval: monthly
     cooldown:
       default-days: 2
     labels:

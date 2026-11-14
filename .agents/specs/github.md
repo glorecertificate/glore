@@ -84,7 +84,8 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 ## Deploys
 
 - Only CI deploys. `vercel.json` sets `git.deploymentEnabled: false`, so Vercel makes no Git builds and no `Vercel` check.
-- Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails and auto-merge waits.
-- The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, CodeQL, and the `preview` deployment.
+- Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails.
+- The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, and CodeQL.
+- The ruleset requires no deployment, because the merge queue rejects a PR when a ruleset requires one. `E2E / E2E` builds and starts the app instead, and the preview deploy runs on each PR without a merge gate.
 - The ruleset also requires a PR with all conversations resolved, squash merges through the merge queue, and no force-push. Admins can bypass it on request.
 - Build detail and the flags that MUST stay: `workflow.md`, "CI builds".

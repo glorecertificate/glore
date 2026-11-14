@@ -89,9 +89,12 @@ To run against a different database, prefix the command with an explicit `DATABA
 ```sh
 pnpm run test       # Vitest unit tests
 pnpm run test:e2e   # Playwright against the running dev server, as seeded users
+pnpm run qa:atlas   # screenshots and axe results for each route and role
 ```
 
 The e2e suite needs `pnpm run dev` running and a database seeded with `pnpm run db:seed`. The recovery spec reads its email from Mailpit, so run `pnpm run mail:up` and set `MAIL_TRANSPORT=mailpit` first. CI runs the same suite against a production build, with Postgres and Mailpit as service containers ([`.github/workflows/e2e.yml`](.github/workflows/e2e.yml)).
+
+The atlas uses the same dev server and seed. It logs in as each role, captures every reachable page in light and dark at 1440 and 390 pixels, and runs axe on each page. It writes the screenshots, `report.json`, and an `index.html` contact sheet to `.playwright/atlas/<timestamp>/`. Pass `--roles admin,guest` to limit the run.
 
 **Switching back to Neon in dev:**
 

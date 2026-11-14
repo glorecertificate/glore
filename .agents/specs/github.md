@@ -45,6 +45,8 @@ The org project "GloRe" is a view. Its workflows keep it, so agents never add it
 - An ask to open a PR includes the fixes and the push. `pnpm run check` MUST exit 0 before each commit.
 - The maintainer merges with `gh pr merge --squash --auto`. The queue runs CI on the squash commit and merges it when each required check passes.
 - `dependabot.yml` turns on auto-merge for npm updates that are not major. Action updates stay manual, because they change workflows.
+- Dependabot runs monthly, so that icon and UI dependency bumps do not churn the screenshot baselines each week.
+- `@types/node` stays on the major of `.node-version` (24). Change the `ignore` entry in `dependabot.yml` when the runtime moves.
 
 ## Labels
 

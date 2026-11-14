@@ -64,7 +64,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@emoji-mart/data": "1.2.1",
-    "@hookform/resolvers": "^6.0.0",
+    "@hookform/resolvers": "^7.0.3",
     "@neondatabase/serverless": "^1.2.0",
     "@platejs/ai": "^53.5.3",
     "@platejs/basic-nodes": "^53.0.0",

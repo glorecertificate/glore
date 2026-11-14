@@ -361,7 +361,7 @@ export const TableRowElement = (props: PlateElementProps<TTableRowElement>) => {
 
   const { handleRef, isDragging, previewRef } = useDraggable({
     canDropNode: ({ dragEntry, dropEntry }) =>
-      PathApi.equals(PathApi.parent(dragEntry[1]), PathApi.parent(dropEntry[1])),
+      !!dragEntry && PathApi.equals(PathApi.parent(dragEntry[1]), PathApi.parent(dropEntry[1])),
     element,
     onDropHandler: (_, { dragItem }) => {
       const dragElement = (dragItem as { element: TElement }).element

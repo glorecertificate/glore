@@ -1,0 +1,20 @@
+{
+  "budgets": { "scriptKb": { "app": 300, "public": 150 } },
+  "field": { "cls": 0.05, "fcp": 1200, "inp": 100, "lcp": 1800, "ttfb": 400 },
+  "publicPaths": ["/login", "/register", "/verify", "/privacy", "/terms", "/quality-charter"],
+  "regression": { "floor": { "cls": 0.005, "kb": 2, "ms": 20 }, "ratio": 0.1 },
+  "targets": {
+    "interaction": {
+      "desktop": { "blocking": 0, "latency": 50 },
+      "mobile": { "blocking": 50, "latency": 100 }
+    },
+    "load": {
+      "desktop": { "cls": 0.01, "fcp": 500, "hydration": 800, "lcp": 800, "tbt": 50, "ttfb": 100 },
+      "mobile": { "cls": 0.01, "fcp": 1200, "hydration": 1800, "lcp": 1800, "tbt": 200, "ttfb": 300 }
+    },
+    "navigation": {
+      "desktop": { "complete": 300, "shell": 100, "shift": 0.01 },
+      "mobile": { "complete": 800, "shell": 200, "shift": 0.01 }
+    }
+  }
+}

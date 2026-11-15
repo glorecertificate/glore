@@ -52,6 +52,7 @@ web
 - The GloRe team edits UI copy and content translations in the app. The database owns that copy.
 - The legal texts of v0.7 are temporary. The GloRe team supplies the final texts.
 - Page loads, navigations, and interactions must feel instant on desktop and on a throttled phone.
+- The targets are in `config/performance.json`, and `.agents/specs/performance.md` explains how CI measures them.
 - Undecided: definitions for Decision making, Initiative, and Work ethic and commitment wait for GloRe review in #40.
 
 ## Brand Commitments

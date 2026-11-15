@@ -24,6 +24,12 @@ jobs:
     permissions:
       contents: read
     uses: ./.github/workflows/e2e.yml
+  perf:
+    name: Perf
+    if: github.event_name != 'merge_group'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/perf.yml
   deploy:
     name: Deploy
     needs: [check, e2e]

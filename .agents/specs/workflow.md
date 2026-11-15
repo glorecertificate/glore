@@ -14,7 +14,9 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 | `pnpm run check`          | Parallel `check:types`, `check:lint`, `check:format`, `check:knip`, `check:i18n` |
 | `pnpm run test`           | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                   |
 | `pnpm run test:e2e`       | Playwright e2e against the running dev server, logged in as seeded users         |
+| `pnpm run test:perf`      | Playwright perf cases against `E2E_BASE_URL` (`performance.md`)                  |
 | `pnpm run qa:atlas`       | Screenshots and axe results per route, role, and theme in `.playwright/atlas/`   |
+| `pnpm run qa:perf`        | Perf report against the targets and an optional `--baseline <dir>`               |
 | `pnpm run build`          | Production build                                                                 |
 | `pnpm run i18n:overrides` | Count overrides per locale and stale state (`--target <env>`, read-only)         |
 | `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`)  |
@@ -175,6 +177,7 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 - The `legal` project runs last. Target it with `--project=setup --project=legal --no-deps`.
 - The `setup` project logs in every `AUTH_ROLES` seed user and stores their state in `.playwright/.auth/`. Specs pick one with `test.use({ storageState: authFile(role) })`.
 - Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs. Setup clears local `rate_limits` first.
+- `*.perf.ts` files run only with `playwright.perf.config.ts` (`pnpm run test:perf`). `performance.md` has the targets and the procedure.
 - `e2e/mail.ts` reads Mailpit (`MAILPIT_URL`). `recovery.spec.ts` resets the `recovery` seed user's password through the emailed link, and `db:seed` restores it.
 - Run Playwright with `--workers=2`: 4 workers make the dev server answer 502.
 

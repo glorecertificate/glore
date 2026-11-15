@@ -109,7 +109,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - After a run, review the `.agents/skills/` and `skills-lock.json` diff as a code change, then `git restore` and `git clean` any skill you did not mean to update.
 - `web-design-guidelines` fetches its rules at runtime from `vercel-labs/web-interface-guidelines` on `main`, so it can change with no lockfile change.
 - `agent-browser`, `sync-i18n`, `sync-docs`, and `sync-agents` are machine-wide skills invoked by name, not vendored here.
-- `impeccable` is the design skill: product and design context (`PRODUCT.md`, `DESIGN.md`), critique, audit, and polish. On first use, its launcher downloads an engine binary to a user cache and checks it against `scripts/engine-checksums.txt` in the skill. The CI Claude workflows cannot run it.
+- `impeccable` is the design skill: product and design context (`PRODUCT.md`, `DESIGN.md`), critique, audit, and polish. `PRODUCT.md` at the root is the product record: users, purpose, evidence, and the WCAG 2.2 AA standard. On first use, its launcher downloads an engine binary to a user cache and checks it against `scripts/engine-checksums.txt` in the skill. The CI Claude workflows cannot run it.
 
 | Working on                       | Read / run                                                           |
 | -------------------------------- | -------------------------------------------------------------------- |

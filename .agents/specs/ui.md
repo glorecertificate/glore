@@ -110,3 +110,12 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `globals.css` suppresses the default root transition, so only a named `<ViewTransition>` with a transition type animates (for example `course-created` on course create).
 - `AnimatedList` and `AnimatedListItem` (`src/components/ui/animated-list.tsx`) wrap `AnimatePresence mode="popLayout"`, with `variant` set to `card` or `row`.
 - For dnd-kit sortable lists, add `asChild` and `exitOnly` and pair them with `animateLayoutChangesAlways` and `measureAlways` from `src/components/ui/sortable.tsx`.
+
+## Loading states
+
+- A loading state either reproduces its content exactly, or it is a `Spinner`. Never ship an approximate or generic `Skeleton`.
+- An exact skeleton has the layout, element count, heights, and widths of the content, so nothing moves when the content arrives.
+- Build the skeleton from the layout components and size tokens of the content, so the two cannot drift apart.
+- Use a `Spinner` when the shape depends on the data, for example an unknown row count or text of variable length.
+- The swap from the loading state to the content is a short fade, never a pop. With reduced motion it is instant.
+- Check each loading state in a browser on a throttled network. Nothing on the page may move or resize when the content arrives.

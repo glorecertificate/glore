@@ -14,6 +14,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 | `pnpm run check`          | Parallel `check:types`, `check:lint`, `check:format`, `check:knip`, `check:i18n` |
 | `pnpm run test`           | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                   |
 | `pnpm run test:e2e`       | Playwright e2e against the running dev server, logged in as seeded users         |
+| `pnpm run qa:atlas`       | Screenshots and axe results per route, role, and theme in `.playwright/atlas/`   |
 | `pnpm run build`          | Production build                                                                 |
 | `pnpm run i18n:overrides` | Count overrides per locale and stale state (`--target <env>`, read-only)         |
 | `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`)  |
@@ -108,11 +109,13 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - After a run, review the `.agents/skills/` and `skills-lock.json` diff as a code change, then `git restore` and `git clean` any skill you did not mean to update.
 - `web-design-guidelines` fetches its rules at runtime from `vercel-labs/web-interface-guidelines` on `main`, so it can change with no lockfile change.
 - `agent-browser`, `sync-i18n`, `sync-docs`, and `sync-agents` are machine-wide skills invoked by name, not vendored here.
+- `impeccable` is the design skill: product and design context (`PRODUCT.md`, `DESIGN.md`), critique, audit, and polish. On first use, its launcher downloads an engine binary to a user cache and checks it against `scripts/engine-checksums.txt` in the skill. The CI Claude workflows cannot run it.
 
 | Working on                       | Read / run                                                           |
 | -------------------------------- | -------------------------------------------------------------------- |
 | Any React or Next.js code        | `vercel-react-best-practices` (apply CRITICAL > HIGH > MEDIUM > LOW) |
 | Next.js APIs and config          | `node_modules/next/dist/docs/` (version-exact, see `reference.md`)   |
+| UI design, critique, and polish  | `impeccable`                                                         |
 | UI and visual review             | `vercel-react-best-practices` + `web-design-guidelines`              |
 | Driving or verifying the real UI | `agent-browser`                                                      |
 | shadcn/ui components             | `shadcn`                                                             |

@@ -32,6 +32,7 @@ Load only the spec you need from `.agents/specs/`:
 - `code.md`: formatter, imports, lint rules, git hooks, release age.
 - `github.md`: issues, PRs, labels, Claude workflows, CI, deploys.
 - `workflow.md`: commands, seeds, translations, commits, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
+- `performance.md`: performance targets, measurement, perf CI.
 
 Work lives in GitHub issues (`github.md`). A one-PR plan lives in its draft PR and a multi-PR plan in its parent issue, so no plan stays on `main`.
 

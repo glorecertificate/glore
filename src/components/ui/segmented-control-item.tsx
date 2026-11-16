@@ -10,7 +10,7 @@ export const SegmentedControlItem = ({
 }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) => (
   <RadioGroupPrimitive.Item
     className={cn(
-      'rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-[color,background-color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-background data-[state=checked]:text-foreground data-[state=checked]:shadow-xs motion-reduce:transition-none',
+      'inline-flex h-8 items-center rounded-md px-3 text-sm font-medium text-muted-foreground transition-[color,background-color,box-shadow] outline-none focus-visible:focus-ring-inset disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-background data-[state=checked]:text-foreground data-[state=checked]:shadow-xs motion-reduce:transition-none dark:data-[state=checked]:bg-surface-selected',
       className
     )}
     data-slot="segmented-control-item"

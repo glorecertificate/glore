@@ -126,7 +126,7 @@ const QuestionItem = ({
                   'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                   option.isCorrect
                     ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-input hover:border-primary/60'
+                    : 'border-border hover:border-primary/60'
                 )}
                 onClick={() => onOptionCorrectToggle(option.id)}
                 type="button"
@@ -134,7 +134,7 @@ const QuestionItem = ({
                 {option.isCorrect && <LucideIcon name="check" className="size-3" strokeWidth={3} />}
               </button>
               <Input
-                className="h-9 flex-1 rounded-lg text-sm"
+                className="flex-1 rounded-lg text-sm"
                 onChange={e => onOptionContentChange(option.id, e.target.value)}
                 placeholder={t('activityOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
                 value={option.content[language] ?? ''}
@@ -151,13 +151,7 @@ const QuestionItem = ({
             </AnimatedListItem>
           ))}
         </AnimatedList>
-        <Button
-          className="ml-7 h-7 text-xs text-muted-foreground"
-          onClick={onAddOption}
-          size="sm"
-          type="button"
-          variant="ghost"
-        >
+        <Button className="ml-7 text-muted-foreground" onClick={onAddOption} size="xs" type="button" variant="ghost">
           <LucideIcon name="plus" className="size-3" />
           {t('addActivityOption')}
         </Button>
@@ -472,7 +466,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
               ))}
             </AnimatedList>
           </div>
-          <Button className="h-7 text-xs" onClick={addQuestion} size="sm" type="button" variant="outline">
+          <Button onClick={addQuestion} size="xs" type="button" variant="outline">
             <LucideIcon name="plus" className="size-3" />
             {t('addActivityQuestion')}
           </Button>
@@ -506,7 +500,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
               ))}
             </AnimatedList>
           </div>
-          <Button className="h-7 text-xs" onClick={addEvaluation} size="sm" type="button" variant="outline">
+          <Button onClick={addEvaluation} size="xs" type="button" variant="outline">
             <LucideIcon name="plus" className="size-3" />
             {t('addActivityEvaluation')}
           </Button>

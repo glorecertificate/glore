@@ -76,7 +76,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current` (navy) marks the current stage, with `-subtle`.
 - `success`, `warning`, `danger`, and `info` each have `-fill`, `-fill-hover`, `-subtle`, `-border`, and `-text`.
 - The shadcn names (`background`, `primary`, `muted-foreground`, `destructive`, and the rest) alias these roles. New code uses the roles.
-- `input` keeps its earlier faint value until the form controls move to `border-strong`.
+- Fields sit on `field` (`surface-0` in light, `surface-1` in dark) with a `border-strong` border. `input` stays only for the vendored editor.
 - Light surfaces are white on a gray `surface-sunken`. Dark surfaces step up in lightness, and dark borders are white at 6% and 9% alpha.
 - `--brand` is the logo light-blue fill with ink text. `--primary` aliases `action`: a deeper blue with white text in light, and `brand` in dark.
 - `danger-fill` keeps white text in both themes. The other dark fills carry ink text.
@@ -105,11 +105,23 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Fonts are variables on `<html>`: Geist (`--font-geist-sans`) for UI text and Bricolage Grotesque (`font-display`).
 - `globals.css` applies `font-display` to `h1` to `h3` and every `[data-slot$='-title']`.
 - `HeaderBreadcrumb` renders the page `h1` unless `backHref` is set. Then the content owns the only `h1`.
-- `--ring` is `action` in light and `brand` in dark. The base outline is full strength in light and 50% in dark.
+- `--ring` is `action` in light and `brand` in dark. The base outline is full strength in both themes.
 - `--radius` is `0.6rem` with `sm`, `md`, `lg`, and `xl` derivatives.
 - `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
 - The mobile breakpoint is 768px, sourced from `config/theme.json`.
 - Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`. Its `brand` is the `action` blue, because email buttons carry white text.
+
+## Controls
+
+- Buttons, fields, and selects share one height scale: `2xs` 24px, `xs` 28px, `sm` 32px, `md` 36px (the default), and `lg` 44px.
+- Icon buttons use the square sizes `icon-2xs`, `icon-xs`, `icon-sm`, `icon`, and `icon-lg` on the same scale.
+- Set the `size` prop. Never override a control height with an `h-*` or `size-*` class.
+- Fields keep 16px text below the `md` breakpoint, so iOS does not zoom on focus.
+- Every focus indicator is `focus-visible:focus-ring`, a 2px `--ring` outline 2px outside the control.
+- Fields and items in a clipped container use `focus-ring-inset`. Never build a focus indicator from `ring-*` or `border-ring`.
+- A composite field such as `InputGroup` draws the ring on the group and passes `ring={false}` to its control.
+- Inputs, textareas, selects, checkboxes, and radios use `border-border-strong` on `bg-field`. Outline buttons, badges, and toolbars use `border-border`.
+- `src/components/ui/control-size.test.ts` holds the scale.
 
 ## Elevation and motion
 

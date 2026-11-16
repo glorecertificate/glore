@@ -64,7 +64,7 @@ export const CountrySelect = ({
           <LucideIcon name="chevrons-up-down" className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0" id={contentId}>
+      <PopoverContent align="start" className="w-(--radix-popover-trigger-width) p-0" id={contentId}>
         <Command>
           <CommandInput placeholder={t('searchCountry')} />
           <CommandList>

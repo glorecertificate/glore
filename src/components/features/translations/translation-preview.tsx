@@ -44,7 +44,7 @@ export const TranslationPreview = ({ locale, source, value }: { locale: string; 
               </Label>
               {spec.kind === 'select' ? (
                 <Select onValueChange={sample => setSample(spec.name, sample)} value={samples[spec.name] ?? ''}>
-                  <SelectTrigger className="h-8 w-full" id={`${id}-${spec.name}`}>
+                  <SelectTrigger className="w-full" size="sm" id={`${id}-${spec.name}`}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

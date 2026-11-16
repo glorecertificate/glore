@@ -20,7 +20,7 @@ export const Badge = ({
 }
 
 const badgeVariants = cva(
-  `inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md whitespace-nowrap transition-[color] select-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3`,
+  `inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md whitespace-nowrap transition-[color] select-none focus-visible:focus-ring aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3`,
   {
     defaultVariants: {
       size: 'default',
@@ -35,7 +35,7 @@ const badgeVariants = cva(
       variant: {
         primary: 'bg-primary text-primary-foreground shadow-xs',
         muted: 'bg-muted text-muted-foreground',
-        outline: 'border border-input bg-background shadow-xs dark:bg-input/30',
+        outline: 'border border-border bg-field',
         ghost: 'bg-transparent text-foreground',
         brand: 'bg-brand text-brand-foreground shadow-xs',
         'brand-soft': 'bg-brand/10 text-brand-text',

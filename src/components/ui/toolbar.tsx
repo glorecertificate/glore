@@ -106,7 +106,7 @@ export const ToolbarButton = ({
 }
 
 const toolbarButtonVariants = cva(
-  `inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm text-sm font-medium whitespace-nowrap transition-[color,box-shadow] transition-discrete outline-none hover:bg-muted/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-checked:bg-accent aria-checked:text-accent-foreground aria-expanded:cursor-default! aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`,
+  `inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm text-sm font-medium whitespace-nowrap transition-[color,box-shadow] transition-discrete outline-none hover:bg-muted/50 focus-visible:focus-ring-inset disabled:pointer-events-none disabled:opacity-50 aria-checked:bg-accent aria-checked:text-accent-foreground aria-expanded:cursor-default! aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`,
   {
     defaultVariants: {
       size: 'default',
@@ -121,7 +121,7 @@ const toolbarButtonVariants = cva(
       },
       variant: {
         default: 'bg-transparent',
-        outline: 'border border-input bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground',
+        outline: 'border border-border bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground',
       },
     },
   }
@@ -217,7 +217,7 @@ const dropdownArrowVariants = cva(
       variant: {
         default:
           'bg-transparent hover:bg-muted hover:text-muted-foreground aria-checked:bg-accent aria-checked:text-accent-foreground',
-        outline: 'border border-l-0 border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
+        outline: 'border border-l-0 border-border bg-transparent hover:bg-accent hover:text-accent-foreground',
       },
     },
   }

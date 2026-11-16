@@ -202,8 +202,8 @@ export const CourseSettings = ({
                   {field.value && (
                     <Button
                       aria-label={t('removeIcon')}
-                      className="size-7 text-muted-foreground transition-colors hover:text-destructive-text"
-                      size="icon"
+                      className="text-muted-foreground transition-colors hover:text-destructive-text"
+                      size="icon-xs"
                       type="button"
                       variant="ghost"
                       onClick={() => form.setValue('icon', null, { shouldDirty: true })}

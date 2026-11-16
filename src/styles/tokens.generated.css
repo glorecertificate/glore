@@ -8,6 +8,7 @@
     --surface-muted: oklch(0.962 0.006 256);
     --surface-selected: oklch(0.942 0.009 256);
     --surface-hover: var(--surface-muted);
+    --field: var(--surface-0);
     --border-subtle: oklch(0.935 0.007 256);
     --border: oklch(0.91 0.008 256);
     --border-strong: oklch(0.651 0.018 256);
@@ -138,6 +139,7 @@
     --surface-muted: oklch(0.24 0.015 256);
     --surface-selected: oklch(0.27 0.017 256);
     --surface-hover: oklch(0.29 0.017 256);
+    --field: var(--surface-1);
     --border-subtle: oklch(1 0 0 / 6%);
     --border: oklch(1 0 0 / 9%);
     --border-strong: oklch(0.514 0.017 256);

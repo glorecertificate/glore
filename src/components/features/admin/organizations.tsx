@@ -204,7 +204,8 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       <div className="overflow-hidden rounded-xl border bg-card shadow-2xs">
         <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-4 py-3">
           <SearchInput
-            className="h-8 w-full sm:w-64"
+            className="w-full sm:w-64"
+            size="sm"
             hotkey="/"
             onValueChange={setSearch}
             placeholder={t('searchPlaceholder')}
@@ -213,7 +214,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
           {countryOptions.length > 0 && (
             <Select onValueChange={setCountry} value={country}>
-              <SelectTrigger aria-label={t('filterCountry')} className="h-8 w-auto gap-1.5 border-dashed text-sm">
+              <SelectTrigger aria-label={t('filterCountry')} className="w-auto gap-1.5 border-dashed text-sm" size="sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -230,7 +231,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="h-8 gap-1.5 border-dashed" size="sm" variant="outline">
+              <Button className="gap-1.5 border-dashed" size="sm" variant="outline">
                 <LucideIcon name="arrow-up-down" className="size-3.5" />
                 {sortLabel}
                 {sort &&
@@ -252,7 +253,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
           </DropdownMenu>
 
           {hasFilters && (
-            <Button className="h-8" onClick={resetFilters} size="sm" variant="ghost">
+            <Button onClick={resetFilters} size="sm" variant="ghost">
               {t('clearFilters')}
             </Button>
           )}

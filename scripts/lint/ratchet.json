@@ -16,10 +16,6 @@
     "no-arbitrary-value": 10,
     "no-restricted-classes": 8
   },
-  "src/components/features/auth": {
-    "no-arbitrary-value": 1,
-    "no-restricted-classes": 1
-  },
   "src/components/features/certificates": {
     "no-arbitrary-value": 40,
     "no-restricted-classes": 10
@@ -45,8 +41,8 @@
     "no-arbitrary-value": 1
   },
   "src/components/features/dashboard": {
-    "no-arbitrary-value": 2,
-    "no-restricted-classes": 2
+    "no-arbitrary-value": 1,
+    "no-restricted-classes": 1
   },
   "src/components/features/docs": {
     "no-arbitrary-value": 2,
@@ -69,8 +65,7 @@
     "no-restricted-classes": 2
   },
   "src/components/features/translations": {
-    "no-arbitrary-value": 2,
-    "no-restricted-classes": 1
+    "no-arbitrary-value": 1
   },
   "src/components/features/users": {
     "no-arbitrary-value": 2,
@@ -84,7 +79,7 @@
     "no-restricted-classes": 3
   },
   "src/components/ui": {
-    "no-arbitrary-value": 85,
-    "no-restricted-classes": 36
+    "no-arbitrary-value": 74,
+    "no-restricted-classes": 22
   }
 }

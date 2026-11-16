@@ -359,7 +359,12 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           <div className="flex h-16 items-center pl-3">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button aria-label={t('addLesson')} className="z-1 size-6 rounded-full" onClick={() => addLesson()}>
+                <Button
+                  aria-label={t('addLesson')}
+                  className="z-1 rounded-full"
+                  onClick={() => addLesson()}
+                  size="icon-2xs"
+                >
                   <LucideIcon name="plus" className="size-4" />
                 </Button>
               </TooltipTrigger>

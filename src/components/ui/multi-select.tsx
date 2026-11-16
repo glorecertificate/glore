@@ -135,7 +135,7 @@ export const MultiSelectTrigger = ({
       <div
         aria-disabled={disabled || undefined}
         className={cn(
-          'flex h-9 w-fit items-center justify-between rounded-md border border-input bg-background text-sm transition-all aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
+          'flex h-9 w-fit items-center justify-between rounded-md border border-border-strong bg-field text-sm transition-[border-color] aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
           className
         )}
         data-slot="multi-select-trigger"
@@ -149,7 +149,7 @@ export const MultiSelectTrigger = ({
           <PopoverTrigger
             aria-label={label}
             className={cn(
-              'my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed',
+              'my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:focus-ring-inset disabled:cursor-not-allowed',
               open && 'cursor-default bg-accent/50'
             )}
             disabled={disabled}

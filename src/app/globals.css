@@ -102,6 +102,7 @@
   --color-surface-muted: var(--surface-muted);
   --color-surface-selected: var(--surface-selected);
   --color-surface-hover: var(--surface-hover);
+  --color-field: var(--field);
   --color-fg-1: var(--fg-1);
   --color-fg-2: var(--fg-2);
   --color-fg-3: var(--fg-3);
@@ -196,6 +197,16 @@
   line-height: 1rem;
 }
 
+@utility focus-ring {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@utility focus-ring-inset {
+  outline: 2px solid var(--ring);
+  outline-offset: -1px;
+}
+
 @utility text-stroke-* {
   /* prettier-ignore */
   -webkit-text-stroke-width: calc(--value(number, [number], --default(1)) * 0.25px);
@@ -205,7 +216,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring dark:outline-ring/50;
+    @apply border-border outline-ring;
   }
   body {
     @apply overflow-x-hidden bg-background text-sm text-foreground;

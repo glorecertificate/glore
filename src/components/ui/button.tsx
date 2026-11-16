@@ -27,9 +27,9 @@ export interface ButtonProps
 export const buttonVariants = cva(
   [
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale] duration-150 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-    'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+    'focus-visible:focus-ring aria-invalid:border-destructive',
     'active:not-disabled:scale-[0.985] motion-reduce:active:not-disabled:scale-100',
-    'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none focus-visible:disabled:ring-0',
+    'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
   ],
   {
     defaultVariants: {
@@ -41,30 +41,30 @@ export const buttonVariants = cva(
       variant: {
         primary: 'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90',
         secondary: 'bg-secondary text-secondary-foreground hover:not-disabled:bg-secondary/80',
-        destructive:
-          'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent focus-visible:not-disabled:ring-destructive/20 dark:focus-visible:not-disabled:ring-destructive/40',
-        warning:
-          'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent focus-visible:not-disabled:ring-warning/20 dark:focus-visible:not-disabled:ring-warning/40',
-        success:
-          'bg-success text-success-foreground hover:not-disabled:bg-success-accent focus-visible:not-disabled:ring-success/20 dark:focus-visible:not-disabled:ring-success/40',
-        brand:
-          'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90 focus-visible:not-disabled:ring-brand/20 dark:focus-visible:not-disabled:ring-brand/40',
+        destructive: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent',
+        warning: 'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent',
+        success: 'bg-success text-success-foreground hover:not-disabled:bg-success-accent',
+        brand: 'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90',
         'brand-secondary':
-          'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent focus-visible:not-disabled:ring-brand-secondary/20 dark:focus-visible:not-disabled:ring-brand-secondary/40',
+          'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent',
         'brand-tertiary':
-          'bg-brand-tertiary text-brand-tertiary-foreground hover:not-disabled:bg-brand-tertiary-accent focus-visible:not-disabled:ring-brand-tertiary/20 dark:focus-visible:not-disabled:ring-brand-tertiary/40',
-        outline:
-          'border border-input bg-background text-foreground hover:not-disabled:bg-accent/60 dark:bg-input/30 dark:hover:not-disabled:bg-input/50',
-        ghost: `text-foreground hover:not-disabled:bg-accent/80 focus-visible:ring-ring! dark:hover:not-disabled:bg-accent/50 dark:focus-visible:ring-ring/50!`,
-        link: `hover:underline hover:underline-offset-2 focus-visible:ring-ring! dark:focus-visible:ring-ring/50!`,
-        transparent: `bg-transparent text-current focus-visible:ring-ring! dark:focus-visible:ring-ring/50!`,
+          'bg-brand-tertiary text-brand-tertiary-foreground hover:not-disabled:bg-brand-tertiary-accent',
+        outline: 'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60',
+        ghost: 'text-foreground hover:not-disabled:bg-accent/80 dark:hover:not-disabled:bg-accent/50',
+        link: 'hover:underline hover:underline-offset-2',
+        transparent: 'bg-transparent text-current',
       },
       size: {
-        xs: 'h-7 px-2 text-xs',
-        sm: 'h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5',
-        md: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
+        '2xs': "h-6 gap-1 px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-7 gap-1.5 px-2.5 text-xs has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-3.5",
+        sm: 'h-8 gap-1.5 px-3 has-[>svg]:px-2.5',
+        md: 'h-9 px-4 has-[>svg]:px-3',
+        lg: 'h-11 px-5 text-base has-[>svg]:px-4',
+        'icon-2xs': "size-6 [&_svg:not([class*='size-'])]:size-3.5",
+        'icon-xs': "size-7 [&_svg:not([class*='size-'])]:size-3.5",
+        'icon-sm': 'size-8',
         icon: 'size-9',
+        'icon-lg': 'size-11',
         text: 'h-auto p-0',
       },
       effect: {

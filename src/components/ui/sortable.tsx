@@ -383,7 +383,7 @@ export const SortableItem = (
         {...(asHandle && !disabled ? attributes : {})}
         {...(asHandle && !disabled ? listeners : {})}
         className={cn(
-          'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden',
+          'focus-visible:focus-ring',
           {
             'cursor-default': context.flatCursor,
             'cursor-grab': !isDragging && asHandle && !context.flatCursor,

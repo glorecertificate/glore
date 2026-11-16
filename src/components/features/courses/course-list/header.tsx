@@ -37,7 +37,7 @@ export const CourseListHeader = ({ className, ...props }: React.ComponentProps<t
       <div className="mb-1 flex w-full flex-wrap items-center justify-between gap-4 max-sm:gap-2 sm:mt-1.5 sm:gap-2">
         <div className="flex flex-wrap items-center gap-1.5 max-sm:contents">
           <SearchInput
-            className="h-9 w-80 max-sm:w-auto max-sm:flex-1 sm:mr-1"
+            className="w-80 max-sm:w-auto max-sm:flex-1 sm:mr-1"
             hotkey="/"
             placeholder={t('searchPlaceholder')}
             urlKey="q"

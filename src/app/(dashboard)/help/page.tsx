@@ -1,6 +1,7 @@
 import { HelpContent } from '@/components/features/help'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -9,9 +10,11 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const HelpPage = () => (
-  <DashboardPage title={<PageTitle namespace="Layout" name="help" />}>
-    <HelpContent />
-  </DashboardPage>
+  <MessagesScope scope="help">
+    <DashboardPage title={<PageTitle namespace="Layout" name="help" />}>
+      <HelpContent />
+    </DashboardPage>
+  </MessagesScope>
 )
 
 export default HelpPage

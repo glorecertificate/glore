@@ -2,11 +2,19 @@
 
 import { createContext, use, useState } from 'react'
 
-import { type Locale, type Messages, NextIntlClientProvider } from 'next-intl'
+import { type Locale, type Messages, NextIntlClientProvider, useLocale, useMessages, useTimeZone } from 'next-intl'
 
 import { setLocaleCookie } from '@/actions/cookies'
 import { getClientMessages } from '@/actions/i18n'
-import { DEFAULT_LOCALE, type IntlRecord, LOCALE_ITEMS, TIME_ZONE, TITLEIZED_LOCALES, localizeRecord } from '@/lib/i18n'
+import {
+  DEFAULT_LOCALE,
+  type IntlRecord,
+  LOCALE_ITEMS,
+  TIME_ZONE,
+  TITLEIZED_LOCALES,
+  localizeRecord,
+  mergeMessages,
+} from '@/lib/i18n'
 
 interface I18nContextValue {
   locale?: Locale
@@ -44,7 +52,15 @@ const useI18nContext = (value: I18nContextValue) => {
 
   const localize = <T,>(record: IntlRecord<T>, fallback?: Locale) => localizeRecord(record, localeState, fallback)
 
-  return { locale: localeState, localeItems, localize, messages, setLocale, timeZone }
+  return {
+    locale: localeState,
+    localeItems,
+    localize,
+    messages,
+    overridden: localeState !== serverLocale,
+    setLocale,
+    timeZone,
+  }
 }
 
 const I18nContext = createContext<Omit<ReturnType<typeof useI18nContext>, 'messages' | 'timeZone'> | null>(null)
@@ -66,4 +82,21 @@ export const useI18n = () => {
   const context = use(I18nContext)
   if (!context) throw new Error('useI18n must be used within an I18nProvider')
   return context
+}
+
+export const ScopedMessagesProvider = ({ children, messages }: React.PropsWithChildren<{ messages: Messages }>) => {
+  const parent = useMessages()
+  const locale = useLocale()
+  const timeZone = useTimeZone()
+  const { overridden } = useI18n()
+
+  return (
+    <NextIntlClientProvider
+      locale={locale}
+      messages={overridden ? parent : mergeMessages(parent, messages)}
+      timeZone={timeZone}
+    >
+      {children}
+    </NextIntlClientProvider>
+  )
 }

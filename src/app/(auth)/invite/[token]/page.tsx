@@ -7,6 +7,7 @@ import { InvitationStatus } from '@/components/features/organization/invite/invi
 import { PublicShell } from '@/components/features/organization/invite/public-shell'
 import { maskEmail } from '@/components/features/organization/utils'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { normalizeEmail } from '@/db/mutations/invitation'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -66,11 +67,13 @@ const InviteContent = async ({
 }
 
 const InvitePage = ({ params, searchParams }: PageProps<'/invite/[token]'>) => (
-  <PublicShell>
-    <Suspense fallback={<LoadingFallback />}>
-      <InviteContent params={params} searchParams={searchParams} />
-    </Suspense>
-  </PublicShell>
+  <MessagesScope scope="invite">
+    <PublicShell>
+      <Suspense fallback={<LoadingFallback />}>
+        <InviteContent params={params} searchParams={searchParams} />
+      </Suspense>
+    </PublicShell>
+  </MessagesScope>
 )
 
 export default InvitePage

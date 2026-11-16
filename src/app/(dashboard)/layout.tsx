@@ -8,6 +8,7 @@ import { getCurrentUser } from '@/actions/user'
 import { ImpersonationBanner } from '@/components/features/admin/impersonation-banner'
 import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { LEGAL_ACCEPT_ROOT } from '@/lib/constants'
@@ -29,13 +30,15 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
   const sidebarWidth = get('sidebarWidth')
 
   return (
-    <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
-      <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
-        <DashboardSidebar pending={pending} />
-        <SidebarInset className={cn(impersonation && 'pb-32 sm:pb-24')}>{children}</SidebarInset>
-        <ImpersonationBanner />
-      </SessionProvider>
-    </SidebarProvider>
+    <MessagesScope scope="dashboard">
+      <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
+        <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
+          <DashboardSidebar pending={pending} />
+          <SidebarInset className={cn(impersonation && 'pb-32 sm:pb-24')}>{children}</SidebarInset>
+          <ImpersonationBanner />
+        </SessionProvider>
+      </SidebarProvider>
+    </MessagesScope>
   )
 }
 

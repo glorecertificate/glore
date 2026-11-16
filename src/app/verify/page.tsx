@@ -9,6 +9,7 @@ import { LookupForm } from '@/components/features/certificates/verify/lookup-for
 import { VerifyShell } from '@/components/features/certificates/verify/verify-shell'
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { Banner } from '@/components/ui/banner'
 import { VERIFY_ROOT } from '@/lib/constants'
 
@@ -43,7 +44,9 @@ const VerifyContent = async ({ searchParams }: Pick<PageProps<'/verify'>, 'searc
 
 const VerifyPage = (props: PageProps<'/verify'>) => (
   <Suspense fallback={<LoadingFallback size="full" />}>
-    <VerifyContent searchParams={props.searchParams} />
+    <MessagesScope scope="verify">
+      <VerifyContent searchParams={props.searchParams} />
+    </MessagesScope>
   </Suspense>
 )
 

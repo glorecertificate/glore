@@ -1,5 +1,6 @@
 import { type NamespaceKeys, type NestedKeyOf, type createTranslator } from 'next-intl'
 
+import { type MessageTree } from '@/lib/message-overrides'
 import { defaultLocale, locales, serverNamespaces, titleizedLocales } from '~/config/i18n.json'
 import type messages from '~/messages/en.json'
 
@@ -51,6 +52,31 @@ export const clientMessages = (messages: Messages) =>
   Object.fromEntries(
     Object.entries(messages).filter(([namespace]) => !SERVER_NAMESPACES.includes(namespace))
   ) as Messages
+
+const isMessageTree = (value: unknown): value is MessageTree =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const mergeTrees = (base: MessageTree, extra: MessageTree): MessageTree =>
+  Object.entries(extra).reduce<MessageTree>((merged, [key, value]) => {
+    const current = merged[key]
+    return { ...merged, [key]: isMessageTree(current) && isMessageTree(value) ? mergeTrees(current, value) : value }
+  }, base)
+
+const pickPath = (tree: MessageTree, [key, ...rest]: string[]): MessageTree => {
+  const value = key === undefined ? undefined : tree[key]
+  if (key === undefined || value === undefined) return {}
+  if (rest.length === 0 || !isMessageTree(value)) return { [key]: value }
+  return { [key]: pickPath(value, rest) }
+}
+
+export const mergeMessages = (base: Messages, extra: Messages) =>
+  mergeTrees(base as unknown as MessageTree, extra as unknown as MessageTree) as unknown as Messages
+
+export const pickMessages = (messages: Messages, paths: readonly Namespace[]) =>
+  paths.reduce<MessageTree>(
+    (picked, path) => mergeTrees(picked, pickPath(messages as unknown as MessageTree, path.split('.'))),
+    {}
+  ) as unknown as Messages
 
 export const localizeRecord = <T>(record: IntlRecord<T>, locale: Locale, fallback?: Locale) => {
   if (!record || typeof record !== 'object') return ''

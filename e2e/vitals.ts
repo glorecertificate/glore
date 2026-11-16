@@ -232,7 +232,9 @@ export const readLoad = async (page: Page) =>
     const [navigation] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
     const fcp = performance.getEntriesByName('first-contentful-paint')[0]?.startTime ?? 0
     const scripts = (performance.getEntriesByType('resource') as PerformanceResourceTiming[]).filter(
-      entry => entry.initiatorType === 'script' || /\.m?js(\?|$)/u.test(entry.name)
+      entry =>
+        (entry.initiatorType === 'script' || /\.m?js(\?|$)/u.test(entry.name)) &&
+        !new URL(entry.name).pathname.startsWith('/_vercel/')
     )
     return {
       cls: store.cls,

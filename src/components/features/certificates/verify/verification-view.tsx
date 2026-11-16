@@ -8,6 +8,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { Image } from '@/components/ui/image'
 import { LevelDots } from '@/components/ui/level-dots'
 import { QrCode } from '@/components/ui/qr-code'
@@ -186,19 +187,19 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
 
       <Card>
         <CardContent className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
-          <dl className="grid gap-3 text-sm">
-            <div>
-              <dt className="text-xs text-muted-foreground">{t('code')}</dt>
-              <dd className="font-mono font-medium">{verification.code}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">{t('issued')}</dt>
-              <dd>{dateFormatter.format(new Date(verification.issuedAt))}</dd>
-            </div>
+          <DescriptionList>
+            <DescriptionItem>
+              <DescriptionTerm>{t('code')}</DescriptionTerm>
+              <DescriptionDetails className="font-mono font-medium">{verification.code}</DescriptionDetails>
+            </DescriptionItem>
+            <DescriptionItem>
+              <DescriptionTerm>{t('issued')}</DescriptionTerm>
+              <DescriptionDetails>{dateFormatter.format(new Date(verification.issuedAt))}</DescriptionDetails>
+            </DescriptionItem>
             {organization.legalRepresentative && (
-              <div>
-                <dt className="text-xs text-muted-foreground">{t('signatory')}</dt>
-                <dd className="flex flex-col gap-1">
+              <DescriptionItem>
+                <DescriptionTerm>{t('signatory')}</DescriptionTerm>
+                <DescriptionDetails className="flex flex-col gap-1">
                   {organization.signatureUrl && (
                     <Image
                       alt=""
@@ -210,10 +211,10 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
                     />
                   )}
                   {organization.legalRepresentative}
-                </dd>
-              </div>
+                </DescriptionDetails>
+              </DescriptionItem>
             )}
-          </dl>
+          </DescriptionList>
           {!revoked && <QrCode label={t('qrLabel')} size={112} value={url} />}
         </CardContent>
       </Card>

@@ -2,9 +2,12 @@
 
 import { useRef, useState } from 'react'
 
+import { useTranslations } from 'next-intl'
+
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Kbd } from '@/components/ui/kbd'
 import { useSearch } from '@/hooks/use-search'
 import { cn } from '@/lib/utils'
 
@@ -26,6 +29,7 @@ export const SearchInput = ({
   onValueChange?: (value: string) => void
   urlKey?: string
 }) => {
+  const t = useTranslations('Common')
   const inputRef = useRef<HTMLInputElement>(null)
   const [focused, setFocused] = useState(false)
   const { searchValue, setSearch } = useSearch({ urlKey })
@@ -61,25 +65,22 @@ export const SearchInput = ({
       />
       {showClear && (
         <Button
-          className="absolute right-1.5 size-5 rounded-sm p-0 hover:bg-muted"
+          aria-label={t('clearSearch')}
+          className="absolute right-1.5 rounded-sm hover:bg-muted"
           onClick={() => {
             setValue('')
             onClear?.()
             inputRef.current?.focus()
           }}
           onMouseDown={e => e.preventDefault()}
-          size="text"
+          size="icon-2xs"
           type="button"
           variant="ghost"
         >
           <LucideIcon name="x" className="size-3 text-muted-foreground" />
         </Button>
       )}
-      {showHotkey && (
-        <kbd className="pointer-events-none absolute right-2 hidden size-5 items-center justify-center rounded-md border bg-muted text-[11px] font-medium text-muted-foreground sm:inline-flex">
-          {hotkey}
-        </kbd>
-      )}
+      {showHotkey && <Kbd className="absolute right-2 hidden sm:inline-flex">{hotkey}</Kbd>}
     </div>
   )
 }

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type MemberDetail } from '@/actions/organizations/members'
+import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { useI18n } from '@/components/providers/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -12,32 +13,9 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
-import { type CertificateStatus } from '@/db/queries/certificate'
 import { timestampMillis } from '@/db/queries/organization'
 
 import { formatRoleLabel } from './utils'
-
-const STATUS_KEYS = {
-  approved: 'statusApproved',
-  changes_requested: 'statusChangesRequested',
-  draft: 'statusDraft',
-  in_review: 'statusInReview',
-  rejected: 'statusRejected',
-  revoked: 'statusRevoked',
-  submitted: 'statusSubmitted',
-  withdrawn: 'statusWithdrawn',
-} as const satisfies Record<CertificateStatus, string>
-
-const STATUS_VARIANTS = {
-  approved: 'success',
-  changes_requested: 'warning',
-  draft: 'muted',
-  in_review: 'info',
-  rejected: 'destructive',
-  revoked: 'destructive',
-  submitted: 'info',
-  withdrawn: 'muted',
-} satisfies Record<CertificateStatus, React.ComponentProps<typeof Badge>['variant']>
 
 const Metric = ({ label, value }: { label: string; value: string }) => (
   <div className="rounded-lg border bg-muted/25 p-3">
@@ -62,7 +40,6 @@ export const MemberDrawer = ({
   const { localize } = useI18n()
   const { dateTime, number } = useFormatter()
   const t = useTranslations('Organization')
-  const tCertificates = useTranslations('CertificateStatus')
   const tCommon = useTranslations('Common')
 
   const formatDate = (value: string) => dateTime(new Date(timestampMillis(value)), { dateStyle: 'medium' })
@@ -149,9 +126,7 @@ export const MemberDrawer = ({
                     {detail.certificates.map(certificate => (
                       <li className="flex items-center justify-between gap-3 px-3 py-2 text-sm" key={certificate.id}>
                         <div className="min-w-0">
-                          <Badge variant={STATUS_VARIANTS[certificate.status]}>
-                            {tCertificates(STATUS_KEYS[certificate.status])}
-                          </Badge>
+                          <CertificateStatusBadge status={certificate.status} />
                           <p className="mt-1 text-xs text-muted-foreground">
                             {t('certificateSkills', { count: certificate.skillCount })}
                             {certificate.issuedAt && ` · ${formatDate(certificate.issuedAt)}`}

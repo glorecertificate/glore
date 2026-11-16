@@ -11,6 +11,13 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
 - `StatCard` composes `NumberTicker`. Formatting follows next-intl, and the ticker respects reduced motion.
 - `Banner` supplies semantic status variants.
+- `StatusBadge` takes a `tone` (`neutral`, `info`, `success`, `warning`, `danger`) and an optional icon.
+- A domain status has one `StatusMeta` map (icon, label key, tone) in its feature folder. `CERTIFICATE_STATUS` lives in `features/certificates/status.ts`.
+- Render a certificate status with `CertificateStatusBadge`, and read a status label from `CERTIFICATE_STATUS`. Never add a second map.
+- `Kbd` and `KbdGroup` render key hints. `useModifierKey()` returns `⌘` on Apple systems and `Ctrl` elsewhere. Never hard-code `⌘`.
+- `DescriptionList` has three layouts: `stacked` (label above value, `columns={2}` from `sm`), `rows` (a 12rem label column with dividers), and `inline` (label left, value right).
+- A `DescriptionItem` holds only its term and details. Put an action such as `CopyButton` inside `DescriptionDetails`.
+- `EmptyDescription` renders a `p`, so pass phrasing content only.
 
 ### Layout rules
 
@@ -86,6 +93,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 
 - Legacy status names (`success`, `warning`, `destructive`, `info`) alias the `*-fill` roles.
 - Text uses the `*-text` tokens, since fills fail AA as text on white or their own tint.
+- Status badges sit on `*-subtle`, because the generator checks `*-text` on `*-subtle` in both themes.
 - Never put `text-muted-foreground/NN` on meaningful text.
 - Fills, icons, and charts keep `brand`.
 
@@ -101,7 +109,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Brand roles: blue for primary actions, active navigation, focus, and links.
 - Brand roles: olive for achievement and secondary data. Navy (`brand-tertiary-text` as text) for tertiary data.
 - Status colors mark state only, never decoration.
-- Never use raw Tailwind palette colors (`amber-500`) for state. Use the `Badge` variants (`success`, `warning`, `destructive`, `info`, `brand-soft`) or `bg-<status>/10 text-<status>-text`.
+- Never use raw Tailwind palette colors (`amber-500`) for state. Use `StatusBadge`, the `Badge` variants, or `bg-<status>-subtle text-<status>-text`.
 - Fonts are variables on `<html>`: Geist (`--font-geist-sans`) for UI text and Bricolage Grotesque (`font-display`).
 - `globals.css` applies `font-display` to `h1` to `h3` and every `[data-slot$='-title']`.
 - `HeaderBreadcrumb` renders the page `h1` unless `backHref` is set. Then the content owns the only `h1`.

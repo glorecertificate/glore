@@ -7,6 +7,7 @@ import { useWatch } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { type ApplicationInput, type ApplicationStep } from '@/db/queries/organization-application'
 import { type MessageKey } from '@/lib/i18n'
@@ -14,10 +15,10 @@ import { type MessageKey } from '@/lib/i18n'
 import { type ApplicationForm } from './types'
 
 const Row = ({ label, value }: { label: string; value: string }) => (
-  <div className="grid gap-0.5 py-2 sm:grid-cols-[12rem_1fr] sm:gap-4">
-    <dt className="text-sm text-muted-foreground">{label}</dt>
-    <dd className="text-sm font-medium wrap-break-word">{value}</dd>
-  </div>
+  <DescriptionItem>
+    <DescriptionTerm>{label}</DescriptionTerm>
+    <DescriptionDetails>{value}</DescriptionDetails>
+  </DescriptionItem>
 )
 
 export const CharterStep = ({ form, onEdit }: { form: ApplicationForm; onEdit: (step: ApplicationStep) => void }) => {
@@ -73,11 +74,11 @@ export const CharterStep = ({ form, onEdit }: { form: ApplicationForm; onEdit: (
                 {t('edit')}
               </Button>
             </div>
-            <dl className="mt-2 divide-y">
+            <DescriptionList className="mt-2" layout="rows">
               {section.rows.map(([label, value]) => (
                 <Row key={label} label={label} value={value || empty} />
               ))}
-            </dl>
+            </DescriptionList>
           </section>
         ))}
       </div>

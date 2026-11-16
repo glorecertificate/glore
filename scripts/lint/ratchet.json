@@ -75,11 +75,11 @@
     "no-default-palette": 23
   },
   "src/components/layout": {
-    "no-arbitrary-value": 8,
-    "no-restricted-classes": 3
+    "no-arbitrary-value": 6,
+    "no-restricted-classes": 1
   },
   "src/components/ui": {
-    "no-arbitrary-value": 74,
-    "no-restricted-classes": 22
+    "no-arbitrary-value": 72,
+    "no-restricted-classes": 20
   }
 }

@@ -11,6 +11,7 @@ import {
   type TutorQueueTab,
 } from '@/components/features/certificates/params'
 import { ageTone } from '@/components/features/certificates/rules'
+import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useTutorQueueAge, useTutorQueueStatus, useTutorQueueTab } from '@/components/features/certificates/use-params'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -20,16 +21,6 @@ import { useSearch } from '@/hooks/use-search'
 import { fullName } from '@/lib/utils'
 
 const ALL = 'all'
-
-const STATUS_LABEL_KEYS = {
-  approved: 'statusApproved',
-  changes_requested: 'statusChangesRequested',
-  in_review: 'statusInReview',
-  rejected: 'statusRejected',
-  revoked: 'statusRevoked',
-  submitted: 'statusSubmitted',
-  withdrawn: 'statusWithdrawn',
-} as const
 
 export const TutorCertificatesContent = ({
   assigned,
@@ -77,7 +68,7 @@ export const TutorCertificatesContent = ({
             <SelectItem value={ALL}>{t('allStatuses')}</SelectItem>
             {statusOptions.map(option => (
               <SelectItem key={option} value={option}>
-                {tStatus(STATUS_LABEL_KEYS[option as keyof typeof STATUS_LABEL_KEYS])}
+                {tStatus(CERTIFICATE_STATUS[option as keyof typeof CERTIFICATE_STATUS].labelKey)}
               </SelectItem>
             ))}
           </SelectContent>

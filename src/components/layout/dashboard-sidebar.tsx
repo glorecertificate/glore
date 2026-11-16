@@ -45,6 +45,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Image } from '@/components/ui/image'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { Link } from '@/components/ui/link'
 import {
   Sidebar,
@@ -65,6 +66,7 @@ import {
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
+import { useModifierKey } from '@/hooks/use-modifier-key'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { type IconName } from '@/lib/types'
 import { cn, sleep } from '@/lib/utils'
@@ -472,6 +474,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 const DashboardSidebarSearch = () => {
   const t = useTranslations('Search')
   const tLayout = useTranslations('Layout')
+  const modifierKey = useModifierKey()
   const [open, setOpen] = useState(false)
   const [activated, setActivated] = useState(false)
 
@@ -506,10 +509,10 @@ const DashboardSidebarSearch = () => {
               <LucideIcon name="search" />
               <span className="flex flex-1 items-center justify-between">
                 {t('trigger')}
-                <kbd className="flex items-center gap-0.5 font-mono text-[13px] text-muted-foreground/70">
-                  <span className="text-[15px]">{'⌘'}</span>
-                  <span>{settings.searchShortcut.toUpperCase()}</span>
-                </kbd>
+                <KbdGroup>
+                  <Kbd>{modifierKey}</Kbd>
+                  <Kbd>{settings.searchShortcut.toUpperCase()}</Kbd>
+                </KbdGroup>
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>

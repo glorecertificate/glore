@@ -6,6 +6,7 @@ import { type CertificateReviewNotes } from '@/actions/certificates/queries'
 import { CERTIFICATE_SECTIONS } from '@/components/features/certificates/schemas'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { type Certificate } from '@/db/queries/certificate'
 
 export const CertificateFeedback = ({
@@ -51,16 +52,14 @@ export const CertificateFeedback = ({
       <CardContent className="flex flex-col gap-4">
         {general && <p className="text-sm whitespace-pre-wrap">{general}</p>}
         {sections.length > 0 && (
-          <dl className="flex flex-col gap-3">
+          <DescriptionList>
             {sections.map(({ section, text }) => (
-              <div className="flex flex-col gap-0.5" key={section}>
-                <dt className="text-xs font-medium text-muted-foreground uppercase">
-                  {t(`feedback.sections.${section}`)}
-                </dt>
-                <dd className="text-sm whitespace-pre-wrap">{text}</dd>
-              </div>
+              <DescriptionItem key={section}>
+                <DescriptionTerm>{t(`feedback.sections.${section}`)}</DescriptionTerm>
+                <DescriptionDetails className="whitespace-pre-wrap">{text}</DescriptionDetails>
+              </DescriptionItem>
             ))}
-          </dl>
+          </DescriptionList>
         )}
       </CardContent>
     </Card>

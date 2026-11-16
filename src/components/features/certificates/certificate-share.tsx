@@ -9,6 +9,7 @@ import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CopyButton } from '@/components/ui/copy-button'
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { QrCode } from '@/components/ui/qr-code'
 import { type Certificate } from '@/db/queries/certificate'
 import { cn } from '@/lib/utils'
@@ -107,26 +108,23 @@ export const CertificateShare = ({
               </a>
             </Button>
           </div>
-          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <DescriptionList className="gap-2" columns={2}>
             {fields.map(field => (
-              <div
-                className="flex min-w-0 items-center justify-between gap-3 rounded-md bg-muted/40 px-3 py-1.5"
-                key={field.key}
-              >
-                <div className="min-w-0">
-                  <dt className="text-xs text-muted-foreground">{field.label}</dt>
-                  <dd className="text-sm wrap-anywhere">{field.value}</dd>
-                </div>
-                <CopyButton
-                  aria-label={t('copyField', { field: field.label })}
-                  className="shrink-0"
-                  copiedLabel={t('linkCopied')}
-                  size="sm"
-                  value={field.value}
-                />
-              </div>
+              <DescriptionItem className="relative rounded-md bg-muted/40 py-1.5 pr-12 pl-3" key={field.key}>
+                <DescriptionTerm>{field.label}</DescriptionTerm>
+                <DescriptionDetails className="wrap-anywhere">
+                  {field.value}
+                  <CopyButton
+                    aria-label={t('copyField', { field: field.label })}
+                    className="absolute top-1/2 right-1.5 -translate-y-1/2"
+                    copiedLabel={t('linkCopied')}
+                    size="sm"
+                    value={field.value}
+                  />
+                </DescriptionDetails>
+              </DescriptionItem>
             ))}
-          </dl>
+          </DescriptionList>
         </div>
       </CardContent>
     </Card>

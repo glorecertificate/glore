@@ -5,9 +5,11 @@ import { usePathname, useSearchParams } from 'next/navigation'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { Link, LinkProps } from '@/components/ui/link'
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useModifierKey } from '@/hooks/use-modifier-key'
 import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
 import settings from '~/config/app.json'
@@ -15,15 +17,19 @@ import metadata from '~/config/metadata.json'
 
 export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<typeof SidebarTrigger>) => {
   const { action } = useSidebar()
+  const modifierKey = useModifierKey()
 
   return (
     <Tooltip delayDuration={600} disableHoverableContent>
       <TooltipTrigger asChild>
         <SidebarTrigger className={cn('-ml-1', className)} {...props} />
       </TooltipTrigger>
-      <TooltipContent showArrow side="right">
-        <p className="text-xs font-medium">{action}</p>
-        <p className="font-mono text-[11px] text-muted-foreground">{`⌘ + ${settings.sidebarShortcut.toUpperCase()}`}</p>
+      <TooltipContent className="flex items-center gap-2" showArrow side="right">
+        <span className="text-xs font-medium">{action}</span>
+        <KbdGroup>
+          <Kbd>{modifierKey}</Kbd>
+          <Kbd>{settings.sidebarShortcut.toUpperCase()}</Kbd>
+        </KbdGroup>
       </TooltipContent>
     </Tooltip>
   )

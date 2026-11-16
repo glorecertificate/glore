@@ -9,6 +9,7 @@ import { type OrgTutor } from '@/components/features/certificates/certificate-re
 import { CertificateRowActions } from '@/components/features/certificates/certificate-row-actions'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { ageTone, daysBetween } from '@/components/features/certificates/rules'
+import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useI18n } from '@/components/providers/i18n'
 import { DataTable } from '@/components/ui/data-table'
 import { Input } from '@/components/ui/input'
@@ -29,16 +30,6 @@ const STATUSES = [
   'withdrawn',
   'revoked',
 ] as const satisfies CertificateStatus[]
-
-const STATUS_LABEL_KEYS = {
-  approved: 'statusApproved',
-  changes_requested: 'statusChangesRequested',
-  in_review: 'statusInReview',
-  rejected: 'statusRejected',
-  revoked: 'statusRevoked',
-  submitted: 'statusSubmitted',
-  withdrawn: 'statusWithdrawn',
-} as const satisfies Record<(typeof STATUSES)[number], string>
 
 const PIPELINE = ['submitted', 'in_review', 'changes_requested', 'approved'] as const
 
@@ -162,7 +153,7 @@ export const OrganizationCertificates = ({
                 <SelectItem value={ALL}>{t('allStatuses')}</SelectItem>
                 {STATUSES.map(key => (
                   <SelectItem key={key} value={key}>
-                    {tCertificates(STATUS_LABEL_KEYS[key])}
+                    {tCertificates(CERTIFICATE_STATUS[key].labelKey)}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -5,6 +5,7 @@ import { AdminOverviewShortcuts } from '@/components/features/admin/overview-sho
 import { hasMonthlyActivity, monthStart, toDuration } from '@/components/features/admin/overview-utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { StatCard } from '@/components/ui/stat-card'
 import { type AdminOverview as AdminOverviewData } from '@/db/queries/admin-overview'
 import config from '~/config/app.json'
@@ -112,16 +113,16 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
           </CardHeader>
           <CardContent>
             {review.averageHours !== null && review.medianHours !== null && (
-              <dl className="space-y-4 text-sm">
-                <div className="flex items-center justify-between gap-3">
-                  <dt>{t('reviewAverage')}</dt>
-                  <dd className="font-medium tabular-nums">{duration(review.averageHours)}</dd>
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <dt>{t('reviewMedian')}</dt>
-                  <dd className="font-medium tabular-nums">{duration(review.medianHours)}</dd>
-                </div>
-              </dl>
+              <DescriptionList layout="inline">
+                <DescriptionItem>
+                  <DescriptionTerm>{t('reviewAverage')}</DescriptionTerm>
+                  <DescriptionDetails className="tabular-nums">{duration(review.averageHours)}</DescriptionDetails>
+                </DescriptionItem>
+                <DescriptionItem>
+                  <DescriptionTerm>{t('reviewMedian')}</DescriptionTerm>
+                  <DescriptionDetails className="tabular-nums">{duration(review.medianHours)}</DescriptionDetails>
+                </DescriptionItem>
+              </DescriptionList>
             )}
           </CardContent>
         </Card>

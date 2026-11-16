@@ -133,7 +133,8 @@ src/
 - It stays in `ui/` so a CLI re-pull keeps working. Treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them.
 - The app touches it only through the `index.tsx` barrel and `provider.tsx`.
 - The AI wiring lives in `use-chat.ts` (`DefaultChatTransport` to `/api/v1/ai/command`, chat registered on `AIChatPlugin` from `plugins/ai.tsx` `useHooks`). Keep it when re-pulling.
-- Learner lessons never load the vendored `provider.tsx`: `features/courses/course-player/reader-provider.tsx` builds a read-only Plate editor from `reader-plugins.ts` (no AI, copilot, toolbar, dnd, slash, emoji, or autoformat kits), keeping the AI SDK out of learner chunks.
+- Learner lessons never load the vendored `provider.tsx`, which keeps the AI SDK out of learner chunks.
+- Instead, `features/courses/course-player/reader-provider.tsx` builds a read-only Plate editor from `reader-plugins.ts`, without the AI, copilot, toolbar, dnd, slash, emoji, or autoformat kits.
 
 ## Server vs client components
 
@@ -153,7 +154,8 @@ src/
 - Every export of a `'use server'` file is a client-callable action, so a cached fetch that takes a `userId` there would serve any user's data.
 - A page that must navigate instantly reads URL state on the client (nuqs) instead of awaiting `searchParams`.
 - The saved course-list filters (`gl_courseListParams`) redirect in `src/proxy.ts` for document requests and through `history.replaceState` in `useCourseListParams` on client navigation.
-- `checkRateLimit` awaits `connection()` first: reading the clock after `headers()` logs "unstable value `Date.now()` while prerendering" under partial prefetching.
+- `checkRateLimit`, `getAuthUser()`, and the impersonation state await `connection()` before a clock read, such as the one in `auth.api.getSession`.
+- Without it, a clock read after `headers()` logs "unstable value `Date.now()` while prerendering" under partial prefetching.
 
 ## Events, notifications, and email
 

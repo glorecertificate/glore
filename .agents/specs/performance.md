@@ -44,6 +44,7 @@ The targets come from the Core Web Vitals "good" thresholds and the RAIL respons
 - `e2e/navigation.perf.ts`: a sidebar link click from a settled page to another main page.
 - `e2e/interactions.perf.ts`: the command palette, the notification popover, a settings tab, and the sidebar toggle.
 - `e2e/vitals.ts`: the profiles, the in-page observers, and the readers. Each case writes one JSON file to `.playwright/perf/results/`.
+- A load result also keeps `frames`: for each run, the blocking frames after FCP with their three longest scripts. Use it to find what a TBT regression counts.
 
 Add a case to the file of its kind for each new journey, page, or primary interaction.
 

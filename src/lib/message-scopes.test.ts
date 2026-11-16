@@ -141,6 +141,30 @@ describe('message scopes', () => {
     }
   )
 
+  it('serves the certificates section from the dashboard scope, so client navigation does not resend it', () => {
+    const section = path.join(APP, '(dashboard)', 'certificates')
+    const provided = [...MESSAGE_SCOPES.root, ...MESSAGE_SCOPES.dashboard]
+    const needs = new Set(
+      entries.filter(entry => entry.startsWith(section)).flatMap(entry => [...needsOf(entry, false)])
+    )
+    expect(scopesIn(path.join(section, 'layout.tsx'))).toEqual([])
+    expect([...needs].filter(need => !covered(need, provided)).sort()).toEqual([])
+  })
+
+  it('repeats no dashboard namespace in a scope below the dashboard layout', () => {
+    const dashboard = path.join(APP, '(dashboard)')
+    const nested = new Set(
+      globSync('src/app/(dashboard)/**/*.tsx', { cwd: ROOT })
+        .map(file => path.join(ROOT, file))
+        .filter(file => file !== path.join(dashboard, 'layout.tsx'))
+        .flatMap(file => scopesIn(file))
+    )
+    const repeated = [...nested]
+      .flatMap(scope => MESSAGE_SCOPES[scope].map(namespace => `${scope}: ${namespace}`))
+      .filter(entry => covered(entry.split(': ')[1] ?? '', MESSAGE_SCOPES.dashboard))
+    expect(repeated).toEqual([])
+  })
+
   it('keeps every scope path in the English catalog', async () => {
     const { default: messages } = await import('~/messages/en.json')
     const exists = (scopePath: string) =>

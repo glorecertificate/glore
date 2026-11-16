@@ -6,6 +6,7 @@ import {
   RUNS,
   expectPath,
   openContext,
+  readFrames,
   readLoad,
   record,
   sampleTargets,
@@ -34,7 +35,7 @@ for (const profile of PROFILE_NAMES) {
           await page.goto(path)
           await settle(page)
           expectPath(page, path)
-          return [await readLoad(page)]
+          return [{ frames: await readFrames(page), load: await readLoad(page) }]
         } finally {
           await context.close()
         }
@@ -43,9 +44,10 @@ for (const profile of PROFILE_NAMES) {
         await record(
           `load ${profile} ${role} ${path}`,
           {
-            devMode: runs.some(run => run.devMode),
+            devMode: runs.some(run => run.load.devMode),
+            frames: runs.map(run => run.frames),
             kind: 'load',
-            ...summarize(runs),
+            ...summarize(runs.map(run => run.load)),
             path,
             profile,
             role,

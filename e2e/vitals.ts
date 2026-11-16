@@ -35,6 +35,7 @@ interface Target {
 interface FrameEntry {
   blocking: number
   duration: number
+  scripts: string[]
   start: number
 }
 
@@ -70,8 +71,17 @@ interface ShiftEntry extends PerformanceEntry {
   value: number
 }
 
+interface ScriptTiming {
+  duration: number
+  invoker: string
+  invokerType: string
+  sourceCharPosition: number
+  sourceURL: string
+}
+
 interface AnimationFrameEntry extends PerformanceEntry {
   blockingDuration: number
+  scripts?: ScriptTiming[]
 }
 
 interface ObserverInit extends PerformanceObserverInit {
@@ -119,7 +129,14 @@ const observeVitals = () => {
   })
   observe('long-animation-frame', entries => {
     for (const entry of entries as AnimationFrameEntry[]) {
-      store.frames.push({ blocking: entry.blockingDuration, duration: entry.duration, start: entry.startTime })
+      const scripts = (entry.scripts ?? [])
+        .toSorted((left, right) => right.duration - left.duration)
+        .slice(0, 3)
+        .map(
+          script =>
+            `${Math.round(script.duration)} ${script.invokerType} ${script.invoker.slice(0, 80)} ${script.sourceURL.split('/').at(-1) ?? ''}:${script.sourceCharPosition}`
+        )
+      store.frames.push({ blocking: entry.blockingDuration, duration: entry.duration, scripts, start: entry.startTime })
     }
   })
   observe(
@@ -246,6 +263,19 @@ export const readLoad = async (page: Page) =>
       tbt: store.frames.filter(frame => frame.start >= fcp).reduce((total, frame) => total + frame.blocking, 0),
       ttfb: navigation?.responseStart ?? 0,
     }
+  })
+
+export const readFrames = async (page: Page) =>
+  await page.evaluate(() => {
+    const fcp = performance.getEntriesByName('first-contentful-paint')[0]?.startTime ?? 0
+    return window.perfVitals.frames
+      .filter(frame => frame.start >= fcp && frame.blocking > 0)
+      .map(({ blocking, duration, scripts, start }) => ({
+        blocking: Math.round(blocking),
+        duration: Math.round(duration),
+        scripts,
+        start: Math.round(start),
+      }))
   })
 
 export const resetMarks = async (page: Page) =>

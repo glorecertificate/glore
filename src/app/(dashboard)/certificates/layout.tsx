@@ -3,7 +3,6 @@ import { Suspense } from 'react'
 
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { MessagesScope } from '@/components/providers/messages-scope'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -22,9 +21,7 @@ const CertificatesLayoutContent = async ({ children }: React.PropsWithChildren) 
 
 const CertificatesLayout = ({ children }: LayoutProps<'/certificates'>) => (
   <Suspense fallback={<LoadingFallback size="full" />}>
-    <MessagesScope scope="certificates">
-      <CertificatesLayoutContent>{children}</CertificatesLayoutContent>
-    </MessagesScope>
+    <CertificatesLayoutContent>{children}</CertificatesLayoutContent>
   </Suspense>
 )
 

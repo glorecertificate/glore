@@ -176,6 +176,9 @@ The two layers stay separate because UI shapes diverge from table columns.
 - The root layout passes only `MESSAGE_SCOPES.root` (`lib/message-scopes.ts`) to `I18nProvider`, through `pickMessages()`.
 - A layout or page adds the namespaces of its client components with `<MessagesScope scope="<name>">` (`providers/messages-scope.tsx`).
 - Put a page scope inside the top-level `Suspense` of the page, so the existing fallback covers its message read.
+- Each client navigation into a section sends the scopes of that section again, twice: in the dynamic data and in its runtime prefetch copy.
+- So the `dashboard` scope also holds the certificate namespaces. A larger response for `/certificates` made React hold the reveal for its 300 ms Suspense throttle.
+- A scope below the dashboard layout never repeats a namespace of the `dashboard` scope.
 - `src/lib/message-scopes.test.ts` fails when a client component on a route uses a namespace that no scope on that route provides.
 - `loadMessages` layers `en` under the locale, then applies published `message_overrides` rows.
 - An override must pass three checks: the key exists in `en`, its `messageSignature` matches `en`, and `icu-minify/compile` works in builds.

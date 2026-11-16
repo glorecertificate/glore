@@ -11,7 +11,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 | ------------------------- | -------------------------------------------------------------------------------- |
 | `pnpm run dev`            | Dev server at `https://glore.localhost` (portless, port 45673)                   |
 | `pnpm run dev:clean`      | Wipe `.next`, then start dev (reclaims Turbopack disk)                           |
-| `pnpm run check`          | Parallel `check:types`, `check:lint`, `check:format`, `check:knip`, `check:i18n` |
+| `pnpm run check`          | Every `check:*` script in parallel: types, lint, format, knip, i18n, theme       |
 | `pnpm run test`           | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                   |
 | `pnpm run test:e2e`       | Playwright e2e against the running dev server, logged in as seeded users         |
 | `pnpm run test:perf`      | Playwright perf cases against `E2E_BASE_URL` (`performance.md`)                  |
@@ -22,6 +22,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 | `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`)  |
 | `pnpm run content:check`  | Validate `content/` courses, lessons, and docs without touching a database       |
 | `pnpm run typegen`        | Generate route and public-file types into `types/`                               |
+| `pnpm run theme`          | Generate color tokens and email colors from `config/theme.json` (`ui.md`)        |
 | `pnpm run db <command>`   | drizzle-kit (`migrate`, `generate`, `studio`, ...)                               |
 | `pnpm run db:up`          | Local Postgres in Docker on port 5433 (used by `next dev`)                       |
 | `pnpm run db:reset`       | Wipe and recreate the local Postgres volume                                      |

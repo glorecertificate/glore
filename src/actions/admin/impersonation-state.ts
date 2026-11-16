@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { headers } from 'next/headers'
+import { connection } from 'next/server'
 import { cache } from 'react'
 
 import { and, eq, sql } from 'drizzle-orm'
@@ -27,6 +28,7 @@ const findReason = async (adminId: string, sessionId: string) => {
 }
 
 const currentSession = async (fresh: boolean) => {
+  await connection()
   const session = await auth.api.getSession({
     headers: await headers(),
     query: fresh ? { disableCookieCache: true } : undefined,

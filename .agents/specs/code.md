@@ -120,6 +120,17 @@ node -e "import('oxlint-plugin-react-doctor').then(m => console.log(Object.keys(
 - The correctness set: `no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`. Also on: `no-hardcoded-colors` and `prefer-theme-tokens`.
 - `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`.
 - Only `no-arbitrary-value` and `no-contradicting-variants` are `off`. `src/emails/**` also turns off `no-hardcoded-colors`.
+
+### Design-system ratchet
+
+- `scripts/lint/oxlintrc.json` runs `no-arbitrary-value`, `no-default-palette`, and `no-restricted-classes` over `src/`, except the vendored editor and `src/emails/`.
+- The main config keeps these rules off, so legacy violations add no noise to `check:lint`.
+- Allowed: runtime variables (`allowVariables: "runtime"`), `grid-cols-`, `grid-rows-`, `content-`, and the palette colors `black` and `white`.
+- Restricted: arbitrary `text-[`, `ring-[`, and `shadow-[` after any variant, and `transition-all`.
+- `scripts/lint/ratchet.json` holds the count per folder and rule. `pnpm run check:ratchet` fails when a count goes up or when the file is stale.
+- On an increase, the report lists the violations in changed files only.
+- After a fix, run `pnpm run lint:ratchet` to lower the counts. It never raises one.
+- `node scripts/lint/ratchet.mts --reset` rewrites the file. Use it only when a rule or an allow entry changes.
 - oxfmt's `sortTailwindcss` still writes last in the `pre-commit` hook (fmt, lint, fmt), so class order comes out of the formatter.
 
 ### Type-aware mode

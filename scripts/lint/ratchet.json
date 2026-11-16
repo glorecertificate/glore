@@ -1,0 +1,90 @@
+{
+  "src/app": {
+    "no-arbitrary-value": 1
+  },
+  "src/app/(dashboard)/courses": {
+    "no-arbitrary-value": 1
+  },
+  "src/app/legal/accept": {
+    "no-arbitrary-value": 1
+  },
+  "src/components/features/about": {
+    "no-arbitrary-value": 1,
+    "no-restricted-classes": 1
+  },
+  "src/components/features/admin": {
+    "no-arbitrary-value": 10,
+    "no-restricted-classes": 8
+  },
+  "src/components/features/auth": {
+    "no-arbitrary-value": 1,
+    "no-restricted-classes": 1
+  },
+  "src/components/features/certificates": {
+    "no-arbitrary-value": 40,
+    "no-restricted-classes": 10
+  },
+  "src/components/features/certificates/review": {
+    "no-arbitrary-value": 2
+  },
+  "src/components/features/courses": {
+    "no-arbitrary-value": 1
+  },
+  "src/components/features/courses/course-editor": {
+    "no-arbitrary-value": 18,
+    "no-restricted-classes": 15
+  },
+  "src/components/features/courses/course-list": {
+    "no-arbitrary-value": 14,
+    "no-restricted-classes": 7
+  },
+  "src/components/features/courses/skill-compass": {
+    "no-arbitrary-value": 1
+  },
+  "src/components/features/courses/skill-framework": {
+    "no-arbitrary-value": 1
+  },
+  "src/components/features/dashboard": {
+    "no-arbitrary-value": 2,
+    "no-restricted-classes": 2
+  },
+  "src/components/features/docs": {
+    "no-arbitrary-value": 2,
+    "no-restricted-classes": 1
+  },
+  "src/components/features/help": {
+    "no-arbitrary-value": 3,
+    "no-restricted-classes": 2
+  },
+  "src/components/features/legal": {
+    "no-arbitrary-value": 2,
+    "no-restricted-classes": 1
+  },
+  "src/components/features/notifications": {
+    "no-arbitrary-value": 5,
+    "no-restricted-classes": 3
+  },
+  "src/components/features/organization": {
+    "no-arbitrary-value": 4,
+    "no-restricted-classes": 2
+  },
+  "src/components/features/translations": {
+    "no-arbitrary-value": 2,
+    "no-restricted-classes": 1
+  },
+  "src/components/features/users": {
+    "no-arbitrary-value": 2,
+    "no-restricted-classes": 2
+  },
+  "src/components/icons": {
+    "no-default-palette": 23
+  },
+  "src/components/layout": {
+    "no-arbitrary-value": 8,
+    "no-restricted-classes": 3
+  },
+  "src/components/ui": {
+    "no-arbitrary-value": 85,
+    "no-restricted-classes": 36
+  }
+}

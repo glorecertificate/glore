@@ -1,0 +1,28 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "plugins": [],
+  "categories": { "correctness": "off" },
+  "settings": { "tailwindcss": { "entryPoint": "src/app/globals.css" } },
+  "jsPlugins": [{ "name": "tailwindcss", "specifier": "oxlint-tailwindcss" }],
+  "rules": {
+    "tailwindcss/no-arbitrary-value": [
+      "warn",
+      { "allow": ["grid-cols-", "grid-rows-", "content-"], "allowVariables": "runtime" }
+    ],
+    "tailwindcss/no-default-palette": ["warn", { "allow": ["black", "white"] }],
+    "tailwindcss/no-restricted-classes": [
+      "warn",
+      {
+        "patterns": [
+          { "pattern": "(^|:)!?text-\\[", "message": "use a type-* role or a text-* step." },
+          { "pattern": "(^|:)!?ring-\\[", "message": "use a ring width from the scale." },
+          { "pattern": "(^|:)!?shadow-\\[", "message": "use the shadow scale, shadow-2xs to shadow-lg." },
+          {
+            "pattern": "(^|:)transition-all$",
+            "message": "name the properties that change, for example transition-colors."
+          }
+        ]
+      }
+    ]
+  }
+}

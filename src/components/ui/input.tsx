@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 import { type VariantProps, cva } from 'class-variance-authority'
 
@@ -9,6 +9,7 @@ import { type IconName } from '@/components/icons/registry'
 import { Label } from '@/components/ui/label'
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { useMounted } from '@/hooks/use-mounted'
+import { useShortcut } from '@/hooks/use-shortcut'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -77,22 +78,7 @@ export const Input = ({
   const composedRef = useComposedRefs(inputRef, ref)
   const IconComponent = typeof icon === 'function' ? icon : null
 
-  useEffect(() => {
-    if (!hotkey) return
-    const handleHotkey = (e: KeyboardEvent) => {
-      const active = document.activeElement
-      const isEditable =
-        active instanceof HTMLInputElement ||
-        active instanceof HTMLTextAreaElement ||
-        (active instanceof HTMLElement && active.isContentEditable)
-      if (e.key === hotkey && !isEditable) {
-        e.preventDefault()
-        inputRef.current?.focus()
-      }
-    }
-    document.addEventListener('keydown', handleHotkey)
-    return () => document.removeEventListener('keydown', handleHotkey)
-  }, [hotkey])
+  useShortcut(hotkey ? { key: hotkey } : undefined, () => inputRef.current?.focus())
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (blurOnEscape && e.key === 'Escape') inputRef.current?.blur()

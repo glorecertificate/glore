@@ -13,6 +13,7 @@ import { CourseListTypeSelect } from '@/components/features/courses/course-list/
 import { useSession } from '@/components/providers/session'
 import { Header, HeaderBreadcrumb, HeaderTrigger } from '@/components/ui/header'
 import { SearchInput } from '@/components/ui/search'
+import { SHORTCUTS } from '@/lib/shortcuts'
 import { cn } from '@/lib/utils'
 
 export const CourseListHeader = ({ className, ...props }: React.ComponentProps<typeof Header>) => {
@@ -38,7 +39,7 @@ export const CourseListHeader = ({ className, ...props }: React.ComponentProps<t
         <div className="flex flex-wrap items-center gap-1.5 max-sm:contents">
           <SearchInput
             className="w-80 max-sm:w-auto max-sm:flex-1 sm:mr-1"
-            hotkey="/"
+            hotkey={SHORTCUTS.filter.key}
             placeholder={t('searchPlaceholder')}
             urlKey="q"
           />

@@ -44,7 +44,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Image } from '@/components/ui/image'
-import { Kbd, KbdGroup } from '@/components/ui/kbd'
+import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { Link } from '@/components/ui/link'
 import {
   Sidebar,
@@ -66,11 +66,11 @@ import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
-import { useModifierKey } from '@/hooks/use-modifier-key'
+import { useShortcut } from '@/hooks/use-shortcut'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { SHORTCUTS } from '@/lib/shortcuts'
 import { type IconName } from '@/lib/types'
 import { cn, sleep } from '@/lib/utils'
-import settings from '~/config/app.json'
 
 const loadSearchCommand = async () => (await import('@/components/layout/search-command')).SearchCommand
 
@@ -481,7 +481,6 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 const DashboardSidebarSearch = () => {
   const t = useTranslations('Search')
   const tLayout = useTranslations('Layout')
-  const modifierKey = useModifierKey()
   const [open, setOpen] = useState(false)
   const [activated, setActivated] = useState(false)
 
@@ -490,17 +489,10 @@ const DashboardSidebarSearch = () => {
     setOpen(true)
   }
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === settings.searchShortcut) {
-        e.preventDefault()
-        setActivated(true)
-        setOpen(prev => !prev)
-      }
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [])
+  useShortcut(SHORTCUTS.search, () => {
+    setActivated(true)
+    setOpen(prev => !prev)
+  })
 
   return (
     <>
@@ -516,10 +508,7 @@ const DashboardSidebarSearch = () => {
               <LucideIcon name="search" />
               <span className="flex flex-1 items-center justify-between">
                 {t('trigger')}
-                <KbdGroup>
-                  <Kbd>{modifierKey}</Kbd>
-                  <Kbd>{settings.searchShortcut.toUpperCase()}</Kbd>
-                </KbdGroup>
+                <KbdShortcut shortcut={SHORTCUTS.search} />
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>

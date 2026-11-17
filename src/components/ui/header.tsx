@@ -11,19 +11,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { Kbd, KbdGroup } from '@/components/ui/kbd'
+import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { Link, LinkProps } from '@/components/ui/link'
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useModifierKey } from '@/hooks/use-modifier-key'
 import { useScroll } from '@/hooks/use-scroll'
+import { SHORTCUTS } from '@/lib/shortcuts'
 import { cn } from '@/lib/utils'
-import settings from '~/config/app.json'
 import metadata from '~/config/metadata.json'
 
 export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<typeof SidebarTrigger>) => {
   const { action } = useSidebar()
-  const modifierKey = useModifierKey()
 
   return (
     <Tooltip delayDuration={600} disableHoverableContent>
@@ -32,10 +30,7 @@ export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<type
       </TooltipTrigger>
       <TooltipContent className="flex items-center gap-2" showArrow side="right">
         <span className="text-xs font-medium">{action}</span>
-        <KbdGroup>
-          <Kbd>{modifierKey}</Kbd>
-          <Kbd>{settings.sidebarShortcut.toUpperCase()}</Kbd>
-        </KbdGroup>
+        <KbdShortcut shortcut={SHORTCUTS.sidebar} />
       </TooltipContent>
     </Tooltip>
   )

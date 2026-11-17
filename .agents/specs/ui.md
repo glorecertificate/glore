@@ -63,6 +63,16 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Team members get no Organization item, no Certificates, and no org switcher.
 - Org owners and representatives add Organization. Learners have no Certificates.
 
+### Page container
+
+- `DashboardPage` renders `Header` and `Main`, and both use the `page` spacing token as the side gutter: 16px, 24px from `sm`, 32px from `lg`.
+- Use `px-page` or `-mx-page` for a page gutter. Never hard-code one.
+- `Header` puts its children in an inner container as wide as `Main`, so the sidebar trigger and the content share one edge. Its `className` styles that inner container.
+- `Main` sets the vertical rhythm: content starts 16px below the header (24px from `sm`), and the page ends with 48px (64px from `sm`). A page root sets no outer padding.
+- `width` on `DashboardPage` sets the content column, and a narrower column centers.
+- Use `full` for lists, tables, and dashboards, `content` for details, forms, wizards, and about pages, `prose` for articles, notifications, and course completion, and `wide` for the course player.
+- A `Tabs` provider that wraps the shell sets `gap-0`, so the header keeps its gap to the content.
+
 ### Org switcher and palette
 
 - The org switcher (`organization-switcher.tsx`) reuses the active-org mechanism: `useSession().setOrganization` writes the `org` cookie that `getActiveOrgId` reads.

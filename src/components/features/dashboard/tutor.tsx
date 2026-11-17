@@ -48,7 +48,7 @@ export const TutorDashboard = ({
         : t('tutor.reviewHours', { hours: number(reviewTime.averageHours, { maximumFractionDigits: 1 }) })
 
   return (
-    <div className="flex flex-col gap-8 pt-6 pb-10">
+    <div className="flex flex-col gap-8">
       <DashboardHero action={heroAction} name={firstName} organization={organization} subtitle={t('subtitle.tutor')} />
 
       {oldest && (

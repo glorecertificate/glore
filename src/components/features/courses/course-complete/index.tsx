@@ -100,7 +100,7 @@ export const CourseCompleteView = ({
   const levelLabel = (level: number) => tCommon(`skillLevels.${SKILL_LEVELS[level - 1] ?? 'absent'}`)
 
   return (
-    <div className={cn('mx-auto flex w-full max-w-3xl flex-col gap-8 pt-2 pb-10', className)} {...props}>
+    <div className={cn('flex flex-col gap-8', className)} {...props}>
       <section className="flex flex-col items-center gap-4 rounded-2xl border bg-card p-8 text-center shadow-2xs">
         <span className="flex size-16 items-center justify-center rounded-full bg-brand/15 text-brand-text">
           <LucideIcon className="size-8" name="trophy" />

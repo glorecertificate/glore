@@ -10,29 +10,29 @@ Stack: Next.js 16 (App Router, RSC, Cached Components), React 19, Neon Postgres,
 
 Libraries to use, not guess: Better Auth, Cloudflare R2, Plate.js, next-intl, react-hook-form + zod, nuqs, React Email + Nodemailer, AI SDK with Gemini, motion, @dnd-kit, shadcn/ui (new-york).
 
-Tooling: oxlint + oxfmt, lefthook, portless.
-
-This file governs agents here. `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
+This file governs agents here, and Claude Code loads it natively. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
 
 Budget: this file stays under 2,000 estimated tokens and each spec under 4,500. Over budget means moving detail into a spec, never dropping a fact.
 
 ## Specs and plans
 
-Load only the spec you need from `.agents/specs/`:
+Read only the spec of each row that applies, from `.agents/specs/`.
 
-- `app.md`: product, roles, features, domain rules.
-- `certificates.md`: lifecycle, screens, PDF, verification.
-- `organizations.md`: invitations, members, ownership, settings, applications.
-- `admin.md`: admin area, moderation, impersonation.
-- `routes.md`: routes, gates, API routes, proxy.
-- `reference.md`: auth, queries, transactions, cache, env vars, storage, cron.
-- `architecture.md`: `src/` tree, naming, layers, server vs client, events and email.
-- `patterns.md`: components, types, hooks, utils, i18n, forms.
-- `ui.md`: release UI kit, shell, theming, motion.
-- `code.md`: formatter, imports, lint rules, git hooks, release age.
-- `github.md`: issues, PRs, labels, Claude workflows, CI, deploys.
-- `workflow.md`: commands, seeds, translations, commits, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
-- `performance.md`: performance targets, measurement, perf CI.
+| Work                                                                              | Spec               |
+| --------------------------------------------------------------------------------- | ------------------ |
+| Product, roles, features, domain rules                                            | `app.md`           |
+| Certificate lifecycle, screens, PDF, verification                                 | `certificates.md`  |
+| Invitations, members, ownership, settings, applications                           | `organizations.md` |
+| Admin area, moderation, impersonation                                             | `admin.md`         |
+| Routes, gates, API routes, proxy                                                  | `routes.md`        |
+| Auth, queries, transactions, cache, env vars, storage, cron                       | `reference.md`     |
+| `src/` tree, naming, layers, server vs client, events and email                   | `architecture.md`  |
+| Components, types, hooks, utils, i18n, forms                                      | `patterns.md`      |
+| Release UI kit, shell, theming, motion                                            | `ui.md`            |
+| Formatter, imports, lint rules, git hooks, release age                            | `code.md`          |
+| Issues, PRs, labels, Claude workflows, CI, deploys                                | `github.md`        |
+| Commands, seeds, translations, commits, skills, MCP, worktrees, tests, browser QA | `workflow.md`      |
+| Performance targets, measurement, perf CI                                         | `performance.md`   |
 
 Work lives in GitHub issues (`github.md`). A one-PR plan lives in its draft PR and a multi-PR plan in its parent issue, so no plan stays on `main`.
 
@@ -52,7 +52,7 @@ References live in `.agents/references/`: product decisions, the certificate PDF
 
 - Before starting, read and apply the matching skill from the routing table in `workflow.md`. Any React or Next.js code needs `vercel-react-best-practices`.
 - Vendored skills in `.agents/skills/` are tracked. Never hand-edit them.
-- `pnpm run skills` pulls upstream default branches and can rewrite every tracked skill. Review its diff and `git restore` unintended updates.
+- After `pnpm run skills`, review its diff and `git restore` unintended updates (`workflow.md`).
 
 ## Architecture
 
@@ -74,7 +74,8 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 - Use `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. Use `await`, never `.then()` chains, and `Promise.all()` for independent work.
 - One component per file, `@/` and `~/` aliases, `cva` variants, `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components.
 - Order hook dependency arrays alphabetically.
-- Render icons through `LucideIcon` from `@/components/icons/lucide`. Add new icons to `icons/registry.ts`. Lint blocks `lucide-react` imports outside `icons/` and the editor. Never `lucide-react/dynamic`.
+- Render icons through `LucideIcon` (`@/components/icons/lucide`). Register new icons in `icons/registry.ts`.
+- Import `lucide-react` only in `icons/` and the editor, never `lucide-react/dynamic`.
 
 ## Gotchas: data and imports
 

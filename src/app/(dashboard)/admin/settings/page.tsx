@@ -19,7 +19,11 @@ const AdminSettingsContent = async () => {
   if (error || !data) throw new Error(error?.message ?? 'Settings unavailable')
 
   return (
-    <DashboardPage description={t('description')} title={<PageTitle namespace="Admin.settings" name="title" />}>
+    <DashboardPage
+      description={t('description')}
+      title={<PageTitle namespace="Admin.settings" name="title" />}
+      width="content"
+    >
       <AdminSettingsForm settings={data} />
     </DashboardPage>
   )

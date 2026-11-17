@@ -94,7 +94,7 @@ export const TutorCertificatesContent = ({
 
   return (
     <Tabs
-      className="gap-4 py-6"
+      className="gap-4"
       onValueChange={value => {
         setTab(value as TutorQueueTab)
         setStatus(null)

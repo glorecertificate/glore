@@ -109,14 +109,20 @@ export const Header = ({ children, className, ...props }: React.ComponentProps<'
   return (
     <header
       className={cn(
-        'sticky top-0 z-5 flex min-h-12 w-full shrink-0 items-center justify-between gap-2 px-6 py-4',
-        'border-b border-transparent bg-header text-header-foreground transition-[width,height] ease-linear',
-        scrolled && 'border-header-border',
-        className
+        'sticky top-0 z-5 w-full shrink-0 border-b border-transparent bg-header text-header-foreground transition-[width,height] ease-linear',
+        scrolled && 'border-header-border'
       )}
       {...props}
     >
-      {children}
+      <div
+        className={cn(
+          'mx-auto flex min-h-12 w-full max-w-420 items-center justify-between gap-2 px-page py-4',
+          className
+        )}
+        data-slot="header-content"
+      >
+        {children}
+      </div>
     </header>
   )
 }

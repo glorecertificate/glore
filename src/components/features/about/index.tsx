@@ -71,7 +71,7 @@ export const AboutContent = async () => {
   )
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-14 pt-8 pb-16">
+    <div className="flex flex-col gap-14">
       <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/8 via-card to-brand-tertiary/5 p-8 sm:p-10">
         <div className="flex flex-col items-start gap-4">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand-text">

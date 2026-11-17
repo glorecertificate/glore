@@ -13,7 +13,7 @@ export const generateMetadata = generateIntlMetadata({
 const CoursesPage = () => (
   <DashboardPage className="min-h-[calc(100vh-160px)]" header={<CourseListHeader />} provider={CourseListTabs}>
     <SkillCompassSection />
-    <CourseList className="pb-6" />
+    <CourseList />
   </DashboardPage>
 )
 

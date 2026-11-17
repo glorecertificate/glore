@@ -11,7 +11,7 @@ export const NoOrganization = ({ firstName }: { firstName: string }) => {
   const t = useTranslations('Dashboard')
 
   return (
-    <div className="flex flex-1 pt-6 pb-10">
+    <div className="flex flex-1">
       <Empty className="border">
         <EmptyHeader>
           <EmptyMedia variant="icon">

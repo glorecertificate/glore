@@ -33,7 +33,6 @@ const OrganizationContent = async () => {
     <OrganizationTabs>
       <DashboardPage
         title={<PageTitle namespace="Organization" name="title" />}
-        className="py-8"
         breadcrumb={
           <OrganizationTabsList
             invitationCount={data.pendingInvitationsCount}

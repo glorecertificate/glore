@@ -9,7 +9,7 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const NotificationsPage = () => (
-  <DashboardPage className="py-8" title={<PageTitle name="notifications" namespace="Layout" />}>
+  <DashboardPage title={<PageTitle name="notifications" namespace="Layout" />} width="prose">
     <NotificationsContent />
   </DashboardPage>
 )

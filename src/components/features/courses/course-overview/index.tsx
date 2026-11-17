@@ -62,7 +62,7 @@ export const CourseOverviewView = ({
   const tone = skillGroupTone(overview.skillGroup?.slug)
 
   return (
-    <div className={cn('mx-auto flex w-full max-w-4xl flex-col gap-8 pt-2 pb-10', className)} {...props}>
+    <div className={cn('flex flex-col gap-8', className)} {...props}>
       <section className="flex flex-col gap-5 rounded-2xl border bg-card p-6 shadow-2xs sm:p-8">
         <div className="flex flex-wrap items-center gap-2">
           <span

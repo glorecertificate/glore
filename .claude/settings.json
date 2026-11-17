@@ -20,8 +20,7 @@
       "Read(./.env.local)",
       "Read(./.env.*.local)",
       "Read(./.vercel/**)",
-      "Edit(./types/*.generated.d.ts)",
-      "Edit(./CLAUDE.md)"
+      "Edit(./types/*.generated.d.ts)"
     ]
   },
   "hooks": {

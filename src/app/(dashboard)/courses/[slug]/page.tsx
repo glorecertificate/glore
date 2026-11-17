@@ -38,7 +38,7 @@ const CoursePageContent = async ({ params, searchParams }: PageProps<'/courses/[
   const completedSkills = isSkillLearner ? (await getSkillProgress(user.id)).completedCourseIds.length : null
 
   return (
-    <DashboardPage backHref="/courses" title={data.overview.title}>
+    <DashboardPage backHref="/courses" title={data.overview.title} width="content">
       <CourseOverviewView access={data.access} completedSkills={completedSkills} overview={data.overview} />
     </DashboardPage>
   )

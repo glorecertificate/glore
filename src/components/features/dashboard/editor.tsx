@@ -33,7 +33,7 @@ export const EditorDashboard = ({
   const pendingTotal = (pending?.organizations ?? 0) + (pending?.team ?? 0)
 
   return (
-    <div className="flex flex-col gap-8 pt-6 pb-10">
+    <div className="flex flex-col gap-8">
       <DashboardHero
         action={{ href: '/courses', label: t('editor.openCourses') }}
         name={firstName}

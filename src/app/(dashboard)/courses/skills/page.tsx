@@ -21,7 +21,7 @@ const SkillsPageContent = async () => {
   const { groups, ungrouped } = await findSkillFramework()
 
   return (
-    <DashboardPage backHref="/courses" title={(await getTranslations('Learning.framework'))('title')}>
+    <DashboardPage backHref="/courses" title={(await getTranslations('Learning.framework'))('title')} width="content">
       <SkillFramework groups={groups} ungrouped={ungrouped} />
     </DashboardPage>
   )

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 export const Switch = ({ className, ...props }: React.ComponentProps<typeof SwitchPrimitive.Root>) => (
   <SwitchPrimitive.Root
     className={cn(
-      'peer inline-flex w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-colors duration-300 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-brand-secondary data-[state=unchecked]:bg-input motion-reduce:transition-none dark:data-[state=unchecked]:bg-input/80',
+      'peer inline-flex w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-colors duration-300 outline-none focus-visible:focus-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-brand-secondary data-[state=unchecked]:bg-border-strong motion-reduce:transition-none',
       className
     )}
     data-slot="switch"

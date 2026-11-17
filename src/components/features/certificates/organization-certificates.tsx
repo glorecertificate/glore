@@ -148,7 +148,7 @@ export const OrganizationCertificates = ({
           <div className="flex flex-wrap items-center gap-2">
             <Input
               aria-label={t('search')}
-              className="h-9 w-56"
+              className="w-56"
               onChange={event => setQuery(event.target.value)}
               placeholder={t('search')}
               type="search"

@@ -1,6 +1,7 @@
 'use client'
 
 import * as SelectPrimitive from '@radix-ui/react-select'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
@@ -19,18 +20,35 @@ export const SelectValue = (props: React.ComponentProps<typeof SelectPrimitive.S
 
 export type SelectTriggerProps = SelectPrimitive.SelectTriggerProps
 
+export const selectTriggerVariants = cva(
+  [
+    'flex items-center justify-between gap-1 rounded-md border border-border-strong bg-field text-sm transition-[color,background-color,border-color] outline-none not-disabled:cursor-pointer',
+    'hover:not-disabled:bg-accent/50 focus-visible:not-disabled:focus-ring-inset',
+    "disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive data-placeholder:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>span]:line-clamp-1",
+  ],
+  {
+    defaultVariants: {
+      size: 'md',
+    },
+    variants: {
+      size: {
+        xs: 'h-7 px-2 text-xs',
+        sm: 'h-8 px-2.5',
+        md: 'h-9 px-3',
+        lg: 'h-11 px-3.5 text-base',
+      },
+    },
+  }
+)
+
 export const SelectTrigger = ({
   children,
   className,
+  size,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.SelectTrigger>) => (
+}: React.ComponentProps<typeof SelectPrimitive.SelectTrigger> & VariantProps<typeof selectTriggerVariants>) => (
   <SelectPrimitive.Trigger
-    className={cn(
-      'flex h-9 items-center justify-between gap-1 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs transition-all outline-none not-disabled:cursor-pointer',
-      'hover:not-disabled:bg-accent/50 focus-visible:not-disabled:border-ring focus-visible:not-disabled:ring-[3px] focus-visible:not-disabled:ring-ring/50',
-      "disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:not-disabled:ring-destructive/20 data-placeholder:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 dark:bg-input/30 dark:hover:not-disabled:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>span]:line-clamp-1",
-      className
-    )}
+    className={cn(selectTriggerVariants({ size }), className)}
     data-slot="select-trigger"
     {...props}
   >

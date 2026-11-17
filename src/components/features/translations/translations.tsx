@@ -80,7 +80,8 @@ export const Translations = ({
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
           aria-label={t('searchPlaceholder')}
-          className="h-8 w-full sm:w-80"
+          className="w-full sm:w-80"
+          size="sm"
           onValueChange={handleSearch}
           placeholder={t('searchPlaceholder')}
           value={search}
@@ -89,7 +90,7 @@ export const Translations = ({
           onValueChange={value => setParams({ filter: value === ALL ? null : (value as TranslationState) })}
           value={filter}
         >
-          <SelectTrigger aria-label={t('filters.state')} className="h-8 w-auto gap-1.5">
+          <SelectTrigger aria-label={t('filters.state')} className="w-auto gap-1.5" size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -105,7 +106,7 @@ export const Translations = ({
           onValueChange={value => setParams({ namespace: value === ALL ? null : value })}
           value={params.namespace ?? ALL}
         >
-          <SelectTrigger aria-label={t('filters.namespace')} className="h-8 w-auto gap-1.5">
+          <SelectTrigger aria-label={t('filters.namespace')} className="w-auto gap-1.5" size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

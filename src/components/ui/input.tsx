@@ -23,25 +23,28 @@ export interface InputProps
 
 export const inputVariants = cva(
   [
-    'flex w-full min-w-0 rounded-md border border-input bg-transparent transition-[color,box-shadow] outline-none',
-    'placeholder:text-muted-foreground disabled:pointer-events-none disabled:opacity-60 aria-invalid:border-destructive aria-invalid:ring-destructive/20',
-    'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30',
+    'flex w-full min-w-0 rounded-md border border-border-strong bg-field transition-[color,background-color,border-color] outline-none',
+    'placeholder:text-muted-foreground disabled:pointer-events-none disabled:opacity-60 aria-invalid:border-destructive',
     'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',
-    'dark:bg-input/30 dark:aria-invalid:ring-destructive/40',
   ],
   {
     defaultVariants: {
-      size: 'default',
+      ring: true,
+      size: 'md',
     },
     variants: {
+      ring: {
+        false: '',
+        true: 'focus-visible:focus-ring-inset',
+      },
       size: {
-        sm: 'h-8 px-2.5 py-0.5 text-xs placeholder:text-xs',
-        default: 'h-9.5 px-3 py-1 text-sm placeholder:text-sm',
-        lg: 'h-10 px-3.5 py-1.5 text-base placeholder:text-base',
+        xs: 'h-7 px-2 text-base md:text-xs',
+        sm: 'h-8 px-2.5 text-base md:text-sm',
+        md: 'h-9 px-3 text-base md:text-sm',
+        lg: 'h-11 px-3.5 text-base',
       },
       variant: {
-        brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
-        floating: 'peer block appearance-none placeholder:text-transparent dark:bg-transparent',
+        floating: 'peer block appearance-none bg-transparent placeholder:text-transparent',
       },
     },
   }
@@ -62,6 +65,7 @@ export const Input = ({
   open,
   placeholder,
   ref,
+  ring,
   size,
   variant,
   ...props
@@ -96,7 +100,7 @@ export const Input = ({
   if (variant !== 'floating') {
     return (
       <input
-        className={cn(inputVariants({ size, variant }), className)}
+        className={cn(inputVariants({ ring, size, variant }), className)}
         disabled={disabled}
         id={id}
         onKeyDown={handleKeyDown}
@@ -110,7 +114,7 @@ export const Input = ({
   return (
     <div className={cn('relative', disabled && 'cursor-not-allowed')}>
       <input
-        className={cn(inputVariants({ size, variant }), className)}
+        className={cn(inputVariants({ ring, size, variant }), className)}
         disabled={disabled}
         id={id}
         onKeyDown={handleKeyDown}

@@ -99,7 +99,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
             ))}
           </SegmentedControl>
           <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
-            <SelectTrigger aria-label={tCommon('sortBy')} className="h-8 w-auto gap-1.5 px-3 text-xs">
+            <SelectTrigger aria-label={tCommon('sortBy')} className="w-auto gap-1.5 px-3 text-xs" size="sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent align="end">

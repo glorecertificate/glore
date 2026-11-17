@@ -71,7 +71,7 @@ export const AdminCertificates = ({
       onValueChange={value => setParams({ org: value === ALL ? null : Number(value), page: 1, q: null, status: null })}
       value={scoped ? String(params.org) : ALL}
     >
-      <SelectTrigger aria-label={t('filters.organization')} className="h-8 w-auto max-w-56 gap-1.5">
+      <SelectTrigger aria-label={t('filters.organization')} className="w-auto max-w-56 gap-1.5" size="sm">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -155,7 +155,8 @@ export const AdminCertificates = ({
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <SearchInput
             aria-label={t('searchPlaceholder')}
-            className="h-8 w-full sm:w-80"
+            className="w-full sm:w-80"
+            size="sm"
             onValueChange={handleSearch}
             placeholder={t('searchPlaceholder')}
             value={search}
@@ -166,7 +167,7 @@ export const AdminCertificates = ({
             }
             value={params.status ?? ALL}
           >
-            <SelectTrigger aria-label={t('filters.status')} className="h-8 w-auto gap-1.5">
+            <SelectTrigger aria-label={t('filters.status')} className="w-auto gap-1.5" size="sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

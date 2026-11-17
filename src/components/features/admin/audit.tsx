@@ -182,7 +182,8 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <SearchInput
             aria-label={t('searchPlaceholder')}
-            className="h-8 w-full sm:w-72"
+            className="w-full sm:w-72"
+            size="sm"
             onValueChange={handleSearch}
             placeholder={t('searchPlaceholder')}
             value={search}
@@ -191,7 +192,7 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
             onValueChange={value => setParams({ category: value === ALL ? null : (value as AuditCategory), page: 1 })}
             value={params.category ?? ALL}
           >
-            <SelectTrigger aria-label={t('filters.category')} className="h-8 w-auto gap-1.5">
+            <SelectTrigger aria-label={t('filters.category')} className="w-auto gap-1.5" size="sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

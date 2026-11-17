@@ -12,7 +12,7 @@ export const RadioGroup = ({ className, ...props }: React.ComponentProps<typeof 
 export const RadioGroupItem = ({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) => (
   <RadioGroupPrimitive.Item
     className={cn(
-      'aspect-square size-4 shrink-0 rounded-full border border-input text-brand-secondary shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40',
+      'aspect-square size-4 shrink-0 rounded-full border border-border-strong bg-field text-brand-secondary shadow-xs transition-[color,border-color] outline-none focus-visible:focus-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive',
       className
     )}
     data-slot="radio-group-item"

@@ -79,8 +79,8 @@ export const TabsContent = ({ className, ...props }: React.ComponentProps<typeof
 const tabsTriggerVariants = cva(
   [
     'group/tabs-trigger inline-flex h-full flex-1 items-center justify-center rounded-md border border-transparent leading-0 whitespace-nowrap text-muted-foreground/90 select-none disabled:pointer-events-none disabled:opacity-50',
-    'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring',
-    'data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground! data-[state=active]:shadow-sm dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground',
+    'focus-visible:focus-ring-inset',
+    'data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground! data-[state=active]:shadow-sm dark:text-muted-foreground dark:data-[state=active]:border-border dark:data-[state=active]:bg-surface-selected dark:data-[state=active]:text-foreground',
     '[&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
   ],
   {

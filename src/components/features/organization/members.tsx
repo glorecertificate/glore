@@ -198,13 +198,14 @@ export const OrganizationMembers = ({
             <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
               <SearchInput
                 aria-label={t('searchMembers')}
-                className="h-8 w-full sm:w-64"
+                className="w-full sm:w-64"
+                size="sm"
                 onValueChange={setSearch}
                 placeholder={t('searchMembers')}
                 value={search}
               />
               <Select onValueChange={value => setRoleFilter(value as typeof roleFilter)} value={roleFilter}>
-                <SelectTrigger aria-label={t('filterRole')} className="h-8 w-auto gap-1.5">
+                <SelectTrigger aria-label={t('filterRole')} className="w-auto gap-1.5" size="sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -217,7 +218,7 @@ export const OrganizationMembers = ({
                 </SelectContent>
               </Select>
               <Select onValueChange={value => setStatusFilter(value as typeof statusFilter)} value={statusFilter}>
-                <SelectTrigger aria-label={t('filterStatus')} className="h-8 w-auto gap-1.5">
+                <SelectTrigger aria-label={t('filterStatus')} className="w-auto gap-1.5" size="sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

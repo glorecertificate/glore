@@ -10,14 +10,14 @@ import { cn } from '@/lib/utils'
 export const InputGroup = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'group/input-group relative flex w-full items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30',
+      'group/input-group relative flex w-full items-center rounded-md border border-border-strong bg-field transition-[color,border-color] outline-none',
       'h-9 min-w-0 has-[>textarea]:h-auto',
       'has-[>[data-align=inline-start]]:[&>input]:pl-2',
       'has-[>[data-align=inline-end]]:[&>input]:pr-2',
       'has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&>input]:pb-3',
       'has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3',
-      'has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50',
-      'has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40',
+      'has-[[data-slot=input-group-control]:focus-visible]:focus-ring-inset',
+      'has-[[data-slot][aria-invalid=true]]:border-destructive',
       className
     )}
     data-slot="input-group"
@@ -120,22 +120,18 @@ export const InputGroupText = ({ className, ...props }: React.ComponentProps<'sp
 
 export const InputGroupInput = ({ className, ...props }: InputProps) => (
   <Input
-    className={cn(
-      'flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent',
-      className
-    )}
+    className={cn('flex-1 rounded-none border-0 bg-transparent shadow-none', className)}
     data-slot="input-group-control"
+    ring={false}
     {...props}
   />
 )
 
 export const InputGroupTextarea = ({ className, ...props }: React.ComponentProps<typeof Textarea>) => (
   <Textarea
-    className={cn(
-      'flex-1 resize-none rounded-none border-0 bg-transparent py-3 shadow-none focus-visible:ring-0 dark:bg-transparent',
-      className
-    )}
+    className={cn('flex-1 resize-none rounded-none border-0 bg-transparent py-3 shadow-none', className)}
     data-slot="input-group-control"
+    ring={false}
     {...props}
   />
 )

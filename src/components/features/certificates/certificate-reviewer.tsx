@@ -64,7 +64,7 @@ export const CertificateReviewer = ({ certificate, tutors }: { certificate: Cert
             }
             value={certificate.reviewerId ?? ''}
           >
-            <SelectTrigger aria-label={t('assignTutor')} className="h-8 w-48">
+            <SelectTrigger aria-label={t('assignTutor')} className="w-48" size="sm">
               <SelectValue placeholder={t('reviewerUnassigned')} />
             </SelectTrigger>
             <SelectContent>

@@ -46,7 +46,8 @@ export const UsersFilters = ({
     <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
       <SearchInput
         aria-label={t('searchPlaceholder')}
-        className="h-8 w-full sm:w-56"
+        className="w-full sm:w-56"
+        size="sm"
         onValueChange={onSearch}
         placeholder={t('searchPlaceholder')}
         value={search}
@@ -55,7 +56,7 @@ export const UsersFilters = ({
         onValueChange={value => onFilter({ role: value === ALL ? null : (value as PlatformRole) })}
         value={values.role ?? ALL}
       >
-        <SelectTrigger aria-label={t('filters.role')} className="h-8 w-auto gap-1.5">
+        <SelectTrigger aria-label={t('filters.role')} className="w-auto gap-1.5" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -71,7 +72,7 @@ export const UsersFilters = ({
         onValueChange={value => onFilter({ status: value === ALL ? null : (value as UserStatus) })}
         value={values.status ?? ALL}
       >
-        <SelectTrigger aria-label={t('filters.status')} className="h-8 w-auto gap-1.5">
+        <SelectTrigger aria-label={t('filters.status')} className="w-auto gap-1.5" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -87,7 +88,7 @@ export const UsersFilters = ({
         onValueChange={value => onFilter({ banned: value === ALL ? null : (value as BanFilter) })}
         value={values.banned ?? ALL}
       >
-        <SelectTrigger aria-label={t('filters.banned')} className="h-8 w-auto gap-1.5">
+        <SelectTrigger aria-label={t('filters.banned')} className="w-auto gap-1.5" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -103,7 +104,7 @@ export const UsersFilters = ({
         onValueChange={value => onFilter({ org: value === ALL ? null : Number(value) })}
         value={values.org === null ? ALL : String(values.org)}
       >
-        <SelectTrigger aria-label={t('filters.organization')} className="h-8 w-auto max-w-44 gap-1.5">
+        <SelectTrigger aria-label={t('filters.organization')} className="w-auto max-w-44 gap-1.5" size="sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

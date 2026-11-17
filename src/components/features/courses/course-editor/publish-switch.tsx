@@ -37,7 +37,7 @@ export const PublishSwitch = ({
       <Switch
         aria-label={label}
         checked={published}
-        className="h-6 w-10.5 data-[state=checked]:bg-success data-[state=unchecked]:bg-muted-foreground/30"
+        className="h-6 w-10.5 data-[state=checked]:bg-success"
         disabled={disabled}
         id={id}
         onCheckedChange={onToggle}

@@ -102,7 +102,7 @@ export const SpokenLanguagesSelect = ({
             <LucideIcon name="plus" className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0" id={contentId}>
+        <PopoverContent align="start" className="w-(--radix-popover-trigger-width) p-0" id={contentId}>
           <Command>
             <CommandInput placeholder={t('searchLanguage')} />
             <CommandList>
@@ -118,7 +118,7 @@ export const SpokenLanguagesSelect = ({
                     <div
                       className={cn(
                         'flex size-4 items-center justify-center rounded-sm border transition-colors',
-                        value.includes(language) ? 'border-primary bg-primary text-primary-foreground' : 'border-input'
+                        value.includes(language) ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
                       )}
                     >
                       <LucideIcon
@@ -153,7 +153,7 @@ export const SpokenLanguagesSelect = ({
               {translate(language)}
               <button
                 aria-label={t('removeLanguage', { language: translate(language) })}
-                className="flex size-4 items-center justify-center rounded-full text-muted-foreground transition-colors not-disabled:cursor-pointer hover:not-disabled:bg-destructive/15 hover:not-disabled:text-destructive-text focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
+                className="flex size-4 items-center justify-center rounded-full text-muted-foreground transition-colors not-disabled:cursor-pointer hover:not-disabled:bg-destructive/15 hover:not-disabled:text-destructive-text focus-visible:focus-ring disabled:opacity-50"
                 disabled={disabled}
                 onClick={() => toggle(language)}
                 type="button"

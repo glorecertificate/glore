@@ -17,16 +17,17 @@ export const LookupForm = ({ defaultValue }: { defaultValue?: string }) => {
       <Input
         autoCapitalize="characters"
         autoComplete="off"
-        className="h-10 font-mono tracking-wider uppercase"
+        className="font-mono tracking-wider uppercase"
         defaultValue={defaultValue}
         id="verify-code"
         maxLength={24}
         name="code"
         placeholder={t('codePlaceholder')}
         required
+        size="lg"
         spellCheck={false}
       />
-      <Button className="h-10" icon="search" type="submit" variant="brand">
+      <Button icon="search" size="lg" type="submit" variant="brand">
         {t('submit')}
       </Button>
     </form>

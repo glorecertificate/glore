@@ -39,7 +39,7 @@ export const AvatarStack = <T extends { id: string; placeholder: string; url?: s
           <HoverCardTrigger asChild>
             <button
               aria-label={avatar.placeholder}
-              className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-full outline-none focus-visible:focus-ring"
               type="button"
             >
               {image}

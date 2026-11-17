@@ -39,6 +39,7 @@ export const OrganizationTabs = (props: React.ComponentProps<typeof Tabs>) => {
 
   return (
     <Tabs
+      className="gap-0"
       defaultValue={DEFAULT_ORGANIZATION_TAB}
       onValueChange={setTab as (value: string) => void}
       value={tab}

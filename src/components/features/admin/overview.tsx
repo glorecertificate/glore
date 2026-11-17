@@ -40,7 +40,7 @@ export const AdminOverview = ({ loading = false, overview }: { loading?: boolean
   const placeholder = (value: React.ReactNode) => (loading ? <SkeletonText>{value}</SkeletonText> : value)
 
   return (
-    <div aria-busy={loading || undefined} className="space-y-6 pb-8">
+    <div aria-busy={loading || undefined} className="space-y-6">
       {loading && <LoadingFallback className="sr-only" spinner={false} />}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

@@ -50,7 +50,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
   const hasOpenRequest = certificates.some(({ isOpen }) => isOpen)
 
   return (
-    <div className="flex flex-col gap-8 py-6">
+    <div className="flex flex-col gap-8">
       {eligible && !hasOpenRequest && (
         <Banner className="flex-wrap items-center justify-between" variant="info">
           <div className="space-y-1">

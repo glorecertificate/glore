@@ -26,7 +26,13 @@ export const UserSettingsTabs = (props: React.ComponentProps<typeof Tabs>) => {
   const { tab, setTab } = useUserSettingsTab()
 
   return (
-    <Tabs defaultValue={DEFAULT_SETTINGS_TAB} onValueChange={setTab as (tab: string) => void} value={tab} {...props} />
+    <Tabs
+      className="gap-0"
+      defaultValue={DEFAULT_SETTINGS_TAB}
+      onValueChange={setTab as (tab: string) => void}
+      value={tab}
+      {...props}
+    />
   )
 }
 

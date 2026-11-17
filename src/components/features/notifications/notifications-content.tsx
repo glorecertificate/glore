@@ -53,7 +53,7 @@ export const NotificationsContent = () => {
   const resetLimit = () => setLimit(null)
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
+    <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <SegmentedControl

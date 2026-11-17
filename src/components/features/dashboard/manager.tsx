@@ -49,7 +49,7 @@ export const ManagerDashboard = ({
   }))
 
   return (
-    <div className="flex flex-col gap-8 pt-6 pb-10">
+    <div className="flex flex-col gap-8">
       <DashboardHero
         action={{ href: '/organization', label: t('manager.openOrganization') }}
         name={firstName}

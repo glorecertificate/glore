@@ -56,7 +56,7 @@ export const HelpContent = () => {
   const faqItems = Object.values(roleContent.faqs)
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-14 pt-8 pb-16">
+    <div className="flex flex-col gap-14">
       <section className="flex flex-col items-center gap-3 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand-text">
           <LucideIcon name="badge-check" className="size-3.5" />

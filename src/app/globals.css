@@ -159,6 +159,10 @@
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
+@theme {
+  --spacing-page: --spacing(4);
+}
+
 @utility type-display {
   font-family: var(--font-display);
   font-size: 2.25rem;
@@ -215,6 +219,14 @@
 }
 
 @layer base {
+  :root {
+    @variant sm {
+      --spacing-page: --spacing(6);
+    }
+    @variant lg {
+      --spacing-page: --spacing(8);
+    }
+  }
   * {
     @apply border-border outline-ring;
   }

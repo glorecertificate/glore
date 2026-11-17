@@ -73,7 +73,7 @@ export const SkillFramework = ({
   const options = groups.map(group => ({ id: group.id, name: pickLocale(group.name, locale) ?? group.slug }))
 
   return (
-    <div className={cn('mx-auto flex w-full max-w-4xl flex-col gap-6 pt-2 pb-10', className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold">{t('title')}</h1>

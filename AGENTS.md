@@ -2,7 +2,7 @@
 
 GloRe Certificate, a multilingual e-learning platform that certifies the soft skills people gain through volunteering.
 
-A real product by [Associazione Joint](https://associazionejoint.org), a Milan youth-mobility non-profit. This repo is the new version of the live platform.
+A real product by Associazione Joint, a Milan youth-mobility non-profit (`app.md`). This repo is the new version of the live platform.
 
 Read "Domain context" in `.agents/specs/app.md` before product work.
 
@@ -10,29 +10,29 @@ Stack: Next.js 16 (App Router, RSC, Cached Components), React 19, Neon Postgres,
 
 Libraries to use, not guess: Better Auth, Cloudflare R2, Plate.js, next-intl, react-hook-form + zod, nuqs, React Email + Nodemailer, AI SDK with Gemini, motion, @dnd-kit, shadcn/ui (new-york).
 
-Tooling: oxlint + oxfmt, lefthook, portless.
-
-This file governs agents here. `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
+This file governs agents here, and Claude Code loads it natively. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
 
 Budget: this file stays under 2,000 estimated tokens and each spec under 4,500. Over budget means moving detail into a spec, never dropping a fact.
 
 ## Specs and plans
 
-Load only the spec you need from `.agents/specs/`:
+Read only the specs whose rows apply (`.agents/specs/`).
 
-- `app.md`: product, roles, features, domain rules.
-- `certificates.md`: lifecycle, screens, PDF, verification.
-- `organizations.md`: invitations, members, ownership, settings, applications.
-- `admin.md`: admin area, moderation, impersonation.
-- `routes.md`: routes, gates, API routes, proxy.
-- `reference.md`: auth, queries, transactions, cache, env vars, storage, cron.
-- `architecture.md`: `src/` tree, naming, layers, server vs client, events and email.
-- `patterns.md`: components, types, hooks, utils, i18n, forms.
-- `ui.md`: release UI kit, shell, theming, motion.
-- `code.md`: formatter, imports, lint rules, git hooks, release age.
-- `github.md`: issues, PRs, labels, Claude workflows, CI, deploys.
-- `workflow.md`: commands, seeds, translations, commits, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
-- `performance.md`: performance targets, measurement, perf CI.
+| Work                                                                              | Spec               |
+| --------------------------------------------------------------------------------- | ------------------ |
+| Product, roles, features, domain rules                                            | `app.md`           |
+| Certificate lifecycle, screens, PDF, verification                                 | `certificates.md`  |
+| Invitations, members, ownership, settings, applications                           | `organizations.md` |
+| Admin area, moderation, impersonation                                             | `admin.md`         |
+| Routes, gates, API routes, proxy                                                  | `routes.md`        |
+| Auth, queries, transactions, cache, env vars, storage, cron                       | `reference.md`     |
+| `src/` tree, naming, layers, server vs client, events and email                   | `architecture.md`  |
+| Components, types, hooks, utils, i18n, forms                                      | `patterns.md`      |
+| Release UI kit, shell, theming, motion                                            | `ui.md`            |
+| Formatter, imports, lint rules, git hooks, release age                            | `code.md`          |
+| Issues, PRs, labels, Claude workflows, CI, deploys                                | `github.md`        |
+| Commands, seeds, translations, commits, skills, MCP, worktrees, tests, browser QA | `workflow.md`      |
+| Performance targets, measurement, perf CI                                         | `performance.md`   |
 
 Work lives in GitHub issues (`github.md`). A one-PR plan lives in its draft PR and a multi-PR plan in its parent issue, so no plan stays on `main`.
 
@@ -41,7 +41,7 @@ References live in `.agents/references/`: product decisions, the certificate PDF
 ## Commands and commits
 
 - Always run `pnpm run <script>`, never bare `pnpm <script>`, except `pnpm install`. Full table: `workflow.md`.
-- Tests: `pnpm run test` (Vitest), and `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once) for auth, routing, and role flows.
+- Tests: `pnpm run test` (Vitest), and `pnpm run test:e2e` (Playwright) for auth, routing, and role flows.
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first.
 - Commit headers are Conventional Commits with a lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 - One PR is one logical task. It merges by squash, with its title as the commit header. Never create a merge commit (`workflow.md`, "Git history").

@@ -28,7 +28,7 @@ const CompletePageContent = async (props: PageProps<'/courses/[slug]/complete'>)
   if (result.status === 'overview') return redirect(`/courses/${slug}`)
 
   return (
-    <DashboardPage backHref="/courses" title={result.overview.title}>
+    <DashboardPage backHref="/courses" title={result.overview.title} width="prose">
       <CourseCompleteView completion={result.completion} overview={result.overview} />
     </DashboardPage>
   )

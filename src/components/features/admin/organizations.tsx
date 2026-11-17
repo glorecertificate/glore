@@ -179,7 +179,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const sortLabel = sort ? t(`sort_${sort}`) : t('sortBy')
 
   return (
-    <div className="space-y-6 pt-1">
+    <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Tabs onValueChange={value => setFilter(value as OrgFilter)} value={filter}>
           <TabsList>

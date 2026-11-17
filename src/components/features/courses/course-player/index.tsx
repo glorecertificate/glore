@@ -152,10 +152,7 @@ export const CoursePlayer = ({
   const { language, languages, progress, slug } = overview
 
   return (
-    <div
-      className={cn('mx-auto grid w-full max-w-6xl gap-8 pt-2 pb-12 md:grid-cols-[16rem_1fr]', className)}
-      {...props}
-    >
+    <div className={cn('grid gap-8 md:grid-cols-[16rem_1fr]', className)} {...props}>
       <aside className="flex flex-col gap-4 md:sticky md:top-20 md:self-start">
         <div className="flex flex-col gap-2">
           <Link

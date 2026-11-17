@@ -17,7 +17,7 @@ const ArticlePageContent = async ({ params }: PageProps<'/docs/articles/[slug]'>
   const data = await loadArticle(slug)
   if (!data) return notFound()
   return (
-    <DashboardPage backHref="/docs" title={data.title}>
+    <DashboardPage backHref="/docs" title={data.title} width="prose">
       <ArticleView slug={slug} />
     </DashboardPage>
   )

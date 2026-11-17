@@ -84,7 +84,7 @@ export const MemberDashboard = ({
   }))
 
   return (
-    <div className="flex flex-col gap-8 pt-6 pb-10">
+    <div className="flex flex-col gap-8">
       <DashboardHero
         action={heroAction}
         name={firstName}

@@ -42,7 +42,7 @@ export const CertificateDetail = ({
   const isOwner = certificate.userId === user.id
 
   return (
-    <div className="flex flex-col gap-6 py-6">
+    <div className="flex flex-col gap-6">
       {isOwner && certificate.isApproved && <CertificateCelebration id={certificate.id} />}
 
       <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

@@ -9,7 +9,7 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const AboutPage = () => (
-  <DashboardPage title={<PageTitle namespace="Layout" name="about" />}>
+  <DashboardPage title={<PageTitle namespace="Layout" name="about" />} width="content">
     <AboutContent />
   </DashboardPage>
 )

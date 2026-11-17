@@ -18,6 +18,7 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import { Link } from '@/components/ui/link'
+import { PageHeaderHeading, PageHeaderTitle } from '@/components/ui/page-header'
 import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/toast'
 import {
@@ -80,10 +81,10 @@ const PlayerLesson = ({
 
   return (
     <article className="flex min-w-0 flex-col gap-6">
-      <header className="flex flex-col gap-2">
+      <PageHeaderHeading>
+        <PageHeaderTitle>{lesson.title}</PageHeaderTitle>
         <p className="text-sm text-muted-foreground">{t('step', { current: index + 1, total: lessons.length })}</p>
-        <h1 className="text-2xl font-semibold text-balance">{lesson.title}</h1>
-      </header>
+      </PageHeaderHeading>
       {!saves && (
         <Banner variant="warning">
           <LucideIcon className="mt-0.5 size-4 shrink-0" name="eye" />

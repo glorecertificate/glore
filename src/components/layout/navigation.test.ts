@@ -6,6 +6,7 @@ import {
   adminSectionHref,
   entriesFor,
   matchesEntry,
+  navigationHref,
   showsOrganizationSwitcher,
   sidebarEntriesFor,
 } from '@/components/layout/navigation'
@@ -124,5 +125,18 @@ describe('matchesEntry', () => {
     expect(matchesEntry('Organization members', 'MEMBERS org')).toBe(true)
     expect(matchesEntry('Organization members', 'members tutor')).toBe(false)
     expect(matchesEntry('Anything', '')).toBe(true)
+  })
+})
+
+describe('navigationHref', () => {
+  it('resolves the parent of each record page', () => {
+    expect(navigationHref('courses')).toBe('/courses')
+    expect(navigationHref('certificates')).toBe('/certificates')
+    expect(navigationHref('docs')).toBe('/docs')
+    expect(navigationHref('admin-organizations')).toBe('/admin/organizations')
+  })
+
+  it('fails loudly for an id that has no entry', () => {
+    expect(() => navigationHref('missing' as NavigationId)).toThrow('Unknown navigation entry: missing')
   })
 })

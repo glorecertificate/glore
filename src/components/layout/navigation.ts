@@ -235,6 +235,12 @@ const NAVIGATION: NavigationEntry[] = [
   },
 ]
 
+export const navigationHref = (id: NavigationId) => {
+  const entry = NAVIGATION.find(item => item.id === id)
+  if (!entry) throw new Error(`Unknown navigation entry: ${id}`)
+  return entry.href
+}
+
 export const entriesFor = (viewer: NavigationViewer, group?: NavigationGroup) =>
   NAVIGATION.filter(entry => (group ? entry.group === group : true) && entry.visible(viewer))
 

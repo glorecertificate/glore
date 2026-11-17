@@ -6,7 +6,12 @@ import { Link, type LinkProps } from '@/components/ui/link'
 import { cn } from '@/lib/utils'
 
 export const Breadcrumb = ({ className, ...props }: React.ComponentProps<'nav'>) => (
-  <nav aria-label="breadcrumb" className={cn('flex h-full grow items-center')} data-slot="breadcrumb" {...props} />
+  <nav
+    aria-label="breadcrumb"
+    className={cn('flex h-full min-w-0 grow items-center', className)}
+    data-slot="breadcrumb"
+    {...props}
+  />
 )
 
 export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (

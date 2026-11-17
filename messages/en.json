@@ -1801,6 +1801,7 @@
   "CertificateList": {
     "backTo": "Back to all certificates",
     "description": "GloRe certificates are an official recognition of your volunteering experience and acquired soft skills. They are issued by GloRe and can be shared on your social media profiles or added to your CV. You can request your certificate after completing at least 3 courses with an average self-assessment of at least 3 out of 5.",
+    "detailTitle": "Certificate",
     "notFound": "Certificate not found",
     "notFoundMessage": "The certificate you are looking for does not exist or has been moved",
     "requestCertificate": "Request certificate",

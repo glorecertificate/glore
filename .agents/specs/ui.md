@@ -73,6 +73,15 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Use `full` for lists, tables, and dashboards, `content` for details, forms, wizards, and about pages, `prose` for articles, notifications, and course completion, and `wide` for the course player.
 - A `Tabs` provider that wraps the shell sets `gap-0`, so the header keeps its gap to the content.
 
+### Page titles
+
+- Each page has one `h1`. A section page passes `title`, and the header bar renders it as the `h1`.
+- A record page also passes `parent`, a navigation id. The bar shows the parent link, then the title with `aria-current="page"`, and the content owns the `h1`.
+- `navigationHref` and `NavigationLabel` give the parent its href and label from the navigation table.
+- Build a content title with `PageHeader`: `PageHeaderHeading` (title, description, meta) and `PageHeaderActions`.
+- Every content `h1` is a `PageHeaderTitle` (`type-title`), and every page description is a `PageHeaderDescription`. A title inside a card uses the same parts.
+- Put a category, step, or date below the title. Never put a label above it.
+
 ### Org switcher and palette
 
 - The org switcher (`organization-switcher.tsx`) reuses the active-org mechanism: `useSession().setOrganization` writes the `org` cookie that `getActiveOrgId` reads.

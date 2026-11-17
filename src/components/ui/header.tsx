@@ -4,7 +4,13 @@ import { Route } from 'next'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 import { LucideIcon } from '@/components/icons/lucide'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
 import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { Link, LinkProps } from '@/components/ui/link'
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
@@ -35,18 +41,22 @@ export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<type
   )
 }
 
+const BAR_TEXT = 'font-sans text-[15px] tracking-normal'
+
 export const HeaderBreadcrumb = ({
   backHref,
+  backLabel,
   children,
   description,
   title,
   ...props
 }: Omit<React.ComponentProps<typeof Breadcrumb>, 'title'> & {
   backHref?: Route
+  backLabel?: React.ReactNode
   description?: React.ReactNode
   title?: React.ReactNode
 }) => {
-  if (!(title || description)) {
+  if (!(title || description || backHref)) {
     return (
       <Breadcrumb {...props}>
         <BreadcrumbList className="grow justify-between sm:gap-4">{children}</BreadcrumbList>
@@ -56,33 +66,44 @@ export const HeaderBreadcrumb = ({
 
   return (
     <Breadcrumb {...props}>
-      <BreadcrumbList className="h-9 grow justify-between sm:gap-3">
-        <BreadcrumbItem className="gap-2">
-          {title &&
-            (backHref ? (
-              <Link
-                className="text-[15px] text-muted-foreground hover:text-foreground dark:text-foreground/80"
-                href={backHref}
-              >
-                {title}
-              </Link>
-            ) : (
-              <h1 className="font-sans text-[15px] font-medium tracking-normal text-foreground">{title}</h1>
-            ))}
-          {description && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <LucideIcon
-                  name="info"
-                  className="mt-px size-3.5 cursor-help text-foreground/60 not-data-[state=closed]:text-foreground hover:text-foreground"
-                />
-              </TooltipTrigger>
-              <TooltipContent className="text-[13px]" showArrow>
-                {description}
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </BreadcrumbItem>
+      <BreadcrumbList className="h-9 min-w-0 grow flex-nowrap gap-1.5 sm:gap-2">
+        {backHref && (
+          <BreadcrumbItem className="shrink-0">
+            <Link
+              className={cn(
+                BAR_TEXT,
+                'font-normal text-muted-foreground hover:text-foreground dark:text-foreground/80'
+              )}
+              href={backHref}
+            >
+              {backLabel}
+            </Link>
+          </BreadcrumbItem>
+        )}
+        {backHref && title && <BreadcrumbSeparator />}
+        {(title || description) && (
+          <BreadcrumbItem className="min-w-0 gap-2">
+            {title &&
+              (backHref ? (
+                <BreadcrumbPage className={cn(BAR_TEXT, 'truncate font-medium')}>{title}</BreadcrumbPage>
+              ) : (
+                <h1 className={cn(BAR_TEXT, 'font-medium text-foreground')}>{title}</h1>
+              ))}
+            {description && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <LucideIcon
+                    name="info"
+                    className="mt-px size-3.5 cursor-help text-foreground/60 not-data-[state=closed]:text-foreground hover:text-foreground"
+                  />
+                </TooltipTrigger>
+                <TooltipContent className="text-[13px]" showArrow>
+                  {description}
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </BreadcrumbItem>
+        )}
         {children}
       </BreadcrumbList>
     </Breadcrumb>

@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { parseAsInteger, useQueryState } from 'nuqs'
 import { type Control, useForm, useWatch } from 'react-hook-form'
-import { toast } from 'sonner'
 
 import { type CertificateReviewNotes } from '@/actions/certificates/queries'
 import {
@@ -48,6 +47,7 @@ import {
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
+import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useDebounce } from '@/hooks/use-debounce'
 import appConfig from '~/config/app.json'

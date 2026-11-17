@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { CourseDialog } from '@/components/features/courses/course-dialog'
 import { CourseAnalyticsSheet } from '@/components/features/courses/course-editor/analytics'
@@ -31,6 +30,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { computeTranslationCoverage } from '@/db/queries/course-editing'
 import { type Lesson } from '@/db/queries/lesson'

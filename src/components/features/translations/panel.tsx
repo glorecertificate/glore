@@ -4,7 +4,6 @@ import { useState } from 'react'
 
 import { type Locale } from 'next-intl'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { translateEntity } from '@/actions/translations/ai'
 import { reviewTranslation } from '@/actions/translations/states'
@@ -22,6 +21,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 import { type ContentEntityType, countStates, localeStates, summarizeLocale } from '@/db/queries/content-translation'
 import { cn } from '@/lib/utils'
 

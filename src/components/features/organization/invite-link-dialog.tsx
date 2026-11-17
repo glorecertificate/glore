@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { createOrganizationInviteLink } from '@/actions/organizations/invitations'
 import { useInvitationError } from '@/components/features/organization/use-invitation-error'
@@ -21,6 +20,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
+import { toast } from '@/components/ui/toast'
 
 const EXPIRY_OPTIONS = ['1', '7', '30', '90', 'never'] as const
 const LINK_ROLES = ['learner', 'volunteer'] as const

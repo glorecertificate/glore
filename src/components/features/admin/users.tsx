@@ -5,7 +5,6 @@ import { startTransition as startNavigation, useState, useTransition } from 'rea
 
 import { useFormatter, useTranslations } from 'next-intl'
 import { debounce, useQueryStates } from 'nuqs'
-import { toast } from 'sonner'
 
 import { updateUserRole } from '@/actions/admin/users'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -13,6 +12,7 @@ import { useSession } from '@/components/providers/session'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
+import { toast } from '@/components/ui/toast'
 import { type AdminPage, type AdminUserRow, type PlatformRole, isBanActive } from '@/db/queries/admin-user'
 import { timestampMillis } from '@/db/queries/organization'
 import { type IconName } from '@/lib/types'

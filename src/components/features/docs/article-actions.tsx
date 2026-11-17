@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { deleteDocArticle } from '@/actions/docs'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
@@ -21,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
 
 export const ArticleActions = ({ article, categories }: { article: DocArticle; categories: DocCategory[] }) => {

@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useReducer } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { createDocArticle, updateDocArticle } from '@/actions/docs'
 import { type TranslatedField, TranslationPanel } from '@/components/features/translations/panel'
@@ -18,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
 import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALES, LOCALE_ITEMS } from '@/lib/i18n'
 

@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { publishVersion } from '@/actions/legal/manage'
 import { useLegalError } from '@/components/features/legal/use-legal-error'
@@ -22,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { type LegalDocumentRow, type LegalVersionRow } from '@/db/queries/legal'
 
 const today = () => {

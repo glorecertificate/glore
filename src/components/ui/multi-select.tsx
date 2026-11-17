@@ -4,13 +4,13 @@ import { createContext, use, useState } from 'react'
 
 import { CommandSeparator } from 'cmdk'
 import { useTranslations } from 'next-intl'
-import { type ToastT, toast } from 'sonner'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
+import { type ExternalToast, toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
@@ -53,7 +53,7 @@ export const MultiSelect = ({
   min?: number
   onChange: (selected: string[]) => void
   options: string[]
-  toast?: ToastT
+  toast?: ExternalToast
   value: string[]
 }) => {
   const t = useTranslations('Components.MultiSelect')

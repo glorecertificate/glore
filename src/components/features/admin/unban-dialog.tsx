@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { unbanUser } from '@/actions/admin/users'
 import { Button } from '@/components/ui/button'
@@ -15,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { toast } from '@/components/ui/toast'
 import { type AdminUserRow } from '@/db/queries/admin-user'
 
 import { useAdminError } from './use-admin-error'

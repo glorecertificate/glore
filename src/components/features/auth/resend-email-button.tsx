@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { resetPassword } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 export const ResendEmailButton = ({ username }: { username?: string }) => {
   const t = useTranslations('Auth')

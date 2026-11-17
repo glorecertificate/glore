@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
@@ -35,6 +34,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { SearchHighlight } from '@/components/ui/search'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
 

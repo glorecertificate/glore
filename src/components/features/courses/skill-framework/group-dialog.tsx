@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { saveSkillGroup } from '@/actions/courses/skill-groups'
 import { type TranslatedField, TranslationPanel } from '@/components/features/translations/panel'
@@ -25,6 +24,7 @@ import { IconPicker } from '@/components/ui/icon-picker'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 

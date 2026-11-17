@@ -11,6 +11,7 @@
     "backToPrevious": "Go back",
     "cancel": "Cancel",
     "clearSearch": "Clear search",
+    "clearFilters": "Clear filters",
     "clearSort": "Clear sort",
     "completed": "Completed",
     "errorMessage": "Please try again or <contactUs>contact us</contactUs> if the problem persists",
@@ -2648,7 +2649,6 @@
       "title": "Team management",
       "actions": "Actions",
       "cancel": "Cancel",
-      "clearFilters": "Clear filters",
       "confirmDelete": "Remove member",
       "deleteDescription": "Are you sure you want to remove {name} from the team? This action cannot be undone and will permanently delete their account.",
       "deleteSuccess": "Team member removed successfully.",
@@ -2704,7 +2704,6 @@
       "approveTitle": "Approve organization",
       "approving": "Approving…",
       "cancel": "Cancel",
-      "clearFilters": "Clear filters",
       "commentLabel": "Message to representative",
       "commentPlaceholder": "Welcome to GloRe! We're happy to have you on board.",
       "createDescription": "Add an organization directly, without inviting a representative.",
@@ -2797,7 +2796,6 @@
       "actions": "Actions",
       "tableLabel": "Users",
       "searchPlaceholder": "Search by name, email, or username",
-      "clearFilters": "Clear filters",
       "filters": {
         "allBans": "Any ban state",
         "allOrganizations": "All organizations",
@@ -2921,7 +2919,6 @@
       "noResultsDescription": "Try a different search or clear the filters.",
       "noCertificates": "No certificates yet",
       "noCertificatesDescription": "Submitted certificates from every organization will appear here.",
-      "clearFilters": "Clear filters",
       "view": "View",
       "openOrganization": "Show the pipeline of {name}"
     },
@@ -2981,8 +2978,7 @@
       "noResults": "No events found",
       "noResultsDescription": "Try a different search or clear the filters.",
       "noEvents": "No events yet",
-      "noEventsDescription": "Bans, role changes, impersonation, revoked certificates, and application decisions will appear here.",
-      "clearFilters": "Clear filters"
+      "noEventsDescription": "Bans, role changes, impersonation, revoked certificates, and application decisions will appear here."
     },
     "settings": {
       "title": "Settings",
@@ -4021,7 +4017,6 @@
     "searchPlaceholder": "Search by key, text, or section",
     "tableLabel": "Interface messages in every language",
     "count": "{count, plural, one {# message} other {# messages}}",
-    "clearFilters": "Clear filters",
     "filters": {
       "state": "Status",
       "namespace": "Section",

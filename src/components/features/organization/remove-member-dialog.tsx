@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { removeOrganizationMember } from '@/actions/organizations/members'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
@@ -17,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { toast } from '@/components/ui/toast'
 
 import { useMemberError } from './use-member-error'
 import { getDisplayName } from './utils'

@@ -3,13 +3,13 @@
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { rateCourse } from '@/actions/courses/progress'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { COMMENT_MAX_LENGTH } from '@/db/queries/learning'
 import { cn } from '@/lib/utils'
 

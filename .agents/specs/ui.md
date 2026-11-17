@@ -18,6 +18,9 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `DescriptionList` has three layouts: `stacked` (label above value, `columns={2}` from `sm`), `rows` (a 12rem label column with dividers), and `inline` (label left, value right).
 - A `DescriptionItem` holds only its term and details. Put an action such as `CopyButton` inside `DescriptionDetails`.
 - `EmptyDescription` renders a `p`, so pass phrasing content only.
+- `FilterBar` holds the controls of a filter row. Pass `active` and `onClear` to show "Clear filters" (`Common.clearFilters`).
+- After a clear, `FilterBar` moves focus to its first control, so focus never drops to the page.
+- Import `toast` from `@/components/ui/toast`. Errors stay 8s, warnings 6s, info 4s, and success 2.5s. A caller can still set `duration`.
 
 ### Layout rules
 

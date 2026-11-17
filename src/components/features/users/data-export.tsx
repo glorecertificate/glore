@@ -3,12 +3,12 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { exportAccountData } from '@/actions/account/export'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 export const DataExport = () => {
   const { user } = useSession()

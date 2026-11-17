@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
 import { acceptLegal } from '@/actions/legal/accept'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { toast } from '@/components/ui/toast'
 import { useActionError } from '@/hooks/use-action-error'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 

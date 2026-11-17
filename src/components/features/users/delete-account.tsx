@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { deleteAccount, getDeletionBlockers } from '@/actions/account/delete'
 import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
@@ -25,6 +24,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { toast } from '@/components/ui/toast'
 import { usePoll } from '@/hooks/use-poll'
 
 const REFRESH_INTERVAL = 5 * 60_000

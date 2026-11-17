@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import {
   copyOrganizationInvitationLink,
@@ -30,6 +29,7 @@ import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
+import { toast } from '@/components/ui/toast'
 import { type InvitationState, canManageInvitation, timestampMillis } from '@/db/queries/organization'
 
 import { CopyLinkButton } from './copy-link-button'

@@ -6,12 +6,12 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLocale, useTranslations } from 'next-intl'
 import { type FieldErrors, type Resolver, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 
 import { requestOrganizationRegistration } from '@/actions/organizations/requests'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
+import { toast } from '@/components/ui/toast'
 import {
   APPLICATION_ERROR_CODES,
   APPLICATION_STEPS,

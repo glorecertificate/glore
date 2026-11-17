@@ -3,8 +3,8 @@
 import { useEffect, useEffectEvent } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
+import { toast } from '@/components/ui/toast'
 import { usePWA } from '@/hooks/use-pwa'
 
 const TOAST_ID = 'pwa-install'

@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react'
 
 import { type Locale, useFormatter, useNow, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { useCourses } from '@/components/features/courses/context'
 import { resolveCourseLanguage, useCourseLanguages } from '@/components/features/courses/course-languages'
@@ -25,6 +24,7 @@ import { IconPicker } from '@/components/ui/icon-picker'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { SearchHighlight } from '@/components/ui/search'
+import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
 import { LOCALES, localizeRecord } from '@/lib/i18n'

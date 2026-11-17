@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { selfAssignCertificate } from '@/actions/certificates/assignment'
 import { AgeBadge } from '@/components/features/certificates/age-badge'
@@ -15,6 +14,7 @@ import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 

@@ -66,21 +66,35 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 
 ## Color and typography
 
-- Color is OKLCH through CSS custom properties in `src/app/globals.css`, with light and dark blocks.
-- The palette comes from the logo.
-- `--brand` is the logo light-blue in both themes (slightly deeper in light) with an ink foreground.
-- `--brand-secondary` is olive (dark foreground). `--brand-tertiary` is navy.
-- `--primary` is a deeper, AA-safe brand blue with white text in light mode (`oklch(0.56 0.11 228)`, 4.5:1).
-- In dark mode `--primary` equals `--brand`, so default buttons, checked controls, and selected chips use the brand color.
-- `--secondary` is the dark navy fill. Neutrals carry a faint navy tint (hue 256).
-- Every text and fill pair meets WCAG AA. Check new pairs before adding them.
+- `config/theme.json` (`system`) is the palette source. `pnpm run theme` writes `src/styles/tokens.generated.css` and `src/emails/colors.generated.ts`. Never edit them by hand.
+- `pnpm run check:theme` fails on a stale generated file or on a contrast pair below its minimum.
+- The generator (`scripts/theme/`) solves text, fill, and ring lightness in OKLCH against the targets in `system.contrast`.
+- Targets are 4.5:1 for text, 6:1 for `fg-2`, 5:1 for colored text, and 3:1 for non-text. Declare a pair in the generator before you use a new combination.
+- Surface roles: `surface-0` to `surface-3`, `surface-sunken` (sidebar and canvas), `surface-muted`, `surface-hover`, and `surface-selected`.
+- Text and border roles: `fg-1` to `fg-3`, `fg-disabled`, `fg-title` (navy), `fg-on-fill`, `fg-on-bright`, `fg-on-danger`, `border-subtle`, `border`, and `border-strong` (3:1).
+- `action` (blue) marks actions only. It has `-hover`, `-subtle`, `-border`, and `-text`.
+- `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current` (navy) marks the current stage, with `-subtle`.
+- `success`, `warning`, `danger`, and `info` each have `-fill`, `-fill-hover`, `-subtle`, `-border`, and `-text`.
+- The shadcn names (`background`, `primary`, `muted-foreground`, `destructive`, and the rest) alias these roles. New code uses the roles.
+- `input` keeps its earlier faint value until the form controls move to `border-strong`.
+- Light surfaces are white on a gray `surface-sunken`. Dark surfaces step up in lightness, and dark borders are white at 6% and 9% alpha.
+- `--brand` is the logo light-blue fill with ink text. `--primary` aliases `action`: a deeper blue with white text in light, and `brand` in dark.
+- `danger-fill` keeps white text in both themes. The other dark fills carry ink text.
+- Neutrals carry a faint navy tint (hue 256).
 
 ### Status and text colors
 
-- Status colors (`success`, `warning`, `destructive`, `info`) are tokens.
-- Text uses their `*-text` tokens plus `brand-text`, `brand-secondary-text`, and `brand-tertiary-text`, since fills fail AA as text on white or their own tint.
+- Legacy status names (`success`, `warning`, `destructive`, `info`) alias the `*-fill` roles.
+- Text uses the `*-text` tokens, since fills fail AA as text on white or their own tint.
 - Never put `text-muted-foreground/NN` on meaningful text.
 - Fills, icons, and charts keep `brand`.
+
+### Type roles
+
+- The Tailwind numeric text scale is unchanged, because the vendored editor and the mobile textarea need `text-base` at 16px.
+- Body text is `text-sm` (14px).
+- Bricolage roles: `type-display` (36/40), `type-title` (28/34), and `type-heading` (16/24). Geist roles: `type-label` (13/20, 500) and `type-caption` (12/16).
+- Name a type role `type-*`, never `text-*`. `cn()` reads an unknown `text-*` class as a color and drops it next to another color.
 
 ### Brand roles and fonts
 
@@ -91,11 +105,11 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Fonts are variables on `<html>`: Geist (`--font-geist-sans`) for UI text and Bricolage Grotesque (`font-display`).
 - `globals.css` applies `font-display` to `h1` to `h3` and every `[data-slot$='-title']`.
 - `HeaderBreadcrumb` renders the page `h1` unless `backHref` is set. Then the content owns the only `h1`.
-- Light `--ring` is 3:1 or better on white. The base outline is full strength in light and 50% in dark.
+- `--ring` is `action` in light and `brand` in dark. The base outline is full strength in light and 50% in dark.
 - `--radius` is `0.6rem` with `sm`, `md`, `lg`, and `xl` derivatives.
 - `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
 - The mobile breakpoint is 768px, sourced from `config/theme.json`.
-- Email templates use their own Tailwind config in `src/emails/layout.tsx`. Its `brand` hex stays the deep teal `#267997`, because email buttons carry white text.
+- Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`. Its `brand` is the `action` blue, because email buttons carry white text.
 
 ## Elevation and motion
 
@@ -119,3 +133,9 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Use a `Spinner` when the shape depends on the data, for example an unknown row count or text of variable length.
 - The swap from the loading state to the content is a short fade, never a pop. With reduced motion it is instant.
 - Check each loading state in a browser on a throttled network. Nothing on the page may move or resize when the content arrives.
+
+## Design briefs
+
+- Impeccable surface briefs live in `.impeccable/surfaces/`, one per surface, and are tracked.
+- The volunteer dashboard brief records the Journey rail direction chosen in #84.
+- Impeccable mocks, reviews, and question state stay ignored.

@@ -62,6 +62,8 @@ web
 - The live sites describe GloRe with these lines, for reference only.
   - "Give value to your volunteering experiences"
   - "An Easy and Professional Way to Certify Your Volunteering Experiences"
+- The interface matches the design-system rigor of Linear and GitHub: tokens, type scale, spacing, components, and consistency.
+- The interface never borrows their UI patterns, such as profile pages or courses shown as repositories.
 
 ## Evidence on Hand
 

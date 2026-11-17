@@ -6,6 +6,14 @@
   },
   "defaultMode": "system",
   "mobileBreakpoint": 768,
+  "system": {
+    "base": { "hue": 256, "chroma": 0.014 },
+    "accent": "#24a7cf",
+    "earned": "#5f7d12",
+    "navy": "#16304f",
+    "status": { "success": 150, "warning": 80, "danger": 27, "info": 250 },
+    "contrast": { "text": 4.5, "secondaryText": 6, "coloredText": 5, "nonText": 3, "margin": 0.05 }
+  },
   "colors": {
     "light": {
       "background": "#ffffff",

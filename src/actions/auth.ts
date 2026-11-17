@@ -42,7 +42,10 @@ const passwordError = (error: unknown) => {
 export const getAuthUser = cache(async () => {
   try {
     await connection()
-    const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } })
+    const session = await auth.api.getSession({
+      headers: await headers(),
+      query: { disableCookieCache: true, disableRefresh: true },
+    })
     return session?.user ?? null
   } catch (e) {
     unstable_rethrow(e)

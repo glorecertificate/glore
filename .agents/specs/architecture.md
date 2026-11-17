@@ -150,6 +150,7 @@ src/
 ### Session and caching
 
 - Actions, guards, and API routes use `getAuthUser()`, which skips the cookie cache (`disableCookieCache`), so a ban or a revoked session blocks writes at once.
+- `getAuthUser()` also passes `disableRefresh`, so a read never rewrites the session cookie. A cookie write in an action makes Next.js re-render the page and drop prefetched routes. The proxy still extends the session on each request.
 - Keep cached render helpers in server-only modules.
 - Every export of a `'use server'` file is a client-callable action, so a cached fetch that takes a `userId` there would serve any user's data.
 - A page that must navigate instantly reads URL state on the client (nuqs) instead of awaiting `searchParams`.

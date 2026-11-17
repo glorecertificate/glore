@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 const getSession = vi.hoisted(() =>
-  vi.fn((_options: { headers: Headers; query?: { disableCookieCache?: boolean } }) =>
+  vi.fn((_options: { headers: Headers; query?: { disableCookieCache?: boolean; disableRefresh?: boolean } }) =>
     Promise.resolve<{ user: { id: string } } | null>(null)
   )
 )
@@ -15,10 +15,12 @@ vi.mock('next/server', () => ({ connection: () => Promise.resolve() }))
 vi.mock('next/navigation', () => ({ redirect: vi.fn(), unstable_rethrow: () => undefined }))
 
 describe('getAuthUser', () => {
-  it('reads the session from the database, not the cookie cache', async () => {
+  it('reads the session from the database and never rewrites the session cookie', async () => {
     const { getAuthUser } = await import('@/actions/auth')
 
     expect(await getAuthUser()).toBeNull()
-    expect(getSession).toHaveBeenCalledWith(expect.objectContaining({ query: { disableCookieCache: true } }))
+    expect(getSession).toHaveBeenCalledWith(
+      expect.objectContaining({ query: { disableCookieCache: true, disableRefresh: true } })
+    )
   })
 })

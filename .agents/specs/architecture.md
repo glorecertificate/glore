@@ -12,7 +12,7 @@ src/
 │   ├── admin/          # audit.ts, certificates.ts, expire.ts, helpers.ts, impersonation.ts, impersonation-state.ts, options.ts, organizations.ts, overview.ts, pending.ts, settings.ts, team.ts, users.ts
 │   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, preview, revoke), public.ts (verification),
 │   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), pdf.ts (server-only), queries.ts
-│   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses, listSessionCourses), compass.ts, data.ts (server-only: learner reads),
+│   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses; fetchCourseSummaries and listSessionCourseSummaries feed `CoursesProvider`), compass.ts, data.ts (server-only: learner reads),
 │   │                   #   learner.ts (server-only: learning context, overview), learning.ts (server-only: grading, finish lesson),
 │   │                   #   analytics.ts, management.ts, skill-groups.ts (framework CRUD), progress.ts (startCourse, answerQuestion, completeLesson), queries.ts
 │   ├── dashboard/      # Read-only, server-only (no 'use server', so per-user cached reads are safe): core.ts (pure types and builders, Vitest),

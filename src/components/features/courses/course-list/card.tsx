@@ -26,7 +26,7 @@ import { Progress } from '@/components/ui/progress'
 import { SearchHighlight } from '@/components/ui/search'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type Course } from '@/db/queries/course'
+import { type CourseSummary } from '@/db/queries/course'
 import { LOCALES, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -38,7 +38,7 @@ export const CourseListCard = ({
   ...props
 }: React.ComponentProps<typeof Card> & {
   activeLanguages: Locale[]
-  course: Course
+  course: CourseSummary
 }) => {
   const { locale, localeItems } = useI18n()
   const t = useTranslations('CourseList')
@@ -72,10 +72,9 @@ export const CourseListCard = ({
 
   const title = localizeRecord(course.title, language)
   const coursePath = `/courses/${course.slug}?lang=${language}` as const
-  const completedLessons = course.lessons?.filter(lesson => lesson.completed).length ?? 0
   const lessonsMessage =
-    course.lessons.length > 0
-      ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
+    course.lessonCount > 0
+      ? `${course.lessonCount} ${t('lessons', { count: course.lessonCount })}`
       : t('noLessonsCreated')
   const createdOn = t('createdOnBy', { date: relativeTime(new Date(course.createdAt), now) })
 
@@ -279,7 +278,7 @@ export const CourseListCard = ({
           <div
             className={cn(
               'flex items-center gap-2.5 text-xs font-normal',
-              course.lessons.length > 0
+              course.lessonCount > 0
                 ? 'text-muted-foreground'
                 : 'pointer-events-none text-muted-foreground/50 select-none'
             )}
@@ -382,9 +381,9 @@ export const CourseListCard = ({
           <div className="w-full">
             <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
               <span className="flex items-center">
-                {completedLessons}
+                {course.completedLessonCount}
                 {' / '}
-                {course.lessons.length} {t('lessons', { count: course.lessons.length })}
+                {course.lessonCount} {t('lessons', { count: course.lessonCount })}
               </span>
               <span>
                 {course.progress}

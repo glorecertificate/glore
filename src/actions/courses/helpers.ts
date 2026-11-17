@@ -8,7 +8,7 @@ import { avg, count, eq } from 'drizzle-orm'
 import { getSessionUser } from '@/actions/session'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { parseCourse } from '@/db/queries/course'
+import { parseCourse, summarizeCourse } from '@/db/queries/course'
 import { publicUserColumns, userWith } from '@/db/queries/user'
 import { courseRatings, userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from '@/db/schema'
 import { CacheTag, progressUserTag } from '@/lib/cache'
@@ -125,8 +125,34 @@ export const fetchCourses = cache(async (userId?: string) => {
   return await safeQuery(() => queryCatalog(userId))
 })
 
-export const listSessionCourses = async () => {
+const buildSummaryWith = (userId?: string) => {
+  const { lessons, ...rest } = buildCourseWith(userId, { catalog: true })
+  return {
+    ...rest,
+    lessons: {
+      columns: { id: true },
+      with: { contributions: lessons.with.contributions, userLessons: lessons.with.userLessons },
+    },
+  } as unknown as typeof courseWith
+}
+
+export const queryCourseSummaries = async (userId: string | undefined, editor: boolean) => {
+  const [rows, ratings] = await Promise.all([
+    db.query.courses.findMany({ with: buildSummaryWith(userId) }),
+    fetchRatingSummaries(),
+  ])
+  return rows.map(course => summarizeCourse(parseCourse({ ...course, rating: ratings.get(course.id) }), { editor }))
+}
+
+export const fetchCourseSummaries = cache(async (userId: string | undefined, editor: boolean) => {
+  'use cache'
+  cacheTag(CacheTag.Courses, ...(userId ? [progressUserTag(userId)] : []))
+
+  return await safeQuery(() => queryCourseSummaries(userId, editor))
+})
+
+export const listSessionCourseSummaries = async () => {
   const user = await getSessionUser()
   const isEditor = user?.role === 'admin' || user?.isEditor
-  return await fetchCourses(isEditor ? undefined : user?.id)
+  return await fetchCourseSummaries(isEditor ? undefined : user?.id, Boolean(isEditor))
 }

@@ -22,7 +22,7 @@ import {
 import { isListedCourse } from '@/components/features/courses/visibility'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
-import { COURSE_TYPES, type Course } from '@/db/queries/course'
+import { COURSE_TYPES, type CourseSummary } from '@/db/queries/course'
 import { type EnumType } from '@/db/types'
 import { useCookies } from '@/hooks/use-cookies'
 import { useSearch } from '@/hooks/use-search'
@@ -145,7 +145,7 @@ export const useCourseList = () => {
   const isViewer = user.isOrgAdmin || user.isRepresentative || user.isTutor
 
   const courseList = (() => {
-    const list: Record<CamelCase<CourseListTab>, Course[]> = {
+    const list: Record<CamelCase<CourseListTab>, CourseSummary[]> = {
       all: [],
       published: [],
       partial: [],

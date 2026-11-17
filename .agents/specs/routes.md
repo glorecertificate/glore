@@ -6,7 +6,7 @@ Route groups, route gates, API routes, and the proxy lifecycle. Authentication d
 
 - `(auth)` holds unauthenticated pages and has no shared layout beyond the root.
 - `(dashboard)` holds authenticated pages with the sidebar, wrapped in `SidebarProvider > SessionProvider`.
-- The `dashboard/` and `courses/` layouts add `CoursesProvider`.
+- The `dashboard/` and `courses/` layouts add `CoursesProvider`. Its context holds `CourseSummary` records only (`summarizeCourse` in `db/queries/course.ts`), never lesson trees. Editor, learn, and complete load their one full course on the server.
 - `/` permanently redirects to `/dashboard` in `next.config.ts`.
 
 ## Public routes

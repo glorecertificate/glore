@@ -22,7 +22,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { queryError } from '@/db/helpers'
-import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course } from '@/db/queries/course'
+import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course, type CourseSummary } from '@/db/queries/course'
 import { COURSE_DURATION_MAX, OUTCOMES_MAX, parseOutcomesText, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { useDebounce } from '@/hooks/use-debounce'
 import { SLUG_REGEX } from '@/lib/constants'
@@ -48,6 +48,11 @@ const onSlugChange = (onChange: (slug: string) => void) => (e: React.ChangeEvent
   onChange(slug)
 }
 
+export interface CourseSettingsValues extends Pick<
+  CourseSummary,
+  'durationMinutes' | 'icon' | 'id' | 'outcomes' | 'skillGroup' | 'slug' | 'type'
+> {}
+
 export const CourseSettings = ({
   className,
   course,
@@ -55,7 +60,7 @@ export const CourseSettings = ({
   onSuccess,
   ...props
 }: Omit<React.ComponentProps<'form'>, 'onError' | 'onSubmit'> & {
-  course?: Course
+  course?: CourseSettingsValues
   onError?: (error: { code: string; message: string }) => void
   onSuccess?: (course: Course) => void
 }) => {

@@ -10,6 +10,7 @@ import { getLocaleCookie } from '@/actions/cookies'
 import { OnboardingForm } from '@/components/features/onboarding'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -51,7 +52,9 @@ const OnboardingContent = async () => {
 
 const OnboardingPage = () => (
   <Suspense fallback={<LoadingFallback size="full" />}>
-    <OnboardingContent />
+    <MessagesScope scope="onboarding">
+      <OnboardingContent />
+    </MessagesScope>
   </Suspense>
 )
 

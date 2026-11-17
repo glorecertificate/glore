@@ -1,5 +1,6 @@
 import { ApplicationForm } from '@/components/features/organization/application/application-form'
 import { PageTitle } from '@/components/layout/page-title'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { Logo } from '@/components/ui/logo'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -9,17 +10,19 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const RegisterPage = () => (
-  <main className="flex min-h-screen items-center justify-center p-6">
-    <div className="mx-auto w-full max-w-xl space-y-12">
-      <div className="flex flex-col items-center gap-8">
-        <Logo className="w-40" />
+  <MessagesScope scope="register">
+    <main className="flex min-h-screen items-center justify-center p-6">
+      <div className="mx-auto w-full max-w-xl space-y-12">
+        <div className="flex flex-col items-center gap-8">
+          <Logo className="w-40" />
+        </div>
+        <h1 className="sr-only">
+          <PageTitle namespace="Register" name="metaTitle" />
+        </h1>
+        <ApplicationForm />
       </div>
-      <h1 className="sr-only">
-        <PageTitle namespace="Register" name="metaTitle" />
-      </h1>
-      <ApplicationForm />
-    </div>
-  </main>
+    </main>
+  </MessagesScope>
 )
 
 export default RegisterPage

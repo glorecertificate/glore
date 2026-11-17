@@ -6,6 +6,7 @@ import { getTranslations } from 'next-intl/server'
 import { findPublicCertificate, lookupLegacyCertificateCode } from '@/actions/certificates/queries'
 import { PublicCertificateView } from '@/components/features/certificates/public-certificate-view'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { VERIFY_ROOT } from '@/lib/constants'
 import { fullName } from '@/lib/utils'
 import config from '~/config/metadata.json'
@@ -55,7 +56,9 @@ const UserPageContent = async ({ params, searchParams }: PageProps<'/[username]'
 
 const UserPage = (props: PageProps<'/[username]'>) => (
   <Suspense fallback={<LoadingFallback size="full" />}>
-    <UserPageContent {...props} />
+    <MessagesScope scope="profile">
+      <UserPageContent {...props} />
+    </MessagesScope>
   </Suspense>
 )
 

@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 
 import { getCurrentUser } from '@/actions/user'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 
 const AdminLayoutContent = async ({ children }: React.PropsWithChildren) => {
   const user = await getCurrentUser()
@@ -12,7 +13,9 @@ const AdminLayoutContent = async ({ children }: React.PropsWithChildren) => {
 
 const AdminLayout = ({ children }: LayoutProps<'/admin'>) => (
   <Suspense fallback={<LoadingFallback size="full" />}>
-    <AdminLayoutContent>{children}</AdminLayoutContent>
+    <MessagesScope scope="admin">
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </MessagesScope>
   </Suspense>
 )
 

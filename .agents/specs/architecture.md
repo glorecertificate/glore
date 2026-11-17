@@ -54,7 +54,7 @@ src/
 │   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
 │   │                   #   loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,
 │   │                   #   search-command (palette), navigation (pure per-role entries), use-navigation-labels
-│   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, settings, theme
+│   ├── providers/      # Flat single-file providers: i18n, messages-scope, motion, search-params, session, settings, theme
 │   └── ui/             # shadcn/ui + release kit (ui.md); vendored rich-text-editor/
 ├── db/
 │   ├── client.ts       # Dual-driver Drizzle client + transaction() + Transaction type
@@ -83,10 +83,11 @@ src/
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail), TEMPLATES, renderEmail
 │   ├── http.ts         # Size-limited body reads, closed Better Auth paths
 │   ├── impersonation-guard.ts # Better Auth plugin: blocks security changes while impersonating, drops the admin cookie on sign out
-│   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), localizeRecord()
+│   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), pickMessages(), mergeMessages(), localizeRecord()
 │   ├── icu.ts          # messageSignature(): ICU arguments, tags, and select cases (scripts import it as #lib/icu.ts)
 │   ├── legal.ts        # Legal reader: loadLegalDocument, getPendingLegal
 │   ├── message-overrides.ts # Override merge, stale states; message-validation.ts: client-safe validation, protected keys
+│   ├── message-scopes.ts # MESSAGE_SCOPES: client namespaces per layout or page (patterns.md, "Internationalization")
 │   ├── message-*.ts    # entries, preview, suggestion (server-only AI); translation-table.ts: rows and filters
 │   ├── messages.ts     # loadMessages, resolveLocale: the one catalog loader (server-only)
 │   ├── settings.ts     # loadSettings: cached reader of app_settings with a defaults fallback

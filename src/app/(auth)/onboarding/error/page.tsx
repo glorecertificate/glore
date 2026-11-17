@@ -1,4 +1,5 @@
 import { OnboardingErrorContent } from '@/components/features/onboarding/error-content'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -6,6 +7,10 @@ export const generateMetadata = generateIntlMetadata({
   title: 'errorTitle',
 })
 
-const OnboardingErrorPage = () => <OnboardingErrorContent />
+const OnboardingErrorPage = () => (
+  <MessagesScope scope="onboardingError">
+    <OnboardingErrorContent />
+  </MessagesScope>
+)
 
 export default OnboardingErrorPage

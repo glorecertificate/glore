@@ -6,6 +6,7 @@ import { InvitationStatus } from '@/components/features/organization/invite/invi
 import { JoinLinkCard } from '@/components/features/organization/invite/join-link-card'
 import { PublicShell } from '@/components/features/organization/invite/public-shell'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -39,11 +40,13 @@ const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['par
 }
 
 const JoinPage = ({ params }: PageProps<'/join/[token]'>) => (
-  <PublicShell>
-    <Suspense fallback={<LoadingFallback />}>
-      <JoinContent params={params} />
-    </Suspense>
-  </PublicShell>
+  <MessagesScope scope="join">
+    <PublicShell>
+      <Suspense fallback={<LoadingFallback />}>
+        <JoinContent params={params} />
+      </Suspense>
+    </PublicShell>
+  </MessagesScope>
 )
 
 export default JoinPage

@@ -7,6 +7,7 @@ import { CategoryManagerTrigger } from '@/components/features/docs/page-controls
 import { LucideIcon } from '@/components/icons/lucide'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -47,9 +48,11 @@ const DocsPageContent = async () => {
 }
 
 const DocsPage = () => (
-  <DashboardPage className="space-y-10" title={<PageTitle namespace="Layout" name="docs" />}>
-    <DocsPageContent />
-  </DashboardPage>
+  <MessagesScope scope="docs">
+    <DashboardPage className="space-y-10" title={<PageTitle namespace="Layout" name="docs" />}>
+      <DocsPageContent />
+    </DashboardPage>
+  </MessagesScope>
 )
 
 export default DocsPage

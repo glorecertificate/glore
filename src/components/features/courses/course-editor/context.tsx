@@ -9,12 +9,14 @@ import {
   deleteAssessment,
   deleteEvaluations,
   deleteLessons,
+  deleteLevelDescriptions,
   deleteQuestionOptions,
   deleteQuestions,
   updateCourse,
   upsertAssessment,
   upsertEvaluations,
   upsertLessons,
+  upsertLevelDescriptions,
   upsertQuestionOptions,
   upsertQuestions,
 } from '@/actions/courses/management'
@@ -22,6 +24,7 @@ import { markTranslationsEdited } from '@/actions/translations/states'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { type Course } from '@/db/queries/course'
 import { Lesson, parseLesson } from '@/db/queries/lesson'
+import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 import { isTempId, tempId } from '@/lib/utils'
@@ -95,6 +98,12 @@ const mergeLocale = <T,>(
   return result
 }
 
+const levelText = (
+  levels: { description?: Record<string, string> | null; level: string }[] | undefined,
+  level: string,
+  locale: Locale
+) => (levels ?? []).find(item => item.level === level)?.description?.[locale] ?? ''
+
 const lessonChanged = (lesson: Lesson, initialLesson: Partial<Lesson>, locale: Locale) => {
   if (lesson.title?.[locale] !== initialLesson.title?.[locale]) return true
 
@@ -142,7 +151,15 @@ const lessonChanged = (lesson: Lesson, initialLesson: Partial<Lesson>, locale: L
 
   const initialAssessmentDesc = initialLesson.assessment?.description?.[locale]
   const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
-  return initialLesson.assessment?.id !== lesson.assessment?.id || initialAssessmentDesc !== currentAssessmentDesc
+  if (initialLesson.assessment?.id !== lesson.assessment?.id || initialAssessmentDesc !== currentAssessmentDesc) {
+    return true
+  }
+
+  return SKILL_LEVELS.some(
+    level =>
+      levelText(initialLesson.assessment?.levelDescriptions, level, locale) !==
+      levelText(lesson.assessment?.levelDescriptions, level, locale)
+  )
 }
 
 const ensureLesson = (course: Course): Course => {
@@ -281,6 +298,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     const optionIdMap = new Map<number, number>()
     const evaluationIdMap = new Map<number, number>()
     const assessmentIdMap = new Map<number, number>()
+    const levelIdMap = new Map<number, number>()
     const initialLessonMap = new Map(initial.lessons.map(l => [l.id, l]))
     const courseTextChanged =
       current.title?.[locale] !== initial.title?.[locale] ||
@@ -502,7 +520,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         const hadAssessment = !!initialLesson?.assessment
         const hasAssessment = !!lesson.assessment
 
-        if (hasAssessment) {
+        if (hasAssessment && lesson.assessment) {
           const initialDesc = initialLesson?.assessment?.description?.[locale]
           const currentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
           const descriptionChanged = !hadAssessment || initialDesc !== currentDesc
@@ -522,6 +540,30 @@ const useCourseProvider = (options: CourseProviderOptions) => {
               assessmentIdMap.set(lesson.assessment.id, realId)
             }
           }
+
+          const assessmentId = assessmentIdMap.get(lesson.assessment.id) ?? lesson.assessment.id
+          const initialLevels = initialLesson?.assessment?.levelDescriptions ?? []
+          const changedLevels = (lesson.assessment.levelDescriptions ?? []).flatMap(item => {
+            const before = initialLevels.find(({ level }) => level === item.level)
+            if (levelText(initialLevels, item.level, locale) === (item.description?.[locale] ?? '')) return []
+            const description = mergeLocale(item.description as IntlRecord, before?.description, locale) as IntlRecord
+            return [{ before, description, item }]
+          })
+          const emptied = changedLevels.filter(({ description }) => LOCALES.every(code => !description[code]?.trim()))
+          const filled = changedLevels.filter(({ description }) => LOCALES.some(code => description[code]?.trim()))
+
+          if (filled.length > 0) {
+            const result = await upsertLevelDescriptions(
+              filled.map(({ description, item }) => ({ assessmentId, description, level: item.level }))
+            )
+            if ('error' in result) throw result.error
+            for (const [i, { item }] of filled.entries()) {
+              const realId = result.data[i]?.id
+              if (realId !== undefined && realId !== item.id) levelIdMap.set(item.id, realId)
+            }
+          }
+          const removedLevelIds = emptied.flatMap(({ before }) => (before ? [before.id] : []))
+          if (removedLevelIds.length > 0) await deleteLevelDescriptions(removedLevelIds)
         }
 
         if (!hasAssessment && hadAssessment && initialLesson?.assessment) {
@@ -532,7 +574,13 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
     const remapId = (map: Map<number, number>, value: number) => map.get(value) ?? value
 
-    if (questionIdMap.size > 0 || optionIdMap.size > 0 || evaluationIdMap.size > 0 || assessmentIdMap.size > 0) {
+    if (
+      questionIdMap.size > 0 ||
+      optionIdMap.size > 0 ||
+      evaluationIdMap.size > 0 ||
+      assessmentIdMap.size > 0 ||
+      levelIdMap.size > 0
+    ) {
       setCourse(prev => ({
         ...prev,
         lessons: prev.lessons.map(l => ({
@@ -543,7 +591,17 @@ const useCourseProvider = (options: CourseProviderOptions) => {
             options: q.options.map(o => ({ ...o, id: remapId(optionIdMap, o.id) })),
           })),
           evaluations: l.evaluations.map(e => ({ ...e, id: remapId(evaluationIdMap, e.id) })),
-          assessment: l.assessment ? { ...l.assessment, id: remapId(assessmentIdMap, l.assessment.id) } : l.assessment,
+          assessment: l.assessment
+            ? {
+                ...l.assessment,
+                id: remapId(assessmentIdMap, l.assessment.id),
+                levelDescriptions: (l.assessment.levelDescriptions ?? []).map(item => ({
+                  ...item,
+                  assessmentId: remapId(assessmentIdMap, item.assessmentId),
+                  id: remapId(levelIdMap, item.id),
+                })),
+              }
+            : l.assessment,
         })),
       }))
     }
@@ -647,6 +705,16 @@ const useCourseProvider = (options: CourseProviderOptions) => {
                 initialLesson?.assessment?.description,
                 locale
               ),
+              levelDescriptions: (lesson.assessment.levelDescriptions ?? []).map(item => ({
+                ...item,
+                assessmentId: remapId(assessmentIdMap, item.assessmentId),
+                description: mergeLocale(
+                  item.description as IntlRecord,
+                  initialLesson?.assessment?.levelDescriptions?.find(({ level }) => level === item.level)?.description,
+                  locale
+                ) as IntlRecord,
+                id: remapId(levelIdMap, item.id),
+              })),
             }
           : lesson.assessment,
       }

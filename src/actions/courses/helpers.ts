@@ -49,6 +49,7 @@ const courseWith = {
 export const buildCourseWith = (userId?: string, { catalog = false }: { catalog?: boolean } = {}) => {
   const lessonColumns = catalog ? { columns: { content: false } } : {}
   const optionColumns = catalog ? { columns: { isCorrect: false } } : {}
+  const levels = catalog ? {} : { levelDescriptions: true }
   if (!userId) {
     return {
       ...courseWith,
@@ -57,6 +58,7 @@ export const buildCourseWith = (userId?: string, { catalog = false }: { catalog?
         with: {
           ...courseWith.lessons.with,
           questions: { with: { options: { ...optionColumns, with: { userAnswers: { columns: { id: true } } } } } },
+          assessments: { with: { ...courseWith.lessons.with.assessments.with, ...levels } },
         },
       },
     } as unknown as typeof courseWith
@@ -79,7 +81,10 @@ export const buildCourseWith = (userId?: string, { catalog = false }: { catalog?
           with: { userEvaluations: { where: eq(userEvaluations.userId, userId), columns: { id: true, value: true } } },
         },
         assessments: {
-          with: { userAssessments: { where: eq(userAssessments.userId, userId), columns: { id: true, value: true } } },
+          with: {
+            ...levels,
+            userAssessments: { where: eq(userAssessments.userId, userId), columns: { id: true, value: true } },
+          },
         },
         userLessons: { where: eq(userLessons.userId, userId), columns: { id: true } },
       },

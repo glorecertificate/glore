@@ -55,11 +55,18 @@ const questionSchema = z.strictObject({
   explanation: text,
 })
 
+export const SKILL_LEVELS = ['intermediate', 'good', 'advanced'] as const
+
+const LEVEL_DESCRIPTION_MAX_LENGTH = 200
+
+const levelText = text.max(LEVEL_DESCRIPTION_MAX_LENGTH)
+
 export const lessonFrontMatterSchema = z.strictObject({
   title: text,
   questions: z.array(questionSchema).optional(),
   evaluations: z.array(text).optional(),
   assessment: text.optional(),
+  levels: z.strictObject({ intermediate: levelText, good: levelText, advanced: levelText }).optional(),
 })
 
 const DOC_TITLE_MAX = 200

@@ -14,6 +14,7 @@ src/
 │   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), pdf.ts (server-only), queries.ts
 │   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses; fetchCourseSummaries and listSessionCourseSummaries feed `CoursesProvider`), compass.ts, data.ts (server-only: learner reads),
 │   │                   #   learner.ts (server-only: learning context, overview), learning.ts (server-only: grading, finish lesson),
+│   │                   #   level-descriptions.ts (server-only cached read of the level descriptions),
 │   │                   #   analytics.ts, management.ts, skill-groups.ts (framework CRUD), progress.ts (startCourse, answerQuestion, completeLesson), queries.ts
 │   ├── dashboard/      # Read-only, server-only (no 'use server', so per-user cached reads are safe): core.ts (pure types and builders, Vitest),
 │   │                   #   load.ts (loadDashboard: role dispatch), member.ts, tutor.ts, manager.ts, editor.ts (cached, tag Courses)
@@ -63,12 +64,12 @@ src/
 │   ├── types.ts        # Drizzle table type helpers
 │   ├── schema/         # Per-table Drizzle definitions: accounts, activity-events, assessments, certificates,
 │   │                   #   content-translations, courses, docs, enums, helpers, index, message-overrides, notifications, organizations, progress,
-│   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
+│   │                   #   rate-limits, regions, relations, sessions, skill-groups, skill-level-descriptions, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, admin-audit, admin-certificate, admin-overview, admin-user, certificate,
 │   │                   #   course, content-translation, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, message-override, notification, onboarding,
-│   │                   #   organization (flattens organization_profiles), organization-application (zod schema), organization-insights (checklist, pipeline, activity parsers), user
+│   │                   #   organization (flattens organization_profiles), organization-application (zod schema), organization-insights (checklist, pipeline, activity parsers), skill-level-description, user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   activity-event.ts, app-settings.ts, certificate.ts, content-translation.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, message-override.ts, moderation.ts, organization.ts, skill-group.ts, team-invitation.ts, user.ts
+│                       #   activity-event.ts, app-settings.ts, certificate.ts, content-translation.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, message-override.ts, moderation.ts, organization.ts, skill-group.ts, skill-level-description.ts, team-invitation.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, learning, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY

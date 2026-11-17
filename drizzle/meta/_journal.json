@@ -232,6 +232,13 @@
       "when": 1792765259349,
       "tag": "0032_app_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1794952695841,
+      "tag": "0033_bright_emma_frost",
+      "breakpoints": true
     }
   ]
 }

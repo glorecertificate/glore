@@ -28,6 +28,7 @@ export type FieldTable =
   | 'question_options'
   | 'questions'
   | 'skill_groups'
+  | 'skill_level_descriptions'
 
 export interface TranslationField {
   column: string
@@ -155,7 +156,7 @@ export const targetField = (
 })
 
 interface LessonRow {
-  assessments: { description: unknown; id: number }[]
+  assessments: { description: unknown; id: number; levelDescriptions?: { description: unknown; id: number }[] }[]
   content: unknown
   evaluations: { description: unknown; id: number }[]
   id: number
@@ -182,9 +183,12 @@ export const lessonTarget = (row: LessonRow): TranslationTarget => ({
     ...row.evaluations.map(evaluation =>
       targetField('evaluations', evaluation.id, 'description', evaluation.description)
     ),
-    ...row.assessments.map(assessment =>
-      targetField('assessments', assessment.id, 'description', assessment.description)
-    ),
+    ...row.assessments.flatMap(assessment => [
+      targetField('assessments', assessment.id, 'description', assessment.description),
+      ...(assessment.levelDescriptions ?? []).map(level =>
+        targetField('skill_level_descriptions', level.id, 'description', level.description)
+      ),
+    ]),
   ],
 })
 

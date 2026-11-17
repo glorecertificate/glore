@@ -142,6 +142,29 @@ const validateAssessments = (course: LoadedCourse) => {
   return problems
 }
 
+const validateLevels = (course: LoadedCourse) => {
+  const problems: Problem[] = []
+  const last = course.lessons.at(-1)
+  const isSkill = course.meta?.type === 'skill'
+  for (const lesson of course.lessons) {
+    const expected = isSkill && lesson === last
+    for (const locale of LOCALES) {
+      const file = lesson.files[locale]
+      if (!file) continue
+      if (expected && !file.levels) {
+        problems.push({
+          file: file.path,
+          message: 'the last lesson of a skill course needs levels: intermediate, good, advanced',
+        })
+      }
+      if (!expected && file.levels) {
+        problems.push({ file: file.path, message: 'levels belong only in the last lesson of a skill course' })
+      }
+    }
+  }
+  return problems
+}
+
 const validateCourse = (content: LoadedContent, course: LoadedCourse) => {
   const problems: Problem[] = []
   const meta = course.meta
@@ -175,7 +198,7 @@ const validateCourse = (content: LoadedContent, course: LoadedCourse) => {
   }
 
   for (const lesson of course.lessons) problems.push(...validateLesson(course, lesson))
-  problems.push(...validateAssessments(course))
+  problems.push(...validateAssessments(course), ...validateLevels(course))
   return problems
 }
 

@@ -47,7 +47,10 @@ export const createFixture = () => {
     write(`${base}/lessons/1.${locale}.md`, lessonText(locale, questionYaml(), 'Read this first.'))
     write(
       `${base}/lessons/2.${locale}.md`,
-      lessonText(locale, 'evaluations:\n  - I can do it.\nassessment: How do you rate yourself?\n')
+      lessonText(
+        locale,
+        'evaluations:\n  - I can do it.\nassessment: How do you rate yourself?\nlevels:\n  intermediate: One\n  good: Two\n  advanced: Three\n'
+      )
     )
   }
 

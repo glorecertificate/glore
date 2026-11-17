@@ -28,13 +28,23 @@ import {
   questionOptions,
   questions,
   skillGroups,
+  skillLevelDescriptions,
 } from '@/db/schema'
 
 const lessonQuery = {
   columns: { content: true, id: true, title: true },
   orderBy: [asc(lessons.sortOrder), asc(lessons.id)] as SQL[],
   with: {
-    assessments: { columns: { description: true, id: true }, orderBy: [asc(assessments.id)] as SQL[] },
+    assessments: {
+      columns: { description: true, id: true },
+      orderBy: [asc(assessments.id)] as SQL[],
+      with: {
+        levelDescriptions: {
+          columns: { description: true, id: true },
+          orderBy: [asc(skillLevelDescriptions.id)] as SQL[],
+        },
+      },
+    },
     evaluations: { columns: { description: true, id: true }, orderBy: [asc(evaluations.id)] as SQL[] },
     questions: {
       columns: { description: true, explanation: true, id: true },

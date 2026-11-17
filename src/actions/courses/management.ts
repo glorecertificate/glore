@@ -5,6 +5,7 @@ import 'server-only'
 import { updateTag } from 'next/cache'
 
 import { and, eq, inArray, isNull, max, ne } from 'drizzle-orm'
+import { z } from 'zod'
 
 import { buildCourseWith } from '@/actions/courses/helpers'
 import { requireEditor } from '@/actions/guards'
@@ -23,9 +24,19 @@ import { languageChanges } from '@/db/queries/content-translation'
 import { type Course, parseCourse } from '@/db/queries/course'
 import { isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
-import { assessments, courses, evaluations, lessons, questionOptions, questions } from '@/db/schema'
+import { SKILL_LEVELS, SKILL_LEVEL_DESCRIPTION_MAX_LENGTH } from '@/db/queries/skill-level-description'
+import {
+  assessments,
+  courses,
+  evaluations,
+  lessons,
+  questionOptions,
+  questions,
+  skillLevelDescriptions,
+} from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag, courseTag } from '@/lib/cache'
+import { type IntlRecord, LOCALES } from '@/lib/i18n'
 import { isTempId, omit } from '@/lib/utils'
 
 const nextActiveSortOrder = async () => {
@@ -407,5 +418,67 @@ export const deleteAssessment = async (id: number) => {
   const [, slugs] = await Promise.all([requireEditor(), slugsByAssessmentIds([id])])
   await transaction(tx => deleteAssessmentRecords(tx, [id]))
   revalidateCourseSlugs(slugs)
+  return { data: true }
+}
+
+const levelDescriptionsSchema = z
+  .array(
+    z.object({
+      assessmentId: z.number().int().positive(),
+      description: z.strictObject(
+        Object.fromEntries(LOCALES.map(locale => [locale, z.string().trim().max(SKILL_LEVEL_DESCRIPTION_MAX_LENGTH)]))
+      ),
+      id: z.number().int().optional(),
+      level: z.enum(SKILL_LEVELS),
+    })
+  )
+  .max(30)
+
+const skillAssessmentIds = async (assessmentIds: number[]) => {
+  if (assessmentIds.length === 0) return []
+  const rows = await db
+    .select({ id: assessments.id })
+    .from(assessments)
+    .innerJoin(lessons, eq(lessons.id, assessments.lessonId))
+    .innerJoin(courses, eq(courses.id, lessons.courseId))
+    .where(and(inArray(assessments.id, assessmentIds), eq(courses.type, 'skill')))
+  return rows.map(({ id }) => id)
+}
+
+export const upsertLevelDescriptions = async (input: z.input<typeof levelDescriptionsSchema>) => {
+  await requireEditor()
+  const parsed = levelDescriptionsSchema.safeParse(input)
+  if (!parsed.success) return { error: { code: 'INVALID_INPUT', message: 'Invalid level descriptions' } }
+  const values = parsed.data
+  const assessmentIds = [...new Set(values.map(({ assessmentId }) => assessmentId))]
+  if ((await skillAssessmentIds(assessmentIds)).length !== assessmentIds.length) {
+    return { error: { code: 'NOT_FOUND', message: 'Level descriptions belong to a skill course assessment' } }
+  }
+  const result = await transaction(tx =>
+    mapSequential(values, ({ assessmentId, description, level }) =>
+      tx
+        .insert(skillLevelDescriptions)
+        .values({ assessmentId, description: description as IntlRecord, level })
+        .onConflictDoUpdate({
+          set: { description: description as IntlRecord },
+          target: [skillLevelDescriptions.assessmentId, skillLevelDescriptions.level],
+        })
+        .returning({ id: skillLevelDescriptions.id, level: skillLevelDescriptions.level })
+    )
+  )
+  revalidateCourseSlugs(await slugsByAssessmentIds(assessmentIds))
+  return { data: result.map(rows => rows[0] ?? null) }
+}
+
+export const deleteLevelDescriptions = async (rawIds: number[]) => {
+  const ids = persistedIds(rawIds)
+  if (ids.length === 0) return { data: true }
+  await requireEditor()
+  const rows = await db
+    .select({ assessmentId: skillLevelDescriptions.assessmentId })
+    .from(skillLevelDescriptions)
+    .where(inArray(skillLevelDescriptions.id, ids))
+  await db.delete(skillLevelDescriptions).where(inArray(skillLevelDescriptions.id, ids))
+  revalidateCourseSlugs(await slugsByAssessmentIds(rows.map(({ assessmentId }) => assessmentId)))
   return { data: true }
 }

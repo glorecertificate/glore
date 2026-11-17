@@ -21,6 +21,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 | `pnpm run i18n:overrides` | Count overrides per locale and stale state (`--target <env>`, read-only)         |
 | `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`)  |
 | `pnpm run content:check`  | Validate `content/` courses, lessons, and docs without touching a database       |
+| `pnpm run content:levels` | Insert missing skill level descriptions (`--target`, `--dry-run`)                |
 | `pnpm run typegen`        | Generate route and public-file types into `types/`                               |
 | `pnpm run theme`          | Generate color tokens and email colors from `config/theme.json` (`ui.md`)        |
 | `pnpm run lint:ratchet`   | Lower the design-system lint counts after a fix (`code.md`)                      |
@@ -42,6 +43,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - `holder` is a volunteer for demo certificates, which tests that wipe `volunteer` leave alone.
 - `recovery` serves the password reset spec.
 - The shared password and roles live in `scripts/seed-data.ts`.
+- It also inserts the missing skill level descriptions of the courses already imported (`scripts/seed-levels.mts`).
 - The seed runs in one transaction, is idempotent, and exits non-zero unless `DATABASE_URL` points to localhost.
 
 ### Demo dataset

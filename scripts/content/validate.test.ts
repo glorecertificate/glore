@@ -22,6 +22,8 @@ afterEach(() => {
   fixture = undefined
 })
 
+const LEVELS = 'levels:\n  intermediate: One\n  good: Two\n  advanced: Three\n'
+
 describe('checkContent', () => {
   it('accepts the committed content', () => {
     const { problems } = checkContent()
@@ -92,7 +94,7 @@ describe('checkContent', () => {
   it('requires the final assessment of a skill course in its last lesson', () => {
     const { base, root, write } = setup()
     for (const locale of LOCALES) {
-      write(`${base}/lessons/2.${locale}.md`, lessonText(locale, 'evaluations:\n  - I can do it.\n'))
+      write(`${base}/lessons/2.${locale}.md`, lessonText(locale, `evaluations:\n  - I can do it.\n${LEVELS}`))
     }
 
     expect(messages(root)).toEqual([`${base}: a skill course needs a final assessment in its last lesson (lesson 2)`])
@@ -102,6 +104,30 @@ describe('checkContent', () => {
       write(`${base}/lessons/2.${locale}.md`, lessonText(locale, 'assessment: Rate.\n'))
     }
     expect(messages(root)[0]).toMatch(/exactly one assessment/u)
+  })
+
+  it('requires the three levels in the last lesson of a skill course, and nowhere else', () => {
+    const { base, root, write } = setup()
+    const last = `evaluations:\n  - I can do it.\nassessment: Rate.\n`
+    for (const locale of LOCALES) write(`${base}/lessons/2.${locale}.md`, lessonText(locale, last))
+    expect(messages(root).filter(message => message.includes('needs levels'))).toHaveLength(LOCALES.length)
+
+    for (const locale of LOCALES) {
+      write(`${base}/lessons/1.${locale}.md`, lessonText(locale, `${questionYaml()}${LEVELS}`))
+      write(`${base}/lessons/2.${locale}.md`, lessonText(locale, `${last}${LEVELS}`))
+    }
+    expect(messages(root)).toEqual([
+      ...LOCALES.map(
+        locale => `${base}/lessons/1.${locale}.md: levels belong only in the last lesson of a skill course`
+      ),
+    ])
+  })
+
+  it('limits each level description to 200 characters', () => {
+    const { base, root, write } = setup()
+    const last = `assessment: Rate.\nlevels:\n  intermediate: ${'x'.repeat(201)}\n  good: Two\n  advanced: Three\n`
+    for (const locale of LOCALES) write(`${base}/lessons/2.${locale}.md`, lessonText(locale, last))
+    expect(messages(root).some(message => message.includes('levels.intermediate'))).toBe(true)
   })
 
   it('forbids assessments and skill groups on other course types', () => {

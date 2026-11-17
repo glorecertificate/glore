@@ -6,6 +6,7 @@ import { Pool } from 'pg'
 import { seedLegal } from './content/legal.mts'
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE, SEED_PASSWORD, SEED_USERS, seedEmail } from './seed-data.ts'
 import { setMembership, upsertOrganization, upsertUser } from './seed-db.mts'
+import { seedLevelDescriptions } from './seed-levels.mts'
 
 const seed = async () => {
   const connectionString = process.env.DATABASE_URL
@@ -53,6 +54,7 @@ const seed = async () => {
     }
 
     await seedLegal(client, { now })
+    await seedLevelDescriptions(client)
     await client.query('delete from rate_limits')
     await client.query('commit')
   } catch (e) {

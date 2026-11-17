@@ -15,10 +15,11 @@ import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDevice } from '@/hooks/use-device'
+import { useShortcut } from '@/hooks/use-shortcut'
 import { toPx, useSidebarResize } from '@/hooks/use-sidebar-resize'
 import { type CookieName, prefixCookieName } from '@/lib/cookies'
+import { SHORTCUTS } from '@/lib/shortcuts'
 import { cn } from '@/lib/utils'
-import settings from '~/config/app.json'
 
 export const SIDEBAR_WIDTH = '16rem'
 export const MIN_SIDEBAR_WIDTH = '14rem'
@@ -118,23 +119,14 @@ export const SidebarProvider = ({
     }
   }
 
-  const toggleSidebar = useEffectEvent(() => {
-    const toggle = isMobile ? setOpenMobile : setOpen
-    toggle(prev => !prev)
-  })
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
-      event.preventDefault()
-      // eslint-disable-next-line react-compiler/rules-of-hooks  -- compiler handles memoization
-      toggleSidebar()
-    }
+  const toggle = () => {
+    const setter = isMobile ? setOpenMobile : setOpen
+    setter(prev => !prev)
   }
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  const toggleSidebar = useEffectEvent(toggle)
+
+  useShortcut(SHORTCUTS.sidebar, toggle)
 
   useEffect(() => {
     setActivePath(pathname)

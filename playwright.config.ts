@@ -1,6 +1,6 @@
 import { type Project, defineConfig, devices } from '@playwright/test'
 
-const wsEndpoint = process.env.PW_TEST_CONNECT_WS_ENDPOINT
+const wsEndpoint = process.env.PLAYWRIGHT_PINNED_ENDPOINT
 
 const chromium = {
   ...devices['Desktop Chrome'],
@@ -9,29 +9,33 @@ const chromium = {
 
 const visual = { contextOptions: { reducedMotion: 'reduce' as const } }
 
+const pinned = {
+  connectOptions: { exposeNetwork: process.env.PLAYWRIGHT_PINNED_EXPOSE, wsEndpoint: wsEndpoint ?? '' },
+}
+
 const pinnedProjects: Project[] = [
   {
     name: 'firefox',
     testMatch: /smoke\.spec\.ts/u,
-    use: { ...devices['Desktop Firefox'] },
+    use: { ...devices['Desktop Firefox'], ...pinned },
     dependencies: ['setup'],
   },
   {
     name: 'mobile-webkit',
     testMatch: /smoke\.spec\.ts/u,
-    use: { ...devices['iPhone 13'] },
+    use: { ...devices['iPhone 13'], ...pinned },
     dependencies: ['setup'],
   },
   {
     name: 'visual-desktop',
     testMatch: /\.visual\.ts/u,
-    use: { ...chromium, ...visual, viewport: { height: 1600, width: 1280 } },
+    use: { ...chromium, ...visual, ...pinned, viewport: { height: 1600, width: 1280 } },
     dependencies: ['setup'],
   },
   {
     name: 'visual-mobile',
     testMatch: /\.visual\.ts/u,
-    use: { ...devices['iPhone 13'], ...visual },
+    use: { ...devices['iPhone 13'], ...visual, ...pinned },
     dependencies: ['setup'],
   },
 ]
@@ -51,7 +55,6 @@ const playwrightConfig = defineConfig({
   },
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'https://glore.localhost',
-    connectOptions: wsEndpoint ? { exposeNetwork: process.env.PW_TEST_CONNECT_EXPOSE_NETWORK, wsEndpoint } : undefined,
     ignoreHTTPSErrors: true,
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
   },

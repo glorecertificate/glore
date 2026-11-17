@@ -68,8 +68,8 @@ const start = () => {
 const run = (args: string[]) => {
   const env = {
     ...process.env,
-    PW_TEST_CONNECT_WS_ENDPOINT: PLAYWRIGHT_ENDPOINT,
-    ...(!HOST_NETWORK && { PW_TEST_CONNECT_EXPOSE_NETWORK: '<loopback>' }),
+    PLAYWRIGHT_PINNED_ENDPOINT: PLAYWRIGHT_ENDPOINT,
+    ...(!HOST_NETWORK && { PLAYWRIGHT_PINNED_EXPOSE: '<loopback>' }),
   }
   const { status } = spawnSync('pnpm', ['run', 'test:e2e', ...args], { env, stdio: 'inherit' })
   process.exit(status ?? 1)

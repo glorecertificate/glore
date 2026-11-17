@@ -7,12 +7,12 @@ import { parseArgs } from 'node:util'
 import AxeBuilder from '@axe-core/playwright'
 import { type Browser, type BrowserContext, type Page, chromium } from '@playwright/test'
 
+import { AXE_TAGS } from './axe.ts'
 import { SEED_PASSWORD, seedEmail } from './seed-data.ts'
 
 const ROLES = ['admin', 'editor', 'learner', 'owner', 'representative', 'tutor', 'volunteer', 'guest'] as const
 const THEMES = ['light', 'dark'] as const
 const WIDTHS = [1440, 390] as const
-const AXE_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 const MAX_ROUTES = 40
 const VIEWPORT_HEIGHT = 900
 const MAX_HEIGHT = 8000

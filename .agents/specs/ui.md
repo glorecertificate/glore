@@ -6,6 +6,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 
 - Shared primitives live in `src/components/ui/`. They accept root props and localized labels.
 - `/dev/ui` shows each primitive in each state, with the prop that sets the state as the row label. Add or update a specimen in `features/dev/` with each primitive change.
+- CI captures each catalog section (`e2e/catalog.visual.ts`) and runs axe on the catalog, so a specimen change needs new baselines (`.agents/references/e2e.md`).
 - Feature components own domain data and permission checks.
 - `ArrowsMotif` uses vector paths extracted from the certificate template. It is decorative and hidden from assistive technology.
 - `LevelDots` takes a level from 1 to 5 and a localized level label.

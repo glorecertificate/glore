@@ -1,0 +1,8 @@
+nextjs-portal,
+[data-sonner-toaster] {
+  display: none !important;
+}
+
+[data-slot="header"] {
+  position: static !important;
+}

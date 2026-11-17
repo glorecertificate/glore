@@ -128,6 +128,7 @@ export const Header = ({ children, className, ...props }: React.ComponentProps<'
         'sticky top-0 z-5 w-full shrink-0 border-b border-transparent bg-header text-header-foreground transition-[width,height] ease-linear',
         scrolled && 'border-header-border'
       )}
+      data-slot="header"
       {...props}
     >
       <div

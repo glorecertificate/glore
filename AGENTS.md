@@ -36,7 +36,7 @@ Read only the spec of each row that applies, from `.agents/specs/`.
 
 Work lives in GitHub issues (`github.md`). A one-PR plan lives in its draft PR and a multi-PR plan in its parent issue, so no plan stays on `main`.
 
-References live in `.agents/references/`: product decisions, the certificate PDF, translations, manual test flows, and the release runbook.
+References live in `.agents/references/`: product decisions, the certificate PDF, translations, manual and e2e testing, and the release runbook.
 
 ## Commands and commits
 

@@ -1,17 +1,58 @@
-import { defineConfig, devices } from '@playwright/test'
+import { type Project, defineConfig, devices } from '@playwright/test'
+
+const wsEndpoint = process.env.PW_TEST_CONNECT_WS_ENDPOINT
+
+const chromium = {
+  ...devices['Desktop Chrome'],
+  launchOptions: { args: process.env.CI ? ['--disable-webgl', '--disable-3d-apis'] : [] },
+}
+
+const visual = { contextOptions: { reducedMotion: 'reduce' as const } }
+
+const pinnedProjects: Project[] = [
+  {
+    name: 'firefox',
+    testMatch: /smoke\.spec\.ts/u,
+    use: { ...devices['Desktop Firefox'] },
+    dependencies: ['setup'],
+  },
+  {
+    name: 'mobile-webkit',
+    testMatch: /smoke\.spec\.ts/u,
+    use: { ...devices['iPhone 13'] },
+    dependencies: ['setup'],
+  },
+  {
+    name: 'visual-desktop',
+    testMatch: /\.visual\.ts/u,
+    use: { ...chromium, ...visual, viewport: { height: 900, width: 1280 } },
+    dependencies: ['setup'],
+  },
+  {
+    name: 'visual-mobile',
+    testMatch: /\.visual\.ts/u,
+    use: { ...devices['iPhone 13'], ...visual },
+    dependencies: ['setup'],
+  },
+]
 
 const playwrightConfig = defineConfig({
   testDir: 'e2e',
   outputDir: '.playwright',
+  snapshotPathTemplate: '{testDir}/__screenshots__/{projectName}/{testFileName}/{arg}{ext}',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'list',
-  expect: { timeout: process.env.CI ? 15_000 : 20_000 },
+  updateSnapshots: 'none',
+  expect: {
+    timeout: process.env.CI ? 15_000 : 20_000,
+    toHaveScreenshot: { animations: 'disabled', caret: 'hide', scale: 'css', stylePath: './e2e/visual.css' },
+  },
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'https://glore.localhost',
+    connectOptions: wsEndpoint ? { exposeNetwork: process.env.PW_TEST_CONNECT_EXPOSE_NETWORK, wsEndpoint } : undefined,
     ignoreHTTPSErrors: true,
-    launchOptions: { args: process.env.CI ? ['--disable-webgl', '--disable-3d-apis'] : [] },
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
   },
   webServer: process.env.CI
@@ -22,19 +63,20 @@ const playwrightConfig = defineConfig({
       }
     : undefined,
   projects: [
-    { name: 'setup', testMatch: /auth\.setup\.ts/u },
+    { name: 'setup', testMatch: /auth\.setup\.ts/u, use: chromium },
     {
       name: 'chromium',
       testIgnore: /legal\.spec\.ts/u,
-      use: { ...devices['Desktop Chrome'] },
+      use: chromium,
       dependencies: ['setup'],
     },
     {
       name: 'legal',
       testMatch: /legal\.spec\.ts/u,
-      use: { ...devices['Desktop Chrome'] },
+      use: chromium,
       dependencies: ['chromium'],
     },
+    ...(wsEndpoint ? pinnedProjects : []),
   ],
 })
 

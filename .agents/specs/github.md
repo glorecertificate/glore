@@ -75,7 +75,8 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 
 - `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then the preview `deploy.yml` runs, except in the queue.
 - Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
-- `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
+- `e2e.yml` starts Postgres and Mailpit services and the pinned browsers, migrates, imports the catalog, seeds the users and demo personas, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
+- When Playwright fails, `e2e.yml` writes the changed visual baselines and uploads them as `visual-baselines` (`.agents/references/e2e.md`).
 - `perf.yml` runs outside the merge queue with the same setup. It builds the base commit too, and compares both on one runner with `test:perf` (`performance.md`).
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
 - CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.

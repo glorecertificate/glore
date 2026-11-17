@@ -32,6 +32,7 @@ Route groups, route gates, API routes, and the proxy lifecycle. Authentication d
 - `/courses/[slug]/complete`: completion summary, rating through `rateCourse`, next step.
 - `/courses/skills`: editors only, skill group CRUD and course assignment. `skills` is a reserved course slug.
 - `/docs`, `/docs/intro`, `/docs/faq`, `/docs/tutorials`, `/docs/articles/[slug]`.
+- `/dev/ui`: the UI kit catalog (`ui.md`). It is not found when `VERCEL_ENV` is `production`.
 
 ## Gated routes
 

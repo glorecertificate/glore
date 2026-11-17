@@ -40,7 +40,7 @@ src/
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
 │   ├── (auth)/         # Unauthenticated: invite/[token], join/[token], login, onboarding, register
 │   ├── (dashboard)/    # Authenticated (sidebar layout, own error and not-found): about, admin, certificates,
-│   │                   #   courses, dashboard, docs, emails, help, legal, notifications, organization, settings
+│   │                   #   courses, dashboard, dev/ui, docs, emails, help, legal, notifications, organization, settings
 │   ├── [username]/     # Public profile page (page, opengraph-image, not-found)
 │   ├── api/            # API routes (auth catch-all + v1/)
 │   ├── offline/        # Offline fallback page
@@ -49,7 +49,7 @@ src/
 │   └── verify/         # Public certificate verification (page, [code])
 ├── components/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,
-│   │                   #   dashboard, docs, help, legal, notifications, onboarding, organization, translations, users
+│   │                   #   dashboard, dev (UI catalog), docs, help, legal, notifications, onboarding, organization, translations, users
 │   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-header, dashboard-loading, dashboard-sidebar, dynamic-marker,
 │   │                   #   error-actions, error-fallback, instant-reveal, loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,

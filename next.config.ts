@@ -39,6 +39,7 @@ const envSchema = z.object({
   SMTP_SENDER: z.string().min(1),
   SMTP_USER: z.email(),
   SMTP_PASSWORD: z.string().min(1),
+  VERCEL_ENV: z.enum(['development', 'preview', 'production']).optional(),
 })
 
 if (!process.env.SKIP_ENV_VALIDATION) {

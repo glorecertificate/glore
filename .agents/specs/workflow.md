@@ -149,7 +149,7 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 
 - Docs sync triggers on a change to routes, API endpoints, server actions, hooks, utils, env vars, components, providers, skills, commands, or structure.
 - On a trigger, update `AGENTS.md`, `README.md`, and the matching spec in the same change, without asking.
-- Edit `AGENTS.md` directly, never `CLAUDE.md`, which only imports it.
+- Edit `AGENTS.md` directly. Never add a `CLAUDE.md`, because Claude Code reads `AGENTS.md` natively.
 - Inventories the code already enumerates (hook lists, env var tables, cache tags) stay in the code with a pointer here, not copied.
 
 ## Testing
@@ -166,7 +166,7 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 
 ### End-to-end tests
 
-- `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`).
+- `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`). Run `pnpm run db:seed` once before the first run.
 - The `legal` project runs last. Target it with `--project=setup --project=legal --no-deps`.
 - The `setup` project logs in every `AUTH_ROLES` seed user and stores their state in `.playwright/.auth/`. Specs pick one with `test.use({ storageState: authFile(role) })`.
 - Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs. Setup clears local `rate_limits` first.

@@ -88,7 +88,7 @@ export const CourseListTabs = ({ children, ...props }: React.ComponentProps<type
     <CourseLanguagesProvider>
       <Tabs
         animated
-        className="gap-2"
+        className="gap-0"
         defaultValue="all"
         onValueChange={value => setTab(value as CourseListTab)}
         value={tab}

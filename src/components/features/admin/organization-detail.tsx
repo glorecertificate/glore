@@ -60,7 +60,7 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
   }
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6">
       <OrganizationHeader onReviewed={refresh} organization={initialData} />
       <Tabs onValueChange={value => setTab(value as AdminOrganizationTab)} value={tab}>
         <TabsList className="max-w-full overflow-x-auto">

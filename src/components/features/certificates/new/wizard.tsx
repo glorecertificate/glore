@@ -243,7 +243,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const comments = notes?.sectionComments ?? {}
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 py-6">
+    <div className="flex flex-col gap-6">
       <StepList aria-label={t('stepsLabel')} items={items} />
 
       {resubmit && notes && (

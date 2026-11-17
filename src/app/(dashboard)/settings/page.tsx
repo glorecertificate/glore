@@ -11,11 +11,7 @@ export const generateMetadata = generateIntlMetadata({
 
 const SettingsPage = () => (
   <UserSettingsTabs>
-    <DashboardPage
-      breadcrumb={<UserSettingsTabsList />}
-      className="py-8"
-      title={<PageTitle namespace="Layout" name="settings" />}
-    >
+    <DashboardPage breadcrumb={<UserSettingsTabsList />} title={<PageTitle namespace="Layout" name="settings" />}>
       <UserSettings />
     </DashboardPage>
   </UserSettingsTabs>

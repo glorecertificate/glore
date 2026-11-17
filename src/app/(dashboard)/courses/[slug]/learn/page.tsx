@@ -34,7 +34,7 @@ const LearnPageContent = async (props: PageProps<'/courses/[slug]/learn'>) => {
   }
 
   return (
-    <DashboardPage backHref="/courses" title={result.overview.title}>
+    <DashboardPage backHref="/courses" title={result.overview.title} width="wide">
       <CoursePlayer access={result.access} lesson={result.lesson} overview={result.overview} />
     </DashboardPage>
   )

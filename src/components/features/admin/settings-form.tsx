@@ -56,7 +56,7 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
 
   return (
     <Form {...form}>
-      <form className="max-w-4xl" onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <SettingsSection description={t('contactDescription')} title={t('contactTitle')}>
           <div className="grid gap-4 sm:grid-cols-2">
             <SettingsField

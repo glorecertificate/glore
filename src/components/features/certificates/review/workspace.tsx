@@ -33,6 +33,13 @@ import { type ReviewFormValues, reviewFormSchema } from '@/components/features/c
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderDescription,
+  PageHeaderHeading,
+  PageHeaderTitle,
+} from '@/components/ui/page-header'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
@@ -140,17 +147,19 @@ export const ReviewWorkspace = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="space-y-1">
-          <h1 className="text-lg font-semibold">{fullName(holder)}</h1>
-          <p className="text-sm text-muted-foreground">{certificate.organization.name}</p>
-        </div>
+      <PageHeader>
+        <PageHeaderHeading>
+          <PageHeaderTitle>{fullName(holder)}</PageHeaderTitle>
+          <PageHeaderDescription>{certificate.organization.name}</PageHeaderDescription>
+        </PageHeaderHeading>
         {certificate.isSubmitted && (
-          <Button icon="play" loading={busy === 'claim'} onClick={() => void claim()} type="button" variant="outline">
-            {t('startReview')}
-          </Button>
+          <PageHeaderActions>
+            <Button icon="play" loading={busy === 'claim'} onClick={() => void claim()} type="button" variant="outline">
+              {t('startReview')}
+            </Button>
+          </PageHeaderActions>
         )}
-      </div>
+      </PageHeader>
 
       {certificate.isChangesRequested && <Banner variant="warning">{t('waitingForVolunteer')}</Banner>}
 

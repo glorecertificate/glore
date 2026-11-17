@@ -8,6 +8,13 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderDescription,
+  PageHeaderHeading,
+  PageHeaderTitle,
+} from '@/components/ui/page-header'
 import { pickCourseTitle, pickLocale } from '@/db/queries/learning'
 import { type IntlRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
@@ -74,18 +81,20 @@ export const SkillFramework = ({
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold">{t('title')}</h1>
-          <p className="text-sm text-muted-foreground">{t('description')}</p>
-        </div>
-        <SkillGroupDialog>
-          <Button variant="brand">
-            <LucideIcon className="size-4" name="plus" />
-            {t('addGroup')}
-          </Button>
-        </SkillGroupDialog>
-      </div>
+      <PageHeader>
+        <PageHeaderHeading>
+          <PageHeaderTitle>{t('title')}</PageHeaderTitle>
+          <PageHeaderDescription>{t('description')}</PageHeaderDescription>
+        </PageHeaderHeading>
+        <PageHeaderActions>
+          <SkillGroupDialog>
+            <Button variant="brand">
+              <LucideIcon className="size-4" name="plus" />
+              {t('addGroup')}
+            </Button>
+          </SkillGroupDialog>
+        </PageHeaderActions>
+      </PageHeader>
       {groups.map((group, index) => {
         const name = pickLocale(group.name, locale) ?? group.slug
         const description = pickLocale(group.description ?? undefined, locale)

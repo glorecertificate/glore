@@ -18,6 +18,7 @@ import { useSession } from '@/components/providers/session'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
+import { PageHeaderTitle } from '@/components/ui/page-header'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 
@@ -62,7 +63,7 @@ export const CertificateDetail = ({
             )}
           </div>
           <div className="min-w-0 space-y-1">
-            <h1 className="text-xl font-semibold">{certificate.organization.name}</h1>
+            <PageHeaderTitle>{certificate.organization.name}</PageHeaderTitle>
             {!isOwner && certificate.holder && (
               <p className="text-sm text-muted-foreground">{fullName(certificate.holder)}</p>
             )}

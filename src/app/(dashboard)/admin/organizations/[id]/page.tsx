@@ -5,9 +5,6 @@ import { getAdminOrganization, getAdminOrganizationName } from '@/actions/admin/
 import { AdminOrganizationDetail } from '@/components/features/admin/organization-detail'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageTitle } from '@/components/layout/page-title'
-import { BreadcrumbItem, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { HeaderBreadcrumb } from '@/components/ui/header'
 
 export const generateMetadata = async ({ params }: PageProps<'/admin/organizations/[id]'>) => {
   const organizationId = Number((await params).id)
@@ -26,19 +23,7 @@ const AdminOrganizationContent = async ({ params }: { params: PageProps<'/admin/
   if (!data) notFound()
 
   return (
-    <DashboardPage
-      breadcrumb={
-        <HeaderBreadcrumb
-          backHref="/admin/organizations"
-          title={<PageTitle namespace="Admin.organizations" name="title" />}
-        >
-          <BreadcrumbSeparator />
-          <BreadcrumbItem className="grow">
-            <BreadcrumbPage className="font-medium">{data.name}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </HeaderBreadcrumb>
-      }
-    >
+    <DashboardPage parent="admin-organizations" title={data.name}>
       <AdminOrganizationDetail initialData={data} />
     </DashboardPage>
   )

@@ -857,6 +857,8 @@
     "activityQuestion": "Pregunta",
     "activityEvaluation": "Autoevaluación",
     "activityAssessment": "Evaluación final",
+    "levelDescriptionCount": "{count} de {max} caracteres",
+    "levelDescriptionsHint": "Los voluntarios ven estos textos en orden aleatorio, sin los niveles.",
     "activityDescriptionPlaceholder": "Escribe una descripción en {lang}",
     "activityOptions": "Opciones",
     "activityOptionPlaceholder": "Escribe una opción en {lang}",

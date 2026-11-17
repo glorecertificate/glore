@@ -33,6 +33,7 @@ Body text.
       assessment: 'Rate yourself.',
       body: 'Body text.',
       evaluations: ['I can.'],
+      levels: null,
       path: FILE,
       questions: [
         {

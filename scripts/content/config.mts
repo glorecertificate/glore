@@ -19,6 +19,8 @@ export const LOCALES = Object.keys(
   readJson<{ locales: Record<string, unknown> }>('config/i18n.json').locales
 ) as Locale[]
 
+export const DEFAULT_LOCALE = readJson<{ defaultLocale: Locale }>('config/i18n.json').defaultLocale
+
 export const ICON_NAMES = new Set(readJson<{ name: string }[]>('config/icons.json').map(({ name }) => name))
 
 export const COURSE_TYPES = ['intro', 'learner', 'skill'] as const

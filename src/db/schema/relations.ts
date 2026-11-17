@@ -19,6 +19,7 @@ import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons
 import { regions } from './regions'
 import { sessions } from './sessions'
 import { skillGroups } from './skill-groups'
+import { skillLevelDescriptions } from './skill-level-descriptions'
 import { teamInvitations } from './teams'
 import { users } from './users'
 
@@ -202,6 +203,11 @@ export const evaluationsRelations = relations(evaluations, ({ one, many }) => ({
 export const assessmentsRelations = relations(assessments, ({ one, many }) => ({
   lesson: one(lessons, { fields: [assessments.lessonId], references: [lessons.id] }),
   userAssessments: many(userAssessments),
+  levelDescriptions: many(skillLevelDescriptions),
+}))
+
+export const skillLevelDescriptionsRelations = relations(skillLevelDescriptions, ({ one }) => ({
+  assessment: one(assessments, { fields: [skillLevelDescriptions.assessmentId], references: [assessments.id] }),
 }))
 
 /* Progress */

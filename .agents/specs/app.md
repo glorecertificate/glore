@@ -126,6 +126,16 @@ Three domain facts shape recurring decisions:
 - Changing `courses.languages` or `doc_articles.languages` records `course.locale_published` or `doc.locale_published`.
 - The editor dashboard shows reviewed and translated counts per locale (`actions/translations/coverage.ts`).
 
+### Skill level descriptions
+
+- A skill course's final assessment holds three descriptions, one per `skill_level` (`intermediate`, `good`, `advanced`). Each is an `IntlRecord` of at most 200 characters (`skill_level_descriptions`, unique on assessment and level, deleted with the assessment).
+- Only admins and editors write them. Tutors and members never edit them. Later PRs show them to volunteers in random order without the level (#140).
+- The editor edits them in the final assessment card of the last lesson (`course-editor/lesson-activities.tsx`, `LevelsItem`), added through "Add activity". On a skill course the card shows the three level fields instead of the prompt, with a 200-character counter each.
+- They live in the editor state (`assessment.levelDescriptions`, `tempId()` for new rows) and save through the normal course save (`context.tsx`). `upsertLevelDescriptions` and `deleteLevelDescriptions` (`actions/courses/management.ts`) require an editor, at most 200 characters, and a skill course. A row emptied in every locale is deleted. Only editors load the rows with the course (`buildCourseWith`, `catalog: false`).
+- They are fields of the last lesson's translation entity (`lessonTarget`), so the course translation popover and the coverage count them with the lesson. The editor tab percentages count them too.
+- `pnpm run content:levels --target <local|staging|production>` reads the `levels:` map of each skill course's last lesson (`content/README.md`) and inserts the missing rows. It never updates an existing row and is allowed on production. It marks the lesson as `machine` in `es` and `it`. `db:seed` runs the same insert (`scripts/seed-levels.mts`).
+- Read path for other features: `fetchLevelDescriptions(courseIds)` (`actions/courses/level-descriptions.ts`, cached, tag `courses`) resolves the rows through each course's assessment. It returns `Record<courseId, Partial<Record<SkillLevel, IntlRecord & { id }>>>`, built by the pure `parseSkillLevelDescriptions`.
+
 ### File storage and email
 
 - Cloudflare R2 (`@aws-sdk/client-s3`) stores user avatars, org logos, editor media, and certificate PDFs. Certificate PDFs are public through `documentUrl`.

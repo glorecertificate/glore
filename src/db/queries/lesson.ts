@@ -8,6 +8,7 @@ import {
   type lessons,
   type questionOptions,
   type questions,
+  type skillLevelDescriptions,
   type userAssessments,
   type userEvaluations,
 } from '@/db/schema'
@@ -21,6 +22,7 @@ type AssessmentRow = InferSelectModel<typeof assessments>
 type UserAssessmentRow = Pick<InferSelectModel<typeof userAssessments>, 'id' | 'value'>
 type UserEvaluationRow = Pick<InferSelectModel<typeof userEvaluations>, 'id' | 'value'>
 type ContributionRow = InferSelectModel<typeof contributions> & { user: PublicUserWithRelations }
+type LevelDescriptionRow = InferSelectModel<typeof skillLevelDescriptions>
 type UserLessonCount = { id: number }[]
 
 export interface LessonWithRelations extends LessonRow {
@@ -28,7 +30,9 @@ export interface LessonWithRelations extends LessonRow {
   questions?: (QuestionRow & {
     options: (QuestionOptionRow & { userAnswers?: { id: number }[] })[]
   })[]
-  assessment?: (AssessmentRow & { userAssessments: UserAssessmentRow[] }) | null
+  assessment?:
+    | (AssessmentRow & { levelDescriptions?: LevelDescriptionRow[]; userAssessments: UserAssessmentRow[] })
+    | null
   evaluations?: (EvaluationRow & { userEvaluations: UserEvaluationRow[] })[]
   contributions?: ContributionRow[]
 }

@@ -9,6 +9,7 @@ import {
   membershipRoleEnum,
   organizationRequestStatusEnum,
   skillCompassKindEnum,
+  skillLevelEnum,
 } from '@/db/schema'
 import {
   type accounts,
@@ -37,6 +38,7 @@ import {
   type regions,
   type sessions,
   type skillGroups,
+  type skillLevelDescriptions,
   type teamInvitations,
   type userAnswers,
   type userAssessments,
@@ -75,6 +77,7 @@ interface TableMap {
   regions: typeof regions
   sessions: typeof sessions
   skill_groups: typeof skillGroups
+  skill_level_descriptions: typeof skillLevelDescriptions
   team_invitations: typeof teamInvitations
   user_answers: typeof userAnswers
   user_assessments: typeof userAssessments
@@ -98,6 +101,7 @@ interface Enums {
   organization_request_status: (typeof organizationRequestStatusEnum.enumValues)[number]
   role: (typeof membershipRoleEnum.enumValues)[number]
   skill_compass_kind: (typeof skillCompassKindEnum.enumValues)[number]
+  skill_level: (typeof skillLevelEnum.enumValues)[number]
 }
 
 export type EnumType<T extends keyof Enums> = Enums[T]

@@ -65,6 +65,7 @@ Unknown keys are errors.
 | `questions`      | Optional list of quiz questions: `question`, `options` (2 to 6 items with `text` and optional `correct: true`), `explanation`.           |
 | `evaluations`    | Optional list of self-assessment prompts (strings).                                                                                      |
 | `assessment`     | Optional prompt for the final assessment. A `skill` course has exactly one, in its last lesson. `intro` and `learner` courses have none. |
+| `levels`         | Required in the last lesson of a skill course, forbidden elsewhere: `intermediate`, `good`, `advanced`, each at most 200 characters.     |
 
 Rules that keep the three locales in step:
 
@@ -131,6 +132,29 @@ assessment: Overall, how would you rate your level in this skill?
 
 Ask the learner to think about a real example before they rate themselves.
 ```
+
+## Level descriptions
+
+The last lesson of every skill course has a `levels:` map in the front matter of each locale file, next to `evaluations:` and `assessment:`. Other lessons and other course types must not have one.
+
+```md
+---
+title: Self-assessment
+evaluations:
+  - I can describe one situation where I used this skill.
+assessment: Overall, how would you rate your level in this skill?
+levels:
+  intermediate: 'I take part in the group and ask when I am unsure.'
+  good: 'I help the group reach its goal and notice who needs support.'
+  advanced: 'I guide the group when things are hard and help others grow.'
+---
+```
+
+- All three levels are required, and each text has at most 200 characters, the room of the certificate PDF.
+- The `es` and `it` files hold the translation of the same three texts.
+- Write the text without the level name or words that give it away, because volunteers see the description without its level.
+- Quote the text when it has a colon followed by a space.
+- `content:check` validates the map with the lessons.
 
 ## Docs
 
@@ -238,3 +262,17 @@ Without `--drafts`, `languages` is set to `en`, `es`, `it`, which the validator 
 - Keeps learner progress for anything that did not change, including lesson completion for lessons that stay. A changed question, a changed or flipped option, a changed evaluation, or a changed assessment removes the learner answers and ratings stored for that item, because they no longer describe the same content.
 
 Courses that disappear from `content/` are not deleted; use `--remove`.
+
+## Import level descriptions
+
+```sh
+pnpm run content:levels --target local
+```
+
+Inserts the `levels:` descriptions of the last lessons of the skill courses into `skill_level_descriptions`, attached to each course's final assessment. It takes `--target <local|staging|production>` with the same database checks as the course import, and `--dry-run`.
+
+- It inserts only the missing rows (`on conflict do nothing`). A row that exists is never updated, so text an editor wrote or changed in the platform is safe, and a second run reports every row as unchanged.
+- It is allowed on production, unlike the course import. It needs no `--bootstrap` and no empty database, because it never overwrites.
+- When it inserts rows, it marks the last lesson as `machine` in `es` and `it`, so the course translation popover and the coverage show the text as waiting for review.
+- A course that is not in the database, or has no final assessment yet, is skipped and listed.
+- `pnpm run db:seed` runs the same insert for the courses already imported.

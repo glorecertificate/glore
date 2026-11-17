@@ -1,5 +1,7 @@
 'use client'
 
+import { useId } from 'react'
+
 import { type Locale, useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
@@ -9,9 +11,11 @@ import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { type Course } from '@/db/queries/course'
 import { type Assessment, type Evaluation, type LessonType, type QuestionOption } from '@/db/queries/lesson'
+import { SKILL_LEVELS, SKILL_LEVEL_DESCRIPTION_MAX_LENGTH, type SkillLevel } from '@/db/queries/skill-level-description'
 import { INTL_PLACEHOLDER, type IntlRecord } from '@/lib/i18n'
 import { cn, tempId } from '@/lib/utils'
 
@@ -42,6 +46,73 @@ const ActivityItem = ({
           placeholder={t('activityDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
           value={description}
         />
+      </div>
+      <Button
+        aria-label={tCommon('delete')}
+        className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+        onClick={onRemove}
+        size="icon"
+        type="button"
+        variant="ghost"
+      >
+        <LucideIcon name="trash" className="size-4 text-destructive-text" />
+      </Button>
+    </div>
+  )
+}
+
+const LevelsItem = ({
+  descriptions,
+  language,
+  onChange,
+  onRemove,
+}: {
+  descriptions: Partial<Record<SkillLevel, string>>
+  language: Locale
+  onChange: (level: SkillLevel, value: string) => void
+  onRemove: () => void
+}) => {
+  const tLang = useTranslations('Intl.Languages')
+  const t = useTranslations('CourseEditor')
+  const tCommon = useTranslations('CourseCommon')
+  const tLevels = useTranslations('Common.skillLevels')
+  const idPrefix = useId()
+
+  return (
+    <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
+      <div className="flex-1 space-y-3">
+        <div className="space-y-1">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityAssessment')}</p>
+          <p className="text-xs text-muted-foreground">{t('levelDescriptionsHint')}</p>
+        </div>
+        {SKILL_LEVELS.map(level => {
+          const value = descriptions[level] ?? ''
+          return (
+            <div className="space-y-1" key={level}>
+              <Label className="text-xs text-muted-foreground" htmlFor={`${idPrefix}-${level}`}>
+                {tLevels(level)}
+              </Label>
+              <Textarea
+                aria-describedby={`${idPrefix}-${level}-count`}
+                className="min-h-10 resize-none rounded-lg text-sm"
+                id={`${idPrefix}-${level}`}
+                maxLength={SKILL_LEVEL_DESCRIPTION_MAX_LENGTH}
+                onChange={e => onChange(level, e.target.value)}
+                placeholder={t('activityDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
+                value={value}
+              />
+              <p
+                className={cn(
+                  'text-right text-xs text-muted-foreground tabular-nums',
+                  value.length >= SKILL_LEVEL_DESCRIPTION_MAX_LENGTH && 'text-warning-text'
+                )}
+                id={`${idPrefix}-${level}-count`}
+              >
+                {t('levelDescriptionCount', { count: value.length, max: SKILL_LEVEL_DESCRIPTION_MAX_LENGTH })}
+              </p>
+            </div>
+          )
+        })}
       </div>
       <Button
         aria-label={tCommon('delete')}
@@ -176,6 +247,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
   const t = useTranslations('CourseEditor')
 
   const { course, currentLesson, language, setCourse, step } = useCourse()
+  const isSkill = course.type === 'skill'
   const { user } = useSession()
 
   const canEdit = user.canEdit && !course.archivedAt
@@ -403,6 +475,34 @@ export const LessonActivities = ({ className }: { className?: string }) => {
     }))
   }
 
+  const updateLevelDescription = (level: SkillLevel, value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) => {
+        if (i !== step - 1 || !lesson.assessment) return lesson
+        const { assessment } = lesson
+        const levels = assessment.levelDescriptions ?? []
+        const existing = levels.find(item => item.level === level)
+        const next = existing
+          ? levels.map(item =>
+              item.level === level ? { ...item, description: { ...item.description, [language]: value } } : item
+            )
+          : [
+              ...levels,
+              {
+                assessmentId: assessment.id,
+                createdAt: new Date().toISOString(),
+                description: { ...INTL_PLACEHOLDER, [language]: value } as IntlRecord,
+                id: tempId(),
+                level,
+                updatedAt: new Date().toISOString(),
+              },
+            ]
+        return { ...lesson, assessment: { ...assessment, levelDescriptions: next } }
+      }),
+    }))
+  }
+
   const removeQuestion = (questionId: number) => {
     setCourse(prev => ({
       ...prev,
@@ -513,13 +613,27 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             <LucideIcon name="star" className="size-4" />
             {t('skillEvaluationTitle')}
           </h4>
-          <ActivityItem
-            description={(currentLesson.assessment.description as IntlRecord)?.[language] ?? ''}
-            label={t('activityAssessment')}
-            language={language}
-            onDescriptionChange={updateAssessmentDescription}
-            onRemove={removeAssessment}
-          />
+          {isSkill ? (
+            <LevelsItem
+              descriptions={Object.fromEntries(
+                (currentLesson.assessment.levelDescriptions ?? []).map(item => [
+                  item.level,
+                  item.description[language] ?? '',
+                ])
+              )}
+              language={language}
+              onChange={updateLevelDescription}
+              onRemove={removeAssessment}
+            />
+          ) : (
+            <ActivityItem
+              description={(currentLesson.assessment.description as IntlRecord)?.[language] ?? ''}
+              label={t('activityAssessment')}
+              language={language}
+              onDescriptionChange={updateAssessmentDescription}
+              onRemove={removeAssessment}
+            />
+          )}
           {/* <RatingGroup
             className="pointer-events-none opacity-50"
             color="brand"

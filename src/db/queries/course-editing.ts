@@ -63,6 +63,7 @@ export const computeTranslationCoverage = (course: Course): Record<(typeof LOCAL
     }
     for (const evaluation of lesson.evaluations ?? []) sources.push(evaluation.description)
     if (lesson.assessment) sources.push(lesson.assessment.description)
+    for (const level of lesson.assessment?.levelDescriptions ?? []) sources.push(level.description)
   }
   const relevant = sources.filter(source => LOCALES.some(locale => hasText(localeValue(source, locale))))
 

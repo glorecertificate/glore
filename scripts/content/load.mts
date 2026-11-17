@@ -5,7 +5,7 @@ import { parse } from 'yaml'
 import { type ZodType, type z } from 'zod'
 
 import { CONTENT_DIR, LOCALES, type Locale } from './config.mts'
-import { courseSchema, lessonFrontMatterSchema, skillGroupsSchema } from './schema.mts'
+import { type SKILL_LEVELS, courseSchema, lessonFrontMatterSchema, skillGroupsSchema } from './schema.mts'
 
 export interface Problem {
   file: string
@@ -23,6 +23,7 @@ export interface LessonFile {
   questions: { question: string; explanation: string; options: { text: string; correct: boolean }[] }[]
   evaluations: string[]
   assessment: string | null
+  levels: Record<(typeof SKILL_LEVELS)[number], string> | null
 }
 
 export interface LoadedLesson {
@@ -128,7 +129,7 @@ export const parseLessonFile = (file: string, raw: string) => {
   const { body, data, problems } = parseMarkdownFile(file, raw, lessonFrontMatterSchema)
   if (!data) return { lesson: null, problems }
 
-  const { assessment, evaluations, questions, title } = data
+  const { assessment, evaluations, levels, questions, title } = data
   const lesson: LessonFile = {
     path: file,
     title,
@@ -140,6 +141,7 @@ export const parseLessonFile = (file: string, raw: string) => {
     })),
     evaluations: evaluations ?? [],
     assessment: assessment ?? null,
+    levels: levels ?? null,
   }
   return { lesson, problems }
 }

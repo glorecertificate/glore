@@ -70,7 +70,7 @@ pnpm run db:seed    # upsert the seed organization and its test users, one per r
 pnpm run db:seed:demo --target local  # full demo dataset on TEST_EMAIL plus-addresses
 ```
 
-The demo seed reads `TEST_EMAIL` from `.env.local` and needs the course catalog, so run `pnpm run content:import --target local` first.
+The demo seed reads `TEST_EMAIL` from `.env.local` and needs the course catalog, so run `pnpm run content:import --target local` first. `pnpm run content:levels --target <local|staging|production>` adds the missing skill level descriptions from `content/` and never overwrites edited text.
 
 **Schema:**
 

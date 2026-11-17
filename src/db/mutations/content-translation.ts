@@ -24,6 +24,7 @@ import {
   questionOptions,
   questions,
   skillGroups,
+  skillLevelDescriptions,
 } from '@/db/schema'
 import { type Any } from '@/lib/types'
 
@@ -46,6 +47,7 @@ const FIELD_TABLES = {
   question_options: questionOptions,
   questions,
   skill_groups: skillGroups,
+  skill_level_descriptions: skillLevelDescriptions,
 } as const satisfies Record<FieldTable, Any>
 
 export const sourceHashOf = (target: TranslationTarget) =>

@@ -8,16 +8,17 @@ import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { LevelDots } from '@/components/ui/level-dots'
 import { type Certificate } from '@/db/queries/certificate'
 import { SKILL_LEVELS } from '@/lib/constants'
 import { fullName } from '@/lib/utils'
 
 const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
-  <div className="flex flex-wrap justify-between gap-x-4 gap-y-0.5 text-sm">
-    <dt className="text-muted-foreground">{label}</dt>
-    <dd className="min-w-0 text-right font-medium wrap-break-word">{value}</dd>
-  </div>
+  <DescriptionItem>
+    <DescriptionTerm>{label}</DescriptionTerm>
+    <DescriptionDetails>{value}</DescriptionDetails>
+  </DescriptionItem>
 )
 
 export const RequestPanel = ({
@@ -80,13 +81,13 @@ export const RequestPanel = ({
           <CardTitle className="text-sm">{t('volunteer')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <dl className="flex flex-col gap-2">
+          <DescriptionList layout="inline">
             <Row label={t('name')} value={fullName(holder)} />
             <Row label={t('email')} value={holder.email} />
             <Row label={t('birthday')} value={format(holder.birthday)} />
             <Row label={t('birthPlace')} value={holder.birthPlace ?? '-'} />
             <Row label={t('nationality')} value={nationality} />
-          </dl>
+          </DescriptionList>
         </CardContent>
       </Card>
 
@@ -95,14 +96,14 @@ export const RequestPanel = ({
           <CardTitle className="text-sm">{t('experience')}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <dl className="flex flex-col gap-2">
+          <DescriptionList layout="inline">
             <Row
               label={t('period')}
               value={formatActivityPeriod(certificate, date, values => tDetail('periodValue', values))}
             />
             <Row label={t('hours')} value={certificate.activityDuration} />
             <Row label={t('location')} value={certificate.activityLocation} />
-          </dl>
+          </DescriptionList>
           <Badge variant={rule ? 'success' : 'destructive'}>{rule ? t('ruleMet') : t('ruleUnmet')}</Badge>
         </CardContent>
       </Card>

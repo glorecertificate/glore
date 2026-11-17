@@ -1,29 +1,10 @@
 import { useTranslations } from 'next-intl'
 
-import { Badge } from '@/components/ui/badge'
+import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
-
-const STATUS_KEYS = {
-  approved: 'statusApproved',
-  changes_requested: 'statusChangesRequested',
-  in_review: 'statusInReview',
-  rejected: 'statusRejected',
-  revoked: 'statusRevoked',
-  submitted: 'statusSubmitted',
-  withdrawn: 'statusWithdrawn',
-} as const satisfies Record<(typeof PIPELINE_STATUSES)[number], string>
-
-const STATUS_VARIANTS = {
-  approved: 'success',
-  changes_requested: 'warning',
-  in_review: 'info',
-  rejected: 'destructive',
-  revoked: 'destructive',
-  submitted: 'info',
-  withdrawn: 'muted',
-} as const satisfies Record<(typeof PIPELINE_STATUSES)[number], React.ComponentProps<typeof Badge>['variant']>
 
 export const AdminOverviewPipeline = ({ pipeline, total }: { pipeline: Pipeline; total: number }) => {
   const t = useTranslations('Admin.overview')
@@ -42,11 +23,11 @@ export const AdminOverviewPipeline = ({ pipeline, total }: { pipeline: Pipeline;
             {PIPELINE_STATUSES.map(status => (
               <li className="space-y-1.5 text-sm" key={status}>
                 <div className="flex items-center justify-between gap-3">
-                  <Badge variant={STATUS_VARIANTS[status]}>{tCertificates(STATUS_KEYS[status])}</Badge>
+                  <CertificateStatusBadge status={status} />
                   <span className="font-medium tabular-nums">{pipeline[status]}</span>
                 </div>
                 <Progress
-                  aria-label={tCertificates(STATUS_KEYS[status])}
+                  aria-label={tCertificates(CERTIFICATE_STATUS[status].labelKey)}
                   className="h-1.5"
                   color="brand"
                   value={(pipeline[status] / total) * 100}

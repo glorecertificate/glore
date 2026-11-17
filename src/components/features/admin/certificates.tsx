@@ -6,6 +6,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { debounce, useQueryStates } from 'nuqs'
 
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { OrganizationCertificatesPanel } from '@/components/features/organization/certificates-panel'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
@@ -25,16 +26,6 @@ import { adminCertificatesParsers } from './certificates-params'
 
 const ALL = 'all'
 const SEARCH_DEBOUNCE_MS = 300
-
-const STATUS_LABEL_KEYS = {
-  approved: 'statusApproved',
-  changes_requested: 'statusChangesRequested',
-  in_review: 'statusInReview',
-  rejected: 'statusRejected',
-  revoked: 'statusRevoked',
-  submitted: 'statusSubmitted',
-  withdrawn: 'statusWithdrawn',
-} as const satisfies Record<AdminCertificateStatus, string>
 
 export const AdminCertificates = ({
   organizations,
@@ -174,7 +165,7 @@ export const AdminCertificates = ({
               <SelectItem value={ALL}>{t('filters.allStatuses')}</SelectItem>
               {ADMIN_CERTIFICATE_STATUSES.map(status => (
                 <SelectItem key={status} value={status}>
-                  {tCertificates(STATUS_LABEL_KEYS[status])}
+                  {tCertificates(CERTIFICATE_STATUS[status].labelKey)}
                 </SelectItem>
               ))}
             </SelectContent>

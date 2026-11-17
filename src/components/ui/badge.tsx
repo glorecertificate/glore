@@ -5,6 +5,8 @@ import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
+export type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>['variant']>
+
 export const Badge = ({
   asChild = false,
   className,
@@ -39,10 +41,10 @@ const badgeVariants = cva(
         ghost: 'bg-transparent text-foreground',
         brand: 'bg-brand text-brand-foreground shadow-xs',
         'brand-soft': 'bg-brand/10 text-brand-text',
-        success: 'bg-success/10 text-success-text',
-        warning: 'bg-warning/15 text-warning-text',
-        destructive: 'bg-destructive/10 text-destructive-text',
-        info: 'bg-info/10 text-info-text',
+        success: 'bg-success-subtle text-success-text',
+        warning: 'bg-warning-subtle text-warning-text',
+        destructive: 'bg-danger-subtle text-danger-text',
+        info: 'bg-info-subtle text-info-text',
       },
     },
   }

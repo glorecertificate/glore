@@ -7,6 +7,7 @@ import { CertificateCard } from '@/components/features/certificates/certificate-
 import { EligibilityPanel } from '@/components/features/certificates/eligibility-panel'
 import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
 import { CERT_LIST_STATUS_VALUES, type CertListStatus } from '@/components/features/certificates/params'
+import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useCertListSort, useCertListStatus } from '@/components/features/certificates/use-params'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
@@ -21,17 +22,6 @@ import { type Certificate } from '@/db/queries/certificate'
 interface CertificatesContentProps {
   certificates: Certificate[]
   eligibility: CertificateEligibility
-}
-
-const STATUS_LABEL_KEYS: Record<CertListStatus, string> = {
-  approved: 'statusApproved',
-  changes_requested: 'statusChangesRequested',
-  draft: 'statusDraft',
-  in_review: 'statusInReview',
-  rejected: 'statusRejected',
-  revoked: 'statusRevoked',
-  submitted: 'statusSubmitted',
-  withdrawn: 'statusWithdrawn',
 }
 
 export const CertificatesContent = ({ certificates, eligibility }: CertificatesContentProps) => {
@@ -94,7 +84,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
             <SegmentedControlItem value="all">{t('filterAll')}</SegmentedControlItem>
             {CERT_LIST_STATUS_VALUES.map(s => (
               <SegmentedControlItem key={s} value={s}>
-                {tStatus(STATUS_LABEL_KEYS[s] as Parameters<typeof tStatus>[0])}
+                {tStatus(CERTIFICATE_STATUS[s].labelKey)}
               </SegmentedControlItem>
             ))}
           </SegmentedControl>

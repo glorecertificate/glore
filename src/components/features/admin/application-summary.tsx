@@ -2,6 +2,7 @@
 
 import { useFormatter, useTranslations } from 'next-intl'
 
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { timestampMillis } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
 
@@ -32,10 +33,10 @@ export interface ApplicationRequestData {
 type Pair = readonly [string, string]
 
 const Row = ({ label, value }: { label: string; value: string }) => (
-  <div className="grid gap-0.5 py-2.5 sm:grid-cols-[11rem_1fr] sm:gap-4">
-    <dt className="text-sm text-muted-foreground">{label}</dt>
-    <dd className="text-sm font-medium wrap-break-word whitespace-pre-wrap">{value}</dd>
-  </div>
+  <DescriptionItem>
+    <DescriptionTerm>{label}</DescriptionTerm>
+    <DescriptionDetails className="whitespace-pre-wrap">{value}</DescriptionDetails>
+  </DescriptionItem>
 )
 
 export const ApplicationSummary = ({
@@ -102,11 +103,11 @@ export const ApplicationSummary = ({
       {groups.map(group => (
         <section className="rounded-lg border bg-card p-4" key={group.title}>
           <h3 className="text-sm font-semibold">{group.title}</h3>
-          <dl className="mt-1 divide-y">
+          <DescriptionList className="mt-1" layout="rows">
             {group.rows.map(([label, value]) => (
               <Row key={label} label={label} value={value} />
             ))}
-          </dl>
+          </DescriptionList>
         </section>
       ))}
     </div>

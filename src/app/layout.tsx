@@ -9,6 +9,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { getLocaleCookie } from '@/actions/cookies'
+import { InstantReveal } from '@/components/layout/instant-reveal'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PwaInstallPrompt } from '@/components/layout/pwa-install-prompt'
 import { I18nProvider } from '@/components/providers/i18n'
@@ -72,6 +73,7 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>
+        <InstantReveal />
         <SearchParamsProvider>
           <I18nProvider locale={locale} messages={clientMessages(messages)}>
             <SettingsProvider settings={settings}>
@@ -102,6 +104,7 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
 const AppLayoutFallback = () => (
   <html lang={DEFAULT_LOCALE}>
     <body aria-busy>
+      <InstantReveal />
       <LoadingFallback label={null} size="full" />
     </body>
   </html>

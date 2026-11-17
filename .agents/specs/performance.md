@@ -88,4 +88,6 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - A block is done when its cases meet the targets on both profiles. If not, the pull request names the blocker.
 - Never trade a metric for another without a reason in the pull request.
 - Prefer a static shell, streamed data behind `Suspense`, and `useOptimistic` for mutations.
+- Keep `InstantReveal` in both branches of the root layout. Without it, a boundary that streams after the first frame waits for the React reveal throttle. In CI that adds about 300 ms to FCP and LCP.
+- When a React update fails `instant-reveal.test.ts`, read the new reveal runtime in `react-dom-server` and update the script or remove it.
 - A loading state follows "Loading states" in `ui.md`. Its navigation cases keep `Shift` at 0.

@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { createDraft } from '@/actions/legal/manage'
 import { LegalDraftEditor } from '@/components/features/legal/legal-draft-editor'
@@ -13,6 +12,7 @@ import { useLegalError } from '@/components/features/legal/use-legal-error'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { toast } from '@/components/ui/toast'
 import { type LegalDocumentRow } from '@/db/queries/legal'
 
 export const LegalDocumentPanel = ({ canPublish, document }: { canPublish: boolean; document: LegalDocumentRow }) => {

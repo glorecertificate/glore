@@ -11,6 +11,7 @@
     "backToPrevious": "Volver a la página anterior",
     "cancel": "Cancelar",
     "clearSearch": "Borrar búsqueda",
+    "clearFilters": "Limpiar filtros",
     "clearSort": "Quitar orden",
     "completed": "Completado",
     "errorMessage": "Inténtalo de nuevo o <contactUs>contáctanos</contactUs> si el problema persiste",
@@ -2648,7 +2649,6 @@
       "title": "Gestión del equipo",
       "actions": "Acciones",
       "cancel": "Cancelar",
-      "clearFilters": "Limpiar filtros",
       "confirmDelete": "Eliminar miembro",
       "deleteDescription": "¿Estás seguro de que quieres eliminar a {name} del equipo? Esta acción no se puede deshacer y eliminará permanentemente su cuenta.",
       "deleteSuccess": "Miembro del equipo eliminado correctamente.",
@@ -2704,7 +2704,6 @@
       "approveTitle": "Aprobar organización",
       "approving": "Aprobando…",
       "cancel": "Cancelar",
-      "clearFilters": "Limpiar filtros",
       "commentLabel": "Mensaje al representante",
       "commentPlaceholder": "¡Te damos la bienvenida a GloRe! Estamos encantados de tenerte a bordo.",
       "createDescription": "Añade directamente una organización, sin invitar a un representante.",
@@ -2797,7 +2796,6 @@
       "actions": "Acciones",
       "tableLabel": "Usuarios",
       "searchPlaceholder": "Busca por nombre, correo o nombre de usuario",
-      "clearFilters": "Limpiar filtros",
       "filters": {
         "allBans": "Cualquier estado de baneo",
         "allOrganizations": "Todas las organizaciones",
@@ -2921,7 +2919,6 @@
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",
       "noCertificates": "Todavía no hay certificados",
       "noCertificatesDescription": "Aquí aparecerán los certificados enviados por todas las organizaciones.",
-      "clearFilters": "Quitar filtros",
       "view": "Ver",
       "openOrganization": "Ver el flujo de {name}"
     },
@@ -2981,8 +2978,7 @@
       "noResults": "No se encontraron eventos",
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",
       "noEvents": "Todavía no hay eventos",
-      "noEventsDescription": "Aquí aparecerán los baneos, los cambios de rol, las sesiones de visualización, los certificados revocados y las decisiones sobre solicitudes.",
-      "clearFilters": "Quitar filtros"
+      "noEventsDescription": "Aquí aparecerán los baneos, los cambios de rol, las sesiones de visualización, los certificados revocados y las decisiones sobre solicitudes."
     },
     "settings": {
       "title": "Ajustes",
@@ -4021,7 +4017,6 @@
     "searchPlaceholder": "Busca por clave, texto o sección",
     "tableLabel": "Mensajes de la interfaz en todos los idiomas",
     "count": "{count, plural, one {# mensaje} other {# mensajes}}",
-    "clearFilters": "Borrar filtros",
     "filters": {
       "state": "Estado",
       "namespace": "Sección",

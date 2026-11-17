@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { listSessions, revokeOtherSessions, revokeSession } from '@/actions/account/sessions'
 import { SessionRow } from '@/components/features/users/session-row'
@@ -11,6 +10,7 @@ import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from '@/components/ui/toast'
 import { usePoll } from '@/hooks/use-poll'
 
 const REFRESH_INTERVAL = 60_000

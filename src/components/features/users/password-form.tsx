@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { changePassword } from '@/actions/auth'
@@ -12,6 +11,7 @@ import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
+import { toast } from '@/components/ui/toast'
 import { useActionError } from '@/hooks/use-action-error'
 import { PASSWORD_REGEX } from '@/lib/constants'
 

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { transferOrganizationOwnership } from '@/actions/organizations/members'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
@@ -19,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from '@/components/ui/toast'
 import { type User } from '@/db/queries/user'
 
 import { useMemberError } from './use-member-error'

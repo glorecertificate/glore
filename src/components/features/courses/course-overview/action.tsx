@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { startCourse } from '@/actions/courses/progress'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/toast'
 import { type CourseAccess, type CourseOverview } from '@/db/queries/learning'
 import { cn } from '@/lib/utils'
 

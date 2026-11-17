@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type Locale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 
 import { completeOnboarding } from '@/actions/onboarding'
 import { AboutStep } from '@/components/features/onboarding/about-step'
@@ -25,6 +24,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Logo } from '@/components/ui/logo'
 import { Progress } from '@/components/ui/progress'
+import { toast } from '@/components/ui/toast'
 import { type OnboardingNextStep } from '@/db/queries/onboarding'
 
 const LAST_STEP = STEP_NAMES.length - 1

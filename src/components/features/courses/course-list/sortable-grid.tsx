@@ -2,7 +2,6 @@
 
 import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { reorderCourses } from '@/actions/courses/management'
 import { useCourses } from '@/components/features/courses/context'
@@ -17,6 +16,7 @@ import {
   animateLayoutChangesAlways,
   measureAlways,
 } from '@/components/ui/sortable'
+import { toast } from '@/components/ui/toast'
 import { type Course } from '@/db/queries/course'
 
 interface CourseListSortableGridProps {

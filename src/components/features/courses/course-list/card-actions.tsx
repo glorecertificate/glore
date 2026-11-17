@@ -4,7 +4,6 @@ import { type Route } from 'next'
 import { useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { deleteCourse as deleteCourseAction, updateCourse as updateCourseAction } from '@/actions/courses/management'
 import { useCourses } from '@/components/features/courses/context'
@@ -36,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/toast'
 import { type Course } from '@/db/queries/course'
 import { cn } from '@/lib/utils'
 

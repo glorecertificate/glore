@@ -11,6 +11,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
@@ -43,6 +44,7 @@ export const Translations = ({
   overrides: OverrideEntry[]
 }) => {
   const t = useTranslations('Translations')
+  const tCommon = useTranslations('Common')
   const { localeItems } = useI18n()
   const [overrides, setOverrides] = useState(initialOverrides)
   const [params, setParams] = useQueryStates(translationsParsers, { clearOnDefault: true })
@@ -77,7 +79,7 @@ export const Translations = ({
 
   return (
     <div className="flex min-w-0 flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
+      <FilterBar active={filtersActive} onClear={handleClear}>
         <SearchInput
           aria-label={t('searchPlaceholder')}
           className="w-full sm:w-80"
@@ -118,15 +120,10 @@ export const Translations = ({
             ))}
           </SelectContent>
         </Select>
-        {filtersActive && (
-          <Button onClick={handleClear} size="sm" variant="ghost">
-            {t('clearFilters')}
-          </Button>
-        )}
         <output aria-live="polite" className="ml-auto text-sm text-muted-foreground">
           {t('count', { count: filtered.length })}
         </output>
-      </div>
+      </FilterBar>
       {filtered.length === 0 ? (
         <Empty>
           <EmptyHeader>
@@ -139,7 +136,7 @@ export const Translations = ({
           {filtersActive && (
             <EmptyContent>
               <Button onClick={handleClear} size="sm" variant="outline">
-                {t('clearFilters')}
+                {tCommon('clearFilters')}
               </Button>
             </EmptyContent>
           )}

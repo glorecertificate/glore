@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { saveSkillCompass } from '@/actions/courses/compass'
 import { type CompassOption } from '@/components/features/courses/skill-compass/card'
@@ -18,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { toast } from '@/components/ui/toast'
 import { COMPASS_MAX_GOALS, COMPASS_MAX_STRENGTHS } from '@/db/queries/learning'
 import { cn } from '@/lib/utils'
 

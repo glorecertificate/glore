@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { deleteSkillGroup, moveSkillGroup } from '@/actions/courses/skill-groups'
 import { SkillGroupDialog, type SkillGroupDraft } from '@/components/features/courses/skill-framework/group-dialog'
@@ -20,6 +19,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 export const SkillGroupControls = ({
   canMoveDown,

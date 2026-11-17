@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
 import {
@@ -32,6 +31,7 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
+import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole, timestampMillis } from '@/db/queries/organization'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 

@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { stopImpersonation } from '@/actions/admin/impersonation'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 const RETURN_ROOT = '/admin/users'
 const AUTO_STOP_LEAD_MS = 3000

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { updateNotificationPreferences } from '@/actions/account/preferences'
 import {
@@ -14,6 +13,7 @@ import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { toast } from '@/components/ui/toast'
 
 export const NotificationsForm = () => {
   const { setUser, user } = useSession()

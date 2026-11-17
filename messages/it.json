@@ -11,6 +11,7 @@
     "backToPrevious": "Torna indietro",
     "cancel": "Annulla",
     "clearSearch": "Cancella ricerca",
+    "clearFilters": "Rimuovi filtri",
     "clearSort": "Rimuovi ordinamento",
     "completed": "Completato",
     "errorMessage": "Riprova o <contactUs>contattaci</contactUs> se il problema persiste",
@@ -2648,7 +2649,6 @@
       "title": "Gestione del team",
       "actions": "Azioni",
       "cancel": "Annulla",
-      "clearFilters": "Rimuovi filtri",
       "confirmDelete": "Rimuovi membro",
       "deleteDescription": "Vuoi davvero rimuovere {name} dal team? Questa azione non può essere annullata ed eliminerà definitivamente il suo account.",
       "deleteSuccess": "Membro del team rimosso.",
@@ -2704,7 +2704,6 @@
       "approveTitle": "Approva organizzazione",
       "approving": "Approvazione in corso…",
       "cancel": "Annulla",
-      "clearFilters": "Rimuovi filtri",
       "commentLabel": "Messaggio al rappresentante",
       "commentPlaceholder": "Ti diamo il benvenuto in GloRe! Siamo felici di averti a bordo.",
       "createDescription": "Aggiungi direttamente un'organizzazione, senza invitare un rappresentante.",
@@ -2797,7 +2796,6 @@
       "actions": "Azioni",
       "tableLabel": "Utenti",
       "searchPlaceholder": "Cerca per nome, email o nome utente",
-      "clearFilters": "Rimuovi filtri",
       "filters": {
         "allBans": "Qualsiasi sospensione",
         "allOrganizations": "Tutte le organizzazioni",
@@ -2921,7 +2919,6 @@
       "noResultsDescription": "Prova con un'altra ricerca o rimuovi i filtri.",
       "noCertificates": "Ancora nessun certificato",
       "noCertificatesDescription": "Qui compariranno i certificati inviati da tutte le organizzazioni.",
-      "clearFilters": "Rimuovi filtri",
       "view": "Vedi",
       "openOrganization": "Mostra il flusso di {name}"
     },
@@ -2981,8 +2978,7 @@
       "noResults": "Nessun evento trovato",
       "noResultsDescription": "Prova con un'altra ricerca o rimuovi i filtri.",
       "noEvents": "Ancora nessun evento",
-      "noEventsDescription": "Qui compariranno sospensioni, cambi di ruolo, visualizzazioni come utente, certificati revocati e decisioni sulle candidature.",
-      "clearFilters": "Rimuovi filtri"
+      "noEventsDescription": "Qui compariranno sospensioni, cambi di ruolo, visualizzazioni come utente, certificati revocati e decisioni sulle candidature."
     },
     "settings": {
       "title": "Impostazioni",
@@ -4021,7 +4017,6 @@
     "searchPlaceholder": "Cerca per chiave, testo o sezione",
     "tableLabel": "Messaggi dell'interfaccia in tutte le lingue",
     "count": "{count, plural, one {# messaggio} other {# messaggi}}",
-    "clearFilters": "Cancella i filtri",
     "filters": {
       "state": "Stato",
       "namespace": "Sezione",

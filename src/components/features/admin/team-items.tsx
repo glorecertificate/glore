@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
@@ -34,6 +33,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
 import { cn } from '@/lib/utils'

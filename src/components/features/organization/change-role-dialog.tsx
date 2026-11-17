@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { updateOrganizationMemberRole } from '@/actions/organizations/members'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
@@ -18,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
 
 import { useMemberError } from './use-member-error'

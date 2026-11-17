@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { copyOrganizationInviteLink, revokeOrganizationInviteLink } from '@/actions/organizations/invitations'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
@@ -23,6 +22,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
+import { toast } from '@/components/ui/toast'
 import { type InviteLinkState, timestampMillis } from '@/db/queries/organization'
 
 import { CopyLinkButton } from './copy-link-button'

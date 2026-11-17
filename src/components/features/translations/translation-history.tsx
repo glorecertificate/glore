@@ -3,11 +3,11 @@
 import { useState, useTransition } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { listMessageHistory } from '@/actions/translations'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 import { timestampMillis } from '@/db/queries/organization'
 
 import { errorCodeOf, useTranslationError } from './use-translation-error'

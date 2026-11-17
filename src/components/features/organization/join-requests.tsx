@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { approveOrganizationJoinRequest, rejectOrganizationJoinRequest } from '@/actions/organizations/requests'
@@ -25,6 +24,7 @@ import {
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 
 import { formatRoleLabel } from './utils'
 

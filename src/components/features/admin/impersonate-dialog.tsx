@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { startImpersonation } from '@/actions/admin/impersonation'
 import { Button } from '@/components/ui/button'
@@ -15,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { toast } from '@/components/ui/toast'
 import { type AdminUserRow, MIN_ADMIN_REASON_LENGTH } from '@/db/queries/admin-user'
 import { APP_ROOT } from '@/lib/constants'
 import appConfig from '~/config/app.json'

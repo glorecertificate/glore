@@ -3,11 +3,11 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { approveOrganization, rejectOrganization } from '@/actions/admin/organizations'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 import { ApproveDialog, RejectDialog } from './organization-items'
 

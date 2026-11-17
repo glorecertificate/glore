@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 
 import { saveSettings } from '@/actions/admin/settings'
 import { SettingsSection } from '@/components/features/organization/settings-section'
@@ -11,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Separator } from '@/components/ui/separator'
+import { toast } from '@/components/ui/toast'
 import { useFormDisabled } from '@/hooks/use-form-disabled'
 import {
   type AppSettings,

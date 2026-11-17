@@ -4,11 +4,11 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from '@/components/ui/toast'
 import { type Course } from '@/db/queries/course'
 
 const CourseSettings = dynamic(

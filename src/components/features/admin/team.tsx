@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import {
   deleteTeamMember,
@@ -20,7 +19,9 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
 
@@ -41,6 +42,7 @@ type SortField = 'name' | 'role' | 'date'
 
 export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   const t = useTranslations('Admin.team')
+  const tCommon = useTranslations('Common')
   const { locale } = useI18n()
   const { user: currentUser } = useSession()
   const adminError = useAdminError()
@@ -144,6 +146,11 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
 
   const hasActiveFilters = filterRole !== 'all' || filterStatus !== 'all'
 
+  const clearFilters = () => {
+    setFilterRole('all')
+    setFilterStatus('all')
+  }
+
   return (
     <div className="space-y-6 pt-1">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -168,76 +175,65 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-5 py-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline">
-                <LucideIcon name="arrow-up-down" className="mr-1.5 size-3.5" />
-                {t(`sort_${sortBy}`)}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onClick={() => setSortBy('name')}>
-                <LucideIcon name="user" className="mr-2 size-3.5" />
-                {t('sort_name')}
-                {sortBy === 'name' && <LucideIcon name="check" className="ml-auto size-3.5" />}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy('role')}>
-                <LucideIcon name="shield" className="mr-2 size-3.5" />
-                {t('sort_role')}
-                {sortBy === 'role' && <LucideIcon name="check" className="ml-auto size-3.5" />}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy('date')}>
-                <LucideIcon name="calendar" className="mr-2 size-3.5" />
-                {t('sort_date')}
-                {sortBy === 'date' && <LucideIcon name="check" className="ml-auto size-3.5" />}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <FilterBar active={hasActiveFilters} onClear={clearFilters}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" variant="outline">
+                  <LucideIcon name="arrow-up-down" className="mr-1.5 size-3.5" />
+                  {t(`sort_${sortBy}`)}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem onClick={() => setSortBy('name')}>
+                  <LucideIcon name="user" className="mr-2 size-3.5" />
+                  {t('sort_name')}
+                  {sortBy === 'name' && <LucideIcon name="check" className="ml-auto size-3.5" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy('role')}>
+                  <LucideIcon name="shield" className="mr-2 size-3.5" />
+                  {t('sort_role')}
+                  {sortBy === 'role' && <LucideIcon name="check" className="ml-auto size-3.5" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy('date')}>
+                  <LucideIcon name="calendar" className="mr-2 size-3.5" />
+                  {t('sort_date')}
+                  {sortBy === 'date' && <LucideIcon name="check" className="ml-auto size-3.5" />}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <Select onValueChange={v => setFilterRole(v as TeamRole | 'all')} value={filterRole}>
-            <SelectTrigger
-              aria-label={t('filterRoleLabel')}
-              className="w-auto gap-1.5 border-dashed px-3 text-sm"
-              size="sm"
-            >
-              <LucideIcon name="funnel" className="size-3.5" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('filter_allRoles')}</SelectItem>
-              <SelectItem value="admin">{t('role_admin')}</SelectItem>
-              <SelectItem value="editor">{t('role_editor')}</SelectItem>
-            </SelectContent>
-          </Select>
+            <Select onValueChange={v => setFilterRole(v as TeamRole | 'all')} value={filterRole}>
+              <SelectTrigger
+                aria-label={t('filterRoleLabel')}
+                className="w-auto gap-1.5 border-dashed px-3 text-sm"
+                size="sm"
+              >
+                <LucideIcon name="funnel" className="size-3.5" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('filter_allRoles')}</SelectItem>
+                <SelectItem value="admin">{t('role_admin')}</SelectItem>
+                <SelectItem value="editor">{t('role_editor')}</SelectItem>
+              </SelectContent>
+            </Select>
 
-          <Select onValueChange={v => setFilterStatus(v as TeamStatus | 'all')} value={filterStatus}>
-            <SelectTrigger
-              aria-label={t('filterStatusLabel')}
-              className="w-auto gap-1.5 border-dashed px-3 text-sm"
-              size="sm"
-            >
-              <LucideIcon name="funnel" className="size-3.5" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('filter_allStatuses')}</SelectItem>
-              <SelectItem value="joined">{t('status_joined')}</SelectItem>
-              <SelectItem value="pending">{t('status_pending')}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {hasActiveFilters && (
-            <Button
-              onClick={() => {
-                setFilterRole('all')
-                setFilterStatus('all')
-              }}
-              size="sm"
-              variant="ghost"
-            >
-              {t('clearFilters')}
-            </Button>
-          )}
+            <Select onValueChange={v => setFilterStatus(v as TeamStatus | 'all')} value={filterStatus}>
+              <SelectTrigger
+                aria-label={t('filterStatusLabel')}
+                className="w-auto gap-1.5 border-dashed px-3 text-sm"
+                size="sm"
+              >
+                <LucideIcon name="funnel" className="size-3.5" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('filter_allStatuses')}</SelectItem>
+                <SelectItem value="joined">{t('status_joined')}</SelectItem>
+                <SelectItem value="pending">{t('status_pending')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </FilterBar>
         </div>
         {displayUsers.length === 0 ? (
           <Empty className="py-16">
@@ -250,15 +246,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
             </EmptyHeader>
             {hasActiveFilters && (
               <EmptyContent>
-                <Button
-                  onClick={() => {
-                    setFilterRole('all')
-                    setFilterStatus('all')
-                  }}
-                  size="sm"
-                  variant="outline"
-                >
-                  {t('clearFilters')}
+                <Button onClick={clearFilters} size="sm" variant="outline">
+                  {tCommon('clearFilters')}
                 </Button>
               </EmptyContent>
             )}

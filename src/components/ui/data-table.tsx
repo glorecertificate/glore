@@ -127,7 +127,7 @@ export const DataTable = <T,>({
       {sortable.length > 0 && (
         <div className="flex items-center gap-2 sm:hidden" data-slot="data-table-sort">
           <Select onValueChange={onSelectSort} value={sort?.id ?? ''}>
-            <SelectTrigger aria-label={t('sortBy')} className="h-8 min-w-0 flex-1 text-xs">
+            <SelectTrigger aria-label={t('sortBy')} className="min-w-0 flex-1" size="sm">
               <SelectValue placeholder={t('sortBy')} />
             </SelectTrigger>
             <SelectContent>

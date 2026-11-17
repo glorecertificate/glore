@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import {
   approveOrganization,
@@ -19,9 +18,11 @@ import { Button } from '@/components/ui/button'
 import { countryCodeToFlag } from '@/components/ui/country-select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
 
@@ -34,6 +35,7 @@ type SortField = 'name' | 'country' | 'members'
 export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganization[] }) => {
   const { locale } = useI18n()
   const t = useTranslations('Admin.organizations')
+  const tCommon = useTranslations('Common')
 
   const [orgs, setOrgs] = useState(initialOrgs)
   const [filter, setFilter] = useState<OrgFilter>('all')
@@ -203,60 +205,60 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
       <div className="overflow-hidden rounded-xl border bg-card shadow-2xs">
         <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-4 py-3">
-          <SearchInput
-            className="w-full sm:w-64"
-            size="sm"
-            hotkey="/"
-            onValueChange={setSearch}
-            placeholder={t('searchPlaceholder')}
-            value={search}
-          />
+          <FilterBar active={hasFilters} onClear={resetFilters}>
+            <SearchInput
+              className="w-full sm:w-64"
+              size="sm"
+              hotkey="/"
+              onValueChange={setSearch}
+              placeholder={t('searchPlaceholder')}
+              value={search}
+            />
 
-          {countryOptions.length > 0 && (
-            <Select onValueChange={setCountry} value={country}>
-              <SelectTrigger aria-label={t('filterCountry')} className="w-auto gap-1.5 border-dashed text-sm" size="sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('allCountries')}</SelectItem>
-                {countryOptions.map(({ code, label }) => (
-                  <SelectItem key={code} value={code}>
-                    <span className="mr-1">{countryCodeToFlag(code)}</span>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="gap-1.5 border-dashed" size="sm" variant="outline">
-                <LucideIcon name="arrow-up-down" className="size-3.5" />
-                {sortLabel}
-                {sort &&
-                  (sortDir === 'asc' ? (
-                    <LucideIcon name="arrow-up" className="size-3" />
-                  ) : (
-                    <LucideIcon name="arrow-down" className="size-3" />
+            {countryOptions.length > 0 && (
+              <Select onValueChange={setCountry} value={country}>
+                <SelectTrigger
+                  aria-label={t('filterCountry')}
+                  className="w-auto gap-1.5 border-dashed text-sm"
+                  size="sm"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('allCountries')}</SelectItem>
+                  {countryOptions.map(({ code, label }) => (
+                    <SelectItem key={code} value={code}>
+                      <span className="mr-1">{countryCodeToFlag(code)}</span>
+                      {label}
+                    </SelectItem>
                   ))}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              {(['name', 'country', 'members'] as SortField[]).map(field => (
-                <DropdownMenuItem key={field} onClick={() => handleSort(field)}>
-                  {t(`sort_${field}`)}
-                  {sort === field && <LucideIcon name="check" className="ml-auto size-3.5" />}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                </SelectContent>
+              </Select>
+            )}
 
-          {hasFilters && (
-            <Button onClick={resetFilters} size="sm" variant="ghost">
-              {t('clearFilters')}
-            </Button>
-          )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="gap-1.5 border-dashed" size="sm" variant="outline">
+                  <LucideIcon name="arrow-up-down" className="size-3.5" />
+                  {sortLabel}
+                  {sort &&
+                    (sortDir === 'asc' ? (
+                      <LucideIcon name="arrow-up" className="size-3" />
+                    ) : (
+                      <LucideIcon name="arrow-down" className="size-3" />
+                    ))}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {(['name', 'country', 'members'] as SortField[]).map(field => (
+                  <DropdownMenuItem key={field} onClick={() => handleSort(field)}>
+                    {t(`sort_${field}`)}
+                    {sort === field && <LucideIcon name="check" className="ml-auto size-3.5" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </FilterBar>
 
           <span className="ml-auto hidden text-xs text-muted-foreground sm:block">
             {t('resultsCount', { count: displayOrgs.length })}
@@ -284,7 +286,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
             </EmptyHeader>
             <EmptyContent>
               <Button onClick={resetFilters} size="sm" variant="outline">
-                {t('clearFilters')}
+                {tCommon('clearFilters')}
               </Button>
             </EmptyContent>
           </Empty>

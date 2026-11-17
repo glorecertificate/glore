@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { discardDraft, saveTranslation } from '@/actions/legal/manage'
 import { LegalPublishDialog } from '@/components/features/legal/legal-publish-dialog'
@@ -26,6 +25,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { type LegalDocumentRow, type LegalVersionRow } from '@/db/queries/legal'
 import { LOCALE_ITEMS } from '@/lib/i18n'
 

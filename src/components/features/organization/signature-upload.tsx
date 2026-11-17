@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import {
   confirmOrganizationSignature,
@@ -12,6 +11,7 @@ import {
 } from '@/actions/organizations/settings'
 import { Button } from '@/components/ui/button'
 import { Image } from '@/components/ui/image'
+import { toast } from '@/components/ui/toast'
 import { SIGNATURE_CONTENT_TYPES } from '@/lib/constants'
 
 import { useMemberError } from './use-member-error'

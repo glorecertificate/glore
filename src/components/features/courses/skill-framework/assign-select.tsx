@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { assignSkillGroup } from '@/actions/courses/skill-groups'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from '@/components/ui/toast'
 
 const NONE = 'none'
 

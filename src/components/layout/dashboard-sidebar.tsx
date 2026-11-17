@@ -6,7 +6,6 @@ import { redirect, usePathname, useSearchParams } from 'next/navigation'
 import { Fragment, Suspense, useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
 import { NotificationBell } from '@/components/features/notifications/notification-bell'
@@ -64,6 +63,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
 import { useModifierKey } from '@/hooks/use-modifier-key'

@@ -8,8 +8,8 @@ import { debounce, useQueryStates } from 'nuqs'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { OrganizationCertificatesPanel } from '@/components/features/organization/certificates-panel'
-import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -143,7 +143,7 @@ export const AdminCertificates = ({
       emptyDescription={filtersActive ? t('noResultsDescription') : t('noCertificatesDescription')}
       emptyTitle={filtersActive ? t('noResults') : t('noCertificates')}
       filters={
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+        <FilterBar active={filtersActive} onClear={handleClear}>
           <SearchInput
             aria-label={t('searchPlaceholder')}
             className="w-full sm:w-80"
@@ -171,12 +171,7 @@ export const AdminCertificates = ({
             </SelectContent>
           </Select>
           {organizationSelect}
-          {filtersActive && (
-            <Button onClick={handleClear} size="sm" variant="ghost">
-              {t('clearFilters')}
-            </Button>
-          )}
-        </div>
+        </FilterBar>
       }
       getRowId={certificate => certificate.id}
       label={t('tableLabel')}

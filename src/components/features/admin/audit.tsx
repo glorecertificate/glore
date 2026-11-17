@@ -8,8 +8,8 @@ import { debounce, useQueryStates } from 'nuqs'
 
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { SearchInput } from '@/components/ui/search'
@@ -179,7 +179,7 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
       emptyDescription={filtersActive ? t('noResultsDescription') : t('noEventsDescription')}
       emptyTitle={filtersActive ? t('noResults') : t('noEvents')}
       filters={
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+        <FilterBar active={filtersActive} onClear={handleClear}>
           <SearchInput
             aria-label={t('searchPlaceholder')}
             className="w-full sm:w-72"
@@ -222,12 +222,7 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
             type="date"
             value={params.to ?? ''}
           />
-          {filtersActive && (
-            <Button onClick={handleClear} size="sm" variant="ghost">
-              {t('clearFilters')}
-            </Button>
-          )}
-        </div>
+        </FilterBar>
       }
       getRowId={row => String(row.id)}
       label={t('tableLabel')}

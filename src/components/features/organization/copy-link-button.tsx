@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 import { useInvitationError } from './use-invitation-error'
 

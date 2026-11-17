@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { createDocCategory, deleteDocCategory } from '@/actions/docs'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -29,6 +28,7 @@ import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { type DocCategory } from '@/db/queries/doc'
 import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALE_ITEMS } from '@/lib/i18n'
 

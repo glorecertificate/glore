@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type Locale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { updateAccount } from '@/actions/user'
@@ -16,6 +15,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Separator } from '@/components/ui/separator'
+import { toast } from '@/components/ui/toast'
 import { type User } from '@/db/queries/user'
 import { useActionError } from '@/hooks/use-action-error'
 import { useFormDisabled } from '@/hooks/use-form-disabled'

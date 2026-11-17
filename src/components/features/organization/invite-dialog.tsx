@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { type InvitationRowResult, type InviteInput } from '@/actions/organizations/invite-core'
 import { useInvitationError } from '@/components/features/organization/use-invitation-error'
@@ -23,6 +22,7 @@ import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
 import { cn } from '@/lib/utils'
 import config from '~/config/app.json'

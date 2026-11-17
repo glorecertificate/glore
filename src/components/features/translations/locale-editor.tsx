@@ -3,7 +3,6 @@
 import { useId, useState, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { discardMessageDraft, publishMessage, resetMessage, saveMessageDraft } from '@/actions/messages'
 import { suggestMessage } from '@/actions/translations'
@@ -22,6 +21,7 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
 import { placeholdersOf } from '@/lib/message-preview'
 import { validateOverride } from '@/lib/message-validation'

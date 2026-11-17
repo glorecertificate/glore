@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { completeLesson } from '@/actions/courses/progress'
 import { CourseLanguageSwitch } from '@/components/features/courses/course-overview/language-switch'
@@ -20,6 +19,7 @@ import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
+import { toast } from '@/components/ui/toast'
 import {
   type CourseAccess,
   type CourseOverview,

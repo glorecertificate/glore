@@ -1,8 +1,8 @@
 import { type VariantProps, cva } from 'class-variance-authority'
-import { toast } from 'sonner'
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { toast } from '@/components/ui/toast'
 import { cn } from '@/lib/utils'
 
 interface RatingGroupProps

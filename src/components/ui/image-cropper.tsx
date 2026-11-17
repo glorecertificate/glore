@@ -5,11 +5,11 @@ import { useEffect, useImperativeHandle, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { type FileRejection, useDropzone } from 'react-dropzone'
-import { toast } from 'sonner'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 import { cn } from '@/lib/utils'
 import app from '~/config/app.json'
 

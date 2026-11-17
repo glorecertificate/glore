@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
@@ -17,6 +16,7 @@ import { IconPicker } from '@/components/ui/icon-picker'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'

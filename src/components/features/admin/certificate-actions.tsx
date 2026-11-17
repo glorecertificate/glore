@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { revokeCertificate } from '@/actions/certificates/review'
 import { MIN_REASON_LENGTH, ReasonDialog } from '@/components/features/certificates/reason-dialog'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/toast'
 import { type AdminCertificateRow } from '@/db/queries/admin-certificate'
 
 export const AdminCertificateActions = ({ certificate }: { certificate: AdminCertificateRow }) => {

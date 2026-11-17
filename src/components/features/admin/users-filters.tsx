@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 
-import { Button } from '@/components/ui/button'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
@@ -43,7 +43,7 @@ export const UsersFilters = ({
   const t = useTranslations('Admin.users')
 
   return (
-    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+    <FilterBar active={active} onClear={onClear}>
       <SearchInput
         aria-label={t('searchPlaceholder')}
         className="w-full sm:w-56"
@@ -116,11 +116,6 @@ export const UsersFilters = ({
           ))}
         </SelectContent>
       </Select>
-      {active && (
-        <Button className="shrink-0" onClick={onClear} size="sm" variant="ghost">
-          {t('clearFilters')}
-        </Button>
-      )}
-    </div>
+    </FilterBar>
   )
 }

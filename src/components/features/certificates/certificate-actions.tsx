@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { featureCertificate, withdrawCertificate } from '@/actions/certificates/requests'
 import { revokeCertificate } from '@/actions/certificates/review'
@@ -23,6 +22,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useActionError } from '@/hooks/use-action-error'
 

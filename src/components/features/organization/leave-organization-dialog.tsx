@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { leaveOrganization } from '@/actions/organizations/members'
 import { useSession } from '@/components/providers/session'
@@ -17,6 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { toast } from '@/components/ui/toast'
 import { type User } from '@/db/queries/user'
 
 import { useMemberError } from './use-member-error'

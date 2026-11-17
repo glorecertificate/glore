@@ -65,6 +65,7 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 - It also blocks `cnfast` (use `@/lib/utils`, which re-exports `cn`) and parent imports `../**` (use `@/` or `~/`).
 - Node-run scripts import dependency-free `src/lib` files through the `#lib/*` subpath import in `package.json`.
 - It blocks `lucide-react` outside `src/components/icons/**` and the vendored `src/components/ui/rich-text-editor/**`, which a later override exempts (render through `LucideIcon`).
+- It blocks `toast` from `sonner` (use `@/components/ui/toast`). `src/components/ui/toast.ts` and the vendored editor are exempt.
 - A scoped override for the shared layers (`src/components/ui/**`, `src/components/icons/**`, `src/hooks/**`, `src/lib/**`) also blocks `@/components/features/**`, `@/app/**`, and `@/actions/**`.
 - That override keeps those layers domain-free.
 - oxlint overrides REPLACE the base rule for matched files, so the override restates the base patterns.

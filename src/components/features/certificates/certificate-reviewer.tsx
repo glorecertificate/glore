@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { assignCertificateTutor, unassignCertificate } from '@/actions/certificates/assignment'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 

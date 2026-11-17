@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -32,6 +31,7 @@ import {
   StepperTitle,
   StepperTrigger,
 } from '@/components/ui/stepper'
+import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
 import { type Lesson } from '@/db/queries/lesson'

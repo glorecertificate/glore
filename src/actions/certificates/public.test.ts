@@ -4,6 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import { type Fixture, createFixture, isLocalDatabase, session } from '@/actions/certificates/test-harness'
 import { generateCertificateCode } from '@/components/features/certificates/rules'
 
+vi.mock('next/cache', async () => (await import('@/actions/certificates/test-harness')).mocks.cache)
 vi.mock('@/lib/rate-limit', async () => (await import('@/actions/certificates/test-harness')).mocks.rateLimit)
 
 describe.skipIf(!isLocalDatabase)('public certificate lookups', () => {
@@ -79,6 +80,13 @@ describe.skipIf(!isLocalDatabase)('public certificate lookups', () => {
                 name: { en: 'Teamwork', es: 'Trabajo en equipo', it: 'Lavoro di squadra' },
                 statement: 'Led it',
               },
+              {
+                courseId: 2,
+                description: { en: 'Described', es: 'Descrita', it: 'Descritta' },
+                icon: null,
+                level: 'good',
+                name: { en: 'Listening', es: 'Escucha', it: 'Ascolto' },
+              },
             ],
           },
         })
@@ -94,7 +102,16 @@ describe.skipIf(!isLocalDatabase)('public certificate lookups', () => {
         organization: { legalRepresentative: 'Rep One', name: 'Snapshot Org' },
         outcome: 'found',
       })
-      expect(result.outcome === 'found' && result.skills[0]).toMatchObject({ level: 5, statement: 'Led it' })
+      expect(result.outcome === 'found' && result.skills[0]).toMatchObject({
+        description: { en: 'Led it', es: 'Led it', it: 'Led it' },
+        level: 3,
+        steps: 3,
+      })
+      expect(result.outcome === 'found' && result.skills[1]).toMatchObject({
+        description: { en: 'Described', es: 'Descrita', it: 'Descritta' },
+        level: 2,
+        steps: 3,
+      })
     })
 
     it('reports a revoked certificate with its revocation date and no reason', async () => {

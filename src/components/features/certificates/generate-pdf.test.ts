@@ -84,7 +84,13 @@ const templateInput = {
   },
   issuedAt: '2022-01-01',
   organization: { legalRepresentative: 'Maria Rossi', logoUrl: null, name: 'Associazione JOINT', signatureUrl: null },
-  skills: [1, 2, 3, 4].map(number => ({ icon: 'users', level: 4, name: `Soft skills ${number}`, statement: task })),
+  skills: [1, 2, 3, 4].map(number => ({
+    description: task,
+    icon: 'users',
+    level: 2,
+    name: `Soft skills ${number}`,
+    steps: 3,
+  })),
 }
 
 const input = (skillCount: number) => ({
@@ -106,10 +112,11 @@ const input = (skillCount: number) => ({
   issuedAt: '2026-07-01T10:00:00Z',
   organization: { legalRepresentative: 'Maria Rossi', logoUrl: null, name: 'Associazione Joint', signatureUrl: null },
   skills: ['messages-square', 'users', 'heart-handshake', 'flag'].slice(0, skillCount).map((icon, index) => ({
+    description: 'Listened to the needs of the group and adapted the plan to include everyone.',
     icon,
-    level: index + 2,
+    level: (index % 3) + 1,
     name: `Skill ${index + 1}`,
-    statement: 'Listened to the needs of the group and adapted the plan to include everyone.',
+    steps: 3,
   })),
 })
 
@@ -127,7 +134,7 @@ describe('generateCertificatePdf', () => {
   it('localizes labels and falls back to English', async () => {
     expect((await certificatePdfLabels('it')).title).toBe('Certificato di soft skill')
     expect((await certificatePdfLabels('fr')).title).toBe('Soft skills certificate')
-    expect((await certificatePdfLabels('es')).levels).toHaveLength(5)
+    expect((await certificatePdfLabels('es')).levels).toHaveLength(3)
   })
 
   it('keeps four long tasks above the representative line', async () => {
@@ -161,11 +168,11 @@ describe('generateCertificatePdf', () => {
           qrPath: null,
           qrSize: 0,
           verifyUrl: null,
-          skills: [{ level: 4, name: 'Soft skills', statement: null }],
+          skills: [{ description: null, level: 2, name: 'Soft skills', steps: 3 }],
         },
         labels,
       })
     )
-    expect(lines).toContain(`${labels.level} ${labels.levels[3]}`)
+    expect(lines).toContain(`${labels.level} ${labels.levels[1]}`)
   })
 })

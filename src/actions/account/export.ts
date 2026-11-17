@@ -5,14 +5,18 @@ import 'server-only'
 import { eq, inArray } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { db } from '@/db/client'
 import { queryError } from '@/db/helpers'
+import { plainDescription } from '@/db/queries/skill-level-description'
 import {
   activityEvents,
+  assessments as assessmentTable,
   certificateReviews,
   certificateSkills,
   certificates,
   courseRatings,
+  lessons as lessonTable,
   memberships,
   notifications,
   userAnswers,
@@ -96,7 +100,20 @@ const buildAccountExport = async (userId: string) => {
     db.select().from(userCourses).where(eq(userCourses.userId, userId)),
     db.select().from(userLessons).where(eq(userLessons.userId, userId)),
     db.select().from(userAnswers).where(eq(userAnswers.userId, userId)),
-    db.select().from(userAssessments).where(eq(userAssessments.userId, userId)),
+    db
+      .select({
+        assessmentId: userAssessments.assessmentId,
+        courseId: lessonTable.courseId,
+        createdAt: userAssessments.createdAt,
+        id: userAssessments.id,
+        reflection: userAssessments.reflection,
+        updatedAt: userAssessments.updatedAt,
+        value: userAssessments.value,
+      })
+      .from(userAssessments)
+      .innerJoin(assessmentTable, eq(assessmentTable.id, userAssessments.assessmentId))
+      .innerJoin(lessonTable, eq(lessonTable.id, assessmentTable.lessonId))
+      .where(eq(userAssessments.userId, userId)),
     db.select().from(userEvaluations).where(eq(userEvaluations.userId, userId)),
     db.select().from(userSkillCompass).where(eq(userSkillCompass.userId, userId)),
     db.select().from(courseRatings).where(eq(courseRatings.userId, userId)),
@@ -121,17 +138,31 @@ const buildAccountExport = async (userId: string) => {
       .where(eq(activityEvents.actorId, userId)),
   ])
 
+  const { data: descriptions } = await fetchLevelDescriptions(
+    assessments.map(({ courseId }) => courseId),
+    { cache: false }
+  )
+  const ownAssessments = assessments.map(({ courseId, value, ...rest }) => ({
+    ...rest,
+    chosenDescription: plainDescription(descriptions?.[courseId]?.[value]),
+  }))
+
   return {
     account: user,
     activity,
     certificates: ownCertificates.map(certificate => ({
       ...certificate,
       reviews: reviews.filter(({ certificateId }) => certificateId === certificate.id),
-      skills: skills.filter(({ certificateId }) => certificateId === certificate.id),
+      skills: skills.flatMap(skill => {
+        if (skill.certificateId !== certificate.id) return []
+        return certificate.status === 'approved' || certificate.status === 'revoked'
+          ? [skill]
+          : [{ ...skill, level: null, selfLevel: null }]
+      }),
     })),
     format: 'glore-account-export',
     generatedAt: new Date().toISOString(),
-    learning: { answers, assessments, compass, courses, evaluations, lessons, ratings },
+    learning: { answers, assessments: ownAssessments, compass, courses, evaluations, lessons, ratings },
     memberships: organizationMemberships.map(({ organization, ...membership }) => ({
       ...membership,
       organization,

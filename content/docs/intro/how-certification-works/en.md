@@ -8,10 +8,10 @@ The path has six steps. Your organization and a tutor are part of it, so you are
 ## The steps
 
 1. Join through an organization. Someone there invites you, or you open an invite link they shared.
-2. Take skill courses. Each one has four short lessons and takes about 35 to 40 minutes. A quiz checks that you understood, and the last lesson asks you to rate yourself.
-3. Reach the minimum. You need at least 3 completed skill courses and an average self-assessment of 3 out of 5 or higher. Introductory and learner courses do not count toward it.
+2. Take skill courses. Each one has four short lessons and takes about 35 to 40 minutes. A quiz checks that you understood, and the last lesson asks you to choose the description that fits you best.
+3. Reach the minimum. You need at least 3 completed skill courses. Introductory and learner courses do not count toward it.
 4. Describe your volunteering. In the request you add dates, hours, place and up to 4 tasks, pick 3 or 4 of your skills, and rate your experience with the organization. Your activity must add up to at least 100 hours, or last at least 3 months from start to end date.
-5. Wait for the review. A tutor in your organization reads the request and your course results, sets the final level for each skill, and approves it, asks for changes, or rejects it with a reason.
+5. Wait for the review. A tutor in your organization reads the request and your course results, confirms or changes the description for each skill, and approves it, asks for changes, or rejects it with a reason.
 6. Get your certificate. After approval it is final and nobody can edit it. You get a PDF, a public page and a code.
 
 ## What the statuses mean
@@ -27,7 +27,7 @@ The path has six steps. Your organization and a tutor are part of it, so you are
 
 ## Skill levels
 
-Each skill on a certificate has one of five levels: Absent, Basic, Intermediate, Good and Advanced. A certificate lists only skills at Basic or higher.
+Each skill on a certificate has one of three levels: Intermediate, Good and Advanced. Next to the level, the certificate shows the description of that level.
 
 ## How people check it
 

@@ -83,12 +83,12 @@ describe('buildAnalytics', () => {
         { done: 4, id: 1, title: text('A') },
         { done: 1, id: 2, title: null },
       ],
+      levels: ['good', 'advanced'],
       ratings: [5, 4, 4],
-      selfAssessments: [3, 4],
     })
     expect(stats).toMatchObject({
       avgRating: 4.3,
-      avgSelfAssessment: 3.5,
+      levelCounts: { advanced: 1, good: 1, intermediate: 0 },
       completionCount: 1,
       completionRate: 25,
       enrollmentCount: 4,
@@ -109,10 +109,10 @@ describe('buildAnalytics', () => {
       completedCount: 0,
       enrollmentCount: 0,
       lessons: [],
+      levels: [],
       ratings: [],
-      selfAssessments: [],
     })
-    expect(stats).toMatchObject({ avgRating: null, avgSelfAssessment: null, completionRate: 0, ratingCount: 0 })
+    expect(stats).toMatchObject({ avgRating: null, completionRate: 0, ratingCount: 0 })
   })
 })
 

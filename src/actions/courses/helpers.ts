@@ -39,7 +39,7 @@ const courseWith = {
       },
       questions: { with: { options: { with: { userAnswers: { columns: { id: true } } } } } },
       evaluations: { with: { userEvaluations: { columns: { id: true, value: true } } } },
-      assessments: { with: { userAssessments: { columns: { id: true, value: true } } } },
+      assessments: { with: { userAssessments: { columns: { id: true } } } },
       userLessons: { columns: { id: true } },
     },
   },
@@ -83,7 +83,7 @@ export const buildCourseWith = (userId?: string, { catalog = false }: { catalog?
         assessments: {
           with: {
             ...levels,
-            userAssessments: { where: eq(userAssessments.userId, userId), columns: { id: true, value: true } },
+            userAssessments: { where: eq(userAssessments.userId, userId), columns: { id: true } },
           },
         },
         userLessons: { where: eq(userLessons.userId, userId), columns: { id: true } },

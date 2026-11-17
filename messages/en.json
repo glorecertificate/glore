@@ -37,8 +37,6 @@
     "switchLanguage": "Change language",
     "theme": "Theme",
     "skillLevels": {
-      "absent": "Absent",
-      "basic": "Basic",
       "intermediate": "Intermediate",
       "good": "Good",
       "advanced": "Advanced"
@@ -1342,7 +1340,7 @@
       },
       "step2": {
         "title": "Qualify",
-        "description": "Once you have completed at least 3 skill courses with an average rating of 3 out of 5, you can request a certificate."
+        "description": "Once you have completed at least 3 skill courses, you can request a certificate."
       },
       "step3": {
         "title": "Get validated",
@@ -1395,7 +1393,7 @@
           },
           "step2": {
             "title": "Complete skill courses",
-            "description": "Work through skill courses and their lessons. Each one ends with a final assessment that rates the skill from 1 to 5."
+            "description": "Work through skill courses and their lessons. Each one ends with a final step where you choose the description that fits you best."
           },
           "step3": {
             "title": "Self-assess your skills",
@@ -1409,7 +1407,7 @@
         "faqs": {
           "q1": {
             "question": "When can I request my certificate?",
-            "answer": "After you complete at least 3 skill courses with an average self-assessment of 3 out of 5 or higher. The button unlocks once you qualify."
+            "answer": "After you complete at least 3 skill courses. The button unlocks once you qualify."
           },
           "q2": {
             "question": "What is a self-assessment?",
@@ -1627,7 +1625,7 @@
       "description": "The certificate turns your volunteering into a verifiable credential.",
       "eligibility": {
         "title": "Eligibility",
-        "description": "Complete at least 3 skill courses with an average self-assessment of 3 out of 5 or higher to unlock the certificate request."
+        "description": "Complete at least 3 skill courses to unlock the certificate request."
       },
       "lifecycle": {
         "title": "Review lifecycle",
@@ -1780,9 +1778,6 @@
     "openDescription": "You can have one open request per organization. Follow it, or withdraw it to start a new one.",
     "courses": "Complete {min} skill courses",
     "coursesDetail": "{count} of {min} completed",
-    "rating": "Average self-assessment of at least {min} out of 5",
-    "ratingNone": "Rate yourself at the end of each skill course.",
-    "ratingDetail": "Your average is {average} out of 5. You need at least {min}.",
     "activity": "At least {hours} hours or {months} months of volunteering",
     "activityDetail": "We check this when you enter the dates and hours of your experience.",
     "viewRequest": "View request",
@@ -1797,12 +1792,12 @@
     "tooLong": "This text is too long.",
     "minSkills": "Choose at least 3 skills.",
     "maxSkills": "Choose at most 4 skills.",
-    "levelRequired": "Choose a level of at least Intermediate.",
+    "levelRequired": "Choose a description for this skill.",
     "commentRequired": "Add a comment or a section note so the volunteer knows what to change."
   },
   "CertificateList": {
     "backTo": "Back to all certificates",
-    "description": "GloRe certificates are an official recognition of your volunteering experience and acquired soft skills. They are issued by GloRe and can be shared on your social media profiles or added to your CV. You can request your certificate after completing at least 3 courses with an average self-assessment of at least 3 out of 5.",
+    "description": "GloRe certificates are an official recognition of your volunteering experience and acquired soft skills. They are issued by GloRe and can be shared on your social media profiles or added to your CV. You can request your certificate after completing at least 3 skill courses.",
     "detailTitle": "Certificate",
     "notFound": "Certificate not found",
     "notFoundMessage": "The certificate you are looking for does not exist or has been moved",
@@ -1913,11 +1908,9 @@
     "ruleUnmet": "Does not meet the activity requirement.",
     "tasks": "Tasks",
     "skills": "Skills",
-    "selfLevel": "Self-assessed level",
-    "selfLevelValue": "Self-assessed: {level}",
+    "selfLevel": "Volunteer's choice",
     "completedOn": "Course completed on {date}",
     "notCompleted": "Course not completed",
-    "courseRating": "Course rating {rating}",
     "sectionExperience": "Experience",
     "sectionPersonal": "Personal data",
     "sectionSkills": "Skills",
@@ -1938,10 +1931,8 @@
     "scoreGrowth": "Growth",
     "scoreGrowthHint": "Progress shown between the start and the end.",
     "skillsTitle": "Skills to certify",
-    "skillsDescription": "Select the skills to include and set the level you confirm. The minimum level is {level}.",
-    "confirmedLevel": "Confirmed level",
-    "statement": "Statement",
-    "statementPlaceholder": "One sentence on what the volunteer showed for this skill.",
+    "skillsDescription": "Select the skills to include. For each one, confirm the description that fits best or pick another. Your choice sets the level.",
+    "confirmedLevel": "Level and description",
     "comment": "General comment",
     "commentPlaceholder": "Required when you request changes. Optional when you approve.",
     "startReview": "Start review",
@@ -1970,7 +1961,9 @@
     "errorInvalidState": "This certificate's status has changed. Reload the page.",
     "errorStorage": "The PDF could not be stored. Try again.",
     "errorRateLimited": "Too many attempts. Wait a moment and try again.",
-    "errorGeneric": "Something went wrong. Try again."
+    "errorGeneric": "Something went wrong. Try again.",
+    "descriptionsMissing": "This skill course has no complete set of level descriptions yet. Ask an editor to add them.",
+    "volunteerChoice": "Chosen by the volunteer"
   },
   "CertificateShare": {
     "title": "Share your certificate",
@@ -2051,8 +2044,6 @@
     "addTask": "Add a task",
     "skillsDescription": "Choose {min} to {max} skills you built during this experience. Only completed skill courses are listed.",
     "skillsSelected": "{count} of {max} selected",
-    "assessedAs": "Course self-assessment: {level}",
-    "selfLevel": "Your level",
     "evidence": "A concrete example",
     "evidencePlaceholder": "Describe one situation where you used this skill.",
     "anonymousNote": "Your answers about {organization} are anonymous. The organization sees them only as an average once at least 3 volunteers have answered.",
@@ -2085,7 +2076,7 @@
     "titlesOrganization": "Rate your organization",
     "titlesReview": "Review and send",
     "descriptionsExperience": "When, where, and what you did as a volunteer.",
-    "descriptionsSkills": "Set your level for each skill and add an example.",
+    "descriptionsSkills": "Review the description you chose for each skill and add an example.",
     "descriptionsOrganization": "Share how the experience went. This feedback is anonymous.",
     "descriptionsReview": "Check the preview, add any missing details, and submit.",
     "changesRequested": "Your tutor asked for changes",
@@ -2112,7 +2103,9 @@
     "submitErrorsConflict": "You already have an open request in this organization.",
     "submitErrorsRateLimited": "Too many attempts. Try again in a few minutes.",
     "submitErrorsGeneric": "Could not submit the request. Please try again.",
-    "submitErrorsSaveFailed": "Could not save your request. Please try again."
+    "submitErrorsSaveFailed": "Could not save your request. Please try again.",
+    "chosenDescription": "Your choice",
+    "chosenDescriptionHint": "You made this choice at the end of the course. It is final, and your tutor reviews it."
   },
   "CertificatePdf": {
     "title": "Soft skills certificate",
@@ -2261,7 +2254,6 @@
     "metricStarted": "Courses started",
     "metricCompleted": "Courses completed",
     "metricSkillCompleted": "Skill courses completed",
-    "metricAverageLevel": "Average self-assessment",
     "notAvailable": "Not available",
     "noCourses": "No courses started yet.",
     "inProgress": "In progress",
@@ -2418,7 +2410,8 @@
     "insightsRatingNone": "No answers",
     "insightsRatingValue": "{value} / 5",
     "insightsRatingRecommend": "Would recommend you",
-    "insightsRatingCount": "Based on {count, plural, one {# rating} other {# ratings}}"
+    "insightsRatingCount": "Based on {count, plural, one {# rating} other {# ratings}}",
+    "metricLevelCount": "{level} choices"
   },
   "Users": {
     "admin": "Admin user",
@@ -3592,7 +3585,7 @@
       "noLessons": "This course has no lessons yet.",
       "progressValue": "{completed} of {total} lessons completed",
       "certificateTitle": "Counts toward your certificate",
-      "certificateNote": "Complete {minSkills} skill courses with an average self-assessment of {minRating} or higher to request your certificate.",
+      "certificateNote": "Complete {minSkills} skill courses to request your certificate.",
       "certificateProgress": "You have completed {completed} of {minSkills} skill courses.",
       "viewerNote": "You are previewing this course. Nothing you do here is saved.",
       "type": {
@@ -3634,7 +3627,7 @@
       "evaluationsTitle": "Rate yourself",
       "evaluationsHint": "Rate each statement from 1 (not at all) to 5 (completely).",
       "assessmentTitle": "Final assessment",
-      "assessmentHint": "Choose your level in this skill, then explain it in your own words. Your reflection counts toward your certificate.",
+      "assessmentHint": "Choose the description that fits you best today. Then explain your choice in your own words. Your reflection counts toward your certificate.",
       "reflectionLabel": "Your reflection",
       "reflectionPlaceholder": "Describe a real moment when you used this skill and what you learned.",
       "reflectionCount": "{count} of {max} characters. Write at least {min}.",
@@ -3642,18 +3635,20 @@
       "blocker": {
         "quiz": "Answer every question correctly to continue.",
         "evaluations": "Rate every statement to continue.",
-        "assessment": "Choose your level to continue.",
-        "reflection": "Write your reflection (at least {min} characters) to continue."
+        "assessment": "Choose a description to continue.",
+        "reflection": "Write your reflection (at least {min} characters) to continue.",
+        "descriptions": "This step is not available yet. Try again later."
       },
-      "viewSummary": "View summary"
+      "viewSummary": "View summary",
+      "descriptionsMissing": "The descriptions for this step are not complete yet. You cannot finish this course until an editor adds them."
     },
     "complete": {
       "title": "Course completed",
       "subtitle": "You finished {course}. Well done!",
       "summaryTitle": "Your summary",
       "lessonsDone": "{count, plural, one {# lesson completed} other {# lessons completed}}",
-      "skillsTitle": "Your self-assessment",
-      "skillsHint": "The level you gave yourself in the final assessment of each lesson.",
+      "skillsTitle": "Your choice",
+      "skillsHint": "The description you chose in the final step of this course.",
       "rateTitle": "How was this course?",
       "rateHint": "Your rating helps us improve the course and helps others choose.",
       "commentLabel": "Comment (optional)",
@@ -3665,17 +3660,15 @@
       "saveError": "We could not save your rating. Please try again.",
       "nextTitle": "What is next",
       "certificateTitle": "You can request your certificate",
-      "certificateText": "You completed {completed} skill courses and your average self-assessment is high enough.",
+      "certificateText": "You completed {completed} skill courses.",
       "certificateCta": "Request your certificate",
       "certificateRemaining": "{remaining, plural, one {# more skill course} other {# more skill courses}} to go before you can request your certificate.",
-      "certificateLowRating": "Your average self-assessment is below {minRating}. Review your weakest skills before you request your certificate.",
       "recommendedTitle": "Recommended next",
       "recommendedCta": "View course",
       "browse": "Browse all courses",
       "review": "Review course"
     },
     "editor": {
-      "analyticsSelfAssessment": "Average self-assessment",
       "analyticsLessonFallback": "Lesson {number}",
       "analyticsError": "The analytics could not be loaded. Check your connection and try again.",
       "analyticsRetry": "Try again",
@@ -3690,7 +3683,9 @@
       "outcomesDescription": "One outcome per line, up to {max}. They appear on the course overview.",
       "outcomesPlaceholder": "Recognize active listening techniques",
       "reorderFailed": "The new order could not be saved. The previous order was restored.",
-      "frameworkLink": "Skill framework"
+      "frameworkLink": "Skill framework",
+      "analyticsLevels": "Chosen levels",
+      "publishDescriptionsMissing": "Add the three level descriptions before you publish this skill course."
     },
     "framework": {
       "title": "Skill framework",

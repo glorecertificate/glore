@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { LevelDots } from '@/components/ui/level-dots'
 import { type Certificate } from '@/db/queries/certificate'
-import { SKILL_LEVELS } from '@/lib/constants'
+import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { fullName } from '@/lib/utils'
 
 const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
@@ -130,21 +130,28 @@ export const RequestPanel = ({
             .toSorted((a, b) => a.sortOrder - b.sortOrder)
             .map(skill => {
               const result = results[skill.course.id]
-              const level = SKILL_LEVELS[(skill.selfLevel ?? 0) - 1]
+              const chosen = result?.level ?? null
+              const chosenText = chosen ? result?.descriptions[chosen] : null
               return (
                 <div className="flex flex-col gap-2 border-b pb-4 last:border-b-0 last:pb-0" key={skill.id}>
                   <p className="text-sm font-medium">
                     {skill.course.title ? localize(skill.course.title, 'en') : skill.course.slug}
                   </p>
-                  {level && skill.selfLevel ? (
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <span className="text-xs text-muted-foreground">{t('selfLevel')}</span>
-                      <LevelDots label={tLevels(level)} level={skill.selfLevel as 1 | 2 | 3 | 4 | 5} />
+                  {chosen ? (
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="text-xs text-muted-foreground">{t('selfLevel')}</span>
+                        <LevelDots
+                          label={tLevels(chosen)}
+                          level={SKILL_LEVELS.indexOf(chosen) + 1}
+                          steps={SKILL_LEVELS.length}
+                        />
+                      </div>
+                      {chosenText && <p className="text-sm text-muted-foreground">{localize(chosenText)}</p>}
                     </div>
                   ) : null}
                   <p className="text-xs text-muted-foreground">
                     {result?.completedAt ? t('completedOn', { date: format(result.completedAt) }) : t('notCompleted')}
-                    {result?.rating ? ` · ${t('courseRating', { rating: result.rating.toFixed(1) })}` : ''}
                   </p>
                   {skill.evidence && <p className="text-sm whitespace-pre-wrap">{skill.evidence}</p>}
                   {result?.reflection && result.reflection !== skill.evidence && (

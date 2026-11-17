@@ -21,10 +21,12 @@ import { ARROW_PATHS, LOGO_PATHS } from '@/components/features/certificates/pdf-
 type IconNode = [string, Record<string, string>][]
 
 export interface CertificatePdfSkill {
+  description: string | null
   iconNode?: IconNode | null
   level: number
+  levelLabel?: string | null
   name: string
-  statement: string | null
+  steps: number
 }
 
 export interface CertificatePdfData {
@@ -126,7 +128,7 @@ const placed = (top: number, fontSize: number) => ({ fontSize, top: top + textSh
 
 const SKILL_TOPS = [226.5, 355.1, 482.7, 610.3]
 const DOT_LEFTS = [269.3, 304.8, 340.4, 375.9, 411.5]
-const STATEMENT_OFFSET = 27.8
+const DESCRIPTION_OFFSET = 27.8
 const LEVEL_OFFSET = 86.25
 const LEVEL_RIGHT = 595.28 - 544.4
 const TASK_TOP = 550.6
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   skillName: { color: '#ffffff', fontSize: 11, fontWeight: 900, marginLeft: 6.7, textTransform: 'uppercase' },
-  statement: {
+  description: {
     left: 269.1,
     lineHeight: 1.4,
     maxLines: 3,
@@ -426,25 +428,26 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         </Text>
         {skills.map((skill, index) => {
           const top = SKILL_TOPS[index] ?? 0
-          const level = Math.max(0, Math.min(5, skill.level))
+          const steps = Math.min(DOT_LEFTS.length, skill.steps)
+          const level = Math.max(0, Math.min(steps, skill.level))
           return (
             <View key={skill.name}>
               <View style={[styles.skillLabel, { top }]}>
                 <SkillIcon iconNode={skill.iconNode} />
                 <Text style={[styles.skillName, { fontSize: skillNameSize(skill.name) }]}>{skill.name}</Text>
               </View>
-              {skill.statement ? (
-                <Text style={[styles.statement, placed(top + STATEMENT_OFFSET, 10)]}>{skill.statement}</Text>
+              {skill.description ? (
+                <Text style={[styles.description, placed(top + DESCRIPTION_OFFSET, 10)]}>{skill.description}</Text>
               ) : null}
               <Svg height={11.2} style={[styles.absolute, { left: DOT_LEFTS[0], top: top + 85.1 }]} width={153.4}>
-                {DOT_LEFTS.map((left, dot) => (
+                {DOT_LEFTS.slice(0, steps).map((left, dot) => (
                   <Circle cx={left - 269.3 + 5.6} cy={5.6} fill={dot < level ? GREEN : GRAY} key={left} r={5.6} />
                 ))}
               </Svg>
               {level > 0 ? (
                 <Text style={[styles.levelText, placed(top + LEVEL_OFFSET, 9)]}>
                   {`${labels.level} `}
-                  <Text style={styles.levelWord}>{labels.levels[level - 1] ?? ''}</Text>
+                  <Text style={styles.levelWord}>{skill.levelLabel ?? labels.levels[level - 1] ?? ''}</Text>
                 </Text>
               ) : null}
             </View>

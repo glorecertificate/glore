@@ -3,6 +3,7 @@ import 'server-only'
 import { and, count, eq, isNull } from 'drizzle-orm'
 
 import { type Transaction, db } from '@/db/client'
+import { type SkillLevel } from '@/db/queries/skill-level-description'
 import {
   courseRatings,
   lessons,
@@ -19,7 +20,7 @@ export const saveAnswer = async (userId: string, optionId: number) => {
 }
 
 interface LessonCompletion {
-  assessment: { assessmentId: number; reflection: string; value: number } | null
+  assessment: { assessmentId: number; reflection: string; value: SkillLevel } | null
   courseId: number
   lessonId: number
   ratings: { evaluationId: number; value: number }[]

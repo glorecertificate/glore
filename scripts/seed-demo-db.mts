@@ -23,6 +23,7 @@ import {
   eventSubject,
   notificationUrl,
   resolveEventData,
+  toSkillLevel,
 } from './seed-demo-story.ts'
 
 interface Context {
@@ -444,18 +445,9 @@ export const insertDemoCertificates = async (
       const course = catalog.get(skill.course)
       if (!course) throw new Error(`Course ${skill.course} is not in the catalog`)
       await client.query(
-        `insert into certificate_skills (certificate_id, course_id, self_level, level, evidence, statement, sort_order, created_at, updated_at)
-         values ($1, $2, $3, $4, $5, $6, $7, $8, $8)`,
-        [
-          id,
-          course.id,
-          skill.selfLevel,
-          skill.level,
-          skill.evidence,
-          skill.statement,
-          skill.sortOrder,
-          certificate.createdAt,
-        ]
+        `insert into certificate_skills (certificate_id, course_id, self_level, level, evidence, sort_order, created_at, updated_at)
+         values ($1, $2, $3, $4, $5, $6, $7, $7)`,
+        [id, course.id, skill.selfLevel, skill.level, skill.evidence, skill.sortOrder, certificate.createdAt]
       )
     }
 
@@ -573,7 +565,7 @@ export const insertDemoProgress = async (context: Context, ids: DemoIds, { catal
   const lessonRows: [string, number, string][] = []
   const answerRows: [string, number, string][] = []
   const evaluationRows: [string, number, number, string][] = []
-  const assessmentRows: [string, number, number, string, string][] = []
+  const assessmentRows: [string, number, string, string, string][] = []
   const courseRows: [string, number, string, number | null, string | null, string][] = []
   const ratingRows: [string, number, number, string | null, string][] = []
 
@@ -598,7 +590,7 @@ export const insertDemoProgress = async (context: Context, ids: DemoIds, { catal
         evaluationRows.push([id, evaluation, clamp(entry.selfLevel + ((index + entry.selfLevel) % 3) - 1), at])
       }
       for (const assessment of lesson.assessments) {
-        assessmentRows.push([id, assessment, clamp(entry.selfLevel), entry.reflection, at])
+        assessmentRows.push([id, assessment, toSkillLevel(entry.selfLevel), entry.reflection, at])
       }
     }
 
@@ -659,7 +651,7 @@ export const insertDemoProgress = async (context: Context, ids: DemoIds, { catal
   if (assessmentRows.length > 0) {
     await client.query(
       `insert into user_assessments (user_id, assessment_id, value, reflection, created_at, updated_at)
-       select u, a, v, r, t, t from unnest($1::text[], $2::int[], $3::int[], $4::text[], $5::timestamp[]) as x(u, a, v, r, t)`,
+       select u, a, v, r, t, t from unnest($1::text[], $2::int[], $3::text[]::skill_level[], $4::text[], $5::timestamp[]) as x(u, a, v, r, t)`,
       [
         column(assessmentRows, 0),
         column(assessmentRows, 1),

@@ -239,6 +239,20 @@
       "when": 1794952695841,
       "tag": "0033_bright_emma_frost",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1794954628884,
+      "tag": "0034_blind_choice_values",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1794954633422,
+      "tag": "0035_blind_choice_schema",
+      "breakpoints": true
     }
   ]
 }

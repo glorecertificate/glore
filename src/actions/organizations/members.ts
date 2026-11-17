@@ -4,7 +4,7 @@ import 'server-only'
 
 import { revalidateTag } from 'next/cache'
 
-import { and, avg, desc, eq, ne } from 'drizzle-orm'
+import { and, count, desc, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
@@ -23,6 +23,7 @@ import { getCurrentUser } from '@/actions/user'
 import { db, transaction } from '@/db/client'
 import { changeMemberRole, memberError, removeMembership, transferOwnership } from '@/db/mutations/organization'
 import { canManageMemberRole } from '@/db/queries/organization'
+import { SKILL_LEVELS, type SkillLevel } from '@/db/queries/skill-level-description'
 import { certificates, courses, memberships, organizations, userAssessments, userCourses } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 import { fullName } from '@/lib/utils'
@@ -154,7 +155,7 @@ export const getOrganizationMemberDetail = async (membershipId: number, organiza
     if (!membership) throw memberError('NOT_FOUND')
     const { user } = membership
 
-    const [progress, [assessment], issued] = await Promise.all([
+    const [progress, levels, issued] = await Promise.all([
       db
         .select({
           completedAt: userCourses.completedAt,
@@ -170,9 +171,10 @@ export const getOrganizationMemberDetail = async (membershipId: number, organiza
         .orderBy(desc(userCourses.updatedAt))
         .limit(50),
       db
-        .select({ average: avg(userAssessments.value) })
+        .select({ count: count(), level: userAssessments.value })
         .from(userAssessments)
-        .where(eq(userAssessments.userId, user.id)),
+        .where(eq(userAssessments.userId, user.id))
+        .groupBy(userAssessments.value),
       db.query.certificates.findMany({
         columns: { code: true, id: true, isDefault: true, issuedAt: true, status: true, submittedAt: true },
         limit: 20,
@@ -205,9 +207,11 @@ export const getOrganizationMemberDetail = async (membershipId: number, organiza
       },
       role: membership.role,
       summary: {
-        averageSelfLevel: assessment?.average ? Number(assessment.average) : null,
         completed: progress.filter(({ completedAt }) => completedAt).length,
         skillCompleted: progress.filter(({ completedAt, type }) => completedAt && type === 'skill').length,
+        levelCounts: Object.fromEntries(
+          SKILL_LEVELS.map(level => [level, levels.find(row => row.level === level)?.count ?? 0])
+        ) as Record<SkillLevel, number>,
         started: progress.length,
       },
     }

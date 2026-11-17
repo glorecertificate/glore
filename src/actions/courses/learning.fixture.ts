@@ -27,7 +27,10 @@ export interface FixtureCourse {
   slug: string
 }
 
-export const createFixtureCourse = async ({ client, schema }: LearningContext): Promise<FixtureCourse> => {
+export const createFixtureCourse = async (
+  { client, schema }: LearningContext,
+  { descriptions = false }: { descriptions?: boolean } = {}
+): Promise<FixtureCourse> => {
   const slug = `fixture-${Math.random().toString(36).slice(2, 10)}`
   const text = (value: string) => ({ en: value, es: value, it: value })
   const plate = (value: string) =>
@@ -109,6 +112,15 @@ export const createFixtureCourse = async ({ client, schema }: LearningContext): 
     .values({ description: text('Rate yourself'), lessonId: assessment.id })
     .returning({ id: schema.assessments.id })
   if (!assessmentRow) throw new Error('Fixture assessment failed')
+  if (descriptions) {
+    await client.db.insert(schema.skillLevelDescriptions).values(
+      (['intermediate', 'good', 'advanced'] as const).map(level => ({
+        assessmentId: assessmentRow.id,
+        description: text(`Fixture description ${level}`),
+        level,
+      }))
+    )
+  }
 
   return {
     assessmentId: assessmentRow.id,

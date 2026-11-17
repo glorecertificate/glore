@@ -70,7 +70,7 @@ test('the quiz explains a wrong answer, accepts a retry, and gates the course en
   await expect(page.getByText(/Tutors from your own organization review requests/u)).toBeVisible()
   await answer(learner, 0, 'A tutor in your organization')
   await expect(page.getByText('Correct').first()).toBeVisible()
-  await answer(learner, 1, 'At least three skill courses with an average rating of 3 out of 5 or more')
+  await answer(learner, 1, 'At least three completed skill courses')
   await answer(learner, 2, 'By scanning the QR code, which leads to the public page marked as verified')
   await expect(page.getByText('Correct')).toHaveCount(3)
 })

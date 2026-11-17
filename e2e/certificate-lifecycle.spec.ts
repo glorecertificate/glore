@@ -13,7 +13,7 @@ import {
   tenantNames,
 } from './actors'
 import { hydrated } from './helpers'
-import { type Tenant, certificateRow, createTenant, draftHours, removeTenant } from './tenant'
+import { type Tenant, certificateRow, certificateSkillLevels, createTenant, draftHours, removeTenant } from './tenant'
 
 test.describe.configure({ mode: 'serial', timeout: 180_000 })
 
@@ -100,15 +100,15 @@ test('tutor sees the request in the queue and starts the review', async () => {
   await expect(page.getByText('Review started.')).toBeVisible()
 })
 
-test('tutor lowers a level, requests changes with a comment, and the volunteer resubmits', async () => {
+test('tutor picks another description, requests changes with a comment, and the volunteer resubmits', async () => {
   const { page } = tutor
   await page.goto(`/certificates/${certificateId}/review`)
-  const confirmedLevels = page.getByRole('radiogroup', { name: 'Confirmed level' })
-  await confirmedLevels.first().getByRole('radio', { name: 'Basic' }).click()
-  await page
-    .getByRole('textbox', { name: 'Statement' })
+  const confirmedLevels = page.getByRole('radiogroup', { name: 'Level and description' })
+  await confirmedLevels
     .first()
-    .fill('Showed a basic level of empathy during the shifts.')
+    .getByRole('radio', { name: /Intermediate/u })
+    .click()
+  await expect(confirmedLevels.first().getByRole('radio', { name: /Intermediate/u })).toBeChecked()
 
   await page.getByRole('button', { name: 'Request changes' }).click()
   await expect(page.getByText('Add a comment before requesting changes.')).toBeVisible()
@@ -116,6 +116,8 @@ test('tutor lowers a level, requests changes with a comment, and the volunteer r
   await page.getByRole('button', { name: 'Request changes' }).click()
   await expect(page.getByText('Changes requested. The volunteer has been notified.')).toBeVisible()
   await expect(page).toHaveURL(/\/certificates$/u)
+  const saved = await certificateSkillLevels(certificateId)
+  expect(saved[0]).toMatchObject({ level: 'intermediate', self_level: 'good' })
 
   const volunteerPage = volunteer.page
   await volunteerPage.goto(`/certificates/${certificateId}`)
@@ -168,5 +170,6 @@ test('tutor previews the PDF and approves, and the volunteer shares the certific
   await guestPage.goto(`/verify/${code}`)
   await expect(guestPage.getByText('Valid certificate')).toBeVisible()
   await expect(guestPage.getByText(tenant.name).first()).toBeVisible()
+  await expect(guestPage.getByText('Intermediate', { exact: true }).first()).toBeVisible()
   await guest.close()
 })

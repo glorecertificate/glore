@@ -3,17 +3,16 @@
 import { useTranslations } from 'next-intl'
 
 import { formatActivityPeriod } from '@/components/features/certificates/rules'
+import { SkillLevel } from '@/components/features/certificates/skill-level'
+import { issuedSkillRendering } from '@/components/features/certificates/snapshot'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { LevelDots } from '@/components/ui/level-dots'
 import { type Certificate } from '@/db/queries/certificate'
-import { SKILL_LEVELS } from '@/lib/constants'
 
 export const CertificateSummary = ({ certificate }: { certificate: Certificate }) => {
   const t = useTranslations('CertificateCredential')
   const tDetail = useTranslations('CertificateDetail')
-  const tLevels = useTranslations('Common.skillLevels')
   const { locale, localize } = useI18n()
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
 
@@ -73,15 +72,13 @@ export const CertificateSummary = ({ certificate }: { certificate: Certificate }
             {certificate.skills
               .toSorted((a, b) => a.sortOrder - b.sortOrder)
               .map(skill => {
-                const level = skill.level ?? skill.selfLevel
-                const name = SKILL_LEVELS[(level ?? 0) - 1]
+                const view = issuedSkillRendering(certificate.snapshot, skill.course.id, skill.level)
                 return (
                   <li className="flex flex-col gap-1.5" key={skill.id}>
                     <p className="text-sm font-medium">
                       {skill.course.title ? localize(skill.course.title) : skill.course.slug}
                     </p>
-                    {level && name ? <LevelDots label={tLevels(name)} level={level as 1 | 2 | 3 | 4 | 5} /> : null}
-                    {skill.statement && <p className="text-sm text-muted-foreground">{skill.statement}</p>}
+                    {view && <SkillLevel locale={locale} rendering={view} />}
                   </li>
                 )
               })}

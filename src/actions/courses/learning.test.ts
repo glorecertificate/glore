@@ -1,5 +1,5 @@
 import { and, eq } from 'drizzle-orm'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import {
   type LessonDetailRow,
@@ -20,6 +20,14 @@ import {
   loadContext,
   removeFixtureCourse,
 } from './learning.fixture'
+import { skillChoiceToken } from './skill-choice'
+
+vi.mock('next/cache', () => ({
+  cacheLife: vi.fn(),
+  cacheTag: vi.fn(),
+  revalidateTag: vi.fn(),
+  updateTag: vi.fn(),
+}))
 
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')
 
@@ -143,19 +151,25 @@ describe('pickCourseTitle', () => {
 })
 
 describe('buildCompletionSkills', () => {
-  it('localizes titles and clamps levels to 1 through 5', () => {
-    expect(
-      buildCompletionSkills(
-        [
-          { title: { en: 'Listening', it: 'Ascolto' }, value: 9 },
-          { title: { en: 'Teamwork' }, value: 0 },
-        ],
-        'it'
-      )
-    ).toEqual([
-      { level: 5, title: 'Ascolto' },
-      { level: 1, title: 'Teamwork' },
+  it('returns the localized description of the chosen level and never the level itself', () => {
+    const descriptions = {
+      advanced: { en: 'Adv', es: 'Avz', it: 'Avanzato' },
+      good: { en: 'Good', es: 'Bue', it: 'Buono' },
+      intermediate: { en: 'Mid', es: 'Med', it: 'Medio' },
+    }
+    const skills = buildCompletionSkills(
+      [
+        { title: { en: 'Listening', it: 'Ascolto' }, value: 'good' },
+        { title: { en: 'Teamwork' }, value: 'advanced' },
+      ],
+      descriptions,
+      'it'
+    )
+    expect(skills).toEqual([
+      { description: 'Buono', title: 'Ascolto' },
+      { description: 'Avanzato', title: 'Teamwork' },
     ])
+    expect(JSON.stringify(skills)).not.toMatch(/good|advanced|intermediate/u)
   })
 })
 
@@ -175,7 +189,7 @@ describe.skipIf(!isLocalDatabase)('learning flow', () => {
   beforeAll(async () => {
     context = await loadContext()
     ;[fixture, data, learning] = await Promise.all([
-      createFixtureCourse(context),
+      createFixtureCourse(context, { descriptions: true }),
       import('./data'),
       import('./learning'),
     ])
@@ -253,13 +267,14 @@ describe.skipIf(!isLocalDatabase)('learning flow', () => {
     const lessonId = fixture.lessonIds.assessment
     const ratings = fixture.evaluationIds.map(evaluationId => ({ evaluationId, value: 4 }))
 
+    const advanced = skillChoiceToken(context.userId, fixture.courseId, 'advanced')
     expect(await learning.finishLesson(learner(), { language: 'en', lessonId })).toEqual({ error: 'evaluations' })
     expect(await learning.finishLesson(learner(), { language: 'en', lessonId, ratings })).toEqual({
       error: 'assessment',
     })
     expect(
       await learning.finishLesson(learner(), {
-        assessment: { reflection: 'Too short', value: 4 },
+        assessment: { choice: advanced, reflection: 'Too short' },
         language: 'en',
         lessonId,
         ratings,
@@ -267,7 +282,7 @@ describe.skipIf(!isLocalDatabase)('learning flow', () => {
     ).toEqual({ error: 'reflection' })
     expect(
       await learning.finishLesson(learner(), {
-        assessment: { reflection: 'x'.repeat(1001), value: 4 },
+        assessment: { choice: advanced, reflection: 'x'.repeat(1001) },
         language: 'en',
         lessonId,
         ratings,
@@ -275,12 +290,28 @@ describe.skipIf(!isLocalDatabase)('learning flow', () => {
     ).toEqual({ error: 'reflection' })
     expect(
       await learning.finishLesson(learner(), {
-        assessment: { reflection: 'x'.repeat(40), value: 9 },
+        assessment: { choice: 'not-a-token', reflection: 'x'.repeat(40) },
         language: 'en',
         lessonId,
         ratings,
       })
     ).toEqual({ error: 'assessment' })
+  })
+
+  it('keeps the blind choice blind: opaque ids, no level names, level resolved on the server', async () => {
+    const { userId } = context
+    const lesson = await data.loadLearnerLesson(fixture.lessonIds.assessment, userId, 'en')
+    const choices = lesson?.assessment?.choices
+    expect(choices).toHaveLength(3)
+    const payload = JSON.stringify(lesson?.assessment)
+    expect(payload).not.toMatch(/"(intermediate|good|advanced)"/u)
+    for (const level of ['intermediate', 'good', 'advanced'] as const) {
+      const id = skillChoiceToken(userId, fixture.courseId, level)
+      expect(choices?.find(card => card.id === id)?.text).toBe(`Fixture description ${level}`)
+      expect(id).not.toContain(level)
+    }
+    expect(lesson?.assessment?.chosenId).toBeNull()
+    expect(choices?.map(({ id }) => id)).toEqual(choices?.map(({ id }) => id).toSorted())
   })
 
   it('refuses a rating before the course is completed', async () => {
@@ -293,7 +324,11 @@ describe.skipIf(!isLocalDatabase)('learning flow', () => {
     const lessonId = fixture.lessonIds.assessment
     const reflection = 'I listened to every teammate before the meeting and changed the plan.'
     const result = await learning.finishLesson(learner(), {
-      assessment: { reflection, value: 4 },
+      assessment: {
+        choice: skillChoiceToken(userId, fixture.courseId, 'good'),
+        reflection,
+        value: 'advanced',
+      } as { choice: string; reflection: string },
       language: 'en',
       lessonId,
       ratings: fixture.evaluationIds.map(evaluationId => ({ evaluationId, value: 4 })),
@@ -308,7 +343,7 @@ describe.skipIf(!isLocalDatabase)('learning flow', () => {
       .where(
         and(eq(schema.userAssessments.userId, userId), eq(schema.userAssessments.assessmentId, fixture.assessmentId))
       )
-    expect(stored).toEqual({ reflection, value: 4 })
+    expect(stored).toEqual({ reflection, value: 'good' })
 
     const enrollment = await client.db.query.userCourses.findFirst({
       where: and(eq(schema.userCourses.userId, userId), eq(schema.userCourses.courseId, fixture.courseId)),
@@ -350,14 +385,14 @@ describe.skipIf(!isLocalDatabase)('learning flow', () => {
 
     const details = await data.findCompletionDetails(fixture.courseId, userId)
     expect(details.rating).toEqual({ comment: null, rating: 5 })
-    expect(details.assessmentRows.map(({ value }) => value)).toEqual([4])
+    expect(details.assessmentRows.map(({ value }) => value)).toEqual(['good'])
   })
 
   it('reports real analytics for the course', async () => {
     const stats = await data.findCourseAnalytics(fixture.courseId)
     expect(stats).toMatchObject({
       avgRating: 5,
-      avgSelfAssessment: 4,
+      levelCounts: { advanced: 0, good: 1, intermediate: 0 },
       completionCount: 1,
       completionRate: 100,
       enrollmentCount: 1,

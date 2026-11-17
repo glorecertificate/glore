@@ -12,7 +12,7 @@ import {
 } from '@/components/features/certificates/document'
 import { pdfImage, pdfLabels } from '@/components/features/certificates/pdf-helpers'
 import { iconNodeOf } from '@/components/icons/registry'
-import { SKILL_LEVELS } from '@/lib/constants'
+import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { loadMessages, resolveLocale } from '@/lib/messages'
 
 type PdfInput = Omit<CertificatePdfData, 'qrPath' | 'qrSize' | 'skills' | 'verifyUrl'> & {

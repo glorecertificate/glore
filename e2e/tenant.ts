@@ -20,6 +20,7 @@ export interface TenantUser {
 export interface Tenant {
   handle: string
   id: number
+  inProgressCourse?: { id: number; slug: string }
   name: string
   tag: string
   users: Record<string, TenantUser>
@@ -27,6 +28,7 @@ export interface Tenant {
 
 interface TenantMember {
   completedSkills?: number
+  inProgressSkill?: boolean
   key: string
   locale?: string
   role: MembershipRole | null
@@ -67,13 +69,14 @@ export const createTenant = async (label: string, members: TenantMember[]): Prom
        values ($1, 'IT', $2, $3, 'Giulia Rappresentante')`,
       [organizationId, `G2 ${label} APS`, `G2-${tag}`]
     )
-    const skills = await pool.query<{ id: number }>(
-      `select c.id from courses c
+    const skills = await pool.query<{ id: number; slug: string }>(
+      `select c.id, c.slug from courses c
        where c.type = 'skill' and c.archived_at is null
          and exists (select 1 from lessons l join assessments a on a.lesson_id = l.id where l.course_id = c.id)
        order by c.id limit 4`
     )
     const users: Record<string, TenantUser> = {}
+    let inProgressCourse: Tenant['inProgressCourse']
     for (const member of members) {
       const id = randomUUID()
       const firstName = capitalize(member.key.replaceAll(/[^a-z0-9]/gu, ''))
@@ -121,14 +124,28 @@ export const createTenant = async (label: string, members: TenantMember[]): Prom
         )
         await pool.query(
           `insert into user_assessments (user_id, assessment_id, value, reflection)
-           select $1, a.id, 4, 'A fixture reflection written for the end to end run, long enough to be valid.'
+           select $1, a.id, 'good', 'A fixture reflection written for the end to end run, long enough to be valid.'
            from assessments a join lessons l on l.id = a.lesson_id where l.course_id = $2`,
           [id, course.id]
         )
       }
+      const pending = member.inProgressSkill ? skills.rows[3] : undefined
+      if (pending) {
+        inProgressCourse = { id: pending.id, slug: pending.slug }
+        await pool.query(`insert into user_courses (user_id, course_id, locale) values ($1, $2, 'en')`, [
+          id,
+          pending.id,
+        ])
+        await pool.query(
+          `insert into user_lessons (user_id, lesson_id)
+           select $1, id from lessons where course_id = $2
+             and sort_order < (select max(sort_order) from lessons where course_id = $2)`,
+          [id, pending.id]
+        )
+      }
       users[member.key] = user
     }
-    return { handle: `g2-${tag}`, id: organizationId, name: `G2 ${label} ${tag}`, tag, users }
+    return { handle: `g2-${tag}`, id: organizationId, inProgressCourse, name: `G2 ${label} ${tag}`, tag, users }
   })
 }
 
@@ -210,8 +227,8 @@ export const seedRequest = async ({ author, code, daysAgo = 0, reviewer, status,
     )
     for (const [index, course] of courses.rows.entries()) {
       await pool.query(
-        `insert into certificate_skills (certificate_id, course_id, level, self_level, sort_order, statement, evidence)
-         values ($1, $2, 3, 3, $3, 'G2 statement', 'G2 evidence')`,
+        `insert into certificate_skills (certificate_id, course_id, level, self_level, sort_order, evidence)
+         values ($1, $2, 'intermediate', 'intermediate', $3, 'G2 evidence')`,
         [id, course.course_id, index]
       )
     }
@@ -226,6 +243,15 @@ export const certificateRow = async (id: number) =>
       status: string
     }>('select code, reviewer_id, status from certificates where id = $1', [id])
     return result.rows[0]
+  })
+
+export const certificateSkillLevels = async (id: number) =>
+  await withDb(async pool => {
+    const result = await pool.query<{ course_id: number; level: string | null; self_level: string | null }>(
+      'select course_id, level, self_level from certificate_skills where certificate_id = $1 order by sort_order',
+      [id]
+    )
+    return result.rows
   })
 
 export const draftHours = async (userId: string) =>

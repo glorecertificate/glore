@@ -8,6 +8,7 @@ import { and, eq, inArray, isNull, max, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { buildCourseWith } from '@/actions/courses/helpers'
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { requireEditor } from '@/actions/guards'
 import { db, transaction } from '@/db/client'
 import { mapSequential } from '@/db/helpers'
@@ -24,6 +25,7 @@ import { languageChanges } from '@/db/queries/content-translation'
 import { type Course, parseCourse } from '@/db/queries/course'
 import { isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
+import { hasEveryLevelDescription } from '@/db/queries/skill-choice'
 import { SKILL_LEVELS, SKILL_LEVEL_DESCRIPTION_MAX_LENGTH } from '@/db/queries/skill-level-description'
 import {
   assessments,
@@ -207,9 +209,20 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
   )
 
   const previous = values.languages
-    ? await db.query.courses.findFirst({ columns: { languages: true, slug: true }, where: eq(courses.id, id) })
+    ? await db.query.courses.findFirst({
+        columns: { languages: true, slug: true, type: true },
+        where: eq(courses.id, id),
+      })
     : null
   const changes = languageChanges(previous?.languages, values.languages ?? [])
+
+  const publishesSkill =
+    (values.type ?? previous?.type) === 'skill' &&
+    changes.some(({ published }) => published) &&
+    !!values.languages?.length
+  if (publishesSkill && !hasEveryLevelDescription((await fetchLevelDescriptions([id], { cache: false })).data?.[id])) {
+    return { error: { code: 'DESCRIPTIONS_MISSING', message: 'A skill course needs its three level descriptions' } }
+  }
 
   await transaction(async tx => {
     await tx.update(courses).set(values).where(eq(courses.id, id))

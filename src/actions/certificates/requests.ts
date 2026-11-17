@@ -18,7 +18,7 @@ import {
   membershipRole,
   requireRateLimitedUser,
 } from '@/actions/certificates/helpers'
-import { getCertificateEligibility } from '@/actions/certificates/queries'
+import { findHolderLevels, getCertificateEligibility } from '@/actions/certificates/queries'
 import { getActiveOrgId } from '@/actions/user'
 import {
   generateCertificateCode,
@@ -147,12 +147,13 @@ const prepareSubmission = async (
     throw new CertificateError('PERSONAL_DATA_MISSING', `Missing personal data: ${missing.join(', ')}`)
   }
 
-  const skills = values.skills.map(skill => {
-    const selfLevel = skill.selfLevel ?? eligibility.selfLevels[skill.courseId]
+  const levels = await findHolderLevels(cert.userId)
+  const skills = values.skills.map(({ courseId, evidence }) => {
+    const selfLevel = levels[courseId]
     if (selfLevel === undefined) {
-      throw new CertificateError('INVALID_INPUT', 'Every skill needs a self-assessment level')
+      throw new CertificateError('INVALID_INPUT', 'Every skill needs a completed self-assessment')
     }
-    return { ...skill, selfLevel }
+    return { courseId, evidence, selfLevel }
   })
 
   return { edit: { ...values, skills }, personal }

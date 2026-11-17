@@ -14,6 +14,7 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { timestampMillis } from '@/db/queries/organization'
+import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 
 import { formatRoleLabel } from './utils'
 
@@ -41,6 +42,7 @@ export const MemberDrawer = ({
   const { dateTime, number } = useFormatter()
   const t = useTranslations('Organization')
   const tCommon = useTranslations('Common')
+  const tLevels = useTranslations('Common.skillLevels')
 
   const formatDate = (value: string) => dateTime(new Date(timestampMillis(value)), { dateStyle: 'medium' })
 
@@ -84,14 +86,13 @@ export const MemberDrawer = ({
                   <Metric label={t('metricStarted')} value={number(detail.summary.started)} />
                   <Metric label={t('metricCompleted')} value={number(detail.summary.completed)} />
                   <Metric label={t('metricSkillCompleted')} value={number(detail.summary.skillCompleted)} />
-                  <Metric
-                    label={t('metricAverageLevel')}
-                    value={
-                      detail.summary.averageSelfLevel === null
-                        ? t('notAvailable')
-                        : number(detail.summary.averageSelfLevel, { maximumFractionDigits: 1 })
-                    }
-                  />
+                  {SKILL_LEVELS.map(level => (
+                    <Metric
+                      key={level}
+                      label={t('metricLevelCount', { level: tLevels(level) })}
+                      value={number(detail.summary.levelCounts[level])}
+                    />
+                  ))}
                 </dl>
                 {detail.courses.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t('noCourses')}</p>

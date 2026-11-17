@@ -2,7 +2,13 @@ import { expect, test } from '@playwright/test'
 
 import { seedEmail } from '~/scripts/seed-data'
 
-import { clearRateLimits, removePublicCertificates, seedPublicCertificate, setPublicProfile } from './db'
+import {
+  E2E_DESCRIPTION,
+  clearRateLimits,
+  removePublicCertificates,
+  seedPublicCertificate,
+  setPublicProfile,
+} from './db'
 
 const VALID = 'E2E0-VA11-D000'
 const REVOKED = 'E2E0-REV0-KED0'
@@ -31,7 +37,7 @@ test.describe('certificate verification', () => {
     expect(response?.status()).toBe(200)
     await expect(page.getByText('Valid certificate')).toBeVisible()
     await expect(page.getByText(VALID)).toBeVisible()
-    await expect(page.getByText('E2E statement').first()).toBeVisible()
+    await expect(page.getByText(E2E_DESCRIPTION).first()).toBeVisible()
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/u)
     await expect.poll(() => page.locator('#verification-json-ld').textContent()).toContain(VALID)
   })

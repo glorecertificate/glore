@@ -52,6 +52,16 @@ interface CertificateSeed {
 
 const skill = (course: string, selfLevel: number, level?: number): DemoSkill => ({ course, selfLevel, level })
 
+export type DemoSkillLevel = 'advanced' | 'good' | 'intermediate'
+
+const LEVEL_NUMBERS = { advanced: 5, good: 4, intermediate: 3 } as const
+
+export const toSkillLevel = (value: number): DemoSkillLevel => {
+  if (value >= 5) return 'advanced'
+  if (value >= 4) return 'good'
+  return 'intermediate'
+}
+
 export const FORMER_HOLDER = {
   birthPlace: 'Bologna',
   birthday: '1999-04-18',
@@ -315,10 +325,10 @@ interface PlannedReview {
 
 interface PlannedSkill {
   course: string
-  selfLevel: number
-  level: number | null
+  selfLevel: DemoSkillLevel
+  level: DemoSkillLevel | null
   evidence: string | null
-  statement: string | null
+  description: Record<DemoLocale, string> | null
   sortOrder: number
 }
 
@@ -442,10 +452,10 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
     if (!text) throw new Error(`Missing text for ${entry.course}`)
     return {
       course: entry.course,
-      selfLevel: entry.selfLevel,
-      level: issued ? (entry.level ?? entry.selfLevel) : null,
+      selfLevel: toSkillLevel(entry.selfLevel),
+      level: issued ? toSkillLevel(entry.level ?? entry.selfLevel) : null,
       evidence: text.evidence[language],
-      statement: issued ? text.statement[language] : null,
+      description: issued ? text.statement : null,
       sortOrder,
     }
   })
@@ -563,8 +573,8 @@ export const planProgress = (certificates: PlannedCertificate[]) => {
         lessons: 'all',
         activityDaysAgo: base + index * 4,
         partialQuiz: false,
-        selfLevel: entry.selfLevel,
-        rating: entry.selfLevel >= 4 ? 5 : 4,
+        selfLevel: LEVEL_NUMBERS[entry.selfLevel],
+        rating: entry.selfLevel === 'intermediate' ? 4 : 5,
         reflection: reflectionFor(languageOf(certificate.holder), index + certificate.skills.length),
       })
     }
@@ -1341,10 +1351,10 @@ export const buildSnapshot = ({ certificate, courses, holder, organization }: Ce
     if (!course) throw new Error(`Course ${entry.course} is not in the catalog`)
     return {
       courseId: course.id,
+      description: entry.description,
       icon: course.icon,
       level: entry.level ?? entry.selfLevel,
       name: course.title ?? { en: entry.course },
-      statement: entry.statement,
     }
   }),
   issuedAt: certificate.issuedAt ?? '',

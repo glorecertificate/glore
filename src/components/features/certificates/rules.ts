@@ -118,7 +118,7 @@ interface StoredCertificate {
     support: number | null
     wouldRecommend: boolean | null
   } | null
-  skills: { courseId: number; evidence: string | null; selfLevel: number | null; sortOrder: number }[]
+  skills: { courseId: number; evidence: string | null; sortOrder: number }[]
   tasks: string[]
 }
 
@@ -141,7 +141,7 @@ export const mergeCertificateValues = (stored: StoredCertificate, edit: Certific
     edit.skills ??
     stored.skills
       .toSorted((a, b) => a.sortOrder - b.sortOrder)
-      .map(({ courseId, evidence, selfLevel }) => ({ courseId, evidence, selfLevel })),
+      .map(({ courseId, evidence }) => ({ courseId, evidence })),
   tasks: edit.tasks ?? stored.tasks,
 })
 

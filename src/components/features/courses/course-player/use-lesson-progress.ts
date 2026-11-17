@@ -41,7 +41,7 @@ export const useLessonProgress = (lesson: LearnerLesson, language: Locale) => {
   const [ratings, setRatings] = useState(() =>
     Object.fromEntries(lesson.evaluations.flatMap(e => (e.value === null ? [] : [[e.id, e.value]])))
   )
-  const [assessmentValue, setAssessmentValue] = useState(lesson.assessment?.value ?? null)
+  const [assessmentChoice, setAssessmentChoice] = useState(lesson.assessment?.chosenId ?? null)
   const [reflection, setReflection] = useState(lesson.assessment?.reflection ?? '')
   const [failed, setFailed] = useState(false)
 
@@ -83,18 +83,19 @@ export const useLessonProgress = (lesson: LearnerLesson, language: Locale) => {
   const blocker: CompletionIssue | null = (() => {
     if (!lesson.questions.every(({ id }) => questions[id]?.solved)) return 'quiz'
     if (!lesson.evaluations.every(({ id }) => ratings[id])) return 'evaluations'
-    if (lesson.assessment && assessmentValue === null) return 'assessment'
+    if (lesson.assessment && !lesson.assessment.choices) return 'descriptions'
+    if (lesson.assessment && assessmentChoice === null) return 'assessment'
     if (lesson.assessment && !reflectionValid) return 'reflection'
     return null
   })()
 
   const payload = {
-    assessment: lesson.assessment && assessmentValue !== null ? { reflection, value: assessmentValue } : undefined,
+    assessment: lesson.assessment && assessmentChoice !== null ? { choice: assessmentChoice, reflection } : undefined,
     ratings: lesson.evaluations.flatMap(({ id }) => (ratings[id] ? [{ evaluationId: id, value: ratings[id] }] : [])),
   }
 
   return {
-    assessmentValue,
+    assessmentChoice,
     blocker,
     check,
     checking,
@@ -106,7 +107,7 @@ export const useLessonProgress = (lesson: LearnerLesson, language: Locale) => {
     reflection,
     reflectionLength,
     select,
-    setAssessmentValue,
+    setAssessmentChoice,
     setReflection,
   }
 }

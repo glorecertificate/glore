@@ -16,7 +16,7 @@ import {
 import { type CertificatePdfLabels } from '@/components/features/certificates/document'
 
 import { courses } from './courses'
-import { certificateReviewDecisionEnum, certificateStatusEnum } from './enums'
+import { certificateReviewDecisionEnum, certificateStatusEnum, skillLevelEnum } from './enums'
 import { type IntlJsonb } from './helpers'
 import { organizations } from './organizations'
 import { users } from './users'
@@ -45,10 +45,11 @@ export interface CertificateSnapshot {
   }
   skills: {
     courseId: number
+    description?: IntlJsonb | null
     icon: string | null
-    level: number
+    level: (typeof skillLevelEnum.enumValues)[number] | number
     name: IntlJsonb
-    statement: string | null
+    statement?: string | null
   }[]
   issuedAt: string
   labels?: CertificatePdfLabels
@@ -123,10 +124,9 @@ export const certificateSkills = pgTable(
     courseId: integer()
       .notNull()
       .references(() => courses.id),
-    selfLevel: smallint(),
-    level: smallint(),
+    selfLevel: skillLevelEnum(),
+    level: skillLevelEnum(),
     evidence: text(),
-    statement: text(),
     sortOrder: integer().default(0).notNull(),
     createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp({ mode: 'string' })
@@ -138,8 +138,6 @@ export const certificateSkills = pgTable(
     index('certificate_skills_certificate_id_idx').on(table.certificateId),
     index('certificate_skills_course_id_idx').on(table.courseId),
     uniqueIndex('certificate_skills_certificate_id_course_id_key').on(table.certificateId, table.courseId),
-    levelCheck('certificate_skills_self_level_check', 'self_level'),
-    levelCheck('certificate_skills_level_check', 'level'),
   ]
 )
 

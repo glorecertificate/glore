@@ -487,11 +487,8 @@ export interface DashboardBase {
 }
 
 export interface EligibilityView {
-  avgRating: number | null
   completedSkillCount: number
   eligible: boolean
-  hasLowRatings: boolean
-  minRating: number
   minSkills: number
 }
 

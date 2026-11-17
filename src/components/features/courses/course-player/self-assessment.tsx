@@ -2,14 +2,14 @@
 
 import { useTranslations } from 'next-intl'
 
+import { DescriptionChoice } from '@/components/features/courses/course-player/description-choice'
 import { type useLessonProgress } from '@/components/features/courses/course-player/use-lesson-progress'
+import { Banner } from '@/components/ui/banner'
 import { Label } from '@/components/ui/label'
-import { LevelDots } from '@/components/ui/level-dots'
 import { Markdown } from '@/components/ui/markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { Textarea } from '@/components/ui/textarea'
 import { type LearnerLesson, REFLECTION_MAX_LENGTH, REFLECTION_MIN_LENGTH } from '@/db/queries/learning'
-import { SKILL_LEVELS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 export const LessonSelfAssessment = ({
@@ -24,14 +24,10 @@ export const LessonSelfAssessment = ({
   progress: ReturnType<typeof useLessonProgress>
 }) => {
   const t = useTranslations('Learning.player')
-  const tCommon = useTranslations('Common')
-  const { assessmentValue, rate, ratings, reflection, reflectionLength, setAssessmentValue, setReflection } = progress
+  const { assessmentChoice, rate, ratings, reflection, reflectionLength, setAssessmentChoice, setReflection } = progress
   const { assessment, evaluations } = lesson
 
   if (evaluations.length === 0 && !assessment) return null
-
-  const levelLabel = (level: number) => tCommon(`skillLevels.${SKILL_LEVELS[level - 1] ?? 'absent'}`)
-  const level = assessmentValue === null ? null : (Math.min(5, Math.max(1, assessmentValue)) as 1 | 2 | 3 | 4 | 5)
 
   return (
     <section className={cn('flex flex-col gap-8 border-t pt-6', className)} {...props}>
@@ -61,16 +57,20 @@ export const LessonSelfAssessment = ({
             <h2 className="text-xl font-semibold">{t('assessmentTitle')}</h2>
             <p className="text-sm text-muted-foreground">{t('assessmentHint')}</p>
           </div>
-          {assessment.text && <Markdown>{assessment.text}</Markdown>}
-          <RatingGroup
-            color="brand"
-            disabled={disabled}
-            id={`assessment-${assessment.id}`}
-            label={levelLabel}
-            onValueChange={value => setAssessmentValue(Number(value))}
-            value={assessmentValue ?? undefined}
-          />
-          {level && <LevelDots label={levelLabel(level)} level={level} />}
+          {assessment.choices ? (
+            <DescriptionChoice
+              aria-label={t('assessmentTitle')}
+              disabled={disabled}
+              id={`assessment-${assessment.id}`}
+              onValueChange={setAssessmentChoice}
+              options={assessment.choices}
+              value={assessmentChoice}
+            />
+          ) : (
+            <Banner variant="warning">
+              <p>{t('descriptionsMissing')}</p>
+            </Banner>
+          )}
           <div className="flex flex-col gap-2">
             <Label htmlFor={`reflection-${assessment.id}`}>{t('reflectionLabel')}</Label>
             <Textarea

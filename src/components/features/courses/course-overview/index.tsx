@@ -30,9 +30,7 @@ const CourseCertificateNote = ({
       <LucideIcon className="mt-0.5 size-4 shrink-0 text-brand-text" name="award" />
       <div className="flex flex-col gap-1">
         <p className="font-medium">{t('certificateTitle')}</p>
-        <p className="text-muted-foreground">
-          {t('certificateNote', { minRating: settings.minRating, minSkills: settings.minSkills })}
-        </p>
+        <p className="text-muted-foreground">{t('certificateNote', { minSkills: settings.minSkills })}</p>
         {completedSkills !== null && (
           <p className="text-muted-foreground">
             {t('certificateProgress', {

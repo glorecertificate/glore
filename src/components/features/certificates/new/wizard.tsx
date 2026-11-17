@@ -105,7 +105,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const moved = useRef(false)
 
   const base = emptyWizardValues(locale, holder)
-  const defaultValues = certificate ? certificateWizardValues(certificate, base, skills) : base
+  const defaultValues = certificate ? certificateWizardValues(certificate, base) : base
   const [step, setStep] = useState(() => (certificate?.isDraft ? resumeStep(defaultValues, missing) : 0))
   const form = useForm<WizardValues>({
     defaultValues,

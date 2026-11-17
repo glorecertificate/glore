@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { type Course } from '@/db/queries/course'
+import { SKILL_LEVELS, type SkillLevel } from '@/db/queries/skill-level-description'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
 
 export const COURSE_DURATION_MAX = 6000
@@ -80,10 +81,10 @@ export const computeTranslationCoverage = (course: Course): Record<(typeof LOCAL
 
 export interface CourseAnalyticsStats {
   avgRating: number | null
-  avgSelfAssessment: number | null
   completionCount: number
   completionRate: number
   enrollmentCount: number
+  levelCounts: Record<SkillLevel, number>
   lessonStats: { completionCount: number; completionRate: number; id: number; title: IntlRecord | null }[]
   ratingCount: number
   ratingDistribution: { count: number; value: number }[]
@@ -98,20 +99,22 @@ export const buildAnalytics = ({
   completedCount,
   enrollmentCount,
   lessons,
+  levels,
   ratings,
-  selfAssessments,
 }: {
   completedCount: number
   enrollmentCount: number
   lessons: { done: number; id: number; title: IntlRecord | null }[]
+  levels: SkillLevel[]
   ratings: number[]
-  selfAssessments: number[]
 }): CourseAnalyticsStats => ({
   avgRating: mean(ratings),
-  avgSelfAssessment: mean(selfAssessments),
   completionCount: completedCount,
   completionRate: percentOf(completedCount, enrollmentCount),
   enrollmentCount,
+  levelCounts: Object.fromEntries(
+    SKILL_LEVELS.map(level => [level, levels.filter(chosen => chosen === level).length])
+  ) as Record<SkillLevel, number>,
   lessonStats: lessons.map(({ done, id, title }) => ({
     completionCount: done,
     completionRate: percentOf(done, enrollmentCount),

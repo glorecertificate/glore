@@ -2,7 +2,7 @@ import { index, integer, pgTable, text, timestamp, uniqueIndex } from 'drizzle-o
 
 import { assessments, evaluations, questionOptions } from './assessments'
 import { courses, lessons } from './courses'
-import { skillCompassKindEnum } from './enums'
+import { skillCompassKindEnum, skillLevelEnum } from './enums'
 import { users } from './users'
 
 export const userCourses = pgTable(
@@ -83,7 +83,7 @@ export const userAssessments = pgTable(
       .notNull()
       .references(() => users.id),
     assessmentId: integer().references(() => assessments.id),
-    value: integer().notNull(),
+    value: skillLevelEnum().notNull(),
     reflection: text(),
     createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp({ mode: 'string' })

@@ -29,7 +29,7 @@ export const EligibilityPanel = ({
   openRequestId?: number | null
 }) => {
   const t = useTranslations('CertificateEligibility')
-  const { avgRating, completedSkillCount, hasLowRatings, minRating, minSkills } = eligibility
+  const { completedSkillCount, minSkills } = eligibility
 
   const requirements: Requirement[] = [
     {
@@ -38,13 +38,6 @@ export const EligibilityPanel = ({
       met: completedSkillCount >= minSkills,
       progress: Math.min(100, (completedSkillCount / minSkills) * 100),
       title: t('courses', { min: minSkills }),
-    },
-    {
-      detail:
-        avgRating === null ? t('ratingNone') : t('ratingDetail', { average: avgRating.toFixed(1), min: minRating }),
-      key: 'rating',
-      met: avgRating !== null && !hasLowRatings,
-      title: t('rating', { min: minRating }),
     },
     {
       detail: t('activityDetail'),

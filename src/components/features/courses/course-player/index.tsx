@@ -73,6 +73,7 @@ const PlayerLesson = ({
 
   const hints = {
     assessment: t('blocker.assessment'),
+    descriptions: t('blocker.descriptions'),
     evaluations: t('blocker.evaluations'),
     quiz: t('blocker.quiz'),
     reflection: t('blocker.reflection', { min: REFLECTION_MIN_LENGTH }),

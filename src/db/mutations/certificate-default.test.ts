@@ -49,7 +49,7 @@ describe.skipIf(!isLocalDatabase)('default certificate', () => {
         issuedAt,
         review: { comment: null },
         reviewerId: fixture.ids.tutorA,
-        skills: fixture.courseIds.slice(0, 3).map(courseId => ({ courseId, level: 3, statement: null })),
+        skills: fixture.courseIds.slice(0, 3).map(courseId => ({ courseId, level: 'intermediate' as const })),
         snapshot: snapshot(issuedAt),
       })
     )

@@ -42,6 +42,9 @@ export type Certificate = ReturnType<typeof parseCertificate>
 export const parseCertificate = (cert: CertificateWithRelations) => ({
   ...cert,
   rating: cert.rating ?? null,
+  skills: cert.skills.map(skill =>
+    cert.status === 'approved' || cert.status === 'revoked' ? skill : { ...skill, level: null, selfLevel: null }
+  ),
   organization: ((organization: OrganizationRow) => {
     const { profile, ...rest } = organization
     return {

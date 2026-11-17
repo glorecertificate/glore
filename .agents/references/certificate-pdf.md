@@ -24,7 +24,7 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 - react-pdf puts the first baseline at top plus the Roboto hhea ascent (1900 / 2048 = 0.928 x font size) whatever the line height.
 - `placed(top, size)` in `document.tsx` therefore adds 0.128 x size to every template top.
 - The template is slightly irregular: its first skill block sits 1 pt higher relative to its statement, dots, and level line than blocks 2 to 4 do.
-- Statement and level text use the midpoint of both. The dots keep the first block's 85.1, so blocks 2 to 4 have dots 1 pt low.
+- Description and level text use the midpoint of both. The dots keep the first block's 85.1, so blocks 2 to 4 have dots 1 pt low.
 - Headings carry +0.73 pt tracking, the banner text about -0.2 pt, and skill labels end 14.8 pt after the name. The level line is one text run, "level: good", with a regular word space.
 - Underlines in the From, hours, at, and Represent rows sit 0.7 pt above the template lines, kept in place so values still sit on them.
 
@@ -54,18 +54,18 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 
 ## Right column
 
-| Element          | Spec                                                                                                                                                                |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Background       | Faded arrows group x 256 to 575, y 20 to 325. The template uses group transparency; reproduce with an opacity wrapper.                                              |
-| Heading          | Roboto Bold 11 pt at x 264.8, tops 187.0 and 200.2: "Recognizes that the following " navy, "SOFT SKILLS" green, " have been / demonstrated by the volunteer:" navy. |
-| Skill block tops | 226.5, 355.1, 482.7, 610.3 (pitch about 127.9). With 3 skills the fourth block is omitted and spacing stays.                                                        |
-| Skill label      | Green box from x 269.3, height 22.9, width fitting the name (template 109.1).                                                                                       |
-| Skill icon       | Slot 14.6 by 14.3 at x 276.3, 5.3 below the label top. The course icon renders in white in place of the gray square.                                                |
-| Skill name       | Roboto Black 11 pt white at x 297.6, uppercase.                                                                                                                     |
-| Statement        | Regular 10 pt navy at x 269.1, 28.3 below the label top, line height 14, at most 3 lines, right edge x 549.5.                                                       |
-| Level dots       | Five 11.2 pt circles at x 269.3, 304.8, 340.4, 375.9, 411.5 (pitch 35.55), 85.1 below the label top. Filled green, empty `#f0f0f0`.                                 |
-| Level word       | "level:" Regular 9 pt `#3c4045` at x 501.5, then the level word in Black 9 pt green (D2 names, lower case), aligned with the dots.                                  |
-| Footer           | Erasmus+ emblem image x 397.5 to 547.6, y 767.9 to 802.0 (template PNG, 519 by 118 px).                                                                             |
+| Element          | Spec                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Background       | Faded arrows group x 256 to 575, y 20 to 325. The template uses group transparency; reproduce with an opacity wrapper.                                                                                       |
+| Heading          | Roboto Bold 11 pt at x 264.8, tops 187.0 and 200.2: "Recognizes that the following " navy, "SOFT SKILLS" green, " have been / demonstrated by the volunteer:" navy.                                          |
+| Skill block tops | 226.5, 355.1, 482.7, 610.3 (pitch about 127.9). With 3 skills the fourth block is omitted and spacing stays.                                                                                                 |
+| Skill label      | Green box from x 269.3, height 22.9, width fitting the name (template 109.1).                                                                                                                                |
+| Skill icon       | Slot 14.6 by 14.3 at x 276.3, 5.3 below the label top. The course icon renders in white in place of the gray square.                                                                                         |
+| Skill name       | Roboto Black 11 pt white at x 297.6, uppercase.                                                                                                                                                              |
+| Description      | Regular 10 pt navy at x 269.1, 28.3 below the label top, line height 14, at most 3 lines, right edge x 549.5.                                                                                                |
+| Level dots       | Three 11.2 pt circles of the template's first three positions, x 269.3, 304.8, 340.4 (pitch 35.55), 85.1 below the label top. Filled green, empty `#f0f0f0`.                                                 |
+| Level word       | "level:" Regular 9 pt `#3c4045` at x 501.5, then the level word in Black 9 pt green (D2 names, lower case). Legacy snapshots with five levels keep five dots and their frozen labels, aligned with the dots. |
+| Footer           | Erasmus+ emblem image x 397.5 to 547.6, y 767.9 to 802.0 (template PNG, 519 by 118 px).                                                                                                                      |
 
 ## Localized labels
 

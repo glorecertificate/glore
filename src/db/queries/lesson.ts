@@ -19,7 +19,7 @@ type QuestionRow = InferSelectModel<typeof questions>
 type QuestionOptionRow = InferSelectModel<typeof questionOptions>
 type EvaluationRow = InferSelectModel<typeof evaluations>
 type AssessmentRow = InferSelectModel<typeof assessments>
-type UserAssessmentRow = Pick<InferSelectModel<typeof userAssessments>, 'id' | 'value'>
+type UserAssessmentRow = Pick<InferSelectModel<typeof userAssessments>, 'id'>
 type UserEvaluationRow = Pick<InferSelectModel<typeof userEvaluations>, 'id' | 'value'>
 type ContributionRow = InferSelectModel<typeof contributions> & { user: PublicUserWithRelations }
 type LevelDescriptionRow = InferSelectModel<typeof skillLevelDescriptions>
@@ -48,7 +48,7 @@ export const parseLesson = (lesson: Partial<LessonWithRelations>) => {
   const assessment = lesson.assessment
     ? {
         ...lesson.assessment,
-        userRating: lesson.assessment.userAssessments[0]?.value,
+        answered: lesson.assessment.userAssessments.length > 0,
       }
     : undefined
 

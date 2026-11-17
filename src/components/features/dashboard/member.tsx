@@ -166,10 +166,7 @@ export const MemberDashboard = ({
       )}
 
       {blocked && (
-        <EligibilityPanel
-          className="mx-0 max-w-none"
-          eligibility={{ ...blocked, completedSkillCourseIds: [], selfLevels: {} }}
-        />
+        <EligibilityPanel className="mx-0 max-w-none" eligibility={{ ...blocked, completedSkillCourseIds: [] }} />
       )}
 
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">

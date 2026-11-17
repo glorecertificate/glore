@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/ui/stat-card'
 import { type Certificate, type CertificateStatus } from '@/db/queries/certificate'
+import { useReveal } from '@/hooks/use-reveal'
 import { cn, fullName } from '@/lib/utils'
 
 const ALL = 'all'
@@ -53,6 +54,7 @@ export const OrganizationCertificates = ({
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState(ALL)
   const [reviewer, setReviewer] = useState(ALL)
+  const reveal = useReveal(loading)
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
   const counts = Object.fromEntries(
@@ -73,7 +75,7 @@ export const OrganizationCertificates = ({
   })
 
   return (
-    <div className={cn('flex flex-col gap-6', !loading && 'animate-reveal')}>
+    <div className={cn('flex flex-col gap-6', reveal && 'animate-reveal')}>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           description={t('unassignedCount', { count: waiting })}

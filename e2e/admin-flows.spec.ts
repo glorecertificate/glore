@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { openDialog } from './actors'
 import { deleteUserByEmail } from './db'
-import { authFile } from './helpers'
+import { authFile, revealed } from './helpers'
 import { withDb } from './tenant'
 
 test.use({ storageState: authFile('admin') })
@@ -54,6 +54,7 @@ test.afterAll(async () => {
 
 test('shows the overview with real numbers and working shortcuts', async ({ page }) => {
   await page.goto('/admin')
+  await revealed(page)
   await expect(page.getByText('Certificate pipeline')).toBeVisible()
   await expect(page.getByText('Review time')).toBeVisible()
   await expect(page.getByText('Something went wrong')).toBeHidden()

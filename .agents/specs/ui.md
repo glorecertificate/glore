@@ -163,7 +163,8 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Labels, titles, and other static text stay real in a skeleton. Only data becomes `SkeletonText`.
 - A region whose size depends on data, such as a list or a table body, shows `LoadingFallback` inside the exact skeleton.
 - `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
-- Put `animate-reveal` on the content that replaces a loading state. It fades in for 150 ms and is off with reduced motion.
+- Put `animate-reveal` on content that replaces a loading state the user saw. It fades in for 150 ms and is off with reduced motion.
+- A fade from opacity 0 delays LCP by its length, so content of a first render or a server stream paints at once. A component with a `loading` prop fades through `useReveal(loading)`.
 
 ## Design briefs
 

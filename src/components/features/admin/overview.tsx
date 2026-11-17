@@ -11,7 +11,6 @@ import { SkeletonText } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
 import { type AdminOverview as AdminOverviewData } from '@/db/queries/admin-overview'
 import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
-import { cn } from '@/lib/utils'
 import config from '~/config/app.json'
 
 const OVERDUE_DAYS = Math.max(...config.reviewReminderDays)
@@ -41,7 +40,7 @@ export const AdminOverview = ({ loading = false, overview }: { loading?: boolean
   const placeholder = (value: React.ReactNode) => (loading ? <SkeletonText>{value}</SkeletonText> : value)
 
   return (
-    <div aria-busy={loading || undefined} className={cn('space-y-6 pb-8', !loading && 'animate-reveal')}>
+    <div aria-busy={loading || undefined} className="space-y-6 pb-8">
       {loading && <LoadingFallback className="sr-only" spinner={false} />}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

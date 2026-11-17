@@ -20,6 +20,7 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useReveal } from '@/hooks/use-reveal'
 import { cn } from '@/lib/utils'
 
 const MOBILE_TABLE = 'max-sm:block'
@@ -85,6 +86,7 @@ export const DataTable = <T,>({
   const { number } = useFormatter()
   const [page, setPage] = useState(0)
   const [sort, setSort] = useState<DataTableSort | null>(null)
+  const reveal = useReveal(loading)
   const column = columns.find(item => item.id === sort?.id)
   const collator = new Intl.Collator(locale, { numeric: true, sensitivity: 'base' })
   const sorted = sortRows({ collator, column, rows, sort })
@@ -196,7 +198,7 @@ export const DataTable = <T,>({
               </TableRow>
             </TableHeader>
           )}
-          <TableBody className={cn(MOBILE_BODY, !loading && 'animate-reveal')}>
+          <TableBody className={cn(MOBILE_BODY, reveal && 'animate-reveal')}>
             {loading ? (
               <TableRow className="max-sm:block">
                 <TableCell className="max-sm:block" colSpan={columnCount}>

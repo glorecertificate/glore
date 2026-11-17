@@ -13,6 +13,7 @@ import { Chart } from '@/components/ui/chart'
 import { Progress } from '@/components/ui/progress'
 import { StatCard } from '@/components/ui/stat-card'
 import { RATING_MIN_COUNT } from '@/db/queries/organization-insights'
+import { useReveal } from '@/hooks/use-reveal'
 import { cn } from '@/lib/utils'
 
 const HOURS_PER_DAY = 24
@@ -71,6 +72,7 @@ const PLACEHOLDER_INSIGHTS: OrganizationInsights = {
 const InsightsView = ({ insights, loading = false }: { insights: OrganizationInsights; loading?: boolean }) => {
   const { dateTime, number } = useFormatter()
   const t = useTranslations('Organization')
+  const reveal = useReveal(loading)
   const { learning, monthly, rating, review, tutors } = insights
   const approvedTotal = monthly.reduce((sum, row) => sum + row.approved, 0)
   const chartData = monthly.map(row => {
@@ -84,7 +86,7 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
   })
 
   return (
-    <div aria-busy={loading || undefined} className={cn('space-y-6', !loading && 'animate-reveal')}>
+    <div aria-busy={loading || undefined} className={cn('space-y-6', reveal && 'animate-reveal')}>
       {loading && <LoadingFallback className="sr-only" spinner={false} />}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard

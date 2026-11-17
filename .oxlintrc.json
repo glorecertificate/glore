@@ -747,6 +747,12 @@
       }
     },
     {
+      "files": ["src/components/layout/instant-reveal.tsx"],
+      "rules": {
+        "react-doctor/nextjs-no-native-script": "off"
+      }
+    },
+    {
       "files": ["*.config.ts"],
       "rules": {
         "eslint/no-template-curly-in-string": "off",

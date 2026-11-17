@@ -165,6 +165,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
 - Put `animate-reveal` on content that replaces a loading state the user saw. It fades in for 150 ms and is off with reduced motion.
 - A fade from opacity 0 delays LCP by its length, so content of a first render or a server stream paints at once. A component with a `loading` prop fades through `useReveal(loading)`.
+- React holds a streamed boundary up to 300 ms after the first frame. `InstantReveal` in the root layout keeps `$RT` unset, so each boundary paints in the frame after it arrives.
 
 ## Design briefs
 

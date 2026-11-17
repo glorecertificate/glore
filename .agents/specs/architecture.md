@@ -51,7 +51,7 @@ src/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,
 │   │                   #   dashboard, docs, help, legal, notifications, onboarding, organization, translations, users
 │   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
-│   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
+│   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback, instant-reveal,
 │   │                   #   loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,
 │   │                   #   search-command (palette), navigation (pure per-role entries), use-navigation-labels
 │   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, settings, theme

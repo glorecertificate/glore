@@ -8,6 +8,7 @@ import { skillGroupTone, skillGroupToneVariants } from '@/components/features/co
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
+import { PageHeaderDescription, PageHeaderTitle } from '@/components/ui/page-header'
 import { Progress } from '@/components/ui/progress'
 import { type CourseAccess, type CourseOverview } from '@/db/queries/learning'
 import { type IconName } from '@/lib/types'
@@ -79,8 +80,8 @@ export const CourseOverviewView = ({
           )}
         </div>
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold text-balance">{overview.title}</h1>
-          {description && <p className="max-w-2xl text-muted-foreground">{description}</p>}
+          <PageHeaderTitle>{overview.title}</PageHeaderTitle>
+          {description && <PageHeaderDescription>{description}</PageHeaderDescription>}
         </div>
         <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
           {durationMinutes ? (

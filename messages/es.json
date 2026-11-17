@@ -1801,6 +1801,7 @@
   "CertificateList": {
     "backTo": "Volver a todos los certificados",
     "description": "Los certificados de GloRe son un reconocimiento oficial de tu experiencia de voluntariado y de las habilidades blandas adquiridas. Los emite GloRe y puedes compartirlos en tus perfiles de redes sociales o añadirlos a tu CV. Puedes solicitar tu certificado después de completar al menos 3 cursos con una autoevaluación media de 3 sobre 5 como mínimo.",
+    "detailTitle": "Certificado",
     "notFound": "Certificado no encontrado",
     "notFoundMessage": "El certificado que buscas no existe o se ha movido",
     "requestCertificate": "Solicitar certificado",

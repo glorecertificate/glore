@@ -11,6 +11,13 @@ import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Link } from '@/components/ui/link'
 import { Markdown } from '@/components/ui/markdown'
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderDescription,
+  PageHeaderHeading,
+  PageHeaderTitle,
+} from '@/components/ui/page-header'
 import { Separator } from '@/components/ui/separator'
 import { pickLocale } from '@/db/queries/learning'
 import { LOCALES } from '@/lib/i18n'
@@ -48,33 +55,29 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
 
   return (
     <article className="flex flex-col gap-6">
-      <header className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          <Link className="hover:text-foreground" href="/docs">
-            {t('title')}
-          </Link>
-          {categoryTitle && (
-            <>
-              <span aria-hidden>{'/'}</span>
-              <span>{categoryTitle}</span>
-            </>
-          )}
-          {article.isDraft && (
-            <Badge size="sm" variant="muted">
-              {t('draft')}
-            </Badge>
-          )}
-        </div>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <h1 className="text-3xl font-semibold text-balance">{title}</h1>
-          {canEdit && <ArticleActions article={article} categories={categories.data ?? []} />}
-        </div>
-        {excerpt && <p className="text-lg text-muted-foreground">{excerpt}</p>}
-        <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <LucideIcon name="calendar" className="size-3 shrink-0" />
-          {t('lastUpdated', { date: format.dateTime(new Date(article.updatedAt), { dateStyle: 'long' }) })}
-        </p>
-      </header>
+      <PageHeader>
+        <PageHeaderHeading>
+          <PageHeaderTitle>{title}</PageHeaderTitle>
+          {excerpt && <PageHeaderDescription>{excerpt}</PageHeaderDescription>}
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            {categoryTitle && <span>{categoryTitle}</span>}
+            <span className="flex items-center gap-1.5">
+              <LucideIcon name="calendar" className="size-3 shrink-0" />
+              {t('lastUpdated', { date: format.dateTime(new Date(article.updatedAt), { dateStyle: 'long' }) })}
+            </span>
+            {article.isDraft && (
+              <Badge size="sm" variant="muted">
+                {t('draft')}
+              </Badge>
+            )}
+          </p>
+        </PageHeaderHeading>
+        {canEdit && (
+          <PageHeaderActions>
+            <ArticleActions article={article} categories={categories.data ?? []} />
+          </PageHeaderActions>
+        )}
+      </PageHeader>
       {translated && translated !== locale && (
         <Banner variant="info">
           <LucideIcon name="languages" className="mt-0.5 size-4 shrink-0" />

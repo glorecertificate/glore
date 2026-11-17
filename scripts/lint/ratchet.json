@@ -79,7 +79,7 @@
     "no-restricted-classes": 1
   },
   "src/components/ui": {
-    "no-arbitrary-value": 72,
-    "no-restricted-classes": 20
+    "no-arbitrary-value": 70,
+    "no-restricted-classes": 18
   }
 }

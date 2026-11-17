@@ -7,6 +7,7 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { LevelDots } from '@/components/ui/level-dots'
 import { Link } from '@/components/ui/link'
+import { PageHeaderDescription, PageHeaderTitle } from '@/components/ui/page-header'
 import {
   type CompletionSkill,
   type CourseOverview,
@@ -106,8 +107,8 @@ export const CourseCompleteView = ({
           <LucideIcon className="size-8" name="trophy" />
         </span>
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-semibold text-balance">{t('title')}</h1>
-          <p className="text-muted-foreground">{t('subtitle', { course: overview.title })}</p>
+          <PageHeaderTitle>{t('title')}</PageHeaderTitle>
+          <PageHeaderDescription>{t('subtitle', { course: overview.title })}</PageHeaderDescription>
         </div>
       </section>
       <section className="flex flex-col gap-4">

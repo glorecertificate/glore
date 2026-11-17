@@ -75,7 +75,7 @@ export const CourseEditorView = async (props: {
 
   return (
     <CourseProvider value={{ course, language, step }}>
-      <DashboardPage backHref="/courses" breadcrumb={<CourseBreadcrumb />}>
+      <DashboardPage breadcrumb={<CourseBreadcrumb />}>
         <ViewTransition default="none" enter={{ 'course-created': 'grid-enter', default: 'none' }}>
           <CourseEditor />
         </ViewTransition>

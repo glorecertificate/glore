@@ -6,6 +6,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { countryCodeToFlag } from '@/components/ui/country-select'
+import { PageHeaderTitle } from '@/components/ui/page-header'
 import { type Organization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
 import { isHttpUrl } from '@/lib/url'
@@ -48,7 +49,7 @@ export const OrganizationHeader = ({
         </Avatar>
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-xl font-semibold tracking-tight">{organization.name}</h1>
+            <PageHeaderTitle>{organization.name}</PageHeaderTitle>
             <Badge variant={statusVariant}>{t(statusLabel)}</Badge>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">

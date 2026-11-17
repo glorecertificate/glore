@@ -111,7 +111,7 @@ export const CourseBreadcrumb = () => {
   }
 
   return (
-    <HeaderBreadcrumb title={tCommon('courses')} backHref="/courses">
+    <HeaderBreadcrumb backHref="/courses" backLabel={tCommon('courses')}>
       <BreadcrumbSeparator />
 
       <BreadcrumbItem className="min-w-0 flex-1 gap-3 pr-6 max-sm:pr-0">

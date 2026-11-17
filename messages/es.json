@@ -15,6 +15,7 @@
     "clearSort": "Quitar orden",
     "completed": "Completado",
     "errorMessage": "Inténtalo de nuevo o <contactUs>contáctanos</contactUs> si el problema persiste",
+    "loading": "Cargando…",
     "uploadFailed": "No se pudo subir el archivo. Inténtalo de nuevo.",
     "errorTitle": "¡Ups! Algo salió mal",
     "hours": "Horas",

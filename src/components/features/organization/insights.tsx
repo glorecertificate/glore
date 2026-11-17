@@ -5,14 +5,16 @@ import { useEffect, useState } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type OrganizationInsights, getOrganizationInsights } from '@/actions/organizations/insights'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
 import { Progress } from '@/components/ui/progress'
-import { Skeleton } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
 import { RATING_MIN_COUNT } from '@/db/queries/organization-insights'
+import { useReveal } from '@/hooks/use-reveal'
+import { cn } from '@/lib/utils'
 
 const HOURS_PER_DAY = 24
 
@@ -25,7 +27,6 @@ export const OrganizationInsightsPanel = ({ organizationId }: { organizationId?:
 }
 
 const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; organizationId?: number }) => {
-  const { dateTime, number } = useFormatter()
   const t = useTranslations('Organization')
   const [insights, setInsights] = useState<OrganizationInsights | null>(null)
   const [failed, setFailed] = useState(false)
@@ -55,19 +56,23 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
     )
   }
 
-  if (!insights) {
-    return (
-      <div aria-busy className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {[0, 1, 2, 3].map(index => (
-            <Skeleton className="h-32 w-full" key={index} />
-          ))}
-        </div>
-        <Skeleton className="h-80 w-full" />
-      </div>
-    )
-  }
+  if (!insights) return <InsightsView insights={PLACEHOLDER_INSIGHTS} loading />
 
+  return <InsightsView insights={insights} />
+}
+
+const PLACEHOLDER_INSIGHTS: OrganizationInsights = {
+  learning: { completedCourses: 0, completedPeople: 0, people: 0, startedPeople: 0 },
+  monthly: [],
+  rating: { count: 0, ready: false },
+  review: { averageHours: 1, sample: 1 },
+  tutors: [],
+}
+
+const InsightsView = ({ insights, loading = false }: { insights: OrganizationInsights; loading?: boolean }) => {
+  const { dateTime, number } = useFormatter()
+  const t = useTranslations('Organization')
+  const reveal = useReveal(loading)
   const { learning, monthly, rating, review, tutors } = insights
   const approvedTotal = monthly.reduce((sum, row) => sum + row.approved, 0)
   const chartData = monthly.map(row => {
@@ -81,16 +86,19 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
   })
 
   return (
-    <div className="space-y-6">
+    <div aria-busy={loading || undefined} className={cn('space-y-6', reveal && 'animate-reveal')}>
+      {loading && <LoadingFallback className="sr-only" spinner={false} />}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           description={t('insightsLearningOf', { people: learning.people })}
           label={t('insightsStarted')}
+          loading={loading}
           value={learning.startedPeople}
         />
         <StatCard
           description={t('insightsCoursesCompleted', { count: learning.completedCourses })}
           label={t('insightsCompleted')}
+          loading={loading}
           value={learning.completedPeople}
         />
         <StatCard
@@ -99,9 +107,15 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
           }
           format={{ maximumFractionDigits: 1 }}
           label={t('insightsReviewTime')}
+          loading={loading}
           value={review.averageHours === null ? 0 : review.averageHours / HOURS_PER_DAY}
         />
-        <StatCard description={t('insightsApprovedRange')} label={t('insightsApproved')} value={approvedTotal} />
+        <StatCard
+          description={t('insightsApprovedRange')}
+          label={t('insightsApproved')}
+          loading={loading}
+          value={approvedTotal}
+        />
       </div>
 
       <Card>
@@ -113,6 +127,7 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
           <Chart
             data={chartData}
             label={t('insightsMonthlyTitle')}
+            loading={loading}
             series={[
               { key: 'submitted', label: t('insightsSubmitted') },
               { color: 'var(--chart-2)', key: 'approved', label: t('insightsApprovedSeries') },
@@ -129,7 +144,10 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
             <CardDescription>{t('insightsTutorsDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
-            {tutors.length === 0 && <p className="text-sm text-muted-foreground">{t('insightsTutorsEmpty')}</p>}
+            {loading && <LoadingFallback className="h-5" label={null} spinner={{ size: 'md' }} />}
+            {!loading && tutors.length === 0 && (
+              <p className="text-sm text-muted-foreground">{t('insightsTutorsEmpty')}</p>
+            )}
             <ul className="space-y-3">
               {tutors.map(tutor => (
                 <li className="flex items-center justify-between gap-3 text-sm" key={tutor.tutorId}>
@@ -149,7 +167,8 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
             <CardDescription>{t('insightsRatingDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
-            {!rating.ready && (
+            {loading && <LoadingFallback className="h-5" label={null} spinner={{ size: 'md' }} />}
+            {!loading && !rating.ready && (
               <p className="text-sm text-muted-foreground">
                 {t('insightsRatingLocked', { count: rating.count, min: RATING_MIN_COUNT })}
               </p>

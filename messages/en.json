@@ -15,6 +15,7 @@
     "clearSort": "Clear sort",
     "completed": "Completed",
     "errorMessage": "Please try again or <contactUs>contact us</contactUs> if the problem persists",
+    "loading": "Loading…",
     "uploadFailed": "Upload failed. Please try again.",
     "errorTitle": "Oops! Something went wrong",
     "hours": "Hours",

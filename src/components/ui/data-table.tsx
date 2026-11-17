@@ -18,8 +18,9 @@ import {
 } from '@/components/ui/data-table-sort'
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useReveal } from '@/hooks/use-reveal'
 import { cn } from '@/lib/utils'
 
 const MOBILE_TABLE = 'max-sm:block'
@@ -85,6 +86,7 @@ export const DataTable = <T,>({
   const { number } = useFormatter()
   const [page, setPage] = useState(0)
   const [sort, setSort] = useState<DataTableSort | null>(null)
+  const reveal = useReveal(loading)
   const column = columns.find(item => item.id === sort?.id)
   const collator = new Intl.Collator(locale, { numeric: true, sensitivity: 'base' })
   const sorted = sortRows({ collator, column, rows, sort })
@@ -121,7 +123,7 @@ export const DataTable = <T,>({
       <div className="flex flex-wrap items-center justify-between gap-3">
         {filters}
         <span aria-live="polite" className="text-sm text-muted-foreground" role="status">
-          {t('count', { count: total })}
+          {!loading && t('count', { count: total })}
         </span>
       </div>
       {sortable.length > 0 && (
@@ -152,59 +154,59 @@ export const DataTable = <T,>({
       )}
       <div className="overflow-hidden rounded-lg border">
         <Table aria-label={label} className={MOBILE_TABLE}>
-          <TableHeader className={MOBILE_HEAD}>
-            <TableRow>
-              {columns.map(item => (
-                <TableHead
-                  aria-sort={
-                    item.sortValue
-                      ? sort?.id === item.id
-                        ? sort.descending
-                          ? 'descending'
-                          : 'ascending'
-                        : 'none'
-                      : undefined
-                  }
-                  className={item.className}
-                  key={item.id}
-                  scope="col"
-                >
-                  {item.sortValue ? (
-                    <Button
-                      className="-ml-2"
-                      onClick={() => onToggleSort(item.id)}
-                      size="sm"
-                      type="button"
-                      variant="ghost"
-                    >
-                      {item.header}
-                      <LucideIcon
-                        name={sort?.id === item.id ? (sort.descending ? 'arrow-down' : 'arrow-up') : 'arrow-up-down'}
-                      />
-                    </Button>
-                  ) : (
-                    item.header
-                  )}
-                </TableHead>
-              ))}
-              {rowActions && (
-                <TableHead scope="col">
-                  <span className="sr-only">{t('actions')}</span>
-                </TableHead>
-              )}
-            </TableRow>
-          </TableHeader>
-          <TableBody className={MOBILE_BODY}>
+          {!loading && (
+            <TableHeader className={MOBILE_HEAD}>
+              <TableRow>
+                {columns.map(item => (
+                  <TableHead
+                    aria-sort={
+                      item.sortValue
+                        ? sort?.id === item.id
+                          ? sort.descending
+                            ? 'descending'
+                            : 'ascending'
+                          : 'none'
+                        : undefined
+                    }
+                    className={item.className}
+                    key={item.id}
+                    scope="col"
+                  >
+                    {item.sortValue ? (
+                      <Button
+                        className="-ml-2"
+                        onClick={() => onToggleSort(item.id)}
+                        size="sm"
+                        type="button"
+                        variant="ghost"
+                      >
+                        {item.header}
+                        <LucideIcon
+                          name={sort?.id === item.id ? (sort.descending ? 'arrow-down' : 'arrow-up') : 'arrow-up-down'}
+                        />
+                      </Button>
+                    ) : (
+                      item.header
+                    )}
+                  </TableHead>
+                ))}
+                {rowActions && (
+                  <TableHead scope="col">
+                    <span className="sr-only">{t('actions')}</span>
+                  </TableHead>
+                )}
+              </TableRow>
+            </TableHeader>
+          )}
+          <TableBody className={cn(MOBILE_BODY, reveal && 'animate-reveal')}>
             {loading ? (
-              Array.from({ length: Math.min(limit, 5) }, (_, row) => (
-                <TableRow className={MOBILE_ROW} key={row}>
-                  {Array.from({ length: columnCount }, (_cell, cell) => (
-                    <TableCell className={cn(MOBILE_CELL)} key={cell}>
-                      <Skeleton className="h-5 w-full min-w-16" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              <TableRow className="max-sm:block">
+                <TableCell className="max-sm:block" colSpan={columnCount}>
+                  <Empty className="cursor-wait">
+                    <Spinner aria-hidden size="lg" variant="colored" />
+                  </Empty>
+                </TableCell>
+              </TableRow>
             ) : visible.length > 0 ? (
               visible.map(row => (
                 <TableRow className={MOBILE_ROW} key={getRowId(row)}>

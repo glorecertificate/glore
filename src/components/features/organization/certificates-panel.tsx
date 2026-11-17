@@ -10,7 +10,6 @@ import { type OrgTutor } from '@/components/features/certificates/certificate-re
 import { OrganizationCertificates } from '@/components/features/certificates/organization-certificates'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import { type Certificate } from '@/db/queries/certificate'
 
 interface LoadedCertificates {
@@ -74,18 +73,7 @@ const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void;
     )
   }
 
-  if (!loaded) {
-    return (
-      <div aria-busy className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {[0, 1, 2, 3].map(index => (
-            <Skeleton className="h-24 w-full" key={index} />
-          ))}
-        </div>
-        <Skeleton className="h-64 w-full" />
-      </div>
-    )
-  }
+  if (!loaded) return <OrganizationCertificates certificates={[]} loading tutors={[]} />
 
   return (
     <OrganizationCertificates

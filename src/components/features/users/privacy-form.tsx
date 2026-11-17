@@ -8,10 +8,10 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { listFeaturableCertificates, updatePrivacy } from '@/actions/account/preferences'
 import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { SettingsSection } from '@/components/features/users/settings-section'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useSession } from '@/components/providers/session'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { toast } from '@/components/ui/toast'
 import { timestampMillis } from '@/db/queries/organization'
@@ -79,13 +79,13 @@ export const PrivacyForm = () => {
       <div className="my-8 border-t" />
 
       <SettingsSection description={t('featuredCertificateDescription')} title={t('featuredCertificate')}>
-        {!data && <Skeleton className="h-16 w-full" />}
+        {!data && <LoadingFallback className="h-16" />}
         {data && certificates.length === 0 && (
           <p className="text-sm text-muted-foreground">{t('featuredCertificateEmpty')}</p>
         )}
         {certificates.length > 0 && (
           <RadioGroup
-            className="gap-2"
+            className="animate-reveal gap-2"
             disabled={saving || impersonating}
             onValueChange={handleFeatured}
             value={featured ? String(featured.id) : ''}

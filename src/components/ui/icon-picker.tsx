@@ -12,7 +12,7 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDebounce } from '@/hooks/use-debounce'
 import { type Any } from '@/lib/types'
@@ -52,13 +52,9 @@ export const useIconData = () => {
   return { icons, loading }
 }
 
-const IconsColumnSkeleton = () => (
-  <div className="mt-1 flex w-full flex-col gap-2">
-    <div className="grid w-full grid-cols-6 gap-2">
-      {Array.from({ length: 42 }).map((_, i) => (
-        <Skeleton className="aspect-square w-full rounded-md" key={i} />
-      ))}
-    </div>
+const IconsLoading = () => (
+  <div className="flex h-full cursor-wait items-center justify-center">
+    <Spinner aria-hidden size="lg" variant="colored" />
   </div>
 )
 
@@ -389,7 +385,7 @@ export const IconPicker = ({
             scrollbarWidth: 'thin',
           }}
         >
-          {loading || iconsLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
+          {loading || iconsLoading ? <IconsLoading /> : renderVirtualContent()}
         </div>
       </PopoverContent>
     </Popover>

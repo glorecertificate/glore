@@ -1,8 +1,5 @@
-import { Suspense } from 'react'
-
 import { CourseList } from '@/components/features/courses/course-list'
 import { CourseListHeader } from '@/components/features/courses/course-list/header'
-import { CourseListSkeleton } from '@/components/features/courses/course-list/skeleton'
 import { CourseListTabs } from '@/components/features/courses/course-list/tabs'
 import { SkillCompassSection } from '@/components/features/courses/skill-compass/section'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -14,15 +11,8 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const CoursesPage = () => (
-  <DashboardPage
-    header={<CourseListHeader />}
-    fallback={<CourseListSkeleton />}
-    className="min-h-[calc(100vh-160px)]"
-    provider={CourseListTabs}
-  >
-    <Suspense fallback={null}>
-      <SkillCompassSection />
-    </Suspense>
+  <DashboardPage className="min-h-[calc(100vh-160px)]" header={<CourseListHeader />} provider={CourseListTabs}>
+    <SkillCompassSection />
     <CourseList className="pb-6" />
   </DashboardPage>
 )

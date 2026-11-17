@@ -9,13 +9,17 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { FormControl } from '@/components/ui/form'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
 const loadCalendar = async () => (await import('@/components/ui/calendar')).Calendar
 
 const Calendar = dynamic(loadCalendar, {
-  loading: () => <Skeleton className="h-75 w-64" />,
+  loading: () => (
+    <div className="flex h-82.5 w-62 cursor-wait items-center justify-center">
+      <Spinner aria-hidden size="lg" variant="colored" />
+    </div>
+  ),
   ssr: false,
 })
 
@@ -94,6 +98,7 @@ export const DatePicker = ({
       <PopoverContent align="start" className="w-auto overflow-hidden p-0">
         <Calendar
           captionLayout="dropdown"
+          fixedWeeks
           defaultMonth={selectedDate}
           disabled={disabled}
           endMonth={new Date()}

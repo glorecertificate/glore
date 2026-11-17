@@ -16,11 +16,11 @@ import {
   notificationLimitParser,
 } from '@/components/features/notifications/params'
 import { LucideIcon } from '@/components/icons/lucide'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
-import { Skeleton } from '@/components/ui/skeleton'
 import { NOTIFICATION_CATEGORIES } from '@/db/queries/notification'
 import { usePoll } from '@/hooks/use-poll'
 
@@ -90,13 +90,7 @@ export const NotificationsContent = () => {
         </Button>
       </div>
 
-      {data === null && (
-        <div className="space-y-2">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-        </div>
-      )}
+      {data === null && <LoadingFallback className="py-16" />}
 
       {data && data.items.length === 0 && (
         <Empty className="border">
@@ -114,7 +108,7 @@ export const NotificationsContent = () => {
 
       {data && data.items.length > 0 && (
         <>
-          <NotificationList notifications={data.items} onRead={refresh} />
+          <NotificationList className="animate-reveal" notifications={data.items} onRead={refresh} />
           {data.hasMore && limit < MAX_LIMIT && (
             <div className="flex justify-center">
               <Button onClick={() => setLimit(limit + PAGE_SIZE)} variant="outline">

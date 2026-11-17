@@ -4,9 +4,18 @@ import { CertificateStatusBadge } from '@/components/features/certificates/certi
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { SkeletonText } from '@/components/ui/skeleton'
 import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
 
-export const AdminOverviewPipeline = ({ pipeline, total }: { pipeline: Pipeline; total: number }) => {
+export const AdminOverviewPipeline = ({
+  loading = false,
+  pipeline,
+  total,
+}: {
+  loading?: boolean
+  pipeline: Pipeline
+  total: number
+}) => {
   const t = useTranslations('Admin.overview')
   const tCertificates = useTranslations('CertificateStatus')
 
@@ -14,7 +23,13 @@ export const AdminOverviewPipeline = ({ pipeline, total }: { pipeline: Pipeline;
     <Card>
       <CardHeader>
         <CardTitle>{t('pipelineTitle')}</CardTitle>
-        <CardDescription>{t('pipelineDescription', { count: total })}</CardDescription>
+        <CardDescription>
+          {loading ? (
+            <SkeletonText>{t('pipelineDescription', { count: total })}</SkeletonText>
+          ) : (
+            t('pipelineDescription', { count: total })
+          )}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {total === 0 && <p className="text-sm text-muted-foreground">{t('pipelineEmpty')}</p>}
@@ -24,7 +39,9 @@ export const AdminOverviewPipeline = ({ pipeline, total }: { pipeline: Pipeline;
               <li className="space-y-1.5 text-sm" key={status}>
                 <div className="flex items-center justify-between gap-3">
                   <CertificateStatusBadge status={status} />
-                  <span className="font-medium tabular-nums">{pipeline[status]}</span>
+                  <span className="font-medium tabular-nums">
+                    {loading ? <SkeletonText>{pipeline[status]}</SkeletonText> : pipeline[status]}
+                  </span>
                 </div>
                 <Progress
                   aria-label={tCertificates(CERTIFICATE_STATUS[status].labelKey)}

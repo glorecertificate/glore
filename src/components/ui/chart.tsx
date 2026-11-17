@@ -22,6 +22,7 @@ interface ChartDatum {
 export interface ChartProps extends Omit<React.ComponentProps<'div'>, 'children'> {
   data: ChartDatum[]
   label: string
+  loading?: boolean
   series: ChartSeries[]
   variant?: 'area' | 'bar' | 'line'
 }
@@ -34,9 +35,17 @@ const ChartRenderer = dynamic(
   { loading: () => <Skeleton className="size-full" />, ssr: false }
 )
 
-export const Chart = ({ className, data, label, series, variant = 'area', ...props }: ChartProps) => {
+export const Chart = ({ className, data, label, loading = false, series, variant = 'area', ...props }: ChartProps) => {
   const t = useTranslations('Components.Chart')
   const { number } = useFormatter()
+
+  if (loading) {
+    return (
+      <div className={cn('min-w-0', className)} data-slot="chart" {...props}>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    )
+  }
 
   return (
     <div className={cn('min-w-0', className)} data-slot="chart" {...props}>

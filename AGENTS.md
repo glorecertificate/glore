@@ -41,18 +41,18 @@ References live in `.agents/references/`: product decisions, the certificate PDF
 ## Commands and commits
 
 - Always run `pnpm run <script>`, never bare `pnpm <script>`, except `pnpm install`. Full table: `workflow.md`.
-- Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
+- Tests: `pnpm run test` (Vitest), and `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once) for auth, routing, and role flows.
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first.
 - Commit headers are Conventional Commits with a lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 - One PR is one logical task. It merges by squash, with its title as the commit header. Never create a merge commit (`workflow.md`, "Git history").
 - Fix the blocking findings of the `Claude review` check (`github.md`).
-- Never run `pnpm install` in a lane worktree, since `node_modules` links to the main checkout (`workflow.md`, "Worktrees and lanes").
+- Never run `pnpm install` in a lane worktree (`workflow.md`, "Worktrees and lanes").
 
 ## Skills
 
 - Before starting, read and apply the matching skill from the routing table in `workflow.md`. Any React or Next.js code needs `vercel-react-best-practices`.
 - Vendored skills in `.agents/skills/` are tracked. Never hand-edit them.
-- `pnpm run skills` pulls upstream default branches and can rewrite every tracked skill. Review its diff and `git restore` unintended updates.
+- After `pnpm run skills`, review its diff and `git restore` unintended updates (`workflow.md`).
 
 ## Architecture
 
@@ -74,7 +74,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 - Use `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. Use `await`, never `.then()` chains, and `Promise.all()` for independent work.
 - One component per file, `@/` and `~/` aliases, `cva` variants, `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components.
 - Order hook dependency arrays alphabetically.
-- Render icons through `LucideIcon` from `@/components/icons/lucide`. Add new icons to `icons/registry.ts`. Lint blocks `lucide-react` imports outside `icons/` and the editor. Never `lucide-react/dynamic`.
+- Render icons through `LucideIcon` from `@/components/icons/lucide` and add new ones to `icons/registry.ts`. Never import `lucide-react` elsewhere (`patterns.md`).
 
 ## Gotchas: data and imports
 
@@ -83,7 +83,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 3. `db/queries/<table>.ts` parsers MUST stay pure and never import `@/db/client` (`architecture.md`).
 4. A cached query wraps the DB call in an inner `'use cache'` + `cacheTag` function, and the outer takes `{ cache: boolean }`.
 5. Multi-statement writes use `transaction(fn)` from `@/db/client` with `(tx, ...args)` units in `src/db/mutations/`, and statements inside run sequentially.
-6. Client-created course-tree records use negative `tempId()` ids, never `Date.now()`. Never send a placeholder id or foreign key to the DB; resolve the real parent id first.
+6. Client-created course-tree records use negative `tempId()` ids that never reach the DB (`patterns.md`).
 7. Read `IntlRecord` fields with `localize(record)` from `useI18n()`.
 
 ## Gotchas: runtime and domain
@@ -104,7 +104,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 Run the rungs in order and report which ones ran:
 
 1. `pnpm run check` exits 0.
-2. `pnpm run test` for logic, with a failing test first for bug fixes. `pnpm run test:e2e` for auth, routing, and role flows.
+2. Prove a fix or a feature with a temporary test outside the repository, in the session temp directory. Commit a test only when it guards a rule that must run again: certificate, invitation, role, or auth logic. Then run the test suites.
 3. Test email flows yourself with Mailpit, never handing them to the user (`workflow.md`).
 4. Verify UI, layout, or animation in a real browser with `agent-browser` at `https://glore.localhost` as a seeded user. A typecheck is not visual verification.
 

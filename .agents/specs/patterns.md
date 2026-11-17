@@ -150,6 +150,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 - `debounce` defaults to 500ms and has `.cancel()` and `.flush()`.
 - `tempId()` and `isTempId()` serve client-created records.
 - Course-tree primary keys are `integer` identity columns, so `tempId()` returns a negative placeholder. Never use `Date.now()`, which overflows `int4`.
+- Never send a placeholder id or foreign key to the DB. Resolve the real parent id first.
 - `isTempId()` decides insert versus update.
 
 ### Hooks

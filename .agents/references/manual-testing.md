@@ -201,3 +201,16 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 3. Open the command palette and reach a course, a setting, and a role-specific page.
 4. Open the notification center, mark all read, and follow a notification link.
 5. In Settings, export your data, list active sessions, and revoke one.
+
+## Demo seed behavior
+
+- Run `pnpm run content:import --target <target>` first: the seed reads the course catalog and stops before writing if it is missing.
+- The seed is idempotent and resets what it owns in one transaction.
+- It upserts organizations and accounts, then deletes and rebuilds their certificates, invitations, links, requests, events, notifications, and progress.
+- Dates are relative to the run.
+- Approved certificates carry a snapshot and no stored PDF: the download renders from it.
+- Data and planning live in `scripts/seed-demo-data.ts` (organizations, accounts) and `seed-demo-story.ts` (certificates, progress, flows, events, notifications; pure and unit tested).
+- Localized text lives in `seed-demo-copy.ts`, SQL in `seed-demo-db.mts`, and shared upserts in `scripts/seed-db.mts`.
+- `local` needs a localhost `DATABASE_URL`.
+- `staging` needs a remote one whose database comment is `glore:staging` (`COMMENT ON DATABASE`, set on the Neon `staging` branch only, since Neon forbids custom database settings).
+- Production never has the comment, so it is never seeded.

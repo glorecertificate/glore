@@ -50,19 +50,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - Accounts sit at `<local>+glore-<key>@<domain>` of `TEST_EMAIL`, with usernames `demo.<key>`.
 - It creates three organizations (two approved in Italy and Spain, one pending) and 28 accounts.
 - It creates 18 certificates in every status plus a deleted holder, learning progress, ratings, invitations, an invite link, join requests, events, and notifications.
-
-### Demo seed behavior
-
-- Run `pnpm run content:import --target <target>` first: the seed reads the course catalog and stops before writing if it is missing.
-- The seed is idempotent and resets what it owns in one transaction.
-- It upserts organizations and accounts, then deletes and rebuilds their certificates, invitations, links, requests, events, notifications, and progress.
-- Dates are relative to the run.
-- Approved certificates carry a snapshot and no stored PDF: the download renders from it.
-- Data and planning live in `scripts/seed-demo-data.ts` (organizations, accounts) and `seed-demo-story.ts` (certificates, progress, flows, events, notifications; pure and unit tested).
-- Localized text lives in `seed-demo-copy.ts`, SQL in `seed-demo-db.mts`, and shared upserts in `scripts/seed-db.mts`.
-- `local` needs a localhost `DATABASE_URL`.
-- `staging` needs a remote one whose database comment is `glore:staging` (`COMMENT ON DATABASE`, set on the Neon `staging` branch only, since Neon forbids custom database settings).
-- Production never has the comment, so it is never seeded.
+- `.agents/references/manual-testing.md`, "Demo seed behavior", has the reset rules, the source files, and the staging guard.
 
 ## Translations
 
@@ -165,6 +153,9 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 - Inventories the code already enumerates (hook lists, env var tables, cache tags) stay in the code with a pointer here, not copied.
 
 ## Testing
+
+- Prove a fix or a feature with a temporary test outside the repository, in the session temp directory.
+- Commit a test only when it guards a rule that must run again: certificate, invitation, role, or auth logic.
 
 ### Unit tests
 

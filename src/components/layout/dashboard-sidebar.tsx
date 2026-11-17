@@ -265,7 +265,14 @@ const DashboardSidebarUserItem = ({
   const searchParams = useSearchParams()
 
   return (
-    <Suspense fallback={<DropdownMenuItem disabled>{children}</DropdownMenuItem>}>
+    <Suspense
+      fallback={
+        <DropdownMenuItem disabled>
+          <LucideIcon name={icon} />
+          {children}
+        </DropdownMenuItem>
+      }
+    >
       <Link href={href} onClick={onClick}>
         <DropdownMenuItem
           className={cn(

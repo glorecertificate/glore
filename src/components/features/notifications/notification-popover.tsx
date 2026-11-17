@@ -5,9 +5,9 @@ import { useTranslations } from 'next-intl'
 import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import { LucideIcon } from '@/components/icons/lucide'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { Skeleton } from '@/components/ui/skeleton'
 import { usePoll } from '@/hooks/use-poll'
 
 const POPOVER_LIMIT = 10
@@ -47,13 +47,7 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
-        {data === null && (
-          <div className="space-y-2 p-2">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        )}
+        {data === null && <LoadingFallback className="py-10" />}
         {data && data.items.length === 0 && (
           <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
             <LucideIcon className="size-6 text-muted-foreground" name="bell-off" />
@@ -62,7 +56,12 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
           </div>
         )}
         {data && data.items.length > 0 && (
-          <NotificationList notifications={data.items} onNavigate={onNavigate} onRead={reload} />
+          <NotificationList
+            className="animate-reveal"
+            notifications={data.items}
+            onNavigate={onNavigate}
+            onRead={reload}
+          />
         )}
       </div>
       <div className="border-t p-2">

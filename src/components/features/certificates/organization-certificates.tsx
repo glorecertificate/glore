@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/ui/stat-card'
 import { type Certificate, type CertificateStatus } from '@/db/queries/certificate'
-import { fullName } from '@/lib/utils'
+import { cn, fullName } from '@/lib/utils'
 
 const ALL = 'all'
 const NO_REVIEWER = 'none'
@@ -37,10 +37,12 @@ const holderName = (certificate: Certificate) => (certificate.holder ? fullName(
 
 export const OrganizationCertificates = ({
   certificates,
+  loading = false,
   onChanged,
   tutors,
 }: {
   certificates: Certificate[]
+  loading?: boolean
   onChanged?: () => void
   tutors: OrgTutor[]
 }) => {
@@ -71,18 +73,20 @@ export const OrganizationCertificates = ({
   })
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn('flex flex-col gap-6', !loading && 'animate-reveal')}>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           description={t('unassignedCount', { count: waiting })}
           label={tCertificates('statusSubmitted')}
+          loading={loading}
           value={counts.submitted}
         />
-        <StatCard label={tCertificates('statusInReview')} value={counts.in_review} />
-        <StatCard label={tCertificates('statusChangesRequested')} value={counts.changes_requested} />
+        <StatCard label={tCertificates('statusInReview')} loading={loading} value={counts.in_review} />
+        <StatCard label={tCertificates('statusChangesRequested')} loading={loading} value={counts.changes_requested} />
         <StatCard
           description={t('closedCount', { count: closed })}
           label={tCertificates('statusApproved')}
+          loading={loading}
           value={counts.approved}
         />
       </div>
@@ -135,6 +139,7 @@ export const OrganizationCertificates = ({
         ]}
         emptyDescription={t('emptyDescription')}
         emptyTitle={t('emptyTitle')}
+        loading={loading}
         filters={
           <div className="flex flex-wrap items-center gap-2">
             <Input

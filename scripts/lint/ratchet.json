@@ -31,7 +31,7 @@
     "no-restricted-classes": 15
   },
   "src/components/features/courses/course-list": {
-    "no-arbitrary-value": 14,
+    "no-arbitrary-value": 13,
     "no-restricted-classes": 7
   },
   "src/components/features/courses/skill-compass": {

@@ -6,14 +6,14 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
 import { type Course } from '@/db/queries/course'
 
 const CourseSettings = dynamic(
   async () => (await import('@/components/features/courses/course-editor/settings')).CourseSettings,
-  { loading: () => <Skeleton className="h-96 w-full rounded-lg" /> }
+  { loading: () => <LoadingFallback className="h-96" /> }
 )
 
 export const CourseDialog = ({

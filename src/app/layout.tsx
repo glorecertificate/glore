@@ -101,8 +101,8 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
 
 const AppLayoutFallback = () => (
   <html lang={DEFAULT_LOCALE}>
-    <body>
-      <LoadingFallback size="full" />
+    <body aria-busy>
+      <LoadingFallback label={null} size="full" />
     </body>
   </html>
 )

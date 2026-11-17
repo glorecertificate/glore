@@ -9,7 +9,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
 import { type ExternalToast, toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
@@ -350,10 +350,8 @@ export const MultiSelectContent = ({
         <CommandList>
           <CommandEmpty className="p-0">
             {loading ? (
-              <div className="p-2">
-                {Array.from({ length: options.length }).map((_, i) => (
-                  <Skeleton className="mb-1 h-4 w-full last:mb-0" key={i} />
-                ))}
+              <div className="flex cursor-wait justify-center py-4">
+                <Spinner aria-hidden size="lg" variant="colored" />
               </div>
             ) : (
               <div className="py-4 text-center text-sm text-muted-foreground">{tMultiSelect('noItems')}</div>

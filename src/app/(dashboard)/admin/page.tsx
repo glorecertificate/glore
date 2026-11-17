@@ -1,7 +1,6 @@
 import { getAdminOverview } from '@/actions/admin/overview'
-import { AdminOverview } from '@/components/features/admin/overview'
+import { AdminOverview, AdminOverviewSkeleton } from '@/components/features/admin/overview'
 import { AdminOverviewError } from '@/components/features/admin/overview-error'
-import { AdminOverviewSkeleton } from '@/components/features/admin/overview-skeleton'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'

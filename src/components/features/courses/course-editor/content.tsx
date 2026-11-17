@@ -8,58 +8,25 @@ import { type Value } from 'platejs'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { LessonActivities } from '@/components/features/courses/course-editor/lesson-activities'
 import { type PendingChange, commitPending } from '@/components/features/courses/course-editor/pending-change'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useSession } from '@/components/providers/session'
-import { Skeleton } from '@/components/ui/skeleton'
 import { type IntlRecord } from '@/lib/i18n'
-import { cn } from '@/lib/utils'
 
-const SKELETON_TOOLBAR_GROUPS = [
-  ['undo', 'redo'],
-  ['insert', 'turn-into', 'ai'],
-  ['bold', 'italic', 'underline'],
-]
-
-const SKELETON_TOOLBAR_WIDTH: Record<string, string> = {
-  'turn-into': 'w-24',
-}
-
-const SkeletonToolbar = () => (
-  <div className="flex w-full items-center gap-1 rounded-t-lg border border-b-0 border-border bg-input/30 p-1">
-    {SKELETON_TOOLBAR_GROUPS.map((group, i) => (
-      <div className="flex items-center gap-1" key={group.join('-')}>
-        {i > 0 && <div className="mr-1 h-5 w-px shrink-0 bg-border" />}
-        {group.map(id => (
-          <Skeleton className={cn('h-8 rounded-sm', SKELETON_TOOLBAR_WIDTH[id] ?? 'w-8')} key={id} />
-        ))}
-      </div>
-    ))}
-  </div>
-)
-
-const EditorSkeleton = () => (
-  <div className="relative w-full cursor-wait select-none">
-    <SkeletonToolbar />
-    <div className="rounded-b-lg border px-8 pt-8 pb-72 text-base sm:px-12">
-      <div className="flex h-8 items-center">
-        <Skeleton className="h-3.5 w-2/5" />
-      </div>
-    </div>
-  </div>
-)
+const EditorFallback = () => <LoadingFallback className="min-h-96 rounded-lg border" />
 
 const LessonEditor = dynamic(
   async () => {
     const m = await import('@/components/features/courses/course-editor/lesson-editor')
     return { default: m.LessonEditor }
   },
-  { loading: () => <EditorSkeleton />, ssr: false }
+  { loading: () => <EditorFallback />, ssr: false }
 )
 const RichTextEditorProvider = dynamic(
   async () => {
     const m = await import('@/components/ui/rich-text-editor/provider')
     return { default: m.RichTextEditorProvider }
   },
-  { loading: () => <EditorSkeleton />, ssr: false }
+  { loading: () => <EditorFallback />, ssr: false }
 )
 
 const CourseEditor = ({

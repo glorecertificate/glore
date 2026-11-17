@@ -3,16 +3,20 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { AdminOverviewPipeline } from '@/components/features/admin/overview-pipeline'
 import { AdminOverviewShortcuts } from '@/components/features/admin/overview-shortcuts'
 import { hasMonthlyActivity, monthStart, toDuration } from '@/components/features/admin/overview-utils'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
+import { SkeletonText } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
 import { type AdminOverview as AdminOverviewData } from '@/db/queries/admin-overview'
+import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
+import { cn } from '@/lib/utils'
 import config from '~/config/app.json'
 
 const OVERDUE_DAYS = Math.max(...config.reviewReminderDays)
 
-export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => {
+export const AdminOverview = ({ loading = false, overview }: { loading?: boolean; overview: AdminOverviewData }) => {
   const t = useTranslations('Admin.overview')
   const { dateTime, number } = useFormatter()
   const { certificates, monthly, organizations, review, users } = overview
@@ -34,12 +38,16 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
     return number(value, { maximumFractionDigits: 1, style: 'unit', unit, unitDisplay: 'long' })
   }
 
+  const placeholder = (value: React.ReactNode) => (loading ? <SkeletonText>{value}</SkeletonText> : value)
+
   return (
-    <div className="space-y-6 pb-8">
+    <div aria-busy={loading || undefined} className={cn('space-y-6 pb-8', !loading && 'animate-reveal')}>
+      {loading && <LoadingFallback className="sr-only" spinner={false} />}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           description={t('usersBreakdown', { admins: users.admins, banned: users.banned, pending: users.pending })}
           label={t('statUsers')}
+          loading={loading}
           value={users.total}
         />
         <StatCard
@@ -49,11 +57,13 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
             rejected: organizations.rejected,
           })}
           label={t('statOrganizations')}
+          loading={loading}
           value={organizations.total}
         />
         <StatCard
           description={t('certificatesBreakdown', { drafts: certificates.drafts })}
           label={t('statCertificates')}
+          loading={loading}
           value={certificates.total}
         />
         <StatCard
@@ -61,6 +71,7 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
             review.overdue > 0 ? t('waitingOverdue', { count: review.overdue, days: OVERDUE_DAYS }) : t('waitingOnTime')
           }
           label={t('statWaiting')}
+          loading={loading}
           value={review.waiting}
         />
       </div>
@@ -75,6 +86,7 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
             <Chart
               data={growth ? chartData : []}
               label={t('growthTitle')}
+              loading={loading}
               series={[
                 { key: 'usersJoined', label: t('seriesUsers') },
                 { color: 'var(--chart-2)', key: 'organizationsRegistered', label: t('seriesOrganizations') },
@@ -92,6 +104,7 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
             <Chart
               data={issuance ? chartData : []}
               label={t('certificatesChartTitle')}
+              loading={loading}
               series={[
                 { key: 'certificatesSubmitted', label: t('seriesSubmitted') },
                 { color: 'var(--chart-2)', key: 'certificatesApproved', label: t('seriesApproved') },
@@ -103,12 +116,12 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
       </div>
 
       <div className="grid gap-4 xl:grid-cols-3">
-        <AdminOverviewPipeline pipeline={certificates.pipeline} total={certificates.total} />
+        <AdminOverviewPipeline loading={loading} pipeline={certificates.pipeline} total={certificates.total} />
         <Card>
           <CardHeader>
             <CardTitle>{t('reviewTitle')}</CardTitle>
             <CardDescription>
-              {review.sample > 0 ? t('reviewSample', { count: review.sample }) : t('reviewNone')}
+              {placeholder(review.sample > 0 ? t('reviewSample', { count: review.sample }) : t('reviewNone'))}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -116,11 +129,15 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
               <DescriptionList layout="inline">
                 <DescriptionItem>
                   <DescriptionTerm>{t('reviewAverage')}</DescriptionTerm>
-                  <DescriptionDetails className="tabular-nums">{duration(review.averageHours)}</DescriptionDetails>
+                  <DescriptionDetails className="tabular-nums">
+                    {placeholder(duration(review.averageHours))}
+                  </DescriptionDetails>
                 </DescriptionItem>
                 <DescriptionItem>
                   <DescriptionTerm>{t('reviewMedian')}</DescriptionTerm>
-                  <DescriptionDetails className="tabular-nums">{duration(review.medianHours)}</DescriptionDetails>
+                  <DescriptionDetails className="tabular-nums">
+                    {placeholder(duration(review.medianHours))}
+                  </DescriptionDetails>
                 </DescriptionItem>
               </DescriptionList>
             )}
@@ -131,3 +148,16 @@ export const AdminOverview = ({ overview }: { overview: AdminOverviewData }) => 
     </div>
   )
 }
+
+const PLACEHOLDER_PIPELINE = Object.fromEntries(PIPELINE_STATUSES.map(status => [status, 0])) as Pipeline
+
+const PLACEHOLDER_OVERVIEW: AdminOverviewData = {
+  certificates: { drafts: 0, pipeline: PLACEHOLDER_PIPELINE, total: 1 },
+  generatedAt: '',
+  monthly: [],
+  organizations: { active: 0, pending: 0, rejected: 0, total: 0 },
+  review: { averageHours: 1, medianHours: 1, monthly: [], overdue: 0, sample: 1, waiting: 0 },
+  users: { admins: 0, banned: 0, editors: 0, pending: 0, total: 0 },
+}
+
+export const AdminOverviewSkeleton = () => <AdminOverview loading overview={PLACEHOLDER_OVERVIEW} />

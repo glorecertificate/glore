@@ -13,7 +13,6 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDevice } from '@/hooks/use-device'
 import { toPx, useSidebarResize } from '@/hooks/use-sidebar-resize'
@@ -584,36 +583,6 @@ export const SidebarMenuBadge = ({ className, ...props }: React.ComponentProps<'
     {...props}
   />
 )
-
-export const SidebarMenuSkeleton = ({
-  className,
-  showIcon = false,
-  style,
-  ...props
-}: React.ComponentProps<'div'> & {
-  showIcon?: boolean
-}) => {
-  const [skeletonWidth] = useState(() => `${Math.floor(Math.random() * 40) + 50}%`)
-  const skeletonStyle = {
-    '--skeleton-width': skeletonWidth,
-    ...style,
-  }
-
-  return (
-    <div
-      className={cn('flex h-8 items-center gap-2 rounded-md px-2', className)}
-      data-sidebar="menu-skeleton"
-      {...props}
-    >
-      {showIcon && <Skeleton className="size-4 rounded-md" data-sidebar="menu-skeleton-icon" />}
-      <Skeleton
-        className="h-4 max-w-(--skeleton-width) flex-1"
-        data-sidebar="menu-skeleton-text"
-        style={skeletonStyle}
-      />
-    </div>
-  )
-}
 
 export const SidebarMenuSub = ({ className, ...props }: React.ComponentProps<'ul'>) => (
   <ul

@@ -261,6 +261,16 @@
   }
 }
 
+@utility animate-reveal {
+  animation: reveal 150ms var(--ease-out);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes grid-enter {
   from {
     opacity: 0;
@@ -274,6 +284,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(.grid-enter) {
+    animation: none;
+  }
+
+  .animate-reveal {
     animation: none;
   }
 }

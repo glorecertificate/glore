@@ -6,13 +6,13 @@ import { useFormatter, useTranslations } from 'next-intl'
 
 import { type MemberDetail } from '@/actions/organizations/members'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useI18n } from '@/components/providers/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Skeleton } from '@/components/ui/skeleton'
 import { timestampMillis } from '@/db/queries/organization'
 
 import { formatRoleLabel } from './utils'
@@ -52,16 +52,10 @@ export const MemberDrawer = ({
           <SheetDescription>{t('drawerDescription')}</SheetDescription>
         </SheetHeader>
         <div className="space-y-6 px-4 pb-6">
-          {loading && (
-            <div aria-busy className="space-y-3">
-              <Skeleton className="h-14 w-full" />
-              <Skeleton className="h-24 w-full" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-          )}
+          {loading && <LoadingFallback className="py-16" />}
           {errorMessage && <Banner variant="destructive">{errorMessage}</Banner>}
           {detail && (
-            <>
+            <div className="animate-reveal space-y-6">
               <section aria-label={t('drawerProfile')} className="flex items-center gap-3">
                 <Avatar className="size-12 rounded-full">
                   {detail.profile.avatarUrl && <AvatarImage alt="" src={detail.profile.avatarUrl} />}
@@ -140,7 +134,7 @@ export const MemberDrawer = ({
                   </ul>
                 )}
               </section>
-            </>
+            </div>
           )}
         </div>
       </SheetContent>

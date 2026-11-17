@@ -8,27 +8,15 @@ import { getCourseAnalytics } from '@/actions/courses/analytics'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useI18n } from '@/components/providers/i18n'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type CourseAnalyticsStats } from '@/db/queries/course-editing'
-
-const AnalyticsSkeleton = () => (
-  <div className="flex flex-col gap-6 p-6">
-    <div className="grid grid-cols-2 gap-3">
-      <Skeleton className="h-18 rounded-lg" />
-      <Skeleton className="h-18 rounded-lg" />
-      <Skeleton className="h-18 rounded-lg" />
-      <Skeleton className="h-18 rounded-lg" />
-    </div>
-    <Skeleton className="h-48 rounded-lg" />
-  </div>
-)
 
 const RatingBar = ({ count, label, max }: { count: number; label: string; max: number }) => (
   <div className="flex items-center gap-2">
@@ -87,7 +75,7 @@ const AnalyticsContent = ({
 
   if (data.enrollmentCount === 0) {
     return (
-      <div className="flex flex-col gap-6 p-6">
+      <div className="flex animate-reveal flex-col gap-6 p-6">
         <p className="text-sm text-muted-foreground">{t('analyticsNoData')}</p>
       </div>
     )
@@ -205,7 +193,7 @@ export const CourseAnalyticsSheet = () => {
             </SheetTitle>
             <SheetDescription className="text-xs">{t('analyticsSheetDescription')}</SheetDescription>
           </SheetHeader>
-          {loading && <AnalyticsSkeleton />}
+          {loading && <LoadingFallback className="flex-1 py-16" />}
           {!loading && failed && (
             <Banner className="m-6" role="alert" variant="destructive">
               <div className="flex flex-col gap-3">

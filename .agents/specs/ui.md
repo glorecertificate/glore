@@ -40,6 +40,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 
 - Input: rows, stable row IDs, columns with optional sort accessors, a filters slot, and a row-actions slot.
 - It sorts and paginates the supplied rows locally, announces counts, and provides loading and empty states.
+- While `loading`, it shows a spinner in place of the header row and the rows, and hides the count. Column widths depend on the rows.
 - Pass `pagination` (page, pageCount, total, onPageChange) for server-paged rows.
 - Below `sm` each row becomes a labeled card (cells carry `data-label`), so status and actions stay reachable.
 - Below `sm` a compact sort select plus a direction toggle replaces the hidden column sorts (`data-table-sort.ts`).
@@ -47,6 +48,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 ### Chart
 
 - `Chart` loads `chart-renderer.tsx` through `next/dynamic` with a local skeleton.
+- `loading` renders the same `h-64` box as a `Skeleton`.
 - Only the renderer imports Recharts. Its targeted lint override accounts for this boundary.
 - Charts use semantic chart tokens, localize values, disable chart animation, and include an accessible data table.
 - Mount charts only on analytics surfaces with real data.
@@ -156,6 +158,12 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Use a `Spinner` when the shape depends on the data, for example an unknown row count or text of variable length.
 - The swap from the loading state to the content is a short fade, never a pop. With reduced motion it is instant.
 - Check each loading state in a browser on a throttled network. Nothing on the page may move or resize when the content arrives.
+- A feature with a fixed layout renders itself as its skeleton: give it a `loading` prop and placeholder data (`AdminOverviewSkeleton`, organization insights and certificates).
+- `StatCard` and `Chart` take `loading`. `SkeletonText` wraps placeholder text, so the skeleton has the line count and width of real text.
+- Labels, titles, and other static text stay real in a skeleton. Only data becomes `SkeletonText`.
+- A region whose size depends on data, such as a list or a table body, shows `LoadingFallback` inside the exact skeleton.
+- `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
+- Put `animate-reveal` on the content that replaces a loading state. It fades in for 150 ms and is off with reduced motion.
 
 ## Design briefs
 

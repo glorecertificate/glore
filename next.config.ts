@@ -39,6 +39,7 @@ const envSchema = z.object({
   SMTP_SENDER: z.string().min(1),
   SMTP_USER: z.email(),
   SMTP_PASSWORD: z.string().min(1),
+  VERCEL_ENV: z.enum(['development', 'preview', 'production']).optional(),
 })
 
 if (!process.env.SKIP_ENV_VALIDATION) {
@@ -154,6 +155,7 @@ const createNextConfig = (phase: PHASE_TYPE) => {
   const isDevServer = phase === PHASE_DEVELOPMENT_SERVER
   const isProdBuild = phase === PHASE_PRODUCTION_BUILD
   const allowedDevOrigins = isDevServer ? [new URL(process.env.APP_URL).host] : undefined
+  const showCatalog = isDevServer || process.env.VERCEL_ENV === 'preview'
   const tsconfigPath = isProdBuild ? 'tsconfig.build.json' : 'tsconfig.json'
 
   const plugins = [
@@ -173,6 +175,7 @@ const createNextConfig = (phase: PHASE_TYPE) => {
   return plugins.reduce<NextConfig>((config, next) => next(config), {
     ...nextConfig,
     allowedDevOrigins,
+    pageExtensions: ['tsx', 'ts', 'jsx', 'js', ...(showCatalog ? ['dev.tsx'] : [])],
     headers: headers(isDevServer),
     reactCompiler: !isDevServer,
     typescript: {

@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/knip/schema.json",
-  "entry": ["src/i18n.ts"],
+  "entry": ["src/i18n.ts", "src/app/**/page.dev.tsx"],
   "project": ["src/**/*", "scripts/**/*"],
   "tags": ["-lintignore"],
   "ignoreIssues": {

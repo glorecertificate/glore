@@ -47,7 +47,7 @@ jobs:
       SMTP_SENDER: GloRe <noreply@glore.test>
       SMTP_USER: e2e@glore.test
       SMTP_PASSWORD: e2e
-      TEST_EMAIL: e2e@glore.test
+      TEST_EMAIL: demo@demo.glore.test
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -79,7 +79,7 @@ jobs:
         run: pnpm run test:e2e
       - name: Write the visual baselines
         if: failure() && steps.e2e.outcome == 'failure'
-        run: pnpm run test:e2e --project visual-desktop --project visual-mobile --update-snapshots=changed
+        run: pnpm run test:e2e --project visual-desktop --project visual-mobile --update-snapshots=changed --output "$RUNNER_TEMP/visual-update"
       - if: failure() && steps.e2e.outcome == 'failure'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

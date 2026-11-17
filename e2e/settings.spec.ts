@@ -1,11 +1,9 @@
-import { readFile } from 'node:fs/promises'
-
 import { expect, test } from '@playwright/test'
 
 import { seedEmail } from '~/scripts/seed-data'
 
 import { pruneSessions } from './db'
-import { authFile, hydrated, login } from './helpers'
+import { authFile, hydrated, login, readDownload } from './helpers'
 
 test.describe('settings', () => {
   test.use({ storageState: authFile('learner') })
@@ -63,8 +61,7 @@ test.describe('settings', () => {
     const download = page.waitForEvent('download')
     await button.click()
 
-    const file = await (await download).path()
-    const exported = JSON.parse(await readFile(file, 'utf8'))
+    const exported = await readDownload(download)
     expect(exported.format).toBe('glore-account-export')
     expect(exported.account.email).toBe(seedEmail('learner'))
     expect(JSON.stringify(exported)).not.toMatch(/password/u)

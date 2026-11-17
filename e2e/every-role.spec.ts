@@ -1,10 +1,8 @@
-import { readFile } from 'node:fs/promises'
-
 import { expect, test } from '@playwright/test'
 
 import { seedEmail } from '~/scripts/seed-data'
 
-import { AUTH_ROLES, type AuthRole, authFile, hydrated } from './helpers'
+import { AUTH_ROLES, type AuthRole, authFile, hydrated, readDownload } from './helpers'
 
 const SETTINGS_TABS = [
   { label: 'Profile', value: 'profile' },
@@ -123,7 +121,7 @@ for (const role of AUTH_ROLES) {
       await hydrated(button)
       const download = page.waitForEvent('download')
       await button.click()
-      const exported = JSON.parse(await readFile(await (await download).path(), 'utf8'))
+      const exported = await readDownload(download)
       expect(exported.format).toBe('glore-account-export')
       expect(exported.account.email).toBe(seedEmail(role))
       expect(JSON.stringify(exported)).not.toMatch(/password/u)

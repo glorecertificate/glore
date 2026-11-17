@@ -13,6 +13,9 @@ Playwright projects, auth state, fixtures, personas, pinned browsers, and visual
 - Run Playwright with `--workers=2`: 4 workers make the dev server answer 502.
 - Import `test` from `e2e/fixtures.ts`. Its `makeAxeBuilder` applies `AXE_TAGS` (`scripts/axe.ts`), which `qa:atlas` shares.
 - The setup project also logs in the `db:seed:demo` personas of `e2e/personas.ts`. Persona specs skip when the seed did not run.
+- CI seeds the personas on `TEST_EMAIL=demo@demo.glore.test`. Its domain keeps each persona address from containing a fixture address such as `admin@glore.test`.
+- A remote browser has no local download path, so specs read a download with `readDownload` from `e2e/helpers.ts`.
+- Chromium paints no element area below the viewport, so `visual-desktop` uses a 1600 px tall viewport. The catalog test fails when a section is taller.
 
 ## Pinned browsers and visual baselines
 

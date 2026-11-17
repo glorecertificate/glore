@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
+import { text } from 'node:stream/consumers'
 
-import { type BrowserContextOptions, type Locator, type Page, expect } from '@playwright/test'
+import { type BrowserContextOptions, type Download, type Locator, type Page, expect } from '@playwright/test'
 
 import { SEED_PASSWORD, seedEmail } from '~/scripts/seed-data'
 
@@ -32,6 +33,9 @@ export const login = async (page: Page, key: string) => await loginWithEmail(pag
 export const revealed = async (page: Page) => {
   await expect(page.locator('main [aria-busy="true"]')).toHaveCount(0)
 }
+
+export const readDownload = async (download: Promise<Download>) =>
+  JSON.parse(await text(await (await download).createReadStream()))
 
 export const hydrated = async (locator: Locator) => {
   await expect

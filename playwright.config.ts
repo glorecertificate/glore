@@ -25,7 +25,7 @@ const pinnedProjects: Project[] = [
   {
     name: 'visual-desktop',
     testMatch: /\.visual\.ts/u,
-    use: { ...chromium, ...visual, viewport: { height: 900, width: 1280 } },
+    use: { ...chromium, ...visual, viewport: { height: 1600, width: 1280 } },
     dependencies: ['setup'],
   },
   {

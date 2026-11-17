@@ -22,6 +22,7 @@ interface CourseWithRelations extends CourseRow {
 type PublicationStatus = 'archived' | 'draft' | 'partial' | 'published'
 type ProgressStatus = 'notStarted' | 'inProgress' | 'completed'
 export type Course = ReturnType<typeof parseCourse>
+export type CourseSummary = ReturnType<typeof summarizeCourse>
 export type SkillGroup = Exclude<Course['skillGroup'], null>
 
 export const COURSE_TYPES = ['intro', 'learner', 'skill'] satisfies EnumType<'course_type'>[]
@@ -79,3 +80,32 @@ export const parseCourse = (course: CourseWithRelations) => {
     contributors: contributions.map(({ user }) => parseUser(user)),
   }
 }
+
+export const summarizeCourse = (course: Course, { editor = false }: { editor?: boolean } = {}) => ({
+  id: course.id,
+  slug: course.slug,
+  type: course.type,
+  title: course.title,
+  description: course.description,
+  icon: course.icon,
+  languages: course.languages,
+  durationMinutes: course.durationMinutes,
+  sortOrder: course.sortOrder,
+  createdAt: course.createdAt,
+  updatedAt: course.updatedAt,
+  archivedAt: course.archivedAt,
+  skillGroup: course.skillGroup,
+  rating: course.rating,
+  enrolled: course.enrolled,
+  enrollmentCount: course.enrollmentCount,
+  progress: course.progress,
+  progressStatus: course.progressStatus,
+  completed: course.completed,
+  publicationStatus: course.publicationStatus,
+  contributors: course.contributors,
+  lessonCount: course.lessons.length,
+  completedLessonCount: course.lessons.filter(lesson => lesson.completed).length,
+  creator: editor ? course.creator : null,
+  archivedBy: editor ? course.archivedBy : null,
+  outcomes: editor ? course.outcomes : null,
+})

@@ -7,13 +7,12 @@ import {
   deleteCourse as deleteCouseAction,
   updateCourse as updateCourseAction,
 } from '@/actions/courses/management'
-import { listCourses } from '@/actions/courses/queries'
 import { useI18n } from '@/components/providers/i18n'
-import { type Course, type SkillGroup } from '@/db/queries/course'
+import { type CourseSummary, type SkillGroup, summarizeCourse } from '@/db/queries/course'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 
 interface CoursesContextValue {
-  courses: Course[]
+  courses: CourseSummary[]
   skillGroups: SkillGroup[]
 }
 
@@ -34,7 +33,7 @@ const useCoursesContext = (value: CoursesContextValue) => {
     value: String(group.id),
   }))
 
-  const setCourse = (handler: React.SetStateAction<Course>) =>
+  const setCourse = (handler: React.SetStateAction<CourseSummary>) =>
     setCourses(prev =>
       prev.map(course => {
         const data = typeof handler === 'function' ? handler(course) : handler
@@ -45,12 +44,12 @@ const useCoursesContext = (value: CoursesContextValue) => {
   const createCourse = async (payload: Omit<TableInsert<'courses'>, 'creatorId'>) => {
     const { data, error } = await createCourseAction(payload)
     if (error) return { error }
-    setCourses(prev => [...prev, data])
+    setCourses(prev => [...prev, summarizeCourse(data, { editor: true })])
     return { data }
   }
 
   const updateCourse = async (id: number, payload: TableUpdate<'courses'>) => {
-    setCourses(prev => prev.map(course => (course.id === id ? ({ ...course, ...payload } as Course) : course)))
+    setCourses(prev => prev.map(course => (course.id === id ? ({ ...course, ...payload } as CourseSummary) : course)))
     return await updateCourseAction(id, payload)
   }
 
@@ -58,12 +57,6 @@ const useCoursesContext = (value: CoursesContextValue) => {
     const { error } = await deleteCouseAction(id)
     if (error) throw error
     setCourses(prev => prev.filter(c => c.id !== id))
-  }
-
-  const refreshCourses = async () => {
-    const { data, error } = await listCourses({ cache: false })
-    if (error) return
-    setCourses(data)
   }
 
   return {
@@ -74,7 +67,6 @@ const useCoursesContext = (value: CoursesContextValue) => {
     createCourse,
     updateCourse,
     deleteCourse,
-    refreshCourses,
   }
 }
 

@@ -36,7 +36,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
 import { toast } from '@/components/ui/toast'
-import { type Course } from '@/db/queries/course'
+import { type CourseSummary, summarizeCourse } from '@/db/queries/course'
 import { cn } from '@/lib/utils'
 
 export const CourseCardActions = ({
@@ -45,7 +45,7 @@ export const CourseCardActions = ({
   coursePath,
 }: {
   actionLabel: string
-  course: Course
+  course: CourseSummary
   coursePath: string
 }) => {
   const archived = !!course.archivedAt
@@ -76,7 +76,7 @@ export const CourseCardActions = ({
       if (error || !data) throw error ?? new Error('Course not found')
       setArchiveDialogOpen(false)
       toast.success(t('courseArchived'))
-      setCourses(prev => prev.map(c => (c.id === course.id ? data : c)))
+      setCourses(prev => prev.map(c => (c.id === course.id ? summarizeCourse(data, { editor: true }) : c)))
     } catch (e) {
       console.error(e)
       setIsArchiving(false)
@@ -91,7 +91,7 @@ export const CourseCardActions = ({
       if (error || !data) throw error ?? new Error('Course not found')
       setArchiveDialogOpen(false)
       toast.success(t('courseUnarchived'))
-      setCourses(prev => prev.map(c => (c.id === course.id ? data : c)))
+      setCourses(prev => prev.map(c => (c.id === course.id ? summarizeCourse(data, { editor: true }) : c)))
     } catch (e) {
       console.error(e)
       setIsArchiving(false)
@@ -121,7 +121,7 @@ export const CourseCardActions = ({
     const next = publish ? [...new Set([...previous, locale])] : previous.filter(lang => lang !== locale)
 
     setIsPublishing(true)
-    setCourses(prev => prev.map(c => (c.id === course.id ? ({ ...c, languages: next } as Course) : c)))
+    setCourses(prev => prev.map(c => (c.id === course.id ? ({ ...c, languages: next } as CourseSummary) : c)))
 
     try {
       const { error } = await updateCourseAction(course.id, { languages: next })
@@ -132,7 +132,7 @@ export const CourseCardActions = ({
       setPublishTarget(null)
     } catch (e) {
       console.error(e)
-      setCourses(prev => prev.map(c => (c.id === course.id ? ({ ...c, languages: previous } as Course) : c)))
+      setCourses(prev => prev.map(c => (c.id === course.id ? ({ ...c, languages: previous } as CourseSummary) : c)))
       toast.error(publish ? t('coursePublishError') : t('courseUnpublishError'))
     } finally {
       setIsPublishing(false)

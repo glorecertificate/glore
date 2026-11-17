@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 
 import { useTranslations } from 'next-intl'
 
+import { type CourseSettingsValues } from '@/components/features/courses/course-editor/settings'
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -23,7 +24,7 @@ export const CourseDialog = ({
   onSuccess,
   ...props
 }: React.ComponentProps<typeof Dialog> & {
-  course?: Course
+  course?: CourseSettingsValues
   onSuccess?: (course: Course) => void
 }) => {
   const { push } = useRouter()

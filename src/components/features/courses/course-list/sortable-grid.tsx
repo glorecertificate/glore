@@ -17,11 +17,11 @@ import {
   measureAlways,
 } from '@/components/ui/sortable'
 import { toast } from '@/components/ui/toast'
-import { type Course } from '@/db/queries/course'
+import { type CourseSummary } from '@/db/queries/course'
 
 interface CourseListSortableGridProps {
   activeLanguages: Locale[]
-  courses: Course[]
+  courses: CourseSummary[]
 }
 
 export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListSortableGridProps) => {
@@ -30,7 +30,7 @@ export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListS
   const { courses: allCourses, setCourses } = useCourses()
   const reducedMotion = useReducedMotion()
 
-  const sortCourses = async (orderedCourses: Course[]) => {
+  const sortCourses = async (orderedCourses: CourseSummary[]) => {
     const snapshot = allCourses
     const next = new Map(orderedCourses.map((course, index) => [course.id, index + 1]))
 
@@ -39,7 +39,7 @@ export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListS
         const previousCourse = new Map(prev.map(c => [c.id, c])).get(course.id)
         const sortOrder = next.get(course.id)
         if (!previousCourse) {
-          const { language: _language, ...rest } = course as Course & { language?: Locale }
+          const { language: _language, ...rest } = course as CourseSummary & { language?: Locale }
           return sortOrder ? { ...rest, sortOrder } : rest
         }
         if (!sortOrder || previousCourse.sortOrder === sortOrder) return previousCourse

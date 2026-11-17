@@ -285,7 +285,7 @@ export const deleteLessons = async (rawIds: number[]) => {
   return { data: true }
 }
 
-export const reorderCourses = async (items: Course[]) => {
+export const reorderCourses = async (items: Pick<Course, 'id' | 'slug'>[]) => {
   await requireEditor()
   await transaction(tx =>
     mapSequential(

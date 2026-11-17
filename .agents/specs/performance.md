@@ -35,6 +35,7 @@ The source of truth for the numbers is `config/performance.json`. Each value is 
 - An interaction latency of 16 ms means no Event Timing entry crossed the 16 ms threshold.
 - `Shift` also counts the shifts that CLS drops as recent input. A loading state that does not match its content shows there.
 - The `field` key holds the p75 targets for Vercel Speed Insights on production traffic.
+- With `partialPrefetching`, each dynamic RSC response embeds a runtime-prefetch render of the same route. Every prop a layout can resolve from cookies travels twice, so a layout passes summaries to client contexts, never full records. Measure with a request that sends the `RSC: 1` header.
 
 The targets come from the Core Web Vitals "good" thresholds and the RAIL response budget, tightened to the instant bar.
 

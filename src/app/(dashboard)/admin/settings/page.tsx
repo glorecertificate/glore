@@ -1,11 +1,6 @@
-import { Suspense } from 'react'
-
-import { getTranslations } from 'next-intl/server'
-
 import { getSettings } from '@/actions/admin/settings'
 import { AdminSettingsForm } from '@/components/features/admin/settings-form'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -15,24 +10,20 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const AdminSettingsContent = async () => {
-  const [t, { data, error }] = await Promise.all([getTranslations('Admin.settings'), getSettings()])
+  const { data, error } = await getSettings()
   if (error || !data) throw new Error(error?.message ?? 'Settings unavailable')
 
-  return (
-    <DashboardPage
-      description={t('description')}
-      title={<PageTitle namespace="Admin.settings" name="title" />}
-      width="content"
-    >
-      <AdminSettingsForm settings={data} />
-    </DashboardPage>
-  )
+  return <AdminSettingsForm settings={data} />
 }
 
 const AdminSettingsPage = () => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
+  <DashboardPage
+    description={<PageTitle namespace="Admin.settings" name="description" />}
+    title={<PageTitle namespace="Admin.settings" name="title" />}
+    width="content"
+  >
     <AdminSettingsContent />
-  </Suspense>
+  </DashboardPage>
 )
 
 export default AdminSettingsPage

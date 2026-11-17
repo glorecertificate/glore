@@ -39,7 +39,7 @@ src/
 │   ├── not-found.tsx   # Global 404 (server)
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
 │   ├── (auth)/         # Unauthenticated: invite/[token], join/[token], login, onboarding, register
-│   ├── (dashboard)/    # Authenticated (sidebar layout): about, admin, certificates,
+│   ├── (dashboard)/    # Authenticated (sidebar layout, own error and not-found): about, admin, certificates,
 │   │                   #   courses, dashboard, docs, emails, help, legal, notifications, organization, settings
 │   ├── [username]/     # Public profile page (page, opengraph-image, not-found)
 │   ├── api/            # API routes (auth catch-all + v1/)
@@ -51,8 +51,8 @@ src/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,
 │   │                   #   dashboard, docs, help, legal, notifications, onboarding, organization, translations, users
 │   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
-│   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback, instant-reveal,
-│   │                   #   loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,
+│   ├── layout/         # dashboard-page, dashboard-header, dashboard-loading, dashboard-sidebar, dynamic-marker,
+│   │                   #   error-actions, error-fallback, instant-reveal, loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,
 │   │                   #   search-command (palette), navigation (pure per-role entries), use-navigation-labels
 │   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, settings, theme
 │   └── ui/             # shadcn/ui + release kit (ui.md); vendored rich-text-editor/
@@ -140,8 +140,9 @@ src/
 
 - Components are server components by default. Add `'use client'` only for interactivity: hooks, event handlers, browser APIs.
 - Layout guards (admin, certificates) are server components that call `notFound()`.
-- A page that fetches data async uses an inner async component plus an outer sync page wrapping it in `<Suspense fallback={<LoadingFallback />}>`, so the page header renders immediately while data loads.
-- Never remove `(dashboard)/loading.tsx`: it is the skeleton that client navigations show at once while a segment awaits uncached data.
+- A page that fetches data is a sync page that renders `DashboardPage` and puts an inner async component in it. `DashboardPage` wraps its children in Suspense, so the header bar renders at once.
+- A record title that needs data is an async component passed as `title`. The bar streams it.
+- Never remove `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the bar and a spinner, which client navigations show at once while a segment awaits uncached data.
 - `next dev` logs a blocking-route error when a navigation would wait on uncached data.
 - Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so never pass `prefetch` to a `Link`.
 - Content joins the shell only behind `'use cache'` with a stale time of at least 5 minutes or behind `'use cache: private'`. Uncached reads, `params`, and `searchParams` stream in after the click.

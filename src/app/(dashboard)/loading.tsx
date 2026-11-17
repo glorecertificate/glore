@@ -1,10 +1,5 @@
-import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { DashboardLoading } from '@/components/layout/dashboard-loading'
 
-const DashboardLoading = () => (
-  <DashboardPage fallback={null}>
-    <LoadingFallback />
-  </DashboardPage>
-)
+const DashboardLoadingPage = () => <DashboardLoading />
 
-export default DashboardLoading
+export default DashboardLoadingPage

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { getCurrentUser } from '@/actions/user'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { DashboardLoading } from '@/components/layout/dashboard-loading'
 
 const AdminLayoutContent = async ({ children }: React.PropsWithChildren) => {
   const user = await getCurrentUser()
@@ -11,7 +11,7 @@ const AdminLayoutContent = async ({ children }: React.PropsWithChildren) => {
 }
 
 const AdminLayout = ({ children }: LayoutProps<'/admin'>) => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
+  <Suspense fallback={<DashboardLoading />}>
     <AdminLayoutContent>{children}</AdminLayoutContent>
   </Suspense>
 )

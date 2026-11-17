@@ -149,8 +149,9 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - They return a fixed message per code and log the SQLSTATE, constraint, table, driver message, and statement (never the bound values) with `console.error('[db] query failed')`. Errors the app throws itself keep their message.
 - Server actions return `{ data, error }` or `{ error }`, and callers MUST check.
 - Mutations that fail throw. Queries that fail return error objects.
-- The global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, and refresh.
+- The global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, and refresh (`ErrorActions`).
 - The global 404 `src/app/not-found.tsx` (server) checks auth to pick the right link.
+- `(dashboard)/error.tsx` and the dashboard 404s render `DashboardHeader` and `Main`, so the sidebar and its trigger stay.
 - The admin layout calls `notFound()` when `!user.isAdmin`, and the certificates layout when `user.canEdit`.
 - User feedback uses `sonner`: `toast.success()` and `toast.error()`.
 

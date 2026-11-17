@@ -5,8 +5,8 @@ import { getOrganizationPanel } from '@/actions/organizations/queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { OrganizationPanel } from '@/components/features/organization/panel'
 import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
+import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -48,7 +48,7 @@ const OrganizationContent = async () => {
 }
 
 const OrganizationPage = () => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
+  <Suspense fallback={<DashboardLoading />}>
     <OrganizationContent />
   </Suspense>
 )

@@ -1,14 +1,10 @@
 import React, { Fragment, Suspense } from 'react'
 
+import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DynamicMarker } from '@/components/layout/dynamic-marker'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { type NavigationId, navigationHref } from '@/components/layout/navigation'
-import { NavigationLabel } from '@/components/layout/navigation-label'
-import { Header, HeaderBreadcrumb, HeaderLogo, HeaderTrigger } from '@/components/ui/header'
-import { Logo } from '@/components/ui/logo'
+import { type NavigationId } from '@/components/layout/navigation'
 import { Main } from '@/components/ui/main'
-import { APP_ROOT } from '@/lib/constants'
-import { cn } from '@/lib/utils'
 
 export const DashboardPage = ({
   breadcrumb,
@@ -33,25 +29,7 @@ export const DashboardPage = ({
 
   return (
     <Provider>
-      {header ?? (
-        <Header>
-          <div className="flex min-w-0 flex-1 items-center gap-2.5">
-            <HeaderTrigger />
-            {breadcrumb ?? (
-              <HeaderBreadcrumb
-                backHref={parent && navigationHref(parent)}
-                backLabel={parent && <NavigationLabel id={parent} />}
-                description={description}
-                title={title}
-              />
-            )}
-            {breadcrumb && title && <h1 className="sr-only">{title}</h1>}
-          </div>
-          <HeaderLogo className={cn((breadcrumb || parent) && 'max-sm:hidden')} href={APP_ROOT}>
-            <Logo className="mr-1 w-18 transition-[width,height]" />
-          </HeaderLogo>
-        </Header>
-      )}
+      {header ?? <DashboardHeader breadcrumb={breadcrumb} description={description} parent={parent} title={title} />}
       <Main {...props}>
         {fallback === null ? children : <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>}
       </Main>

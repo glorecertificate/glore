@@ -41,10 +41,10 @@ The targets come from the Core Web Vitals "good" thresholds and the RAIL respons
 
 ## Cases
 
-- `e2e/load.perf.ts`: one cold context per run for a public page and the main page of each role.
-- `e2e/navigation.perf.ts`: a sidebar link click from a settled page to another main page.
-- `e2e/interactions.perf.ts`: the command palette, the notification popover, a settings tab, and the sidebar toggle.
-- `e2e/vitals.ts`: the profiles, the in-page observers, and the readers. Each case writes one JSON file to `.playwright/perf/results/`.
+- `e2e/perf/load.perf.ts`: one cold context per run for a public page and the main page of each role.
+- `e2e/perf/navigation.perf.ts`: a sidebar link click from a settled page to another main page.
+- `e2e/perf/interactions.perf.ts`: the command palette, the notification popover, a settings tab, and the sidebar toggle.
+- `e2e/perf/vitals.ts`: the profiles, the in-page observers, and the readers. Each case writes one JSON file to `.playwright/perf/results/`.
 
 Add a case to the file of its kind for each new journey, page, or primary interaction.
 

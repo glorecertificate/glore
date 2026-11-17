@@ -22,6 +22,7 @@
     "noUnusedParameters": true,
     "paths": {
       "~/config/*": ["./config/*"],
+      "~/e2e/*": ["./e2e/*"],
       "~/messages/*": ["./messages/*"],
       "~/scripts/*": ["./scripts/*"],
       "@/*": ["./src/*"]

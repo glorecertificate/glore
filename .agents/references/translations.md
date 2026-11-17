@@ -131,8 +131,8 @@ Nothing an editor saves can break a page.
 
 ## Tests
 
-- Vitest: merge, signature filter, compile, hashes, stale classification, and AI output validation with a mocked model.
+- Vitest: override drafts and publishing, placeholder and ICU validation, source fingerprints, stale classification, and AI translation with a mocked model.
 - DB-backed Vitest: legal immutability and publish transactions.
-- e2e: `translations.spec.ts`, `legal.spec.ts`, and `content-translation.spec.ts`.
+- e2e: `locales.spec.ts` renders the main pages in each locale with no missing messages.
 - A `@prod` smoke run on `next build` and `next start`, because precompile runs only in builds.
 - Mailpit checks an overridden email subject.

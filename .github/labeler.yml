@@ -2,7 +2,6 @@ admin:
   - changed-files:
       - any-glob-to-any-file:
           - src/**/admin/**
-          - e2e/admin-*.spec.ts
 
 auth:
   - changed-files:
@@ -34,7 +33,6 @@ courses:
           - src/components/ui/rich-text-editor/**
           - content/courses/**
           - e2e/course-editor.spec.ts
-          - e2e/learning.spec.ts
 
 db:
   - changed-files:

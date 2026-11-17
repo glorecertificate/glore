@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const perfConfig = defineConfig({
-  testDir: 'e2e',
-  outputDir: '.playwright/perf/output',
+  testDir: '..',
+  outputDir: '../../.playwright/perf/output',
   fullyParallel: false,
   workers: 1,
   retries: 0,
@@ -18,6 +18,7 @@ const perfConfig = defineConfig({
     ? [
         {
           command: 'pnpm exec next start --port 3000',
+          cwd: '../..',
           url: 'http://localhost:3000/api/v1/health',
           timeout: 60_000,
         },

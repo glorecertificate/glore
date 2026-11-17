@@ -15,7 +15,7 @@ const FRONT_MATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/u
 
 const HEADING_REGEX = /^(#{1,6})\s/gmu
 
-export const flattenCatalog = (value: unknown, prefix = ''): Map<string, unknown> => {
+const flattenCatalog = (value: unknown, prefix = ''): Map<string, unknown> => {
   const entries = new Map<string, unknown>()
   if (value !== null && typeof value === 'object') {
     for (const [key, child] of Object.entries(value)) {

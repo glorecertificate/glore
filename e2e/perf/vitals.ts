@@ -3,7 +3,7 @@ import { join } from 'node:path'
 
 import { type Browser, type BrowserContextOptions, type Page } from '@playwright/test'
 
-import { type AuthRole, authFile } from './helpers'
+import { type AuthRole, authFile } from '~/e2e/helpers'
 
 export type PerfRole = AuthRole | 'guest'
 

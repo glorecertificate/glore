@@ -298,9 +298,9 @@ const CERTIFICATE_SEEDS: CertificateSeed[] = [
 
 const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
 
-export const demoHandle = (key: string) => `demo-${key}`
+const demoHandle = (key: string) => `demo-${key}`
 
-export const demoCode = (handle: string) => {
+const demoCode = (handle: string) => {
   const bytes = createHash('sha256').update(handle).digest()
   const chars = Array.from({ length: 12 }, (_, index) => CROCKFORD[(bytes[index] ?? 0) % 32])
   return [chars.slice(0, 4), chars.slice(4, 8), chars.slice(8)].map(group => group.join('')).join('-')
@@ -499,7 +499,7 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
   }
 }
 
-export const planCertificates = (now: Date) => CERTIFICATE_SEEDS.map((seed, index) => planCertificate(seed, index, now))
+const planCertificates = (now: Date) => CERTIFICATE_SEEDS.map((seed, index) => planCertificate(seed, index, now))
 
 export interface DemoCourseProgress {
   user: string
@@ -557,7 +557,7 @@ const COURSE_COMMENTS: Record<string, string> = {
   'volunteer-progress:team-work': 'Short lessons and a quiz that really makes you think.',
 }
 
-export const planProgress = (certificates: PlannedCertificate[]) => {
+const planProgress = (certificates: PlannedCertificate[]) => {
   const byKey = new Map<string, DemoCourseProgress>()
   const languageOf = (user: string) => DEMO_USERS.find(({ key }) => key === user)?.locale ?? 'en'
 
@@ -1196,17 +1196,17 @@ const organizationEvents = (now: Date, progress: DemoCourseProgress[]): DemoEven
 
 const SKILL_SLUGS = new Set(Object.keys(SKILL_TEXTS))
 
-export const planEvents = (now: Date, certificates: PlannedCertificate[], progress: DemoCourseProgress[]) =>
+const planEvents = (now: Date, certificates: PlannedCertificate[], progress: DemoCourseProgress[]) =>
   [
     ...organizationEvents(now, progress),
     ...certificates.flatMap(certificate => certificateEvents(certificate, now)),
   ].toSorted((a, b) => a.at.localeCompare(b.at))
 
-export const NOTIFICATION_WINDOW_DAYS = 60
+const NOTIFICATION_WINDOW_DAYS = 60
 
-export const UNREAD_WINDOW_DAYS = 3
+const UNREAD_WINDOW_DAYS = 3
 
-export const rolesIn = (organization: string, roles: string[]) =>
+const rolesIn = (organization: string, roles: string[]) =>
   DEMO_USERS.filter(({ memberships }) => roles.includes(memberships[organization] ?? '')).map(({ key }) => key)
 
 const PLATFORM_ADMINS = DEMO_USERS.filter(({ platformRole }) => platformRole === 'admin').map(({ key }) => key)
@@ -1219,7 +1219,7 @@ const managers = (organization: string | null) =>
 
 const str = (value: unknown) => (typeof value === 'string' ? value : null)
 
-export const recipientsOf = ({ data, organization, type }: DemoEvent): string[] => {
+const recipientsOf = ({ data, organization, type }: DemoEvent): string[] => {
   const holder = str(data.holderId)
   const tutor = str(data.tutorId)
   switch (type) {
@@ -1263,7 +1263,7 @@ export interface PlannedNotification {
 
 const NOTIFYING_EXCEPTIONS = new Set(['learning.eligible', 'course.completed'])
 
-export const planNotifications = (now: Date, events: DemoEvent[]) =>
+const planNotifications = (now: Date, events: DemoEvent[]) =>
   events.flatMap(entry => {
     const age = (now.getTime() - Date.parse(entry.at)) / DAY_MS
     if (age > NOTIFICATION_WINDOW_DAYS) return []

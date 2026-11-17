@@ -157,7 +157,6 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Fields and items in a clipped container use `focus-ring-inset`. Never build a focus indicator from `ring-*` or `border-ring`.
 - A composite field such as `InputGroup` draws the ring on the group and passes `ring={false}` to its control.
 - Inputs, textareas, selects, checkboxes, and radios use `border-border-strong` on `bg-field`. Outline buttons, badges, and toolbars use `border-border`.
-- `src/components/ui/control-size.test.ts` holds the scale.
 - A checkbox is a rounded square (`rounded-sm`) and a radio is a circle. `checked="indeterminate"` shows a minus.
 - An SVG gradient or pattern takes its id from `useId()`, so two copies on one page keep their fills.
 
@@ -196,6 +195,6 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 
 ## Design briefs
 
-- Impeccable surface briefs live in `.impeccable/surfaces/`, one per surface, and are tracked.
+- Impeccable surface briefs live in `.impeccable/surfaces/`, one per surface, and stay untracked.
 - The volunteer dashboard brief records the Journey rail direction chosen in #84.
 - Impeccable mocks, reviews, and question state stay ignored.

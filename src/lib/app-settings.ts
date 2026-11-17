@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import metadata from '~/config/metadata.json'
 
-export const SETTING_KEYS = ['email', 'phone', 'website', 'social', 'legalEntity'] as const
+const SETTING_KEYS = ['email', 'phone', 'website', 'social', 'legalEntity'] as const
 
 type SettingKey = (typeof SETTING_KEYS)[number]
 

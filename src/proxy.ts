@@ -13,6 +13,7 @@ import {
   LEGAL_ROOTS,
   ONBOARDING_ROOT,
   REGISTER_ROOT,
+  SESSION_ROOT,
   VERIFY_ROOT,
 } from '@/lib/constants'
 import { prefixCookieName } from '@/lib/cookies'
@@ -51,6 +52,13 @@ const expireSession = (request: NextRequest, { returnTo = false }: { returnTo?: 
   return NextResponse.redirect(url)
 }
 
+const revokeSession = (request: NextRequest) => {
+  const url = new URL(SESSION_ROOT, request.url)
+  const next = returnPath(request)
+  if (next) url.searchParams.set('next', next)
+  return NextResponse.redirect(url)
+}
+
 const restoreCourseListParams = (request: NextRequest) => {
   const { cookies, headers, nextUrl, url } = request
   if (request.method !== 'GET' || nextUrl.pathname !== '/courses' || nextUrl.search || headers.has('rsc')) return null
@@ -72,7 +80,7 @@ export const proxy: NextProxy = async request => {
     const session = await auth.api.getSession({ headers })
 
     if (!session?.user) return isPublic ? response : expireSession(request, { returnTo: true })
-    if (session.user.banned) return expireSession(request)
+    if (session.user.banned) return revokeSession(request)
     if (nextUrl.pathname === AUTH_ROOT) return NextResponse.redirect(new URL(APP_ROOT, request.url))
     if (!(session.user.onboardedAt || isOnboarding)) return NextResponse.redirect(new URL(ONBOARDING_ROOT, request.url))
     if (session.user.onboardedAt && isOnboarding) return NextResponse.redirect(new URL(APP_ROOT, request.url))

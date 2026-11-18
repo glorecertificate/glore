@@ -10,8 +10,8 @@ export const ApplicationSteps = ({ current }: { current: number }) => {
   const t = useTranslations('Register')
 
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">
+    <div className="flex flex-col gap-3">
+      <p className="type-caption text-muted-foreground">
         {t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}
       </p>
       <ol className="flex items-start gap-2">
@@ -24,20 +24,20 @@ export const ApplicationSteps = ({ current }: { current: number }) => {
                 <span
                   className={cn(
                     'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium',
-                    done && 'border-brand bg-brand text-brand-foreground',
-                    active && 'border-brand text-foreground',
+                    done && 'border-primary bg-primary text-primary-foreground',
+                    active && 'border-primary text-foreground',
                     !(done || active) && 'text-muted-foreground'
                   )}
                 >
                   {done ? <LucideIcon className="size-3.5" name="check" /> : index + 1}
                 </span>
                 {index < APPLICATION_STEPS.length - 1 && (
-                  <span aria-hidden className={cn('h-px flex-1 bg-border', done && 'bg-brand')} />
+                  <span aria-hidden className={cn('h-px flex-1 bg-border', done && 'bg-primary')} />
                 )}
               </div>
               <p
                 className={cn(
-                  'pr-2 text-xs leading-tight wrap-break-word sm:text-sm',
+                  'pr-2 text-xs leading-tight wrap-break-word max-sm:sr-only sm:text-sm',
                   active ? 'font-medium' : 'text-muted-foreground'
                 )}
               >

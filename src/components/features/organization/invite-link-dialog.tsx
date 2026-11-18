@@ -29,11 +29,12 @@ type LinkRole = (typeof LINK_ROLES)[number]
 
 interface InviteLinkDialogProps {
   onCreated: () => void
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   open: boolean
 }
 
-export const InviteLinkDialog = ({ onCreated, onOpenChange, open }: InviteLinkDialogProps) => {
+export const InviteLinkDialog = ({ onCloseAutoFocus, onCreated, onOpenChange, open }: InviteLinkDialogProps) => {
   const t = useTranslations('Invitations')
   const tOrganization = useTranslations('Organization')
   const errorMessage = useInvitationError()
@@ -87,7 +88,7 @@ export const InviteLinkDialog = ({ onCreated, onOpenChange, open }: InviteLinkDi
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent onCloseAutoFocus={onCloseAutoFocus} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t('linkDialogTitle')}</DialogTitle>
           <DialogDescription>{t('linkDialogDescription')}</DialogDescription>

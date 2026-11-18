@@ -34,7 +34,7 @@ export const OrganizationChecklist = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('checklistTitle')}</CardTitle>
+        <CardTitle className="type-heading">{t('checklistTitle')}</CardTitle>
         <CardDescription>
           {t('checklistProgress', { completed: checklist.completed, total: checklist.total })}
         </CardDescription>

@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useLocale, useTranslations } from 'next-intl'
 import { type FieldErrors, type Resolver, useForm } from 'react-hook-form'
 
 import { requestOrganizationRegistration } from '@/actions/organizations/requests'
+import { TabHeader } from '@/components/features/organization/tab-header'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
@@ -57,6 +58,8 @@ export const ApplicationForm = () => {
   const [stepIndex, setStepIndex] = useState(0)
   const [loading, setLoading] = useState(false)
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
+  const headingRef = useRef<HTMLDivElement>(null)
+  const previousStep = useRef(0)
 
   const resolver: Resolver<ApplicationInput> = async (values, context, options) => {
     const result = await (zodResolver(applicationSchema) as unknown as Resolver<ApplicationInput>)(
@@ -82,12 +85,18 @@ export const ApplicationForm = () => {
   const step = APPLICATION_STEPS[stepIndex] ?? 'organization'
   const isLast = stepIndex === APPLICATION_STEPS.length - 1
 
+  useEffect(() => {
+    if (previousStep.current === stepIndex) return
+    previousStep.current = stepIndex
+    headingRef.current?.focus()
+  }, [stepIndex])
+
   const goTo = (target: ApplicationStep) => {
     setStepIndex(APPLICATION_STEPS.indexOf(target))
   }
 
   const handleNext = async () => {
-    const valid = await form.trigger([...APPLICATION_STEP_FIELDS[step]])
+    const valid = await form.trigger([...APPLICATION_STEP_FIELDS[step]], { shouldFocus: true })
     if (valid) setStepIndex(current => current + 1)
   }
 
@@ -116,27 +125,28 @@ export const ApplicationForm = () => {
 
   if (submittedEmail) {
     return (
-      <div className="flex flex-col items-center gap-6 rounded-lg border p-8 text-center">
+      <output className="flex flex-col items-center gap-6 rounded-xl border bg-card p-8 text-center shadow-2xs">
         <LucideIcon className="size-12 text-success-text" name="circle-check" />
-        <div className="space-y-2">
-          <h2 className="text-xl font-semibold">{t('successTitle')}</h2>
-          <p className="text-sm text-muted-foreground">{t('successMessage', { email: submittedEmail })}</p>
+        <div className="flex flex-col gap-2">
+          <h2 className="type-heading">{t('successTitle')}</h2>
+          <p className="text-sm wrap-anywhere text-muted-foreground">
+            {t('successMessage', { email: submittedEmail })}
+          </p>
         </div>
         <Button asChild variant="outline">
           <Link href={AUTH_ROOT}>{t('goToLogin')}</Link>
         </Button>
-      </div>
+      </output>
     )
   }
 
   return (
     <Form {...form}>
-      <form className="space-y-8" noValidate onSubmit={form.handleSubmit(handleSubmit, handleInvalid)}>
+      <form className="flex flex-col gap-8" noValidate onSubmit={form.handleSubmit(handleSubmit, handleInvalid)}>
         <ApplicationSteps current={stepIndex} />
 
-        <div className="space-y-1">
-          <h2 className="text-xl font-semibold">{t(`title_${step}`)}</h2>
-          <p className="text-sm text-muted-foreground">{t(`description_${step}`)}</p>
+        <div className="outline-none" ref={headingRef} tabIndex={-1}>
+          <TabHeader description={t(`description_${step}`)} title={t(`title_${step}`)} />
         </div>
 
         {step === 'organization' && <OrganizationStep form={form} />}
@@ -154,8 +164,8 @@ export const ApplicationForm = () => {
             {t('back')}
           </Button>
           {isLast ? (
-            <Button disabled={loading} key="submit" type="submit">
-              {loading ? t('submitting') : t('submit')}
+            <Button key="submit" loading={loading} loadingText={t('submitting')} type="submit">
+              {t('submit')}
             </Button>
           ) : (
             <Button key="next" onClick={handleNext} type="button">

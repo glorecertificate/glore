@@ -1,50 +1,69 @@
 'use client'
 
-import { startTransition } from 'react'
+import { useEffect, useOptimistic, useRef, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { parseAsStringEnum, useQueryState } from 'nuqs'
+import { useQueryState } from 'nuqs'
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsList } from '@/components/ui/tabs'
 
-const ORGANIZATION_TAB_PARAM = 'tab'
-const ORGANIZATION_TABS = [
-  'overview',
-  'members',
-  'invitations',
-  'requests',
-  'certificates',
-  'insights',
-  'activity',
-  'settings',
-] as const
+import { type InsightsScope } from './insights-cache'
+import { preloadWithin } from './lazy-tabs'
+import {
+  DEFAULT_ORGANIZATION_TAB,
+  ORGANIZATION_TAB_PARAM,
+  type OrganizationTab,
+  OrganizationTabContext,
+  organizationTabParser,
+  useOrganizationTab,
+} from './tab-context'
+import { OrganizationTabTrigger } from './tab-trigger'
 
-export type OrganizationTab = (typeof ORGANIZATION_TABS)[number]
-const DEFAULT_ORGANIZATION_TAB = 'overview'
+export type { OrganizationTab } from './tab-context'
 
-const organizationTabParser = parseAsStringEnum([...ORGANIZATION_TABS]).withDefault(DEFAULT_ORGANIZATION_TAB)
-
-export const useOrganizationTab = () => {
-  const [tab, setTab] = useQueryState(ORGANIZATION_TAB_PARAM, {
+export const OrganizationTabs = ({
+  organizationId,
+  userId,
+  ...props
+}: React.ComponentProps<typeof Tabs> & InsightsScope) => {
+  const [pending, startTransition] = useTransition()
+  const [tab, setQueryTab] = useQueryState(ORGANIZATION_TAB_PARAM, {
     ...organizationTabParser,
     history: 'push',
     startTransition,
   })
+  const [shown, setShown] = useOptimistic(tab)
+  const latest = useRef(0)
+  const committed = useRef(tab)
+  const scope = { organizationId, userId }
 
-  return { setTab, tab }
-}
+  useEffect(() => {
+    committed.current = tab
+    latest.current += 1
+  }, [tab])
 
-export const OrganizationTabs = (props: React.ComponentProps<typeof Tabs>) => {
-  const { setTab, tab } = useOrganizationTab()
+  const setTab = (next: OrganizationTab) => {
+    latest.current += 1
+    const request = latest.current
+    const from = window.location.search
+    startTransition(async () => {
+      setShown(next)
+      await preloadWithin(next, scope)
+      if (request !== latest.current || next === committed.current || window.location.search !== from) return
+      await setQueryTab(next)
+    })
+  }
 
   return (
-    <Tabs
-      className="gap-0"
-      defaultValue={DEFAULT_ORGANIZATION_TAB}
-      onValueChange={setTab as (value: string) => void}
-      value={tab}
-      {...props}
-    />
+    <OrganizationTabContext value={{ pending, scope, setTab, shown, tab }}>
+      <Tabs
+        className="gap-0"
+        defaultValue={DEFAULT_ORGANIZATION_TAB}
+        onValueChange={value => setTab(value as OrganizationTab)}
+        value={shown}
+        {...props}
+      />
+    </OrganizationTabContext>
   )
 }
 
@@ -60,21 +79,35 @@ export const OrganizationTabsList = ({
 }) => {
   const t = useTranslations('Organization')
   const tInvitations = useTranslations('Invitations')
+  const { shown: tab } = useOrganizationTab()
+  const listRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const list = listRef.current
+    const active = list?.querySelector<HTMLElement>('[role="tab"][data-state="active"]')
+    if (!(list && active)) return
+    const listBox = list.getBoundingClientRect()
+    const activeBox = active.getBoundingClientRect()
+    const start = activeBox.left - listBox.left + list.scrollLeft
+    const end = start + activeBox.width
+    if (start >= list.scrollLeft && end <= list.scrollLeft + list.clientWidth) return
+    list.scrollLeft = start - (list.clientWidth - activeBox.width) / 2
+  }, [tab])
 
   return (
-    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" {...props}>
-      <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
-      <TabsTrigger value="members">{t('members')}</TabsTrigger>
-      <TabsTrigger count={invitationCount} value="invitations">
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" ref={listRef} {...props}>
+      <OrganizationTabTrigger value="overview">{t('overview')}</OrganizationTabTrigger>
+      <OrganizationTabTrigger value="members">{t('members')}</OrganizationTabTrigger>
+      <OrganizationTabTrigger count={invitationCount} value="invitations">
         {tInvitations('tab')}
-      </TabsTrigger>
-      <TabsTrigger count={joinRequestCount} value="requests">
+      </OrganizationTabTrigger>
+      <OrganizationTabTrigger count={joinRequestCount} value="requests">
         {t('joinRequests')}
-      </TabsTrigger>
-      <TabsTrigger value="certificates">{t('certificates')}</TabsTrigger>
-      <TabsTrigger value="insights">{t('insights')}</TabsTrigger>
-      <TabsTrigger value="activity">{t('activity')}</TabsTrigger>
-      {isOrgAdmin && <TabsTrigger value="settings">{t('settings')}</TabsTrigger>}
+      </OrganizationTabTrigger>
+      <OrganizationTabTrigger value="certificates">{t('certificates')}</OrganizationTabTrigger>
+      <OrganizationTabTrigger value="insights">{t('insights')}</OrganizationTabTrigger>
+      <OrganizationTabTrigger value="activity">{t('activity')}</OrganizationTabTrigger>
+      {isOrgAdmin && <OrganizationTabTrigger value="settings">{t('settings')}</OrganizationTabTrigger>}
     </TabsList>
   )
 }

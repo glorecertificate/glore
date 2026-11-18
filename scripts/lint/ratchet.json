@@ -44,10 +44,6 @@
     "no-arbitrary-value": 4,
     "no-restricted-classes": 2
   },
-  "src/components/features/organization": {
-    "no-arbitrary-value": 4,
-    "no-restricted-classes": 2
-  },
   "src/components/features/translations": {
     "no-arbitrary-value": 1
   },

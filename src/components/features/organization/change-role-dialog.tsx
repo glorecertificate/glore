@@ -28,11 +28,13 @@ type Member = OrganizationPanelData['members'][number]
 export const ChangeRoleDialog = ({
   member,
   onDone,
+  onCloseAutoFocus,
   onOpenChange,
   organizationId,
 }: {
   member: Member | null
   onDone: () => void
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   organizationId?: number
 }) => {
@@ -68,7 +70,7 @@ export const ChangeRoleDialog = ({
       }}
       open={Boolean(member)}
     >
-      <DialogContent>
+      <DialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <DialogHeader>
           <DialogTitle>{t('changeRoleTitle')}</DialogTitle>
           <DialogDescription>

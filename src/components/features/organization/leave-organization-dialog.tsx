@@ -23,12 +23,14 @@ import { useMemberError } from './use-member-error'
 
 export const LeaveOrganizationDialog = ({
   onLeft,
+  onCloseAutoFocus,
   onOpenChange,
   open,
   organizationId,
   organizationName,
 }: {
   onLeft: (user: User) => void
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   open: boolean
   organizationId: number
@@ -60,7 +62,7 @@ export const LeaveOrganizationDialog = ({
 
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent>
+      <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('leaveTitle')}</AlertDialogTitle>
           <AlertDialogDescription>{t('leaveDescription', { name: organizationName })}</AlertDialogDescription>

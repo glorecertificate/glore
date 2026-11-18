@@ -29,12 +29,14 @@ export const MemberDrawer = ({
   detail,
   errorMessage,
   loading,
+  onCloseAutoFocus,
   onOpenChange,
   open,
 }: {
   detail: MemberDetail | null
   errorMessage: string | null
   loading: boolean
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   open: boolean
 }) => {
@@ -48,7 +50,11 @@ export const MemberDrawer = ({
 
   return (
     <Sheet onOpenChange={onOpenChange} open={open}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-md" closeSrText={t('close')}>
+      <SheetContent
+        onCloseAutoFocus={onCloseAutoFocus}
+        className="w-full overflow-y-auto sm:max-w-md"
+        closeSrText={t('close')}
+      >
         <SheetHeader>
           <SheetTitle>{t('drawerTitle')}</SheetTitle>
           <SheetDescription>{t('drawerDescription')}</SheetDescription>

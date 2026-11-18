@@ -27,13 +27,16 @@ export interface ChartProps extends Omit<React.ComponentProps<'div'>, 'children'
   variant?: 'area' | 'bar' | 'line'
 }
 
-const ChartRenderer = dynamic(
-  async () => {
-    const { ChartRenderer: Renderer } = await import('@/components/ui/chart-renderer')
-    return Renderer
-  },
-  { loading: () => <Skeleton className="size-full" />, ssr: false }
-)
+const loadChartRenderer = async () => {
+  const { ChartRenderer: Renderer } = await import('@/components/ui/chart-renderer')
+  return Renderer
+}
+
+export const preloadChart = async () => {
+  await loadChartRenderer()
+}
+
+const ChartRenderer = dynamic(loadChartRenderer, { loading: () => <Skeleton className="size-full" />, ssr: false })
 
 export const Chart = ({ className, data, label, loading = false, series, variant = 'area', ...props }: ChartProps) => {
   const t = useTranslations('Components.Chart')

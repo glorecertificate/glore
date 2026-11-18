@@ -28,12 +28,14 @@ type Member = OrganizationPanelData['members'][number]
 
 export const TransferOwnershipDialog = ({
   candidates,
+  onCloseAutoFocus,
   onOpenChange,
   onTransferred,
   open,
   organizationName,
 }: {
   candidates: Member[]
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   onTransferred: (user: User) => void
   open: boolean
@@ -79,7 +81,7 @@ export const TransferOwnershipDialog = ({
       }}
       open={open}
     >
-      <DialogContent>
+      <DialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <DialogHeader>
           <DialogTitle>{t('transferTitle')}</DialogTitle>
           <DialogDescription>{t('transferDescription')}</DialogDescription>

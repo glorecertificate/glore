@@ -50,6 +50,12 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Organization approval, platform-admin organization invites, and admin member invites send an `admin` or member invitation. None creates an account or a membership.
 - Public actions are rate limited: `invite-account`, `invite-proof`, `invite-decline`, `join-link`. Invite sign-in shares the `login` keys.
 
+## Tab loading
+
+- `features/organization/panel.tsx` renders the active tab through `LazyTabHost`. Each tab chunk (members, invitations, join requests, insights, activity, settings) loads and caches on its own and stays out of the first load. `features/organization/lazy-tabs.tsx` preloads a chunk on `pointerenter`, `focus`, and `pointerdown` of its tab trigger and for the tab in the URL, so a tab switch after intent shows no fallback. `OrganizationTabs` runs each switch in a transition: the clicked trigger turns active at once, the panel gets `aria-busy`, and the old tab stays on screen until the new chunk (and the insights data) is ready, so a direct click shows no fallback. The exact skeleton from `tab-skeletons.tsx` shows only on a direct load of that tab. The insights preload also fetches its data and calls `preloadChart()`.
+- A direct load of `?tab=<name>` server-renders that tab. A failed chunk shows `TabBoundary` with a retry button, and a retry re-imports only that chunk.
+- A dialog opened from a row restores focus to its trigger. When an action removes the row, focus moves to the tab container (`tabIndex={-1}`) through `useReturnFocus`.
+
 ## Members and ownership
 
 - `/organization?tab=members` is a `DataTable` named "Members" with search, role and status filters, sorting, and pagination.

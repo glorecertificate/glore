@@ -9,11 +9,9 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const RegisterPage = () => (
-  <main className="flex min-h-screen items-center justify-center p-6">
-    <div className="mx-auto w-full max-w-xl space-y-12">
-      <div className="flex flex-col items-center gap-8">
-        <Logo className="w-40" />
-      </div>
+  <main className="flex min-h-svh justify-center px-4 py-12 sm:px-6 sm:py-16">
+    <div className="mx-auto flex w-full max-w-xl flex-col gap-12">
+      <Logo className="mx-auto w-40" />
       <h1 className="sr-only">
         <PageTitle namespace="Register" name="metaTitle" />
       </h1>

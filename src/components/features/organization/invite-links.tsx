@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -22,21 +22,18 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
-import { type InviteLinkState, timestampMillis } from '@/db/queries/organization'
+import { timestampMillis } from '@/db/queries/organization'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 
 import { CopyLinkButton } from './copy-link-button'
 import { InviteLinkDialog } from './invite-link-dialog'
+import { INVITE_LINK_STATUS } from './status'
+import { TabHeader } from './tab-header'
 import { formatRoleLabel } from './utils'
 
 type InviteLink = OrganizationPanelData['inviteLinks'][number]
-
-const STATE_BADGES = {
-  active: 'success',
-  exhausted: 'muted',
-  expired: 'warning',
-  revoked: 'destructive',
-} satisfies Record<InviteLinkState, React.ComponentProps<typeof Badge>['variant']>
 
 interface InviteLinksProps {
   links: OrganizationPanelData['inviteLinks']
@@ -48,6 +45,8 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
   const t = useTranslations('Invitations')
   const tOrganization = useTranslations('Organization')
   const errorMessage = useInvitationError()
+  const { remember, restore } = useReturnFocus()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const [createOpen, setCreateOpen] = useState(false)
   const [revokeTarget, setRevokeTarget] = useState<InviteLink | null>(null)
@@ -74,24 +73,32 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
 
   return (
     <>
-      <div className="space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold">{t('linksTitle')}</h2>
-            <p className="text-sm text-muted-foreground">{t('linksDescription')}</p>
-          </div>
-          <Button onClick={() => setCreateOpen(true)} size="sm" variant="outline">
-            <LucideIcon name="link" className="size-3.5" />
-            {t('createLink')}
-          </Button>
-        </div>
+      <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
+        <TabHeader
+          actions={
+            <Button
+              onClick={() => {
+                remember()
+                setCreateOpen(true)
+              }}
+              size="sm"
+              variant="outline"
+            >
+              <LucideIcon name="link" />
+              {t('createLink')}
+            </Button>
+          }
+          as="h3"
+          description={t('linksDescription')}
+          title={t('linksTitle')}
+        />
 
         <DataTable
           columns={[
             {
               cell: link => (
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="ghost">{formatRoleLabel(link.role, tOrganization)}</Badge>
+                  <span>{formatRoleLabel(link.role, tOrganization)}</span>
                   <Badge variant="outline">{link.requiresApproval ? t('approvalRequired') : t('approvalNone')}</Badge>
                 </div>
               ),
@@ -101,13 +108,13 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
             },
             {
               cell: link => (
-                <div className="flex flex-col gap-0.5 text-sm">
+                <div className="flex flex-col gap-0.5">
                   <span>
                     {link.maxUses === null
                       ? t('usesUnlimited', { uses: link.uses })
                       : t('usesLimited', { max: link.maxUses, uses: link.uses })}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="type-caption text-muted-foreground">
                     {link.expiresAt
                       ? t(link.state === 'expired' ? 'expiredOn' : 'expiresOn', {
                           date: dateFormatter.format(new Date(timestampMillis(link.expiresAt))),
@@ -123,9 +130,13 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
             {
               cell: link => (
                 <div className="flex flex-col gap-1">
-                  <Badge variant={STATE_BADGES[link.state]}>{t(`linkState_${link.state}`)}</Badge>
+                  <StatusBadge icon={INVITE_LINK_STATUS[link.state].icon} tone={INVITE_LINK_STATUS[link.state].tone}>
+                    {t(INVITE_LINK_STATUS[link.state].labelKey)}
+                  </StatusBadge>
                   {link.creatorName && (
-                    <span className="text-xs text-muted-foreground">{t('createdBy', { name: link.creatorName })}</span>
+                    <span className="type-caption text-muted-foreground">
+                      {t('createdBy', { name: link.creatorName })}
+                    </span>
                   )}
                 </div>
               ),
@@ -142,7 +153,14 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
             link.state === 'active' ? (
               <div className="flex items-center justify-end gap-2">
                 <CopyLinkButton label={t('copyLink')} load={() => copyOrganizationInviteLink(link.id)} />
-                <Button onClick={() => setRevokeTarget(link)} size="sm" variant="outline">
+                <Button
+                  onClick={() => {
+                    remember()
+                    setRevokeTarget(link)
+                  }}
+                  size="sm"
+                  variant="outline"
+                >
                   {t('revoke')}
                 </Button>
               </div>
@@ -152,10 +170,21 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
         />
       </div>
 
-      <InviteLinkDialog onCreated={onRefresh} onOpenChange={setCreateOpen} open={createOpen} />
+      <InviteLinkDialog
+        onCreated={onRefresh}
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
+        onOpenChange={setCreateOpen}
+        open={createOpen}
+      />
 
-      <AlertDialog onOpenChange={open => !open && setRevokeTarget(null)} open={Boolean(revokeTarget)}>
-        <AlertDialogContent>
+      <AlertDialog
+        onOpenChange={open => {
+          if (open) return
+          setRevokeTarget(null)
+        }}
+        open={Boolean(revokeTarget)}
+      >
+        <AlertDialogContent onCloseAutoFocus={event => restore(event, containerRef.current)}>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('revokeLinkTitle')}</AlertDialogTitle>
             <AlertDialogDescription>{t('revokeLinkDescription')}</AlertDialogDescription>

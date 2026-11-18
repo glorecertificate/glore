@@ -157,13 +157,14 @@ The two layers stay separate because UI shapes diverge from table columns.
 
 ### Hooks
 
-- `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-form-disabled`, `use-metadata`, `use-mounted`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
+- `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-form-disabled`, `use-metadata`, `use-mounted`, `use-return-focus`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
 - `use-action-error`: returns `(error, fallback)`, which resolves the impersonation lock code to `Common.impersonationLocked` and otherwise the fallback message.
 - `use-country-name`: returns `(code)`, which resolves a country code of any case to its `Intl.Countries` name (`countryName` in `lib/country.ts`) and falls back to the upper-cased code.
 - `use-file-upload`: presigned R2 PUT flow.
 - `use-navigation-guard`: blocks navigation on unsaved changes.
 - `use-poll`: visible-tab polling with `refresh`.
 - `use-pwa`: captures `beforeinstallprompt` at module scope so late mounts still see it.
+- `use-return-focus`: `const { remember, restore } = useReturnFocus()`. `remember(element?)` stores the element that opened an overlay in an instance ref: the explicit element, else the open `dropdown-menu-trigger` (`aria-expanded=true`, because Radix prevents focus on pointerdown), else `document.activeElement`. `restore(event, fallback?)` goes in the dialog's `onCloseAutoFocus`: it calls `event.preventDefault()`, consumes the stored element, and focuses it, or the `fallback` (an element or a function returning one) when it is no longer connected, such as a removed row. No timers. Call `remember(container)` before the action that removes the row, and pass a `tabIndex={-1}` container as the fallback.
 - `use-scroll-edges`: overflow state for `TabsList`, which scrolls with a fade edge.
 - `useCookies` writes script-visible cookies (no `HttpOnly`, URI-encoded values).
 - A server `setCookie` for a cookie the client also writes passes `{ httpOnly: false }`, because a script cannot overwrite an `HttpOnly` cookie.

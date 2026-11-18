@@ -13,15 +13,15 @@ export const OrganizationPipeline = ({ pipeline }: { pipeline: Pipeline }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('pipelineTitle')}</CardTitle>
+        <CardTitle className="type-heading">{t('pipelineTitle')}</CardTitle>
         <CardDescription>{t('pipelineDescription', { count: total })}</CardDescription>
       </CardHeader>
       <CardContent>
         {total === 0 && <p className="text-sm text-muted-foreground">{t('pipelineEmpty')}</p>}
         {total > 0 && (
-          <ul className="space-y-2">
+          <ul className="divide-y divide-border-subtle text-sm">
             {PIPELINE_STATUSES.map(status => (
-              <li className="flex items-center justify-between gap-3 rounded-lg border p-3 text-sm" key={status}>
+              <li className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0" key={status}>
                 <CertificateStatusBadge status={status} />
                 <span className="font-medium tabular-nums">{pipeline[status]}</span>
               </li>

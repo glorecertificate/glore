@@ -105,7 +105,7 @@ export const SignatureUpload = ({
           </Button>
         )}
       </div>
-      <p className="text-[13px] text-muted-foreground">{t('signatureHelp')}</p>
+      <p className="type-caption text-muted-foreground">{t('signatureHelp')}</p>
     </div>
   )
 }

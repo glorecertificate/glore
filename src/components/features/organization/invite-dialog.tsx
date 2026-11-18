@@ -38,6 +38,7 @@ interface InviteMemberDialogProps {
   onInvite: (
     input: InviteInput
   ) => Promise<{ data: InvitationRowResult[] | null; error: { code?: string | null; message: string } | null }>
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   onSent: () => void
   open: boolean
@@ -47,6 +48,7 @@ export const InviteMemberDialog = ({
   allowedRoles,
   defaultLocale,
   onInvite,
+  onCloseAutoFocus,
   onOpenChange,
   onSent,
   open,
@@ -112,7 +114,7 @@ export const InviteMemberDialog = ({
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent onCloseAutoFocus={onCloseAutoFocus} className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{t('inviteTitle')}</DialogTitle>
           <DialogDescription>{t('inviteDescription')}</DialogDescription>

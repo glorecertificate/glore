@@ -3,7 +3,7 @@
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
 import { redirect, usePathname, useSearchParams } from 'next/navigation'
-import { Fragment, Suspense, useEffect, useState } from 'react'
+import { Fragment, Suspense, useEffect, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -110,7 +110,9 @@ const DashboardSidebarItem = ({
   subItem,
 }: DashboardSidebarItemProps) => {
   const { activePath, setActivePath } = useSidebar()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
+  const pressed = useRef(false)
 
   const Component = asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem
   const isActivePath = route === activePath && searchParams.size === 0
@@ -121,7 +123,22 @@ const DashboardSidebarItem = ({
     return activePath.startsWith(route)
   })()
 
+  const isPending = activePath === route && pathname !== route
+
+  const press = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return
+    pressed.current = true
+    setActivePath(route)
+  }
+
+  const cancelPress = () => {
+    if (!pressed.current) return
+    pressed.current = false
+    setActivePath(pathname as Route)
+  }
+
   const setPath = (e: React.MouseEvent<HTMLButtonElement>) => {
+    pressed.current = false
     setActivePath(route)
     onClick?.(e)
   }
@@ -136,11 +153,16 @@ const DashboardSidebarItem = ({
           subItem
             ? 'border-transparent px-2.75 py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:text-sidebar-foreground data-active:text-stroke'
             : 'px-2.25 py-3 font-medium data-active:bg-brand/10 data-active:hover:bg-brand/12',
-          isActivePath && 'pointer-events-none',
+          isActivePath && !isPending && 'pointer-events-none',
           badge > 0 && 'relative',
           className
         )}
+        aria-current={isActivePath && !isPending ? 'page' : undefined}
+        data-pending={isPending || undefined}
         onClick={setPath}
+        onPointerCancel={cancelPress}
+        onPointerDown={press}
+        onPointerLeave={cancelPress}
         tooltip={label}
       >
         <Link href={route} prefetch>

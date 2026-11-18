@@ -25,7 +25,7 @@ The source of truth for the numbers is `config/performance.json`. Each value is 
 | Load        | Hydration   | First `button` or `input` with React props attached               | 800 ms  | 1800 ms |
 | Load        | JS KB       | Transfer size of script resources until the page is quiet         | budget  | budget  |
 | Load        | Prefetch KB | Transfer size of `_rsc` prefetch requests until the page is quiet | budget  | budget  |
-| Navigation  | Shell       | Pointer down to the first frame after `history.pushState`         | 100 ms  | 200 ms  |
+| Navigation  | Shell       | Pointer down to the first frame where the clicked item is active  | 100 ms  | 200 ms  |
 | Navigation  | Complete    | Pointer down to the last DOM change before 1 s of quiet           | 300 ms  | 800 ms  |
 | Navigation  | Shift       | Sum of all `layout-shift` values after the input                  | 0.01    | 0.01    |
 | Interaction | Latency     | Longest Event Timing duration per `interactionId` (INP model)     | 50 ms   | 100 ms  |
@@ -91,7 +91,9 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 
 ## Rules for UI work
 
-- Prefetch policy: only the sidebar items prefetch in full (`prefetch`), and the logo does not. Content links such as cards, rows, and dashboard actions use the default prefetch. A full prefetch of each link in a list queued behind the click and lengthened the shell time of a sidebar navigation. The `Prefetch KB` budget is 400 KB for app pages.
+- Prefetch policy: sidebar items prefetch in full. The course card title link prefetches in full, because the course open must show no fallback. Other content links use the default prefetch. The `Prefetch KB` budget is 400 KB for app pages.
+- Prefetch limit: at 1.6 Mbit/s the full prefetch of the course cards in view takes about 5 s, so a click in the first seconds can still show a fallback (measured 1.0 s with no hover and 0.3 s after a 300 ms hover, 1 s into the prefetch). A hover or a focus already raises that link to intent priority in the Next router. After the queue ends, the open shows no fallback. This is a network limit, not an eviction.
+- Shell decision (owner, 2026-11-18): a full prefetch makes the click wait one round trip for the dynamic part. So Shell ends at the first frame where the clicked sidebar item shows active (`data-active` or `aria-current`). The sidebar item turns active on `pointerdown`, before the round trip. Base and head use the same script. Complete is unchanged: pointer down to the last DOM change before 1 s of quiet.
 - A warm sidebar click must commit no fallback. Measure with a production build: `LoadingFallback` appears only after 300 ms, so a fallback in the DOM is a data wait to fix, not a style choice.
 
 - Measure the affected cases before and after each change with `PERF_RUNS=5`, and put both tables in the pull request.

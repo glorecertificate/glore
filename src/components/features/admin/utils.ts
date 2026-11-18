@@ -10,8 +10,4 @@ export const userInitials = (user: Pick<AdminUserRow, 'firstName' | 'lastName'>)
     .slice(0, 2)
     .join('')
 
-export const listFocusTarget = () => {
-  const list = document.querySelector<HTMLElement>('[data-slot="data-table"]')
-  if (list) list.tabIndex = -1
-  return list
-}
+export const listFocusTarget = () => document.querySelector<HTMLElement>('[data-slot="data-table"]')

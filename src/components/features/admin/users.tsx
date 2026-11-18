@@ -97,7 +97,9 @@ export const AdminUsers = ({
   return (
     <>
       <DataTable
-        className={cn(pending && 'opacity-60 transition-opacity')}
+        tabIndex={-1}
+        aria-busy={pending}
+        className={cn('outline-none', pending && 'opacity-60 transition-opacity')}
         columns={[
           {
             cell: user => (

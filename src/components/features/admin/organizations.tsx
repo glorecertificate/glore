@@ -191,7 +191,9 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   return (
     <PageIntro actions={actions} description={t('description')}>
       <DataTable
-        key={`${search}|${country}|${filter}`}
+        className="outline-none"
+        tabIndex={-1}
+        pageResetKey={`${search}|${country}|${filter}`}
         columns={[
           {
             cell: org => (

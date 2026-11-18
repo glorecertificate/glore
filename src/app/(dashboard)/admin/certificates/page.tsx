@@ -38,16 +38,7 @@ const AdminCertificatesContent = async ({
 const AdminCertificatesPage = ({ searchParams }: PageProps<'/admin/certificates'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.certificates" name="title" />}>
     <PageIntro description={<PageTitle namespace="Admin.certificates" name="description" />}>
-      <Suspense
-        fallback={
-          <AdminTableSkeleton
-            columns={['code', 'holder', 'organization', 'status', 'date']}
-            namespace="Admin.certificates"
-            pageSize={20}
-            rowActions
-          />
-        }
-      >
+      <Suspense fallback={<AdminTableSkeleton kind="certificates" />}>
         <AdminCertificatesContent searchParams={searchParams} />
       </Suspense>
     </PageIntro>

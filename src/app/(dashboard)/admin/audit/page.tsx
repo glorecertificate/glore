@@ -28,15 +28,7 @@ const AdminAuditContent = async ({ searchParams }: { searchParams: PageProps<'/a
 const AdminAuditPage = ({ searchParams }: PageProps<'/admin/audit'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.audit" name="title" />}>
     <PageIntro description={<PageTitle namespace="Admin.audit" name="description" />}>
-      <Suspense
-        fallback={
-          <AdminTableSkeleton
-            columns={['date', 'category', 'event', 'organization', 'details']}
-            namespace="Admin.audit"
-            pageSize={25}
-          />
-        }
-      >
+      <Suspense fallback={<AdminTableSkeleton kind="audit" />}>
         <AdminAuditContent searchParams={searchParams} />
       </Suspense>
     </PageIntro>

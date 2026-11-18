@@ -39,16 +39,7 @@ const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/a
 const AdminUsersPage = ({ searchParams }: PageProps<'/admin/users'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.users" name="title" />}>
     <PageIntro description={<PageTitle namespace="Admin.users" name="description" />}>
-      <Suspense
-        fallback={
-          <AdminTableSkeleton
-            columns={['user', 'role', 'status', 'organizations', 'joined']}
-            namespace="Admin.users"
-            pageSize={20}
-            rowActions
-          />
-        }
-      >
+      <Suspense fallback={<AdminTableSkeleton kind="users" />}>
         <AdminUsersContent searchParams={searchParams} />
       </Suspense>
     </PageIntro>

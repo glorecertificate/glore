@@ -185,7 +185,9 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
       </div>
 
       <DataTable
-        key={`${filterRole}|${filterStatus}`}
+        className="outline-none"
+        tabIndex={-1}
+        pageResetKey={`${filterRole}|${filterStatus}`}
         columns={[
           {
             cell: user => (

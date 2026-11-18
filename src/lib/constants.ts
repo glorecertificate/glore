@@ -52,6 +52,8 @@ export const AVATAR_CONTENT_TYPES = ['image/png', 'image/jpeg', 'image/webp']
 export const SIGNATURE_CONTENT_TYPES = ['image/png', 'image/jpeg']
 
 /* Validation */
+export const COURSE_TITLE_MAX_LENGTH = 100
+
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u
 export const USERNAME_REGEX = /^(?!\.)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9.]+$/u
 export const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).+$/u

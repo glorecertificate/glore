@@ -17,18 +17,18 @@ import { SearchInput } from '@/components/ui/search'
 import { SHORTCUTS } from '@/lib/shortcuts'
 import settings from '~/config/app.json'
 
+const descriptionKey = (user: { isAdmin: boolean; isEditor: boolean; isLearner: boolean }) => {
+  if (user.isAdmin) return 'descriptionAdmin'
+  if (user.isEditor) return 'descriptionEditor'
+  if (user.isLearner) return 'descriptionLearner'
+  return 'description'
+}
+
 export const CourseListToolbar = () => {
   const { user } = useSession()
   const t = useTranslations('CourseList')
   const { hasFilters, resetFilters } = useCourseListFilters()
-  const descriptionKey = user.isAdmin
-    ? 'descriptionAdmin'
-    : user.isEditor
-      ? 'descriptionEditor'
-      : user.isLearner
-        ? 'descriptionLearner'
-        : 'description'
-  const description = t(descriptionKey, { minSkills: settings.minSkills })
+  const description = t(descriptionKey(user), { minSkills: settings.minSkills })
 
   return (
     <div className="mb-6 flex flex-col gap-4">

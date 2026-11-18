@@ -201,7 +201,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
   const contentFlushRef = useRef<(() => unknown) | null>(null)
-  const lessonKeysRef = useRef(new Map<number, number>())
+  const [lessonKeys, setLessonKeys] = useState<Record<number, number>>({})
 
   const currentLesson = {
     ...(course.lessons[step - 1] ?? course.lessons[0]),
@@ -363,14 +363,16 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     if (lessonsPayload.length > 0) {
       const result = await upsertLessons(lessonsPayload.map(({ value }) => value))
       if (result && 'error' in result) throw result.error
+      const collectedKeys: Record<number, number> = {}
       for (const [i, { tempKey }] of lessonsPayload.entries()) {
         const realId = result.data[i]?.id
         if (tempKey !== undefined && realId !== undefined && tempKey !== realId) {
           idMap.set(tempKey, realId)
-          lessonKeysRef.current.set(realId, lessonKeysRef.current.get(tempKey) ?? tempKey)
+          collectedKeys[realId] = lessonKeys[tempKey] ?? tempKey
         }
       }
       if (idMap.size > 0) {
+        setLessonKeys(previous => ({ ...previous, ...collectedKeys }))
         setCourse(prev => ({
           ...prev,
           lessons: prev.lessons.map(l => {
@@ -821,7 +823,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     contentFlushRef,
     course,
     courseRef,
-    lessonKeysRef,
+    lessonKeys,
     currentLesson,
     editCourse,
     hasAnyUpdates,

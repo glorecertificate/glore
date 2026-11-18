@@ -81,7 +81,7 @@ const CourseEditor = ({
 }
 
 export const CourseContent = () => {
-  const { contentFlushRef, course, currentLesson, language, lessonKeysRef, setLesson } = useCourse()
+  const { contentFlushRef, course, currentLesson, language, lessonKeys, setLesson } = useCourse()
   const { user } = useSession()
 
   const canEdit = user.canEdit && !course.archivedAt
@@ -101,7 +101,7 @@ export const CourseContent = () => {
   }
 
   const initialContent = currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }]
-  const editorVersion = `${lessonKeysRef.current.get(currentLesson.id!) ?? currentLesson.id}-${language}`
+  const editorVersion = `${lessonKeys[currentLesson.id!] ?? currentLesson.id}-${language}`
 
   return (
     <>

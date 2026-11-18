@@ -15,7 +15,7 @@ import { PageHeaderDescription, PageHeaderHeading, PageHeaderTitle } from '@/com
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { COURSE_TITLE_MAX_LENGTH } from '@/db/queries/course-editing'
+import { COURSE_TITLE_MAX_LENGTH } from '@/lib/constants'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn, debounce } from '@/lib/utils'

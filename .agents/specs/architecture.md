@@ -79,7 +79,7 @@ src/
 │   ├── app-settings.ts # App settings: zod schemas, defaults from config/metadata.json, parseSettings (pure, client-safe)
 │   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum, per-record tag helpers
-│   ├── constants.ts    # Route roots, regex validators
+│   ├── constants.ts    # Route roots, regex validators, shared limits
 │   ├── cookie-store.ts # Server-only typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
 │   ├── cron.ts         # isAuthorizedCron

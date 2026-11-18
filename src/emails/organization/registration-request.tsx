@@ -1,6 +1,7 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { Button, Section, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
 import { DEFAULT_SETTINGS } from '@/lib/app-settings'
@@ -53,7 +54,7 @@ const OrganizationRegistrationRequestEmail = ({
   const countryKey = country?.toLowerCase() as MessageKey<'Intl.Countries'>
   const countryName = countries.has(countryKey) ? countries(countryKey) : country?.toUpperCase()
   const location = [city, countryName].filter(Boolean).join(', ')
-  const footer = <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('footer')}</Text>
+  const footer = <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>{t('footer')}</Text>
 
   return (
     <EmailLayout
@@ -64,20 +65,15 @@ const OrganizationRegistrationRequestEmail = ({
       preview={t('preview', { organizationName })}
       settings={settings}
     >
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
+      <Text className={`m-0 ${EMAIL_CLASSES.body}`}>
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{t('intro', { organizationName })}</Text>
-      <Text className="text-[13px] leading-5.5 text-[#71717a]">
-        {t('details', { registrantEmail, registrantName })}
-      </Text>
-      {location && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('location', { location })}</Text>}
-      {message && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('message', { message })}</Text>}
+      <Text className={EMAIL_CLASSES.body}>{t('intro', { organizationName })}</Text>
+      <Text className={EMAIL_CLASSES.detail}>{t('details', { registrantEmail, registrantName })}</Text>
+      {location && <Text className={EMAIL_CLASSES.detail}>{t('location', { location })}</Text>}
+      {message && <Text className={EMAIL_CLASSES.detail}>{t('message', { message })}</Text>}
       <Section className="my-6 text-center">
-        <Button
-          className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-          href={`${process.env.APP_URL}/admin/organizations/${organizationId}`}
-        >
+        <Button className={EMAIL_CLASSES.button} href={`${process.env.APP_URL}/admin/organizations/${organizationId}`}>
           {t('button')}
         </Button>
       </Section>

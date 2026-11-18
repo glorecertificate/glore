@@ -1,6 +1,7 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
-import { Button, Hr, Link, Section, Text } from 'react-email'
+import { Button, Link, Section, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
 import { DEFAULT_SETTINGS } from '@/lib/app-settings'
@@ -34,9 +35,14 @@ const AuthRecoveryEmail = ({
   })
 
   const footer = (
-    <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
+    <Text className={`mt-4 mb-0 ${EMAIL_CLASSES.fine}`}>
+      {' '}
       {t.rich('footer', {
-        emailLink: chunks => <Link href={`mailto:${settings.email}`}>{chunks}</Link>,
+        emailLink: chunks => (
+          <Link className={EMAIL_CLASSES.link} href={`mailto:${settings.email}`}>
+            {chunks}
+          </Link>
+        ),
       })}
     </Text>
   )
@@ -50,22 +56,21 @@ const AuthRecoveryEmail = ({
       preview={t('preview')}
       settings={settings}
     >
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
+      <Text className={`m-0 ${EMAIL_CLASSES.body}`}>
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{t('intro')}</Text>
-      <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('buttonInstruction')}</Text>
+      <Text className={EMAIL_CLASSES.body}>{t('intro')}</Text>
+      <Text className={EMAIL_CLASSES.detail}>{t('buttonInstruction')}</Text>
       <Section className="my-6 text-center">
-        <Button className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline" href={url}>
+        <Button className={EMAIL_CLASSES.button} href={url}>
           {t('button')}
         </Button>
       </Section>
-      <Text className="text-[12px] leading-5 text-[#71717a]">{t('manualLink')}</Text>
-      <Link className="text-[12px] break-all text-[#3bb5da]" href={url}>
+      <Text className={EMAIL_CLASSES.fine}>{t('manualLink')}</Text>
+      <Link className={EMAIL_CLASSES.manualLink} href={url}>
         {url}
       </Link>
-      <Hr className="mx-0 my-6 border-[#e4e4e7]" />
-      <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('instructions')}</Text>
+      <Text className={`mt-4 mb-0 ${EMAIL_CLASSES.fine}`}>{t('instructions')}</Text>
     </EmailLayout>
   )
 }

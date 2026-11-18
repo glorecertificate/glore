@@ -1,6 +1,7 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { Link, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
 import { DEFAULT_SETTINGS } from '@/lib/app-settings'
@@ -35,9 +36,13 @@ const AccountEmailChangedEmail = ({
   })
 
   const footer = (
-    <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
+    <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>
       {t.rich('footer', {
-        emailLink: chunks => <Link href={`mailto:${settings.email}`}>{chunks}</Link>,
+        emailLink: chunks => (
+          <Link className={EMAIL_CLASSES.link} href={`mailto:${settings.email}`}>
+            {chunks}
+          </Link>
+        ),
       })}
     </Text>
   )
@@ -51,12 +56,12 @@ const AccountEmailChangedEmail = ({
       preview={t('preview')}
       settings={settings}
     >
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
+      <Text className={`m-0 ${EMAIL_CLASSES.body}`}>
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{t('intro', { email: newEmail })}</Text>
-      <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('details', { oldEmail, newEmail })}</Text>
-      <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('security')}</Text>
+      <Text className={EMAIL_CLASSES.body}>{t('intro', { email: newEmail })}</Text>
+      <Text className={EMAIL_CLASSES.detail}>{t('details', { oldEmail, newEmail })}</Text>
+      <Text className={EMAIL_CLASSES.detail}>{t('security')}</Text>
     </EmailLayout>
   )
 }

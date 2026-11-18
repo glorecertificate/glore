@@ -1,6 +1,7 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { Button, Section, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
 import { DEFAULT_SETTINGS } from '@/lib/app-settings'
@@ -42,7 +43,7 @@ const OrganizationJoinRequestEmail = ({
 
   const isAccepted = status === 'accepted'
   const isPending = status === 'pending'
-  const footer = <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('footer')}</Text>
+  const footer = <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>{t('footer')}</Text>
 
   const preview = isPending
     ? t('previewPending', { organizationName })
@@ -65,34 +66,23 @@ const OrganizationJoinRequestEmail = ({
       preview={preview}
       settings={settings}
     >
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
+      <Text className={`m-0 ${EMAIL_CLASSES.body}`}>
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{intro}</Text>
-      {isPending && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsPending')}</Text>}
+      <Text className={EMAIL_CLASSES.body}>{intro}</Text>
+      {isPending && <Text className={EMAIL_CLASSES.detail}>{t('detailsPending')}</Text>}
       {isAccepted && (
-        <Text className="text-[13px] leading-5.5 text-[#71717a]">
-          {url ? t('detailsAcceptedNew') : t('detailsAccepted')}
-        </Text>
+        <Text className={EMAIL_CLASSES.detail}>{url ? t('detailsAcceptedNew') : t('detailsAccepted')}</Text>
       )}
-      {!isPending && comment && (
-        <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsComment', { comment })}</Text>
-      )}
+      {!isPending && comment && <Text className={EMAIL_CLASSES.detail}>{t('detailsComment', { comment })}</Text>}
       {isAccepted && (
         <>
           <Section className="my-6 text-center">
-            <Button
-              className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-              href={url ?? `${process.env.APP_URL}/login`}
-            >
+            <Button className={EMAIL_CLASSES.button} href={url ?? `${process.env.APP_URL}/login`}>
               {url ? t('buttonSetup') : t('button')}
             </Button>
           </Section>
-          {url && (
-            <Text className="text-[12px] leading-5 text-[#71717a]">
-              {t('expiry', { days: config.invitationExpiryDays })}
-            </Text>
-          )}
+          {url && <Text className={EMAIL_CLASSES.fine}>{t('expiry', { days: config.invitationExpiryDays })}</Text>}
         </>
       )}
     </EmailLayout>

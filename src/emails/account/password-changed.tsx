@@ -1,6 +1,7 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { Button, Link, Section, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
 import { DEFAULT_SETTINGS } from '@/lib/app-settings'
@@ -31,9 +32,13 @@ const AccountPasswordChangedEmail = ({
   })
 
   const footer = (
-    <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
+    <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>
       {t.rich('footer', {
-        emailLink: chunks => <Link href={`mailto:${settings.email}`}>{chunks}</Link>,
+        emailLink: chunks => (
+          <Link className={EMAIL_CLASSES.link} href={`mailto:${settings.email}`}>
+            {chunks}
+          </Link>
+        ),
       })}
     </Text>
   )
@@ -47,16 +52,13 @@ const AccountPasswordChangedEmail = ({
       preview={t('preview')}
       settings={settings}
     >
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
+      <Text className={`m-0 ${EMAIL_CLASSES.body}`}>
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{t('intro')}</Text>
-      <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('details')}</Text>
+      <Text className={EMAIL_CLASSES.body}>{t('intro')}</Text>
+      <Text className={EMAIL_CLASSES.detail}>{t('details')}</Text>
       <Section className="mt-6 text-center">
-        <Button
-          className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-          href={`mailto:${settings.email}`}
-        >
+        <Button className={EMAIL_CLASSES.button} href={`mailto:${settings.email}`}>
           {common('contactUs')}
         </Button>
       </Section>

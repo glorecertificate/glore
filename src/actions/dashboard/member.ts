@@ -5,8 +5,8 @@ import { cacheLife, cacheTag } from 'next/cache'
 import { and, asc, eq, inArray, isNull } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
+import { fetchCertificateActivity } from '@/actions/certificates/detail-data'
 import { fetchUserCertificates } from '@/actions/certificates/lists'
-import { findCertificateActivity } from '@/actions/certificates/queries'
 import { findSkillCompass, getSkillProgress } from '@/actions/courses/data'
 import {
   type MemberCourseRow,
@@ -18,7 +18,7 @@ import {
   summarizeMemberCourses,
   volunteerJourney,
 } from '@/actions/dashboard/core'
-import { fetchNotificationPreview } from '@/actions/notifications/preview'
+import { readNotificationPreview } from '@/actions/notifications/preview'
 import {
   type HolderProfile,
   certificateWizardValues,
@@ -95,8 +95,8 @@ const draftStep = (certificate: Certificate, holder: Holder, language: Locale) =
 
 const findReviewNotes = async (certificate: Certificate) => {
   if (!certificate.isChangesRequested) return null
-  const { data } = await findCertificateActivity(certificate.id)
-  return data?.review ?? null
+  const activity = await fetchCertificateActivity(certificate.id)
+  return activity?.review ?? null
 }
 
 export const loadLearnerSummary = async ({
@@ -112,10 +112,10 @@ export const loadLearnerSummary = async ({
 
   const [rows, notifications] = await Promise.all([
     findMemberCourses(userId, 'learner', language),
-    fetchNotificationPreview(userId, NOTIFICATION_PREVIEW),
+    readNotificationPreview(userId, NOTIFICATION_PREVIEW),
   ])
   const summary = summarizeMemberCourses(rows, [], recommendFromCompass)
-  return { checklist: learnerChecklist(summary), courses: summary, notifications: notifications.data?.items ?? [] }
+  return { checklist: learnerChecklist(summary), courses: summary, notifications: notifications.items }
 }
 
 export const loadVolunteerSummary = async ({

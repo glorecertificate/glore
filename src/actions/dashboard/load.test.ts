@@ -6,14 +6,12 @@ import { loadLearnerSummary, loadVolunteerSummary } from '@/actions/dashboard/me
 import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
 
 vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn() }))
-vi.mock('@/actions/certificates/queries', () => ({
-  findCertificateActivity: () => Promise.resolve({ data: null, error: null }),
-}))
+vi.mock('@/actions/certificates/detail-data', () => ({ fetchCertificateActivity: () => Promise.resolve(null) }))
 vi.mock('@/actions/certificates/lists', () => ({
   fetchUserCertificates: () => Promise.resolve({ data: [], error: null }),
 }))
 vi.mock('@/actions/notifications/preview', () => ({
-  fetchNotificationPreview: () => Promise.resolve({ data: { hasMore: false, items: [] }, error: null }),
+  readNotificationPreview: () => Promise.resolve({ hasMore: false, items: [] }),
 }))
 
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')

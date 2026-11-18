@@ -7,7 +7,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { type TutorQueueItem, type TutorSummary } from '@/actions/dashboard/core'
 import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
-import { DashboardHeading } from '@/components/features/dashboard/heading'
+import { DashboardHero } from '@/components/features/dashboard/hero'
 import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import { Badge } from '@/components/ui/badge'
@@ -50,7 +50,7 @@ export const TutorDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHeading
+      <DashboardHero
         action={heroAction}
         organization={organization}
         subtitle={t('subtitle.tutor')}

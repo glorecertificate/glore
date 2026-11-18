@@ -60,7 +60,7 @@ Three domain facts shape recurring decisions:
 
 - Email and password through Better Auth: verification, password reset, and profile management.
 - The login field takes the email or the username (3 characters or more).
-- The auth flow shows the animated globe above the form. Its color follows the view (`decisions.md`, U18).
+- The auth flow shows the animated globe above the form. Its color follows the view (`decisions.md`, U21).
 - Sessions live in signed HTTP-only cookies (`gl_` prefix). There is no SSO or OAuth.
 
 ### Registration and onboarding
@@ -158,8 +158,10 @@ Three domain facts shape recurring decisions:
 - Representative and owner: waiting-for-tutor banner, setup checklist, members, invitations, requests, pipeline, activity.
 - Editor and platform admin: content health, translation gaps, enrollment charts. Admins also see pending applications.
 - Users without an organization see an empty state.
-- Each view owns the page `h1` and the header bar shows no title: a `PageHeader` with the greeting, subtitle, organization, and one action, or the volunteer stage title.
-- Empty cards use `DashboardEmpty` (icon and title), and the globe hero is gone.
+- Each view owns the page `h1` and the header bar shows no title, on purpose (#151): two `h1` elements would repeat the page name.
+- The learner, tutor, representative and owner, and editor views open with `DashboardHero`, the welcome card (decisions.md, U22): a gradient card with the greeting as `h1`, the subtitle, the organization, one action, and the animated globe at 25 to 30% opacity in the top-right corner. The volunteer view opens with the stage title.
+- `DashboardHero` is a client island. `Globe` renders its canvas in the server HTML and loads `cobe` after hydration at pixel ratio 0.5, because a `next/dynamic` mount added about 100 ms to the dashboard client navigation and the full ratio starved the main thread in software WebGL. The card renders without the globe when WebGL is off.
+- Empty cards use `DashboardEmpty` (icon and title).
 
 ### Documentation
 

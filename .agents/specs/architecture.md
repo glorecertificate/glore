@@ -51,7 +51,7 @@ src/
 │   └── verify/         # Public certificate verification (page, [code])
 ├── components/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,
-│   │                   #   dashboard (`DashboardHeading`, `DashboardEmpty`, `CourseRow` and one view per role), dev (UI catalog), docs, help, legal, notifications, onboarding, organization, translations, users
+│   │                   #   dashboard (`DashboardHero`, `DashboardEmpty`, `CourseRow` and one view per role), dev (UI catalog), docs, help, legal, notifications, onboarding, organization, translations, users
 │   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-header, dashboard-loading, dashboard-sidebar, dynamic-marker,
 │   │                   #   error-actions, error-fallback, instant-reveal, loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,

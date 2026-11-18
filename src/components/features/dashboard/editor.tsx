@@ -6,7 +6,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 
 import { type EditorSummary } from '@/actions/dashboard/core'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
-import { DashboardHeading } from '@/components/features/dashboard/heading'
+import { DashboardHero } from '@/components/features/dashboard/hero'
 import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
@@ -35,7 +35,7 @@ export const EditorDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHeading
+      <DashboardHero
         action={{ href: '/courses', label: t('editor.openCourses') }}
         organization={organization}
         subtitle={t('subtitle.editor')}

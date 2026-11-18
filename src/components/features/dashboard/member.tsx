@@ -8,7 +8,7 @@ import { type MemberSummary } from '@/actions/dashboard/core'
 import { DashboardChecklist } from '@/components/features/dashboard/checklist'
 import { CourseRow } from '@/components/features/dashboard/course-row'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
-import { DashboardHeading } from '@/components/features/dashboard/heading'
+import { DashboardHero } from '@/components/features/dashboard/hero'
 import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import { Card, CardContent } from '@/components/ui/card'
@@ -41,7 +41,7 @@ export const MemberDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHeading
+      <DashboardHero
         action={heroAction}
         organization={organization}
         subtitle={t('subtitle.learner')}

@@ -56,6 +56,10 @@ const stop = () => {
   timer = undefined
   document.removeEventListener('visibilitychange', refreshWhenVisible)
   window.removeEventListener(NOTIFICATIONS_CHANGED, onChanged)
+  request += 1
+  loaded = false
+  count = 0
+  emit()
 }
 
 const subscribe = (listener: () => void) => {

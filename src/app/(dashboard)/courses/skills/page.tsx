@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
 import { findSkillFramework } from '@/actions/courses/data'
-import { getLearningContext } from '@/actions/courses/learner'
+import { getViewerContext } from '@/actions/viewer'
 import { SkillFramework } from '@/components/features/courses/skill-framework'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -14,7 +14,7 @@ export const generateMetadata = async () => {
 }
 
 const SkillsPageContent = async () => {
-  const { user } = await getLearningContext()
+  const { user } = await getViewerContext()
   if (!user.canEdit) return notFound()
 
   const { groups, ungrouped } = await findSkillFramework()

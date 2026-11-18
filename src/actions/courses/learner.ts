@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
 import { type Locale } from 'next-intl'
@@ -14,6 +15,7 @@ import {
 } from '@/actions/courses/data'
 import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
+import { getViewerContext } from '@/actions/viewer'
 import {
   buildCompletionSkills,
   buildOverview,
@@ -24,6 +26,7 @@ import {
   resolveCourseLanguage,
   resolveLessonTarget,
 } from '@/db/queries/learning'
+import { CacheTag, LIVE_LIFE, progressUserTag } from '@/lib/cache'
 import appConfig from '~/config/app.json'
 
 export const getLearningContext = async () => {
@@ -32,9 +35,17 @@ export const getLearningContext = async () => {
   return { orgId, role, user }
 }
 
+const fetchCourseOverview = async (slug: string, userId: string) => {
+  'use cache'
+  cacheTag(CacheTag.Courses, progressUserTag(userId))
+  cacheLife(LIVE_LIFE)
+
+  return await findCourseOverview(slug, userId)
+}
+
 export const loadCourseOverview = cache(async (slug: string, requested: Locale | null, preferred: Locale) => {
-  const { role, user } = await getLearningContext()
-  const row = await findCourseOverview(slug, user.id)
+  const { role, user } = await getViewerContext()
+  const row = await fetchCourseOverview(slug, user.id)
   if (!row) return null
   const access = courseAccess({ canEdit: user.canEdit, role }, row)
   if (!access) return null

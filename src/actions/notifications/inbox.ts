@@ -2,14 +2,18 @@
 
 import 'server-only'
 
-import { and, count, desc, eq, isNull, or, sql } from 'drizzle-orm'
+import { updateTag } from 'next/cache'
+
+import { and, count, eq, isNull } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { getAuthUser } from '@/actions/auth'
+import { queryNotifications } from '@/actions/notifications/inbox-core'
 import { db } from '@/db/client'
 import { queryError } from '@/db/helpers'
-import { NOTIFICATION_CATEGORIES, NOTIFICATION_CATEGORY_PREFIXES, parseNotification } from '@/db/queries/notification'
+import { NOTIFICATION_CATEGORIES } from '@/db/queries/notification'
 import { notifications } from '@/db/schema'
+import { notificationsUserTag } from '@/lib/cache'
 
 const PAGE_SIZE = 20
 const PAGE_LIMIT = 200
@@ -24,31 +28,15 @@ export type ListNotificationsInput = z.input<typeof listSchema>
 
 const unauthenticated = () => ({ code: 'UNAUTHORIZED', message: 'Not authenticated' })
 
-const prefixMatch = (prefix: string) => sql`left(${notifications.type}, ${prefix.length}) = ${prefix}`
-
 export const listNotifications = async (input: ListNotificationsInput = {}) => {
   const user = await getAuthUser()
   if (!user) return { data: null, error: unauthenticated() }
 
   const parsed = listSchema.safeParse(input)
   if (!parsed.success) return { data: null, error: { code: 'INVALID_INPUT', message: 'Invalid filters' } }
-  const { category, filter, limit } = parsed.data
 
   try {
-    const rows = await db
-      .select()
-      .from(notifications)
-      .where(
-        and(
-          eq(notifications.userId, user.id),
-          filter === 'unread' ? isNull(notifications.readAt) : undefined,
-          category ? or(...NOTIFICATION_CATEGORY_PREFIXES[category].map(prefixMatch)) : undefined
-        )
-      )
-      .orderBy(desc(notifications.createdAt), desc(notifications.id))
-      .limit(limit + 1)
-
-    return { data: { hasMore: rows.length > limit, items: rows.slice(0, limit).map(parseNotification) }, error: null }
+    return { data: await queryNotifications(user.id, parsed.data), error: null }
   } catch (error) {
     return { data: null, error: queryError(error) }
   }
@@ -79,6 +67,7 @@ export const markNotificationRead = async (id: number) => {
       .update(notifications)
       .set({ readAt: new Date().toISOString() })
       .where(and(eq(notifications.id, id), eq(notifications.userId, user.id), isNull(notifications.readAt)))
+    updateTag(notificationsUserTag(user.id))
     return { data: true, error: null }
   } catch (error) {
     return { data: null, error: queryError(error) }
@@ -95,6 +84,7 @@ export const markAllNotificationsRead = async () => {
       .set({ readAt: new Date().toISOString() })
       .where(and(eq(notifications.userId, user.id), isNull(notifications.readAt)))
       .returning({ id: notifications.id })
+    updateTag(notificationsUserTag(user.id))
     return { data: updated.length, error: null }
   } catch (error) {
     return { data: null, error: queryError(error) }

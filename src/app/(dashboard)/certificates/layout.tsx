@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { getActiveOrgId, getCurrentUser } from '@/actions/user'
+import { getViewerContext } from '@/actions/viewer'
 import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -11,10 +11,9 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const CertificatesLayoutContent = async ({ children }: React.PropsWithChildren) => {
-  const [user, organizationId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  const { role, user } = await getViewerContext()
   if (user.isAdmin) return children
   if (user.canEdit) return notFound()
-  const role = user.organizations.find(({ id }) => id === organizationId)?.role
   if (role === 'learner') return notFound()
   return children
 }

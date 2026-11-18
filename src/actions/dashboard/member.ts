@@ -1,9 +1,12 @@
 import 'server-only'
 
+import { cacheLife, cacheTag } from 'next/cache'
+
 import { and, asc, eq, inArray, isNull } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
-import { findCertificateActivity, listUserCertificates } from '@/actions/certificates/queries'
+import { fetchUserCertificates } from '@/actions/certificates/lists'
+import { findCertificateActivity } from '@/actions/certificates/queries'
 import { findSkillCompass, getSkillProgress } from '@/actions/courses/data'
 import {
   type MemberCourseRow,
@@ -15,7 +18,7 @@ import {
   summarizeMemberCourses,
   volunteerJourney,
 } from '@/actions/dashboard/core'
-import { listNotifications } from '@/actions/notifications/inbox'
+import { fetchNotificationPreview } from '@/actions/notifications/preview'
 import {
   type HolderProfile,
   certificateWizardValues,
@@ -28,6 +31,7 @@ import { type Certificate } from '@/db/queries/certificate'
 import { enrollableTypes, evaluateEligibility, pickLocale, recommendFromCompass } from '@/db/queries/learning'
 import { courses, userCourses, userLessons, users } from '@/db/schema'
 import { type EnumType } from '@/db/types'
+import { CacheTag, LIVE_LIFE, certificatesUserTag, notificationsUserTag, progressUserTag, userTag } from '@/lib/cache'
 import { fullName } from '@/lib/utils'
 import appConfig from '~/config/app.json'
 
@@ -102,9 +106,13 @@ export const loadLearnerSummary = async ({
   language: Locale
   userId: string
 }): Promise<MemberSummary> => {
+  'use cache'
+  cacheTag(CacheTag.Courses, notificationsUserTag(userId), progressUserTag(userId))
+  cacheLife(LIVE_LIFE)
+
   const [rows, notifications] = await Promise.all([
     findMemberCourses(userId, 'learner', language),
-    listNotifications({ limit: NOTIFICATION_PREVIEW }),
+    fetchNotificationPreview(userId, NOTIFICATION_PREVIEW),
   ])
   const summary = summarizeMemberCourses(rows, [], recommendFromCompass)
   return { checklist: learnerChecklist(summary), courses: summary, notifications: notifications.data?.items ?? [] }
@@ -121,11 +129,15 @@ export const loadVolunteerSummary = async ({
   organizationId: number | null
   userId: string
 }): Promise<VolunteerSummary> => {
+  'use cache'
+  cacheTag(CacheTag.Courses, certificatesUserTag(userId), progressUserTag(userId), userTag(userId))
+  cacheLife(LIVE_LIFE)
+
   const [rows, compass, progress, certificates] = await Promise.all([
     findMemberCourses(userId, 'volunteer', language),
     findSkillCompass(userId),
     getSkillProgress(userId),
-    listUserCertificates(),
+    fetchUserCertificates(userId),
   ])
 
   const result = evaluateEligibility(progress, appConfig)

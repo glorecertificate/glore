@@ -5,13 +5,15 @@ export interface ReadingHeading {
   text: string
 }
 
-const HEADING = /^(#{1,3})\s+(.+?)(?:\s+#+)?\s*$/u
-const FENCE = /^\s{0,3}(`{3,}|~{3,})(.*)$/u
+const HEADING = /^ {0,3}(#{1,3})[ \t]+(.+?)(?:[ \t]+#+)?[ \t]*$/u
+const FENCE = /^ {0,3}(`{3,}|~{3,})([^\r\n]*)/u
 
 const plain = (value: string) =>
   value
     .replace(/!?\[([^\]]*)\]\([^)]*\)/gu, '$1')
-    .replace(/[*_`~]/gu, '')
+    .replace(/(\*{1,3}|~~)(?=\S)([^*~]*?\S)\1/gu, '$2')
+    .replace(/(^|\s)(_{1,3})(?=\S)([^_]*?\S)\2(?=\s|$)/gu, '$1$3')
+    .replace(/`([^`]*)`/gu, '$1')
     .trim()
 
 const slugifyHeading = (value: string) =>
@@ -27,7 +29,7 @@ export const extractHeadings = (markdown: string): ReadingHeading[] => {
   const headings: ReadingHeading[] = []
   let fence: string | null = null
 
-  for (const [index, line] of markdown.split('\n').entries()) {
+  for (const [index, line] of markdown.split(/\r?\n/u).entries()) {
     const marker = FENCE.exec(line)
     if (fence) {
       const closes =
@@ -43,10 +45,16 @@ export const extractHeadings = (markdown: string): ReadingHeading[] => {
     if (!match) continue
     const text = plain(match[2] ?? '')
     const base = slugifyHeading(text) || 'section'
-    const count = used.get(base) ?? 0
+    let count = used.get(base) ?? 0
+    let id = count === 0 ? base : `${base}-${count}`
+    while (used.has(id)) {
+      count += 1
+      id = `${base}-${count}`
+    }
     used.set(base, count + 1)
+    used.set(id, 1)
     const level = (match[1]?.length ?? 2) as 1 | 2 | 3
-    headings.push({ id: count === 0 ? base : `${base}-${count}`, level, line: index + 1, text })
+    headings.push({ id, level, line: index + 1, text })
   }
 
   return headings

@@ -1300,8 +1300,8 @@
   },
   "Docs": {
     "title": "Documentación",
-    "description": "Aprende a usar la plataforma GloRe con nuestras guías y tutoriales completos.",
-    "empty": "Aún no hay documentación disponible. ¡Vuelve más tarde!",
+    "description": "Guías y tutoriales para usar GloRe.",
+    "empty": "Todavía no hay documentación. Vuelve más tarde.",
     "draft": "Borrador",
     "lastUpdated": "Última actualización: {date}",
     "editor": {
@@ -1498,7 +1498,7 @@
         "faqs": {
           "q1": {
             "question": "¿Cuándo puedo solicitar mi certificado?",
-            "answer": "Cuando completes al menos 3 cursos de habilidades. El botón se desbloquea al cumplir el requisito."
+            "answer": "Cuando completes al menos 3 cursos de habilidades. El botón se activa al cumplir el requisito."
           },
           "q2": {
             "question": "¿Qué es una autoevaluación?",
@@ -1716,7 +1716,7 @@
       "description": "El certificado convierte tu voluntariado en una credencial verificable.",
       "eligibility": {
         "title": "Requisitos",
-        "description": "Completa al menos 3 cursos de habilidades para desbloquear la solicitud del certificado."
+        "description": "Completa al menos 3 cursos de habilidades para solicitar el certificado."
       },
       "lifecycle": {
         "title": "Ciclo de revisión",
@@ -3278,9 +3278,9 @@
       "detailsApprovedDownload": "O haz clic en el botón de abajo para descargarlo directamente:",
       "detailsChanges": "Se han solicitado los siguientes cambios: {comment}",
       "footer": "Recibes este correo porque enviaste un certificado para revisión en GloRe.",
-      "introApproved": "¡Se ha revisado y aprobado tu certificado!",
+      "introApproved": "Tu certificado se ha revisado y aprobado.",
       "introChanges": "Tu revisor ha examinado tu certificado y ha pedido algunos cambios.",
-      "previewApproved": "¡Felicidades! Se ha aprobado tu certificado de GloRe.",
+      "previewApproved": "Tu certificado de GloRe se ha aprobado.",
       "previewChanges": "Tu revisor ha solicitado algunos cambios en tu certificado de GloRe.",
       "subjectApproved": "Se ha aprobado tu certificado de GloRe",
       "subjectChanges": "Se han solicitado cambios en tu certificado de GloRe"
@@ -3445,7 +3445,7 @@
     "account/welcome": {
       "subject": "Te damos la bienvenida a GloRe",
       "preview": "Tu cuenta de GloRe está lista.",
-      "intro": "¡Te damos la bienvenida a GloRe! Tu cuenta está lista. Este es tu nombre de usuario:",
+      "intro": "Te damos la bienvenida a GloRe. Tu cuenta está lista. Este es tu nombre de usuario:",
       "details": "Puedes iniciar sesión con tu correo o con tu nombre de usuario.",
       "button": "Abrir GloRe",
       "footer": "Recibes este correo porque creaste una cuenta de GloRe."

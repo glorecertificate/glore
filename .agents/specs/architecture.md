@@ -120,7 +120,8 @@ src/
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`).
 - `db/schema/<table>.ts` holds Drizzle table definitions.
 - `features/docs/use-docs-search.ts` is the docs search hook for the command palette.
-- Reading surfaces (articles, legal documents) share `features/docs/headings.ts` (`extractHeadings`, `headingIdsByLine`), `reading-components.tsx`, `reading-markdown.tsx`, `reading-toc.tsx`, and `toc-links.tsx`. Heading ids map by source line, so the table of contents and the rendered anchors always agree.
+- Reading surfaces (articles and legal documents) share `features/docs/headings.ts` (`extractHeadings`, `headingIdsByLine`), `reading-components.tsx`, `reading-markdown.tsx`, `reading-toc.tsx`, and `toc-links.tsx`.
+- Heading ids map by source line, so the table of contents and the rendered anchors agree. `extractHeadings` reads ATX headings (`#` to `###`, up to 3 spaces of indent) and handles CRLF, fenced code, and duplicate titles. It does not read setext headings (underlined with `===` or `---`), so write headings with `#`.
 - `features/about/` also holds `InfoSection`, `InfoCard`, and `info-tone.ts`, the shared blocks of the About and Help pages.
 - `features/translations/` holds the `/translations` table and editor sheet.
 

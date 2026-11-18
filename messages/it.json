@@ -1300,8 +1300,8 @@
   },
   "Docs": {
     "title": "Documentazione",
-    "description": "Scopri come usare la piattaforma GloRe con le nostre guide e tutorial completi.",
-    "empty": "Nessuna documentazione disponibile al momento. Torna più tardi!",
+    "description": "Guide e tutorial per usare GloRe.",
+    "empty": "Non ci sono ancora documenti. Torna più tardi.",
     "draft": "Bozza",
     "lastUpdated": "Ultimo aggiornamento: {date}",
     "editor": {
@@ -1498,7 +1498,7 @@
         "faqs": {
           "q1": {
             "question": "Quando posso richiedere il mio certificato?",
-            "answer": "Dopo aver completato almeno 3 corsi sulle competenze. Il pulsante si sblocca quando soddisfi il requisito."
+            "answer": "Dopo aver completato almeno 3 corsi sulle competenze. Il pulsante si attiva quando soddisfi il requisito."
           },
           "q2": {
             "question": "Che cos'è un'autovalutazione?",
@@ -1550,7 +1550,7 @@
           },
           "q2": {
             "question": "Che tipi di corsi posso seguire?",
-            "answer": "I corsi introduttivi spiegano come funziona GloRe, mentre i corsi per studenti sono pensati per il tuo percorso. Entrambi ti permettono di esplorare le soft skill senza una valutazione finale."
+            "answer": "I corsi introduttivi spiegano come funziona GloRe, mentre i corsi per studenti sono pensati per chi sta imparando. Con entrambi puoi esplorare le soft skill senza una valutazione finale."
           },
           "q3": {
             "question": "Come faccio a unirmi a un'organizzazione?",
@@ -1716,7 +1716,7 @@
       "description": "Il certificato trasforma il tuo volontariato in una credenziale verificabile.",
       "eligibility": {
         "title": "Requisiti",
-        "description": "Completa almeno 3 corsi sulle competenze per sbloccare la richiesta del certificato."
+        "description": "Completa almeno 3 corsi sulle competenze per richiedere il certificato."
       },
       "lifecycle": {
         "title": "Ciclo di revisione",
@@ -3278,9 +3278,9 @@
       "detailsApprovedDownload": "Oppure clicca sul pulsante qui sotto per scaricarlo direttamente:",
       "detailsChanges": "Sono state richieste le seguenti modifiche: {comment}",
       "footer": "Ricevi questa email perché hai inviato un certificato per la revisione su GloRe.",
-      "introApproved": "Il tuo certificato è stato esaminato e approvato!",
+      "introApproved": "Il tuo certificato è stato esaminato e approvato.",
       "introChanges": "Il tuo revisore ha esaminato il tuo certificato e ha richiesto alcune modifiche.",
-      "previewApproved": "Congratulazioni! Il tuo certificato GloRe è stato approvato.",
+      "previewApproved": "Il tuo certificato GloRe è stato approvato.",
       "previewChanges": "Il tuo revisore ha richiesto alcune modifiche al tuo certificato GloRe.",
       "subjectApproved": "Il tuo certificato GloRe è stato approvato",
       "subjectChanges": "Sono state richieste modifiche al tuo certificato GloRe"
@@ -3445,7 +3445,7 @@
     "account/welcome": {
       "subject": "Ti diamo il benvenuto su GloRe",
       "preview": "Il tuo account GloRe è pronto.",
-      "intro": "Ti diamo il benvenuto su GloRe! Il tuo account è pronto. Questo è il tuo nome utente:",
+      "intro": "Ti diamo il benvenuto su GloRe. Il tuo account è pronto. Questo è il tuo nome utente:",
       "details": "Puoi accedere con la tua email o con il tuo nome utente.",
       "button": "Apri GloRe",
       "footer": "Ricevi questa email perché hai creato un account GloRe."

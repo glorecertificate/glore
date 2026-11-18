@@ -1300,8 +1300,8 @@
   },
   "Docs": {
     "title": "Documentation",
-    "description": "Learn how to use the GloRe platform with our comprehensive guides and tutorials.",
-    "empty": "No documentation available yet. Check back later!",
+    "description": "Guides and tutorials on how to use GloRe.",
+    "empty": "No documentation yet. Check back later.",
     "draft": "Draft",
     "lastUpdated": "Last updated: {date}",
     "editor": {
@@ -1498,7 +1498,7 @@
         "faqs": {
           "q1": {
             "question": "When can I request my certificate?",
-            "answer": "After you complete at least 3 skill courses. The button unlocks once you qualify."
+            "answer": "After you complete at least 3 skill courses. The button becomes active once you qualify."
           },
           "q2": {
             "question": "What is a self-assessment?",
@@ -1716,7 +1716,7 @@
       "description": "The certificate turns your volunteering into a verifiable credential.",
       "eligibility": {
         "title": "Eligibility",
-        "description": "Complete at least 3 skill courses to unlock the certificate request."
+        "description": "Complete at least 3 skill courses to request a certificate."
       },
       "lifecycle": {
         "title": "Review lifecycle",
@@ -3278,9 +3278,9 @@
       "detailsApprovedDownload": "Or click the button below to download your certificate directly:",
       "detailsChanges": "The following changes were requested: {comment}",
       "footer": "You're receiving this email because you submitted a certificate for review on GloRe.",
-      "introApproved": "Your certificate has been reviewed and approved!",
+      "introApproved": "Your certificate has been reviewed and approved.",
       "introChanges": "Your reviewer has reviewed your certificate and requested some changes.",
-      "previewApproved": "Congratulations! Your GloRe certificate has been approved.",
+      "previewApproved": "Your GloRe certificate has been approved.",
       "previewChanges": "Your reviewer has requested some changes on your GloRe certificate.",
       "subjectApproved": "Your GloRe certificate has been approved",
       "subjectChanges": "Changes requested on your GloRe certificate"
@@ -3445,7 +3445,7 @@
     "account/welcome": {
       "subject": "Welcome to GloRe",
       "preview": "Your GloRe account is ready.",
-      "intro": "Welcome to GloRe! Your account is ready. This is your username:",
+      "intro": "Welcome to GloRe. Your account is ready. This is your username:",
       "details": "You can log in with your email address or with your username.",
       "button": "Open GloRe",
       "footer": "You receive this email because you created a GloRe account."

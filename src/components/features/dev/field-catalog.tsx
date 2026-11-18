@@ -77,6 +77,7 @@ export const FieldCatalog = () => (
       <CatalogRow label="Checkbox">
         <Checkbox aria-label="unchecked" />
         <Checkbox aria-label="checked" defaultChecked />
+        <Checkbox aria-label="indeterminate" checked="indeterminate" />
         <Checkbox aria-label="disabled" disabled />
         <Checkbox aria-label="disabled checked" defaultChecked disabled />
         <Checkbox aria-invalid aria-label="aria-invalid" />

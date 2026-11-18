@@ -4,6 +4,7 @@ import { createSearchParamsCache } from 'nuqs/server'
 
 import { listAdminOrganizationOptions } from '@/actions/admin/options'
 import { listAdminUsers } from '@/actions/admin/users'
+import { AdminPage } from '@/components/features/admin/admin-page'
 import { AdminUsers } from '@/components/features/admin/users'
 import { adminUsersParsers } from '@/components/features/admin/users-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -37,9 +38,11 @@ const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/a
 
 const AdminUsersPage = ({ searchParams }: PageProps<'/admin/users'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.users" name="title" />}>
-    <Suspense fallback={<LoadingFallback />}>
-      <AdminUsersContent searchParams={searchParams} />
-    </Suspense>
+    <AdminPage description={<PageTitle namespace="Admin.users" name="description" />}>
+      <Suspense fallback={<LoadingFallback />}>
+        <AdminUsersContent searchParams={searchParams} />
+      </Suspense>
+    </AdminPage>
   </DashboardPage>
 )
 

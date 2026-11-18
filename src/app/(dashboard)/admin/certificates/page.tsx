@@ -4,6 +4,7 @@ import { createSearchParamsCache } from 'nuqs/server'
 
 import { searchAdminCertificates } from '@/actions/admin/certificates'
 import { listAdminOrganizationOptions } from '@/actions/admin/options'
+import { AdminPage } from '@/components/features/admin/admin-page'
 import { AdminCertificates } from '@/components/features/admin/certificates'
 import { adminCertificatesParsers } from '@/components/features/admin/certificates-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -36,9 +37,11 @@ const AdminCertificatesContent = async ({
 
 const AdminCertificatesPage = ({ searchParams }: PageProps<'/admin/certificates'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.certificates" name="title" />}>
-    <Suspense fallback={<LoadingFallback />}>
-      <AdminCertificatesContent searchParams={searchParams} />
-    </Suspense>
+    <AdminPage description={<PageTitle namespace="Admin.certificates" name="description" />}>
+      <Suspense fallback={<LoadingFallback />}>
+        <AdminCertificatesContent searchParams={searchParams} />
+      </Suspense>
+    </AdminPage>
   </DashboardPage>
 )
 

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { loadTranslations } from '@/actions/translations'
+import { AdminPage } from '@/components/features/admin/admin-page'
 import { Translations } from '@/components/features/translations/translations'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -21,11 +22,10 @@ const TranslationsPageContent = async () => {
 }
 
 const TranslationsPage = () => (
-  <DashboardPage
-    description={<PageTitle namespace="Translations" name="description" />}
-    title={<PageTitle namespace="Translations" name="title" />}
-  >
-    <TranslationsPageContent />
+  <DashboardPage title={<PageTitle namespace="Translations" name="title" />}>
+    <AdminPage description={<PageTitle namespace="Translations" name="description" />}>
+      <TranslationsPageContent />
+    </AdminPage>
   </DashboardPage>
 )
 

@@ -1,4 +1,5 @@
 import { getSettings } from '@/actions/admin/settings'
+import { AdminPage } from '@/components/features/admin/admin-page'
 import { AdminSettingsForm } from '@/components/features/admin/settings-form'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -17,12 +18,10 @@ const AdminSettingsContent = async () => {
 }
 
 const AdminSettingsPage = () => (
-  <DashboardPage
-    description={<PageTitle namespace="Admin.settings" name="description" />}
-    title={<PageTitle namespace="Admin.settings" name="title" />}
-    width="content"
-  >
-    <AdminSettingsContent />
+  <DashboardPage title={<PageTitle namespace="Admin.settings" name="title" />} width="content">
+    <AdminPage description={<PageTitle namespace="Admin.settings" name="description" />}>
+      <AdminSettingsContent />
+    </AdminPage>
   </DashboardPage>
 )
 

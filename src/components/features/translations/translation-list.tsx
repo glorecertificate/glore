@@ -36,7 +36,7 @@ export const TranslationList = ({
     <div className="overflow-hidden rounded-lg border">
       <div className="h-[calc(100dvh-17rem)] min-h-96 overflow-auto" ref={scrollRef}>
         <table aria-label={t('tableLabel')} aria-rowcount={rows.length + 1} className="grid w-full">
-          <thead className="sticky top-0 z-10 hidden bg-muted md:grid">
+          <thead className="sticky top-0 z-10 hidden bg-surface-muted md:grid">
             <tr className={cn('grid gap-4 border-b p-3 text-xs font-medium text-muted-foreground', TRANSLATION_GRID)}>
               <th className="text-left font-medium" scope="col">
                 {t('columns.key')}

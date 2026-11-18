@@ -2779,16 +2779,12 @@
       "inviteMember": "Invita membro",
       "inviteSuccess": "Invito inviato a {email}",
       "inviteTitle": "Invita membro del team",
-      "memberCount": "Mostrati {count} di {total} membri",
-      "noMembers": "Nessun membro del team trovato.",
+      "noMembers": "Ancora nessun membro del team",
       "removeMember": "Rimuovi membro",
       "roleLabel": "Ruolo",
       "role_admin": "Admin",
       "role_editor": "Editor",
       "sendInvite": "Invia invito",
-      "sort_date": "Data di iscrizione",
-      "sort_name": "Nome",
-      "sort_role": "Ruolo",
       "status_joined": "Iscritto",
       "status_pending": "In attesa",
       "tryAdjustingFilters": "Prova a modificare i filtri.",
@@ -2802,7 +2798,17 @@
       "statAdmins": "Admin",
       "statEditors": "Editor",
       "statPending": "In sospeso",
-      "members": "Membri"
+      "members": "Membri",
+      "description": "Gestisci gli amministratori e gli editor della piattaforma.",
+      "columns": {
+        "member": "Membro",
+        "role": "Ruolo",
+        "status": "Stato",
+        "added": "Aggiunto"
+      },
+      "tableLabel": "Membri del team",
+      "noMembersDescription": "Invita un amministratore o un editor per iniziare.",
+      "noMembersFiltered": "Nessun membro trovato"
     },
     "organizations": {
       "title": "Organizzazioni",
@@ -2863,12 +2869,7 @@
       "rejecting": "Rifiuto in corso…",
       "rejectSuccess": "{name} è stata rifiutata.",
       "rejectTitle": "Rifiuta organizzazione",
-      "resultsCount": "{count, plural, =0 {Nessuna organizzazione} one {# organizzazione} other {# organizzazioni}}",
       "searchPlaceholder": "Cerca organizzazioni",
-      "sort_country": "Paese",
-      "sort_members": "Membri",
-      "sort_name": "Nome",
-      "sortBy": "Ordina",
       "statusPending": "In attesa",
       "statusRejected": "Rifiutata",
       "app_tab": "Candidatura",
@@ -2900,7 +2901,17 @@
       "app_decision": "Decisione",
       "app_decisionAccepted": "Approvata in data {date}",
       "app_decisionRejected": "Rifiutata in data {date}",
-      "app_decisionComment": "Commento del revisore"
+      "app_decisionComment": "Commento del revisore",
+      "description": "Esamina le candidature e gestisci tutte le organizzazioni della piattaforma.",
+      "columns": {
+        "organization": "Organizzazione",
+        "status": "Stato",
+        "location": "Sede",
+        "members": "Membri",
+        "created": "Registrata"
+      },
+      "tableLabel": "Organizzazioni",
+      "openOrg": "Apri organizzazione"
     },
     "users": {
       "title": "Utenti",
@@ -2971,7 +2982,8 @@
       "impersonateReasonPlaceholder": "Quale richiesta di supporto o bug stai verificando?",
       "confirmImpersonate": "Inizia a visualizzare",
       "impersonating": "Avvio in corso…",
-      "cancel": "Annulla"
+      "cancel": "Annulla",
+      "description": "Cerca qualsiasi account, cambia i ruoli della piattaforma e sospendi o impersona le persone."
     },
     "impersonation": {
       "label": "Sessione di visualizzazione",
@@ -3031,7 +3043,8 @@
       "noCertificates": "Ancora nessun certificato",
       "noCertificatesDescription": "Qui compariranno i certificati inviati da tutte le organizzazioni.",
       "view": "Vedi",
-      "openOrganization": "Mostra il flusso di {name}"
+      "openOrganization": "Mostra il flusso di {name}",
+      "description": "Cerca qualsiasi certificato richiesto o emesso e revocalo quando serve."
     },
     "audit": {
       "title": "Registro di audit",
@@ -3089,7 +3102,8 @@
       "noResults": "Nessun evento trovato",
       "noResultsDescription": "Prova con un'altra ricerca o rimuovi i filtri.",
       "noEvents": "Ancora nessun evento",
-      "noEventsDescription": "Qui compariranno sospensioni, cambi di ruolo, visualizzazioni come utente, certificati revocati e decisioni sulle candidature."
+      "noEventsDescription": "Qui compariranno sospensioni, cambi di ruolo, visualizzazioni come utente, certificati revocati e decisioni sulle candidature.",
+      "description": "Ogni decisione di moderazione, accesso, contenuti e impostazioni, dalla più recente."
     },
     "settings": {
       "title": "Impostazioni",
@@ -3158,7 +3172,8 @@
       "shortcutCertificates": "Certificati",
       "shortcutCertificatesHint": "Cerca e revoca i certificati",
       "shortcutAudit": "Registro di audit",
-      "shortcutAuditHint": "Azioni sensibili e chi le ha eseguite"
+      "shortcutAuditHint": "Azioni sensibili e chi le ha eseguite",
+      "description": "Stato della piattaforma, code di revisione e scorciatoie per il team di amministrazione."
     }
   },
   "Join": {

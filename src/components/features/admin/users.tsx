@@ -12,6 +12,7 @@ import { useSession } from '@/components/providers/session'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { type AdminPage, type AdminUserRow, type PlatformRole, isBanActive } from '@/db/queries/admin-user'
 import { timestampMillis } from '@/db/queries/organization'
@@ -136,7 +137,9 @@ export const AdminUsers = ({
               if (isBanActive(user)) {
                 return (
                   <div className="flex flex-col items-start gap-1">
-                    <Badge variant="destructive">{t('status_banned')}</Badge>
+                    <StatusBadge icon="ban" tone="danger">
+                      {t('status_banned')}
+                    </StatusBadge>
                     {user.banExpires && (
                       <span className="text-xs text-muted-foreground">
                         {t('bannedUntil', {
@@ -152,8 +155,18 @@ export const AdminUsers = ({
                   </div>
                 )
               }
-              if (!user.onboardedAt) return <Badge variant="warning">{t('status_pending')}</Badge>
-              return <Badge variant="success">{t('status_active')}</Badge>
+              if (!user.onboardedAt) {
+                return (
+                  <StatusBadge icon="clock" tone="warning">
+                    {t('status_pending')}
+                  </StatusBadge>
+                )
+              }
+              return (
+                <StatusBadge icon="circle-check" tone="success">
+                  {t('status_active')}
+                </StatusBadge>
+              )
             },
             header: t('columns.status'),
             id: 'status',

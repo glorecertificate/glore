@@ -1,12 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { LucideIcon } from '@/components/icons/lucide'
-import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,10 +14,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { CountrySelect, countryCodeToFlag } from '@/components/ui/country-select'
+import { CountrySelect } from '@/components/ui/country-select'
 import {
   Dialog,
   DialogContent,
@@ -29,117 +24,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { SearchHighlight } from '@/components/ui/search'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
-import { useCountryName } from '@/hooks/use-country-name'
-
-export const OrgRow = ({
-  onApprove,
-  onReject,
-  onView,
-  org,
-  query,
-}: {
-  org: AdminOrganization
-  onApprove: (org: AdminOrganization) => void
-  onReject: (org: AdminOrganization) => void
-  onView: (org: AdminOrganization) => void
-  query?: string
-}) => {
-  const { locale } = useI18n()
-  const t = useTranslations('Admin.organizations')
-  const translateCountry = useCountryName()
-
-  const country = org.country && `${translateCountry(org.country)} ${countryCodeToFlag(org.country)}`
-  const location = [org.city, country].filter(Boolean).join(', ')
-  const createdAt = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(org.createdAt))
-
-  return (
-    <div className="group relative flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-accent/40">
-      <Link aria-label={org.name} className="absolute inset-0" href={`/admin/organizations/${org.id}`} />
-      <Avatar className="size-10 shrink-0 rounded-lg">
-        {org.avatarUrl && <AvatarImage alt={org.name} src={org.avatarUrl} />}
-        <AvatarFallback className="rounded-lg bg-muted text-sm font-medium">
-          {org.name.slice(0, 2).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <p className="truncate text-sm font-medium">
-            <SearchHighlight query={query} value={org.name} />
-          </p>
-          {org.isPending && (
-            <Badge className="shrink-0" size="sm" variant="warning">
-              {t('statusPending')}
-            </Badge>
-          )}
-          {org.isRejected && (
-            <Badge className="shrink-0" size="sm" variant="destructive">
-              {t('statusRejected')}
-            </Badge>
-          )}
-        </div>
-        <div className="mt-1 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-xs text-muted-foreground">
-          {location && (
-            <span className="flex items-center gap-1">
-              <LucideIcon name="map-pin" className="size-3.5 shrink-0" />
-              {location}
-            </span>
-          )}
-          <span className="flex items-center gap-1">
-            <LucideIcon name="users" className="size-3.5 shrink-0" />
-            {t('memberCount', { count: org.memberCount })}
-          </span>
-          <span className="flex min-w-0 items-center gap-1">
-            <LucideIcon name="mail" className="size-3.5 shrink-0" />
-            <span className="truncate">{org.email}</span>
-          </span>
-        </div>
-      </div>
-      <div className="relative z-10 flex shrink-0 items-center gap-2">
-        <span className="hidden text-xs text-muted-foreground sm:block">{createdAt}</span>
-        {(org.isPending || org.registrationRequest) && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button aria-label={t('actions')} size="icon" variant="ghost">
-                <LucideIcon name="ellipsis" className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
-              {org.registrationRequest && (
-                <DropdownMenuItem className="text-[13px]" onClick={() => onView(org)}>
-                  <LucideIcon name="file-text" className="size-3" />
-                  {t('app_view')}
-                </DropdownMenuItem>
-              )}
-              {org.isPending && (
-                <DropdownMenuItem className="text-[13px]" onClick={() => onApprove(org)}>
-                  <LucideIcon name="check" className="size-3" />
-                  {t('approve')}
-                </DropdownMenuItem>
-              )}
-              {org.isPending && (
-                <DropdownMenuItem className="text-[13px]" onClick={() => onReject(org)} variant="destructive">
-                  <LucideIcon name="x" className="size-3" />
-                  {t('reject')}
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-        <LucideIcon
-          name="chevron-right"
-          className="size-4 text-muted-foreground/40 transition-colors group-hover:text-muted-foreground"
-        />
-      </div>
-    </div>
-  )
-}
 
 export const ApproveDialog = ({
   onConfirm,

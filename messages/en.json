@@ -2779,16 +2779,12 @@
       "inviteMember": "Invite member",
       "inviteSuccess": "Invitation sent to {email}",
       "inviteTitle": "Invite team member",
-      "memberCount": "Showing {count} of {total} members",
-      "noMembers": "No team members found.",
+      "noMembers": "No team members yet",
       "removeMember": "Remove member",
       "roleLabel": "Role",
       "role_admin": "Admin",
       "role_editor": "Editor",
       "sendInvite": "Send invitation",
-      "sort_date": "Join date",
-      "sort_name": "Name",
-      "sort_role": "Role",
       "status_joined": "Joined",
       "status_pending": "Pending",
       "tryAdjustingFilters": "Try adjusting your filters.",
@@ -2802,7 +2798,17 @@
       "statAdmins": "Admins",
       "statEditors": "Editors",
       "statPending": "Pending",
-      "members": "Members"
+      "members": "Members",
+      "description": "Manage the platform admins and editors.",
+      "columns": {
+        "member": "Member",
+        "role": "Role",
+        "status": "Status",
+        "added": "Added"
+      },
+      "tableLabel": "Team members",
+      "noMembersDescription": "Invite an admin or an editor to get started.",
+      "noMembersFiltered": "No team members found"
     },
     "organizations": {
       "title": "Organizations",
@@ -2863,12 +2869,7 @@
       "rejecting": "Rejecting…",
       "rejectSuccess": "{name} has been rejected.",
       "rejectTitle": "Reject organization",
-      "resultsCount": "{count, plural, =0 {No organizations} one {# organization} other {# organizations}}",
       "searchPlaceholder": "Search organizations",
-      "sort_country": "Country",
-      "sort_members": "Members",
-      "sort_name": "Name",
-      "sortBy": "Sort",
       "statusPending": "Pending",
       "statusRejected": "Rejected",
       "app_tab": "Application",
@@ -2900,7 +2901,17 @@
       "app_decision": "Decision",
       "app_decisionAccepted": "Approved on {date}",
       "app_decisionRejected": "Rejected on {date}",
-      "app_decisionComment": "Reviewer comment"
+      "app_decisionComment": "Reviewer comment",
+      "description": "Review applications and manage every organization on the platform.",
+      "columns": {
+        "organization": "Organization",
+        "status": "Status",
+        "location": "Location",
+        "members": "Members",
+        "created": "Registered"
+      },
+      "tableLabel": "Organizations",
+      "openOrg": "Open organization"
     },
     "users": {
       "title": "Users",
@@ -2971,7 +2982,8 @@
       "impersonateReasonPlaceholder": "Which support request or bug are you looking into?",
       "confirmImpersonate": "Start viewing",
       "impersonating": "Starting…",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "description": "Search every account, change platform roles, and suspend or impersonate people."
     },
     "impersonation": {
       "label": "Viewing session",
@@ -3031,7 +3043,8 @@
       "noCertificates": "No certificates yet",
       "noCertificatesDescription": "Submitted certificates from every organization will appear here.",
       "view": "View",
-      "openOrganization": "Show the pipeline of {name}"
+      "openOrganization": "Show the pipeline of {name}",
+      "description": "Look up any requested or issued certificate and revoke it when needed."
     },
     "audit": {
       "title": "Audit log",
@@ -3089,7 +3102,8 @@
       "noResults": "No events found",
       "noResultsDescription": "Try a different search or clear the filters.",
       "noEvents": "No events yet",
-      "noEventsDescription": "Bans, role changes, impersonation, revoked certificates, and application decisions will appear here."
+      "noEventsDescription": "Bans, role changes, impersonation, revoked certificates, and application decisions will appear here.",
+      "description": "Every moderation, access, content, and settings decision, newest first."
     },
     "settings": {
       "title": "Settings",
@@ -3158,7 +3172,8 @@
       "shortcutCertificates": "Certificates",
       "shortcutCertificatesHint": "Look up and revoke certificates",
       "shortcutAudit": "Audit log",
-      "shortcutAuditHint": "Sensitive actions and who took them"
+      "shortcutAuditHint": "Sensitive actions and who took them",
+      "description": "Platform health, review queues, and shortcuts for the admin team."
     }
   },
   "Join": {

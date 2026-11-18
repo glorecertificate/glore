@@ -16,10 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -28,7 +25,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -36,43 +39,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
-import { cn } from '@/lib/utils'
 
 export type TeamRole = 'admin' | 'editor'
 export type TeamStatus = 'joined' | 'pending'
 
-const STAT_ACCENTS = {
-  brand: 'border-brand/20 bg-brand/10 text-brand-text',
-  warning: 'border-warning/25 bg-warning/15 text-warning-text',
-  success: 'border-success/25 bg-success/10 text-success-text',
-} as const
-
-export const TeamStatCard = ({
-  accent,
-  icon,
-  label,
-  value,
-}: {
-  accent?: keyof typeof STAT_ACCENTS
-  icon: IconName
-  label: string
-  value: number
-}) => (
-  <Card className="flex-row items-center justify-start gap-3.5 p-4">
-    <div
-      className={cn(
-        'flex size-10 shrink-0 items-center justify-center rounded-lg border',
-        accent && STAT_ACCENTS[accent]
-      )}
-    >
-      <LucideIcon className="size-5" name={icon} />
-    </div>
-    <div className="flex flex-col gap-1">
-      <span className="text-2xl leading-none font-semibold tabular-nums">{value}</span>
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
-    </div>
-  </Card>
-)
+export const ROLE_ICONS = {
+  admin: 'shield-user',
+  editor: 'pencil',
+} as const satisfies Record<TeamRole, IconName>
 
 export const getUserRole = (user: User): TeamRole => (user.isAdmin ? 'admin' : 'editor')
 
@@ -85,97 +59,48 @@ export const getDisplayName = (user: User) => {
   return user.email
 }
 
-export const TeamMemberRow = ({
-  isCurrentUser,
+export const TeamMemberActions = ({
+  busy,
   onChangeRole,
   onDelete,
   onResend,
   user,
 }: {
-  user: TeamMember
-  isCurrentUser: boolean
+  busy: boolean
   onChangeRole: (user: User, role: TeamRole) => void
   onDelete: (user: User) => void
   onResend: (user: User) => void
+  user: TeamMember
 }) => {
   const t = useTranslations('Admin.team')
   const role = getUserRole(user)
-  const status = getUserStatus(user)
   const targetRole = role === 'admin' ? 'editor' : 'admin'
 
   return (
-    <div className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-accent/40">
-      <div className="flex min-w-0 items-center gap-3.5">
-        <div className="relative shrink-0">
-          <Avatar className="size-10 rounded-full ring-2 ring-background">
-            {user.avatarUrl && <AvatarImage alt={getDisplayName(user)} src={user.avatarUrl} />}
-            <AvatarFallback className="rounded-full bg-muted text-sm font-medium">
-              {user.initials || <LucideIcon name="user" className="size-4" />}
-            </AvatarFallback>
-          </Avatar>
-        </div>
-        <div className="min-w-0">
-          <p className="flex items-center gap-1.5 truncate text-sm font-medium">
-            {getDisplayName(user)}
-            {isCurrentUser && (
-              <Badge className="px-1.5" size="sm" variant="muted">
-                {t('you')}
-              </Badge>
-            )}
-            {status === 'pending' && (
-              <Badge className="px-1.5" size="sm" variant="warning">
-                {t('status_pending')}
-              </Badge>
-            )}
-          </p>
-          <p className="truncate text-[13px] text-muted-foreground">{user.email}</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-2 sm:gap-2.5">
-        <Badge className={cn('gap-1 border')} variant="ghost">
-          {role === 'admin' ? (
-            <LucideIcon name="shield-user" className="size-3" />
-          ) : (
-            <LucideIcon name="pencil" className="size-3" />
-          )}
-          {t(`role_${role}`)}
-        </Badge>
-        {!isCurrentUser && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                aria-label={t('actions')}
-                className={cn(isCurrentUser && 'pointer-events-none opacity-0')}
-                size="icon"
-                variant="ghost"
-              >
-                <LucideIcon name="ellipsis" className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
-              <DropdownMenuItem className="text-[13px]" onClick={() => onChangeRole(user, targetRole)}>
-                {targetRole === 'admin' ? (
-                  <LucideIcon name="shield-user" className="size-3" />
-                ) : (
-                  <LucideIcon name="pencil" className="size-3" />
-                )}
-                {t('makeRole', { role: t(`role_${targetRole}`) })}
-              </DropdownMenuItem>
-              {status === 'pending' && user.invitationOpen && (
-                <DropdownMenuItem className="text-[13px]" onClick={() => onResend(user)}>
-                  <LucideIcon name="mail" className="size-3" />
-                  {t('resendInvite')}
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem className="text-[13px]" onClick={() => onDelete(user)} variant="destructive">
-                <LucideIcon name="trash-2" className="size-3" />
-                {t('removeMember')}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-label={`${t('actions')}: ${getDisplayName(user)}`} disabled={busy} size="icon" variant="ghost">
+          <LucideIcon name="ellipsis" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onSelect={() => onChangeRole(user, targetRole)}>
+          <LucideIcon name={ROLE_ICONS[targetRole]} />
+          {t('makeRole', { role: t(`role_${targetRole}`) })}
+        </DropdownMenuItem>
+        {getUserStatus(user) === 'pending' && user.invitationOpen && (
+          <DropdownMenuItem onSelect={() => onResend(user)}>
+            <LucideIcon name="mail" />
+            {t('resendInvite')}
+          </DropdownMenuItem>
         )}
-      </div>
-    </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => onDelete(user)} variant="destructive">
+          <LucideIcon name="trash-2" />
+          {t('removeMember')}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 

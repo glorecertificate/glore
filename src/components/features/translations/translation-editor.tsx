@@ -47,7 +47,7 @@ export const TranslationEditor = ({
             </Banner>
           )}
           {source !== null && (
-            <div className="flex flex-col gap-1 rounded-lg border bg-muted/30 p-3">
+            <div className="flex flex-col gap-1 rounded-lg border bg-surface-muted p-3">
               <span className="text-xs font-medium text-muted-foreground">{t('source')}</span>
               <p className="text-sm wrap-break-word whitespace-pre-wrap" lang={DEFAULT_LOCALE}>
                 {source}

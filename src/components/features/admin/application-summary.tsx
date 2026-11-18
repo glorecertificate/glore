@@ -102,7 +102,7 @@ export const ApplicationSummary = ({
     <div className="space-y-4">
       {groups.map(group => (
         <section className="rounded-lg border bg-card p-4" key={group.title}>
-          <h3 className="text-sm font-semibold">{group.title}</h3>
+          <h3 className="type-label">{group.title}</h3>
           <DescriptionList className="mt-1" layout="rows">
             {group.rows.map(([label, value]) => (
               <Row key={label} label={label} value={value} />

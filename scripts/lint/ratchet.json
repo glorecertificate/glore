@@ -9,8 +9,8 @@
     "no-arbitrary-value": 1
   },
   "src/components/features/admin": {
-    "no-arbitrary-value": 10,
-    "no-restricted-classes": 8
+    "no-arbitrary-value": 2,
+    "no-restricted-classes": 1
   },
   "src/components/features/certificates": {
     "no-arbitrary-value": 38,

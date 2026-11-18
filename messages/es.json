@@ -2779,16 +2779,12 @@
       "inviteMember": "Invitar miembro",
       "inviteSuccess": "Invitación enviada a {email}",
       "inviteTitle": "Invitar miembro del equipo",
-      "memberCount": "Mostrando {count} de {total} miembros",
-      "noMembers": "No se encontraron miembros del equipo.",
+      "noMembers": "Aún no hay miembros del equipo",
       "removeMember": "Eliminar miembro",
       "roleLabel": "Rol",
       "role_admin": "Admin",
       "role_editor": "Editor",
       "sendInvite": "Enviar invitación",
-      "sort_date": "Fecha de incorporación",
-      "sort_name": "Nombre",
-      "sort_role": "Rol",
       "status_joined": "Activo",
       "status_pending": "Pendiente",
       "tryAdjustingFilters": "Prueba a ajustar los filtros.",
@@ -2802,7 +2798,17 @@
       "statAdmins": "Admins",
       "statEditors": "Editores",
       "statPending": "Pendientes",
-      "members": "Miembros"
+      "members": "Miembros",
+      "description": "Gestiona los administradores y editores de la plataforma.",
+      "columns": {
+        "member": "Miembro",
+        "role": "Rol",
+        "status": "Estado",
+        "added": "Alta"
+      },
+      "tableLabel": "Miembros del equipo",
+      "noMembersDescription": "Invita a un administrador o editor para empezar.",
+      "noMembersFiltered": "No se encontraron miembros"
     },
     "organizations": {
       "title": "Organizaciones",
@@ -2863,12 +2869,7 @@
       "rejecting": "Rechazando…",
       "rejectSuccess": "Se ha rechazado {name}.",
       "rejectTitle": "Rechazar organización",
-      "resultsCount": "{count, plural, =0 {Sin organizaciones} one {# organización} other {# organizaciones}}",
       "searchPlaceholder": "Buscar organizaciones",
-      "sort_country": "País",
-      "sort_members": "Miembros",
-      "sort_name": "Nombre",
-      "sortBy": "Ordenar",
       "statusPending": "Pendiente",
       "statusRejected": "Rechazada",
       "app_tab": "Solicitud",
@@ -2900,7 +2901,17 @@
       "app_decision": "Decisión",
       "app_decisionAccepted": "Aprobada el {date}",
       "app_decisionRejected": "Rechazada el {date}",
-      "app_decisionComment": "Comentario de revisión"
+      "app_decisionComment": "Comentario de revisión",
+      "description": "Revisa solicitudes y gestiona todas las organizaciones de la plataforma.",
+      "columns": {
+        "organization": "Organización",
+        "status": "Estado",
+        "location": "Ubicación",
+        "members": "Miembros",
+        "created": "Registro"
+      },
+      "tableLabel": "Organizaciones",
+      "openOrg": "Abrir organización"
     },
     "users": {
       "title": "Usuarios",
@@ -2971,7 +2982,8 @@
       "impersonateReasonPlaceholder": "¿Qué solicitud de soporte o error estás investigando?",
       "confirmImpersonate": "Empezar a ver",
       "impersonating": "Iniciando…",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "description": "Busca cualquier cuenta, cambia roles de la plataforma y suspende o suplanta personas."
     },
     "impersonation": {
       "label": "Sesión de visualización",
@@ -3031,7 +3043,8 @@
       "noCertificates": "Todavía no hay certificados",
       "noCertificatesDescription": "Aquí aparecerán los certificados enviados por todas las organizaciones.",
       "view": "Ver",
-      "openOrganization": "Ver el flujo de {name}"
+      "openOrganization": "Ver el flujo de {name}",
+      "description": "Consulta cualquier certificado solicitado o emitido y revócalo cuando haga falta."
     },
     "audit": {
       "title": "Registro de auditoría",
@@ -3089,7 +3102,8 @@
       "noResults": "No se encontraron eventos",
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",
       "noEvents": "Todavía no hay eventos",
-      "noEventsDescription": "Aquí aparecerán los baneos, los cambios de rol, las sesiones de visualización, los certificados revocados y las decisiones sobre solicitudes."
+      "noEventsDescription": "Aquí aparecerán los baneos, los cambios de rol, las sesiones de visualización, los certificados revocados y las decisiones sobre solicitudes.",
+      "description": "Cada decisión de moderación, acceso, contenido y ajustes, de la más reciente a la más antigua."
     },
     "settings": {
       "title": "Ajustes",
@@ -3158,7 +3172,8 @@
       "shortcutCertificates": "Certificados",
       "shortcutCertificatesHint": "Busca y revoca certificados",
       "shortcutAudit": "Registro de auditoría",
-      "shortcutAuditHint": "Acciones sensibles y quién las realizó"
+      "shortcutAuditHint": "Acciones sensibles y quién las realizó",
+      "description": "Estado de la plataforma, colas de revisión y accesos directos para el equipo de administración."
     }
   },
   "Join": {

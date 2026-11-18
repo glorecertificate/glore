@@ -26,7 +26,7 @@ export const TranslationPreview = ({ locale, source, value }: { locale: string; 
   const setSample = (name: string, sample: string) => setSamples(current => ({ ...current, [name]: sample }))
 
   return (
-    <section aria-label={t('title')} className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-3">
+    <section aria-label={t('title')} className="flex flex-col gap-3 rounded-lg border bg-surface-muted p-3">
       <h4 className="text-sm font-medium">{t('title')}</h4>
       {result.ok ? (
         <p className="text-sm wrap-break-word whitespace-pre-wrap" data-testid="translation-preview" lang={locale}>

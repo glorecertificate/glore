@@ -52,16 +52,14 @@ export const OrganizationReviewActions = ({
 
   return (
     <>
-      <div className="flex shrink-0 items-center gap-2">
-        <Button onClick={() => setApproveOpen(true)} size="sm" variant="brand">
-          <LucideIcon name="check" />
-          {t('approve')}
-        </Button>
-        <Button onClick={() => setRejectOpen(true)} size="sm" variant="outline">
-          <LucideIcon name="x" />
-          {t('reject')}
-        </Button>
-      </div>
+      <Button onClick={() => setApproveOpen(true)} variant="brand">
+        <LucideIcon name="check" />
+        {t('approve')}
+      </Button>
+      <Button onClick={() => setRejectOpen(true)} variant="outline">
+        <LucideIcon name="x" />
+        {t('reject')}
+      </Button>
       <ApproveDialog onConfirm={handleApprove} onOpenChange={setApproveOpen} open={approveOpen} org={{ name }} />
       <RejectDialog onConfirm={handleReject} onOpenChange={setRejectOpen} open={rejectOpen} org={{ name }} />
     </>

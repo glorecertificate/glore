@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { createSearchParamsCache } from 'nuqs/server'
 
 import { listAdminAudit } from '@/actions/admin/audit'
+import { AdminPage } from '@/components/features/admin/admin-page'
 import { AdminAudit } from '@/components/features/admin/audit'
 import { adminAuditParsers } from '@/components/features/admin/audit-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -26,9 +27,11 @@ const AdminAuditContent = async ({ searchParams }: { searchParams: PageProps<'/a
 
 const AdminAuditPage = ({ searchParams }: PageProps<'/admin/audit'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.audit" name="title" />}>
-    <Suspense fallback={<LoadingFallback />}>
-      <AdminAuditContent searchParams={searchParams} />
-    </Suspense>
+    <AdminPage description={<PageTitle namespace="Admin.audit" name="description" />}>
+      <Suspense fallback={<LoadingFallback />}>
+        <AdminAuditContent searchParams={searchParams} />
+      </Suspense>
+    </AdminPage>
   </DashboardPage>
 )
 

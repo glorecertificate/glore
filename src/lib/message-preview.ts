@@ -51,7 +51,7 @@ export const argumentSpecs = (source: string): ArgumentSpec[] => {
   return [...specs.values()]
 }
 
-export const tagNames = (source: string) =>
+const tagNames = (source: string) =>
   messageSignature(source).tokens.flatMap(token => (token.startsWith('tag:') ? [token.slice('tag:'.length)] : []))
 
 export const sampleValues = (source: string): SampleValues =>

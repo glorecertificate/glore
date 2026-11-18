@@ -125,7 +125,7 @@ export const parseMarkdownFile = <T extends ZodType>(file: string, raw: string, 
   return { body: (match[2] ?? '').trim(), data: parsed.data, problems: [...problems, ...parsed.problems] }
 }
 
-export const parseLessonFile = (file: string, raw: string) => {
+const parseLessonFile = (file: string, raw: string) => {
   const { body, data, problems } = parseMarkdownFile(file, raw, lessonFrontMatterSchema)
   if (!data) return { lesson: null, problems }
 

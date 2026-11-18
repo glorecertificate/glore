@@ -36,21 +36,13 @@ interface SuggestionOptions {
   precompiled: boolean
 }
 
-export const buildSuggestionInstructions = (locale: string) =>
+const buildSuggestionInstructions = (locale: string) =>
   [
     `You translate and polish interface messages into ${LANGUAGES[locale] ?? locale}.`,
     ...RULES.map(rule => `- ${rule}`),
   ].join('\n')
 
-export const buildSuggestionPrompt = ({
-  current,
-  key,
-  source,
-}: {
-  current: string | null
-  key: string
-  source: string
-}) =>
+const buildSuggestionPrompt = ({ current, key, source }: { current: string | null; key: string; source: string }) =>
   [
     `Message key: ${key}`,
     `English source:\n${source}`,
@@ -59,7 +51,7 @@ export const buildSuggestionPrompt = ({
     .filter(Boolean)
     .join('\n\n')
 
-export const cleanSuggestion = (text: string) => {
+const cleanSuggestion = (text: string) => {
   const trimmed = text.trim()
   const fenced = FENCE_REGEX.exec(trimmed)?.[1]?.trim() ?? trimmed
   const quoted = fenced.length > 1 && fenced.startsWith('"') && fenced.endsWith('"') ? fenced.slice(1, -1) : fenced

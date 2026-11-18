@@ -97,7 +97,7 @@ const replace = (value: unknown, path: string, translations: ReadonlyMap<string,
 export const applySegments = (value: unknown, path: string, translations: ReadonlyMap<string, string>) =>
   replace(value, path, translations)
 
-export const chunkSegments = (segments: Segment[]) => {
+const chunkSegments = (segments: Segment[]) => {
   const chunks: Segment[][] = []
   let current: Segment[] = []
   let size = 0
@@ -115,7 +115,7 @@ export const chunkSegments = (segments: Segment[]) => {
   return chunks
 }
 
-export const buildInstructions = (language: string, source: string) =>
+const buildInstructions = (language: string, source: string) =>
   [
     `You are a professional translator for GloRe, an e-learning platform that certifies the soft skills people gain through volunteering. Translate from ${source} to ${language}.`,
     'The user message is a JSON object that maps numeric keys to text fragments. Fragments are consecutive pieces of one document: a fragment can start or end in the middle of a sentence, so use the neighbors for context but translate each fragment on its own.',
@@ -146,7 +146,7 @@ const parseObject = (output: string) => {
   }
 }
 
-export const validateOutput = (chunk: Segment[], output: string): TranslationOutput => {
+const validateOutput = (chunk: Segment[], output: string): TranslationOutput => {
   const parsed = parseObject(output)
   if (!parsed) return { ok: false, reason: 'format' }
   const expected = chunk.map((_, index) => String(index))

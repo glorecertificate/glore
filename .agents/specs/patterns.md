@@ -113,7 +113,9 @@ const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'>
 | -------------- | -------------- |
 | `@/*`          | `./src/*`      |
 | `~/config/*`   | `./config/*`   |
+| `~/e2e/*`      | `./e2e/*`      |
 | `~/messages/*` | `./messages/*` |
+| `~/scripts/*`  | `./scripts/*`  |
 
 - `src/lib/types.ts` holds `Any`, `AnyRecord`, and `AnyFunction` (the only sanctioned `any` site).
 - It also holds `AuthView`, `CamelCase<S>`, `Icon<T>` and `IconProps<T>`, `IconName` (re-export), `Rgb`, `Enum<T>`, `HttpUrl`, and `Theme` and `ResolvedTheme`.

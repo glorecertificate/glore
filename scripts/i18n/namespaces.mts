@@ -73,7 +73,7 @@ const referencesOf = (text: string, namespaces: string[]) => {
   return [...found].filter(namespace => namespaces.includes(namespace))
 }
 
-export const namespaceUsage = (root: string, namespaces: string[]): NamespaceUsage => {
+const namespaceUsage = (root: string, namespaces: string[]): NamespaceUsage => {
   const files = listSources(join(root, 'src'))
   const texts = new Map(files.map(file => [file, readFileSync(file, 'utf8')]))
   const head = (file: string) => (texts.get(file) as string).slice(0, DIRECTIVE_WINDOW)

@@ -16,7 +16,7 @@ export interface Change {
   rule: string
 }
 
-export const ruleName = (code: string) => code.replace(/^[\w-]+\((.+)\)$/u, '$1')
+const ruleName = (code: string) => code.replace(/^[\w-]+\((.+)\)$/u, '$1')
 
 const sortCounts = (counts: Counts): Counts =>
   Object.fromEntries(

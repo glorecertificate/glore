@@ -11,13 +11,13 @@ const LEGAL_DIR = join(CONTENT_DIR, 'legal')
 
 const SOURCE_LOCALE = 'en'
 
-export const LEGAL_SLUGS = ['privacy', 'quality-charter', 'terms'] as const
+const LEGAL_SLUGS = ['privacy', 'quality-charter', 'terms'] as const
 
 const ACCEPTANCE_SLUGS: readonly string[] = ['terms']
 
 const FRONT_MATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/u
 
-export const parseLegalFile = (source: string) => {
+const parseLegalFile = (source: string) => {
   const match = FRONT_MATTER_REGEX.exec(source)
   if (!match) return null
   const meta = parse(match[1] ?? '') as { title?: unknown; updated?: unknown } | null
@@ -34,7 +34,7 @@ export interface LegalFixture {
   translations: { body: string; locale: string; title: string }[]
 }
 
-export const readLegalFixtures = (root = LEGAL_DIR): LegalFixture[] =>
+const readLegalFixtures = (root = LEGAL_DIR): LegalFixture[] =>
   LEGAL_SLUGS.map(slug => {
     const files = LOCALES.map(locale => {
       const parsed = parseLegalFile(readFileSync(join(root, `${slug}.${locale}.md`), 'utf8'))

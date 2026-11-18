@@ -143,7 +143,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 Email flows (auth, invite, certificate, account) are tested by the agent, never handed to the user.
 
 1. Run `pnpm run mail:up`.
-2. Confirm delivery with `pnpm run test:e2e -- e2e/recovery.spec.ts`. It fails when no mail reaches Mailpit, usually because `.env.local` lacks `MAIL_TRANSPORT=mailpit`.
+2. Confirm delivery with `pnpm run test:e2e -- e2e/invitations.spec.ts`. It fails when no mail reaches Mailpit, usually because `.env.local` lacks `MAIL_TRANSPORT=mailpit`.
 3. When that variable is missing, ask the user to set it. Env files are unreadable to agents, and dev otherwise sends real SMTP email.
 4. Drive the flow, then read the message and its links from `http://localhost:8025/api/v1/search?query=to:"<email>"`.
 
@@ -169,11 +169,11 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 ### End-to-end tests
 
 - `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`). Run `pnpm run db:seed` once before the first run.
-- The `legal` project runs last. Target it with `--project=setup --project=legal --no-deps`.
+- The e2e specs cover the certificate, invitation, role, auth, and locale flows. `course-editor.spec.ts` is an owner exception, because it catches the AI preview freeze after a Plate re-pull.
 - The `setup` project logs in every `AUTH_ROLES` seed user and stores their state in `.playwright/.auth/`. Specs pick one with `test.use({ storageState: authFile(role) })`.
 - Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs. Setup clears local `rate_limits` first.
-- `*.perf.ts` files run only with `playwright.perf.config.ts` (`pnpm run test:perf`). `performance.md` has the targets and the procedure.
-- `e2e/mail.ts` reads Mailpit (`MAILPIT_URL`). `recovery.spec.ts` resets the `recovery` seed user's password through the emailed link, and `db:seed` restores it.
+- `*.perf.ts` files live in `e2e/perf/` and run only with `e2e/perf/playwright.config.ts` (`pnpm run test:perf`). `performance.md` has the targets and the procedure.
+- `e2e/mail.ts` reads Mailpit (`MAILPIT_URL`) for the invitation and application specs.
 - Run Playwright with `--workers=2`: 4 workers make the dev server answer 502.
 
 ## Browser verification

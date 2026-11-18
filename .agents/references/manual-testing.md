@@ -210,7 +210,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 - It upserts organizations and accounts, then deletes and rebuilds their certificates, invitations, links, requests, events, notifications, and progress.
 - Dates are relative to the run.
 - Approved certificates carry a snapshot and no stored PDF: the download renders from it.
-- Data and planning live in `scripts/seed-demo-data.ts` (organizations, accounts) and `seed-demo-story.ts` (certificates, progress, flows, events, notifications; pure and unit tested).
+- Data and planning live in `scripts/seed-demo-data.ts` (organizations, accounts) and `seed-demo-story.ts` (certificates, progress, flows, events, notifications; pure).
 - Localized text lives in `seed-demo-copy.ts`, SQL in `seed-demo-db.mts`, and shared upserts in `scripts/seed-db.mts`.
 - `local` needs a localhost `DATABASE_URL`.
 - `staging` needs a remote one whose database comment is `glore:staging` (`COMMENT ON DATABASE`, set on the Neon `staging` branch only, since Neon forbids custom database settings).

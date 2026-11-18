@@ -14,7 +14,7 @@ export const ReadingToc = async ({ headings: all }: { headings: ReadingHeading[]
   return (
     <>
       <details className="group rounded-lg border bg-card lg:hidden">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 type-label text-fg-1 [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-4 py-3 type-label text-fg-1 focus-visible:focus-ring [&::-webkit-details-marker]:hidden">
           {t('article.onThisPage')}
           <LucideIcon name="chevron-down" className="size-4 text-fg-2 transition-transform group-open:rotate-180" />
         </summary>

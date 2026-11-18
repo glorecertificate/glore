@@ -12,14 +12,16 @@ import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { type DocCategory } from '@/db/queries/doc'
 import { type IntlRecord } from '@/lib/i18n'
+import { cn } from '@/lib/utils'
 
 interface DocsSectionProps {
   category: DocCategory
   allCategories: DocCategory[]
   canEdit: boolean
+  showTitle?: boolean
 }
 
-export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionProps) => {
+export const DocsSection = ({ allCategories, canEdit, category, showTitle = true }: DocsSectionProps) => {
   const t = useTranslations('Docs')
   const { localize } = useI18n()
 
@@ -29,8 +31,14 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="type-heading text-fg-title capitalize">{title}</h2>
+      <div
+        className={cn(
+          'flex items-center gap-3',
+          showTitle ? 'justify-between' : 'justify-end',
+          !(showTitle || canEdit) && 'hidden'
+        )}
+      >
+        {showTitle && <h2 className="type-heading text-fg-title capitalize">{title}</h2>}
         {canEdit && (
           <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
             <LucideIcon name="plus" className="size-4" />

@@ -44,6 +44,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { HeaderLogo } from '@/components/ui/header'
 import { Image } from '@/components/ui/image'
+import { InfoTip } from '@/components/ui/info-tip'
 import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { Link } from '@/components/ui/link'
 import { Logo } from '@/components/ui/logo'
@@ -58,12 +59,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarTrigger,
   sidebarMenuButtonVariants,
   useSidebar,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { toast } from '@/components/ui/toast'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
 import { useShortcut } from '@/hooks/use-shortcut'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
@@ -193,7 +194,7 @@ const DashboardSidebarItem = ({
       >
         <Link href={route} prefetch={quiet || undefined}>
           {icon && <LucideIcon name={icon} />}
-          {label}
+          <span>{label}</span>
           {badge > 0 && <DashboardSidebarBadge count={badge} />}
         </Link>
       </SidebarMenuButton>
@@ -357,36 +358,26 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                 <span className="flex items-center gap-1 font-semibold text-sidebar-accent-foreground">
                   {user.firstName}
                   {user.isAdmin && (
-                    <Tooltip>
-                      <TooltipTrigger
-                        asChild
-                        className="group-aria-expanded/sidebar-user:pointer-events-none!"
-                        pointerEvents="auto"
-                      >
-                        <span>
-                          <LucideIcon className="size-3" name="shield-user" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={6} size="sm">
-                        <span className="text-xs">{t('adminUser')}</span>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip
+                      className="text-inherit group-aria-expanded/sidebar-user:pointer-events-none! hover:text-inherit data-[state=open]:text-inherit"
+                      icon="shield-user"
+                      iconClassName="size-3"
+                      label={t('adminUser')}
+                      nested
+                    >
+                      {t('adminUser')}
+                    </InfoTip>
                   )}
                   {user.isEditor && (
-                    <Tooltip>
-                      <TooltipTrigger
-                        asChild
-                        className="group-aria-expanded/sidebar-user:pointer-events-none!"
-                        pointerEvents="auto"
-                      >
-                        <span>
-                          <LucideIcon className="size-3" name="pencil" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={6} size="sm">
-                        <span className="text-xs">{t('editorUser')}</span>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip
+                      className="text-inherit group-aria-expanded/sidebar-user:pointer-events-none! hover:text-inherit data-[state=open]:text-inherit"
+                      icon="pencil"
+                      iconClassName="size-3"
+                      label={t('editorUser')}
+                      nested
+                    >
+                      {t('editorUser')}
+                    </InfoTip>
                   )}
                 </span>
                 <span className="truncate text-xs font-normal text-sidebar-muted">{user.email}</span>
@@ -524,14 +515,41 @@ const DashboardSidebarBrand = () => {
       <HeaderLogo className="inline-flex rounded-lg logo-chip px-2.5 py-1.5" href={APP_ROOT} prefetch={false}>
         <Logo className="h-4.5 w-auto" />
       </HeaderLogo>
-      {user.isAdmin && (
-        <Badge className="bg-sidebar-badge text-sidebar-badge-foreground" variant="ghost">
-          {t('admin')}
-        </Badge>
-      )}
+      <div className="flex items-center gap-1">
+        {user.isAdmin && (
+          <Badge className="bg-sidebar-badge text-sidebar-badge-foreground" variant="ghost">
+            {t('admin')}
+          </Badge>
+        )}
+        <DashboardSidebarClose />
+      </div>
     </div>
   )
 }
+
+const DashboardSidebarClose = () => {
+  const { action, toggleSidebar } = useSidebar()
+
+  return (
+    <Button
+      className="size-7 text-sidebar-muted hover:bg-sidebar-accent hover:text-sidebar-accent-foreground lg:hidden"
+      data-sidebar="close"
+      onClick={toggleSidebar}
+      size="icon"
+      variant="ghost"
+    >
+      <LucideIcon className="size-4" name="x" />
+      <span className="sr-only">{action}</span>
+    </Button>
+  )
+}
+
+const DashboardSidebarExpand = () => (
+  <SidebarTrigger
+    className="hidden size-8 self-center text-sidebar-muted group-data-[collapsible=icon]:flex hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+    data-sidebar="expand"
+  />
+)
 
 export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
   const { organization, user } = useSession()
@@ -548,7 +566,8 @@ export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="gap-4 p-4 pb-2">
+      <SidebarHeader className="gap-4 p-4 pb-2 group-data-[collapsible=icon]:p-2">
+        <DashboardSidebarExpand />
         <DashboardSidebarBrand />
         {showsOrganizationSwitcher(user) && <OrganizationSwitcher />}
       </SidebarHeader>

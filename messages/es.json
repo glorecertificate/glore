@@ -2221,7 +2221,7 @@
     "joinRequests": "Solicitudes de acceso",
     "settings": "Ajustes",
     "membersTitle": "Miembros",
-    "membersDescription": "Invita a personas, cambia sus roles y elimínalas cuando se marchen.",
+    "membersDescription": "Invita a personas, cambia sus roles o elimínalas de la organización.",
     "inviteMember": "Invitar miembro",
     "firstName": "Nombre",
     "lastName": "Apellidos",
@@ -2486,7 +2486,7 @@
     "insightsTutorsTitle": "Carga de los tutores",
     "insightsTutorsDescription": "Revisiones abiertas y revisiones completadas por cada tutor.",
     "insightsTutorsEmpty": "Todavía no hay tutores. Invita a uno para empezar a revisar.",
-    "insightsTutorLoad": "{open} abiertas, {reviewed} completadas",
+    "insightsTutorLoad": "{open, plural, one {# abierta} other {# abiertas}}, {reviewed, plural, one {# completada} other {# completadas}}",
     "insightsRatingTitle": "Cómo te valoran los voluntarios",
     "insightsRatingDescription": "Medias anónimas de las valoraciones que dejan los voluntarios tras recibir su certificado.",
     "insightsRatingLocked": "Las medias aparecen cuando al menos {min} voluntarios te hayan valorado. Hasta ahora: {count}.",
@@ -2503,7 +2503,9 @@
     "insightsMonthlyEmptyDescription": "Los certificados enviados y aprobados aparecerán aquí mes a mes.",
     "certificatesDescription": "Sigue cada solicitud de certificado, asigna revisores y revoca certificados aprobados.",
     "settingsPageDescription": "Actualiza el perfil, el firmante y los datos de contacto de tu organización.",
-    "discardChanges": "Descartar cambios"
+    "discardChanges": "Descartar cambios",
+    "tabLoadError": "No se pudo cargar esta pestaña. Inténtalo de nuevo.",
+    "activityEmptyTitle": "Aún no hay actividad"
   },
   "Users": {
     "admin": "Usuario admin",

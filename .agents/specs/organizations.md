@@ -50,6 +50,12 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Organization approval, platform-admin organization invites, and admin member invites send an `admin` or member invitation. None creates an account or a membership.
 - Public actions are rate limited: `invite-account`, `invite-proof`, `invite-decline`, `join-link`. Invite sign-in shares the `login` keys.
 
+## Tab loading
+
+- `features/organization/panel.tsx` renders the active tab through `LazyTabHost`. Each tab chunk (members, invitations, join requests, insights, activity, settings) loads and caches on its own, and the panel preloads all of them on mount, so a tab switch shows no fallback.
+- A direct load of `?tab=<name>` server-renders that tab. A failed chunk shows `TabBoundary` with a retry button, and a retry re-imports only that chunk.
+- A dialog opened from a row restores focus to its trigger. When an action removes the row, focus moves to the tab container (`tabIndex={-1}`) through `useReturnFocus`.
+
 ## Members and ownership
 
 - `/organization?tab=members` is a `DataTable` named "Members" with search, role and status filters, sorting, and pagination.

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -25,12 +25,12 @@ import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { timestampMillis } from '@/db/queries/organization'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 
 import { CopyLinkButton } from './copy-link-button'
 import { InviteLinkDialog } from './invite-link-dialog'
 import { INVITE_LINK_STATUS } from './status'
 import { TabHeader } from './tab-header'
-import { useReturnFocus } from './use-return-focus'
 import { formatRoleLabel } from './utils'
 
 type InviteLink = OrganizationPanelData['inviteLinks'][number]
@@ -46,6 +46,7 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
   const tOrganization = useTranslations('Organization')
   const errorMessage = useInvitationError()
   const { remember, restore } = useReturnFocus()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const [createOpen, setCreateOpen] = useState(false)
   const [revokeTarget, setRevokeTarget] = useState<InviteLink | null>(null)
@@ -72,7 +73,7 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
 
   return (
     <>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
         <TabHeader
           actions={
             <Button
@@ -171,10 +172,8 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
 
       <InviteLinkDialog
         onCreated={onRefresh}
-        onOpenChange={open => {
-          setCreateOpen(open)
-          if (!open) restore()
-        }}
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
+        onOpenChange={setCreateOpen}
         open={createOpen}
       />
 
@@ -182,11 +181,10 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
         onOpenChange={open => {
           if (open) return
           setRevokeTarget(null)
-          restore()
         }}
         open={Boolean(revokeTarget)}
       >
-        <AlertDialogContent>
+        <AlertDialogContent onCloseAutoFocus={event => restore(event, containerRef.current)}>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('revokeLinkTitle')}</AlertDialogTitle>
             <AlertDialogDescription>{t('revokeLinkDescription')}</AlertDialogDescription>

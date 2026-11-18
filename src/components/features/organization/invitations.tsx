@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -32,13 +32,13 @@ import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { canManageInvitation, timestampMillis } from '@/db/queries/organization'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 
 import { CopyLinkButton } from './copy-link-button'
 import { InviteMemberDialog } from './invite-dialog'
 import { InviteLinks } from './invite-links'
 import { INVITATION_STATUS } from './status'
 import { TabHeader } from './tab-header'
-import { useReturnFocus } from './use-return-focus'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES, formatRoleLabel } from './utils'
 
 type Invitation = OrganizationPanelData['invitations'][number]
@@ -67,6 +67,7 @@ export const OrganizationInvitations = ({
   const tOrganization = useTranslations('Organization')
   const errorMessage = useInvitationError()
   const { remember, restore } = useReturnFocus()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const [filter, setFilter] = useState<'all' | 'open'>('open')
   const [inviteOpen, setInviteOpen] = useState(false)
@@ -130,7 +131,7 @@ export const OrganizationInvitations = ({
   return (
     <>
       <div className="flex flex-col gap-10">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
           <TabHeader
             actions={
               <Button
@@ -247,10 +248,8 @@ export const OrganizationInvitations = ({
         allowedRoles={allowedRoles}
         defaultLocale={locale}
         onInvite={input => inviteOrganizationMembers(input, organizationId)}
-        onOpenChange={open => {
-          setInviteOpen(open)
-          if (!open) restore()
-        }}
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
+        onOpenChange={setInviteOpen}
         onSent={onRefresh}
         open={inviteOpen}
       />
@@ -259,11 +258,10 @@ export const OrganizationInvitations = ({
         onOpenChange={open => {
           if (open) return
           setRevokeTarget(null)
-          restore()
         }}
         open={Boolean(revokeTarget)}
       >
-        <AlertDialogContent>
+        <AlertDialogContent onCloseAutoFocus={event => restore(event, containerRef.current)}>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('revokeTitle')}</AlertDialogTitle>
             <AlertDialogDescription>

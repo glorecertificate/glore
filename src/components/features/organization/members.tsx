@@ -27,6 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { StatusBadge } from '@/components/ui/status-badge'
 import { type OrganizationMembershipRole, canManageMemberRole, timestampMillis } from '@/db/queries/organization'
 import { type User } from '@/db/queries/user'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 
 import { ChangeRoleDialog } from './change-role-dialog'
 import { InviteMemberDialog } from './invite-dialog'
@@ -36,7 +37,6 @@ import { RemoveMemberDialog } from './remove-member-dialog'
 import { TabHeader } from './tab-header'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
-import { useReturnFocus } from './use-return-focus'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES, formatRoleLabel, getDisplayName } from './utils'
 
 type Member = OrganizationPanelData['members'][number]
@@ -82,6 +82,7 @@ export const OrganizationMembers = ({
     open: boolean
   }>({ data: null, error: null, loading: false, open: false })
   const drawerRequest = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const platform = organizationId !== undefined
   const managerRole = isOrgAdmin ? 'admin' : 'representative'
@@ -120,15 +121,23 @@ export const OrganizationMembers = ({
 
   const closeDrawer = (open: boolean) => {
     if (open) return
-    restore()
     drawerRequest.current += 1
     setDrawer(current => ({ ...current, open: false }))
+  }
+
+  const openDialog = (next: NonNullable<typeof dialog>) => {
+    remember()
+    setDialog(next)
   }
 
   const handleDialog = (open: boolean) => {
     if (open) return
     setDialog(null)
-    restore()
+  }
+
+  const handleRemoved = () => {
+    remember(containerRef.current)
+    onRefresh()
   }
 
   const handleOwnerChange = (user: User) => {
@@ -143,7 +152,7 @@ export const OrganizationMembers = ({
 
   return (
     <>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
         <TabHeader
           actions={
             <Button
@@ -273,7 +282,7 @@ export const OrganizationMembers = ({
                 </Button>
                 {!(canRemove || canChangeRole || canLeave) && <span aria-hidden className="size-8" />}
                 {(canRemove || canChangeRole || canLeave) && (
-                  <DropdownMenu onOpenChange={open => open && remember()}>
+                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         aria-label={t('memberActions', { name: getDisplayName(member.user) })}
@@ -285,13 +294,13 @@ export const OrganizationMembers = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       {canChangeRole && (
-                        <DropdownMenuItem onSelect={() => setDialog({ kind: 'role', member })}>
+                        <DropdownMenuItem onSelect={() => openDialog({ kind: 'role', member })}>
                           <LucideIcon name="user-cog" />
                           {t('changeRole')}
                         </DropdownMenuItem>
                       )}
                       {canLeave && (
-                        <DropdownMenuItem onSelect={() => setDialog({ kind: 'leave' })} variant="destructive">
+                        <DropdownMenuItem onSelect={() => openDialog({ kind: 'leave' })} variant="destructive">
                           <LucideIcon name="log-out" />
                           {t('leaveOrganization')}
                         </DropdownMenuItem>
@@ -300,7 +309,7 @@ export const OrganizationMembers = ({
                         <>
                           {canChangeRole && <DropdownMenuSeparator />}
                           <DropdownMenuItem
-                            onSelect={() => setDialog({ kind: 'remove', member })}
+                            onSelect={() => openDialog({ kind: 'remove', member })}
                             variant="destructive"
                           >
                             <LucideIcon name="trash-2" />
@@ -342,10 +351,8 @@ export const OrganizationMembers = ({
         allowedRoles={availableInviteRoles}
         defaultLocale={locale}
         onInvite={input => inviteOrganizationMembers(input, organizationId)}
-        onOpenChange={open => {
-          setInviteOpen(open)
-          if (!open) restore()
-        }}
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
+        onOpenChange={setInviteOpen}
         onSent={onRefresh}
         open={inviteOpen}
       />
@@ -354,11 +361,13 @@ export const OrganizationMembers = ({
         detail={drawer.data}
         errorMessage={drawer.error}
         loading={drawer.loading}
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
         onOpenChange={closeDrawer}
         open={drawer.open}
       />
 
       <ChangeRoleDialog
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
         key={dialog?.kind === 'role' ? dialog.member.id : 'role'}
         member={dialog?.kind === 'role' ? dialog.member : null}
         onDone={onRefresh}
@@ -366,14 +375,16 @@ export const OrganizationMembers = ({
         organizationId={organizationId}
       />
       <RemoveMemberDialog
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
         member={dialog?.kind === 'remove' ? dialog.member : null}
-        onDone={onRefresh}
+        onDone={handleRemoved}
         onOpenChange={handleDialog}
         organizationId={organizationId}
       />
       {!platform && (
         <>
           <LeaveOrganizationDialog
+            onCloseAutoFocus={event => restore(event, containerRef.current)}
             onLeft={handleLeft}
             onOpenChange={handleDialog}
             open={dialog?.kind === 'leave'}
@@ -381,6 +392,7 @@ export const OrganizationMembers = ({
             organizationName={organizationName}
           />
           <TransferOwnershipDialog
+            onCloseAutoFocus={event => restore(event, containerRef.current)}
             candidates={candidates}
             onOpenChange={handleDialog}
             onTransferred={handleOwnerChange}

@@ -1,7 +1,8 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { startTransition, useEffect, useState } from 'react'
+import { type ComponentType, startTransition, useEffect, useState } from 'react'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -10,30 +11,83 @@ import { type User } from '@/db/queries/user'
 
 import { OrganizationCertificatesPanel } from './certificates-panel'
 import { OrganizationOverview } from './overview'
+import { TabBoundary } from './tab-boundary'
 import { useOrganizationTab } from './tabs'
 
-const loadTabs = async () => {
-  const [activity, insights, invitations, joinRequests, members, settings] = await Promise.all([
-    import('./activity'),
-    import('./insights'),
-    import('./invitations'),
-    import('./join-requests'),
-    import('./members'),
-    import('./settings'),
-  ])
-  return {
-    OrganizationActivity: activity.OrganizationActivity,
-    OrganizationInsightsPanel: insights.OrganizationInsightsPanel,
-    OrganizationInvitations: invitations.OrganizationInvitations,
-    OrganizationJoinRequests: joinRequests.OrganizationJoinRequests,
-    OrganizationMembers: members.OrganizationMembers,
-    OrganizationSettings: settings.OrganizationSettings,
-  }
+const TabLoading = () => <LoadingFallback className="min-h-64" />
+
+interface LazyTab<P extends object> {
+  Dynamic: ComponentType<P>
+  load: () => Promise<ComponentType<P>>
+  preload: () => Promise<void>
+  reset: () => void
+  resolved: ComponentType<P> | null
 }
 
-type Tabs = Awaited<ReturnType<typeof loadTabs>>
+const createLazyTab = <P extends object>(load: () => Promise<ComponentType<P>>, initial: ComponentType<P>) => {
+  const tab: LazyTab<P> = {
+    Dynamic: initial,
+    load,
+    async preload() {
+      if (tab.resolved) return
+      try {
+        tab.resolved = await load()
+      } catch {
+        tab.resolved = null
+      }
+    },
+    reset() {
+      tab.resolved = null
+      tab.Dynamic = dynamic(load, { loading: TabLoading })
+    },
+    resolved: null,
+  }
+  return tab
+}
 
-let loadedTabs: Tabs | null = null
+const activityTab = createLazyTab(
+  async () => (await import('./activity')).OrganizationActivity,
+  dynamic(async () => (await import('./activity')).OrganizationActivity, { loading: TabLoading })
+)
+const insightsTab = createLazyTab(
+  async () => (await import('./insights')).OrganizationInsightsPanel,
+  dynamic(async () => (await import('./insights')).OrganizationInsightsPanel, { loading: TabLoading })
+)
+const invitationsTab = createLazyTab(
+  async () => (await import('./invitations')).OrganizationInvitations,
+  dynamic(async () => (await import('./invitations')).OrganizationInvitations, { loading: TabLoading })
+)
+const joinRequestsTab = createLazyTab(
+  async () => (await import('./join-requests')).OrganizationJoinRequests,
+  dynamic(async () => (await import('./join-requests')).OrganizationJoinRequests, { loading: TabLoading })
+)
+const membersTab = createLazyTab(
+  async () => (await import('./members')).OrganizationMembers,
+  dynamic(async () => (await import('./members')).OrganizationMembers, { loading: TabLoading })
+)
+const settingsTab = createLazyTab(
+  async () => (await import('./settings')).OrganizationSettings,
+  dynamic(async () => (await import('./settings')).OrganizationSettings, { loading: TabLoading })
+)
+
+const LAZY_TABS = [activityTab, insightsTab, invitationsTab, joinRequestsTab, membersTab, settingsTab]
+
+const LazyTabHost = <P extends object>({ lazy, ...props }: P & { lazy: LazyTab<P> }) => {
+  const [attempt, setAttempt] = useState(0)
+  const [Component, setComponent] = useState(() => lazy.resolved ?? lazy.Dynamic)
+
+  const retry = () => {
+    lazy.reset()
+    setComponent(() => lazy.Dynamic)
+    setAttempt(current => current + 1)
+  }
+
+  return (
+    <TabBoundary key={attempt} onRetry={retry}>
+      <Component {...(props as unknown as P)} />
+    </TabBoundary>
+  )
+}
 
 export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPanelData }) => {
   const { refresh: routerRefresh } = useRouter()
@@ -42,16 +96,9 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
 
   const data = initialData
 
-  const [tabs, setTabs] = useState(loadedTabs)
-
   useEffect(() => {
-    if (tabs) return
-    const load = async () => {
-      loadedTabs = await loadTabs()
-      setTabs(loadedTabs)
-    }
-    void load()
-  }, [tabs])
+    for (const lazy of LAZY_TABS) void lazy.preload()
+  }, [])
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab
 
@@ -69,13 +116,10 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     }
   }
 
-  if (currentTab !== 'overview' && currentTab !== 'certificates' && !tabs) {
-    return <LoadingFallback className="min-h-64" />
-  }
-
-  if (tabs && currentTab === 'members') {
+  if (currentTab === 'members') {
     return (
-      <tabs.OrganizationMembers
+      <LazyTabHost
+        lazy={membersTab}
         currentUserId={data.currentUserId}
         isOrgAdmin={data.isOrgAdmin}
         members={data.members}
@@ -86,9 +130,10 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     )
   }
 
-  if (tabs && currentTab === 'invitations') {
+  if (currentTab === 'invitations') {
     return (
-      <tabs.OrganizationInvitations
+      <LazyTabHost
+        lazy={invitationsTab}
         currentUserId={data.currentUserId}
         inviteLinks={data.inviteLinks}
         invitations={data.invitations}
@@ -98,25 +143,26 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     )
   }
 
-  if (tabs && currentTab === 'requests') {
-    return <tabs.OrganizationJoinRequests joinRequests={data.joinRequests} onRefresh={refresh} />
+  if (currentTab === 'requests') {
+    return <LazyTabHost joinRequests={data.joinRequests} lazy={joinRequestsTab} onRefresh={refresh} />
   }
 
   if (currentTab === 'certificates') {
     return <OrganizationCertificatesPanel organizationId={data.organization.id} />
   }
 
-  if (tabs && currentTab === 'insights') {
-    return <tabs.OrganizationInsightsPanel />
+  if (currentTab === 'insights') {
+    return <LazyTabHost lazy={insightsTab} />
   }
 
-  if (tabs && currentTab === 'activity') {
-    return <tabs.OrganizationActivity initial={data.activity} />
+  if (currentTab === 'activity') {
+    return <LazyTabHost initial={data.activity} lazy={activityTab} />
   }
 
-  if (tabs && currentTab === 'settings' && data.isOrgAdmin) {
+  if (currentTab === 'settings' && data.isOrgAdmin) {
     return (
-      <tabs.OrganizationSettings
+      <LazyTabHost
+        lazy={settingsTab}
         key={data.organization.updatedAt}
         members={data.members}
         onRefresh={refresh}

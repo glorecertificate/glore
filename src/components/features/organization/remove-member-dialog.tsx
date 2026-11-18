@@ -26,11 +26,13 @@ type Member = OrganizationPanelData['members'][number]
 export const RemoveMemberDialog = ({
   member,
   onDone,
+  onCloseAutoFocus,
   onOpenChange,
   organizationId,
 }: {
   member: Member | null
   onDone: () => void
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   organizationId?: number
 }) => {
@@ -59,7 +61,7 @@ export const RemoveMemberDialog = ({
 
   return (
     <AlertDialog onOpenChange={onOpenChange} open={Boolean(member)}>
-      <AlertDialogContent>
+      <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('removeMemberTitle')}</AlertDialogTitle>
           <AlertDialogDescription>

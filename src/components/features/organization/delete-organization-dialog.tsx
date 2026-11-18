@@ -19,11 +19,13 @@ import { Label } from '@/components/ui/label'
 
 export const DeleteOrganizationDialog = ({
   onConfirm,
+  onCloseAutoFocus,
   onOpenChange,
   open,
   organizationName,
 }: {
   onConfirm: () => Promise<void>
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   open: boolean
   organizationName: string
@@ -50,7 +52,7 @@ export const DeleteOrganizationDialog = ({
 
   return (
     <AlertDialog onOpenChange={handleOpenChange} open={open}>
-      <AlertDialogContent>
+      <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('deleteOrganizationTitle')}</AlertDialogTitle>
           <AlertDialogDescription>{t('deleteOrganizationDescription')}</AlertDialogDescription>

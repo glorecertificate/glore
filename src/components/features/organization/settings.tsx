@@ -31,6 +31,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { type User } from '@/db/queries/user'
 import { useFormDisabled } from '@/hooks/use-form-disabled'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
 
 import { OrganizationAvatarMenu } from './avatar-menu'
@@ -41,7 +42,6 @@ import { SignatureUpload } from './signature-upload'
 import { TabHeader } from './tab-header'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
-import { useReturnFocus } from './use-return-focus'
 
 type Values = z.infer<ReturnType<typeof organizationSettingsSchema>>
 type Locale = keyof IntlRecord
@@ -95,6 +95,7 @@ export const OrganizationSettings = ({
   })
 
   const handleSubmit = async ({ description, ...values }: Values) => {
+    if (!form.formState.isDirty) return
     const dirty = form.formState.dirtyFields.description ?? {}
     const patch: Partial<Record<Locale, string>> = {}
     for (const locale of LOCALES) {
@@ -421,7 +422,7 @@ export const OrganizationSettings = ({
               </Button>
             )}
             <Button
-              disabled={disabled || form.formState.isSubmitting}
+              disabled={disabled || !form.formState.isDirty || form.formState.isSubmitting}
               loading={form.formState.isSubmitting}
               loadingText={t('saving')}
               size="sm"
@@ -483,20 +484,16 @@ export const OrganizationSettings = ({
 
       <DeleteOrganizationDialog
         onConfirm={handleDelete}
-        onOpenChange={open => {
-          setDeleteOpen(open)
-          if (!open) restore()
-        }}
+        onCloseAutoFocus={restore}
+        onOpenChange={setDeleteOpen}
         open={deleteOpen}
         organizationName={organization.name}
       />
       {!platform && (
         <TransferOwnershipDialog
           candidates={candidates}
-          onOpenChange={open => {
-            setTransferOpen(open)
-            if (!open) restore()
-          }}
+          onCloseAutoFocus={restore}
+          onOpenChange={setTransferOpen}
           onTransferred={handleTransferred}
           open={transferOpen}
           organizationName={organization.name}

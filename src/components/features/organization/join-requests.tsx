@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -25,16 +25,18 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 
 import { TabHeader } from './tab-header'
-import { useReturnFocus } from './use-return-focus'
 import { formatRoleLabel } from './utils'
 
 const RejectRequestDialog = ({
+  onCloseAutoFocus,
   onConfirm,
   onOpenChange,
   open,
 }: {
+  onCloseAutoFocus: (event: Event) => void
   onConfirm: (comment: string) => Promise<boolean>
   onOpenChange: (open: boolean) => void
   open: boolean
@@ -57,7 +59,7 @@ const RejectRequestDialog = ({
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent>
+      <DialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <DialogHeader>
           <DialogTitle>{t('rejectRequestTitle')}</DialogTitle>
           <DialogDescription>{t('rejectRequestDescription')}</DialogDescription>
@@ -101,6 +103,7 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
   const tInvitations = useTranslations('Invitations')
   const errorMessage = useInvitationError()
   const { remember, restore } = useReturnFocus()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const [activeRequestId, setActiveRequestId] = useState<number | null>(null)
   const [rejectRequestId, setRejectRequestId] = useState<number | null>(null)
@@ -120,6 +123,7 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
     }
 
     toast.success(data.kind === 'member' ? t('joinRequestApproved') : tInvitations('requestApprovedInvited'))
+    containerRef.current?.focus()
     onRefresh()
   }
 
@@ -141,13 +145,14 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
 
     setRejectRequestId(null)
     toast.success(t('joinRequestRejected'))
+    remember(containerRef.current)
     onRefresh()
     return true
   }
 
   return (
     <>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
         <TabHeader description={t('joinRequestsDescription')} title={t('joinRequestsTitle')} />
 
         {joinRequests.length === 0 && (
@@ -222,11 +227,11 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
       </div>
 
       <RejectRequestDialog
+        onCloseAutoFocus={event => restore(event, containerRef.current)}
         onConfirm={handleRejectRequest}
         onOpenChange={open => {
           if (open) return
           setRejectRequestId(null)
-          restore()
         }}
         open={!!rejectRequestId}
       />

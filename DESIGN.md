@@ -40,7 +40,7 @@ The action gradient starts at `#107ea4`, not the logo teal, because white text o
 ## Components
 
 - Shell: navy sidebar with a white logo chip, a teal gradient active item, and a green count badge.
-- Page band: gradient, line-art globe at 20% opacity, breadcrumb, title, description, and actions. Content overlaps it by 64px.
+- Page band: gradient, line-art globe at 20% opacity, breadcrumb, title, description, and actions. With `overlap`, an opaque card overlaps it by 64px. Otherwise the band ends with a clean gap.
 - Stat card: 4px gradient strip, 32px gradient icon tile, large number, short context line.
 - Highlight card: navy gradient with white text, for one key figure per page.
 - Earned certificate: a green to teal to navy panel with the document tilted -2 degrees and a deep shadow.

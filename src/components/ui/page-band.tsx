@@ -25,7 +25,10 @@ export const PageBandGlobe = ({ className, ...props }: React.ComponentProps<'svg
 
 export const PageBand = ({ children, className, ...props }: React.ComponentProps<'header'>) => (
   <header
-    className={cn('relative isolate shrink-0 overflow-hidden bg-band text-band-foreground', className)}
+    className={cn(
+      'relative isolate shrink-0 overflow-hidden bg-band text-band-foreground band-scope has-[+main:not([data-overlap])]:[&>div]:pb-10',
+      className
+    )}
     data-slot="page-band"
     {...props}
   >

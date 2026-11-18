@@ -413,6 +413,18 @@
   --fg-3: var(--sidebar-muted);
 }
 
+@utility band-scope {
+  --foreground: var(--band-foreground);
+  --card-foreground: var(--band-foreground);
+  --muted-foreground: var(--band-muted);
+  --fg-1: var(--band-foreground);
+  --fg-2: var(--band-text);
+  --fg-3: var(--band-muted);
+  --border: var(--band-border);
+  --input: var(--band-border);
+  --ring: var(--band-foreground);
+}
+
 @utility logo-chip {
   background-color: var(--logo-chip);
   --foreground: var(--logo-ink);
@@ -431,8 +443,8 @@
     }
 
     &[data-state="active"] {
-      background-color: var(--surface-0) !important;
-      color: var(--fg-1) !important;
+      background-color: var(--band-foreground) !important;
+      color: var(--band-from) !important;
     }
   }
 }

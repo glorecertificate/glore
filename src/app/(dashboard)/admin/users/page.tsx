@@ -37,6 +37,7 @@ const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/a
 
 const AdminUsersPage = ({ searchParams }: PageProps<'/admin/users'>) => (
   <DashboardPage
+    overlap
     description={<PageTitle namespace="Admin.users" name="description" />}
     title={<PageTitle namespace="Admin.users" name="title" />}
   >

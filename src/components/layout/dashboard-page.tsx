@@ -13,6 +13,7 @@ export const DashboardPage = ({
   description,
   header,
   fallback,
+  overlap,
   parent,
   provider,
   title,
@@ -23,6 +24,7 @@ export const DashboardPage = ({
   description?: React.ReactNode
   header?: React.ReactNode
   fallback?: React.ReactNode
+  overlap?: boolean
   parent?: NavigationId
   provider?: React.ComponentType
   title?: React.ReactNode
@@ -40,7 +42,7 @@ export const DashboardPage = ({
           title={title}
         />
       )}
-      <Main {...props}>
+      <Main overlap={overlap} {...props}>
         {fallback === null ? children : <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>}
       </Main>
       <DynamicMarker />

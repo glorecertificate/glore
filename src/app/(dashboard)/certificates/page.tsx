@@ -57,6 +57,7 @@ const CertificatesBand = async () => {
 
 const CertificatesPage = () => (
   <DashboardPage
+    overlap
     header={
       <Suspense fallback={<DashboardHeader title={<PageTitle name="certificates" namespace="Layout" />} />}>
         <CertificatesBand />

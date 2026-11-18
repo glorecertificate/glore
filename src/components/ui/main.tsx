@@ -19,11 +19,17 @@ const mainWidthVariants = cva('flex w-full flex-1 flex-col', {
 export const Main = ({
   children,
   className,
+  overlap = false,
   width = 'full',
   ...props
-}: React.ComponentProps<'main'> & VariantProps<typeof mainWidthVariants>) => (
+}: React.ComponentProps<'main'> & VariantProps<typeof mainWidthVariants> & { overlap?: boolean }) => (
   <main
-    className={cn('relative mx-auto -mt-16 flex size-full max-w-310 flex-col px-page pb-12 sm:pb-16', className)}
+    className={cn(
+      'relative mx-auto flex size-full max-w-310 flex-col px-page pb-12 sm:pb-16',
+      overlap ? '-mt-16' : 'pt-6',
+      className
+    )}
+    data-overlap={overlap || undefined}
     data-width={width}
     {...props}
   >

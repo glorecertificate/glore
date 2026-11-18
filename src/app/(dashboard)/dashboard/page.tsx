@@ -12,7 +12,7 @@ export const generateMetadata = generateIntlMetadata({
 const DashboardData = async () => <DashboardContent data={await loadDashboard()} />
 
 const DashboardPageContent = () => (
-  <DashboardPage header={<DashboardBand />}>
+  <DashboardPage header={<DashboardBand />} overlap>
     <DashboardData />
   </DashboardPage>
 )

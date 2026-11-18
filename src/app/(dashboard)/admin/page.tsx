@@ -20,6 +20,7 @@ const AdminOverviewContent = async () => {
 
 const AdminOverviewPage = () => (
   <DashboardPage
+    overlap
     actions={
       <Button asChild variant="band">
         <Link href="/admin/certificates">

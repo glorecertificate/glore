@@ -13,6 +13,7 @@ export const generateMetadata = generateIntlMetadata({
 const SettingsPage = () => (
   <UserSettingsTabs>
     <DashboardPage
+      overlap
       breadcrumb={<UserSettingsTabsList />}
       description={<PageTitle name="settingsDescription" namespace="Users" />}
       title={<PageTitle name="settings" namespace="Layout" />}

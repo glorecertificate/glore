@@ -1,22 +1,7 @@
-import { Suspense } from 'react'
-
-import { getTranslations } from 'next-intl/server'
-
-import { loadDashboard } from '@/actions/dashboard/load'
-import { DashboardHeader } from '@/components/layout/dashboard-header'
-import { PageTitle } from '@/components/layout/page-title'
-
-const DashboardBandContent = async () => {
-  const data = await loadDashboard()
-  const t = await getTranslations('Dashboard')
-
-  if (data.view === 'none') return <DashboardHeader title={t('none.title', { name: data.firstName })} />
-  if (data.view === 'volunteer') return <DashboardHeader title={t('greeting', { name: data.firstName })} />
-  return <DashboardHeader title={<PageTitle name="dashboard" namespace="Layout" />} />
-}
-
 export const DashboardBand = () => (
-  <Suspense fallback={<DashboardHeader title={<PageTitle name="dashboard" namespace="Layout" />} />}>
-    <DashboardBandContent />
-  </Suspense>
+  <header className="relative isolate shrink-0 overflow-hidden bg-band text-band-foreground">
+    <div className="relative mx-auto flex w-full max-w-310 flex-col gap-3 px-4 pt-5 pb-24">
+      <h1 className="type-band text-band-foreground">Dashboard</h1>
+    </div>
+  </header>
 )

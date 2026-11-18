@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation'
 
 import { getTeamMembers } from '@/actions/admin/team'
 import { getCurrentUser } from '@/actions/user'
+import { AdminDialogProvider } from '@/components/features/admin/dialog-provider'
 import { AdminTeam } from '@/components/features/admin/team'
+import { AdminTeamActions } from '@/components/features/admin/team-actions'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
@@ -21,7 +23,13 @@ const AdminContent = async () => {
 }
 
 const AdminPage = () => (
-  <DashboardPage title={<PageTitle namespace="Admin.team" name="title" />}>
+  <DashboardPage
+    overlap
+    actions={<AdminTeamActions />}
+    description={<PageTitle namespace="Admin.team" name="description" />}
+    provider={AdminDialogProvider}
+    title={<PageTitle namespace="Admin.team" name="title" />}
+  >
     <AdminContent />
   </DashboardPage>
 )

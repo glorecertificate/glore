@@ -52,11 +52,11 @@ export const OrganizationReviewActions = ({
 
   return (
     <>
-      <Button onClick={() => setApproveOpen(true)} variant="brand">
+      <Button onClick={() => setApproveOpen(true)} variant="band">
         <LucideIcon name="check" />
         {t('approve')}
       </Button>
-      <Button onClick={() => setRejectOpen(true)} variant="outline">
+      <Button onClick={() => setRejectOpen(true)} variant="band-secondary">
         <LucideIcon name="x" />
         {t('reject')}
       </Button>

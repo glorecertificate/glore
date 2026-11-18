@@ -12,7 +12,7 @@ import { OrganizationCertificatesPanel } from '@/components/features/organizatio
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { ApplicationSummary } from './application-summary'
-import { OrganizationHeader } from './organization-header'
+import { organizationState } from './utils'
 
 const OrganizationActivity = dynamic(
   async () => (await import('@/components/features/organization/activity')).OrganizationActivity
@@ -42,79 +42,105 @@ type AdminOrganizationTab = (typeof ADMIN_ORGANIZATION_TABS)[number]
 
 const tabParser = parseAsStringEnum([...ADMIN_ORGANIZATION_TABS])
 
-export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrganizationData }) => {
-  const { refresh: routerRefresh } = useRouter()
+const useAdminOrganizationTab = ({ approved, hasApplication }: { approved: boolean; hasApplication: boolean }) => {
+  const [selected, setTab] = useQueryState('tab', { ...tabParser, history: 'push', startTransition })
+  const defaultTab: AdminOrganizationTab = hasApplication && !approved ? 'application' : 'members'
+  const tab = selected === 'application' && !hasApplication ? 'members' : (selected ?? defaultTab)
+
+  return { setTab, tab }
+}
+
+export const AdminOrganizationTabs = ({
+  approved,
+  hasApplication,
+  ...props
+}: React.ComponentProps<typeof Tabs> & { approved: boolean; hasApplication: boolean }) => {
+  const { setTab, tab } = useAdminOrganizationTab({ approved, hasApplication })
+
+  return (
+    <Tabs className="gap-0" onValueChange={value => setTab(value as AdminOrganizationTab)} value={tab} {...props} />
+  )
+}
+
+export const AdminOrganizationTabsList = ({
+  hasApplication,
+  members,
+  pendingInvitations,
+}: {
+  hasApplication: boolean
+  members: number
+  pendingInvitations: number
+}) => {
   const t = useTranslations('Organization')
   const tAdmin = useTranslations('Admin.organizations')
   const tInvitations = useTranslations('Invitations')
-  const [selected, setTab] = useQueryState('tab', { ...tabParser, history: 'push', startTransition })
 
+  return (
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto">
+      {hasApplication && <TabsTrigger value="application">{tAdmin('app_tab')}</TabsTrigger>}
+      <TabsTrigger count={members} showZero value="members">
+        {t('members')}
+      </TabsTrigger>
+      <TabsTrigger count={pendingInvitations} value="invitations">
+        {tInvitations('tab')}
+      </TabsTrigger>
+      <TabsTrigger value="certificates">{t('certificates')}</TabsTrigger>
+      <TabsTrigger value="activity">{t('activity')}</TabsTrigger>
+      <TabsTrigger value="settings">{t('settings')}</TabsTrigger>
+    </TabsList>
+  )
+}
+
+export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrganizationData }) => {
+  const { refresh: routerRefresh } = useRouter()
+  const { hasApplication } = organizationState(initialData)
   const request = initialData.joinRequests.find(item => item.role === 'admin') ?? null
-  const hasApplication = Boolean(request || initialData.motivation || initialData.charterAcceptedAt)
-  const defaultTab: AdminOrganizationTab = hasApplication && !initialData.approvedAt ? 'application' : 'members'
-  const tab = selected === 'application' && !hasApplication ? 'members' : (selected ?? defaultTab)
-  const pendingInvitations = initialData.invitations.filter(({ state }) => state === 'pending').length
 
   const refresh = () => {
     startTransition(() => routerRefresh())
   }
 
   return (
-    <div className="flex min-w-0 flex-col gap-6">
-      <OrganizationHeader onReviewed={refresh} organization={initialData} />
-      <Tabs onValueChange={value => setTab(value as AdminOrganizationTab)} value={tab}>
-        <TabsList className="max-w-full overflow-x-auto">
-          {hasApplication && <TabsTrigger value="application">{tAdmin('app_tab')}</TabsTrigger>}
-          <TabsTrigger count={initialData.memberships.length} showZero value="members">
-            {t('members')}
-          </TabsTrigger>
-          <TabsTrigger count={pendingInvitations} value="invitations">
-            {tInvitations('tab')}
-          </TabsTrigger>
-          <TabsTrigger value="certificates">{t('certificates')}</TabsTrigger>
-          <TabsTrigger value="activity">{t('activity')}</TabsTrigger>
-          <TabsTrigger value="settings">{t('settings')}</TabsTrigger>
-        </TabsList>
-        {hasApplication && (
-          <TabsContent className="pt-4" value="application">
-            <ApplicationSummary organization={initialData} request={request} />
-          </TabsContent>
-        )}
-        <TabsContent className="pt-4" value="members">
-          <OrganizationMembers
-            currentUserId={initialData.currentUserId}
-            isOrgAdmin
-            members={initialData.memberships}
-            onRefresh={refresh}
-            organizationId={initialData.id}
-            organizationName={initialData.name}
-          />
+    <>
+      {hasApplication && (
+        <TabsContent value="application">
+          <ApplicationSummary organization={initialData} request={request} />
         </TabsContent>
-        <TabsContent className="pt-4" value="invitations">
-          <OrganizationInvitations
-            currentUserId={initialData.currentUserId}
-            invitations={initialData.invitations}
-            isOrgAdmin
-            onRefresh={refresh}
-            organizationId={initialData.id}
-          />
-        </TabsContent>
-        <TabsContent className="pt-4" value="certificates">
-          <OrganizationCertificatesPanel organizationId={initialData.id} />
-        </TabsContent>
-        <TabsContent className="pt-4" value="activity">
-          <OrganizationActivity initial={initialData.activity} organizationId={initialData.id} />
-        </TabsContent>
-        <TabsContent className="pt-4" value="settings">
-          <OrganizationSettings
-            key={initialData.updatedAt}
-            members={initialData.memberships}
-            onRefresh={refresh}
-            organization={{ ...initialData, role: null }}
-            organizationId={initialData.id}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
+      )}
+      <TabsContent value="members">
+        <OrganizationMembers
+          currentUserId={initialData.currentUserId}
+          isOrgAdmin
+          members={initialData.memberships}
+          onRefresh={refresh}
+          organizationId={initialData.id}
+          organizationName={initialData.name}
+        />
+      </TabsContent>
+      <TabsContent value="invitations">
+        <OrganizationInvitations
+          currentUserId={initialData.currentUserId}
+          invitations={initialData.invitations}
+          isOrgAdmin
+          onRefresh={refresh}
+          organizationId={initialData.id}
+        />
+      </TabsContent>
+      <TabsContent value="certificates">
+        <OrganizationCertificatesPanel organizationId={initialData.id} />
+      </TabsContent>
+      <TabsContent value="activity">
+        <OrganizationActivity initial={initialData.activity} organizationId={initialData.id} />
+      </TabsContent>
+      <TabsContent value="settings">
+        <OrganizationSettings
+          key={initialData.updatedAt}
+          members={initialData.memberships}
+          onRefresh={refresh}
+          organization={{ ...initialData, role: null }}
+          organizationId={initialData.id}
+        />
+      </TabsContent>
+    </>
   )
 }

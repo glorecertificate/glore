@@ -34,5 +34,5 @@ export const DocsCategoryView = async ({ slug }: { slug: string }) => {
     )
   }
 
-  return <DocsSection allCategories={categories.data ?? []} canEdit={canEdit} category={category} />
+  return <DocsSection allCategories={categories.data ?? []} canEdit={canEdit} category={category} showTitle={false} />
 }

@@ -14,7 +14,7 @@ interface ArticleEditorProps {
 
 export const ArticleEditor = ({ onOpenChange, open, ...props }: ArticleEditorProps) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
-    <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+    <DialogContent className="max-h-[90dvh] max-w-2xl overflow-y-auto">
       <ArticleEditorForm onOpenChange={onOpenChange} {...props} />
     </DialogContent>
   </Dialog>

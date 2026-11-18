@@ -886,7 +886,18 @@
     "visibleLanguages": "{count, plural, =0 {No visible para los alumnos} =1 {Visible en 1 idioma} other {Visible en # idiomas}}",
     "lessonsCount": "{count, plural, =1 {1 lección} other {# lecciones}}",
     "lessonsTitle": "Lecciones",
-    "titleLength": "{count}/{max} caracteres"
+    "titleLength": "{count}/{max} caracteres",
+    "moveLessonUp": "Subir lección",
+    "moveLessonDown": "Bajar lección",
+    "lessonsSheetDescription": "Elige, renombra, reordena o elimina las lecciones de este curso.",
+    "moreActions": "Más",
+    "blockMenu": "Bloque",
+    "blockMenuLabel": "Acciones del bloque",
+    "moveBlockUp": "Subir",
+    "moveBlockDown": "Bajar",
+    "descriptionShowMore": "Ver más",
+    "descriptionShowLess": "Ver menos",
+    "saveBarLabel": "Guardar y publicar"
   },
   "CourseList": {
     "active": "Activos",

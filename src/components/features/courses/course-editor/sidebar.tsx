@@ -47,6 +47,8 @@ const CourseSidebarItem = ({
   language,
   lesson,
   lessonStatus,
+  onChoose,
+  onMove,
   onRemove,
   onSelect,
   setLesson,
@@ -59,6 +61,8 @@ const CourseSidebarItem = ({
   language: Locale
   lesson: Lesson
   lessonStatus: { isCompleted: boolean; isCurrent: boolean; isReachable: boolean }
+  onChoose?: () => void
+  onMove?: (direction: -1 | 1) => void
   onRemove: (id: number) => void
   onSelect: (step: number) => void
   setLesson: (data: Lesson) => void
@@ -118,9 +122,13 @@ const CourseSidebarItem = ({
   }
 
   const onLessonClick = () => {
-    if (isCurrent || !isReachable) return
-    onSelect(step)
+    if (!isReachable) return
+    if (!isCurrent) onSelect(step)
+    onChoose?.()
   }
+
+  const canRemove = user.canEdit && !isSingleLesson
+  const showTouchActions = user.canEdit && (canRemove || onMove)
 
   return (
     <StepperItem className="group relative w-full" loading={user.canEdit ? false : undefined} step={step} {...props}>
@@ -179,7 +187,7 @@ const CourseSidebarItem = ({
                     <TooltipTrigger asChild>
                       <Button
                         aria-label={t('removeLesson')}
-                        className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:-inset-3 pointer-coarse:before:content-['']"
+                        className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground pointer-coarse:hidden"
                         onClick={e => {
                           e.stopPropagation()
                           if (isSingleLesson) {
@@ -206,6 +214,48 @@ const CourseSidebarItem = ({
           </StepperTitle>
           <StepperDescription>{t('lessonType', { type: lesson.type })}</StepperDescription>
         </div>
+        {showTouchActions && (
+          <div
+            className="hidden shrink-0 items-center gap-3 self-center pointer-coarse:flex"
+            onClick={event => event.stopPropagation()}
+          >
+            {onMove && (
+              <>
+                <Button
+                  aria-label={t('moveLessonUp')}
+                  className="relative before:absolute before:-inset-1.5 before:content-['']"
+                  disabled={step === 1}
+                  onClick={() => onMove(-1)}
+                  size="icon-sm"
+                  variant="outline"
+                >
+                  <LucideIcon name="arrow-up" />
+                </Button>
+                <Button
+                  aria-label={t('moveLessonDown')}
+                  className="relative before:absolute before:-inset-1.5 before:content-['']"
+                  disabled={isLast}
+                  onClick={() => onMove(1)}
+                  size="icon-sm"
+                  variant="outline"
+                >
+                  <LucideIcon name="arrow-down" />
+                </Button>
+              </>
+            )}
+            {canRemove && (
+              <Button
+                aria-label={t('removeLesson')}
+                className="relative text-destructive before:absolute before:-inset-1.5 before:content-['']"
+                onClick={() => onRemove(lesson.id!)}
+                size="icon-sm"
+                variant="outline"
+              >
+                <LucideIcon name="trash-2" />
+              </Button>
+            )}
+          </div>
+        )}
       </StepperTrigger>
 
       <StepperSeparator
@@ -219,7 +269,11 @@ const CourseSidebarItem = ({
   )
 }
 
-export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
+export const CourseSidebar = ({
+  onChoose,
+  variant = 'inline',
+  ...props
+}: React.ComponentProps<'div'> & { onChoose?: () => void; variant?: 'inline' | 'sheet' }) => {
   const t = useTranslations('CourseEditor')
   const tList = useTranslations('CourseList')
   const { user } = useSession()
@@ -254,6 +308,17 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
     void setStep(s)
   }
 
+  const handleMove = (index: number, direction: -1 | 1) => {
+    const target = index + direction
+    if (target < 0 || target >= course.lessons.length) return
+    const lessons = [...course.lessons]
+    const [moved] = lessons.splice(index, 1)
+    lessons.splice(target, 0, moved)
+    onReorder(lessons)
+  }
+
+  const isSheet = variant === 'sheet'
+
   return (
     <div {...props}>
       {isStudent && (
@@ -265,11 +330,13 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           </span>
         </div>
       )}
-      <div className="sticky top-20">
-        <div className="flex items-center justify-between gap-2 pr-2 pb-2 pl-3">
-          <h2 className="type-label">{t('lessonsTitle')}</h2>
-          <span className="type-caption text-muted-foreground tabular-nums">{course.lessons.length}</span>
-        </div>
+      <div className={cn(!isSheet && 'sticky top-20')}>
+        {!isSheet && (
+          <div className="flex items-center justify-between gap-2 pr-2 pb-2 pl-3">
+            <h2 className="type-label">{t('lessonsTitle')}</h2>
+            <span className="type-caption text-muted-foreground tabular-nums">{course.lessons.length}</span>
+          </div>
+        )}
         <Sortable
           getItemValue={lesson => lesson.id!}
           measuring={measureAlways}
@@ -308,7 +375,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                           {user.canEdit && (
                             <SortableItemHandle
                               aria-label={t('reorderLesson')}
-                              className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-4 pointer-coarse:before:content-['']"
+                              className="absolute top-4 -left-6 z-10 cursor-grab touch-none text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:-inset-x-3.5 pointer-coarse:before:-inset-y-3.5 pointer-coarse:before:content-['']"
                             >
                               <LucideIcon name="grip-vertical" className="size-4" />
                             </SortableItemHandle>
@@ -320,6 +387,8 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                             language={language}
                             lesson={lesson}
                             lessonStatus={{ isCompleted, isCurrent, isReachable }}
+                            onChoose={onChoose}
+                            onMove={direction => handleMove(index, direction)}
                             onRemove={removeLesson}
                             onSelect={handleSelect}
                             setLesson={setLesson}
@@ -367,7 +436,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           </Stepper>
         </Sortable>
         {user.canEdit && (
-          <div className="pt-3 pr-2 pl-3">
+          <div className={cn('pt-3 pr-2 pl-3', isSheet && 'sticky bottom-0 bg-background pb-3')}>
             <Button className="w-full" icon="plus" onClick={() => addLesson()} variant="outline">
               {t('addLesson')}
             </Button>

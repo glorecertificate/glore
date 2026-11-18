@@ -270,7 +270,7 @@ export const DataTable = <T,>({
                   >
                     {item.sortValue ? (
                       <Button
-                        className="-ml-2"
+                        className="-ml-2 text-muted-foreground hover:text-foreground"
                         disabled={loading}
                         onClick={() => onToggleSort(item.id)}
                         size="sm"

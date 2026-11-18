@@ -1,13 +1,7 @@
-'use client'
-
-import dynamic from 'next/dynamic'
-
-import { type Components, type Options } from 'react-markdown'
+import ReactMarkdown, { type Components, type Options } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 import { cn } from '@/lib/utils'
-
-const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false })
 
 const isExternal = (href?: string) => Boolean(href?.startsWith('http'))
 

@@ -51,6 +51,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 const OPTIONS = ['one', 'two', 'three']
 
+const LONG = Array.from({ length: 24 }, (_, index) => index + 1)
+
 const STEPS = [1, 2, 3] as const
 
 const CHART_DATA = [
@@ -89,6 +91,29 @@ export const OverlayCatalog = () => {
               </DialogHeader>
               <DialogFooter>
                 <Button variant="outline">{'cancel'}</Button>
+                <Button>{'confirm'}</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </CatalogRow>
+        <CatalogRow label="Dialog, long">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">{'open long dialog'}</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {'A dialog title that is long enough to wrap onto a second line in the header'}
+                </DialogTitle>
+                <DialogDescription>{'DialogDescription'}</DialogDescription>
+              </DialogHeader>
+              {LONG.map(line => (
+                <p className="text-sm" key={line}>
+                  {`Paragraph ${line}. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.`}
+                </p>
+              ))}
+              <DialogFooter>
                 <Button>{'confirm'}</Button>
               </DialogFooter>
             </DialogContent>

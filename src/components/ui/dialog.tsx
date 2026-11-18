@@ -7,6 +7,14 @@ import { useTranslations } from 'next-intl'
 import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+const findFirstFocusable = (root: HTMLElement) =>
+  [...root.querySelectorAll<HTMLElement>(FOCUSABLE)].find(
+    element => !element.closest('[data-slot=dialog-close-anchor]')
+  )
+
 export const Dialog = (props: React.ComponentProps<typeof DialogPrimitive.Root>) => (
   <DialogPrimitive.Root data-slot="dialog" {...props} />
 )
@@ -48,6 +56,7 @@ export const DialogContent = ({
   overlay = 0.5,
   portal = true,
   showClose = true,
+  onOpenAutoFocus,
   size,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> &
@@ -61,18 +70,28 @@ export const DialogContent = ({
     <>
       {overlay && <DialogOverlay opacity={overlay} />}
       <DialogPrimitive.Content
-        className={cn(dialogContentVariants({ size }), className)}
+        className={cn(dialogContentVariants({ size }), showClose && 'pt-2', className)}
         data-slot="dialog-content"
         aria-describedby={undefined}
+        onOpenAutoFocus={event => {
+          onOpenAutoFocus?.(event)
+          if (event.defaultPrevented) return
+          const first = findFirstFocusable(event.currentTarget as HTMLElement)
+          if (!first) return
+          event.preventDefault()
+          first.focus()
+        }}
         {...props}
       >
-        {children}
         {showClose && (
-          <DialogClose className="absolute top-3 right-3 flex size-8 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
-            <LucideIcon name="x" />
-            <span className="sr-only">{t('close')}</span>
-          </DialogClose>
+          <div className="pointer-events-none sticky top-2 z-10 h-0" data-slot="dialog-close-anchor">
+            <DialogClose className="pointer-events-auto absolute top-1 -right-3 flex size-8 cursor-pointer items-center justify-center rounded-md bg-background text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+              <LucideIcon name="x" />
+              <span className="sr-only">{t('close')}</span>
+            </DialogClose>
+          </div>
         )}
+        {children}
       </DialogPrimitive.Content>
     </>
   )
@@ -113,7 +132,7 @@ export const DialogFooter = ({ className, ...props }: React.ComponentProps<'div'
 
 export const DialogTitle = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) => (
   <DialogPrimitive.Title
-    className={cn('text-lg leading-snug font-semibold', className)}
+    className={cn('pr-6 text-lg leading-snug font-semibold', className)}
     data-slot="dialog-title"
     {...props}
   />

@@ -42,7 +42,7 @@ export const CertificateFeedback = ({
   if (!general && sections.length === 0) return null
 
   return (
-    <Card className="border-warning/40 bg-warning/5">
+    <Card className="border-warning-border bg-warning-subtle">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-sm">
           <LucideIcon name="message-square" className="size-4" />

@@ -9,6 +9,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Logo } from '@/components/ui/logo'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 
@@ -50,10 +51,9 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
       <div className="relative flex flex-col gap-6">
         <div className="flex items-start justify-between gap-4">
           <Logo className="h-6 w-auto" />
-          <Badge className="gap-1.5 border-success/30 bg-success/10 text-success-text" variant="outline">
-            <LucideIcon name="badge-check" className="size-3.5" />
+          <StatusBadge icon="badge-check" tone="success">
             {t('verifiedCredential')}
-          </Badge>
+          </StatusBadge>
         </div>
 
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">

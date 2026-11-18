@@ -18,7 +18,14 @@ import { useSession } from '@/components/providers/session'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
-import { PageHeaderTitle } from '@/components/ui/page-header'
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderDescription,
+  PageHeaderHeading,
+  PageHeaderTitle,
+} from '@/components/ui/page-header'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 
@@ -46,8 +53,8 @@ export const CertificateDetail = ({
     <div className="flex flex-col gap-6">
       {isOwner && certificate.isApproved && <CertificateCelebration id={certificate.id} />}
 
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 items-start gap-3">
+      <PageHeader>
+        <div className="flex min-w-0 items-start gap-4">
           <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-card">
             {certificate.organization.avatarUrl ? (
               <Image
@@ -62,7 +69,7 @@ export const CertificateDetail = ({
               <LucideIcon name="building-2" className="size-5 text-brand-text" />
             )}
           </div>
-          <div className="min-w-0 space-y-1">
+          <PageHeaderHeading>
             <PageHeaderTitle>{certificate.organization.name}</PageHeaderTitle>
             {!isOwner && certificate.holder && (
               <p className="text-sm text-muted-foreground">{fullName(certificate.holder)}</p>
@@ -71,17 +78,18 @@ export const CertificateDetail = ({
               <CertificateStatusBadge status={certificate.status} />
               {certificate.isHolderDeleted && <Badge variant="outline">{t('holderDeleted')}</Badge>}
               {certificate.isApproved && certificate.isDefault && (
-                <Badge className="gap-1" variant="outline">
-                  <LucideIcon name="star" className="size-3" />
+                <StatusBadge icon="star" tone="info">
                   {tDetail('featuredBadge')}
-                </Badge>
+                </StatusBadge>
               )}
             </div>
-            <p className="text-sm text-muted-foreground">{tDetail(`statusMessage.${certificate.status}`)}</p>
-          </div>
+            <PageHeaderDescription>{tDetail(`statusMessage.${certificate.status}`)}</PageHeaderDescription>
+          </PageHeaderHeading>
         </div>
-        <CertificateActions canManage={canManage} certificate={certificate} />
-      </header>
+        <PageHeaderActions>
+          <CertificateActions canManage={canManage} certificate={certificate} />
+        </PageHeaderActions>
+      </PageHeader>
 
       <CertificateJourney status={certificate.status} />
 
@@ -89,7 +97,9 @@ export const CertificateDetail = ({
 
       <CertificateFeedback certificate={certificate} notes={notes} />
 
-      {!certificate.isDraft && <CertificateReviewer certificate={certificate} tutors={tutors} />}
+      {!certificate.isDraft && (certificate.reviewerId || certificate.isOpen) && (
+        <CertificateReviewer certificate={certificate} tutors={tutors} />
+      )}
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
         <CertificatePreview certificate={certificate} className="lg:sticky lg:top-20" />
@@ -97,7 +107,7 @@ export const CertificateDetail = ({
           <CertificateSummary certificate={certificate} />
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">{tDetail('timeline')}</CardTitle>
+              <CardTitle className="type-label text-muted-foreground">{tDetail('timeline')}</CardTitle>
             </CardHeader>
             <CardContent>
               <CertificateTimeline certificate={certificate} events={events} />

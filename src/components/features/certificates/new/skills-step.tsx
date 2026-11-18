@@ -98,7 +98,7 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
                   {option.description && (
                     <div className="flex flex-col gap-1.5">
                       <p className="text-sm font-medium">{t('chosenDescription')}</p>
-                      <p className="rounded-lg border bg-muted/40 p-3 text-sm leading-relaxed">
+                      <p className="rounded-lg border bg-surface-muted p-3 text-sm leading-relaxed">
                         {localize(option.description)}
                       </p>
                       <p className="text-xs text-muted-foreground">{t('chosenDescriptionHint')}</p>

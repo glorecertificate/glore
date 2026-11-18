@@ -78,7 +78,7 @@ export const RequestPanel = ({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">{t('volunteer')}</CardTitle>
+          <CardTitle className="type-label">{t('volunteer')}</CardTitle>
         </CardHeader>
         <CardContent>
           <DescriptionList layout="inline">
@@ -93,7 +93,7 @@ export const RequestPanel = ({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">{t('experience')}</CardTitle>
+          <CardTitle className="type-label">{t('experience')}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <DescriptionList layout="inline">
@@ -110,7 +110,7 @@ export const RequestPanel = ({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">{t('tasks')}</CardTitle>
+          <CardTitle className="type-label">{t('tasks')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="list-disc space-y-1 pl-5 text-sm">
@@ -123,7 +123,7 @@ export const RequestPanel = ({
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">{t('skills')}</CardTitle>
+          <CardTitle className="type-label">{t('skills')}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           {certificate.skills

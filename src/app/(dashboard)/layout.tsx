@@ -6,6 +6,8 @@ import { getPendingCounts } from '@/actions/admin/pending'
 import { getCurrentUser } from '@/actions/user'
 import { ImpersonationBanner } from '@/components/features/admin/impersonation-banner'
 import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
+import { EditorPreload } from '@/components/layout/editor-preload'
+import { LiveRefresh } from '@/components/layout/live-refresh'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -32,7 +34,9 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
     <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
       <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
         <DashboardSidebar pending={pending} />
-        <SidebarInset className={cn(impersonation && 'pb-32 sm:pb-24')}>{children}</SidebarInset>
+        <SidebarInset className={cn(impersonation && 'pt-28 sm:pt-0 sm:pb-24')}>{children}</SidebarInset>
+        <LiveRefresh />
+        {user.canEdit && <EditorPreload />}
         <ImpersonationBanner />
       </SessionProvider>
     </SidebarProvider>

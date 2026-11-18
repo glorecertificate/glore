@@ -28,9 +28,12 @@ export const LegalLanguageSwitch = ({ locale }: { locale: Locale }) => {
           key={value}
           onClick={() => handleSelect(value)}
           size="sm"
-          className={cn(value !== locale && 'border border-transparent')}
+          className={cn(
+            'relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5',
+            value !== locale && 'border border-transparent'
+          )}
           type="button"
-          variant={value === locale ? 'outline' : 'ghost'}
+          variant={value === locale ? 'band-secondary' : 'ghost'}
         >
           <span>{icon}</span>
           {value.toUpperCase()}

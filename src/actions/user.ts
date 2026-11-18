@@ -16,8 +16,8 @@ import { USER_NOT_FOUND, fetchUser, queryUserById } from '@/actions/user-data'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
-import { userTag } from '@/lib/cache'
-import { AUTH_ROOT, SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
+import { certificatesUserTag, userTag } from '@/lib/cache'
+import { SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
 import { getCookie } from '@/lib/cookie-store'
 import { sendMail } from '@/lib/email'
 import { LOCALES } from '@/lib/i18n'
@@ -32,7 +32,7 @@ const isUniqueViolation = (error: unknown) =>
 
 export const getCurrentUser = cache(async () => {
   const authUser = await getAuthUser()
-  if (!authUser) redirect(AUTH_ROOT)
+  if (!authUser) redirect(SESSION_ROOT)
 
   const { data, error } = await fetchUser(authUser.id)
   if (error?.message === USER_NOT_FOUND) redirect(SESSION_ROOT)
@@ -81,6 +81,7 @@ export const updateProfile = async (values: z.input<typeof profileSchema>) => {
   if (Object.keys(parsed.data).length > 0) {
     await db.update(users).set(parsed.data).where(eq(users.id, currentUser.id))
     updateTag(userTag(currentUser.id))
+    updateTag(certificatesUserTag(currentUser.id))
   }
 
   return await queryUserById(currentUser.id)
@@ -140,6 +141,7 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
       return { error: { code: 'USERNAME_TAKEN', message: 'Username is taken' } }
     }
     updateTag(userTag(currentUser.id))
+    updateTag(certificatesUserTag(currentUser.id))
   }
 
   return { pendingEmail, user: await queryUserById(currentUser.id) }

@@ -20,7 +20,6 @@ import { DataTable } from '@/components/ui/data-table'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
-import { PageIntro } from '@/components/ui/page-header'
 import { SearchHighlight, SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusBadge } from '@/components/ui/status-badge'
@@ -28,10 +27,10 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
-import { useReturnFocus } from '@/hooks/use-return-focus'
 import { SHORTCUTS } from '@/lib/shortcuts'
 
 import { ApplicationSheet } from './application-sheet'
+import { useAdminDialog } from './dialog-provider'
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, RejectDialog } from './organization-items'
 import { listFocusTarget } from './utils'
 
@@ -49,9 +48,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const [approveTarget, setApproveTarget] = useState<AdminOrganization | null>(null)
   const [rejectTarget, setRejectTarget] = useState<AdminOrganization | null>(null)
   const [viewTarget, setViewTarget] = useState<AdminOrganization | null>(null)
-  const [inviteOpen, setInviteOpen] = useState(false)
-  const [createOpen, setCreateOpen] = useState(false)
-  const { remember, restore } = useReturnFocus()
+  const { close, current, remember, restore } = useAdminDialog()
   const returnFocus = (event: Event) => restore(event, listFocusTarget)
 
   const translateCountry = useCountryName()
@@ -163,33 +160,8 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
   const formatDate = (value: string) => dateTime(new Date(value), { dateStyle: 'medium' })
 
-  const actions = (
-    <>
-      <Button
-        onClick={() => {
-          remember()
-          setCreateOpen(true)
-        }}
-        variant="brand"
-      >
-        <LucideIcon name="plus" />
-        {t('createOrg')}
-      </Button>
-      <Button
-        onClick={() => {
-          remember()
-          setInviteOpen(true)
-        }}
-        variant="outline"
-      >
-        <LucideIcon name="user-plus" />
-        {t('inviteOrg')}
-      </Button>
-    </>
-  )
-
   return (
-    <PageIntro actions={actions} description={t('description')}>
+    <>
       <DataTable
         className="outline-none"
         tabIndex={-1}
@@ -395,15 +367,15 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       <OrgInviteDialog
         onCloseAutoFocus={returnFocus}
         onInvite={handleInvite}
-        onOpenChange={setInviteOpen}
-        open={inviteOpen}
+        onOpenChange={value => !value && close()}
+        open={current === 'invite'}
       />
       <OrgCreateDialog
         onCloseAutoFocus={returnFocus}
         onCreate={handleCreate}
-        onOpenChange={setCreateOpen}
-        open={createOpen}
+        onOpenChange={value => !value && close()}
+        open={current === 'create'}
       />
-    </PageIntro>
+    </>
   )
 }

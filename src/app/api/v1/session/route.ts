@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { safeNextPath } from '@/lib/next-path'
 
 const redirectTo = (location: string, headers = new Headers()) => {
   headers.set('location', location)
@@ -17,5 +18,9 @@ export const GET = async (request: Request) => {
     headers.append('set-cookie', cookie)
   }
 
-  return redirectTo(`${AUTH_ROOT}?expired=true`, headers)
+  const next = safeNextPath(new URL(request.url).searchParams.get('next'))
+  const params = new URLSearchParams({ expired: 'true' })
+  if (next) params.set('next', next)
+
+  return redirectTo(`${AUTH_ROOT}?${params.toString()}`, headers)
 }

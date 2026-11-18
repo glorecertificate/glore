@@ -51,7 +51,7 @@ export const EligibilityPanel = ({
     <section
       aria-labelledby="eligibility-title"
       className={cn(
-        'relative mx-auto w-full max-w-2xl overflow-hidden rounded-xl border bg-card p-6 shadow-2xs sm:p-8',
+        'relative mx-auto w-full max-w-2xl overflow-hidden rounded-xl border border-border-subtle bg-card p-6 shadow-card sm:p-8',
         className
       )}
       data-slot="eligibility-panel"

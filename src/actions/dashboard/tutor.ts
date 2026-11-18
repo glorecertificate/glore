@@ -1,12 +1,12 @@
 import 'server-only'
 
-import { listTutorCertificates, listUnassignedOrgCertificates } from '@/actions/certificates/queries'
+import { loadTutorCertificates, loadUnassignedCertificates } from '@/actions/certificates/lists'
 import { buildTutorSummary } from '@/actions/dashboard/core'
 
 export const loadTutorSummary = async (now: number) => {
   const [{ data: assigned }, { data: unassigned }] = await Promise.all([
-    listTutorCertificates(),
-    listUnassignedOrgCertificates(),
+    loadTutorCertificates(),
+    loadUnassignedCertificates(),
   ])
   return buildTutorSummary(assigned ?? [], unassigned ?? [], now)
 }

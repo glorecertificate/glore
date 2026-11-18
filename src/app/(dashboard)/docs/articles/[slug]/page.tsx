@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
+import { ArticleHeader } from '@/components/features/docs/article-header'
 import { ArticleView, loadArticle } from '@/components/features/docs/article-view'
+import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 
 export const generateMetadata = async ({ params }: PageProps<'/docs/articles/[slug]'>) => {
@@ -10,10 +13,9 @@ export const generateMetadata = async ({ params }: PageProps<'/docs/articles/[sl
   return { description: data.excerpt ?? undefined, title: data.title }
 }
 
-const ArticleTitle = async ({ params }: Pick<PageProps<'/docs/articles/[slug]'>, 'params'>) => {
+const ArticleHeaderLoader = async ({ params }: Pick<PageProps<'/docs/articles/[slug]'>, 'params'>) => {
   const { slug } = await params
-  const data = await loadArticle(slug)
-  return data?.title ?? null
+  return <ArticleHeader slug={slug} />
 }
 
 const ArticlePageContent = async ({ params }: PageProps<'/docs/articles/[slug]'>) => {
@@ -24,7 +26,14 @@ const ArticlePageContent = async ({ params }: PageProps<'/docs/articles/[slug]'>
 }
 
 const ArticlePage = (props: PageProps<'/docs/articles/[slug]'>) => (
-  <DashboardPage parent="docs" title={<ArticleTitle params={props.params} />} width="content">
+  <DashboardPage
+    overlap
+    header={
+      <Suspense fallback={<DashboardHeader parent="docs" />}>
+        <ArticleHeaderLoader params={props.params} />
+      </Suspense>
+    }
+  >
     <ArticlePageContent {...props} />
   </DashboardPage>
 )

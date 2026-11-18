@@ -2,14 +2,14 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
 import {
-  getCertificateEligibility,
-  listOrganizationCertificates,
-  listTutorCertificates,
-  listUnassignedOrgCertificates,
-  listUserCertificates,
-} from '@/actions/certificates/queries'
-import { listOrgTutors } from '@/actions/organizations/queries'
-import { getActiveOrgId, getCurrentUser } from '@/actions/user'
+  loadCertificateEligibility,
+  loadOrganizationCertificates,
+  loadTutorCertificates,
+  loadUnassignedCertificates,
+  loadUserCertificates,
+} from '@/actions/certificates/lists'
+import { loadOrgTutors } from '@/actions/organizations/panel-data'
+import { getViewerContext } from '@/actions/viewer'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
 import { OrganizationCertificates } from '@/components/features/certificates/organization-certificates'
 import { TutorCertificatesContent } from '@/components/features/certificates/tutor-certificates-content'
@@ -18,33 +18,34 @@ import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 
 const CertificatesPageContent = async () => {
-  const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  const { orgId: activeOrgId, role, user } = await getViewerContext()
   if (user.isAdmin) redirect('/admin/certificates')
-  const role = user.organizations.find(({ id }) => id === activeOrgId)?.role
 
   if (activeOrgId && (role === 'admin' || role === 'representative')) {
     const [{ data: certificates }, { data: tutors }] = await Promise.all([
-      listOrganizationCertificates(activeOrgId),
-      listOrgTutors(activeOrgId),
+      loadOrganizationCertificates(activeOrgId),
+      loadOrgTutors(activeOrgId),
     ])
     return <OrganizationCertificates certificates={certificates ?? []} tutors={tutors ?? []} />
   }
 
   if (role === 'tutor') {
     const [{ data: assigned }, { data: unassigned }] = await Promise.all([
-      listTutorCertificates({ cache: false }),
-      listUnassignedOrgCertificates({ cache: false }),
+      loadTutorCertificates(),
+      loadUnassignedCertificates(),
     ])
     return <TutorCertificatesContent assigned={assigned ?? []} unassigned={unassigned ?? []} />
   }
 
-  const [{ data: certificates }, eligibility] = await Promise.all([listUserCertificates(), getCertificateEligibility()])
+  const [{ data: certificates }, eligibility] = await Promise.all([
+    loadUserCertificates(),
+    loadCertificateEligibility(),
+  ])
   return <CertificatesContent certificates={certificates ?? []} eligibility={eligibility} />
 }
 
 const CertificatesBand = async () => {
-  const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
-  const role = user.organizations.find(({ id }) => id === activeOrgId)?.role
+  const { orgId: activeOrgId, role } = await getViewerContext()
   const manager = activeOrgId && (role === 'admin' || role === 'representative')
 
   return (

@@ -8,6 +8,9 @@ import { NOTIFICATIONS_CHANGED } from '@/components/features/notifications/event
 const POLL_INTERVAL = 60_000
 
 const listeners = new Set<() => void>()
+const increaseListeners = new Set<() => void>()
+
+let loaded = false
 
 let count = 0
 let request = 0
@@ -24,8 +27,11 @@ const refreshUnreadCount = async () => {
     const { data, error } = await countUnreadNotifications()
     const next = data ?? 0
     if (error || current !== request || next === count) return false
+    const increased = loaded && next > count
+    loaded = true
     count = next
     emit()
+    if (increased) for (const listener of increaseListeners) listener()
     return true
   } catch {
     return false
@@ -50,6 +56,10 @@ const stop = () => {
   timer = undefined
   document.removeEventListener('visibilitychange', refreshWhenVisible)
   window.removeEventListener(NOTIFICATIONS_CHANGED, onChanged)
+  request += 1
+  loaded = false
+  count = 0
+  emit()
 }
 
 const subscribe = (listener: () => void) => {
@@ -66,3 +76,10 @@ const getSnapshot = () => count
 const getServerSnapshot = () => 0
 
 export const useUnreadCount = () => useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+
+export const onUnreadIncrease = (listener: () => void) => {
+  increaseListeners.add(listener)
+  return () => {
+    increaseListeners.delete(listener)
+  }
+}

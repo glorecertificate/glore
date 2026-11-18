@@ -2,6 +2,8 @@
 
 import 'server-only'
 
+import { updateTag } from 'next/cache'
+
 import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -27,6 +29,7 @@ import {
 } from '@/db/mutations/invitation'
 import { canInviteRole, canManageInvitation } from '@/db/queries/organization'
 import { organizationInvitations } from '@/db/schema'
+import { CacheTag } from '@/lib/cache'
 import { isRateLimited } from '@/lib/rate-limit'
 import config from '~/config/app.json'
 
@@ -63,7 +66,9 @@ export const inviteOrganizationMembers = async (input: InviteInput, scopeId?: nu
     if (await isRateLimited(`org-invite:${user.id}`, INVITE_BATCHES_PER_HOUR, HOUR)) {
       throw invitationError('RATE_LIMITED')
     }
-    return await sendInvitations({ actorId: user.id, emails: unique, locale, message, organizationId, role })
+    const sent = await sendInvitations({ actorId: user.id, emails: unique, locale, message, organizationId, role })
+    updateTag(CacheTag.Organizations)
+    return sent
   })
 
 export const resendOrganizationInvitation = async (invitationId: number, scopeId?: number) =>
@@ -81,6 +86,7 @@ export const resendOrganizationInvitation = async (invitationId: number, scopeId
       })
     )
     await notify(event)
+    updateTag(CacheTag.Organizations)
     return { id: invitationId }
   })
 
@@ -92,6 +98,7 @@ export const revokeOrganizationInvitation = async (invitationId: number, scopeId
 
     const { event } = await transaction(tx => revokeInvitation(tx, { actorId: user.id, invitationId, organizationId }))
     await notify(event)
+    updateTag(CacheTag.Organizations)
     return { id: invitationId }
   })
 
@@ -124,6 +131,7 @@ export const createOrganizationInviteLink = async (input: z.input<typeof inviteL
       createInviteLink(tx, { ...parsed.data, createdById: user.id, organizationId })
     )
     await notify(event)
+    updateTag(CacheTag.Organizations)
     return { id: link.id, url: inviteLinkUrl(token) }
   })
 
@@ -132,5 +140,6 @@ export const revokeOrganizationInviteLink = async (inviteLinkId: number) =>
     const { organizationId, user } = await requireManager()
     const { event } = await transaction(tx => revokeInviteLink(tx, { actorId: user.id, inviteLinkId, organizationId }))
     await notify(event)
+    updateTag(CacheTag.Organizations)
     return { id: inviteLinkId }
   })

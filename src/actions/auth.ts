@@ -3,6 +3,7 @@
 import 'server-only'
 
 import { type Route } from 'next'
+import { updateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect, unstable_rethrow } from 'next/navigation'
 import { connection } from 'next/server'
@@ -16,6 +17,7 @@ import { impersonationLocked } from '@/actions/admin/impersonation-state'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
+import { CacheTag, userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { applyUserLocale } from '@/lib/cookie-store'
 import { sendMail } from '@/lib/email'
@@ -107,8 +109,11 @@ export const login = async ({
   redirect((safeNextPath(next) ?? APP_ROOT) as Route)
 }
 
-export const logout = async () => {
+export const logout = async ({ loggedOut = false }: { loggedOut?: boolean } = {}) => {
+  const user = await getAuthUser()
   await auth.api.signOut({ headers: await headers() })
+  updateTag(user ? userTag(user.id) : CacheTag.User)
+  if (loggedOut) redirect(`${AUTH_ROOT}?loggedOut=true`)
 }
 
 export const refreshAuthSession = async () => {

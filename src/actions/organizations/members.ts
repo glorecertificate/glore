@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 
 import { and, count, desc, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
@@ -63,7 +63,7 @@ export const updateOrganizationMemberRole = async (membershipId: number, role: s
     )
     await settleEvents(events)
     expireUserAccess([userId])
-    revalidateTag(CacheTag.Organizations, 'max')
+    updateTag(CacheTag.Organizations)
     return { id: membershipId }
   })
 
@@ -84,7 +84,7 @@ export const removeOrganizationMember = async (membershipId: number, organizatio
     )
     await settleEvents(events)
     expireUserAccess([membership.userId])
-    revalidateTag(CacheTag.Organizations, 'max')
+    updateTag(CacheTag.Organizations)
     return { id: membership.id, userId: membership.userId }
   })
 
@@ -102,7 +102,7 @@ export const leaveOrganization = async (organizationId: number) =>
     )
     await settleEvents(events)
     expireUserAccess([user.id])
-    revalidateTag(CacheTag.Organizations, 'max')
+    updateTag(CacheTag.Organizations)
 
     const nextUser = await getFreshCurrentUser(user.id)
     const activeId = Number(await getCookie('org'))
@@ -140,7 +140,7 @@ export const transferOrganizationOwnership = async (input: z.input<typeof transf
     )
     await notify(event)
     expireUserAccess([event.data.newOwnerId, event.data.previousOwnerId])
-    revalidateTag(CacheTag.Organizations, 'max')
+    updateTag(CacheTag.Organizations)
     return { user: await getFreshCurrentUser(access.user.id) }
   })
 

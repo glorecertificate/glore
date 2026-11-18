@@ -1,4 +1,4 @@
-import { getAdminOverview } from '@/actions/admin/overview'
+import { loadAdminOverview } from '@/actions/admin/overview-core'
 import { AdminOverview, AdminOverviewSkeleton } from '@/components/features/admin/overview'
 import { AdminOverviewError } from '@/components/features/admin/overview-error'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -13,9 +13,9 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const AdminOverviewContent = async () => {
-  const { data, error } = await getAdminOverview()
-  if (error || !data) return <AdminOverviewError />
-  return <AdminOverview overview={data} />
+  const result = await loadAdminOverview()
+  if (!result?.data) return <AdminOverviewError />
+  return <AdminOverview overview={result.data} />
 }
 
 const AdminOverviewPage = () => (

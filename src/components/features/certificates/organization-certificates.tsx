@@ -86,15 +86,31 @@ export const OrganizationCertificates = ({
     <div className={cn('flex flex-col gap-6', reveal && 'animate-reveal')}>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
+          accent="teal"
           description={t('unassignedCount', { count: waiting })}
+          icon="send"
           label={tCertificates('statusSubmitted')}
           loading={loading}
           value={counts.submitted}
         />
-        <StatCard label={tCertificates('statusInReview')} loading={loading} value={counts.in_review} />
-        <StatCard label={tCertificates('statusChangesRequested')} loading={loading} value={counts.changes_requested} />
         <StatCard
+          accent="navy"
+          icon="clock"
+          label={tCertificates('statusInReview')}
+          loading={loading}
+          value={counts.in_review}
+        />
+        <StatCard
+          accent="amber"
+          icon="pencil"
+          label={tCertificates('statusChangesRequested')}
+          loading={loading}
+          value={counts.changes_requested}
+        />
+        <StatCard
+          accent="green"
           description={t('closedCount', { count: closed })}
+          icon="award"
           label={tCertificates('statusApproved')}
           loading={loading}
           value={counts.approved}

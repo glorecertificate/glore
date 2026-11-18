@@ -11,7 +11,13 @@ export const ApplicationSteps = ({ current }: { current: number }) => {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="type-caption text-muted-foreground">
+      <p aria-hidden className="flex flex-wrap gap-x-2 type-caption text-muted-foreground sm:hidden">
+        <span>{t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}</span>
+        <span className="font-medium text-foreground">
+          {t(`step_${APPLICATION_STEPS[current] ?? APPLICATION_STEPS[0]}`)}
+        </span>
+      </p>
+      <p className="type-caption text-muted-foreground max-sm:sr-only">
         {t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}
       </p>
       <ol className="flex items-start gap-2">

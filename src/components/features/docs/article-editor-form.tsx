@@ -288,7 +288,7 @@ export const ArticleEditorForm = ({ article, categories, defaultCategoryId, onOp
         ))}
       </Tabs>
 
-      <DialogFooter>
+      <DialogFooter className="sticky bottom-0 -mx-6 -mb-6 border-t bg-background px-6 py-4">
         <Button variant="outline" onClick={() => onOpenChange(false)}>
           {t('editor.cancel')}
         </Button>

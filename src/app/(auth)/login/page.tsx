@@ -26,7 +26,7 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
   return (
     <>
       <AuthFlow params={params} username={username} />
-      <div className="flex items-center justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-4 px-4 pb-6">
         <LegalLinks />
         <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
       </div>
@@ -35,7 +35,7 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
 }
 
 const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
-  <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-8">
+  <div className="flex min-h-svh flex-col bg-canvas">
     <Suspense fallback={<LoadingFallback size="full" />}>
       <LoginContent searchParams={searchParams} />
     </Suspense>

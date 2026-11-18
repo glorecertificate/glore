@@ -18,10 +18,12 @@ const mocks = vi.hoisted(() => ({
   editor: vi.fn(),
   limited: vi.fn(),
   models: vi.fn(),
+  overrides: vi.fn(),
   updateTag: vi.fn(),
 }))
 
 vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn(), updateTag: mocks.updateTag }))
+vi.mock('@/actions/message-overrides-cache', () => ({ expireMessageOverrides: mocks.overrides }))
 vi.mock('@/actions/guards', () => ({ requireEditor: mocks.editor }))
 vi.mock('@/actions/admin/helpers', () => ({ requireAdmin: mocks.admin }))
 vi.mock('@/lib/rate-limit', () => ({ isRateLimited: mocks.limited }))
@@ -100,6 +102,7 @@ describe.skipIf(!isLocalDatabase)('translations actions', () => {
     mocks.models.mockReset().mockReturnValue([model()])
     mocks.answer.text = ''
     mocks.updateTag.mockClear()
+    mocks.overrides.mockClear()
   })
 
   afterAll(cleanup)
@@ -153,6 +156,7 @@ describe.skipIf(!isLocalDatabase)('translations actions', () => {
         value: null,
       })
       expect(mocks.updateTag).not.toHaveBeenCalled()
+      expect(mocks.overrides).toHaveBeenCalledTimes(1)
       await messages.discardMessageDraft({ key: open[0], locale: 'es' })
     })
 

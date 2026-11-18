@@ -7,6 +7,7 @@ import { useQueryStates } from 'nuqs'
 
 import { EMAIL_PREVIEW_CATEGORIES, emailPreviewParsers } from '@/components/features/admin/emails-params'
 import { Banner } from '@/components/ui/banner'
+import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
@@ -34,7 +35,7 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
   })
 
   return (
-    <div className="flex flex-col gap-4">
+    <Card className="gap-4 p-4">
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex min-w-60 flex-col gap-1.5">
           <Label htmlFor={templateId}>{t('template')}</Label>
@@ -97,13 +98,13 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
           {t('renderError')}
         </Banner>
       ) : (
-        <div className="overflow-hidden rounded-xl border bg-card">
+        <div className="overflow-hidden rounded-lg border">
           <p className="border-b px-4 py-3 type-label">{t('subject', { subject })}</p>
           <div className="overflow-x-auto">
             <iframe className="h-176 w-full min-w-160" sandbox="" srcDoc={html} title={t('frameTitle', { template })} />
           </div>
         </div>
       )}
-    </div>
+    </Card>
   )
 }

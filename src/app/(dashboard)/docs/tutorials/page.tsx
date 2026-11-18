@@ -9,7 +9,7 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const DocsTutorialsPage = () => (
-  <DashboardPage title={<PageTitle namespace="Layout" name="docsTutorials" />}>
+  <DashboardPage parent="docs" title={<PageTitle namespace="Layout" name="docsTutorials" />}>
     <DocsCategoryView slug="tutorials" />
   </DashboardPage>
 )

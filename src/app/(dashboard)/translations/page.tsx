@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation'
 
-import { loadTranslations } from '@/actions/translations'
+import { loadTranslationsData } from '@/actions/translations-core'
 import { Translations } from '@/components/features/translations/translations'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
-import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const maxDuration = 60
@@ -15,17 +14,19 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const TranslationsPageContent = async () => {
-  const result = await loadTranslations()
-  if (!('data' in result)) return notFound()
+  const data = await loadTranslationsData()
+  if (!data) return notFound()
 
-  return <Translations catalogs={result.data.catalogs} overrides={result.data.overrides} />
+  return <Translations catalogs={data.catalogs} overrides={data.overrides} />
 }
 
 const TranslationsPage = () => (
-  <DashboardPage title={<PageTitle namespace="Translations" name="title" />}>
-    <PageIntro description={<PageTitle namespace="Translations" name="description" />}>
-      <TranslationsPageContent />
-    </PageIntro>
+  <DashboardPage
+    overlap
+    description={<PageTitle namespace="Translations" name="description" />}
+    title={<PageTitle namespace="Translations" name="title" />}
+  >
+    <TranslationsPageContent />
   </DashboardPage>
 )
 

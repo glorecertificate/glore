@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
-import { findCertificate, findCertificateActivity } from '@/actions/certificates/queries'
-import { listOrgTutors } from '@/actions/organizations/queries'
-import { getCurrentUser } from '@/actions/user'
+import { loadCertificate, loadCertificateActivity } from '@/actions/certificates/detail-data'
+import { loadOrgTutors } from '@/actions/organizations/panel-data'
+import { getViewer } from '@/actions/viewer'
+import { CertificateBand } from '@/components/features/certificates/certificate-band'
 import { CertificateDetail } from '@/components/features/certificates/certificate-detail'
+import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 import { VERIFY_ROOT } from '@/lib/constants'
@@ -13,13 +16,13 @@ const CertificatePageContent = async ({ params }: { params: PageProps<'/certific
   const certificateId = Number(id)
   if (!certificateId || Number.isNaN(certificateId)) notFound()
 
-  const { data: certificate } = await findCertificate(certificateId)
+  const certificate = await loadCertificate(certificateId)
   if (!certificate) notFound()
 
-  const [user, { data: tutors }, { data: activity }] = await Promise.all([
-    getCurrentUser(),
-    listOrgTutors(certificate.organizationId),
-    findCertificateActivity(certificate.id),
+  const [user, { data: tutors }, activity] = await Promise.all([
+    getViewer(),
+    loadOrgTutors(certificate.organizationId),
+    loadCertificateActivity(certificate.id),
   ])
   const canManage =
     user.isAdmin ||
@@ -39,8 +42,26 @@ const CertificatePageContent = async ({ params }: { params: PageProps<'/certific
   )
 }
 
+const CertificateBandLoader = async ({ params }: { params: PageProps<'/certificates/[id]'>['params'] }) => {
+  const { id } = await params
+  const certificateId = Number(id)
+  if (!certificateId || Number.isNaN(certificateId)) notFound()
+  return <CertificateBand id={certificateId} />
+}
+
 const CertificatePage = ({ params }: PageProps<'/certificates/[id]'>) => (
-  <DashboardPage parent="certificates" title={<PageTitle namespace="CertificateList" name="detailTitle" />}>
+  <DashboardPage
+    overlap
+    header={
+      <Suspense
+        fallback={
+          <DashboardHeader parent="certificates" title={<PageTitle name="detailTitle" namespace="CertificateList" />} />
+        }
+      >
+        <CertificateBandLoader params={params} />
+      </Suspense>
+    }
+  >
     <CertificatePageContent params={params} />
   </DashboardPage>
 )

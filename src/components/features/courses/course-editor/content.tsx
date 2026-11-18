@@ -1,6 +1,5 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useEffect, useRef } from 'react'
 
 import { type Value } from 'platejs'
@@ -8,26 +7,28 @@ import { type Value } from 'platejs'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { LessonActivities } from '@/components/features/courses/course-editor/lesson-activities'
 import { type PendingChange, commitPending } from '@/components/features/courses/course-editor/pending-change'
+import { resolvedDynamic } from '@/components/features/courses/course-editor/resolved-dynamic'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useSession } from '@/components/providers/session'
 import { type IntlRecord } from '@/lib/i18n'
 
 const EditorFallback = () => <LoadingFallback className="min-h-96 rounded-lg border" />
 
-const LessonEditor = dynamic(
-  async () => {
-    const m = await import('@/components/features/courses/course-editor/lesson-editor')
-    return { default: m.LessonEditor }
-  },
-  { loading: () => <EditorFallback />, ssr: false }
+const lessonEditor = resolvedDynamic(
+  async () => (await import('@/components/features/courses/course-editor/lesson-editor')).LessonEditor,
+  EditorFallback
 )
-const RichTextEditorProvider = dynamic(
-  async () => {
-    const m = await import('@/components/ui/rich-text-editor/provider')
-    return { default: m.RichTextEditorProvider }
-  },
-  { loading: () => <EditorFallback />, ssr: false }
+const richTextEditorProvider = resolvedDynamic(
+  async () => (await import('@/components/ui/rich-text-editor/provider')).RichTextEditorProvider,
+  EditorFallback
 )
+
+export const preloadLessonEditor = async () => {
+  await Promise.all([lessonEditor.preload(), richTextEditorProvider.preload()])
+}
+
+const LessonEditor = lessonEditor.Component
+const RichTextEditorProvider = richTextEditorProvider.Component
 
 const CourseEditor = ({
   initialValue,

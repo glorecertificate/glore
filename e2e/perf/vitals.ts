@@ -47,6 +47,7 @@ interface EventEntry {
 
 interface VitalsStore {
   cls: number
+  activePaint: number
   devMode: boolean
   events: EventEntry[]
   frames: FrameEntry[]
@@ -87,6 +88,7 @@ const observeVitals = () => {
     cls: 0,
     devMode: false,
     events: [],
+    activePaint: 0,
     frames: [],
     hydrated: 0,
     lastContent: 0,
@@ -145,7 +147,25 @@ const observeVitals = () => {
     if (location.pathname === before) return
     requestAnimationFrame(() => (store.urlPaint = performance.now()))
   }
-  addEventListener('pointerdown', event => (store.pointerAt = event.timeStamp), { capture: true })
+  const watchActive = (target: Element, since: number) => {
+    requestAnimationFrame(() => {
+      if (store.activePaint > 0 || store.pointerAt !== since) return
+      if (target.closest('[data-active], [aria-current]')) {
+        store.activePaint = performance.now()
+        return
+      }
+      if (performance.now() - since < 5000) watchActive(target, since)
+    })
+  }
+  addEventListener(
+    'pointerdown',
+    event => {
+      store.pointerAt = event.timeStamp
+      store.activePaint = 0
+      if (event.target instanceof Element) watchActive(event.target, event.timeStamp)
+    },
+    { capture: true }
+  )
   addEventListener('keydown', event => (store.pointerAt = event.timeStamp), { capture: true })
   const watchContent = () => {
     if (!document.body) return requestAnimationFrame(watchContent)
@@ -235,13 +255,18 @@ export const readLoad = async (page: Page) =>
     const scripts = (performance.getEntriesByType('resource') as PerformanceResourceTiming[]).filter(
       entry => entry.initiatorType === 'script' || /\.m?js(\?|$)/u.test(entry.name)
     )
+    const entries = performance.getEntriesByType('resource') as PerformanceResourceTiming[]
+    const prefetches = entries.filter(entry => entry.initiatorType === 'fetch' && /[?&]_rsc=/u.test(entry.name))
+    const kb = (list: PerformanceResourceTiming[]) =>
+      list.reduce((total, entry) => total + entry.transferSize, 0) / 1024
     return {
       cls: store.cls,
       devMode: store.devMode,
       fcp,
       hydration: store.hydrated,
       lcp: store.lcp,
-      scriptKb: scripts.reduce((total, entry) => total + entry.transferSize, 0) / 1024,
+      prefetchKb: kb(prefetches),
+      scriptKb: kb(scripts),
       tbt: store.frames.filter(frame => frame.start >= fcp).reduce((total, frame) => total + frame.blocking, 0),
       ttfb: navigation?.responseStart ?? 0,
     }
@@ -254,6 +279,7 @@ export const resetMarks = async (page: Page) =>
     window.perfVitals.pointerAt = 0
     window.perfVitals.shift = 0
     window.perfVitals.urlPaint = 0
+    window.perfVitals.activePaint = 0
   })
 
 export const readInteraction = async (page: Page) => {
@@ -273,14 +299,18 @@ export const readInteraction = async (page: Page) => {
 }
 
 export const readNavigation = async (page: Page, path: string) => {
-  await page.waitForFunction(target => location.pathname === target && window.perfVitals.urlPaint > 0, path, {
-    polling: 'raf',
-    timeout: 20_000,
-  })
+  await page.waitForFunction(
+    target => location.pathname === target && window.perfVitals.urlPaint > 0 && window.perfVitals.activePaint > 0,
+    path,
+    {
+      polling: 'raf',
+      timeout: 20_000,
+    }
+  )
   await settle(page)
   return await page.evaluate(() => {
-    const { lastContent, pointerAt, shift, urlPaint } = window.perfVitals
-    return { complete: Math.max(lastContent, urlPaint) - pointerAt, shell: urlPaint - pointerAt, shift }
+    const { activePaint, lastContent, pointerAt, shift, urlPaint } = window.perfVitals
+    return { complete: Math.max(lastContent, urlPaint) - pointerAt, shell: activePaint - pointerAt, shift }
   })
 }
 

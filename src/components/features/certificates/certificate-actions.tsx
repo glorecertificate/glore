@@ -44,7 +44,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
   const canWithdraw = isOwner && certificate.isOpen
   const canFeature = isOwner && certificate.isApproved && !certificate.isDefault
   const canRevoke = canManage && certificate.isApproved
-  const pdfHref = certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf`
+  const pdfHref = certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf?download=1`
 
   const withdraw = () =>
     startTransition(async () => {
@@ -75,31 +75,63 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
   return (
     <div className="flex flex-wrap items-center gap-2">
       {canEdit && (
-        <Button asChild icon="pencil" size="sm" variant="brand">
+        <Button
+          asChild
+          icon="pencil"
+          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+          size="sm"
+          variant="band"
+        >
           <Link href={`/certificates/new?draft=${certificate.id}`}>
             {certificate.isDraft ? tWizard('continueDraft') : t('resubmitButton')}
           </Link>
         </Button>
       )}
       {canReview && (
-        <Button asChild icon="clipboard-check" size="sm" variant="brand">
+        <Button
+          asChild
+          icon="clipboard-check"
+          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+          size="sm"
+          variant="band"
+        >
           <Link href={`/certificates/${certificate.id}/review`}>{t('openReview')}</Link>
         </Button>
       )}
       {certificate.isApproved && (
-        <Button asChild icon="download" size="sm" variant="outline">
-          <a href={pdfHref} rel="noopener noreferrer" target="_blank">
+        <Button
+          asChild
+          icon="download"
+          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+          size="sm"
+          variant="band-secondary"
+        >
+          <a download href={pdfHref}>
             {t('download')}
           </a>
         </Button>
       )}
       {canFeature && (
-        <Button disabled={pending || impersonating} icon="star" onClick={feature} size="sm" variant="outline">
+        <Button
+          disabled={pending || impersonating}
+          icon="star"
+          onClick={feature}
+          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+          size="sm"
+          variant="band-secondary"
+        >
           {t('makeFeatured')}
         </Button>
       )}
       {canWithdraw && (
-        <Button disabled={pending} icon="undo-2" onClick={() => setWithdrawing(true)} size="sm" variant="ghost">
+        <Button
+          disabled={pending}
+          icon="undo-2"
+          onClick={() => setWithdrawing(true)}
+          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+          size="sm"
+          variant="band-secondary"
+        >
           {t('withdraw')}
         </Button>
       )}
@@ -108,8 +140,9 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
           disabled={pending || impersonating}
           icon="shield-off"
           onClick={() => setRevoking(true)}
+          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
           size="sm"
-          variant="ghost"
+          variant="band-secondary"
         >
           {t('revoke')}
         </Button>

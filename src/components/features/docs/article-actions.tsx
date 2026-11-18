@@ -40,13 +40,13 @@ export const ArticleActions = ({ article, categories }: { article: DocArticle; c
 
   return (
     <div className="flex shrink-0 gap-1.5">
-      <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
+      <Button size="sm" variant="band-secondary" onClick={() => setEditorOpen(true)}>
         <LucideIcon name="pencil" className="size-3.5" />
         {t('editor.editArticle')}
       </Button>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button aria-label={t('editor.delete')} className="text-destructive-text" size="sm" variant="outline">
+          <Button aria-label={t('editor.delete')} size="sm" variant="band-secondary">
             <LucideIcon name="trash-2" className="size-3.5" />
           </Button>
         </AlertDialogTrigger>

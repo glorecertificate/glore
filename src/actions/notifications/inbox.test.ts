@@ -5,6 +5,7 @@ import { LOCAL_DATABASE_REGEX, seedEmail } from '~/scripts/seed-data'
 
 const authUser = vi.hoisted(() => ({ current: null as { id: string } | null }))
 
+vi.mock('next/cache', () => ({ updateTag: vi.fn() }))
 vi.mock('@/actions/auth', () => ({ getAuthUser: () => Promise.resolve(authUser.current) }))
 
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')

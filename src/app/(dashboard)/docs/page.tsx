@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
-import { getAuthUser } from '@/actions/auth'
-import { listDocCategories } from '@/actions/docs'
+import { getDocEditor, loadDocCategories } from '@/actions/docs-core'
 import { DocsList } from '@/components/features/docs/docs-list'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -16,12 +15,11 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const DocsPageContent = async () => {
-  const [user, { data: categories }, t] = await Promise.all([
-    getAuthUser(),
-    listDocCategories({ includeUnpublished: true }),
+  const [canEdit, { data: categories }, t] = await Promise.all([
+    getDocEditor(),
+    loadDocCategories(),
     getTranslations('Docs'),
   ])
-  const canEdit = user?.role === 'admin' || Boolean(user?.isEditor)
   const allCategories = categories ?? []
 
   return allCategories.length === 0 ? (

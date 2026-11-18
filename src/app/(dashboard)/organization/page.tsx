@@ -1,8 +1,8 @@
 import { notFound, redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { getOrganizationPanel } from '@/actions/organizations/queries'
-import { getActiveOrgId, getCurrentUser } from '@/actions/user'
+import { loadOrganizationPanel } from '@/actions/organizations/panel-data'
+import { getViewerContext } from '@/actions/viewer'
 import { OrganizationPanel } from '@/components/features/organization/panel'
 import { OrganizationPanelRegion } from '@/components/features/organization/panel-region'
 import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
@@ -17,17 +17,15 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const OrganizationContent = async () => {
-  const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  const { role, user } = await getViewerContext()
   if (user.isAdmin) redirect('/admin')
   if (user.canEdit) notFound()
 
-  const activeOrganization = user.organizations.find(({ id }) => id === activeOrgId)
-
-  if (!(activeOrganization?.role === 'admin' || activeOrganization?.role === 'representative')) {
+  if (!(role === 'admin' || role === 'representative')) {
     notFound()
   }
 
-  const { data, error } = await getOrganizationPanel()
+  const { data, error } = await loadOrganizationPanel()
   if (error || !data) notFound()
 
   return (

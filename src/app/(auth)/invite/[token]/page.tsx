@@ -2,11 +2,12 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInvitationPreview } from '@/actions/organizations/previews'
+import { BrandShell } from '@/components/features/auth/brand-shell'
 import { InvitationCard } from '@/components/features/organization/invite/invitation-card'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
-import { PublicShell } from '@/components/features/organization/invite/public-shell'
 import { maskEmail } from '@/components/features/organization/utils'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { Card } from '@/components/ui/card'
 import { normalizeEmail } from '@/db/mutations/invitation'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -66,11 +67,13 @@ const InviteContent = async ({
 }
 
 const InvitePage = ({ params, searchParams }: PageProps<'/invite/[token]'>) => (
-  <PublicShell>
-    <Suspense fallback={<LoadingFallback />}>
-      <InviteContent params={params} searchParams={searchParams} />
-    </Suspense>
-  </PublicShell>
+  <BrandShell size="sm">
+    <Card className="gap-6 p-6 sm:p-8">
+      <Suspense fallback={<LoadingFallback />}>
+        <InviteContent params={params} searchParams={searchParams} />
+      </Suspense>
+    </Card>
+  </BrandShell>
 )
 
 export default InvitePage

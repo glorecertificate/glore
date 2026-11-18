@@ -143,6 +143,7 @@ const nextConfig: TypedNextConfig = {
       'react-day-picker',
       'react-hook-form',
     ],
+    staleTimes: { dynamic: 30 },
     turbopackFileSystemCacheForDev: true,
     turbopackGc: true,
     turbopackMemoryEviction: 'auto',

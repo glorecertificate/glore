@@ -179,7 +179,7 @@ const CourseSidebarItem = ({
                     <TooltipTrigger asChild>
                       <Button
                         aria-label={t('removeLesson')}
-                        className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground"
+                        className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:-inset-3 pointer-coarse:before:content-['']"
                         onClick={e => {
                           e.stopPropagation()
                           if (isSingleLesson) {
@@ -308,7 +308,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                           {user.canEdit && (
                             <SortableItemHandle
                               aria-label={t('reorderLesson')}
-                              className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100"
+                              className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-4 pointer-coarse:before:content-['']"
                             >
                               <LucideIcon name="grip-vertical" className="size-4" />
                             </SortableItemHandle>

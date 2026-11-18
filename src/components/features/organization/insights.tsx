@@ -142,28 +142,36 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
       <TabHeader description={t('insightsDescription')} title={t('insights')} />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
+          accent="teal"
           description={t('insightsLearningOf', { people: learning.people })}
+          icon="play"
           label={t('insightsStarted')}
           loading={loading}
           value={learning.startedPeople}
         />
         <StatCard
+          accent="green"
           description={t('insightsCoursesCompleted', { count: learning.completedCourses })}
+          icon="graduation-cap"
           label={t('insightsCompleted')}
           loading={loading}
           value={learning.completedPeople}
         />
         <StatCard
+          accent="amber"
           description={
             review.averageHours === null ? t('insightsReviewNone') : t('insightsReviewSample', { count: review.sample })
           }
           format={{ maximumFractionDigits: 1 }}
+          icon="timer"
           label={t('insightsReviewTime')}
           loading={loading}
           value={review.averageHours === null ? 0 : review.averageHours / HOURS_PER_DAY}
         />
         <StatCard
+          accent="navy"
           description={t('insightsApprovedRange')}
+          icon="award"
           label={t('insightsApproved')}
           loading={loading}
           value={approvedTotal}

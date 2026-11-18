@@ -16,10 +16,10 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { ConfettiButton } from '@/components/ui/confetti'
 import { Link } from '@/components/ui/link'
 import { preloadMarkdown } from '@/components/ui/markdown-lazy'
-import { PageHeaderHeading, PageHeaderTitle } from '@/components/ui/page-header'
 import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/toast'
 import {
@@ -82,11 +82,13 @@ const PlayerLesson = ({
   const hint = progress.blocker ? hints[progress.blocker] : null
 
   return (
-    <article className="flex min-w-0 flex-col gap-6">
-      <PageHeaderHeading>
-        <PageHeaderTitle>{lesson.title}</PageHeaderTitle>
-        <p className="text-sm text-muted-foreground">{t('step', { current: index + 1, total: lessons.length })}</p>
-      </PageHeaderHeading>
+    <Card className="min-w-0 gap-6 p-6 sm:p-8">
+      <header className="flex min-w-0 flex-col gap-1.5">
+        <p className="text-sm font-medium text-brand-text">
+          {t('step', { current: index + 1, total: lessons.length })}
+        </p>
+        <h2 className="type-title text-balance">{lesson.title}</h2>
+      </header>
       {!saves && (
         <Banner variant="warning">
           <LucideIcon className="mt-0.5 size-4 shrink-0" name="eye" />
@@ -136,7 +138,7 @@ const PlayerLesson = ({
           )}
         </div>
       </footer>
-    </article>
+    </Card>
   )
 }
 
@@ -160,25 +162,23 @@ export const CoursePlayer = ({
 
   return (
     <div className={cn('grid gap-8 md:grid-cols-[16rem_1fr]', className)} {...props}>
-      <aside className="flex flex-col gap-4 md:sticky md:top-20 md:self-start">
-        <div className="flex flex-col gap-2">
-          <Link
-            className="text-sm text-muted-foreground hover:text-foreground"
-            href={`/courses/${slug}?lang=${language}`}
-          >
-            {overview.title}
-          </Link>
-          {access === 'learner' && (
-            <div className="flex flex-col gap-1.5">
-              <Progress color={progress.percent === 100 ? 'success' : 'brand'} value={progress.percent} />
-              <span className="text-xs text-muted-foreground">
-                {t('progress', { completed: progress.completed, total: progress.total })}
-              </span>
-            </div>
-          )}
-        </div>
-        <details className="md:hidden">
-          <summary className="cursor-pointer text-sm font-medium">{t('lessons')}</summary>
+      <aside className="flex flex-col gap-4 rounded-xl border border-border-subtle bg-card p-4 shadow-card md:sticky md:top-6 md:self-start">
+        {access === 'learner' && (
+          <div className="flex flex-col gap-1.5">
+            <Progress color={progress.percent === 100 ? 'success' : 'brand'} value={progress.percent} />
+            <span className="text-xs text-muted-foreground">
+              {t('progress', { completed: progress.completed, total: progress.total })}
+            </span>
+          </div>
+        )}
+        <details className="group/lessons md:hidden">
+          <summary className="relative flex cursor-pointer list-none items-center gap-1.5 text-sm font-medium pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-3 pointer-coarse:before:content-[''] [&::-webkit-details-marker]:hidden">
+            <LucideIcon
+              className="size-4 text-muted-foreground transition-transform group-open/lessons:rotate-90 motion-reduce:transition-none"
+              name="chevron-right"
+            />
+            {t('lessons')}
+          </summary>
           <PlayerOutline access={access} className="mt-2" currentId={lesson.id} overview={overview} />
         </details>
         <PlayerOutline access={access} className="hidden md:flex" currentId={lesson.id} overview={overview} />

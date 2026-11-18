@@ -4,7 +4,7 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 
 import { and, eq } from 'drizzle-orm'
 
@@ -59,7 +59,7 @@ export const approveOrganizationJoinRequest = async (requestId: number) =>
       await notify(result.joinedEvent)
       await notify(result.decidedEvent)
       expireUserAccess([result.joinedEvent.data.userId])
-      revalidateTag(CacheTag.Organizations, 'max')
+      updateTag(CacheTag.Organizations)
       return { kind: result.kind }
     }
 

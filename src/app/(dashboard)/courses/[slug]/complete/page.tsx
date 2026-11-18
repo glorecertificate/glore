@@ -1,9 +1,12 @@
 import { notFound, redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 import { createSearchParamsCache, parseAsStringEnum } from 'nuqs/server'
 
 import { loadCompletion } from '@/actions/courses/learner'
 import { CourseCompleteView } from '@/components/features/courses/course-complete'
+import { CourseCompleteHeader } from '@/components/features/courses/course-complete/header'
+import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LOCALES } from '@/lib/i18n'
 
@@ -20,9 +23,10 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]/complet
   return { title: result.overview.title }
 }
 
-const CompleteTitle = async (props: PageProps<'/courses/[slug]/complete'>) => {
+const CompleteHeader = async (props: PageProps<'/courses/[slug]/complete'>) => {
   const { result } = await resolveCompletion(props)
-  return result.status === 'ok' ? result.overview.title : null
+  if (result.status !== 'ok') return <DashboardHeader parent="courses" />
+  return <CourseCompleteHeader overview={result.overview} />
 }
 
 const CompletePageContent = async (props: PageProps<'/courses/[slug]/complete'>) => {
@@ -34,7 +38,15 @@ const CompletePageContent = async (props: PageProps<'/courses/[slug]/complete'>)
 }
 
 const CompletePage = (props: PageProps<'/courses/[slug]/complete'>) => (
-  <DashboardPage parent="courses" title={<CompleteTitle {...props} />} width="prose">
+  <DashboardPage
+    overlap
+    header={
+      <Suspense fallback={<DashboardHeader parent="courses" />}>
+        <CompleteHeader {...props} />
+      </Suspense>
+    }
+    width="prose"
+  >
     <CompletePageContent {...props} />
   </DashboardPage>
 )

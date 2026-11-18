@@ -3,7 +3,7 @@
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
 import { redirect, usePathname, useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -79,6 +79,36 @@ const preloadSearchCommand = () => {
   void loadSearchCommand()
 }
 
+const PREFETCH_HOLD_MS = 4000
+
+const prefetchHold = { listeners: new Set<() => void>(), quiet: true, timer: 0 }
+
+const setPrefetchQuiet = (quiet: boolean) => {
+  if (prefetchHold.quiet === quiet) return
+  prefetchHold.quiet = quiet
+  for (const listener of prefetchHold.listeners) listener()
+}
+
+const holdPrefetch = () => {
+  window.clearTimeout(prefetchHold.timer)
+  setPrefetchQuiet(false)
+  prefetchHold.timer = window.setTimeout(() => setPrefetchQuiet(true), PREFETCH_HOLD_MS)
+}
+
+const subscribePrefetchHold = (listener: () => void) => {
+  prefetchHold.listeners.add(listener)
+  return () => {
+    prefetchHold.listeners.delete(listener)
+  }
+}
+
+const usePrefetchQuiet = () =>
+  useSyncExternalStore(
+    subscribePrefetchHold,
+    () => prefetchHold.quiet,
+    () => true
+  )
+
 interface PendingCounts {
   organizations: number
   team: number
@@ -108,7 +138,10 @@ const DashboardSidebarItem = ({
   route,
 }: DashboardSidebarItemProps) => {
   const { activePath, setActivePath } = useSidebar()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
+  const pressed = useRef(false)
+  const quiet = usePrefetchQuiet()
 
   const isActivePath = route === activePath && searchParams.size === 0
 
@@ -118,7 +151,23 @@ const DashboardSidebarItem = ({
     return activePath.startsWith(route)
   })()
 
+  const isPending = activePath === route && pathname !== route
+
+  const press = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return
+    pressed.current = true
+    holdPrefetch()
+    setActivePath(route)
+  }
+
+  const cancelPress = () => {
+    if (!pressed.current) return
+    pressed.current = false
+    setActivePath(pathname as Route)
+  }
+
   const setPath = (e: React.MouseEvent<HTMLButtonElement>) => {
+    pressed.current = false
     setActivePath(route)
     onClick?.(e)
   }
@@ -128,11 +177,21 @@ const DashboardSidebarItem = ({
       <SidebarMenuButton
         active={isActive}
         asChild
-        className={cn('select-none', isActivePath && 'pointer-events-none', badge > 0 && 'relative', className)}
+        aria-current={isActivePath && !isPending ? 'page' : undefined}
+        className={cn(
+          'select-none',
+          isActivePath && !isPending && 'pointer-events-none',
+          badge > 0 && 'relative',
+          className
+        )}
+        data-pending={isPending || undefined}
         onClick={setPath}
+        onPointerCancel={cancelPress}
+        onPointerDown={press}
+        onPointerLeave={cancelPress}
         tooltip={label}
       >
-        <Link href={route}>
+        <Link href={route} prefetch={quiet || undefined}>
           {icon && <LucideIcon name={icon} />}
           {label}
           {badge > 0 && <DashboardSidebarBadge count={badge} />}
@@ -244,7 +303,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
     setLoggingOut(true)
 
     try {
-      await logout()
+      await logout({ loggedOut: true })
     } catch {
       toast.error(t('logoutFailed'))
       setLoggingOut(false)
@@ -476,6 +535,16 @@ const DashboardSidebarBrand = () => {
 
 export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
   const { organization, user } = useSession()
+  const pathname = usePathname()
+  const mounted = useRef(false)
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+    holdPrefetch()
+  }, [pathname])
 
   return (
     <Sidebar collapsible="icon">

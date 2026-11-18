@@ -7,8 +7,11 @@ import { auth } from '@/lib/auth'
 
 export const getSessionUser = async () => {
   'use cache: private'
-  cacheLife({ stale: 300 })
+  cacheLife({ stale: 30, revalidate: 60, expire: 600 })
 
-  const session = await auth.api.getSession({ headers: await headers() })
+  const session = await auth.api.getSession({
+    headers: await headers(),
+    query: { disableCookieCache: true, disableRefresh: true },
+  })
   return session?.user ?? null
 }

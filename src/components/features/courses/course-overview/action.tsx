@@ -43,7 +43,7 @@ export const CourseOverviewActions = ({
   if (access === 'viewer') {
     return (
       <div className={cn('contents', className)} {...props}>
-        <Button asChild>
+        <Button asChild variant="band">
           <Link href={learnHref(lessons[0]?.id ?? null)}>{t('preview')}</Link>
         </Button>
       </div>
@@ -53,7 +53,7 @@ export const CourseOverviewActions = ({
   if (!enrollment) {
     return (
       <div className={cn('contents', className)} {...props}>
-        <Button loading={starting} onClick={onStart}>
+        <Button loading={starting} onClick={onStart} variant="band">
           {t('start')}
         </Button>
       </div>
@@ -62,13 +62,13 @@ export const CourseOverviewActions = ({
 
   return (
     <div className={cn('contents', className)} {...props}>
-      <Button asChild>
+      <Button asChild variant="band">
         <Link href={learnHref(completed ? (lessons[0]?.id ?? null) : resumeLessonId)}>
           {completed ? t('review') : t('resume')}
         </Link>
       </Button>
       {completed && (
-        <Button asChild variant="outline">
+        <Button asChild variant="band-secondary">
           <Link href={`/courses/${slug}/complete?lang=${language}`}>{t('viewCompletion')}</Link>
         </Button>
       )}

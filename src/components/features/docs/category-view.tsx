@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
-import { getAuthUser } from '@/actions/auth'
-import { findDocCategory, listDocCategories } from '@/actions/docs'
+import { getDocEditor, loadDocCategories } from '@/actions/docs-core'
 import { DocsSection } from '@/components/features/docs/docs-section'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
@@ -9,13 +8,12 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { Link } from '@/components/ui/link'
 
 export const DocsCategoryView = async ({ slug }: { slug: string }) => {
-  const [category, user, categories, t] = await Promise.all([
-    findDocCategory(slug, { includeUnpublished: true }),
-    getAuthUser(),
-    listDocCategories({ includeUnpublished: true }),
+  const [canEdit, categories, t] = await Promise.all([
+    getDocEditor(),
+    loadDocCategories(),
     getTranslations('Docs.missing'),
   ])
-  const canEdit = user?.role === 'admin' || Boolean(user?.isEditor)
+  const category = categories.data?.find(item => item.slug === slug)
 
   if (!category) {
     return (
@@ -36,5 +34,5 @@ export const DocsCategoryView = async ({ slug }: { slug: string }) => {
     )
   }
 
-  return <DocsSection allCategories={categories.data ?? []} canEdit={canEdit} category={category} />
+  return <DocsSection allCategories={categories.data ?? []} canEdit={canEdit} category={category} showTitle={false} />
 }

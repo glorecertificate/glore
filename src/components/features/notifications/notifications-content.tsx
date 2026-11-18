@@ -19,15 +19,9 @@ import { useUnreadCount } from '@/components/features/notifications/use-unread-c
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { FilterBar } from '@/components/ui/filter-bar'
-import {
-  PageHeader,
-  PageHeaderActions,
-  PageHeaderDescription,
-  PageHeaderHeading,
-  PageHeaderTitle,
-} from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -117,58 +111,59 @@ export const NotificationsContent = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <PageHeader>
-        <PageHeaderHeading>
-          <PageHeaderTitle>{t('title')}</PageHeaderTitle>
-          <PageHeaderDescription>{t('description')}</PageHeaderDescription>
-        </PageHeaderHeading>
-        <PageHeaderActions>
-          <Button disabled={!hasUnread} loading={marking} onClick={markAll} size="sm" variant="outline">
-            {t('markAllRead')}
-          </Button>
-        </PageHeaderActions>
-      </PageHeader>
-
-      <FilterBar active={filtering} onClear={clearFilters}>
-        <SegmentedControl
-          aria-label={t('filterStatus')}
-          onValueChange={value => {
-            void setFilter(value as (typeof NOTIFICATION_FILTERS)[number])
-            void resetLimit()
-          }}
-          value={filter}
-        >
-          {NOTIFICATION_FILTERS.map(value => (
-            <SegmentedControlItem key={value} value={value}>
-              {t(`filter_${value}`)}
-            </SegmentedControlItem>
-          ))}
-        </SegmentedControl>
-        <Select
-          onValueChange={value => {
-            void setCategory(value === ALL_CATEGORIES ? null : (value as (typeof NOTIFICATION_CATEGORIES)[number]))
-            void resetLimit()
-          }}
-          value={category ?? ALL_CATEGORIES}
-        >
-          <SelectTrigger aria-label={t('filterCategory')} className="w-auto gap-1.5" size="sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {CATEGORY_OPTIONS.map(value => (
-              <SelectItem key={value} value={value}>
-                {t(`category_${value}`)}
-              </SelectItem>
+    <Card className="gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <FilterBar active={filtering} onClear={clearFilters}>
+          <SegmentedControl
+            aria-label={t('filterStatus')}
+            onValueChange={value => {
+              void setFilter(value as (typeof NOTIFICATION_FILTERS)[number])
+              void resetLimit()
+            }}
+            value={filter}
+          >
+            {NOTIFICATION_FILTERS.map(value => (
+              <SegmentedControlItem key={value} value={value}>
+                {t(`filter_${value}`)}
+              </SegmentedControlItem>
             ))}
-          </SelectContent>
-        </Select>
-      </FilterBar>
+          </SegmentedControl>
+          <Select
+            onValueChange={value => {
+              void setCategory(value === ALL_CATEGORIES ? null : (value as (typeof NOTIFICATION_CATEGORIES)[number]))
+              void resetLimit()
+            }}
+            value={category ?? ALL_CATEGORIES}
+          >
+            <SelectTrigger aria-label={t('filterCategory')} className="w-auto gap-1.5" size="sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {CATEGORY_OPTIONS.map(value => (
+                <SelectItem key={value} value={value}>
+                  {t(`category_${value}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FilterBar>
+        <Button
+          className="shrink-0"
+          disabled={!hasUnread}
+          icon="check-check"
+          loading={marking}
+          onClick={markAll}
+          size="sm"
+          variant="outline"
+        >
+          {t('markAllRead')}
+        </Button>
+      </div>
 
       {data === null && !failed && <LoadingFallback className="py-16" />}
 
       {failed && (
-        <Empty className="border">
+        <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <LucideIcon name="triangle-alert" />
@@ -185,7 +180,7 @@ export const NotificationsContent = () => {
       )}
 
       {data && !failed && data.items.length === 0 && (
-        <Empty className="border">
+        <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <LucideIcon name="bell-off" />
@@ -198,7 +193,11 @@ export const NotificationsContent = () => {
 
       {data && !failed && data.items.length > 0 && (
         <>
-          <NotificationList className="animate-reveal" notifications={data.items} onRead={refresh} />
+          <NotificationList
+            className="animate-reveal border-t border-border-subtle pt-4"
+            notifications={data.items}
+            onRead={refresh}
+          />
           {data.hasMore && limit < MAX_LIMIT && (
             <div className="flex justify-center">
               <Button onClick={() => setLimit(limit + PAGE_SIZE)} variant="outline">
@@ -208,6 +207,6 @@ export const NotificationsContent = () => {
           )}
         </>
       )}
-    </div>
+    </Card>
   )
 }

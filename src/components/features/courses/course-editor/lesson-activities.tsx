@@ -643,11 +643,11 @@ export const LessonActivities = ({ className }: { className?: string }) => {
         </div>
       )}
 
-      <div className="flex w-full items-center justify-center gap-4">
+      <div className="flex w-full items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button aria-label={t('addActivity')} className="rounded-full" size="icon" type="button" variant="brand">
-              <LucideIcon name="plus" className="size-4" />
+            <Button icon="plus" type="button" variant="outline">
+              {t('addActivity')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">

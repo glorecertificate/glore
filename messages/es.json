@@ -835,9 +835,7 @@
     "previous": "Anterior",
     "proceedToNextLesson": "Pasar al siguiente paso",
     "publishSwitchDraft": "Borrador",
-    "publishSwitchHidden": "Aún no visible",
     "publishSwitchPublished": "Publicado",
-    "publishSwitchVisible": "Visible · {count, plural, =1 {1 idioma} other {# idiomas}}",
     "questionsTitle": "Cuestionario",
     "removeIcon": "Quitar icono",
     "renameCourse": "Cambiar nombre del curso",
@@ -886,7 +884,12 @@
     "quizQuestionEmpty": "Lección {position} ({title}): la pregunta {number} no tiene texto",
     "quizMinOptions": "Lección {position} ({title}): la pregunta {number} debe tener al menos 2 opciones",
     "quizOptionEmpty": "Lección {position} ({title}): todas las opciones de la pregunta {number} deben completarse",
-    "quizNoCorrect": "Lección {position} ({title}): selecciona la opción correcta para la pregunta {number}"
+    "quizNoCorrect": "Lección {position} ({title}): selecciona la opción correcta para la pregunta {number}",
+    "unsavedChanges": "Cambios sin guardar",
+    "publishStatus": "Estado de publicación en {language}",
+    "visibleLanguages": "{count, plural, =0 {No visible para los alumnos} =1 {Visible en 1 idioma} other {Visible en # idiomas}}",
+    "lessonsCount": "{count, plural, =1 {1 lección} other {# lecciones}}",
+    "lessonsTitle": "Lecciones"
   },
   "CourseList": {
     "active": "Activos",

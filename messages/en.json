@@ -835,9 +835,7 @@
     "previous": "Previous",
     "proceedToNextLesson": "Proceed to the next step",
     "publishSwitchDraft": "Draft",
-    "publishSwitchHidden": "Not yet visible",
     "publishSwitchPublished": "Published",
-    "publishSwitchVisible": "Visible · {count, plural, =1 {1 language} other {# languages}}",
     "questionsTitle": "Quiz",
     "removeIcon": "Remove icon",
     "renameCourse": "Rename course",
@@ -886,7 +884,12 @@
     "quizQuestionEmpty": "Lesson {position} ({title}): question {number} is missing its text",
     "quizMinOptions": "Lesson {position} ({title}): question {number} must have at least 2 options",
     "quizOptionEmpty": "Lesson {position} ({title}): all options in question {number} must be filled in",
-    "quizNoCorrect": "Lesson {position} ({title}): select the correct option for question {number}"
+    "quizNoCorrect": "Lesson {position} ({title}): select the correct option for question {number}",
+    "unsavedChanges": "Unsaved changes",
+    "publishStatus": "Publication status in {language}",
+    "visibleLanguages": "{count, plural, =0 {Not visible to learners} =1 {Visible in 1 language} other {Visible in # languages}}",
+    "lessonsCount": "{count, plural, =1 {1 lesson} other {# lessons}}",
+    "lessonsTitle": "Lessons"
   },
   "CourseList": {
     "active": "Active",

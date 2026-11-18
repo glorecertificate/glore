@@ -5,7 +5,8 @@ import { type Locale } from 'next-intl'
 import { CourseContent } from '@/components/features/courses/course-editor/content'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { CourseFooter } from '@/components/features/courses/course-editor/footer'
-import { CourseHeader, CourseHeaderMobile } from '@/components/features/courses/course-editor/header'
+import { CourseHeader } from '@/components/features/courses/course-editor/header'
+import { CourseLessonPicker } from '@/components/features/courses/course-editor/lesson-picker'
 import { CourseSidebar } from '@/components/features/courses/course-editor/sidebar'
 import { Tabs } from '@/components/ui/tabs'
 import { useMetadata } from '@/hooks/use-metadata'
@@ -23,12 +24,12 @@ export const CourseEditor = () => {
   useNavigationGuard(hasAnyUpdates)
 
   return (
-    <Tabs onValueChange={value => setLanguage(value as Locale)} value={language}>
+    <Tabs className="gap-4" onValueChange={value => setLanguage(value as Locale)} value={language}>
       <CourseHeader />
       <div className="flex flex-col gap-2 md:flex-row">
         <CourseSidebar className="hidden shrink-0 md:block" style={sidebarStyle} />
         <div className="flex min-w-0 grow flex-col">
-          <CourseHeaderMobile className="sticky top-18 md:hidden" />
+          <CourseLessonPicker className="mb-4 md:hidden" />
           <CourseContent />
           {hasFooter && <CourseFooter />}
         </div>

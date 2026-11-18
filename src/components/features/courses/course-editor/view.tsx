@@ -6,7 +6,7 @@ import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs
 
 import { getCourse } from '@/actions/courses/queries'
 import { getCurrentUser } from '@/actions/user'
-import { CourseBreadcrumb } from '@/components/features/courses/course-editor/breadcrumb'
+import { CourseBarTitle } from '@/components/features/courses/course-editor/bar-title'
 import { CourseProvider } from '@/components/features/courses/course-editor/context'
 import { CourseEditor } from '@/components/features/courses/course-editor/lazy'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
@@ -75,7 +75,7 @@ export const CourseEditorView = async (props: {
 
   return (
     <CourseProvider value={{ course, language, step }}>
-      <DashboardPage breadcrumb={<CourseBreadcrumb />}>
+      <DashboardPage parent="courses" title={<CourseBarTitle />}>
         <ViewTransition default="none" enter={{ 'course-created': 'grid-enter', default: 'none' }}>
           <CourseEditor />
         </ViewTransition>

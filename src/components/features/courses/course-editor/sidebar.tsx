@@ -124,8 +124,8 @@ const CourseSidebarItem = ({
       <StepperTrigger
         className={cn(
           'relative flex w-full cursor-pointer items-start rounded-md p-3',
-          isCurrent && 'cursor-default bg-accent/50 dark:bg-accent/30',
-          isReachable && !isCurrent && 'hover:bg-accent/40 dark:hover:bg-accent/20',
+          isCurrent && 'cursor-default bg-surface-selected',
+          isReachable && !isCurrent && 'hover:bg-surface-hover',
           !isReachable && 'cursor-not-allowed text-muted-foreground'
         )}
         onClick={onLessonClick}
@@ -260,7 +260,11 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           </span>
         </div>
       )}
-      <div className="sticky top-30">
+      <div className="sticky top-20">
+        <div className="flex items-center justify-between gap-2 pr-2 pb-2 pl-3">
+          <h2 className="type-label">{t('lessonsTitle')}</h2>
+          <span className="type-caption text-muted-foreground tabular-nums">{course.lessons.length}</span>
+        </div>
         <Sortable
           getItemValue={lesson => lesson.id!}
           measuring={measureAlways}
@@ -299,7 +303,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                           {user.canEdit && (
                             <SortableItemHandle
                               aria-label={t('reorderLesson')}
-                              className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50"
+                              className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100"
                             >
                               <LucideIcon name="grip-vertical" className="size-4" />
                             </SortableItemHandle>
@@ -356,22 +360,10 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           </Stepper>
         </Sortable>
         {user.canEdit && (
-          <div className="flex h-16 items-center pl-3">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  aria-label={t('addLesson')}
-                  className="z-1 rounded-full"
-                  onClick={() => addLesson()}
-                  size="icon-2xs"
-                >
-                  <LucideIcon name="plus" className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={8}>
-                {t('addLesson')}
-              </TooltipContent>
-            </Tooltip>
+          <div className="pt-3 pr-2 pl-3">
+            <Button className="w-full" icon="plus" onClick={() => addLesson()} variant="outline">
+              {t('addLesson')}
+            </Button>
           </div>
         )}
       </div>

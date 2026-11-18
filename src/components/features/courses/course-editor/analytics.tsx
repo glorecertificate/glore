@@ -115,8 +115,8 @@ const AnalyticsContent = ({
                 </span>
                 <div className="flex w-28 shrink-0 flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-muted-foreground">{lesson.completionCount}</span>
-                    <span className="text-[11px] font-medium tabular-nums">{`${lesson.completionRate}%`}</span>
+                    <span className="type-caption text-muted-foreground">{lesson.completionCount}</span>
+                    <span className="text-xs font-medium tabular-nums">{`${lesson.completionRate}%`}</span>
                   </div>
                   <Progress
                     className="h-1"
@@ -197,13 +197,11 @@ export const CourseAnalyticsSheet = () => {
     <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="xs" variant="outline">
-            <LucideIcon name="chart-no-axes-column" className="size-4" />
+          <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="icon" variant="outline">
+            <LucideIcon name="chart-no-axes-column" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent className="max-w-72 text-center" sideOffset={6}>
-          {t('analyticsSheet')}
-        </TooltipContent>
+        <TooltipContent>{t('analyticsSheet')}</TooltipContent>
       </Tooltip>
       <Sheet onOpenChange={setOpen} open={open}>
         <SheetContent className="flex flex-col gap-0 overflow-y-auto p-0" side="right">

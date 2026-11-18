@@ -185,12 +185,12 @@ export const CourseSettings = ({
             render={({ field }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col gap-y-1">
-                  <FormLabel className="text-[15px]">{t('icon')}</FormLabel>
+                  <FormLabel>{t('icon')}</FormLabel>
                   <FormDescription>{t('iconDescription')}</FormDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <IconPicker value={field.value as IconName} onValueChange={icon => field.onChange(icon)}>
-                    <Button className="w-fit animate-none text-[13px] font-normal" type="button" variant="outline">
+                    <Button className="w-fit animate-none font-normal" type="button" variant="outline">
                       {field.value && (
                         <div>
                           <LucideIcon
@@ -226,7 +226,7 @@ export const CourseSettings = ({
             render={({ field }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col gap-y-1">
-                  <FormLabel className="text-[15px]">{tCommon('courseType')}</FormLabel>
+                  <FormLabel>{tCommon('courseType')}</FormLabel>
                   <FormDescription>{t('courseTypeDescription')}</FormDescription>
                 </div>
                 <div className="space-y-1.5">
@@ -259,7 +259,7 @@ export const CourseSettings = ({
               render={({ field }) => (
                 <FormItem className="space-y-1">
                   <div className="flex flex-col gap-y-1">
-                    <FormLabel className="text-[15px]">{tCommon('skillGroup')}</FormLabel>
+                    <FormLabel>{tCommon('skillGroup')}</FormLabel>
                     <FormDescription>{t('skillGroupDescription')}</FormDescription>
                   </div>
                   <Select
@@ -287,7 +287,7 @@ export const CourseSettings = ({
             render={({ field }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col gap-y-1">
-                  <FormLabel className="text-[15px]">{tEditor('durationLabel')}</FormLabel>
+                  <FormLabel>{tEditor('durationLabel')}</FormLabel>
                   <FormDescription>{tEditor('durationDescription')}</FormDescription>
                 </div>
                 <InputGroup className="w-48">
@@ -314,18 +314,16 @@ export const CourseSettings = ({
             render={({ field: { onChange, ...field } }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col gap-y-1">
-                  <Label className="text-[15px]">{t('courseSlug')}</Label>
+                  <Label>{t('courseSlug')}</Label>
                   <FormDescription>{t('courseSlugDescription')}</FormDescription>
                 </div>
                 <div className="space-y-1.5">
                   <InputGroup>
                     <InputGroupAddon>
-                      <InputGroupText className="font-mono text-[13px] text-muted-foreground/80">
-                        {slugPrefix}
-                      </InputGroupText>
+                      <InputGroupText className="font-mono text-sm text-muted-foreground">{slugPrefix}</InputGroupText>
                     </InputGroupAddon>
                     <InputGroupInput
-                      className="pl-0.5! font-mono text-[13px]"
+                      className="pl-0.5! font-mono text-sm"
                       disabled={form.formState.isSubmitting}
                       id={slugId}
                       onChange={onSlugChange(onChange)}
@@ -348,7 +346,7 @@ export const CourseSettings = ({
           />
           <div className="space-y-1">
             <div className="flex flex-col gap-y-1">
-              <Label className="text-[15px]">{tEditor('outcomesLabel')}</Label>
+              <Label>{tEditor('outcomesLabel')}</Label>
               <FormDescription>{tEditor('outcomesDescription', { max: OUTCOMES_MAX })}</FormDescription>
             </div>
             <div className="space-y-3">

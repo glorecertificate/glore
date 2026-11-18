@@ -26,7 +26,10 @@ const perfConfig = defineConfig({
               {
                 command: 'pnpm exec next start --port 3001',
                 cwd: process.env.PERF_BASE_DIR,
-                env: { APP_URL: 'http://localhost:3001' },
+                env: {
+                  APP_URL: 'http://localhost:3001',
+                  ...(process.env.PERF_BASE_DATABASE_URL ? { DATABASE_URL: process.env.PERF_BASE_DATABASE_URL } : {}),
+                },
                 url: 'http://localhost:3001/api/v1/health',
                 timeout: 60_000,
               },

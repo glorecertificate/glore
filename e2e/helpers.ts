@@ -8,7 +8,10 @@ export const AUTH_ROLES = ['admin', 'editor', 'learner', 'owner', 'representativ
 
 export type AuthRole = (typeof AUTH_ROLES)[number]
 
-export const authFile = (role: AuthRole) => `.playwright/.auth/${role}.json`
+export type AuthTarget = 'base' | 'head'
+
+export const authFile = (role: AuthRole, target: AuthTarget = 'head') =>
+  target === 'base' ? `.playwright/.auth/base-${role}.json` : `.playwright/.auth/${role}.json`
 
 type StorageState = Exclude<BrowserContextOptions['storageState'], string | undefined>
 

@@ -5,8 +5,7 @@ import { Pool } from 'pg'
 
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE, SEED_PASSWORD } from '~/scripts/seed-data'
 
-export const clearRateLimits = async () => {
-  const connectionString = process.env.DATABASE_URL
+export const clearRateLimits = async (connectionString = process.env.DATABASE_URL) => {
   if (!(connectionString && LOCAL_DATABASE_REGEX.test(connectionString))) return
   const pool = new Pool({ connectionString })
   await pool.query('delete from rate_limits')

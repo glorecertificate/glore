@@ -78,6 +78,7 @@ jobs:
           git worktree add --detach "$RUNNER_TEMP/base" "$BASE_SHA"
           echo "PERF_BASE_DIR=$RUNNER_TEMP/base" >> "$GITHUB_ENV"
           echo "PERF_BASE_URL=http://localhost:3001" >> "$GITHUB_ENV"
+          echo "PERF_BASE_DATABASE_URL=postgresql://glore:glore@localhost:5433/glore_base" >> "$GITHUB_ENV"
       - if: github.event_name == 'pull_request'
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
@@ -85,13 +86,18 @@ jobs:
           key: nextjs-${{ runner.os }}-perf-base-${{ github.event.pull_request.base.sha }}
           restore-keys: |
             nextjs-${{ runner.os }}-perf-
-      - name: Build the base commit
+      - name: Build the base commit and its database
         if: github.event_name == 'pull_request'
         working-directory: ${{ runner.temp }}/base
         env:
           APP_URL: http://localhost:3001
+          DATABASE_URL: ${{ env.PERF_BASE_DATABASE_URL }}
         run: |
           pnpm install --frozen-lockfile
+          docker exec ${{ job.services.postgres.id }} createdb -U glore glore_base
+          pnpm run db migrate
+          pnpm run content:import --target local
+          pnpm run db:seed
           pnpm run build
       - name: Measure
         run: pnpm run test:perf

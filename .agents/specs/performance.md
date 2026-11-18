@@ -57,6 +57,7 @@ Only a production server gives comparable numbers. The report checks no target o
 3. Run `E2E_BASE_URL=http://localhost:3100 pnpm run test:perf`. Add `-g <case>` for one case and `PERF_RUNS=5` for a stable median.
 4. Run `pnpm run qa:perf` for the report, or `pnpm run qa:perf --baseline <dir>` to compare with an earlier results folder.
 5. To compare two builds, start the second one on another port and add `PERF_BASE_URL=<url>` to step 3. The base results go to `.playwright/perf/baseline/`.
+6. Give the second build its own database and add `PERF_BASE_DATABASE_URL=<url>` to step 3. Without it, both servers share `DATABASE_URL`.
 
 The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ misses it, and a ▲ is a regression against the baseline.
 
@@ -64,10 +65,12 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 
 - The `Perf` job in `.github/workflows/perf.yml` runs on each pull request and each push to `main`. It skips the merge queue.
 - It builds and starts the app like `E2E / E2E`, runs `test:perf`, and uploads `perf-results` for 30 days.
-- On a pull request it also builds the base commit and starts it on port 3001 on the same runner. Both servers use one seeded database.
+- On a pull request it also builds the base commit and starts it on port 3001 on the same runner. Each server has its own database and its own logins. The head uses `glore` and the base uses `glore_base`, which the job migrates, imports, and seeds with the base code.
+- The separate database lets the base run after a destructive migration. The setup project logs each role in on each server and saves one storage state per target, because sessions live in the database.
 - Each load and navigation case alternates between the base and the head on each run. Each interaction case runs one block on each server.
 - A baseline from another runner is not valid. On two runs of one commit, the CPU-bound metrics moved by 10% to 50%.
-- If the base server fails, for example after a destructive migration, the report lists the case without a baseline.
+- If the base server fails, the report lists the case without a baseline.
+- A base seed can differ from the head seed, so a seed change can move a metric.
 - On a push to `main` it measures the head only, as a record.
 - It runs each case 5 times on each server. A metric regresses when its median grows by more than 10% and by more than the noise floor: 20 ms, 2 KB, or 0.005 CLS.
 - The fastest run must also be slower than the baseline median plus the noise floor. This rule ignores a bimodal metric that lands in its slow mode by chance.

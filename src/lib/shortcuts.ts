@@ -5,8 +5,11 @@ export interface Shortcut {
 
 export const SHORTCUTS = {
   filter: { key: '/' },
+  next: { key: 'j' },
+  previous: { key: 'k' },
   search: { key: 'k', mod: true },
   sidebar: { key: '\\', mod: true },
+  submit: { key: 'enter', mod: true },
 } as const satisfies Record<string, Shortcut>
 
 const EDITABLE_TAGS = new Set(['INPUT', 'SELECT', 'TEXTAREA'])

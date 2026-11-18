@@ -661,6 +661,11 @@
     "DataTable": {
       "count": "{count, plural, one {# result} other {# results}}",
       "actions": "Row actions",
+      "bulkActions": "Bulk actions",
+      "clearSelection": "Clear selection",
+      "selectAll": "Select all on this page",
+      "selectRow": "Select row",
+      "selected": "{count, plural, one {# selected} other {# selected}}",
       "loading": "Loading results",
       "page": "Page {page} of {total}",
       "previous": "Previous",

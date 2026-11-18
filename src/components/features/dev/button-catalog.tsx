@@ -1,6 +1,7 @@
 import { CatalogRow } from '@/components/features/dev/catalog-row'
 import { CatalogSection } from '@/components/features/dev/catalog-section'
 import { Button, type ButtonProps } from '@/components/ui/button'
+import { CopyButton } from '@/components/ui/copy-button'
 
 const VARIANTS = [
   'primary',
@@ -68,6 +69,11 @@ export const ButtonCatalog = () => (
           {variant}
         </Button>
       ))}
+    </CatalogRow>
+    <CatalogRow label="CopyButton">
+      <CopyButton value="https://glore.test" />
+      <CopyButton iconOnly label="Copy link" value="https://glore.test" />
+      <CopyButton disabled iconOnly label="Copy link" value="https://glore.test" />
     </CatalogRow>
   </CatalogSection>
 )

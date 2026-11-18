@@ -8,7 +8,7 @@ import { type ManagerSummary } from '@/actions/dashboard/core'
 import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { DashboardChecklist } from '@/components/features/dashboard/checklist'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
-import { DashboardHeading } from '@/components/features/dashboard/heading'
+import { DashboardHero } from '@/components/features/dashboard/hero'
 import { StatLink } from '@/components/features/dashboard/section'
 import { ActivityList } from '@/components/features/organization/activity-list'
 import { OrganizationPipeline } from '@/components/features/organization/pipeline'
@@ -51,7 +51,7 @@ export const ManagerDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHeading
+      <DashboardHero
         action={{ href: '/organization', label: t('manager.openOrganization') }}
         organization={organization}
         subtitle={t('subtitle.manager')}

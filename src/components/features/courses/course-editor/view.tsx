@@ -4,14 +4,13 @@ import { ViewTransition } from 'react'
 import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
-import { getCourse } from '@/actions/courses/queries'
-import { getCurrentUser } from '@/actions/user'
+import { loadCourse } from '@/actions/courses/course-data'
+import { getViewerContext } from '@/actions/viewer'
 import { CourseBarTitle } from '@/components/features/courses/course-editor/bar-title'
 import { CourseProvider } from '@/components/features/courses/course-editor/context'
 import { CourseEditor } from '@/components/features/courses/course-editor/lazy'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { getCookie } from '@/lib/cookie-store'
 import { LOCALES } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({
@@ -28,15 +27,14 @@ const resolveEditorData = async ({
   searchParams: Promise<Record<string, string | string[] | undefined>>
   slug: string
 }) => {
-  const { data: course, error } = await getCourse(slug)
+  const { data: course, error } = await loadCourse(slug)
   if (error) return notFound()
 
   const resolvedSearchParams = await searchParams
   const { [COURSE_PARAMS.LANGUAGE]: languageParam, [COURSE_PARAMS.STEP]: stepParam } = await parse(resolvedSearchParams)
   const language = languageParam ?? (await getLocale())
 
-  const [user, orgId] = await Promise.all([getCurrentUser(), getCookie('org')])
-  const orgRole = user.organizations.find(({ id }) => id === orgId)?.role ?? null
+  const { role: orgRole, user } = await getViewerContext()
   const isViewer = !user.canEdit && (orgRole === 'admin' || orgRole === 'representative' || orgRole === 'tutor')
 
   let step = stepParam

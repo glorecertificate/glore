@@ -148,9 +148,10 @@ src/
 - Layout guards (admin, certificates) are server components that call `notFound()`.
 - A page that fetches data is a sync page that renders `DashboardPage` and puts an inner async component in it. `DashboardPage` wraps its children in Suspense, so the header bar renders at once.
 - A record title that needs data is an async component passed as `title`. The bar streams it.
-- Never remove `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the bar and a spinner, which client navigations show at once while a segment awaits uncached data.
+- Keep `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the bar and a spinner, for a segment that still awaits uncached data. `LoadingFallback` fades in after 300 ms (`delay-300`), so a wait under 300 ms shows nothing. A route with its data behind cached loaders never reaches it.
 - `next dev` logs a blocking-route error when a navigation would wait on uncached data.
-- Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so never pass `prefetch` to a `Link`.
+- Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so a plain `Link` needs no `prefetch`. Pass `prefetch` on the sidebar links and on primary in-page links (course cards, certificate rows) to carry cached data that needs a fresh 30 s stale time or a URL value into the click. `experimental.staleTimes.dynamic` is 30, so a revisit within 30 s skips the request.
+- Page data comes from loaders in `viewer.ts` (`getViewer`, `getViewerContext`: fresh session plus the tagged `fetchUser`), `certificates/lists.ts`, `organizations/panel-data.ts`, `docs-core.ts`, and `dashboard/*`. They take ids as arguments to `'use cache'` functions with `LIVE_LIFE` (60 s stale). A loader never calls `connection()`, `getAuthUser()`, or `Date.now()` outside a cache (use `readClock()`).
 - Content joins the shell only behind `'use cache'` with a stale time of at least 5 minutes or behind `'use cache: private'`. Uncached reads, `params`, and `searchParams` stream in after the click.
 - Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache, 30 s stale time, fresh database check). Links to pages that read it use `prefetch`, since 30 s stays out of the App Shell.
 

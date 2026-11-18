@@ -85,6 +85,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel (`reference.md`, "Authentication").
 3. `db/queries/<table>.ts` parsers MUST stay pure and never import `@/db/client` (`architecture.md`).
 4. A cached query is an inner `'use cache'` + `cacheTag` function under an outer `{ cache: boolean }` one (`reference.md`).
+   Render-path loaders read the user through `getViewer()` (`actions/viewer.ts`), never `getAuthUser()`, `connection()`, or `Date.now()`, so the data joins the prefetch (`architecture.md`).
 5. Multi-statement writes use `transaction(fn)` units in `src/db/mutations/`, run sequentially (`reference.md`).
 6. Client-created course-tree records use negative `tempId()` ids that never reach the DB (`patterns.md`).
 7. Read `IntlRecord` fields with `localize(record)` from `useI18n()`.

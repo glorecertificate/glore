@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
+import { createPortal } from 'react-dom'
 
 import { CourseDialog } from '@/components/features/courses/course-dialog'
 import { CourseAnalyticsSheet } from '@/components/features/courses/course-editor/analytics'
@@ -28,13 +29,17 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useMounted } from '@/hooks/use-mounted'
 import { COURSE_TITLE_MAX_LENGTH } from '@/lib/constants'
 import { type IntlRecord } from '@/lib/i18n'
 import { isTempId } from '@/lib/utils'
+
+const BAR_STYLE = { paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }
 
 export const CourseHeader = () => {
   const { replace } = useRouter()
@@ -48,6 +53,8 @@ export const CourseHeader = () => {
   const [publishTarget, setPublishTarget] = useState(languageStatus.published)
   const [saving, setSaving] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const mounted = useMounted()
+  const [analyticsOpen, setAnalyticsOpen] = useState(false)
   const prevLanguageRef = useRef(language)
   const alertResolverRef = useRef<((value: boolean) => void) | null>(null)
 
@@ -147,7 +154,7 @@ export const CourseHeader = () => {
         {({ counter, description, icon, title }) => (
           <DashboardHeader
             actions={
-              <>
+              <div className="contents max-md:hidden">
                 <CourseDialog
                   course={course}
                   onOpenChange={setSettingsOpen}
@@ -208,7 +215,7 @@ export const CourseHeader = () => {
                     {t('nothingToSave')}
                   </span>
                 )}
-              </>
+              </div>
             }
             breadcrumb={
               <div className="flex flex-col gap-3">
@@ -226,8 +233,39 @@ export const CourseHeader = () => {
                     </StatusBadge>
                   )}
                   <span>{t('visibleLanguages', { count: publishedLanguageCount })}</span>
-                  <span>{t('lessonsCount', { count: course.lessons.length })}</span>
+                  <span className="max-md:hidden">{t('lessonsCount', { count: course.lessons.length })}</span>
                   {counter}
+                  <div className="ml-auto md:hidden">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          aria-label={t('moreActions')}
+                          className="relative before:absolute before:-inset-1 before:content-['']"
+                          size="icon"
+                          variant="band-secondary"
+                        >
+                          <LucideIcon name="ellipsis" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="min-w-56">
+                        <DropdownMenuItem onSelect={() => setSettingsOpen(true)}>
+                          <LucideIcon aria-hidden name="settings" />
+                          {tCourseCommon('settings')}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setAnalyticsOpen(true)}>
+                          <LucideIcon aria-hidden name="chart-no-axes-column" />
+                          {t('analyticsSheet')}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href={previewHref}>
+                            <LucideIcon aria-hidden name="eye" />
+                            {tEditor('previewAsLearner')}
+                          </Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <CourseAnalyticsSheet onOpenChange={setAnalyticsOpen} open={analyticsOpen} />
+                  </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <CourseLanguageTabs />
@@ -242,6 +280,29 @@ export const CourseHeader = () => {
           />
         )}
       </CourseHeading>
+      {mounted &&
+        createPortal(
+          <section
+            aria-label={t('saveBarLabel')}
+            className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 px-page pt-2 backdrop-blur-sm md:hidden"
+            style={BAR_STYLE}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <PublishControl
+                disabled={saving}
+                language={languageLabel}
+                onChange={setPublishTarget}
+                published={publishTarget}
+                tone="surface"
+              />
+              <Button disabled={saveDisabled} icon="save" loading={saving} onClick={handleSave} variant="brand">
+                {t('save')}
+              </Button>
+            </div>
+            {saveDisabled && <p className="pt-1 text-right type-caption text-muted-foreground">{t('nothingToSave')}</p>}
+          </section>,
+          document.body
+        )}
       <AlertDialog onOpenChange={open => !open && handleAlertCancel()} open={incompleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

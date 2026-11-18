@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { COURSE_TITLE_MAX_LENGTH } from '@/lib/constants'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
-import { debounce } from '@/lib/utils'
+import { cn, debounce } from '@/lib/utils'
 
 const MAX_TITLE_LENGTH = COURSE_TITLE_MAX_LENGTH
 const TITLE_COUNTER_FROM = 80
@@ -45,6 +45,9 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
   const [editingTitle, setEditingTitle] = useState<string | null>(null)
   const [draftDescription, setDraftDescription] = useState(description)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
+  const descriptionWrapperRef = useRef<HTMLSpanElement>(null)
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false)
+  const [descriptionOverflowing, setDescriptionOverflowing] = useState(false)
   const canEdit = user.canEdit && !course.archivedAt
 
   const draftTitle = editingTitle ?? title
@@ -54,6 +57,16 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
       setDraftDescription(description)
     }
   }, [description])
+
+  useEffect(() => {
+    const element = descriptionWrapperRef.current
+    if (!element || descriptionExpanded) return
+    const measure = () => setDescriptionOverflowing(element.scrollHeight > element.clientHeight + 1)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [description, descriptionExpanded, draftDescription])
 
   const languageRef = useRef(language)
   languageRef.current = language
@@ -171,7 +184,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
     </output>
   )
 
-  const descriptionNode = canEdit ? (
+  const descriptionField = canEdit ? (
     <InlineInput
       aria-label={t('updateDescription')}
       className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
@@ -184,6 +197,32 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
     />
   ) : (
     description || t('noDescriptionAvailable')
+  )
+
+  const descriptionNode = (
+    <>
+      <span
+        className={cn(
+          'block',
+          !descriptionExpanded && 'max-md:max-h-13 max-md:overflow-hidden',
+          !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2'
+        )}
+        onFocusCapture={() => setDescriptionExpanded(true)}
+        ref={descriptionWrapperRef}
+      >
+        {descriptionField}
+      </span>
+      {(descriptionOverflowing || descriptionExpanded) && (
+        <button
+          aria-expanded={descriptionExpanded}
+          className="mt-1 type-caption text-band-text underline underline-offset-2 md:hidden"
+          onClick={() => setDescriptionExpanded(value => !value)}
+          type="button"
+        >
+          {descriptionExpanded ? t('descriptionShowLess') : t('descriptionShowMore')}
+        </button>
+      )}
+    </>
   )
 
   return children({ counter, description: descriptionNode, icon, title: titleNode })

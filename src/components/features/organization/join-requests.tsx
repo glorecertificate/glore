@@ -27,6 +27,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 
 import { TabHeader } from './tab-header'
+import { useReturnFocus } from './use-return-focus'
 import { formatRoleLabel } from './utils'
 
 const RejectRequestDialog = ({
@@ -99,6 +100,7 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
   const t = useTranslations('Organization')
   const tInvitations = useTranslations('Invitations')
   const errorMessage = useInvitationError()
+  const { remember, restore } = useReturnFocus()
 
   const [activeRequestId, setActiveRequestId] = useState<number | null>(null)
   const [rejectRequestId, setRejectRequestId] = useState<number | null>(null)
@@ -201,7 +203,10 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
                       </Button>
                       <Button
                         disabled={activeRequestId === request.id}
-                        onClick={() => setRejectRequestId(request.id)}
+                        onClick={() => {
+                          remember()
+                          setRejectRequestId(request.id)
+                        }}
                         size="sm"
                         variant="outline"
                       >
@@ -218,7 +223,11 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
 
       <RejectRequestDialog
         onConfirm={handleRejectRequest}
-        onOpenChange={open => !open && setRejectRequestId(null)}
+        onOpenChange={open => {
+          if (open) return
+          setRejectRequestId(null)
+          restore()
+        }}
         open={!!rejectRequestId}
       />
     </>

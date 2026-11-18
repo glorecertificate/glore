@@ -10,7 +10,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 
 import { ActivityList } from './activity-list'
 import { TabHeader } from './tab-header'
@@ -49,8 +49,7 @@ export const OrganizationActivity = ({
             <EmptyMedia variant="icon">
               <LucideIcon name="history" />
             </EmptyMedia>
-            <EmptyTitle>{t('activityTitle')}</EmptyTitle>
-            <EmptyDescription>{t('activityEmpty')}</EmptyDescription>
+            <EmptyTitle>{t('activityEmpty')}</EmptyTitle>
           </EmptyHeader>
         </Empty>
       )}

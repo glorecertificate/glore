@@ -30,6 +30,7 @@ import { CopyLinkButton } from './copy-link-button'
 import { InviteLinkDialog } from './invite-link-dialog'
 import { INVITE_LINK_STATUS } from './status'
 import { TabHeader } from './tab-header'
+import { useReturnFocus } from './use-return-focus'
 import { formatRoleLabel } from './utils'
 
 type InviteLink = OrganizationPanelData['inviteLinks'][number]
@@ -44,6 +45,7 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
   const t = useTranslations('Invitations')
   const tOrganization = useTranslations('Organization')
   const errorMessage = useInvitationError()
+  const { remember, restore } = useReturnFocus()
 
   const [createOpen, setCreateOpen] = useState(false)
   const [revokeTarget, setRevokeTarget] = useState<InviteLink | null>(null)
@@ -73,7 +75,14 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
       <div className="flex flex-col gap-6">
         <TabHeader
           actions={
-            <Button onClick={() => setCreateOpen(true)} size="sm" variant="outline">
+            <Button
+              onClick={() => {
+                remember()
+                setCreateOpen(true)
+              }}
+              size="sm"
+              variant="outline"
+            >
               <LucideIcon name="link" />
               {t('createLink')}
             </Button>
@@ -143,7 +152,14 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
             link.state === 'active' ? (
               <div className="flex items-center justify-end gap-2">
                 <CopyLinkButton label={t('copyLink')} load={() => copyOrganizationInviteLink(link.id)} />
-                <Button onClick={() => setRevokeTarget(link)} size="sm" variant="outline">
+                <Button
+                  onClick={() => {
+                    remember()
+                    setRevokeTarget(link)
+                  }}
+                  size="sm"
+                  variant="outline"
+                >
                   {t('revoke')}
                 </Button>
               </div>
@@ -153,9 +169,23 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
         />
       </div>
 
-      <InviteLinkDialog onCreated={onRefresh} onOpenChange={setCreateOpen} open={createOpen} />
+      <InviteLinkDialog
+        onCreated={onRefresh}
+        onOpenChange={open => {
+          setCreateOpen(open)
+          if (!open) restore()
+        }}
+        open={createOpen}
+      />
 
-      <AlertDialog onOpenChange={open => !open && setRevokeTarget(null)} open={Boolean(revokeTarget)}>
+      <AlertDialog
+        onOpenChange={open => {
+          if (open) return
+          setRevokeTarget(null)
+          restore()
+        }}
+        open={Boolean(revokeTarget)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('revokeLinkTitle')}</AlertDialogTitle>

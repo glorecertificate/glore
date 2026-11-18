@@ -1,8 +1,7 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { startTransition } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -13,27 +12,28 @@ import { OrganizationCertificatesPanel } from './certificates-panel'
 import { OrganizationOverview } from './overview'
 import { useOrganizationTab } from './tabs'
 
-const TabLoading = () => <LoadingFallback className="min-h-64" />
+const loadTabs = async () => {
+  const [activity, insights, invitations, joinRequests, members, settings] = await Promise.all([
+    import('./activity'),
+    import('./insights'),
+    import('./invitations'),
+    import('./join-requests'),
+    import('./members'),
+    import('./settings'),
+  ])
+  return {
+    OrganizationActivity: activity.OrganizationActivity,
+    OrganizationInsightsPanel: insights.OrganizationInsightsPanel,
+    OrganizationInvitations: invitations.OrganizationInvitations,
+    OrganizationJoinRequests: joinRequests.OrganizationJoinRequests,
+    OrganizationMembers: members.OrganizationMembers,
+    OrganizationSettings: settings.OrganizationSettings,
+  }
+}
 
-const OrganizationActivity = dynamic(async () => (await import('./activity')).OrganizationActivity, {
-  loading: TabLoading,
-})
-const OrganizationInsightsPanel = dynamic(async () => (await import('./insights')).OrganizationInsightsPanel, {
-  loading: TabLoading,
-})
+type Tabs = Awaited<ReturnType<typeof loadTabs>>
 
-const OrganizationInvitations = dynamic(async () => (await import('./invitations')).OrganizationInvitations, {
-  loading: TabLoading,
-})
-const OrganizationJoinRequests = dynamic(async () => (await import('./join-requests')).OrganizationJoinRequests, {
-  loading: TabLoading,
-})
-const OrganizationMembers = dynamic(async () => (await import('./members')).OrganizationMembers, {
-  loading: TabLoading,
-})
-const OrganizationSettings = dynamic(async () => (await import('./settings')).OrganizationSettings, {
-  loading: TabLoading,
-})
+let loadedTabs: Tabs | null = null
 
 export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPanelData }) => {
   const { refresh: routerRefresh } = useRouter()
@@ -41,6 +41,17 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   const { setTab, tab } = useOrganizationTab()
 
   const data = initialData
+
+  const [tabs, setTabs] = useState(loadedTabs)
+
+  useEffect(() => {
+    if (tabs) return
+    const load = async () => {
+      loadedTabs = await loadTabs()
+      setTabs(loadedTabs)
+    }
+    void load()
+  }, [tabs])
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab
 
@@ -58,9 +69,13 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     }
   }
 
-  if (currentTab === 'members') {
+  if (currentTab !== 'overview' && currentTab !== 'certificates' && !tabs) {
+    return <LoadingFallback className="min-h-64" />
+  }
+
+  if (tabs && currentTab === 'members') {
     return (
-      <OrganizationMembers
+      <tabs.OrganizationMembers
         currentUserId={data.currentUserId}
         isOrgAdmin={data.isOrgAdmin}
         members={data.members}
@@ -71,9 +86,9 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     )
   }
 
-  if (currentTab === 'invitations') {
+  if (tabs && currentTab === 'invitations') {
     return (
-      <OrganizationInvitations
+      <tabs.OrganizationInvitations
         currentUserId={data.currentUserId}
         inviteLinks={data.inviteLinks}
         invitations={data.invitations}
@@ -83,25 +98,25 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     )
   }
 
-  if (currentTab === 'requests') {
-    return <OrganizationJoinRequests joinRequests={data.joinRequests} onRefresh={refresh} />
+  if (tabs && currentTab === 'requests') {
+    return <tabs.OrganizationJoinRequests joinRequests={data.joinRequests} onRefresh={refresh} />
   }
 
   if (currentTab === 'certificates') {
     return <OrganizationCertificatesPanel organizationId={data.organization.id} />
   }
 
-  if (currentTab === 'insights') {
-    return <OrganizationInsightsPanel />
+  if (tabs && currentTab === 'insights') {
+    return <tabs.OrganizationInsightsPanel />
   }
 
-  if (currentTab === 'activity') {
-    return <OrganizationActivity initial={data.activity} />
+  if (tabs && currentTab === 'activity') {
+    return <tabs.OrganizationActivity initial={data.activity} />
   }
 
-  if (currentTab === 'settings' && data.isOrgAdmin) {
+  if (tabs && currentTab === 'settings' && data.isOrgAdmin) {
     return (
-      <OrganizationSettings
+      <tabs.OrganizationSettings
         key={data.organization.updatedAt}
         members={data.members}
         onRefresh={refresh}

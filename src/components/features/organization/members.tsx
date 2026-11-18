@@ -36,6 +36,7 @@ import { RemoveMemberDialog } from './remove-member-dialog'
 import { TabHeader } from './tab-header'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
+import { useReturnFocus } from './use-return-focus'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES, formatRoleLabel, getDisplayName } from './utils'
 
 type Member = OrganizationPanelData['members'][number]
@@ -67,6 +68,7 @@ export const OrganizationMembers = ({
   const { dateTime } = useFormatter()
   const t = useTranslations('Organization')
   const memberError = useMemberError()
+  const { remember, restore } = useReturnFocus()
 
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState<'all' | OrganizationMembershipRole>('all')
@@ -107,6 +109,7 @@ export const OrganizationMembers = ({
   }
 
   const openDetail = async (member: Member) => {
+    remember()
     const request = ++drawerRequest.current
     setDrawer({ data: null, error: null, loading: true, open: true })
     const { data, error } = await getOrganizationMemberDetail(member.id, organizationId)
@@ -117,12 +120,15 @@ export const OrganizationMembers = ({
 
   const closeDrawer = (open: boolean) => {
     if (open) return
+    restore()
     drawerRequest.current += 1
     setDrawer(current => ({ ...current, open: false }))
   }
 
   const handleDialog = (open: boolean) => {
-    if (!open) setDialog(null)
+    if (open) return
+    setDialog(null)
+    restore()
   }
 
   const handleOwnerChange = (user: User) => {
@@ -140,7 +146,14 @@ export const OrganizationMembers = ({
       <div className="flex flex-col gap-6">
         <TabHeader
           actions={
-            <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
+            <Button
+              onClick={() => {
+                remember()
+                setInviteOpen(true)
+              }}
+              size="sm"
+              variant="brand"
+            >
               <LucideIcon name="user-plus" />
               {t('inviteMember')}
             </Button>
@@ -260,7 +273,7 @@ export const OrganizationMembers = ({
                 </Button>
                 {!(canRemove || canChangeRole || canLeave) && <span aria-hidden className="size-8" />}
                 {(canRemove || canChangeRole || canLeave) && (
-                  <DropdownMenu>
+                  <DropdownMenu onOpenChange={open => open && remember()}>
                     <DropdownMenuTrigger asChild>
                       <Button
                         aria-label={t('memberActions', { name: getDisplayName(member.user) })}
@@ -310,7 +323,15 @@ export const OrganizationMembers = ({
               <p className="type-label">{t('transferTitle')}</p>
               <p className="text-sm text-muted-foreground">{t('transferHelp')}</p>
             </div>
-            <Button className="shrink-0" onClick={() => setDialog({ kind: 'transfer' })} size="sm" variant="outline">
+            <Button
+              className="shrink-0"
+              onClick={() => {
+                remember()
+                setDialog({ kind: 'transfer' })
+              }}
+              size="sm"
+              variant="outline"
+            >
               {t('transferOwnership')}
             </Button>
           </div>
@@ -321,7 +342,10 @@ export const OrganizationMembers = ({
         allowedRoles={availableInviteRoles}
         defaultLocale={locale}
         onInvite={input => inviteOrganizationMembers(input, organizationId)}
-        onOpenChange={setInviteOpen}
+        onOpenChange={open => {
+          setInviteOpen(open)
+          if (!open) restore()
+        }}
         onSent={onRefresh}
         open={inviteOpen}
       />

@@ -41,6 +41,7 @@ import { SignatureUpload } from './signature-upload'
 import { TabHeader } from './tab-header'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
+import { useReturnFocus } from './use-return-focus'
 
 type Values = z.infer<ReturnType<typeof organizationSettingsSchema>>
 type Locale = keyof IntlRecord
@@ -65,6 +66,7 @@ export const OrganizationSettings = ({
   const t = useTranslations('Organization')
   const tLanguages = useTranslations('Intl.Languages')
   const memberError = useMemberError()
+  const { remember, restore } = useReturnFocus()
 
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [transferOpen, setTransferOpen] = useState(false)
@@ -444,7 +446,10 @@ export const OrganizationSettings = ({
             <CardContent>
               <Button
                 disabled={impersonating}
-                onClick={() => setTransferOpen(true)}
+                onClick={() => {
+                  remember()
+                  setTransferOpen(true)
+                }}
                 size="sm"
                 type="button"
                 variant="destructive"
@@ -462,7 +467,10 @@ export const OrganizationSettings = ({
           <CardContent>
             <Button
               disabled={impersonating}
-              onClick={() => setDeleteOpen(true)}
+              onClick={() => {
+                remember()
+                setDeleteOpen(true)
+              }}
               size="sm"
               type="button"
               variant="destructive"
@@ -475,14 +483,20 @@ export const OrganizationSettings = ({
 
       <DeleteOrganizationDialog
         onConfirm={handleDelete}
-        onOpenChange={setDeleteOpen}
+        onOpenChange={open => {
+          setDeleteOpen(open)
+          if (!open) restore()
+        }}
         open={deleteOpen}
         organizationName={organization.name}
       />
       {!platform && (
         <TransferOwnershipDialog
           candidates={candidates}
-          onOpenChange={setTransferOpen}
+          onOpenChange={open => {
+            setTransferOpen(open)
+            if (!open) restore()
+          }}
           onTransferred={handleTransferred}
           open={transferOpen}
           organizationName={organization.name}

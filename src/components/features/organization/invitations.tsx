@@ -38,6 +38,7 @@ import { InviteMemberDialog } from './invite-dialog'
 import { InviteLinks } from './invite-links'
 import { INVITATION_STATUS } from './status'
 import { TabHeader } from './tab-header'
+import { useReturnFocus } from './use-return-focus'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES, formatRoleLabel } from './utils'
 
 type Invitation = OrganizationPanelData['invitations'][number]
@@ -65,6 +66,7 @@ export const OrganizationInvitations = ({
   const t = useTranslations('Invitations')
   const tOrganization = useTranslations('Organization')
   const errorMessage = useInvitationError()
+  const { remember, restore } = useReturnFocus()
 
   const [filter, setFilter] = useState<'all' | 'open'>('open')
   const [inviteOpen, setInviteOpen] = useState(false)
@@ -131,7 +133,14 @@ export const OrganizationInvitations = ({
         <div className="flex flex-col gap-6">
           <TabHeader
             actions={
-              <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
+              <Button
+                onClick={() => {
+                  remember()
+                  setInviteOpen(true)
+                }}
+                size="sm"
+                variant="brand"
+              >
                 <LucideIcon name="user-plus" />
                 {t('invitePeople')}
               </Button>
@@ -215,7 +224,10 @@ export const OrganizationInvitations = ({
                   </Button>
                   <Button
                     disabled={activeId === invitation.id}
-                    onClick={() => setRevokeTarget(invitation)}
+                    onClick={() => {
+                      remember()
+                      setRevokeTarget(invitation)
+                    }}
                     size="sm"
                     variant="outline"
                   >
@@ -235,12 +247,22 @@ export const OrganizationInvitations = ({
         allowedRoles={allowedRoles}
         defaultLocale={locale}
         onInvite={input => inviteOrganizationMembers(input, organizationId)}
-        onOpenChange={setInviteOpen}
+        onOpenChange={open => {
+          setInviteOpen(open)
+          if (!open) restore()
+        }}
         onSent={onRefresh}
         open={inviteOpen}
       />
 
-      <AlertDialog onOpenChange={open => !open && setRevokeTarget(null)} open={Boolean(revokeTarget)}>
+      <AlertDialog
+        onOpenChange={open => {
+          if (open) return
+          setRevokeTarget(null)
+          restore()
+        }}
+        open={Boolean(revokeTarget)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('revokeTitle')}</AlertDialogTitle>

@@ -191,15 +191,17 @@ export const OrganizationOverview = ({
             {data.activity.items.length > 0 && (
               <ActivityList items={data.activity.items.slice(0, PREVIEW_ACTIVITY_COUNT)} label={t('activityTitle')} />
             )}
-            <Button
-              className="self-start"
-              onClick={() => onNavigate('activity')}
-              size="sm"
-              type="button"
-              variant="outline"
-            >
-              {t('activityViewAll')}
-            </Button>
+            {data.activity.items.length > 0 && (
+              <Button
+                className="self-start"
+                onClick={() => onNavigate('activity')}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                {t('activityViewAll')}
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>

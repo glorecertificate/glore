@@ -26,9 +26,9 @@ export interface ButtonProps
 
 export const buttonVariants = cva(
   [
-    "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale] duration-150 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    "inline-flex shrink-0 items-center justify-center gap-2 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale,filter] duration-100 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     'focus-visible:focus-ring aria-invalid:border-destructive',
-    'active:not-disabled:scale-[0.985] motion-reduce:active:not-disabled:scale-100',
+    'active:not-disabled:scale-98 motion-reduce:active:not-disabled:scale-100',
     'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
   ],
   {
@@ -39,16 +39,21 @@ export const buttonVariants = cva(
     },
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90',
+        primary:
+          'bg-gradient-action text-fg-on-dark shadow-glow hover:not-disabled:brightness-110 active:not-disabled:brightness-95',
         secondary: 'bg-secondary text-secondary-foreground hover:not-disabled:bg-secondary/80',
         destructive: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent',
         warning: 'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent',
         success: 'bg-success text-success-foreground hover:not-disabled:bg-success-accent',
-        brand: 'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90',
+        brand:
+          'bg-gradient-action text-fg-on-dark shadow-glow hover:not-disabled:brightness-110 active:not-disabled:brightness-95',
         'brand-secondary':
           'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent',
         'brand-tertiary':
           'bg-brand-tertiary text-brand-tertiary-foreground hover:not-disabled:bg-brand-tertiary-accent',
+        band: 'bg-band-action font-semibold text-band-action-foreground shadow-glow-green hover:not-disabled:bg-band-action-hover',
+        'band-secondary':
+          'border border-band-border bg-band-scrim text-band-foreground hover:not-disabled:bg-band-scrim/60',
         outline: 'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60',
         ghost: 'text-foreground hover:not-disabled:bg-accent/80 dark:hover:not-disabled:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',
@@ -74,16 +79,7 @@ export const buttonVariants = cva(
     },
     compoundVariants: [
       {
-        variant: [
-          'primary',
-          'secondary',
-          'destructive',
-          'warning',
-          'success',
-          'brand',
-          'brand-secondary',
-          'brand-tertiary',
-        ],
+        variant: ['secondary', 'destructive', 'warning', 'success', 'brand-secondary', 'brand-tertiary'],
         className:
           'bg-linear-to-b from-white/12 to-transparent not-disabled:shadow-xs not-disabled:inset-shadow-2xs not-disabled:inset-shadow-white/20 not-disabled:[:active,[data-pressed]]:shadow-none',
       },

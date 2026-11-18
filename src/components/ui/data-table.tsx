@@ -178,7 +178,7 @@ export const DataTable = <T,>({
   return (
     <div
       aria-busy={loading}
-      className={cn('flex min-w-0 flex-col gap-4', className)}
+      className={cn('flex min-w-0 flex-col gap-4 rounded-xl bg-card p-4 shadow-card', className)}
       data-slot="data-table"
       onKeyDown={selectable ? onKeyDown : undefined}
       role={selectable ? 'group' : undefined}

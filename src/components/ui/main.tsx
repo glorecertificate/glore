@@ -2,7 +2,7 @@ import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-const mainWidthVariants = cva('mx-auto flex w-full flex-1 flex-col', {
+const mainWidthVariants = cva('flex w-full flex-1 flex-col', {
   defaultVariants: {
     width: 'full',
   },
@@ -23,10 +23,7 @@ export const Main = ({
   ...props
 }: React.ComponentProps<'main'> & VariantProps<typeof mainWidthVariants>) => (
   <main
-    className={cn(
-      'mx-auto flex size-full min-h-[calc(100vh-72px)] max-w-420 flex-col px-page pt-4 pb-12 sm:pt-6 sm:pb-16',
-      className
-    )}
+    className={cn('relative mx-auto -mt-16 flex size-full max-w-310 flex-col px-page pb-12 sm:pb-16', className)}
     data-width={width}
     {...props}
   >

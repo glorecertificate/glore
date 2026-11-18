@@ -37,7 +37,7 @@ const ActivityItem = ({
   const tCommon = useTranslations('CourseCommon')
 
   return (
-    <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
+    <div className="flex items-start gap-2 rounded-xl border bg-card p-4">
       <div className="flex-1 space-y-1.5">
         <p className="type-label text-foreground">{label}</p>
         <Textarea
@@ -79,7 +79,7 @@ const LevelsItem = ({
   const idPrefix = useId()
 
   return (
-    <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
+    <div className="flex items-start gap-2 rounded-xl border bg-card p-4">
       <div className="flex-1 space-y-3">
         <p className="text-sm text-muted-foreground">{t('levelDescriptionsHint')}</p>
         {SKILL_LEVELS.map(level => {
@@ -157,7 +157,7 @@ const QuestionItem = ({
   const tCommon = useTranslations('CourseCommon')
 
   return (
-    <div className="group/question space-y-4 rounded-xl border bg-card p-4">
+    <div className="space-y-4 rounded-xl border bg-card p-4">
       <div className="flex items-start gap-2">
         <div className="flex-1 space-y-1.5">
           <p className="type-label text-foreground">{label}</p>
@@ -186,7 +186,7 @@ const QuestionItem = ({
         <p className="type-label text-foreground">{t('activityOptions')}</p>
         <AnimatedList>
           {options.map(option => (
-            <AnimatedListItem className="group/option flex items-center gap-2" key={option.id} variant="row">
+            <AnimatedListItem className="flex items-center gap-2" key={option.id} variant="row">
               <button
                 aria-label={t('activityOptionCorrect')}
                 aria-pressed={option.isCorrect}

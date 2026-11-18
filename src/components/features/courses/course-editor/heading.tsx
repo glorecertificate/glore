@@ -67,7 +67,7 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
       commitTitle.cancel()
       commitDescription.cancel()
     },
-    [commitTitle, commitDescription]
+    [commitDescription, commitTitle]
   )
 
   const onTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -141,7 +141,6 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
             <InlineInput
               aria-label={t('renameCourse')}
               className="-my-0.5 px-1.5 py-0.5 type-title!"
-              maxLength={MAX_TITLE_LENGTH}
               onBlur={onTitleBlur}
               placeholder={fallbackTitle}
               onChange={onTitleChange}

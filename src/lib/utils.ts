@@ -1,5 +1,5 @@
 import { CAMEL_CASE_REGEX, EMAIL_REGEX, USERNAME_REGEX } from '@/lib/constants'
-import { type Any, type AnyFunction, type AnyRecord, type CamelCase } from '@/lib/types'
+import { type Any, type AnyFunction, type AnyRecord, type CamelCase, type Rgb } from '@/lib/types'
 
 /*
   App
@@ -12,6 +12,19 @@ export const serializeJsonLd = (data: unknown) => JSON.stringify(data).replace(/
   Theme
 */
 export { cn } from 'cnfast'
+
+export const hexToRgb = <T extends AnyRecord>(record: T) =>
+  Object.entries(record).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key as keyof T]: [
+        parseInt(value.slice(1, 3), 16),
+        parseInt(value.slice(3, 5), 16),
+        parseInt(value.slice(5, 7), 16),
+      ] as Rgb,
+    }),
+    {} as { [K in keyof T]: Rgb }
+  )
 
 /*
   Validation

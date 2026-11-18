@@ -29,6 +29,7 @@ Decisions with IDs from the v0.7 release. Specs and issues cite them by ID (for 
 - U15: The login title reads "Log in to GloRe", "Inicia sesión en GloRe" and "Accedi a GloRe", because the page is the login form. The meta title is the short verb ("Log in", "Iniciar sesión", "Accedi"), since the layout template appends "· GloRe". The old "Únete a la red GloRe" title (first an ungrammatical "Únete a el GloRe Network") promised a sign-up on a login page.
 - U16: Invitation copy never names a role as the sender: "someone from your organization", "alguien de tu organización", "qualcuno della tua organizzazione". Owner wording stays for owner-only actions.
 - U17: The privacy policy says that, to solve support requests, GloRe staff can view the platform as the user and that every such access is logged. Reviewed in en, es, and it.
+- U18: The owner requires the animated cobe globe on every auth view, with its per-view colors: brand trio on login, warning on password request and reset, success on password updated and email sent, destructive on errors and invalid tokens (2026-11-18, restored after #152 removed it). No lane removes it or replaces it with icon tiles.
 
 ## Skill framework (U8)
 

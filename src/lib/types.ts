@@ -33,6 +33,7 @@ export type ResolvedTheme = Exclude<Theme, 'system'>
 export type Icon<T = {}> = (props: IconProps<T>) => React.ReactNode
 export type IconProps<T = {}> = React.ComponentProps<'svg'> & LucideProps & T
 export type { IconName }
+export type Rgb = [number, number, number]
 
 /*
   App

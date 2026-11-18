@@ -15,21 +15,23 @@ import { certificates } from '@/db/schema'
 import { LIVE_LIFE, certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import appConfig from '~/config/app.json'
 
-export const fetchUserCertificates = cache(async (userId: string) => {
+const readUserCertificates = async (userId: string) => {
   'use cache'
   cacheTag(certificatesUserTag(userId))
   cacheLife(LIVE_LIFE)
 
-  return await safeQuery(async () => {
-    const result = await db.query.certificates.findMany({
-      where: eq(certificates.userId, userId),
-      with: certificateOwnerWith,
-      orderBy: (certs, { desc }) => [desc(certs.createdAt)],
-      limit: 500,
-    })
-    return result.map(parseCertificate)
+  const result = await db.query.certificates.findMany({
+    where: eq(certificates.userId, userId),
+    with: certificateOwnerWith,
+    orderBy: (certs, { desc }) => [desc(certs.createdAt)],
+    limit: 500,
   })
-})
+  return result.map(parseCertificate)
+}
+
+export const fetchUserCertificates = cache(
+  async (userId: string) => await safeQuery(() => readUserCertificates(userId))
+)
 
 export const queryTutorCertificates = async (reviewerId: string, organizationId: number) => {
   const result = await db.query.certificates.findMany({
@@ -47,13 +49,18 @@ export const queryTutorCertificates = async (reviewerId: string, organizationId:
   return result.map(parseCertificate)
 }
 
-export const fetchTutorCertificates = cache(async (reviewerId: string, organizationId: number) => {
+const readTutorCertificates = async (reviewerId: string, organizationId: number) => {
   'use cache'
   cacheTag(certificatesTutorTag(reviewerId))
   cacheLife(LIVE_LIFE)
 
-  return await safeQuery(() => queryTutorCertificates(reviewerId, organizationId))
-})
+  return await queryTutorCertificates(reviewerId, organizationId)
+}
+
+export const fetchTutorCertificates = cache(
+  async (reviewerId: string, organizationId: number) =>
+    await safeQuery(() => readTutorCertificates(reviewerId, organizationId))
+)
 
 export const queryUnassignedOrgCertificates = async (orgId: number) => {
   const result = await db.query.certificates.findMany({
@@ -69,13 +76,17 @@ export const queryUnassignedOrgCertificates = async (orgId: number) => {
   return result.map(parseCertificate)
 }
 
-export const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
+const readUnassignedOrgCertificates = async (orgId: number) => {
   'use cache'
   cacheTag(certificatesOrgTag(orgId))
   cacheLife(LIVE_LIFE)
 
-  return await safeQuery(() => queryUnassignedOrgCertificates(orgId))
-})
+  return await queryUnassignedOrgCertificates(orgId)
+}
+
+export const fetchUnassignedOrgCertificates = cache(
+  async (orgId: number) => await safeQuery(() => readUnassignedOrgCertificates(orgId))
+)
 
 export const queryOrganizationCertificates = async (organizationId: number) => {
   const result = await db.query.certificates.findMany({
@@ -87,13 +98,17 @@ export const queryOrganizationCertificates = async (organizationId: number) => {
   return result.map(parseCertificate)
 }
 
-export const fetchOrganizationCertificates = cache(async (organizationId: number) => {
+const readOrganizationCertificates = async (organizationId: number) => {
   'use cache'
   cacheTag(certificatesOrgTag(organizationId))
   cacheLife(LIVE_LIFE)
 
-  return await safeQuery(() => queryOrganizationCertificates(organizationId))
-})
+  return await queryOrganizationCertificates(organizationId)
+}
+
+export const fetchOrganizationCertificates = cache(
+  async (organizationId: number) => await safeQuery(() => readOrganizationCertificates(organizationId))
+)
 
 export const loadUserCertificates = async () => {
   const user = await getViewer()
@@ -118,8 +133,8 @@ export const loadUnassignedCertificates = async () => {
 }
 
 export const loadOrganizationCertificates = async (organizationId: number) => {
-  const { role, user } = await getViewerContext()
-  const memberRole = user.organizations.find(({ id }) => id === organizationId)?.role ?? role
+  const { user } = await getViewerContext()
+  const memberRole = user.organizations.find(({ id }) => id === organizationId)?.role
   if (!(user.isAdmin || memberRole === 'admin' || memberRole === 'representative')) {
     return { data: [] as Certificate[], error: null }
   }

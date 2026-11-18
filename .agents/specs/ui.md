@@ -5,6 +5,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 ## Release UI kit
 
 - Shared primitives live in `src/components/ui/`. They accept root props and localized labels.
+- `/dev/ui` (development and previews only) shows each primitive in each state, with the prop that sets the state as the row label. Add or update a specimen in `features/dev/` with each primitive change.
 - Feature components own domain data and permission checks.
 - `ArrowsMotif` uses vector paths extracted from the certificate template. It is decorative and hidden from assistive technology.
 - `LevelDots` takes a level, a number of `steps`, and a localized level label. It renders only after issue or in the tutor workspace.
@@ -184,6 +185,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - A region whose size depends on data, such as a list or a table body, shows `LoadingFallback` inside the exact skeleton.
 - The header bar never waits for data. A layout or page fallback is `DashboardLoading` (the bar and a spinner), never a full-page spinner.
 - `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
+- A `Spinner` without `size` takes its size from the parent, as in a `Button`. Pass `size` when it stands alone.
 - Put `animate-reveal` on content that replaces a loading state the user saw. It fades in for 150 ms and is off with reduced motion.
 - A fade from opacity 0 delays LCP by its length, so content of a first render or a server stream paints at once. A component with a `loading` prop fades through `useReveal(loading)`.
 - React holds a streamed boundary up to 300 ms after the first frame. `InstantReveal` in the root layout keeps `$RT` unset, so each boundary paints in the frame after it arrives.

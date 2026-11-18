@@ -3,13 +3,12 @@
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
 import { redirect, usePathname, useSearchParams } from 'next/navigation'
-import { Fragment, Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
 import { logout } from '@/actions/auth'
 import { NotificationBell } from '@/components/features/notifications/notification-bell'
-import { DashboardIcon } from '@/components/icons/dashboard'
 import { LucideIcon } from '@/components/icons/lucide'
 import {
   type NavigationViewer,
@@ -33,8 +32,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,21 +42,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { HeaderLogo } from '@/components/ui/header'
 import { Image } from '@/components/ui/image'
 import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { Link } from '@/components/ui/link'
+import { Logo } from '@/components/ui/logo'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
   SidebarRail,
   sidebarMenuButtonVariants,
   useSidebar,
@@ -87,10 +86,10 @@ interface PendingCounts {
 
 interface DashboardSidebarItemProps extends React.ComponentProps<typeof SidebarMenuButton> {
   badge?: number
+  exact?: boolean
   icon?: IconName
   label: string
   route: Route
-  subItem?: boolean
 }
 
 const DashboardSidebarBadge = ({ count }: { count: number }) => {
@@ -100,23 +99,21 @@ const DashboardSidebarBadge = ({ count }: { count: number }) => {
 }
 
 const DashboardSidebarItem = ({
-  asChild = false,
   badge = 0,
   className,
+  exact,
   icon,
   label,
   onClick,
   route,
-  subItem,
 }: DashboardSidebarItemProps) => {
   const { activePath, setActivePath } = useSidebar()
   const searchParams = useSearchParams()
 
-  const Component = asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem
   const isActivePath = route === activePath && searchParams.size === 0
 
   const isActive = (() => {
-    if (isActivePath || subItem) return isActivePath
+    if (isActivePath || exact) return isActivePath
     if (route === APP_ROOT) return activePath === APP_ROOT
     return activePath.startsWith(route)
   })()
@@ -127,71 +124,21 @@ const DashboardSidebarItem = ({
   }
 
   return (
-    <Component>
+    <SidebarMenuItem>
       <SidebarMenuButton
         active={isActive}
         asChild
-        className={cn(
-          'select-none',
-          subItem
-            ? 'border-transparent px-2.75 py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:text-sidebar-foreground data-active:text-stroke'
-            : 'px-2.25 py-3 font-medium data-active:bg-brand/10 data-active:hover:bg-brand/12',
-          isActivePath && 'pointer-events-none',
-          badge > 0 && 'relative',
-          className
-        )}
+        className={cn('select-none', isActivePath && 'pointer-events-none', badge > 0 && 'relative', className)}
         onClick={setPath}
         tooltip={label}
       >
         <Link href={route}>
-          {route === APP_ROOT ? (
-            <DashboardIcon className="size-4" colored />
-          ) : icon ? (
-            <LucideIcon
-              className={cn('text-muted-foreground/80 transition-colors', isActive && 'text-brand-text')}
-              name={icon}
-            />
-          ) : null}
+          {icon && <LucideIcon name={icon} />}
           {label}
           {badge > 0 && <DashboardSidebarBadge count={badge} />}
         </Link>
       </SidebarMenuButton>
-    </Component>
-  )
-}
-
-const DashboardSidebarCollapsible = ({ badge = 0, children, icon, label, route }: DashboardSidebarItemProps) => {
-  const { activePath } = useSidebar()
-  const t = useTranslations('Layout')
-  const [open, setOpen] = useState(() => activePath.startsWith(route))
-
-  return (
-    <Collapsible asChild open={open}>
-      <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
-          <DashboardSidebarItem
-            asChild
-            badge={open ? 0 : badge}
-            icon={icon}
-            label={label}
-            onClick={() => !open && setOpen(true)}
-            route={route}
-          />
-        </CollapsibleTrigger>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuAction
-            aria-label={t('toggleSection', { name: label })}
-            className="cursor-pointer data-[state=open]:rotate-90"
-            onClick={() => setOpen(prev => !prev)}
-          >
-            <LucideIcon className="text-foreground/64" name="chevron-right" />
-          </SidebarMenuAction>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>{children}</SidebarMenuSub>
-        </CollapsibleContent>
-      </SidebarMenuItem>
-    </Collapsible>
+    </SidebarMenuItem>
   )
 }
 
@@ -205,7 +152,7 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
 
   return (
     <SidebarGroup>
-      <SidebarMenu className="mt-4 gap-3">
+      <SidebarMenu>
         {sidebarEntriesFor(viewer).map(({ href, icon, id }) => (
           <DashboardSidebarItem icon={icon} key={id} label={labels[id]} route={href} />
         ))}
@@ -214,25 +161,24 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
           <DashboardSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
           <DashboardSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
         </DashboardSidebarCollapsible> */}
-        {adminHref && (
-          <DashboardSidebarCollapsible
-            badge={pending.organizations + pending.team}
-            icon="cog"
-            label={t('admin')}
-            route={adminHref}
-          >
-            {adminEntries.map(({ href, id }) => (
+      </SidebarMenu>
+      {adminHref && (
+        <div className="mt-6 flex flex-col gap-1">
+          <SidebarGroupLabel>{t('admin')}</SidebarGroupLabel>
+          <SidebarMenu>
+            {adminEntries.map(({ href, icon, id }) => (
               <DashboardSidebarItem
                 badge={id === 'admin-team' ? pending.team : id === 'admin-organizations' ? pending.organizations : 0}
+                exact
+                icon={icon}
                 key={id}
                 label={labels[id]}
                 route={href}
-                subItem
               />
             ))}
-          </DashboardSidebarCollapsible>
-        )}
-      </SidebarMenu>
+          </SidebarMenu>
+        </div>
+      )}
     </SidebarGroup>
   )
 }
@@ -325,21 +271,18 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user overflow-visible rounded-lg border bg-popover py-7 shadow-2xs transition-[background-color,color,box-shadow] duration-150',
-                'hover:bg-popover/50 data-[state=open]:bg-popover/30 data-[state=open]:text-foreground data-[state=open]:shadow-inner'
+                'group/sidebar-user overflow-visible rounded-xl bg-sidebar-field py-7 transition-[background-color,color] duration-100',
+                'hover:bg-sidebar-accent data-[state=open]:bg-sidebar-accent'
               )}
               size="lg"
               variant="outline"
             >
               <div className="relative ml-0 transition-[margin] duration-150">
-                <Avatar
-                  className={cn(
-                    'aspect-square size-8 rounded-lg border border-transparent',
-                    !user.avatarUrl && 'border-border'
-                  )}
-                >
+                <Avatar className={cn('aspect-square size-8 rounded-full border border-transparent')}>
                   {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
-                  <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
+                  <AvatarFallback className="bg-avatar font-bold text-band-action-foreground">
+                    {user.initials}
+                  </AvatarFallback>
                 </Avatar>
                 {organization?.avatarUrl && (
                   <Image
@@ -352,7 +295,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
               </div>
               {collapsed && <span className="sr-only">{user.firstName}</span>}
               <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
-                <span className="flex items-center gap-1 font-semibold">
+                <span className="flex items-center gap-1 font-semibold text-sidebar-accent-foreground">
                   {user.firstName}
                   {user.isAdmin && (
                     <Tooltip>
@@ -387,7 +330,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                     </Tooltip>
                   )}
                 </span>
-                <span className="truncate text-xs font-normal text-muted-foreground">{user.email}</span>
+                <span className="truncate text-xs font-normal text-sidebar-muted">{user.email}</span>
               </div>
               <Button
                 asChild
@@ -398,7 +341,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                 variant="ghost"
               >
                 <span>
-                  <LucideIcon className="size-4 stroke-foreground/64" name="chevrons-up-down" />
+                  <LucideIcon className="size-4 stroke-sidebar-muted" name="chevrons-up-down" />
                 </span>
               </Button>
             </SidebarMenuButton>
@@ -488,6 +431,7 @@ const DashboardSidebarSearch = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
+              className="border border-sidebar-border bg-sidebar-field text-sidebar-muted"
               onClick={openSearch}
               onFocus={preloadSearchCommand}
               onPointerEnter={preloadSearchCommand}
@@ -512,16 +456,33 @@ const DashboardSidebarSearch = () => {
   )
 }
 
+const DashboardSidebarBrand = () => {
+  const { user } = useSession()
+  const t = useTranslations('Layout')
+
+  return (
+    <div className="flex items-center justify-between gap-2 px-1 group-data-[collapsible=icon]:hidden">
+      <HeaderLogo className="inline-flex rounded-lg logo-chip px-2.5 py-1.5" href={APP_ROOT} prefetch={false}>
+        <Logo className="h-4.5 w-auto" />
+      </HeaderLogo>
+      {user.isAdmin && (
+        <Badge className="bg-sidebar-badge text-sidebar-badge-foreground" variant="ghost">
+          {t('admin')}
+        </Badge>
+      )}
+    </div>
+  )
+}
+
 export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
   const { organization, user } = useSession()
 
   return (
     <Sidebar collapsible="icon">
-      {showsOrganizationSwitcher(user) && (
-        <SidebarHeader>
-          <OrganizationSwitcher />
-        </SidebarHeader>
-      )}
+      <SidebarHeader className="gap-4 p-4 pb-2">
+        <DashboardSidebarBrand />
+        {showsOrganizationSwitcher(user) && <OrganizationSwitcher />}
+      </SidebarHeader>
       <SidebarContent>
         <DashboardSidebarSearch />
         <DashboardSidebarMain pending={pending} />

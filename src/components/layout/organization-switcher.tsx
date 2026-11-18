@@ -76,7 +76,7 @@ export const OrganizationSwitcher = () => {
         <DropdownMenu onOpenChange={isOpen => isOpen && refresh()}>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="overflow-hidden rounded-lg border bg-popover py-7 shadow-2xs transition-[background-color,color,box-shadow] duration-150 hover:bg-popover/50 data-[state=open]:bg-popover/30 data-[state=open]:text-foreground data-[state=open]:shadow-inner"
+              className="overflow-hidden rounded-xl border border-sidebar-border bg-sidebar-field py-7 transition-[background-color,color] duration-100 hover:bg-sidebar-accent data-[state=open]:bg-sidebar-accent"
               size="lg"
               tooltip={organization?.name ?? t('noOrganization')}
               variant="outline"

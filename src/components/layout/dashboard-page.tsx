@@ -7,6 +7,7 @@ import { type NavigationId } from '@/components/layout/navigation'
 import { Main } from '@/components/ui/main'
 
 export const DashboardPage = ({
+  actions,
   breadcrumb,
   children,
   description,
@@ -17,6 +18,7 @@ export const DashboardPage = ({
   title,
   ...props
 }: Omit<React.ComponentProps<typeof Main>, 'title'> & {
+  actions?: React.ReactNode
   breadcrumb?: React.ReactNode
   description?: React.ReactNode
   header?: React.ReactNode
@@ -29,7 +31,15 @@ export const DashboardPage = ({
 
   return (
     <Provider>
-      {header ?? <DashboardHeader breadcrumb={breadcrumb} description={description} parent={parent} title={title} />}
+      {header ?? (
+        <DashboardHeader
+          actions={actions}
+          breadcrumb={breadcrumb}
+          description={description}
+          parent={parent}
+          title={title}
+        />
+      )}
       <Main {...props}>
         {fallback === null ? children : <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>}
       </Main>

@@ -46,7 +46,9 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   const data = initialData
 
   useEffect(() => {
-    void preloadOrganizationTab(tab, { organizationId: data.organization.id, userId: data.currentUserId })
+    const scope = { organizationId: data.organization.id, userId: data.currentUserId }
+    void preloadOrganizationTab(tab, scope)
+    for (const name of ['certificates', 'insights']) void preloadOrganizationTab(name, scope)
   }, [data.currentUserId, data.organization.id, tab])
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab
@@ -99,7 +101,7 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   }
 
   if (currentTab === 'certificates') {
-    return <OrganizationCertificatesPanel organizationId={data.organization.id} />
+    return <OrganizationCertificatesPanel organizationId={data.organization.id} viewerId={data.currentUserId} />
   }
 
   if (currentTab === 'insights') {

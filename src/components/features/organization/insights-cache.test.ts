@@ -16,6 +16,13 @@ describe('insights cache', () => {
     expect(cache.read({ organizationId: 1, userId: 'a' })).toEqual({ organizationId: 1 })
   })
 
+  it('drops the entry on invalidate', async () => {
+    const { cache } = setup()
+    await cache.prefetch({ organizationId: 1, userId: 'a' })
+    cache.invalidate()
+    expect(cache.read({ organizationId: 1, userId: 'a' })).toBeNull()
+  })
+
   it('never returns an entry of organization A for organization B', async () => {
     const { cache } = setup()
     await cache.prefetch({ organizationId: 1, userId: 'a' })

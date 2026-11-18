@@ -26,7 +26,7 @@ Decisions with IDs from the v0.7 release. Specs and issues cite them by ID (for 
 - U13: Organization role `admin` reads Owner (en), Administrador/a (es), Amministratore (it). Platform admins read Admin in all three languages. Only labels change, the stored value `admin` stays.
 - U14: Changed on 2026-10-22 (eea02591): issued certificates stay valid and keep every original detail after the holder deletes the account.
   - The verify page may note that the holder left. Managers can still revoke.
-- U15: Spanish login title and meta title read "Únete a la red GloRe", matching the other es copy. "Únete a el GloRe Network" was ungrammatical.
+- U15: The login title reads "Log in to GloRe", "Inicia sesión en GloRe" and "Accedi a GloRe", because the page is the login form. The meta title is the short verb ("Log in", "Iniciar sesión", "Accedi"), since the layout template appends "· GloRe". The old "Únete a la red GloRe" title (first an ungrammatical "Únete a el GloRe Network") promised a sign-up on a login page.
 - U16: Invitation copy never names a role as the sender: "someone from your organization", "alguien de tu organización", "qualcuno della tua organizzazione". Owner wording stays for owner-only actions.
 - U17: The privacy policy says that, to solve support requests, GloRe staff can view the platform as the user and that every such access is logged. Reviewed in en, es, and it.
 

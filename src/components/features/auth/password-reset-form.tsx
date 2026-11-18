@@ -107,7 +107,7 @@ export const PasswordResetForm = ({
             type="submit"
             variant="brand"
           >
-            {form.formState.isSubmitting ? t('submitting') : t('submit')}
+            {form.formState.isSubmitting ? t('savingPassword') : t('savePassword')}
           </Button>
         </form>
       </Form>

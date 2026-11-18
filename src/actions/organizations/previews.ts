@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { and, eq, gt } from 'drizzle-orm'
+import { and, eq, gt, sql } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { hashProof, normalizeEmail, proofIdentifier } from '@/db/mutations/invitation'
@@ -65,18 +65,14 @@ export const getInviteLinkPreview = async (token: string, userId?: string) => {
     with: {
       organization: {
         columns: { approvedAt: true, id: true, name: true },
-        with: { profile: { columns: { avatarUrl: true } } },
+        with: {
+          memberships: { columns: { id: true }, where: userId ? eq(memberships.userId, userId) : sql`false` },
+          profile: { columns: { avatarUrl: true } },
+        },
       },
     },
   })
   if (!link) return null
 
-  const membership = userId
-    ? await db.query.memberships.findFirst({
-        columns: { id: true },
-        where: and(eq(memberships.userId, userId), eq(memberships.organizationId, link.organizationId)),
-      })
-    : null
-
-  return parseInviteLinkPreview(link, Boolean(membership))
+  return parseInviteLinkPreview(link, link.organization.memberships.length > 0)
 }

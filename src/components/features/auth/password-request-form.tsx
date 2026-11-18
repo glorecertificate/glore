@@ -111,7 +111,7 @@ export const PasswordRequestForm = ({
             />
           </div>
           <Button className="w-full [&_svg]:size-4" loading={form.formState.isSubmitting} type="submit" variant="brand">
-            {form.formState.isSubmitting ? t('submitting') : t('submit')}
+            {form.formState.isSubmitting ? t('sendingLink') : t('sendLink')}
           </Button>
         </form>
       </Form>

@@ -322,7 +322,7 @@
 }
 
 @utility bg-band {
-  background-image: linear-gradient(120deg, var(--band-from) 0%, var(--band-via) 55%, var(--band-to) 100%);
+  background-color: var(--band-from);
 }
 
 @utility bg-gradient-action {

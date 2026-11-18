@@ -2486,7 +2486,7 @@
     "insightsTutorsTitle": "Tutor workload",
     "insightsTutorsDescription": "Open reviews and reviews completed by each tutor.",
     "insightsTutorsEmpty": "No tutors yet. Invite one to start reviewing.",
-    "insightsTutorLoad": "{open, plural, one {# open} other {# open}}, {reviewed, plural, one {# done} other {# done}}",
+    "insightsTutorLoad": "{open, plural, other {# open}}, {reviewed, plural, other {# done}}",
     "insightsRatingTitle": "How volunteers rate you",
     "insightsRatingDescription": "Anonymous averages from the feedback volunteers leave after their certificate.",
     "insightsRatingLocked": "Averages appear once at least {min} volunteers have rated you. So far: {count}.",

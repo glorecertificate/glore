@@ -67,14 +67,16 @@ export const OrganizationTabsList = ({
     const list = listRef.current
     const active = list?.querySelector<HTMLElement>('[role="tab"][data-state="active"]')
     if (!(list && active)) return
-    const start = active.offsetLeft
-    const end = start + active.offsetWidth
+    const listBox = list.getBoundingClientRect()
+    const activeBox = active.getBoundingClientRect()
+    const start = activeBox.left - listBox.left + list.scrollLeft
+    const end = start + activeBox.width
     if (start >= list.scrollLeft && end <= list.scrollLeft + list.clientWidth) return
-    list.scrollLeft = start - (list.clientWidth - active.offsetWidth) / 2
+    list.scrollLeft = start - (list.clientWidth - activeBox.width) / 2
   }, [tab])
 
   return (
-    <TabsList className="relative max-w-full min-w-0 justify-start overflow-x-auto" ref={listRef} {...props}>
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" ref={listRef} {...props}>
       <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
       <TabsTrigger value="members">{t('members')}</TabsTrigger>
       <TabsTrigger count={invitationCount} value="invitations">

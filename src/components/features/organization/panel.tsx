@@ -74,13 +74,13 @@ const LAZY_TABS = [activityTab, insightsTab, invitationsTab, joinRequestsTab, me
 
 const LazyTabHost = <P extends object>({ lazy, ...props }: P & { lazy: LazyTab<P> }) => {
   const [attempt, setAttempt] = useState(0)
-  const [Component, setComponent] = useState(() => lazy.resolved ?? lazy.Dynamic)
 
   const retry = () => {
     lazy.reset()
-    setComponent(() => lazy.Dynamic)
     setAttempt(current => current + 1)
   }
+
+  const Component = lazy.resolved ?? lazy.Dynamic
 
   return (
     <TabBoundary key={attempt} onRetry={retry}>
@@ -119,6 +119,7 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   if (currentTab === 'members') {
     return (
       <LazyTabHost
+        key="members"
         lazy={membersTab}
         currentUserId={data.currentUserId}
         isOrgAdmin={data.isOrgAdmin}
@@ -133,6 +134,7 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   if (currentTab === 'invitations') {
     return (
       <LazyTabHost
+        key="invitations"
         lazy={invitationsTab}
         currentUserId={data.currentUserId}
         inviteLinks={data.inviteLinks}
@@ -144,7 +146,7 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   }
 
   if (currentTab === 'requests') {
-    return <LazyTabHost joinRequests={data.joinRequests} lazy={joinRequestsTab} onRefresh={refresh} />
+    return <LazyTabHost key="requests" joinRequests={data.joinRequests} lazy={joinRequestsTab} onRefresh={refresh} />
   }
 
   if (currentTab === 'certificates') {
@@ -152,18 +154,18 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   }
 
   if (currentTab === 'insights') {
-    return <LazyTabHost lazy={insightsTab} />
+    return <LazyTabHost key="insights" lazy={insightsTab} />
   }
 
   if (currentTab === 'activity') {
-    return <LazyTabHost initial={data.activity} lazy={activityTab} />
+    return <LazyTabHost key="activity" initial={data.activity} lazy={activityTab} />
   }
 
   if (currentTab === 'settings' && data.isOrgAdmin) {
     return (
       <LazyTabHost
         lazy={settingsTab}
-        key={data.organization.updatedAt}
+        key={`settings-${data.organization.updatedAt}`}
         members={data.members}
         onRefresh={refresh}
         onSyncUser={syncUser}

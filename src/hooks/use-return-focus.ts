@@ -16,11 +16,12 @@ export const useReturnFocus = () => {
   }
 
   const restore = (event: Event, fallback?: Fallback) => {
-    event.preventDefault()
     const element = target.current
     target.current = null
     const next = element?.isConnected ? element : typeof fallback === 'function' ? fallback() : fallback
-    next?.focus()
+    if (!next) return
+    event.preventDefault()
+    next.focus()
   }
 
   return { remember, restore }

@@ -51,7 +51,7 @@ const navigatedToDetail = async (page: Page) => {
   }
 }
 
-export const submitFromLastStep = async (page: Page, label = 'Submit request') => {
+export const submitFromLastStep = async (page: Page, label = 'Send request') => {
   if (!(await navigatedToDetail(page))) {
     await page.getByRole('button', { name: label }).click()
     await expect(page).toHaveURL(/\/certificates\/\d+$/u)

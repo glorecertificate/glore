@@ -10,9 +10,9 @@ import { z } from 'zod'
 
 import { logout, updatePassword } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
-import { useFormDisabled, useFormErrored } from '@/hooks/use-form-disabled'
+import { useFormErrored } from '@/hooks/use-form-disabled'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { AuthView } from '@/lib/types'
 
@@ -44,10 +44,10 @@ export const PasswordResetForm = ({
     defaultValues: {
       password: '',
     },
+    mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
 
-  const disabled = useFormDisabled(form.control)
   const errored = useFormErrored(form.control)
   const prevErrored = useRef(errored)
 
@@ -91,8 +91,9 @@ export const PasswordResetForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <PasswordInput autoFocus open variant="floating" {...field} />
+                    <PasswordInput autoComplete="new-password" autoFocus open variant="floating" {...field} />
                   </FormControl>
+                  <FormDescription>{t('passwordRequirements')}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -100,8 +101,7 @@ export const PasswordResetForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={disabled}
-            disabledTitle={t('insertNewPassword')}
+            disabled={errored}
             loading={form.formState.isSubmitting}
             type="submit"
             variant="brand"

@@ -779,7 +779,8 @@
     "userRequired": "Introduce un email o un nombre de usuario válido",
     "userTooShort": "El nombre de usuario es demasiado corto",
     "userInvalid": "Email o nombre de usuario no válido",
-    "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo."
+    "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+    "emailResent": "Te hemos enviado otro correo."
   },
   "CourseCommon": {
     "courseCreationFailed": "No se pudo crear el curso. Inténtalo de nuevo.",
@@ -2649,7 +2650,14 @@
     "deleteAccountConfirmLabel": "Escribe {email} para confirmar",
     "deleteAccountTransferTitle": "Transfiere primero la propiedad",
     "deleteAccountTransferDescription": "Eres la única persona administradora de {organizations}. Transfiere la propiedad a una persona representante desde los ajustes de la organización, en Zona de peligro, antes de eliminar tu cuenta.",
-    "deleteAccountTransferLink": "Abrir los ajustes de la organización"
+    "deleteAccountTransferLink": "Abrir los ajustes de la organización",
+    "settingsDescription": "Gestiona tu perfil, tu cuenta, tu privacidad y tus datos.",
+    "firstNameRequired": "Introduce tu nombre",
+    "tooLong": "Usa como máximo {max} caracteres",
+    "emailInvalid": "Introduce un correo electrónico válido",
+    "sessionsShowAll": "Mostrar las {count} sesiones",
+    "sessionsShowLess": "Mostrar menos sesiones",
+    "bioCount": "{count} de {max}"
   },
   "Register": {
     "metaTitle": "Solicita unirte a GloRe",

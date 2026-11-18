@@ -62,10 +62,11 @@ export const LoginForm = ({
       username: username ?? '',
       password: '',
     },
+    mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
   form.watch()
-  const formDisabled = errored || loading || !form.getValues('username') || !form.getValues('password')
+  const formDisabled = errored || loading
 
   const setPasswordInvalid = () => {
     form.setError('password', { message: t('passwordInvalid'), type: 'validate' }, { shouldFocus: true })
@@ -149,6 +150,9 @@ export const LoginForm = ({
                 <FormItem>
                   <FormControl>
                     <Input
+                      autoCapitalize="none"
+                      autoComplete="username"
+                      autoCorrect="off"
                       autoFocus={!username}
                       defaultOpen
                       disabled={loading}
@@ -180,6 +184,7 @@ export const LoginForm = ({
                   </div>
                   <FormControl>
                     <PasswordInput
+                      autoComplete="current-password"
                       autoFocus={Boolean(username)}
                       disabled={loading}
                       readOnly={passwordReadOnly}
@@ -195,7 +200,6 @@ export const LoginForm = ({
           <Button
             className="w-full [&_svg]:size-4"
             disabled={formDisabled}
-            disabledTitle={t('insertCredentials')}
             loading={loading}
             type="submit"
             variant="brand"

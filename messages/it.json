@@ -779,7 +779,8 @@
     "userRequired": "Inserisci un'email o un nome utente valido",
     "userTooShort": "Il nome utente è troppo breve",
     "userInvalid": "Email o nome utente non validi",
-    "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo."
+    "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo.",
+    "emailResent": "Ti abbiamo inviato un'altra email."
   },
   "CourseCommon": {
     "courseCreationFailed": "Impossibile creare il corso. Riprova.",
@@ -2649,7 +2650,14 @@
     "deleteAccountConfirmLabel": "Digita {email} per confermare",
     "deleteAccountTransferTitle": "Trasferisci prima la proprietà",
     "deleteAccountTransferDescription": "Sei l'unico amministratore di {organizations}. Trasferisci la proprietà a un rappresentante dalle impostazioni dell'organizzazione, in «Zona di pericolo», prima di eliminare il tuo account.",
-    "deleteAccountTransferLink": "Apri le impostazioni dell'organizzazione"
+    "deleteAccountTransferLink": "Apri le impostazioni dell'organizzazione",
+    "settingsDescription": "Gestisci il tuo profilo, il tuo account, la privacy e i tuoi dati.",
+    "firstNameRequired": "Inserisci il tuo nome",
+    "tooLong": "Usa al massimo {max} caratteri",
+    "emailInvalid": "Inserisci un indirizzo email valido",
+    "sessionsShowAll": "Mostra tutte le {count} sessioni",
+    "sessionsShowLess": "Mostra meno sessioni",
+    "bioCount": "{count} di {max}"
   },
   "Register": {
     "metaTitle": "Candidati a GloRe",

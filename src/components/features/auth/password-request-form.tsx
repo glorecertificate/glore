@@ -13,7 +13,6 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/ui/toast'
 import { useCookies } from '@/hooks/use-cookies'
-import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { AuthView } from '@/lib/types'
 import { cn, isValidUsername } from '@/lib/utils'
 
@@ -36,7 +35,6 @@ export const PasswordRequestForm = ({
     username: z
       .string()
       .nonempty(t('userRequired'))
-      .nonempty(t('userRequired'))
       .min(5, {
         message: t('userTooShort'),
       })
@@ -49,9 +47,9 @@ export const PasswordRequestForm = ({
     defaultValues: {
       username: username ?? '',
     },
+    mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
-  const formDisabled = useFormDisabled(form.control)
   form.watch('username')
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
@@ -98,6 +96,8 @@ export const PasswordRequestForm = ({
                   <FormControl>
                     <Input
                       {...field}
+                      autoCapitalize="none"
+                      autoComplete="username"
                       autoFocus
                       disabled={form.formState.isSubmitting}
                       open
@@ -111,14 +111,7 @@ export const PasswordRequestForm = ({
               )}
             />
           </div>
-          <Button
-            className="w-full [&_svg]:size-4"
-            disabled={!username && formDisabled}
-            disabledTitle={t('userRequired')}
-            loading={form.formState.isSubmitting}
-            type="submit"
-            variant="brand"
-          >
+          <Button className="w-full [&_svg]:size-4" loading={form.formState.isSubmitting} type="submit" variant="brand">
             {form.formState.isSubmitting ? t('submitting') : t('submit')}
           </Button>
         </form>

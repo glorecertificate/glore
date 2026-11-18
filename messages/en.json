@@ -779,7 +779,8 @@
     "userRequired": "Enter a valid email or username",
     "userTooShort": "Username is too short",
     "userInvalid": "Invalid email or username",
-    "sessionExpired": "Your session has expired. Please log in again."
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "emailResent": "We sent you another email."
   },
   "CourseCommon": {
     "courseCreationFailed": "Failed to create course. Please try again.",
@@ -2649,7 +2650,14 @@
     "deleteAccountConfirmLabel": "Type {email} to confirm",
     "deleteAccountTransferTitle": "Transfer ownership first",
     "deleteAccountTransferDescription": "You are the only owner of {organizations}. Transfer the ownership to a representative in the organization settings, under Danger zone, before you delete your account.",
-    "deleteAccountTransferLink": "Open the organization settings"
+    "deleteAccountTransferLink": "Open the organization settings",
+    "settingsDescription": "Manage your profile, account, privacy, and data.",
+    "firstNameRequired": "Enter your first name",
+    "tooLong": "Use at most {max} characters",
+    "emailInvalid": "Enter a valid email address",
+    "sessionsShowAll": "Show all {count} sessions",
+    "sessionsShowLess": "Show fewer sessions",
+    "bioCount": "{count} of {max}"
   },
   "Register": {
     "metaTitle": "Apply to join GloRe",

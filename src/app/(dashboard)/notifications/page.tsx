@@ -1,5 +1,6 @@
 import { NotificationsContent } from '@/components/features/notifications/notifications-content'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -8,7 +9,12 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const NotificationsPage = () => (
-  <DashboardPage width="prose">
+  <DashboardPage
+    overlap
+    description={<PageTitle namespace="Notifications" name="description" />}
+    title={<PageTitle namespace="Notifications" name="title" />}
+    width="content"
+  >
     <NotificationsContent />
   </DashboardPage>
 )

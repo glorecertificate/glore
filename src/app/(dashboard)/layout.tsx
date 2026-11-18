@@ -10,6 +10,7 @@ import { EditorPreload } from '@/components/layout/editor-preload'
 import { LiveRefresh } from '@/components/layout/live-refresh'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PhoneAppBar } from '@/components/layout/phone-app-bar'
+import { PwaInstallBanner } from '@/components/layout/pwa-install-prompt'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { LEGAL_ACCEPT_ROOT } from '@/lib/constants'
@@ -35,7 +36,10 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
     <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
       <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
         <DashboardSidebar pending={pending} />
-        <SidebarInset className={cn(impersonation && 'pt-28 sm:pt-0 sm:pb-24')}>{children}</SidebarInset>
+        <SidebarInset className={cn(impersonation && 'pt-28 sm:pt-0 sm:pb-24')}>
+          <PwaInstallBanner />
+          {children}
+        </SidebarInset>
         <PhoneAppBar />
         <LiveRefresh />
         {user.canEdit && <EditorPreload />}

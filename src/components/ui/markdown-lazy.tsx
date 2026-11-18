@@ -2,8 +2,8 @@
 
 import dynamic from 'next/dynamic'
 
-import { Spinner } from '@/components/ui/spinner'
+const loadMarkdown = () => import('@/components/ui/markdown')
 
-export const MarkdownLazy = dynamic(() => import('@/components/ui/markdown'), {
-  loading: () => <Spinner aria-hidden size="sm" />,
-})
+export const preloadMarkdown = () => loadMarkdown()
+
+export const MarkdownLazy = dynamic(loadMarkdown, { loading: () => null })

@@ -1,12 +1,14 @@
 'use client'
 
+import { useEffect } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { DescriptionChoice } from '@/components/features/courses/course-player/description-choice'
 import { type useLessonProgress } from '@/components/features/courses/course-player/use-lesson-progress'
 import { Banner } from '@/components/ui/banner'
 import { Label } from '@/components/ui/label'
-import { MarkdownLazy } from '@/components/ui/markdown-lazy'
+import { MarkdownLazy, preloadMarkdown } from '@/components/ui/markdown-lazy'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { Textarea } from '@/components/ui/textarea'
 import { type LearnerLesson, REFLECTION_MAX_LENGTH, REFLECTION_MIN_LENGTH } from '@/db/queries/learning'
@@ -26,6 +28,10 @@ export const LessonSelfAssessment = ({
   const t = useTranslations('Learning.player')
   const { assessmentChoice, rate, ratings, reflection, reflectionLength, setAssessmentChoice, setReflection } = progress
   const { assessment, evaluations } = lesson
+
+  useEffect(() => {
+    void preloadMarkdown()
+  }, [])
 
   if (evaluations.length === 0 && !assessment) return null
 

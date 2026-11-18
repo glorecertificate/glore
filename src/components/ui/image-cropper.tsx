@@ -38,7 +38,7 @@ export const ImageCropper = ({
   disabled?: boolean
   fallback?: React.ReactNode
   onChange?: (file: File) => Promise<void> | void
-  onRemove?: () => void
+  onRemove?: (event: React.MouseEvent<HTMLElement>) => void
   pickerRef?: React.Ref<ImageCropperHandle>
   trigger?: React.ReactNode
   value?: string | null

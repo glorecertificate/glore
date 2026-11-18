@@ -89,7 +89,7 @@ export const DialogContent = ({
         {...props}
       >
         {showClose && (
-          <div className="pointer-events-none sticky top-6 z-10 h-0 [&+*]:-mt-4" data-slot="dialog-close-anchor">
+          <div className="pointer-events-none sticky top-0 z-10 h-0 [&+*]:-mt-4" data-slot="dialog-close-anchor">
             <DialogClose className="pointer-events-auto absolute -top-3 -right-3 flex size-8 cursor-pointer items-center justify-center rounded-md bg-background text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
               <LucideIcon name="x" />
               <span className="sr-only">{t('close')}</span>

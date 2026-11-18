@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 export const Table = ({ className, ...props }: React.ComponentProps<'table'>) => (
-  <div data-slot="table-container" className="relative w-full overflow-x-auto">
+  <div data-slot="table-container" className="relative w-full overflow-x-auto pointer-coarse:-my-1 pointer-coarse:py-1">
     <table data-slot="table" className={cn('w-full caption-bottom text-sm', className)} {...props} />
   </div>
 )

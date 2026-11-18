@@ -536,6 +536,84 @@
   max-height: calc(100dvh - 2rem);
 }
 
+@utility touch-hit {
+  @media (pointer: coarse) {
+    &:where(:not(.absolute, .fixed, .sticky)) {
+      position: relative;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      translate: -50% -50%;
+    }
+  }
+}
+
+@utility touch-hit-y {
+  @media (pointer: coarse) {
+    &:where(:not(.absolute, .fixed, .sticky)) {
+      position: relative;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: max(100%, 44px);
+      translate: 0 -50%;
+    }
+  }
+}
+
+@utility tabs-scroll-band {
+  @media (pointer: coarse) {
+    background-color: transparent !important;
+    background-image: linear-gradient(var(--color-muted), var(--color-muted));
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% --spacing(9);
+  }
+}
+
+@utility touch-row {
+  @media (pointer: coarse) {
+    min-height: var(--touch-row-min, --spacing(11));
+    padding-block: 0 !important;
+  }
+}
+
+@utility calendar-cell {
+  --calendar-cell: --spacing(8);
+
+  @media (pointer: coarse) {
+    --calendar-cell: var(--touch-cell, --spacing(11));
+  }
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility px-page-safe {
+  padding-left: max(--spacing(4), env(safe-area-inset-left));
+  padding-right: max(--spacing(4), env(safe-area-inset-right));
+}
+
+@utility pb-sheet-footer {
+  padding-bottom: max(--spacing(6), env(safe-area-inset-bottom));
+}
+
 @utility sheet-fit {
   width: min(100%, calc((100dvh - 11rem) * 595 / 842));
 }

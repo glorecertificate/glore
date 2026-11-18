@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { useEffect, useState } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
 
@@ -27,6 +28,19 @@ export interface ChartProps extends Omit<React.ComponentProps<'div'>, 'children'
   variant?: 'area' | 'bar' | 'line'
 }
 
+const LOADING_DELAY_MS = 300
+
+const DelayedSkeleton = () => {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setVisible(true), LOADING_DELAY_MS)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  return visible ? <Skeleton className="size-full" /> : null
+}
+
 const loadChartRenderer = async () => {
   const { ChartRenderer: Renderer } = await import('@/components/ui/chart-renderer')
   return Renderer
@@ -36,7 +50,7 @@ export const preloadChart = async () => {
   await loadChartRenderer()
 }
 
-const ChartRenderer = dynamic(loadChartRenderer, { loading: () => <Skeleton className="size-full" />, ssr: false })
+const ChartRenderer = dynamic(loadChartRenderer, { loading: () => <DelayedSkeleton />, ssr: false })
 
 export const Chart = ({ className, data, label, loading = false, series, variant = 'area', ...props }: ChartProps) => {
   const t = useTranslations('Components.Chart')

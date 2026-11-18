@@ -2,9 +2,11 @@
 
 import { useTranslations } from 'next-intl'
 
+import { BrandShell } from '@/components/features/auth/brand-shell'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useSettings } from '@/components/providers/settings'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { AUTH_ROOT } from '@/lib/constants'
 
 export const OnboardingErrorContent = () => {
@@ -12,8 +14,8 @@ export const OnboardingErrorContent = () => {
   const { email } = useSettings()
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="mx-auto flex max-w-md flex-col items-center text-center">
+    <BrandShell size="sm">
+      <Card className="items-center gap-0 p-8 text-center">
         <div className="mb-6 flex size-16 items-center justify-center rounded-full bg-danger-subtle">
           <LucideIcon name="circle-alert" className="size-8 text-destructive-text" />
         </div>
@@ -22,7 +24,7 @@ export const OnboardingErrorContent = () => {
         <Button asChild variant="outline">
           <a href={AUTH_ROOT}>{t('backToLogin')}</a>
         </Button>
-      </div>
-    </div>
+      </Card>
+    </BrandShell>
   )
 }

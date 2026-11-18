@@ -18,6 +18,7 @@ import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Logo } from '@/components/ui/logo'
 import { MotionFeatures } from '@/components/ui/motion-features'
+import { PageBandGlobe } from '@/components/ui/page-band'
 import { toast } from '@/components/ui/toast'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useTheme } from '@/hooks/use-theme'
@@ -73,11 +74,11 @@ const AuthHeader = ({
   }
 
   return (
-    <div className={cn('flex justify-between gap-2', className)} {...props}>
-      <div title={view === 'login' ? undefined : t('goToLogin')}>
+    <div className={cn('flex items-center justify-between gap-2', className)} {...props}>
+      <div className="rounded-md logo-chip" title={view === 'login' ? undefined : t('goToLogin')}>
         <Logo
           className={cn(
-            'w-24 rounded-md px-2 outline-none focus-visible:focus-ring',
+            'w-24 rounded-md px-2 py-1 outline-none focus-visible:focus-ring',
             view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
           )}
           onClick={onLogoClick}
@@ -86,7 +87,7 @@ const AuthHeader = ({
       </div>
       <div className="flex flex-col items-center gap-2">
         <LanguageSelect
-          className="min-w-28 border"
+          className="min-w-28 border-band-border bg-band-scrim text-band-foreground"
           contentProps={{ className: 'data-[state=open]:transition-none', onCloseAutoFocus }}
           onChange={() => {
             languageChanged.current = true
@@ -294,8 +295,16 @@ export const AuthFlow = ({
 
   return (
     <MotionFeatures>
-      <AuthHeader contentRef={ref} onLogoClick={() => setView('login')} view={view} />
-      <main className="relative flex flex-1 items-center justify-center overflow-hidden">
+      <header className="relative isolate overflow-hidden bg-band text-band-foreground band-scope">
+        <PageBandGlobe />
+        <AuthHeader
+          className="relative mx-auto w-full max-w-md px-6 pt-4 pb-6 sm:pt-5"
+          contentRef={ref}
+          onLogoClick={() => setView('login')}
+          view={view}
+        />
+      </header>
+      <main className="relative flex flex-1 items-center justify-center overflow-hidden p-4">
         <div className="w-full max-w-md">
           <m.div
             animate={{ height: height ?? 'auto' }}
@@ -303,7 +312,7 @@ export const AuthFlow = ({
             initial={false}
             transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
           >
-            <div className="flex min-h-164 flex-col gap-8 p-2" ref={ref}>
+            <div className="flex flex-col gap-6 p-2" ref={ref}>
               <Globe className="mx-auto size-48 sm:size-80" transitionDuration={600} {...globeOptions} />
               <AnimatePresence initial={false} mode="wait">
                 <AuthStep

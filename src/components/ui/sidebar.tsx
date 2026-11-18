@@ -203,7 +203,7 @@ export const Sidebar = ({
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetContent
-          className="dark sidebar-scope w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          className="dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sidebar-scope [&>button]:hidden"
           data-mobile="true"
           data-sidebar="sidebar"
           side={side}
@@ -222,7 +222,7 @@ export const Sidebar = ({
 
   return (
     <div
-      className="group dark sidebar-scope peer hidden text-sidebar-foreground md:block"
+      className="group dark peer hidden text-sidebar-foreground sidebar-scope md:block"
       data-collapsible={state === 'collapsed' ? collapsible : ''}
       data-dragging={isDraggingRail}
       data-side={side}

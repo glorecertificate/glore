@@ -31,7 +31,7 @@
       "canvas": ["#e9f1f6", "#0b1522"],
       "sidebar": ["#16304f", "#08111d"],
       "sidebar-foreground": ["#c9d6e6", "#c9d6e6"],
-      "sidebar-muted": ["#8aa2bd", "#8aa2bd"],
+      "sidebar-muted": ["#9db3cb", "#9db3cb"],
       "sidebar-accent": ["oklch(1 0 0 / 8%)", "oklch(1 0 0 / 8%)"],
       "sidebar-accent-foreground": ["#ffffff", "#ffffff"],
       "sidebar-border": ["oklch(1 0 0 / 10%)", "oklch(1 0 0 / 10%)"],

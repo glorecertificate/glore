@@ -499,7 +499,7 @@ export const buildTheme = (config: SystemConfig): Theme => {
   const lightCss = light.tokens.map(name => [name, light.resolved.get(name)?.css ?? ''] as [string, string])
   const darkCss = dark.tokens
     .map(name => [name, dark.resolved.get(name)?.css ?? ''] as [string, string])
-    .filter(([name, value]) => light.resolved.get(name)?.css !== value)
+    .filter(([name, value]) => value.startsWith('var(') || light.resolved.get(name)?.css !== value)
   const hexOf = (mode: typeof light, name: string) => {
     const value = mode.resolved.get(name)?.color
     if (!value) throw new Error(`Token ${name} has no color`)

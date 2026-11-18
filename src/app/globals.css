@@ -407,6 +407,12 @@
   --stat-text: var(--stat-amber-text);
 }
 
+@utility sidebar-scope {
+  --muted-foreground: var(--sidebar-muted);
+  --fg-2: var(--sidebar-muted);
+  --fg-3: var(--sidebar-muted);
+}
+
 @utility logo-chip {
   background-color: var(--logo-chip);
   --foreground: var(--logo-ink);

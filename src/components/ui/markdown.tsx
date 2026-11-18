@@ -69,12 +69,10 @@ const COMPONENTS = {
   ul: props => <ul className="my-4 list-disc space-y-2 pl-6" {...props} />,
 } satisfies Components
 
-export const Markdown = ({
-  className,
-  components,
-  ...props
-}: React.PropsWithChildren<Options> & { className?: string }) => (
+const Markdown = ({ className, components, ...props }: React.PropsWithChildren<Options> & { className?: string }) => (
   <div className={cn('markdown min-w-0 wrap-break-word [&>:first-child]:mt-0 [&>:last-child]:mb-0', className)}>
     <ReactMarkdown components={{ ...COMPONENTS, ...components }} remarkPlugins={[remarkGfm]} {...props} />
   </div>
 )
+
+export default Markdown

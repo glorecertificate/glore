@@ -31,13 +31,16 @@ const MOBILE_HEAD = 'max-sm:sr-only'
 
 const MOBILE_BODY = 'max-sm:block'
 
-const MOBILE_ROW = 'max-sm:grid max-sm:grid-cols-2 max-sm:gap-x-4 max-sm:gap-y-2 max-sm:p-3'
+const MOBILE_ROW = 'max-sm:relative max-sm:grid max-sm:grid-cols-2 max-sm:gap-x-4 max-sm:gap-y-2 max-sm:p-3'
 
 const MOBILE_CELL = [
   'max-sm:block max-sm:min-w-0 max-sm:p-0 max-sm:whitespace-normal',
   'max-sm:before:mb-0.5 max-sm:before:block max-sm:before:text-xs max-sm:before:text-muted-foreground max-sm:before:content-[attr(data-label)]',
-  'max-sm:first:col-span-2 max-sm:first:before:hidden',
 ]
+
+const MOBILE_LEAD = 'max-sm:col-span-2 max-sm:before:hidden'
+
+const MOBILE_SELECT = 'w-10 max-sm:absolute max-sm:top-3 max-sm:right-3 max-sm:block max-sm:w-auto max-sm:p-0'
 
 const MOBILE_ACTIONS = 'max-sm:col-span-2 max-sm:text-left'
 
@@ -81,7 +84,6 @@ export const DataTable = <T,>({
   skeleton = false,
   ...props
 }: Omit<React.ComponentProps<'div'>, 'children'> & {
-  /** Rendered in the toolbar while rows are selected, with the selected row ids. */
   bulkActions?: (ids: DataTableRowId[]) => React.ReactNode
   columns: DataTableColumn<T>[]
   emptyDescription: string
@@ -94,16 +96,10 @@ export const DataTable = <T,>({
   pageSize?: number
   pagination?: DataTablePagination
   rowActions?: (row: T) => React.ReactNode
-  /** Accessible name of a row checkbox. */
-  rowLabel?: (row: T) => string
   rows: T[]
-  /** Adds a checkbox column with select all on the page. */
-  selectable?: boolean
-  /** Controlled selection. Omit it to let the table keep the selection. */
   selectedIds?: DataTableRowId[]
-  /** While `loading`, shows `pageSize` placeholder rows under the real header, instead of a spinner. */
   skeleton?: boolean
-}) => {
+} & ({ rowLabel: (row: T) => string; selectable: true } | { rowLabel?: (row: T) => string; selectable?: false })) => {
   const t = useTranslations('Components.DataTable')
   const locale = useLocale()
   const { number } = useFormatter()
@@ -122,11 +118,14 @@ export const DataTable = <T,>({
   const total = pagination ? pagination.total : rows.length
   const columnCount = columns.length + (rowActions ? 1 : 0) + (selectable ? 1 : 0)
   const showSkeleton = loading && skeleton
-  const selection = selectedIds ?? ownSelection
+  const storedSelection = selectedIds ?? ownSelection
+  const knownIds = pagination ? null : new Set(rows.map(getRowId))
+  const selection = knownIds ? storedSelection.filter(id => knownIds.has(id)) : storedSelection
   const pageIds = visible.map(getRowId)
   const pageSelected = pageIds.filter(id => selection.includes(id)).length
   const allSelected = pageIds.length > 0 && pageSelected === pageIds.length
   const hasSelection = selectable && selection.length > 0 && !loading
+  const pageChecked = allSelected ? true : pageSelected > 0 ? 'indeterminate' : false
 
   const select = (ids: DataTableRowId[]) => {
     setOwnSelection(ids)
@@ -181,6 +180,9 @@ export const DataTable = <T,>({
     >
       <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
         {filters}
+        <span aria-live="polite" className="sr-only" role="status">
+          {hasSelection ? t('selected', { count: selection.length }) : !loading && t('count', { count: total })}
+        </span>
         {hasSelection ? (
           <div
             aria-label={t('bulkActions')}
@@ -188,16 +190,14 @@ export const DataTable = <T,>({
             data-slot="data-table-selection"
             role="toolbar"
           >
-            <span aria-live="polite" className="text-sm font-medium" role="status">
-              {t('selected', { count: selection.length })}
-            </span>
+            <span className="text-sm font-medium">{t('selected', { count: selection.length })}</span>
             {bulkActions?.(selection)}
             <Button onClick={() => select([])} size="sm" type="button" variant="ghost">
               {t('clearSelection')}
             </Button>
           </div>
         ) : (
-          <span aria-live="polite" className="text-sm text-muted-foreground" role="status">
+          <span aria-hidden className="text-sm text-muted-foreground">
             {!loading && t('count', { count: total })}
           </span>
         )}
@@ -205,7 +205,7 @@ export const DataTable = <T,>({
       {selectable && (
         <label className="flex items-center gap-2 text-sm sm:hidden">
           <Checkbox
-            checked={allSelected ? true : pageSelected > 0 ? 'indeterminate' : false}
+            checked={pageChecked}
             disabled={loading || visible.length === 0}
             onCheckedChange={checked => togglePage(checked === true)}
           />
@@ -244,10 +244,10 @@ export const DataTable = <T,>({
             <TableHeader className={MOBILE_HEAD}>
               <TableRow>
                 {selectable && (
-                  <TableHead className="w-10" scope="col">
+                  <TableHead className="w-10 max-sm:hidden" scope="col">
                     <Checkbox
                       aria-label={t('selectAll')}
-                      checked={allSelected ? true : pageSelected > 0 ? 'indeterminate' : false}
+                      checked={pageChecked}
                       disabled={loading || visible.length === 0}
                       onCheckedChange={checked => togglePage(checked === true)}
                     />
@@ -300,12 +300,20 @@ export const DataTable = <T,>({
               Array.from({ length: limit }, (_, index) => (
                 <TableRow aria-hidden className={MOBILE_ROW} key={index}>
                   {selectable && (
-                    <TableCell className={cn(MOBILE_CELL, 'w-10')}>
+                    <TableCell className={MOBILE_SELECT}>
                       <Skeleton className="size-4" />
                     </TableCell>
                   )}
                   {columns.map((item, position) => (
-                    <TableCell className={cn(MOBILE_CELL, item.className)} data-label={item.header} key={item.id}>
+                    <TableCell
+                      className={cn(
+                        MOBILE_CELL,
+                        position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
+                        item.className
+                      )}
+                      data-label={item.header}
+                      key={item.id}
+                    >
                       <Skeleton className={cn('h-5', SKELETON_WIDTHS[(index + position) % SKELETON_WIDTHS.length])} />
                     </TableCell>
                   ))}
@@ -332,7 +340,7 @@ export const DataTable = <T,>({
                   key={getRowId(row)}
                 >
                   {selectable && (
-                    <TableCell className={cn(MOBILE_CELL, 'w-10')}>
+                    <TableCell className={MOBILE_SELECT}>
                       <Checkbox
                         aria-label={rowLabel?.(row) ?? t('selectRow')}
                         checked={selection.includes(getRowId(row))}
@@ -340,8 +348,16 @@ export const DataTable = <T,>({
                       />
                     </TableCell>
                   )}
-                  {columns.map(item => (
-                    <TableCell className={cn(MOBILE_CELL, item.className)} data-label={item.header} key={item.id}>
+                  {columns.map((item, position) => (
+                    <TableCell
+                      className={cn(
+                        MOBILE_CELL,
+                        position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
+                        item.className
+                      )}
+                      data-label={item.header}
+                      key={item.id}
+                    >
                       {item.cell(row)}
                     </TableCell>
                   ))}

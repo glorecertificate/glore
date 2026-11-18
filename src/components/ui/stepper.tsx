@@ -65,7 +65,10 @@ export const Stepper = ({
   indicators?: StepIndicators
 }) => {
   const [activeStep, setActiveStep] = useState(defaultValue)
-  const [triggerNodes, setTriggerNodes] = useState<HTMLButtonElement[]>([])
+  const [registeredNodes, setTriggerNodes] = useState<HTMLButtonElement[]>([])
+  const triggerNodes = [...registeredNodes].sort((a, b) =>
+    a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+  )
 
   const handleSetActiveStep = (step: number) => {
     if (value === undefined) {

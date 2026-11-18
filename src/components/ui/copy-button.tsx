@@ -19,7 +19,6 @@ export const CopyButton = ({
   ...props
 }: Omit<React.ComponentProps<typeof Button>, 'asChild' | 'children' | 'icon' | 'loading' | 'onClick'> & {
   copiedLabel?: string
-  /** Shows only the icon. The label becomes the accessible name and the tooltip. */
   iconOnly?: boolean
   label?: string
   value: string
@@ -68,7 +67,7 @@ export const CopyButton = ({
       <Tooltip>
         <TooltipTrigger asChild pointerEvents="auto">
           <Button
-            aria-label={text}
+            aria-label={label ?? t('copy')}
             disabled={disabled || pending}
             onClick={() => void copy()}
             size={size ?? 'icon-sm'}

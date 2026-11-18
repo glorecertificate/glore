@@ -6,7 +6,7 @@ import { DescriptionChoice } from '@/components/features/courses/course-player/d
 import { type useLessonProgress } from '@/components/features/courses/course-player/use-lesson-progress'
 import { Banner } from '@/components/ui/banner'
 import { Label } from '@/components/ui/label'
-import { Markdown } from '@/components/ui/markdown'
+import { MarkdownLazy } from '@/components/ui/markdown-lazy'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { Textarea } from '@/components/ui/textarea'
 import { type LearnerLesson, REFLECTION_MAX_LENGTH, REFLECTION_MIN_LENGTH } from '@/db/queries/learning'
@@ -39,7 +39,7 @@ export const LessonSelfAssessment = ({
           </div>
           {evaluations.map(evaluation => (
             <div className="flex flex-col gap-3" key={evaluation.id}>
-              <Markdown>{evaluation.text}</Markdown>
+              <MarkdownLazy>{evaluation.text}</MarkdownLazy>
               <RatingGroup
                 color="brand"
                 disabled={disabled}

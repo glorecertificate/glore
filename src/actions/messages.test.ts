@@ -9,10 +9,12 @@ import es from '~/messages/es.json'
 const mocks = vi.hoisted(() => ({
   admin: vi.fn(),
   editor: vi.fn(),
+  overrides: vi.fn(),
   updateTag: vi.fn(),
 }))
 
 vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn(), updateTag: mocks.updateTag }))
+vi.mock('@/actions/message-overrides-cache', () => ({ expireMessageOverrides: mocks.overrides }))
 vi.mock('@/actions/guards', () => ({ requireEditor: mocks.editor }))
 vi.mock('@/actions/admin/helpers', () => ({ requireAdmin: mocks.admin }))
 
@@ -60,6 +62,7 @@ describe.skipIf(!isLocalDatabase)('message override actions', () => {
     const [user] = await client.db.select({ id: schema.users.id }).from(schema.users).limit(1)
     mocks.editor.mockReset().mockResolvedValue({ id: user?.id })
     mocks.admin.mockReset().mockResolvedValue({ id: user?.id })
+    mocks.overrides.mockClear()
     mocks.updateTag.mockClear()
   })
 
@@ -92,16 +95,19 @@ describe.skipIf(!isLocalDatabase)('message override actions', () => {
     const draft = await actions.saveMessageDraft({ key: open[0], locale: 'es', value: text })
     expect(draft).toMatchObject({ data: { draftValue: text, hasDraft: true, value: null } })
     expect(mocks.updateTag).not.toHaveBeenCalled()
+    expect(mocks.overrides).toHaveBeenCalledTimes(1)
 
     const published = await actions.publishMessage({ key: open[0], locale: 'es' })
     expect(published).toMatchObject({ data: { draftValue: null, isPublished: true, value: text } })
     expect(mocks.updateTag).toHaveBeenCalledTimes(1)
     expect(mocks.updateTag).toHaveBeenCalledWith('messages-es')
+    expect(mocks.overrides).toHaveBeenCalledTimes(2)
     expect(await actions.publishMessage({ key: open[0], locale: 'es' })).toMatchObject({ error: { code: 'NO_DRAFT' } })
 
     mocks.updateTag.mockClear()
     expect(await actions.resetMessage({ key: open[0], locale: 'es' })).toEqual({ data: { key: open[0], locale: 'es' } })
     expect(mocks.updateTag).toHaveBeenCalledWith('messages-es')
+    expect(mocks.overrides).toHaveBeenCalledTimes(3)
     expect(await actions.resetMessage({ key: open[0], locale: 'es' })).toMatchObject({ error: { code: 'NOT_FOUND' } })
   })
 
@@ -123,6 +129,7 @@ describe.skipIf(!isLocalDatabase)('message override actions', () => {
       data: { key: open[0], locale: 'es', remaining: false },
     })
     expect(mocks.updateTag).not.toHaveBeenCalled()
+    expect(mocks.overrides).toHaveBeenCalledTimes(2)
   })
 
   it('keeps protected keys behind the admin guard', async () => {

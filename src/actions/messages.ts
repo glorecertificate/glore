@@ -8,6 +8,7 @@ import { unstable_rethrow } from 'next/navigation'
 import { and, eq } from 'drizzle-orm'
 
 import { authorizeAdmin, authorizeMessage, inspectMessage } from '@/actions/message-helpers'
+import { expireMessageOverrides } from '@/actions/message-overrides-cache'
 import { db, transaction } from '@/db/client'
 import {
   discardMessageDraft as discardDraft,
@@ -57,6 +58,7 @@ export const saveMessageDraft = async (input: { key: string; locale: string; val
 
   try {
     const row = await transaction(tx => saveDraft(tx, { actorId: actor.id, baseHash, key, locale, sourceHash, value }))
+    expireMessageOverrides()
     return { data: parseMessageOverride(row) }
   } catch (error) {
     return handle(error)
@@ -90,6 +92,7 @@ export const publishMessage = async (input: { key: string; locale: string }) => 
       })
     )
     expire(locale)
+    expireMessageOverrides()
     return { data: parseMessageOverride(row) }
   } catch (error) {
     return handle(error)
@@ -110,6 +113,7 @@ export const resetMessage = async (input: { key: string; locale: string }) => {
   try {
     const { wasPublished } = await transaction(tx => resetOverride(tx, { actorId: actor.id, key, locale }))
     if (wasPublished) expire(locale)
+    expireMessageOverrides()
     return { data: { key, locale } }
   } catch (error) {
     return handle(error)
@@ -126,6 +130,7 @@ export const discardMessageDraft = async (input: { key: string; locale: string }
 
   try {
     const { remaining } = await transaction(tx => discardDraft(tx, { actorId: actor.id, key, locale }))
+    expireMessageOverrides()
     return { data: { key, locale, remaining } }
   } catch (error) {
     return handle(error)

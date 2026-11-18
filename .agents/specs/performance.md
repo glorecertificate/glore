@@ -15,21 +15,21 @@ The mobile values match the Lighthouse mobile defaults. CDP applies the latency 
 
 The source of truth for the numbers is `config/performance.json`. Each value is the median of `PERF_RUNS` runs (default 3).
 
-| Kind        | Metric      | Measures                                                              | Desktop | Mobile  |
-| ----------- | ----------- | --------------------------------------------------------------------- | ------- | ------- |
-| Load        | TTFB        | `responseStart` of the navigation entry                               | 100 ms  | 300 ms  |
-| Load        | FCP         | `first-contentful-paint`                                              | 500 ms  | 1200 ms |
-| Load        | LCP         | Last `largest-contentful-paint` entry                                 | 800 ms  | 1800 ms |
-| Load        | CLS         | Sum of `layout-shift` values without recent input                     | 0.01    | 0.01    |
-| Load        | TBT         | Sum of `long-animation-frame` `blockingDuration` after FCP            | 50 ms   | 200 ms  |
-| Load        | Hydration   | First `button` or `input` with React props attached                   | 800 ms  | 1800 ms |
-| Load        | JS KB       | Transfer size of scripts that start before the first prefetch         | budget  | budget  |
-| Load        | Prefetch KB | Transfer size of `_rsc` prefetch requests and scripts after the first | budget  | budget  |
-| Navigation  | Shell       | Pointer down to the first frame after `history.pushState`             | 100 ms  | 200 ms  |
-| Navigation  | Complete    | Pointer down to the last DOM change before 1 s of quiet               | 300 ms  | 800 ms  |
-| Navigation  | Shift       | Sum of all `layout-shift` values after the input                      | 0.01    | 0.01    |
-| Interaction | Latency     | Longest Event Timing duration per `interactionId` (INP model)         | 50 ms   | 100 ms  |
-| Interaction | Blocking    | Sum of `long-animation-frame` `blockingDuration` after the input      | 0 ms    | 50 ms   |
+| Kind        | Metric      | Measures                                                          | Desktop | Mobile  |
+| ----------- | ----------- | ----------------------------------------------------------------- | ------- | ------- |
+| Load        | TTFB        | `responseStart` of the navigation entry                           | 100 ms  | 300 ms  |
+| Load        | FCP         | `first-contentful-paint`                                          | 500 ms  | 1200 ms |
+| Load        | LCP         | Last `largest-contentful-paint` entry                             | 800 ms  | 1800 ms |
+| Load        | CLS         | Sum of `layout-shift` values without recent input                 | 0.01    | 0.01    |
+| Load        | TBT         | Sum of `long-animation-frame` `blockingDuration` after FCP        | 50 ms   | 200 ms  |
+| Load        | Hydration   | First `button` or `input` with React props attached               | 800 ms  | 1800 ms |
+| Load        | JS KB       | Transfer size of script resources until the page is quiet         | budget  | budget  |
+| Load        | Prefetch KB | Transfer size of `_rsc` prefetch requests until the page is quiet | budget  | budget  |
+| Navigation  | Shell       | Pointer down to the first frame after `history.pushState`         | 100 ms  | 200 ms  |
+| Navigation  | Complete    | Pointer down to the last DOM change before 1 s of quiet           | 300 ms  | 800 ms  |
+| Navigation  | Shift       | Sum of all `layout-shift` values after the input                  | 0.01    | 0.01    |
+| Interaction | Latency     | Longest Event Timing duration per `interactionId` (INP model)     | 50 ms   | 100 ms  |
+| Interaction | Blocking    | Sum of `long-animation-frame` `blockingDuration` after the input  | 0 ms    | 50 ms   |
 
 - The script budget is 150 KB for public pages (`publicPaths`) and 300 KB for app pages.
 - Hydration must finish by the LCP target, so a page is usable when its main content paints.
@@ -91,7 +91,7 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 
 ## Rules for UI work
 
-- Prefetch policy: the sidebar items and the logo-free header prefetch, and so do the content links that lead to a detail page. Measured on a production build at 1440 px (dashboard landing, all roles): 16 to 20 prefetch requests, 313 to 1069 KB decoded and 119 to 300 KB transferred. Admin on `/admin` is the largest case at 36 requests and 347 KB transferred. The `Prefetch KB` budget is 400 KB for app pages. Limiting prefetch to the current section would leave every other sidebar item cold, so it is not the policy.
+- Prefetch policy: only the sidebar items prefetch in full (`prefetch`), and the logo does not. Content links such as cards, rows, and dashboard actions use the default prefetch. A full prefetch of each link in a list queued behind the click and lengthened the shell time of a sidebar navigation. The `Prefetch KB` budget is 400 KB for app pages.
 - A warm sidebar click must commit no fallback. Measure with a production build: `LoadingFallback` appears only after 300 ms, so a fallback in the DOM is a data wait to fix, not a style choice.
 
 - Measure the affected cases before and after each change with `PERF_RUNS=5`, and put both tables in the pull request.

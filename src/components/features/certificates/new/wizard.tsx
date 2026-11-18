@@ -94,6 +94,8 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const missing = missingPersonalData(holder)
   const [submitting, setSubmitting] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [advancing, setAdvancing] = useState(false)
+  const [invalid, setInvalid] = useState(false)
   const [saveState, setSaveState] = useState<SaveState>('idle')
   const draftId = useRef(certificate?.isDraft ? certificate.id : undefined)
   const latest = useRef<WizardDraft | null>(null)
@@ -149,18 +151,23 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const { isDirty } = form.formState
 
   const autosave = (values: WizardDraft) => {
-    if (resubmit || !isDirty) return
+    if (resubmit || !(isDirty || draftId.current)) return
     latest.current = values
     void flush()
   }
 
   const goTo = (next: number) => {
     moved.current = true
+    setInvalid(false)
     setStep(next)
   }
 
   const advance = async () => {
-    if (await form.trigger([...WIZARD_STEP_FIELDS[step]!])) goTo(step + 1)
+    setAdvancing(true)
+    const valid = await form.trigger([...WIZARD_STEP_FIELDS[step]!], { shouldFocus: true })
+    setAdvancing(false)
+    setInvalid(!valid)
+    if (valid) goTo(step + 1)
   }
 
   const submitError = (code: string) => {
@@ -265,6 +272,12 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
             <p className="text-sm text-muted-foreground">{stepDescriptions[WIZARD_STEPS[step]!]}</p>
           </div>
 
+          {invalid && (
+            <Banner role="alert" variant="destructive">
+              {t('stepInvalid')}
+            </Banner>
+          )}
+
           {step === 0 && <ExperienceStep comments={comments} />}
           {step === 1 && <SkillsStep comment={comments.skills} options={skills} />}
           {step === 2 && <OrganizationStep organization={organization.name} />}
@@ -335,6 +348,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                   icon="arrow-right"
                   iconPlacement="right"
                   key="next"
+                  loading={advancing}
                   onClick={() => void advance()}
                   type="button"
                   variant="brand"

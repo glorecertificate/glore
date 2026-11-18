@@ -1968,7 +1968,7 @@
     "notApplicable": "Cerrado",
     "claim": "Reclamar revisión",
     "claimSuccess": "{count, plural, one {Certificado reclamado. Ya está en tu lista asignada.} other {# certificados reclamados. Ya están en tu lista asignada.}}",
-    "claimError": "No se pudo reclamar este certificado. Inténtalo de nuevo.",
+    "claimError": "{count, plural, one {No se pudo reclamar este certificado. Inténtalo de nuevo.} other {No se pudieron reclamar # certificados. Inténtalo de nuevo en unos minutos.}}",
     "review": "Revisar",
     "view": "Ver",
     "empty": {
@@ -2206,7 +2206,8 @@
     "submitErrorsSaveFailed": "No se pudo guardar tu solicitud. Inténtalo de nuevo.",
     "chosenDescription": "Tu elección",
     "chosenDescriptionHint": "Hiciste esta elección al final del curso. Es definitiva y tu tutor la revisa.",
-    "draftLimit": "Tienes demasiados borradores. Continúa o descarta uno desde tus certificados para guardar este."
+    "draftLimit": "Tienes demasiados borradores. Continúa o descarta uno desde tus certificados para guardar este.",
+    "stepInvalid": "Algunos campos necesitan tu atención. Corrige los campos resaltados para continuar."
   },
   "CertificatePdf": {
     "title": "Certificado de habilidades blandas",

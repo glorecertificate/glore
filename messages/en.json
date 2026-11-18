@@ -1968,7 +1968,7 @@
     "notApplicable": "Closed",
     "claim": "Claim review",
     "claimSuccess": "{count, plural, one {Certificate claimed. It is now in your assigned list.} other {# certificates claimed. They are now in your assigned list.}}",
-    "claimError": "Could not claim this certificate. Try again.",
+    "claimError": "{count, plural, one {Could not claim this certificate. Try again.} other {Could not claim # certificates. Try again in a few minutes.}}",
     "review": "Review",
     "view": "View",
     "empty": {
@@ -2206,7 +2206,8 @@
     "submitErrorsSaveFailed": "Could not save your request. Please try again.",
     "chosenDescription": "Your choice",
     "chosenDescriptionHint": "You made this choice at the end of the course. It is final, and your tutor reviews it.",
-    "draftLimit": "You have too many drafts. Continue or discard one from your certificates to save this one."
+    "draftLimit": "You have too many drafts. Continue or discard one from your certificates to save this one.",
+    "stepInvalid": "Some fields need your attention. Fix the highlighted fields to continue."
   },
   "CertificatePdf": {
     "title": "Soft skills certificate",

@@ -13,7 +13,7 @@
     "no-restricted-classes": 8
   },
   "src/components/features/certificates": {
-    "no-arbitrary-value": 39,
+    "no-arbitrary-value": 38,
     "no-restricted-classes": 9
   },
   "src/components/features/certificates/review": {

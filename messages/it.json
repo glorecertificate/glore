@@ -1968,7 +1968,7 @@
     "notApplicable": "Chiuso",
     "claim": "Prendi in carico",
     "claimSuccess": "{count, plural, one {Certificato preso in carico. Ora è nella tua lista.} other {# certificati presi in carico. Ora sono nella tua lista.}}",
-    "claimError": "Impossibile prendere in carico questo certificato. Riprova.",
+    "claimError": "{count, plural, one {Impossibile prendere in carico questo certificato. Riprova.} other {Impossibile prendere in carico # certificati. Riprova tra qualche minuto.}}",
     "review": "Esamina",
     "view": "Visualizza",
     "empty": {
@@ -2206,7 +2206,8 @@
     "submitErrorsSaveFailed": "Impossibile salvare la richiesta. Riprova.",
     "chosenDescription": "La tua scelta",
     "chosenDescriptionHint": "Hai fatto questa scelta alla fine del corso. È definitiva e il tutor la verifica.",
-    "draftLimit": "Hai troppe bozze. Continua o elimina una bozza dai tuoi certificati per salvare questa."
+    "draftLimit": "Hai troppe bozze. Continua o elimina una bozza dai tuoi certificati per salvare questa.",
+    "stepInvalid": "Alcuni campi richiedono la tua attenzione. Correggi i campi evidenziati per continuare."
   },
   "CertificatePdf": {
     "title": "Certificato di soft skill",

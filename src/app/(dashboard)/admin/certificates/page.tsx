@@ -9,7 +9,6 @@ import { adminCertificatesParsers } from '@/components/features/admin/certificat
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
-import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(adminCertificatesParsers)
@@ -36,12 +35,14 @@ const AdminCertificatesContent = async ({
 }
 
 const AdminCertificatesPage = ({ searchParams }: PageProps<'/admin/certificates'>) => (
-  <DashboardPage title={<PageTitle namespace="Admin.certificates" name="title" />}>
-    <PageIntro description={<PageTitle namespace="Admin.certificates" name="description" />}>
-      <Suspense fallback={<LoadingFallback />}>
-        <AdminCertificatesContent searchParams={searchParams} />
-      </Suspense>
-    </PageIntro>
+  <DashboardPage
+    overlap
+    description={<PageTitle namespace="Admin.certificates" name="description" />}
+    title={<PageTitle namespace="Admin.certificates" name="title" />}
+  >
+    <Suspense fallback={<LoadingFallback />}>
+      <AdminCertificatesContent searchParams={searchParams} />
+    </Suspense>
   </DashboardPage>
 )
 

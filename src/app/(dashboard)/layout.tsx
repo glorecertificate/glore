@@ -32,7 +32,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
     <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
       <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
         <DashboardSidebar pending={pending} />
-        <SidebarInset className={cn(impersonation && 'pb-32 sm:pb-24')}>{children}</SidebarInset>
+        <SidebarInset className={cn(impersonation && 'pt-28 sm:pt-0 sm:pb-24')}>{children}</SidebarInset>
         <ImpersonationBanner />
       </SessionProvider>
     </SidebarProvider>

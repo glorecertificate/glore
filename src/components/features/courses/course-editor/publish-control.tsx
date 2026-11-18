@@ -4,10 +4,14 @@ import { useTranslations } from 'next-intl'
 
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
+import { cn } from '@/lib/utils'
+
+const TOUCH_HIT = "relative before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-['']"
 
 export const PublishControl = ({
   disabled,
   language,
+  tone = 'band',
   onChange,
   published,
 }: {
@@ -15,25 +19,37 @@ export const PublishControl = ({
   language: string
   onChange: (published: boolean) => void
   published: boolean
+  tone?: 'band' | 'surface'
 }) => {
   const t = useTranslations('CourseEditor')
+  const isBand = tone === 'band'
 
   return (
     <SegmentedControl
       aria-label={t('publishStatus', { language })}
-      className="shrink-0 bg-band-scrim"
+      className={cn('shrink-0', isBand && 'bg-band-scrim')}
       disabled={disabled}
       onValueChange={value => onChange(value === 'published')}
       value={published ? 'published' : 'draft'}
     >
       <SegmentedControlItem
-        className="text-band-text data-[state=checked]:bg-band-foreground data-[state=checked]:text-band-from dark:data-[state=checked]:bg-band-foreground"
+        className={cn(
+          !isBand && TOUCH_HIT,
+          isBand &&
+            'text-band-text data-[state=checked]:bg-band-foreground data-[state=checked]:text-band-from dark:data-[state=checked]:bg-band-foreground'
+        )}
         value="draft"
       >
         {t('publishSwitchDraft')}
       </SegmentedControlItem>
       <SegmentedControlItem
-        className="text-band-text data-[state=checked]:bg-band-action data-[state=checked]:text-band-action-foreground dark:data-[state=checked]:bg-band-action"
+        className={cn(
+          !isBand && TOUCH_HIT,
+          !isBand &&
+            'data-[state=checked]:bg-success data-[state=checked]:text-success-foreground dark:data-[state=checked]:bg-success',
+          isBand &&
+            'text-band-text data-[state=checked]:bg-band-action data-[state=checked]:text-band-action-foreground dark:data-[state=checked]:bg-band-action'
+        )}
         value="published"
       >
         {t('publishSwitchPublished')}

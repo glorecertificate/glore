@@ -22,7 +22,7 @@ export const CourseLanguageTabs = ({ className, ...props }: React.ComponentProps
         const { hasUpdates, published } = status[value]
 
         return (
-          <TabsTrigger className="gap-2" key={value} size="sm" value={value}>
+          <TabsTrigger className="group/tab gap-2" key={value} size="sm" value={value}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="flex items-center gap-2">
@@ -32,7 +32,10 @@ export const CourseLanguageTabs = ({ className, ...props }: React.ComponentProps
                   />
                   {label}
                   {hasUpdates && <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-warning" />}
-                  <span aria-hidden className="hidden text-xs pointer-coarse:inline">
+                  <span
+                    aria-hidden
+                    className="hidden text-xs max-sm:group-data-[state=inactive]/tab:hidden pointer-coarse:inline"
+                  >
                     {`${coverage[value].done}/${coverage[value].total}`}
                   </span>
                   <span className="sr-only">

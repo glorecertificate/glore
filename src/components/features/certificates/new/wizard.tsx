@@ -96,6 +96,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const [deleting, setDeleting] = useState(false)
   const [advancing, setAdvancing] = useState(false)
   const [invalid, setInvalid] = useState(false)
+  const [attempts, setAttempts] = useState(0)
   const [saveState, setSaveState] = useState<SaveState>('idle')
   const draftId = useRef(certificate?.isDraft ? certificate.id : undefined)
   const latest = useRef<WizardDraft | null>(null)
@@ -118,12 +119,15 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   }, [step])
 
   const skillsError: unknown = form.formState.errors.skills
+  const skillsRootError = Boolean(skillsError) && !(Array.isArray(skillsError) && skillsError.some(Boolean))
+
+  const focusSkills = useEffectEvent(() => {
+    if (skillsRootError) document.getElementById('skills-list')?.focus()
+  })
 
   useEffect(() => {
-    if (!(invalid && skillsError)) return
-    const items = Array.isArray(skillsError) ? skillsError.filter(Boolean) : []
-    if (items.length === 0) document.getElementById('skills-list')?.focus()
-  }, [invalid, skillsError])
+    if (attempts > 0) focusSkills()
+  }, [attempts])
 
   const persist = async (values: WizardDraft) => {
     setSaveState('saving')
@@ -176,6 +180,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     setAdvancing(false)
     setInvalid(!valid)
     if (valid) goTo(step + 1)
+    else setAttempts(count => count + 1)
   }
 
   const submitError = (code: string) => {

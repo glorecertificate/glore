@@ -201,37 +201,31 @@ export const createOrganization = async (input: z.input<typeof createOrganizatio
     return created
   })
 
-export const getAdminOrganizationName = async (organizationId: number) => {
-  const admin = await adminAction(requireAdmin)
-  const id = organizationIdSchema.safeParse(organizationId)
-  if (admin.error || !id.success) return null
+const fetchAdminOrganizationName = async (organizationId: number) => {
+  'use cache'
+  cacheTag(CacheTag.Organizations)
 
   const { data } = await safeQuery(() =>
-    db.query.organizations.findFirst({ columns: { name: true }, where: eq(organizations.id, id.data) })
+    db.query.organizations.findFirst({ columns: { name: true }, where: eq(organizations.id, organizationId) })
   )
   return data?.name ?? null
 }
 
-export const getAdminOrganization = async (organizationId: number) => {
-  const admin = await adminAction(requireAdmin)
-  if (admin.error) return { data: null, error: admin.error }
-  const id = organizationIdSchema.safeParse(organizationId)
-  if (!id.success) return { data: null, error: { code: 'INVALID_INPUT', message: 'These values are not valid' } }
-
-  return await safeQuery(async () => {
+const loadAdminOrganization = async (organizationId: number) =>
+  await safeQuery(async () => {
     const [record, membershipRecords, invitationRecords, pipelineRows, activity] = await Promise.all([
       db.query.organizations.findFirst({
         with: { joinRequests: true, profile: true },
-        where: eq(organizations.id, id.data),
+        where: eq(organizations.id, organizationId),
       }),
       db.query.memberships.findMany({
-        where: eq(memberships.organizationId, id.data),
+        where: eq(memberships.organizationId, organizationId),
         with: { user: { columns: memberUserColumns } },
         orderBy: (records, { asc }) => [asc(records.role), asc(records.createdAt)],
         limit: 500,
       }),
       db.query.organizationInvitations.findMany({
-        where: eq(organizationInvitations.organizationId, id.data),
+        where: eq(organizationInvitations.organizationId, organizationId),
         with: { invitedBy: { columns: reviewerColumns } },
         orderBy: (records, { desc: orderDesc }) => [orderDesc(records.createdAt)],
         limit: 200,
@@ -239,9 +233,9 @@ export const getAdminOrganization = async (organizationId: number) => {
       db
         .select({ status: certificates.status, total: count() })
         .from(certificates)
-        .where(eq(certificates.organizationId, id.data))
+        .where(eq(certificates.organizationId, organizationId))
         .groupBy(certificates.status),
-      listOrganizationActivity(id.data),
+      listOrganizationActivity(organizationId),
     ])
 
     if (!record) {
@@ -251,9 +245,33 @@ export const getAdminOrganization = async (organizationId: number) => {
     return {
       ...parseOrganization({ ...record, memberships: membershipRecords }),
       activity,
-      currentUserId: admin.data.id,
       invitations: invitationRecords.map(invitation => parseOrganizationInvitation(invitation)),
       pipeline: toPipeline(pipelineRows),
     }
   })
+
+const fetchAdminOrganization = async (organizationId: number) => {
+  'use cache'
+  cacheTag(CacheTag.Organizations)
+
+  return await loadAdminOrganization(organizationId)
+}
+
+export const getAdminOrganizationName = async (organizationId: number) => {
+  const admin = await adminAction(requireAdmin)
+  const id = organizationIdSchema.safeParse(organizationId)
+  if (admin.error || !id.success) return null
+
+  return await fetchAdminOrganizationName(id.data)
+}
+
+export const getAdminOrganization = async (organizationId: number, { cache = false }: { cache?: boolean } = {}) => {
+  const admin = await adminAction(requireAdmin)
+  if (admin.error) return { data: null, error: admin.error }
+  const id = organizationIdSchema.safeParse(organizationId)
+  if (!id.success) return { data: null, error: { code: 'INVALID_INPUT', message: 'These values are not valid' } }
+
+  const result = cache ? await fetchAdminOrganization(id.data) : await loadAdminOrganization(id.data)
+  if (!result.data) return result
+  return { data: { ...result.data, currentUserId: admin.data.id }, error: null }
 }

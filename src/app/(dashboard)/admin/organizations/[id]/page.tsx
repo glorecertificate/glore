@@ -28,7 +28,7 @@ const AdminOrganizationLoaded = async ({ params }: { params: PageProps<'/admin/o
   const organizationId = Number(id)
   if (!organizationId || Number.isNaN(organizationId)) notFound()
 
-  const { data } = await getAdminOrganization(organizationId)
+  const { data } = await getAdminOrganization(organizationId, { cache: true })
   if (!data) notFound()
 
   const state = organizationState(data)

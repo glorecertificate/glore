@@ -3767,6 +3767,7 @@
       "previewNote": "You are previewing this course. Answers are checked, but nothing is saved.",
       "fallbackLanguage": "This lesson is not available in your language yet. You are reading it in {language}.",
       "noContent": "This lesson has no content yet.",
+      "locked": "Finish the previous lesson to open this one.",
       "quizTitle": "Check your understanding",
       "quizHint": "{count, plural, one {Answer the question to continue.} other {Answer all # questions to continue.}} After a wrong answer you can read the explanation and try again.",
       "quizHintOpen": "{count, plural, one {Answer the question to check it.} other {Answer the # questions to check them.}} After a wrong answer you can read the explanation and try again.",

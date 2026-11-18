@@ -3767,6 +3767,7 @@
       "previewNote": "Estás previsualizando este curso. Las respuestas se comprueban, pero no se guarda nada.",
       "fallbackLanguage": "Esta lección aún no está disponible en tu idioma. La estás leyendo en {language}.",
       "noContent": "Esta lección aún no tiene contenido.",
+      "locked": "Termina la lección anterior para abrir esta.",
       "quizTitle": "Comprueba lo que has aprendido",
       "quizHint": "{count, plural, one {Responde a la pregunta para continuar.} other {Responde a las # preguntas para continuar.}} Si fallas, puedes leer la explicación e intentarlo de nuevo.",
       "quizHintOpen": "{count, plural, one {Responde a la pregunta para comprobarla.} other {Responde a las # preguntas para comprobarlas.}} Si fallas, puedes leer la explicación e intentarlo de nuevo.",

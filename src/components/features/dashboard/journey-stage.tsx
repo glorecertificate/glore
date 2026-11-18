@@ -101,9 +101,9 @@ export const JourneyStage = ({
       data-slot="journey-stage"
     >
       <div className="flex flex-col gap-2">
-        <h2 className="type-stage text-fg-title" id="journey-stage-title">
+        <h1 className="type-stage text-fg-title" id="journey-stage-title">
           {t(`phases.${phase}.title`)}
-        </h2>
+        </h1>
         <p className="max-w-prose text-base text-fg-2">{lead()}</p>
       </div>
       <div className="flex flex-col gap-6 rounded-xl bg-surface-0 p-5 shadow-md sm:p-6 dark:bg-surface-1">

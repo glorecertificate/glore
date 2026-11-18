@@ -6,13 +6,12 @@ import { useTranslations } from 'next-intl'
 
 import { type MemberSummary } from '@/actions/dashboard/core'
 import { DashboardChecklist } from '@/components/features/dashboard/checklist'
-import { CourseIcon } from '@/components/features/dashboard/course-icon'
-import { DashboardHero } from '@/components/features/dashboard/hero'
+import { CourseRow } from '@/components/features/dashboard/course-row'
+import { DashboardEmpty } from '@/components/features/dashboard/empty'
+import { DashboardHeading } from '@/components/features/dashboard/heading'
 import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { NotificationList } from '@/components/features/notifications/notification-list'
-import { LucideIcon } from '@/components/icons/lucide'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Link } from '@/components/ui/link'
+import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 
 export const MemberDashboard = ({
@@ -42,11 +41,11 @@ export const MemberDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHero
+      <DashboardHeading
         action={heroAction}
-        name={firstName}
         organization={organization}
         subtitle={t('subtitle.learner')}
+        title={t('greeting', { name: firstName })}
       />
 
       <DashboardChecklist
@@ -68,32 +67,24 @@ export const MemberDashboard = ({
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <DashboardSection action={{ href: '/courses', label: t('viewCourses') }} title={t('continue.title')}>
           {courses.continuing.length === 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">{t('continue.emptyTitle')}</CardTitle>
-                <CardDescription>{t('continue.emptyDescription')}</CardDescription>
-              </CardHeader>
-            </Card>
+            <DashboardEmpty
+              className="border"
+              description={t('continue.emptyDescription')}
+              icon="book-open"
+              title={t('continue.emptyTitle')}
+            />
           ) : (
             <ul className="flex flex-col gap-3">
               {courses.continuing.map(course => (
                 <li key={course.slug}>
-                  <Link
-                    className="flex items-center gap-3 rounded-xl border bg-card p-4 transition-colors hover:bg-accent/40"
-                    href={`/courses/${course.slug}` as Route}
-                  >
-                    <CourseIcon icon={course.icon} type={course.type} />
-                    <span className="flex min-w-0 flex-1 flex-col gap-2">
-                      <span className="truncate text-sm font-medium">{course.title}</span>
-                      <span className="flex items-center gap-2">
-                        <Progress aria-label={course.title} className="h-1.5" color="brand" value={course.percent} />
-                        <span className="w-10 shrink-0 text-right text-xs font-medium tabular-nums">
-                          {t('continue.percent', { percent: course.percent })}
-                        </span>
+                  <CourseRow icon={course.icon} slug={course.slug} title={course.title} type={course.type}>
+                    <span className="flex items-center gap-2">
+                      <Progress aria-label={course.title} className="h-1.5" color="brand" value={course.percent} />
+                      <span className="w-10 shrink-0 text-right text-xs font-medium tabular-nums">
+                        {t('continue.percent', { percent: course.percent })}
                       </span>
                     </span>
-                    <LucideIcon name="arrow-right" className="size-4 shrink-0 text-muted-foreground" />
-                  </Link>
+                  </CourseRow>
                 </li>
               ))}
             </ul>
@@ -102,29 +93,21 @@ export const MemberDashboard = ({
 
         <DashboardSection title={t('recommended.title')}>
           {courses.recommendations.length === 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">{t('recommended.emptyTitle')}</CardTitle>
-                <CardDescription>{t('recommended.emptyDescription')}</CardDescription>
-              </CardHeader>
-            </Card>
+            <DashboardEmpty
+              className="border"
+              description={t('recommended.emptyDescription')}
+              icon="sparkles"
+              title={t('recommended.emptyTitle')}
+            />
           ) : (
             <ul className="flex flex-col gap-3">
               {courses.recommendations.map(course => (
                 <li key={course.slug}>
-                  <Link
-                    className="flex items-center gap-3 rounded-xl border bg-card p-4 transition-colors hover:bg-accent/40"
-                    href={`/courses/${course.slug}` as Route}
-                  >
-                    <CourseIcon icon={course.icon} type={course.type} />
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-sm font-medium">{course.title}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {course.goal ? t('recommended.goal') : t(`recommended.type.${course.type}`)}
-                      </span>
+                  <CourseRow icon={course.icon} slug={course.slug} title={course.title} type={course.type}>
+                    <span className="text-xs text-muted-foreground">
+                      {course.goal ? t('recommended.goal') : t(`recommended.type.${course.type}`)}
                     </span>
-                    <LucideIcon name="arrow-right" className="size-4 shrink-0 text-muted-foreground" />
-                  </Link>
+                  </CourseRow>
                 </li>
               ))}
             </ul>
@@ -136,7 +119,7 @@ export const MemberDashboard = ({
         <Card>
           <CardContent>
             {notifications.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t('updates.empty')}</p>
+              <DashboardEmpty icon="bell-off" title={t('updates.empty')} />
             ) : (
               <NotificationList notifications={notifications} />
             )}

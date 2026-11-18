@@ -5,7 +5,8 @@ import { type Route } from 'next'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type EditorSummary } from '@/actions/dashboard/core'
-import { DashboardHero } from '@/components/features/dashboard/hero'
+import { DashboardEmpty } from '@/components/features/dashboard/empty'
+import { DashboardHeading } from '@/components/features/dashboard/heading'
 import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
@@ -34,11 +35,11 @@ export const EditorDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHero
+      <DashboardHeading
         action={{ href: '/courses', label: t('editor.openCourses') }}
-        name={firstName}
         organization={organization}
         subtitle={t('subtitle.editor')}
+        title={t('greeting', { name: firstName })}
       />
 
       {pending && pendingTotal > 0 && (
@@ -111,7 +112,7 @@ export const EditorDashboard = ({
                 variant="area"
               />
             ) : (
-              <p className="text-sm text-muted-foreground">{t('editor.engagementEmpty')}</p>
+              <DashboardEmpty icon="chart-line" title={t('editor.engagementEmpty')} />
             )}
           </CardContent>
         </Card>
@@ -138,7 +139,7 @@ export const EditorDashboard = ({
                 variant="bar"
               />
             ) : (
-              <p className="text-sm text-muted-foreground">{t('editor.topEmpty')}</p>
+              <DashboardEmpty icon="chart-bar" title={t('editor.topEmpty')} />
             )}
           </CardContent>
         </Card>
@@ -187,11 +188,10 @@ export const EditorDashboard = ({
         <Card>
           <CardHeader>
             <CardTitle>{t('editor.healthTitle')}</CardTitle>
-            <CardDescription>
-              {health.attention.length === 0 ? t('editor.healthClear') : t('editor.healthDescription')}
-            </CardDescription>
+            {health.attention.length > 0 && <CardDescription>{t('editor.healthDescription')}</CardDescription>}
           </CardHeader>
           <CardContent>
+            {health.attention.length === 0 && <DashboardEmpty icon="circle-check" title={t('editor.healthClear')} />}
             {health.attention.length > 0 && (
               <ul className="divide-y">
                 {health.attention.map(course => (

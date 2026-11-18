@@ -34,7 +34,7 @@ import {
 import { parseOrganization, parseOrganizationInvitation } from '@/db/queries/organization'
 import { toPipeline } from '@/db/queries/organization-insights'
 import { certificates, memberships, organizationInvitations, organizations } from '@/db/schema'
-import { CacheTag } from '@/lib/cache'
+import { CacheTag, certificatesOrgTag, userTag } from '@/lib/cache'
 import config from '~/config/app.json'
 
 const fetchOrganizations = async () => {
@@ -195,9 +195,11 @@ const loadAdminOrganization = async (organizationId: number) =>
 
 const fetchAdminOrganization = async (organizationId: number) => {
   'use cache'
-  cacheTag(CacheTag.Organizations)
+  cacheTag(CacheTag.Organizations, certificatesOrgTag(organizationId))
 
-  return await loadAdminOrganization(organizationId)
+  const result = await loadAdminOrganization(organizationId)
+  for (const { user } of result.data?.memberships ?? []) cacheTag(userTag(user.id))
+  return result
 }
 
 export const getAdminOrganizationName = async (organizationId: number) => {

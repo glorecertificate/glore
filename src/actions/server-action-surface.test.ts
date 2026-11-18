@@ -146,9 +146,15 @@ const analyzeSource = (file: string, source: string): Violation[] => {
     }
     if (statement.type === 'ExportDefaultDeclaration') {
       const { declaration } = statement
-      if (declaration.type === 'FunctionDeclaration' && declaration.id) check('default', declaration.id.name)
-      else if (declaration.type === 'Identifier') check('default', declaration.name)
-      else flag('default', 'default export of a non-function declaration')
+      if (declaration.type === 'FunctionDeclaration' && declaration.id) {
+        check('default', declaration.id.name)
+        continue
+      }
+      if (declaration.type === 'Identifier') {
+        check('default', declaration.name)
+        continue
+      }
+      flag('default', 'default export of a non-function declaration')
       continue
     }
     if (statement.type !== 'ExportNamedDeclaration' || statement.exportKind === 'type') continue

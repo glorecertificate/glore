@@ -43,6 +43,10 @@
     {
       "name": "tailwindcss",
       "specifier": "oxlint-tailwindcss"
+    },
+    {
+      "name": "glore",
+      "specifier": "./scripts/lint/glore-plugin.mjs"
     }
   ],
   "rules": {
@@ -167,6 +171,7 @@
     "eslint/symbol-description": "warn",
     "eslint/use-isnan": "error",
     "eslint/valid-typeof": "error",
+    "glore/no-else": "error",
     "import/consistent-type-specifier-style": ["error", "prefer-inline"],
     "import/exports-last": "off",
     "import/group-exports": "off",

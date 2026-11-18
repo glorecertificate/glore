@@ -47,8 +47,9 @@ export const renameInCatalogs = ({ catalogs, newKey, oldKey }: Omit<RenameOption
   const renamed: string[] = []
   const missing: string[] = []
   for (const [locale, tree] of Object.entries(next)) {
-    if (renameLeaf(tree, oldKey, newKey)) renamed.push(locale)
-    else missing.push(locale)
+    const done = renameLeaf(tree, oldKey, newKey)
+    if (done) renamed.push(locale)
+    if (!done) missing.push(locale)
   }
   return { catalogs: next, missing, renamed }
 }

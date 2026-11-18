@@ -83,27 +83,28 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 - Also off in `react-doctor`: `js-set-map-lookups`, `no-tiny-text`, `no-layout-property-animation`, `no-pass-data-to-parent`, and `effect-needs-cleanup`.
 - The vendored editor gets a scoped override instead of source edits, and its one hardcoded color class sits in the `tailwindcss/no-hardcoded-colors` allow list.
 
-| Rule                                     | Setting                                        |
-| ---------------------------------------- | ---------------------------------------------- |
-| `unicorn/no-array-for-each`              | Error: use `for..of`, `map`, `reduce`          |
-| `eslint/no-else-return`                  | Error: use early returns                       |
-| `func-style`                             | Error, `expression`: arrow functions only      |
-| `import/no-relative-parent-imports`      | Error: use `@/` or `~/`                        |
-| `import/consistent-type-specifier-style` | Error: inline type imports                     |
-| `typescript/consistent-type-definitions` | Error, `interface`: interface over type        |
-| `typescript/array-type`                  | Error, `array`: `string[]` not `Array<string>` |
-| `typescript/no-inferrable-types`         | Error: omit inferrable type annotations        |
-| `typescript/no-explicit-any`             | Warn (only `src/lib/types.ts` may use `any`)   |
-| `unicorn/filename-case`                  | Error: kebab-case (ignores `$`-prefixed)       |
-| `import/no-anonymous-default-export`     | Error everywhere, call expressions included    |
-| `promise/prefer-await-to-then`           | Error: `await`, not `.then()` chains           |
-| `react/jsx-curly-brace-presence`         | Error: no braces on props, always on children  |
-| `eslint/prefer-template`                 | Error: template literals over concatenation    |
+| Rule                                     | Setting                                                                      |
+| ---------------------------------------- | ---------------------------------------------------------------------------- |
+| `unicorn/no-array-for-each`              | Error: use `for..of`, `map`, `reduce`                                        |
+| `eslint/no-else-return`                  | Error: use early returns                                                     |
+| `glore/no-else`                          | Error: no `else` or `else if` (local plugin `scripts/lint/glore-plugin.mjs`) |
+| `func-style`                             | Error, `expression`: arrow functions only                                    |
+| `import/no-relative-parent-imports`      | Error: use `@/` or `~/`                                                      |
+| `import/consistent-type-specifier-style` | Error: inline type imports                                                   |
+| `typescript/consistent-type-definitions` | Error, `interface`: interface over type                                      |
+| `typescript/array-type`                  | Error, `array`: `string[]` not `Array<string>`                               |
+| `typescript/no-inferrable-types`         | Error: omit inferrable type annotations                                      |
+| `typescript/no-explicit-any`             | Warn (only `src/lib/types.ts` may use `any`)                                 |
+| `unicorn/filename-case`                  | Error: kebab-case (ignores `$`-prefixed)                                     |
+| `import/no-anonymous-default-export`     | Error everywhere, call expressions included                                  |
+| `promise/prefer-await-to-then`           | Error: `await`, not `.then()` chains                                         |
+| `react/jsx-curly-brace-presence`         | Error: no braces on props, always on children                                |
+| `eslint/prefer-template`                 | Error: template literals over concatenation                                  |
 
 ## Plugins and type-aware mode
 
 - Loaded plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`.
-- JS plugins (`jsPlugins` entries): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`).
+- JS plugins (`jsPlugins` entries): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`), `glore` (`scripts/lint/glore-plugin.mjs`).
 - Knip resolves `jsPlugins` natively as an oxlint config, so they need no `ignoreDependencies` entry.
 - All 380 `react-doctor` rules are listed explicitly (352 `error`, 28 `off`).
 - oxlint runs a JS-plugin rule only when `rules` names it. There is no wildcard or category shorthand, and an unlisted rule is disabled.

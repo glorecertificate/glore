@@ -93,12 +93,12 @@ export const InlineInput = ({
     const empty = !e.target.value.trim()
 
     if (keepFilled && empty) {
-      if (value !== undefined && onChange) {
+      const controlled = value !== undefined && onChange
+      if (controlled) {
         e.target.value = staticValueRef.current.toString()
         onChange(e)
-      } else if (ref.current) {
-        ref.current.value = staticValueRef.current.toString()
       }
+      if (!controlled && ref.current) ref.current.value = staticValueRef.current.toString()
       onBlur?.(e)
       requestAnimationFrame(() => {
         if (ref.current) {

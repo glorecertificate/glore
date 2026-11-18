@@ -74,7 +74,9 @@ const smoothStream = <TOOLS extends ToolSet>({
 
       return match
     }
-  } else {
+  }
+
+  if (typeof chunking !== 'function') {
     const chunkingRegex = typeof chunking === 'string' ? CHUNKING_REGEXPS[chunking] : chunking
 
     if (!chunkingRegex) {
@@ -151,37 +153,26 @@ export const POST = async (request: NextRequest) => {
     abortSignal: request.signal,
     experimental_transform: smoothStream({
       chunking: buffer => {
-        if (CODE_BLOCK_REGEX.test(buffer)) {
-          isInCodeBlock = true
-        } else if (isInCodeBlock && buffer.includes('```')) {
-          isInCodeBlock = false
-        }
-        if (buffer.includes('http')) {
-          isInLink = true
-        } else if (buffer.includes('https')) {
-          isInLink = true
-        } else if (buffer.includes('\n') && isInLink) {
-          isInLink = false
-        }
-        if (buffer.includes('*') || buffer.includes('-')) {
-          isInList = true
-        } else if (buffer.includes('\n') && isInList) {
-          isInList = false
-        }
-        if (!isInTable && buffer.includes('|')) {
-          isInTable = true
-        } else if (isInTable && buffer.includes('\n\n')) {
-          isInTable = false
-        }
+        const opensCodeBlock = CODE_BLOCK_REGEX.test(buffer)
+        if (opensCodeBlock) isInCodeBlock = true
+        if (!opensCodeBlock && isInCodeBlock && buffer.includes('```')) isInCodeBlock = false
 
-        let match: RegExpExecArray | null
-        if (isInCodeBlock || isInTable || isInLink) {
-          match = CHUNKING_REGEXPS.line.exec(buffer)
-        } else if (isInList) {
-          match = CHUNKING_REGEXPS.list.exec(buffer)
-        } else {
-          match = CHUNKING_REGEXPS.word.exec(buffer)
-        }
+        const hasLink = buffer.includes('http')
+        if (hasLink) isInLink = true
+        if (!hasLink && buffer.includes('\n') && isInLink) isInLink = false
+
+        const hasList = buffer.includes('*') || buffer.includes('-')
+        if (hasList) isInList = true
+        if (!hasList && buffer.includes('\n') && isInList) isInList = false
+
+        const opensTable = !isInTable && buffer.includes('|')
+        if (opensTable) isInTable = true
+        if (!opensTable && isInTable && buffer.includes('\n\n')) isInTable = false
+
+        let pattern = CHUNKING_REGEXPS.word
+        if (isInList) pattern = CHUNKING_REGEXPS.list
+        if (isInCodeBlock || isInTable || isInLink) pattern = CHUNKING_REGEXPS.line
+        const match = pattern.exec(buffer)
         if (!match) {
           return null
         }

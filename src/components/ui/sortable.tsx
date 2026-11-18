@@ -165,11 +165,8 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
       const activeIndex = value.findIndex(item => getItemValue(item) === active.id)
       const overIndex = value.findIndex(item => getItemValue(item) === over.id)
 
-      if (onMove) {
-        onMove({ ...event, activeIndex, overIndex })
-      } else {
-        onValueChange?.(arrayMove(value, activeIndex, overIndex))
-      }
+      if (onMove) onMove({ ...event, activeIndex, overIndex })
+      if (!onMove) onValueChange?.(arrayMove(value, activeIndex, overIndex))
     }
     setActiveId(null)
   }

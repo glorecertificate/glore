@@ -176,7 +176,7 @@ const loadLessons = (root: string, courseDir: string) => {
     const number = Number(match[1])
     const lesson = byNumber.get(number) ?? { files: {}, invalid: [], number }
     if (parsed.lesson) lesson.files[locale] = parsed.lesson
-    else lesson.invalid.push(locale)
+    if (!parsed.lesson) lesson.invalid.push(locale)
     byNumber.set(number, lesson)
   }
 

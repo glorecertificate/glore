@@ -102,6 +102,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 15. Invitations never create memberships. Accepting one does (`organizations.md`, "Invitation rules").
 16. Membership changes live in `db/mutations/organization.ts` (`organizations.md`).
 17. Call admin `auth.api.*` only from `actions/admin/*` after `requireAdmin` (`admin.md`).
+18. Controls keep their visible size on touch. Add a hit area with `touch-hit`, never a bigger control (`ui-components.md`, "Mobile and touch").
 
 ## Verification
 

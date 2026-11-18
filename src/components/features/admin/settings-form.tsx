@@ -5,11 +5,9 @@ import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 
 import { saveSettings } from '@/actions/admin/settings'
-import { SettingsSection } from '@/components/features/organization/settings-section'
 import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Separator } from '@/components/ui/separator'
 import { toast } from '@/components/ui/toast'
 import { useFormDisabled } from '@/hooks/use-form-disabled'
 import {
@@ -22,6 +20,7 @@ import {
 } from '@/lib/app-settings'
 
 import { SettingsField } from './settings-field'
+import { SettingsSection } from './settings-section'
 import { useAdminError } from './use-admin-error'
 
 export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
@@ -56,79 +55,78 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(handleSubmit)}>
         <SettingsSection description={t('contactDescription')} title={t('contactTitle')}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <SettingsField
-              control={form.control}
-              label={t('email')}
-              name="email"
-              placeholder={t('emailPlaceholder')}
-              type="email"
-            />
-            <SettingsField
-              control={form.control}
-              description={t('phoneHelp')}
-              label={t('phone')}
-              name="phone"
-              placeholder={t('phonePlaceholder')}
-              type="tel"
-            />
-            <SettingsField
-              className="sm:col-span-2"
-              control={form.control}
-              label={t('website')}
-              name="website"
-              placeholder={t('websitePlaceholder')}
-              type="url"
-            />
-          </div>
+          <SettingsField
+            control={form.control}
+            label={t('email')}
+            name="email"
+            placeholder={t('emailPlaceholder')}
+            type="email"
+          />
+          <SettingsField
+            control={form.control}
+            description={t('phoneHelp')}
+            label={t('phone')}
+            name="phone"
+            placeholder={t('phonePlaceholder')}
+            type="tel"
+          />
+          <SettingsField
+            className="sm:col-span-2"
+            control={form.control}
+            label={t('website')}
+            name="website"
+            placeholder={t('websitePlaceholder')}
+            type="url"
+          />
         </SettingsSection>
-
-        <Separator className="my-8" />
 
         <SettingsSection description={t('socialDescription')} title={t('socialTitle')}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {SOCIAL_PLATFORMS.map(platform => (
-              <SettingsField
-                control={form.control}
-                key={platform}
-                label={SOCIAL_LABELS[platform]}
-                name={`social.${platform}`}
-                placeholder={t('socialPlaceholder')}
-                type="url"
-              />
-            ))}
-          </div>
+          {SOCIAL_PLATFORMS.map(platform => (
+            <SettingsField
+              control={form.control}
+              key={platform}
+              label={SOCIAL_LABELS[platform]}
+              name={`social.${platform}`}
+              placeholder={t('socialPlaceholder')}
+              type="url"
+            />
+          ))}
         </SettingsSection>
-
-        <Separator className="my-8" />
 
         <SettingsSection description={t('entityDescription')} title={t('entityTitle')}>
-          <div className="grid gap-4">
-            <SettingsField control={form.control} label={t('entityName')} name="legalEntity.name" />
-            <SettingsField control={form.control} label={t('entityAddress')} name="legalEntity.address" />
-            <FormField
-              control={form.control}
-              name="legalEntity.country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('entityCountry')}</FormLabel>
-                  <FormControl>
-                    <CountrySelect
-                      disabled={form.formState.isSubmitting}
-                      onChange={field.onChange}
-                      value={field.value}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <SettingsField
+            className="sm:col-span-2"
+            control={form.control}
+            label={t('entityName')}
+            name="legalEntity.name"
+          />
+          <SettingsField
+            className="sm:col-span-2"
+            control={form.control}
+            label={t('entityAddress')}
+            name="legalEntity.address"
+          />
+          <FormField
+            control={form.control}
+            name="legalEntity.country"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('entityCountry')}</FormLabel>
+                <FormControl>
+                  <CountrySelect disabled={form.formState.isSubmitting} onChange={field.onChange} value={field.value} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </SettingsSection>
 
-        <div className="mt-8 flex justify-end gap-2">
+        <div className="sticky bottom-0 -mx-page flex flex-wrap items-center justify-end gap-3 border-t bg-background/95 px-page py-3 backdrop-blur-sm">
+          <output aria-live="polite" className="mr-auto text-sm text-muted-foreground">
+            {form.formState.isDirty ? t('unsaved') : t('upToDate')}
+          </output>
           <Button disabled={form.formState.isSubmitting} onClick={handleRestore} type="button" variant="outline">
             {t('restore')}
           </Button>

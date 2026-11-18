@@ -6,6 +6,15 @@
 - `adminAction()` returns `{ data, error: { code, message } }`. The client maps `code` to `Admin.errors` with `useAdminError`.
 - The organization actions in `actions/admin/organizations.ts` (read, approve, reject, create, invite) follow the same rule, never `isAdmin` from `getCurrentUser`. Writes validate `db/queries/admin-organization.ts` schemas (ids, review comment, create and invite input with an `http` or `https` website) and answer `INVALID_INPUT` on a bad value.
 
+## Screen anatomy
+
+- Every admin, translations, and emails page renders `AdminPage` (`features/admin/admin-page.tsx`): a visible `PageHeaderDescription` and optional `PageHeaderActions`, then the content. The title stays in the header bar, and the bar no longer carries a description tooltip.
+- Primary actions sit in the page header (`Create organization`, `Invite organization`, `Invite member`), never inside a table card.
+- Lists use `DataTable` with a `FilterBar`. `/admin/organizations` and `/admin/team` sort and filter locally with a header sort, and the server-paged lists (users, certificates, audit) sort by recency only.
+- States are `StatusBadge` tones: pending `warning`, active or joined `success`, rejected or banned `danger`. Roles and audit categories stay `Badge`.
+- The organization record header is a `PageHeader` (avatar, `PageHeaderTitle`, status, meta list) with the review actions in `PageHeaderActions`. The application tab links the website and emails.
+- Row actions are one `ellipsis` menu with a destructive item last, and a confirm dialog for every destructive or irreversible action.
+
 ## Users
 
 - `/admin/users` is server paged (20 per page).

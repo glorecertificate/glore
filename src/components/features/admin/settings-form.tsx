@@ -124,13 +124,20 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
         </SettingsSection>
 
         <div className="sticky bottom-0 -mx-page flex flex-wrap items-center justify-end gap-3 border-t bg-background/95 px-page py-3 backdrop-blur-sm">
-          <output aria-live="polite" className="mr-auto text-sm text-muted-foreground">
+          <output aria-live="polite" className="mr-auto text-sm text-muted-foreground max-sm:sr-only">
             {form.formState.isDirty ? t('unsaved') : t('upToDate')}
           </output>
-          <Button disabled={form.formState.isSubmitting} onClick={handleRestore} type="button" variant="outline">
+          <Button
+            disabled={form.formState.isSubmitting}
+            className="max-sm:flex-1"
+            onClick={handleRestore}
+            type="button"
+            variant="outline"
+          >
             {t('restore')}
           </Button>
           <Button
+            className="max-sm:flex-1"
             disabled={disabled || form.formState.isSubmitting}
             loading={form.formState.isSubmitting}
             loadingText={t('saving')}

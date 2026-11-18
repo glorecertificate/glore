@@ -64,8 +64,10 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 ## CI
 
 - The `Perf` job in `.github/workflows/perf.yml` runs on each pull request and each push to `main`. It skips the merge queue.
-- It builds and starts the app like `E2E / E2E`, runs `test:perf`, and uploads `perf-results` for 30 days.
-- On a pull request it also builds the base commit and starts it on port 3001 on the same runner. Each server has its own database and its own logins. The head uses `glore` and the base uses `glore_base`, which the job migrates, imports, and seeds with the base code.
+- Four `Measure` jobs run in parallel. Each one builds and starts the app like `E2E / E2E` and runs `test:perf --shard=<n>/4`. The perf project sets `fullyParallel: true`, so Playwright splits the cases by test, and each case runs in exactly one shard. Each shard keeps `workers: 1` and uploads its results as `perf-shard-<n>` for 1 day.
+- The last job is named `Perf`. It downloads the four shard artifacts into one folder, runs `qa:perf` once, and uploads `perf-results` for 30 days. Each case writes its own file, so the merge needs no change to `scripts/perf.mts`, and the report is the same as for one runner.
+- The `Perf` job fails when a `Measure` job fails or is skipped, and when `qa:perf` fails.
+- On a pull request each shard also builds the base commit and starts it on port 3001 on the same runner, so the base and the head of a case always run on one runner. Each server has its own database and its own logins. The head uses `glore` and the base uses `glore_base`, which the job migrates, imports, and seeds with the base code.
 - The separate database lets the base run after a destructive migration. The setup project logs each role in on each server and saves one storage state per target, because sessions live in the database.
 - Each load and navigation case alternates between the base and the head on each run. Each interaction case runs one block on each server.
 - A baseline from another runner is not valid. On two runs of one commit, the CPU-bound metrics moved by 10% to 50%.

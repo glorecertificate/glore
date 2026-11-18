@@ -109,10 +109,11 @@ export const login = async ({
   redirect((safeNextPath(next) ?? APP_ROOT) as Route)
 }
 
-export const logout = async () => {
+export const logout = async ({ loggedOut = false }: { loggedOut?: boolean } = {}) => {
   const user = await getAuthUser()
   await auth.api.signOut({ headers: await headers() })
   updateTag(user ? userTag(user.id) : CacheTag.User)
+  if (loggedOut) redirect(`${AUTH_ROOT}?loggedOut=true`)
 }
 
 export const refreshAuthSession = async () => {

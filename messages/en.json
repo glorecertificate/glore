@@ -943,7 +943,6 @@
     "lessons": "{count, plural, =1 {lesson} other {lessons}}",
     "loading": "Loading…",
     "sortBy-name": "Name",
-    "noDescription": "No description available.",
     "noLessonsCreated": "No lessons available",
     "enrolledStudents": "{count, plural, one {# person enrolled} other {# people enrolled}}",
     "notFound": "Course not found",

@@ -22,6 +22,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { IconPicker } from '@/components/ui/icon-picker'
 import { Link } from '@/components/ui/link'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Progress } from '@/components/ui/progress'
 import { SearchHighlight } from '@/components/ui/search'
 import { StatusBadge } from '@/components/ui/status-badge'
@@ -100,14 +101,14 @@ export const CourseListCard = ({
     return translation.length > courseDescription.length ? (
       <>
         <SearchHighlight query={search} value={courseDescription} />
-        <Tooltip>
-          <TooltipTrigger className="ml-1 inline-block cursor-help type-caption text-muted-foreground">
+        <Popover>
+          <PopoverTrigger className="relative ml-1 inline-block cursor-pointer type-caption text-muted-foreground underline-offset-2 hover:underline pointer-coarse:before:absolute pointer-coarse:before:-inset-3 pointer-coarse:before:content-['']">
             {t('cardDescriptionMore')}
-          </TooltipTrigger>
-          <TooltipContent className="max-w-75 text-sm" side="bottom" sideOffset={4}>
+          </PopoverTrigger>
+          <PopoverContent className="max-w-75 text-sm" side="bottom" sideOffset={4}>
             <SearchHighlight query={search} value={translation} />
-          </TooltipContent>
-        </Tooltip>
+          </PopoverContent>
+        </Popover>
       </>
     ) : (
       <SearchHighlight query={search} value={courseDescription} />
@@ -219,11 +220,11 @@ export const CourseListCard = ({
           </div>
         )}
       </CardHeader>
-      <CardContent className="mb-0.5">
-        <p className={cn('text-sm', description ? 'text-muted-foreground' : 'text-muted-foreground italic')}>
-          {description ?? t('noDescription')}
-        </p>
-      </CardContent>
+      {description && (
+        <CardContent className="mb-0.5">
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </CardContent>
+      )}
       <CardFooter className="flex grow flex-col justify-end gap-5">
         <div className="flex flex-col gap-2.5">
           {/* Drafts */}
@@ -404,7 +405,7 @@ export const CourseListCard = ({
         {user.canEdit ? (
           <CourseCardActions actionLabel={actionLabel} course={course} coursePath={coursePath} />
         ) : (
-          <Button asChild className="w-full" variant="outline">
+          <Button asChild className="w-full" variant={course.completed ? 'outline' : 'primary'}>
             <Link href={coursePath}>{actionLabel}</Link>
           </Button>
         )}

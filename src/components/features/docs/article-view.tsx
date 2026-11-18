@@ -3,8 +3,7 @@ import { cache } from 'react'
 import { type Locale } from 'next-intl'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 
-import { getAuthUser } from '@/actions/auth'
-import { findDocArticle, listDocCategories } from '@/actions/docs'
+import { getDocEditor, loadDocArticle, loadDocCategories } from '@/actions/docs-core'
 import { ArticleActions } from '@/components/features/docs/article-actions'
 import { extractHeadings, headingIdsByLine } from '@/components/features/docs/headings'
 import { ReadingMarkdown } from '@/components/features/docs/reading-markdown'
@@ -25,7 +24,7 @@ import { pickLocale } from '@/db/queries/learning'
 import { LOCALES } from '@/lib/i18n'
 
 export const loadArticle = cache(async (slug: string) => {
-  const found = await findDocArticle(slug)
+  const found = await loadDocArticle(slug)
   if (!found) return null
   const locale = (await getLocale()) as Locale
   const title = pickLocale(found.article.title, locale) ?? found.article.slug
@@ -40,13 +39,12 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
   const data = await loadArticle(slug)
   if (!data) return null
 
-  const [t, format, user, categories] = await Promise.all([
+  const [t, format, canEdit, categories] = await Promise.all([
     getTranslations('Docs'),
     getFormatter(),
-    getAuthUser(),
-    listDocCategories({ includeUnpublished: true }),
+    getDocEditor(),
+    loadDocCategories(),
   ])
-  const canEdit = user?.role === 'admin' || Boolean(user?.isEditor)
   const { article, category, content, excerpt, locale, siblings, title, translated } = data
 
   const index = siblings.findIndex(sibling => sibling.slug === article.slug)

@@ -43,7 +43,6 @@ const TeamInviteEmail = ({
 
   const footer = (
     <Text className={`mt-4 mb-0 ${EMAIL_CLASSES.fine}`}>
-      {' '}
       {t.rich('footer', {
         inviter: inviterName,
         emailLink: chunks => (

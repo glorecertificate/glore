@@ -120,6 +120,8 @@ src/
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`).
 - `db/schema/<table>.ts` holds Drizzle table definitions.
 - `features/docs/use-docs-search.ts` is the docs search hook for the command palette.
+- Reading surfaces (articles, legal documents) share `features/docs/headings.ts` (`extractHeadings`, `headingIdsByLine`), `reading-components.tsx`, `reading-markdown.tsx`, `reading-toc.tsx`, and `toc-links.tsx`. Heading ids map by source line, so the table of contents and the rendered anchors always agree.
+- `features/about/` also holds `InfoSection`, `InfoCard`, and `info-tone.ts`, the shared blocks of the About and Help pages.
 - `features/translations/` holds the `/translations` table and editor sheet.
 
 ## Layer boundaries (lint-enforced)
@@ -197,4 +199,4 @@ src/
 - `organization/{application-decision,invitation (invite and reminder),join-request,join-request-received,membership,registration-request}`.
 - `team/{invite,role-changed}`.
 - Each has `PreviewProps` for `pnpm run email` and `Email.<name>` copy in all catalogs.
-- `Notice` (`src/emails/notice.tsx`) is the shared body, and `public/email/header.png` is the logo and motif header.
+- `EmailLayout` (`src/emails/layout.tsx`) is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` (`src/emails/notice.tsx`) is the shared body, and `public/email/header.png` is the logo and motif header.

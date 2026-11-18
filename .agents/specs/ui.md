@@ -150,7 +150,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `--radius` is `0.6rem` with `sm`, `md`, `lg`, and `xl` derivatives.
 - `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
 - The mobile breakpoint is 768px, sourced from `config/theme.json`.
-- Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`. Its `brand` is the `action` blue, because email buttons carry white text.
+- Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`: `EMAIL_COLORS` (light) and `EMAIL_COLORS_DARK`, each with `action`, `actionText`, `border`, `canvas`, `danger`, `faint`, `muted`, `onDanger`, `onFill`, `sunken`, `surface`, `text`, and `title`. Dark names carry a `-dark` suffix and apply through `dark:` classes. Class strings live in `src/emails/classes.ts` (`EMAIL_CLASSES`), so a template never writes a hex value. The `brand` color is the `action` blue, because email buttons carry white text.
 
 ## Controls
 

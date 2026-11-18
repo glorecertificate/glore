@@ -52,7 +52,7 @@ const OrganizationInvitationEmail = ({
       }
       userName={userName}
     >
-      <Text className={`mt-2 ${EMAIL_CLASSES.fine}`}>{t('manualLink')}</Text>
+      <Text className={`m-0 mt-2 ${EMAIL_CLASSES.fine}`}>{t('manualLink')}</Text>
       <Link className={EMAIL_CLASSES.manualLink} href={url}>
         {url}
       </Link>

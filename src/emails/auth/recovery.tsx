@@ -36,7 +36,6 @@ const AuthRecoveryEmail = ({
 
   const footer = (
     <Text className={`mt-4 mb-0 ${EMAIL_CLASSES.fine}`}>
-      {' '}
       {t.rich('footer', {
         emailLink: chunks => (
           <Link className={EMAIL_CLASSES.link} href={`mailto:${settings.email}`}>

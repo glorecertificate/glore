@@ -2,7 +2,9 @@
 
 import { useMessages, useTranslations } from 'next-intl'
 
-import { InfoCard, InfoSection, type InfoTone } from '@/components/features/about/blocks'
+import { InfoCard } from '@/components/features/about/info-card'
+import { InfoSection } from '@/components/features/about/info-section'
+import { type InfoTone } from '@/components/features/about/info-tone'
 import { Faq } from '@/components/features/help/faq'
 import { type HelpRole, useHelpRole } from '@/components/features/help/use-help-role'
 import { LucideIcon } from '@/components/icons/lucide'

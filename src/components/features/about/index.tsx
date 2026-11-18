@@ -1,6 +1,8 @@
 import { getMessages, getTranslations } from 'next-intl/server'
 
-import { InfoCard, InfoSection, type InfoTone } from '@/components/features/about/blocks'
+import { InfoCard } from '@/components/features/about/info-card'
+import { InfoSection } from '@/components/features/about/info-section'
+import { type InfoTone } from '@/components/features/about/info-tone'
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
 import { Button } from '@/components/ui/button'

@@ -10,8 +10,9 @@ import { useDocsSearch } from '@/components/features/docs/use-docs-search'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { FilterBar } from '@/components/ui/filter-bar'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/ui/search'
 import { type DocCategory } from '@/db/queries/doc'
+import { SHORTCUTS } from '@/lib/shortcuts'
 
 interface DocsListProps {
   categories: DocCategory[]
@@ -43,14 +44,13 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
     <>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <FilterBar active={term.length > 0} onClear={() => setQuery('')}>
-          <Input
+          <SearchInput
             aria-label={tCommon('searchItems')}
-            className="sm:max-w-sm"
-            hotkey="/"
-            icon="search"
+            className="sm:w-80"
+            hotkey={SHORTCUTS.filter.key}
             placeholder={tCommon('searchItems')}
             value={query}
-            onChange={event => setQuery(event.target.value)}
+            onValueChange={setQuery}
           />
           {term && <output className="type-caption text-fg-2">{t('search.results', { count: total })}</output>}
         </FilterBar>

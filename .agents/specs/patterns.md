@@ -205,5 +205,6 @@ The two layers stay separate because UI shapes diverge from table columns.
 
 ## Email templates and notifications
 
-- Templates live in `src/emails/<group>/<name>.tsx` (React Email) and register in `TEMPLATES` in `src/lib/email.ts`.
+- Templates live in `src/emails/<group>/<name>.tsx` (React Email) and register in `TEMPLATES` in `src/lib/email.ts`. Style them with `EMAIL_CLASSES` from `src/emails/classes.ts` (light and `dark:` token classes), never a hex value.
+- Reading pages build on `InfoSection` and `InfoCard` (`features/about/`), and long-form text on `ReadingMarkdown`, `ReadingToc`, and `extractHeadings` (`features/docs/`). One component per file.
 - Events, `notify`, and the catalog: `architecture.md`, "Events, notifications, and email".

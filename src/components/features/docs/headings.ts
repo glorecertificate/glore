@@ -1,12 +1,12 @@
 export interface ReadingHeading {
   id: string
-  level: 2 | 3
+  level: 1 | 2 | 3
   line: number
   text: string
 }
 
-const HEADING = /^(#{1,3})\s+(.+?)\s*#*\s*$/u
-const FENCE = /^\s*(```|~~~)/u
+const HEADING = /^(#{1,3})\s+(.+?)(?:\s+#+)?\s*$/u
+const FENCE = /^\s{0,3}(`{3,}|~{3,})(.*)$/u
 
 const plain = (value: string) =>
   value
@@ -25,21 +25,27 @@ const slugifyHeading = (value: string) =>
 export const extractHeadings = (markdown: string): ReadingHeading[] => {
   const used = new Map<string, number>()
   const headings: ReadingHeading[] = []
-  let fenced = false
+  let fence: string | null = null
 
   for (const [index, line] of markdown.split('\n').entries()) {
-    if (FENCE.test(line)) {
-      fenced = !fenced
+    const marker = FENCE.exec(line)
+    if (fence) {
+      const closes =
+        marker && marker[1]?.[0] === fence[0] && (marker[1]?.length ?? 0) >= fence.length && !marker[2]?.trim()
+      if (closes) fence = null
       continue
     }
-    if (fenced) continue
+    if (marker) {
+      fence = marker[1] ?? null
+      continue
+    }
     const match = HEADING.exec(line)
     if (!match) continue
     const text = plain(match[2] ?? '')
     const base = slugifyHeading(text) || 'section'
     const count = used.get(base) ?? 0
     used.set(base, count + 1)
-    const level = (match[1]?.length ?? 1) === 3 ? 3 : 2
+    const level = (match[1]?.length ?? 2) as 1 | 2 | 3
     headings.push({ id: count === 0 ? base : `${base}-${count}`, level, line: index + 1, text })
   }
 

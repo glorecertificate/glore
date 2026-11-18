@@ -214,7 +214,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
               }
               return (
                 <StatusBadge icon="circle-check" tone="success">
-                  {t('filter_active')}
+                  {t('statusActive')}
                 </StatusBadge>
               )
             },

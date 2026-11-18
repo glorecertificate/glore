@@ -2911,7 +2911,8 @@
       },
       "tableLabel": "Organizaciones",
       "openOrg": "Abrir organización",
-      "commentLabelOptional": "Comentario (opcional)"
+      "commentLabelOptional": "Comentario (opcional)",
+      "statusActive": "Activa"
     },
     "users": {
       "title": "Usuarios",

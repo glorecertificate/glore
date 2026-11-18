@@ -32,7 +32,7 @@ export const OrganizationHeader = ({
     !organization.approvedAt &&
     organization.joinRequests.some(request => request.role === 'admin' && request.isRejected)
   const status = organization.approvedAt
-    ? ({ icon: 'circle-check', label: 'filter_active', tone: 'success' } as const)
+    ? ({ icon: 'circle-check', label: 'statusActive', tone: 'success' } as const)
     : isRejected
       ? ({ icon: 'circle-x', label: 'statusRejected', tone: 'danger' } as const)
       : ({ icon: 'clock', label: 'statusPending', tone: 'warning' } as const)

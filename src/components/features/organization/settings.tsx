@@ -33,6 +33,7 @@ import { type User } from '@/db/queries/user'
 import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { useReturnFocus } from '@/hooks/use-return-focus'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
+import { cn } from '@/lib/utils'
 
 import { OrganizationAvatarMenu } from './avatar-menu'
 import { DeleteOrganizationDialog } from './delete-organization-dialog'
@@ -174,7 +175,12 @@ export const OrganizationSettings = ({
   const disabled = useFormDisabled(form.control)
 
   return (
-    <div className="flex flex-col gap-8">
+    <div
+      className={cn(
+        'flex flex-col gap-8',
+        !platform && 'rounded-xl border border-border-subtle bg-card p-5 shadow-card sm:p-6'
+      )}
+    >
       {!platform && <TabHeader description={t('settingsPageDescription')} title={t('settings')} />}
       {platform && <h2 className="sr-only">{t('settings')}</h2>}
       <Form {...form}>

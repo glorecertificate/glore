@@ -39,11 +39,11 @@ test.describe('course editor', () => {
     await page.getByRole('button', { name: 'Save' }).click()
     await expect(page.getByText('Course saved')).toBeVisible()
 
-    await page.getByRole('switch', { name: 'Draft' }).click()
+    await page.getByRole('radio', { name: 'Published' }).click()
     await page.getByRole('button', { name: 'Save' }).click()
     const publishAnyway = page.getByRole('button', { name: 'Publish anyway' })
     if (await publishAnyway.isVisible()) await publishAnyway.click()
-    await expect(page.getByRole('switch', { name: 'Published' })).toBeVisible()
+    await expect(page.getByRole('radio', { name: 'Published', checked: true })).toBeVisible()
 
     await page.goto('/courses')
     await expect(page.getByText('E2E course').first()).toBeVisible()

@@ -156,7 +156,7 @@ export const queryOrganizationPanel = async (
   }
 }
 
-const fetchOrganizationPanel = async (
+const readOrganizationPanel = async (
   organizationId: number,
   role: OrganizationMembershipRole | null,
   userId: string
@@ -165,8 +165,14 @@ const fetchOrganizationPanel = async (
   cacheTag(CacheTag.Organizations, certificatesOrgTag(organizationId))
   cacheLife({ stale: 60, revalidate: 60, expire: 3600 })
 
-  return await safeQuery(() => queryOrganizationPanel(organizationId, role, userId))
+  return await queryOrganizationPanel(organizationId, role, userId)
 }
+
+const fetchOrganizationPanel = async (
+  organizationId: number,
+  role: OrganizationMembershipRole | null,
+  userId: string
+) => await safeQuery(() => readOrganizationPanel(organizationId, role, userId))
 
 export const loadOrganizationPanel = async () => {
   const { orgId, role, user } = await getViewerContext()
@@ -174,23 +180,23 @@ export const loadOrganizationPanel = async () => {
   return await fetchOrganizationPanel(orgId, role, user.id)
 }
 
-const fetchOrgTutors = async (organizationId: number) => {
+const readOrgTutors = async (organizationId: number) => {
   'use cache'
   cacheTag(CacheTag.Organizations)
   cacheLife({ stale: 60, revalidate: 60, expire: 3600 })
 
-  return await safeQuery(async () => {
-    const result = await db.query.memberships.findMany({
-      where: and(eq(memberships.organizationId, organizationId), eq(memberships.role, 'tutor')),
-      columns: {},
-      with: {
-        user: { columns: { id: true, firstName: true, lastName: true } },
-      },
-      limit: 200,
-    })
-    return result.map(m => m.user)
+  const result = await db.query.memberships.findMany({
+    where: and(eq(memberships.organizationId, organizationId), eq(memberships.role, 'tutor')),
+    columns: {},
+    with: {
+      user: { columns: { id: true, firstName: true, lastName: true } },
+    },
+    limit: 200,
   })
+  return result.map(m => m.user)
 }
+
+const fetchOrgTutors = async (organizationId: number) => await safeQuery(() => readOrgTutors(organizationId))
 
 export const loadOrgTutors = async (organizationId: number) => {
   const { user } = await getViewerContext()

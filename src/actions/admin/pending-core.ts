@@ -9,44 +9,44 @@ import { safeQuery } from '@/db/helpers'
 import { organizationJoinRequests, organizations, users } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 
-const fetchPendingCounts = async () => {
+const readPendingCounts = async () => {
   'use cache'
   cacheTag(CacheTag.Organizations, CacheTag.TeamMembers)
 
-  return await safeQuery(async () => {
-    const [organizationRows, teamRows] = await Promise.all([
-      db
-        .select({ total: count() })
-        .from(organizations)
-        .where(
-          and(
-            isNull(organizations.approvedAt),
-            notExists(
-              db
-                .select({ id: organizationJoinRequests.id })
-                .from(organizationJoinRequests)
-                .where(
-                  and(
-                    eq(organizationJoinRequests.organizationId, organizations.id),
-                    eq(organizationJoinRequests.role, 'admin'),
-                    eq(organizationJoinRequests.status, 'rejected')
-                  )
+  const [organizationRows, teamRows] = await Promise.all([
+    db
+      .select({ total: count() })
+      .from(organizations)
+      .where(
+        and(
+          isNull(organizations.approvedAt),
+          notExists(
+            db
+              .select({ id: organizationJoinRequests.id })
+              .from(organizationJoinRequests)
+              .where(
+                and(
+                  eq(organizationJoinRequests.organizationId, organizations.id),
+                  eq(organizationJoinRequests.role, 'admin'),
+                  eq(organizationJoinRequests.status, 'rejected')
                 )
-            )
+              )
           )
-        ),
-      db
-        .select({ total: count() })
-        .from(users)
-        .where(and(or(eq(users.role, 'admin'), eq(users.isEditor, true)), isNull(users.onboardedAt))),
-    ])
+        )
+      ),
+    db
+      .select({ total: count() })
+      .from(users)
+      .where(and(or(eq(users.role, 'admin'), eq(users.isEditor, true)), isNull(users.onboardedAt))),
+  ])
 
-    return {
-      organizations: organizationRows[0]?.total ?? 0,
-      team: teamRows[0]?.total ?? 0,
-    }
-  })
+  return {
+    organizations: organizationRows[0]?.total ?? 0,
+    team: teamRows[0]?.total ?? 0,
+  }
 }
+
+const fetchPendingCounts = async () => await safeQuery(readPendingCounts)
 
 export const loadPendingCounts = async () => {
   const { data } = await fetchPendingCounts()

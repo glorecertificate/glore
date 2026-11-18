@@ -69,6 +69,7 @@ export const OrganizationOverview = ({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
+          accent="teal"
           description={t('memberBreakdown', {
             admins: data.stats.adminCount,
             learners: data.stats.learnerCount,
@@ -76,6 +77,7 @@ export const OrganizationOverview = ({
             tutors: data.stats.tutorCount,
             volunteers: data.stats.volunteerCount,
           })}
+          icon="users"
           label={t('memberCount')}
           value={data.stats.memberCount}
         >
@@ -88,17 +90,23 @@ export const OrganizationOverview = ({
           />
         </StatCard>
         <StatCard
+          accent="amber"
           description={t('pendingJoinRequestsDescription')}
+          icon="user-plus"
           label={t('pendingJoinRequests')}
           value={data.pendingJoinRequestsCount}
         />
         <StatCard
+          accent="navy"
           description={t('pendingCertificatesDescription')}
+          icon="clipboard-list"
           label={t('pendingCertificates')}
           value={data.pendingCertificatesCount}
         />
         <StatCard
+          accent="green"
           description={t('approvedCertificatesDescription')}
+          icon="award"
           label={t('approvedCertificates')}
           value={data.approvedCertificatesCount}
         />

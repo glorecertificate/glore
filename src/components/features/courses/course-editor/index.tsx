@@ -21,10 +21,10 @@ export const CourseEditor = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2 md:flex-row">
-        <CourseSidebar className="hidden shrink-0 md:block" style={sidebarStyle} />
+      <div className="flex flex-col gap-2 pb-24 md:pb-0 lg:flex-row">
+        <CourseSidebar className="hidden shrink-0 lg:block" style={sidebarStyle} />
         <div className="flex min-w-0 grow flex-col">
-          <CourseLessonPicker className="mb-4 md:hidden" />
+          <CourseLessonPicker className="mb-4 lg:hidden" />
           <CourseContent />
           {hasFooter && <CourseFooter />}
         </div>

@@ -7,7 +7,7 @@ GloRe, siglas de Global Recognition, te ayuda a mostrar lo que te ha enseñado e
 
 ## Cómo funciona, en pocas palabras
 
-Haces cursos breves en línea sobre habilidades blandas, como el trabajo en equipo, la empatía o la resolución de problemas. Cada curso termina con una autoevaluación en la que valoras tu propio nivel y describes un momento real en el que usaste esa habilidad. Cuando has completado suficientes cursos y tu voluntariado ha durado lo bastante, pides un certificado. Un tutor o una tutora de tu organización lee tu solicitud y decide. Si la aprueba, GloRe crea un PDF y una página pública con un código QR, para que una empresa o un centro de estudios pueda comprobar que es auténtico.
+Haces cursos breves en línea sobre habilidades blandas, como el trabajo en equipo, la empatía o la resolución de problemas. Cada curso termina con un paso final en el que eliges la descripción que mejor te representa y describes un momento real en el que usaste esa habilidad. Cuando has completado suficientes cursos y tu voluntariado ha durado lo bastante, pides un certificado. Un tutor o una tutora de tu organización lee tu solicitud y decide. Si la aprueba, GloRe crea un PDF y una página pública con un código QR, para que una empresa o un centro de estudios pueda comprobar que es auténtico.
 
 ## Quién está detrás
 

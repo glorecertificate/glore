@@ -8,8 +8,9 @@ import { Logo } from '@/components/ui/logo'
 import { cn } from '@/lib/utils'
 
 export interface ThumbnailSkill {
-  level: number
+  level: number | null
   name: string
+  steps: number
 }
 
 const PAPER = {
@@ -21,9 +22,9 @@ const PAPER = {
   '--mist': '#f0f0f0',
 } as React.CSSProperties
 
-const Dots = ({ level }: { level: number }) => (
+const Dots = ({ level, steps }: { level: number; steps: number }) => (
   <span className="flex gap-[0.7cqw]">
-    {[1, 2, 3, 4, 5].map(dot => (
+    {Array.from({ length: steps }, (_, index) => index + 1).map(dot => (
       <span className={cn('size-[1.9cqw] rounded-full', dot <= level ? 'bg-(--leaf)' : 'bg-(--mist)')} key={dot} />
     ))}
   </span>
@@ -130,7 +131,7 @@ export const CertificateThumbnail = ({
               {skills.slice(0, 4).map(skill => (
                 <li className="flex flex-col gap-[0.8cqw]" key={skill.name}>
                   <p className="truncate text-[2.5cqw] font-black text-(--leaf-text) uppercase">{skill.name}</p>
-                  <Dots level={skill.level} />
+                  {skill.level !== null && <Dots level={skill.level} steps={skill.steps} />}
                 </li>
               ))}
             </ul>

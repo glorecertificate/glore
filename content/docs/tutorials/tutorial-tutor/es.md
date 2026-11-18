@@ -17,7 +17,7 @@ Los tutores revisan las solicitudes de certificado. Eres quien confirma que un c
 1. Abre la solicitud. Pasa a En revisión y la persona voluntaria recibe una notificación.
 2. Lee la solicitud y los resultados de los cursos de la persona voluntaria, incluidas sus reflexiones.
 3. Comprueba la experiencia: fechas, horas, lugar y tareas. Puedes editar lo que esté mal.
-4. Para cada habilidad, fija el nivel y escribe una breve afirmación sobre lo que demostró la persona voluntaria. Puedes confirmar, subir o bajar el nivel que se dio a sí misma. Un certificado conserva 3 o 4 habilidades, y una habilidad de nivel Ausente no puede figurar en él, así que quita esa habilidad.
+4. Para cada habilidad, ves las tres descripciones con el nombre de su nivel y la que eligió la persona voluntaria. Confírmala o elige otra descripción, lo que cambia el nivel. La persona voluntaria no ve tu cambio hasta que se emite el certificado. Un certificado conserva 3 o 4 habilidades, así que quita una habilidad si no puedes confirmarla.
 5. Rellena las puntuaciones de la evaluación.
 
 ## Decide

@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import {
   findCertificateActivity,
   getCertificateEligibility,
-  listSkillReflections,
+  listSkillSelections,
   listUserCertificates,
 } from '@/actions/certificates/queries'
 import { listCourses } from '@/actions/courses/queries'
@@ -18,13 +18,13 @@ const CertificatesNewContent = async ({ searchParams }: Pick<PageProps<'/certifi
   const { draft } = await searchParams
   const draftId = Number(Array.isArray(draft) ? draft[0] : draft)
 
-  const [user, activeOrgId, eligibility, { data: certificates }, { data: courses }, reflections] = await Promise.all([
+  const [user, activeOrgId, eligibility, { data: certificates }, { data: courses }, selections] = await Promise.all([
     getCurrentUser(),
     getActiveOrgId(),
     getCertificateEligibility(),
     listUserCertificates(),
     listCourses(),
-    listSkillReflections(),
+    listSkillSelections(),
   ])
 
   const activeOrg = user.organizations.find(({ id }) => id === activeOrgId)
@@ -46,10 +46,10 @@ const CertificatesNewContent = async ({ searchParams }: Pick<PageProps<'/certifi
     type === 'skill' && completed
       ? [
           {
+            description: selections[id]?.description ?? null,
             icon: icon ?? null,
             id,
-            reflection: reflections[id] ?? null,
-            selfLevel: eligibility.selfLevels[id] ?? null,
+            reflection: selections[id]?.reflection ?? null,
             slug,
             title: title ?? null,
           },

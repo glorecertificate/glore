@@ -7,7 +7,7 @@ GloRe, abbreviazione di Global Recognition, ti aiuta a mostrare ciò che il volo
 
 ## Come funziona in breve
 
-Segui brevi corsi online sulle competenze trasversali, come lavoro di squadra, empatia o problem solving. Ogni corso si chiude con un'autovalutazione in cui valuti il tuo livello e descrivi un momento reale in cui hai usato quella competenza. Quando hai completato abbastanza corsi e il tuo volontariato è durato abbastanza, chiedi un certificato. Un tutor della tua organizzazione legge la richiesta e decide. Se la approva, GloRe crea un PDF e una pagina pubblica con un codice QR, così un datore di lavoro o una scuola può verificare che sia autentico.
+Segui brevi corsi online sulle competenze trasversali, come lavoro di squadra, empatia o problem solving. Ogni corso si chiude con un passaggio finale in cui scegli la descrizione che ti rappresenta meglio e descrivi un momento reale in cui hai usato quella competenza. Quando hai completato abbastanza corsi e il tuo volontariato è durato abbastanza, chiedi un certificato. Un tutor della tua organizzazione legge la richiesta e decide. Se la approva, GloRe crea un PDF e una pagina pubblica con un codice QR, così un datore di lavoro o una scuola può verificare che sia autentico.
 
 ## Chi c'è dietro
 

@@ -35,7 +35,6 @@ const USER_KEYS: UserKey[] = [...MEMBERS.map(([key]) => key), 'foreignTutor', 'o
 interface CourseStub {
   completed: boolean
   id: number
-  lessons: { assessment: { userRating: number } }[]
   type: 'skill'
 }
 
@@ -46,8 +45,8 @@ export const session = {
   rateLimited: false,
 }
 
-export const stubCourses = (courseIds: number[], userRating = 4): CourseStub[] =>
-  courseIds.map(id => ({ completed: true, id, lessons: [{ assessment: { userRating } }], type: 'skill' }))
+export const stubCourses = (courseIds: number[]): CourseStub[] =>
+  courseIds.map(id => ({ completed: true, id, type: 'skill' }))
 
 export const notifyMock = vi.fn((_event: unknown) => Promise.resolve({ emailed: 0, inApp: 0 }))
 export const putMock = vi.fn((key: string, _body: unknown, _type: string) => Promise.resolve(`https://r2.test/${key}`))
@@ -141,6 +140,45 @@ export const createFixture = async () => {
     )
     .returning({ id: schema.courses.id })
   const courseIds = courses.map(({ id }) => id).toSorted((a, b) => a - b)
+  const lessonRows = await db
+    .insert(schema.lessons)
+    .values(courseIds.map(courseId => ({ courseId, sortOrder: 0, title: { en: 'Final', es: 'Final', it: 'Finale' } })))
+    .returning({ id: schema.lessons.id })
+  const assessmentRows = await db
+    .insert(schema.assessments)
+    .values(lessonRows.map(({ id }) => ({ lessonId: id })))
+    .returning({ id: schema.assessments.id })
+  const assessmentIds = assessmentRows.map(({ id }) => id)
+  const seedDescriptions = async () => {
+    await db
+      .delete(schema.skillLevelDescriptions)
+      .where(inArray(schema.skillLevelDescriptions.assessmentId, assessmentIds))
+    await db.insert(schema.skillLevelDescriptions).values(
+      assessmentIds.flatMap(assessmentId =>
+        (['intermediate', 'good', 'advanced'] as const).map(level => ({
+          assessmentId,
+          description: { en: `en ${level}`, es: `es ${level}`, it: `it ${level}` },
+          level,
+        }))
+      )
+    )
+  }
+  await seedDescriptions()
+
+  const assess = async (
+    level: 'advanced' | 'good' | 'intermediate' = 'good',
+    user: 'author' | 'otherAuthor' = 'author'
+  ) => {
+    await db.delete(schema.userAssessments).where(eq(schema.userAssessments.userId, ids[user]))
+    await db.insert(schema.userAssessments).values(
+      assessmentRows.map(({ id }) => ({
+        assessmentId: id,
+        reflection: 'A reflection written for the fixture, long enough to be valid.',
+        userId: ids[user],
+        value: level,
+      }))
+    )
+  }
 
   const as = (key: UserKey | null) => {
     session.authUser = key ? { id: ids[key], role: key === 'platformAdmin' ? 'admin' : 'user' } : null
@@ -193,9 +231,8 @@ export const createFixture = async () => {
           certificateId: row.id,
           courseId,
           evidence: 'Led the weekly welcome desk',
-          selfLevel: 4,
+          selfLevel: 'good' as const,
           sortOrder: index,
-          statement: `Statement ${index}`,
         }))
       )
       await db
@@ -252,6 +289,9 @@ export const createFixture = async () => {
       .where(inArray(schema.users.id, Object.values(ids)))
     session.authUser = null
     session.courses = stubCourses(courseIds)
+    await assess()
+    await assess('good', 'otherAuthor')
+    await seedDescriptions()
     session.organizationId = organizationId
     session.rateLimited = false
     notifyMock.mockClear()
@@ -262,7 +302,15 @@ export const createFixture = async () => {
 
   const cleanup = async () => {
     await clearCertificates()
+    await db.delete(schema.userAssessments).where(inArray(schema.userAssessments.userId, [ids.author, ids.otherAuthor]))
     await db.delete(schema.organizations).where(inArray(schema.organizations.id, [organizationId, otherOrganizationId]))
+    await db.delete(schema.assessments).where(
+      inArray(
+        schema.assessments.id,
+        assessmentRows.map(({ id }) => id)
+      )
+    )
+    await db.delete(schema.lessons).where(inArray(schema.lessons.courseId, courseIds))
     await db.delete(schema.courses).where(inArray(schema.courses.id, courseIds))
     await db.delete(schema.users).where(inArray(schema.users.id, Object.values(ids)))
   }
@@ -271,6 +319,8 @@ export const createFixture = async () => {
     as,
     clearCertificates,
     cleanup,
+    assessmentIds,
+    assess,
     reset,
     courseIds,
     db,

@@ -8,10 +8,10 @@ Il percorso ha sei passaggi. La tua organizzazione e un tutor ne fanno parte, qu
 ## I passaggi
 
 1. Entra attraverso un'organizzazione. Qualcuno ti invita, oppure apri un link d'invito che hanno condiviso.
-2. Segui i corsi sulle competenze. Ognuno ha quattro lezioni brevi e dura circa 35 o 40 minuti. Un quiz verifica che tu abbia capito, e l'ultima lezione ti chiede di valutarti.
-3. Raggiungi il minimo. Ti servono almeno 3 corsi sulle competenze completati e un'autovalutazione media di 3 su 5 o più. I corsi introduttivi e quelli per studenti non contano.
+2. Segui i corsi sulle competenze. Ognuno ha quattro lezioni brevi e dura circa 35 o 40 minuti. Un quiz verifica che tu abbia capito, e l'ultima lezione ti chiede di scegliere la descrizione che ti rappresenta meglio.
+3. Raggiungi il minimo. Ti servono almeno 3 corsi sulle competenze completati. I corsi introduttivi e quelli per studenti non contano.
 4. Descrivi il tuo volontariato. Nella richiesta aggiungi date, ore, luogo e fino a 4 attività, scegli 3 o 4 delle tue competenze e valuti la tua esperienza con l'organizzazione. La tua attività deve arrivare ad almeno 100 ore, oppure durare almeno 3 mesi tra la data di inizio e quella di fine.
-5. Aspetta la revisione. Un tutor della tua organizzazione legge la richiesta e i risultati dei tuoi corsi, stabilisce il livello finale di ogni competenza e la approva, chiede modifiche o la rifiuta con una motivazione.
+5. Aspetta la revisione. Un tutor della tua organizzazione legge la richiesta e i risultati dei tuoi corsi, conferma o cambia la descrizione di ogni competenza e la approva, chiede modifiche o la rifiuta con una motivazione.
 6. Ricevi il tuo certificato. Dopo l'approvazione è definitivo e nessuno può modificarlo. Ottieni un PDF, una pagina pubblica e un codice.
 
 ## Cosa significa ogni stato
@@ -27,7 +27,7 @@ Il percorso ha sei passaggi. La tua organizzazione e un tutor ne fanno parte, qu
 
 ## Livelli delle competenze
 
-Ogni competenza di un certificato ha uno di cinque livelli: Assente, Base, Intermedio, Buono e Avanzato. Un certificato include solo competenze di livello Base o superiore.
+Ogni competenza di un certificato ha uno di tre livelli: Intermedio, Buono e Avanzato. Accanto al livello, il certificato mostra la descrizione di quel livello.
 
 ## Come lo verificano le persone
 

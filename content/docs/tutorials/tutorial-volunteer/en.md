@@ -11,18 +11,18 @@ This is the full path for volunteers. It takes more than one sitting, and the ap
 2. Set your skill compass if the app offers it: choose up to 3 skills you are good at and up to 5 you want to grow. GloRe uses it to recommend courses.
 3. Open a course and select Start course. Next time, select Resume course to continue where you left off.
 4. Read each lesson, then select Complete and continue. In a quiz lesson, answer every question. After a wrong answer you read the explanation and try again.
-5. In the last lesson you rate yourself on four statements, from 1 (not at all) to 5 (completely). Then you choose your overall level and write a reflection of 40 to 1,000 characters about a real moment when you used the skill. Pick a concrete example, because the tutor reads it.
+5. In the last lesson you rate yourself on four statements, from 1 (not at all) to 5 (completely). Then you read three descriptions of the skill and choose the one that fits you best. Your choice is final. Finally you write a reflection of 40 to 1,000 characters about a real moment when you used the skill. Pick a concrete example, because the tutor reads it.
 6. On the completion screen, rate the course and add a comment if you like.
 
 ## Check that you can request a certificate
 
-You need at least 3 completed skill courses and an average self-assessment of 3 out of 5 or higher. When you reach that, the completion screen and your dashboard show Request your certificate.
+You need at least 3 completed skill courses. When you reach that, the completion screen and your dashboard show Request your certificate.
 
 ## Request your certificate
 
 1. Select Request your certificate, or start a new request from Certificates. The request has four steps.
 2. Experience: enter your start and end dates, your hours, the place, and 1 to 4 tasks of up to 110 characters each. Your activity must reach 100 hours, or last at least 3 months.
-3. Skills: choose 3 or 4 of your completed skill courses. Your self-assessment is filled in as a starting point.
+3. Skills: choose 3 or 4 of your completed skill courses. The description you chose in each course is shown and cannot be changed.
 4. Your organization: rate your experience with the organization. The rating is anonymous.
 5. Review: add any personal details that are missing (last name, birthday, birth place and nationality), check the preview and the certificate language, then submit.
 

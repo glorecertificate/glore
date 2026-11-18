@@ -122,8 +122,9 @@ export const CourseHeader = () => {
       setSaving(true)
       await saveCourse({ locale: language, publish })
       toast.success(t('saveSuccess'))
-    } catch {
-      toast.error(t('saveError'))
+    } catch (error) {
+      const missing = (error as { code?: string } | null)?.code === 'DESCRIPTIONS_MISSING'
+      toast.error(missing ? tEditor('publishDescriptionsMissing') : t('saveError'))
     } finally {
       setSaving(false)
     }

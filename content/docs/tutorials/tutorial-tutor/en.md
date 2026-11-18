@@ -17,7 +17,7 @@ Tutors review certificate requests. You are the person who confirms that a certi
 1. Open the request. It moves to In review and the volunteer gets a notification.
 2. Read the request and the volunteer's course results, including their reflections.
 3. Check the experience: dates, hours, place and tasks. You can edit what is wrong.
-4. For each skill, set the level and write a short statement about what the volunteer showed. You can confirm, raise or lower the level the volunteer gave themselves. A certificate keeps 3 or 4 skills, and a skill at level Absent cannot be on it, so remove that skill instead.
+4. For each skill, you see the three descriptions with their level names and the one the volunteer chose. Confirm it or pick another description, which changes the level. The volunteer does not see your change until the certificate is issued. A certificate keeps 3 or 4 skills, so remove a skill if you cannot confirm it.
 5. Fill in the evaluation scores.
 
 ## Decide

@@ -25,7 +25,7 @@ const idSchema = z.number().int().positive()
 const languageSchema = z.enum(LOCALES)
 const answerSchema = z.object({ language: languageSchema, optionId: idSchema, questionId: idSchema })
 const completionSchema = z.object({
-  assessment: z.object({ reflection: z.string().max(5000), value: z.number().int() }).optional(),
+  assessment: z.object({ choice: z.string().max(64), reflection: z.string().max(5000) }).optional(),
   language: languageSchema,
   lessonId: idSchema,
   ratings: z

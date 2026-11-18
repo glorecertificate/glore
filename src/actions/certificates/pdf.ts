@@ -2,8 +2,11 @@ import 'server-only'
 
 import { eq } from 'drizzle-orm'
 
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
+import { renderSnapshotSkill } from '@/components/features/certificates/snapshot'
 import { db } from '@/db/client'
+import { type SkillLevelDescriptionsByCourse, plainDescription } from '@/db/queries/skill-level-description'
 import { type CertificateSnapshot, certificates } from '@/db/schema'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES, localizeRecord } from '@/lib/i18n'
 
@@ -30,6 +33,7 @@ type CertificatePdfSource = NonNullable<Awaited<ReturnType<typeof findCertificat
 export const certificateSnapshot = (
   cert: CertificatePdfSource,
   issuedAt: string,
+  descriptions: SkillLevelDescriptionsByCourse,
   labels?: CertificateSnapshot['labels']
 ): CertificateSnapshot => ({
   holder: {
@@ -55,13 +59,16 @@ export const certificateSnapshot = (
   },
   skills: cert.skills
     .toSorted((a, b) => a.sortOrder - b.sortOrder)
-    .map(skill => ({
-      courseId: skill.course.id,
-      icon: skill.course.icon,
-      level: skill.level ?? skill.selfLevel ?? 0,
-      name: skill.course.title ?? ({ [DEFAULT_LOCALE]: skill.course.slug } as IntlRecord),
-      statement: skill.statement,
-    })),
+    .map(skill => {
+      const level = skill.level ?? skill.selfLevel ?? 'intermediate'
+      return {
+        courseId: skill.course.id,
+        description: plainDescription(descriptions[skill.course.id]?.[level]),
+        icon: skill.course.icon,
+        level,
+        name: skill.course.title ?? ({ [DEFAULT_LOCALE]: skill.course.slug } as IntlRecord),
+      }
+    }),
   issuedAt,
   ...(labels && { labels }),
   language: cert.language,
@@ -88,12 +95,17 @@ export const renderCertificatePdf = async (snapshot: CertificateSnapshot, code: 
         name: organization.name,
         signatureUrl: organization.signatureUrl,
       },
-      skills: snapshot.skills.map(skill => ({
-        icon: skill.icon,
-        level: skill.level,
-        name: localizeRecord(skill.name, locale, DEFAULT_LOCALE),
-        statement: skill.statement,
-      })),
+      skills: snapshot.skills.map(skill => {
+        const { description, label, level, steps } = renderSnapshotSkill(skill, snapshot.labels?.levels)
+        return {
+          description: description ? localizeRecord(description, locale, DEFAULT_LOCALE) : null,
+          icon: skill.icon,
+          level,
+          levelLabel: label,
+          name: localizeRecord(skill.name, locale, DEFAULT_LOCALE),
+          steps,
+        }
+      }),
     },
     locale,
     snapshot.labels
@@ -103,8 +115,17 @@ export const renderCertificatePdf = async (snapshot: CertificateSnapshot, code: 
 export const certificatePdf = async (id: number) => {
   const cert = await findCertificateWithSource(id)
   if (!cert) return null
+  const descriptions = cert.snapshot
+    ? {}
+    : ((
+        await fetchLevelDescriptions(
+          cert.skills.map(({ courseId }) => courseId),
+          { cache: false }
+        )
+      ).data ?? {})
   const snapshot =
-    cert.snapshot ?? (cert.user ? certificateSnapshot({ ...cert, user: cert.user }, cert.issuedAt ?? '') : null)
+    cert.snapshot ??
+    (cert.user ? certificateSnapshot({ ...cert, user: cert.user }, cert.issuedAt ?? '', descriptions) : null)
   if (!snapshot) return null
   return { buffer: await renderCertificatePdf(snapshot, cert.code), handle: cert.handle }
 }

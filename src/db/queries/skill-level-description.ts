@@ -10,6 +10,8 @@ type SkillLevelDescription = IntlRecord & { id: number }
 
 type SkillLevelDescriptions = Partial<Record<SkillLevel, SkillLevelDescription>>
 
+export type LevelTexts = Partial<Record<SkillLevel, IntlRecord>>
+
 export type SkillLevelDescriptionsByCourse = Record<number, SkillLevelDescriptions>
 
 type SkillLevelDescriptionRow = Pick<
@@ -18,6 +20,17 @@ type SkillLevelDescriptionRow = Pick<
 > & {
   courseId: number
 }
+
+export const plainDescription = (description: SkillLevelDescription | undefined | null): IntlRecord | null => {
+  if (!description) return null
+  const { id: _id, ...text } = description
+  return text
+}
+
+export const plainDescriptions = (descriptions: SkillLevelDescriptions | undefined) =>
+  Object.fromEntries(
+    Object.entries(descriptions ?? {}).map(([level, description]) => [level, plainDescription(description)])
+  ) as LevelTexts
 
 export const SKILL_LEVELS = ['intermediate', 'good', 'advanced'] as const satisfies SkillLevel[]
 

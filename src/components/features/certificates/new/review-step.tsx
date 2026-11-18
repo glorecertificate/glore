@@ -15,6 +15,7 @@ import { DatePicker } from '@/components/ui/date-picker'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 
 interface ReviewStepProps {
@@ -50,7 +51,7 @@ const Thumbnail = ({ firstName, lastName, options, organization }: Omit<ReviewSt
       logoUrl={organization.logoUrl}
       organization={organization.name}
       skills={(values.skills ?? []).flatMap(skill =>
-        skill?.courseId ? [{ level: skill.selfLevel ?? 0, name: titles.get(skill.courseId) ?? '' }] : []
+        skill?.courseId ? [{ level: null, name: titles.get(skill.courseId) ?? '', steps: SKILL_LEVELS.length }] : []
       )}
       start={pdfDate(values.activityStartDate)}
       tasks={(values.tasks ?? []).flatMap(task => (task?.text?.trim() ? [task.text.trim()] : []))}

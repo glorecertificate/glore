@@ -175,8 +175,7 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates va
     expect(after.holderDeletedAt).toBeTruthy()
     expect(after.skills).toHaveLength(3)
     for (const skill of after.skills) {
-      expect(skill).toMatchObject({ evidence: 'Led the weekly welcome desk', selfLevel: 4 })
-      expect(skill.statement).toMatch(/^Statement \d$/u)
+      expect(skill).toMatchObject({ evidence: 'Led the weekly welcome desk', selfLevel: 'good' })
     }
     expect(after.reviews[0]).toMatchObject({
       comment: 'Great work, Tester',
@@ -236,7 +235,7 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates va
     })
     expect(result).toMatchObject({
       activity: { duration: 120, location: 'Milan', tasks: ['Desk'] },
-      skills: [{ level: 4, statement: 'Led it' }],
+      skills: [{ description: { en: 'Led it', es: 'Led it', it: 'Led it' }, level: 2, steps: 3 }],
     })
     expect(await pub.verifyCertificate(revoked.code!)).toMatchObject({
       holderDeleted: true,

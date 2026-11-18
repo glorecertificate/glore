@@ -10,6 +10,7 @@ import {
 } from '@/components/features/certificates/schemas'
 import { type Transaction } from '@/db/client'
 import { type CertificateStatus, OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
+import { type SkillLevel } from '@/db/queries/skill-level-description'
 import {
   type CertificateSnapshot,
   activityEvents,
@@ -50,6 +51,16 @@ export class CertificateError extends Error {
 type CertificateRow = typeof certificates.$inferSelect
 type CertificateSkillRow = typeof certificateSkills.$inferSelect
 
+interface SkillWrite {
+  courseId: number
+  evidence?: string | null
+  selfLevel?: SkillLevel | null
+}
+
+type EditWrite = Omit<CertificateEditValues, 'skills'> & { skills?: SkillWrite[] }
+
+type RequestWrite = Omit<CertificateRequestValues, 'skills'> & { skills: SkillWrite[] }
+
 const now = () => new Date().toISOString()
 
 const lock = async (tx: Transaction, key: string) => {
@@ -86,7 +97,7 @@ const transition = async (tx: Transaction, { from, guard, id, set }: Transition)
   return { ...row, userId: row.userId }
 }
 
-const contentColumns = (edit: CertificateEditValues) => ({
+const contentColumns = (edit: EditWrite) => ({
   activityDescription: edit.activityDescription,
   activityDuration: edit.activityDuration,
   activityEndDate: edit.activityEndDate,
@@ -99,7 +110,7 @@ const contentColumns = (edit: CertificateEditValues) => ({
 const writeRelations = async (
   tx: Transaction,
   { id, organizationId }: Pick<CertificateRow, 'id' | 'organizationId'>,
-  { rating, skills }: CertificateEditValues
+  { rating, skills }: EditWrite
 ) => {
   if (skills) {
     const courseIds = skills.map(({ courseId }) => courseId)
@@ -128,7 +139,7 @@ const writeRelations = async (
 }
 
 interface CreateDraftParams {
-  edit: CertificateEditValues
+  edit: EditWrite
   organizationId: number
   userId: string
 }
@@ -173,7 +184,7 @@ export const createCertificateDraft = async (tx: Transaction, { edit, organizati
 }
 
 interface UpdateDraftParams {
-  edit: CertificateEditValues
+  edit: EditWrite
   id: number
   userId: string
 }
@@ -255,7 +266,7 @@ const pickReviewer = async (tx: Transaction, organizationId: number, authorId: s
 
 interface SubmitParams {
   code: string
-  edit: CertificateRequestValues
+  edit: RequestWrite
   from: 'changes_requested' | 'draft'
   id: number
   organizationId: number
@@ -403,11 +414,12 @@ interface RequestChangesParams {
   id: number
   reviewerId: string
   sectionComments?: typeof certificateReviews.$inferInsert.sectionComments
+  skills?: { courseId: number; level?: SkillLevel }[]
 }
 
 export const recordCertificateChanges = async (
   tx: Transaction,
-  { comment, id, reviewerId, sectionComments }: RequestChangesParams
+  { comment, id, reviewerId, sectionComments, skills = [] }: RequestChangesParams
 ) => {
   const row = await transition(tx, {
     from: ['submitted', 'in_review'],
@@ -415,6 +427,13 @@ export const recordCertificateChanges = async (
     id,
     set: { reviewedAt: now(), reviewerComment: comment || null, status: 'changes_requested' },
   })
+  for (const { courseId, level } of skills) {
+    if (!level) continue
+    await tx
+      .update(certificateSkills)
+      .set({ level })
+      .where(and(eq(certificateSkills.certificateId, id), eq(certificateSkills.courseId, courseId)))
+  }
   await recordReview(tx, id, { comment, decision: 'changes_requested', reviewerId, sectionComments })
   return row
 }
@@ -435,13 +454,13 @@ export const recordCertificateRejection = async (
 
 interface ApproveParams {
   code: string
-  edit: CertificateEditValues
+  edit: EditWrite
   expectedUpdatedAt: string
   id: number
   issuedAt: string
   review: Pick<ReviewRecord, 'comment' | 'scores'>
   reviewerId: string
-  skills: { courseId: number; level: number; statement: string | null }[]
+  skills: { courseId: number; level: SkillLevel }[]
   snapshot: CertificateSnapshot
 }
 
@@ -469,7 +488,7 @@ export const recordCertificateApproval = async (
   for (const [index, skill] of skills.entries()) {
     await tx
       .update(certificateSkills)
-      .set({ level: skill.level, sortOrder: index, statement: skill.statement })
+      .set({ level: skill.level, sortOrder: index })
       .where(and(eq(certificateSkills.certificateId, id), eq(certificateSkills.courseId, skill.courseId)))
   }
 
@@ -537,7 +556,6 @@ export const revertCertificateApproval = async (
         level: skill.level,
         selfLevel: skill.selfLevel,
         sortOrder: skill.sortOrder,
-        statement: skill.statement,
       }))
     )
   }

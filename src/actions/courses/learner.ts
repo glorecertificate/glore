@@ -12,6 +12,7 @@ import {
   getSkillProgress,
   loadLearnerLesson,
 } from '@/actions/courses/data'
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import {
   buildCompletionSkills,
@@ -72,8 +73,9 @@ export const loadCompletion = cache(async (slug: string, requested: Locale | nul
   const completed = !!overview.enrollment?.completedAt
   if (access !== 'learner' || !completed) return { status: 'overview' as const }
 
-  const [details, candidates, skillProgress] = await Promise.all([
+  const [details, descriptions, candidates, skillProgress] = await Promise.all([
     findCompletionDetails(overview.id, user.id),
+    fetchLevelDescriptions([overview.id]),
     findRecommendationCandidates(user.id, enrollableTypes(role), overview.id),
     role === 'volunteer' ? getSkillProgress(user.id) : null,
   ])
@@ -83,7 +85,7 @@ export const loadCompletion = cache(async (slug: string, requested: Locale | nul
       eligibility: skillProgress ? evaluateEligibility(skillProgress, appConfig) : null,
       myRating: details.rating,
       recommendation: pickRecommendation(candidates, overview.skillGroup?.id ?? null, overview.language),
-      skills: buildCompletionSkills(details.assessmentRows, overview.language),
+      skills: buildCompletionSkills(details.assessmentRows, descriptions.data?.[overview.id], overview.language),
     },
     overview,
     status: 'ok' as const,

@@ -1,6 +1,6 @@
 import { updateTag } from 'next/cache'
 
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
@@ -56,21 +56,19 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
     rows: {
       courseId: number
       evidence: string | null
-      level: number | null
-      selfLevel: number | null
+      level: string | null
+      selfLevel: string | null
       sortOrder: number
-      statement: string | null
     }[]
   ) =>
     rows
       .toSorted((a, b) => a.sortOrder - b.sortOrder)
-      .map(({ courseId, evidence, level, selfLevel, sortOrder, statement }) => ({
+      .map(({ courseId, evidence, level, selfLevel, sortOrder }) => ({
         courseId,
         evidence,
         level,
         selfLevel,
         sortOrder,
-        statement,
       }))
 
   const reason = 'The activity description does not match the stated tasks'
@@ -279,8 +277,11 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
         activity: { duration: 120, location: 'Milan' },
         holder: { lastName: 'Tester', nationality: 'it' },
       })
-      expect(saved.snapshot?.skills.map(({ level }) => level)).toEqual([4, 4, 4])
-      expect((await skillRows(cert.id)).map(({ level }) => level)).toEqual([4, 4, 4])
+      expect(saved.snapshot?.skills.map(({ level }) => level)).toEqual(['good', 'good', 'good'])
+      expect(saved.snapshot?.skills.map(({ description }) => description)).toEqual(
+        fixture.courseIds.slice(0, 3).map(() => ({ en: 'en good', es: 'es good', it: 'it good' }))
+      )
+      expect((await skillRows(cert.id)).map(({ level }) => level)).toEqual(['good', 'good', 'good'])
       expect(saved.reviews).toHaveLength(1)
       expect(saved.reviews[0]).toMatchObject({
         comment: 'Well done',
@@ -333,8 +334,8 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       const { error } = await review.approveCertificate(cert.id, {
         activityLocation: 'Rome',
         skills: [
-          { courseId: third ?? 0, level: 3 },
-          { courseId: first ?? 0, level: 5, statement: 'Led the welcome desk' },
+          { courseId: third ?? 0, level: 'intermediate' },
+          { courseId: first ?? 0, level: 'advanced' },
           { courseId: second ?? 0 },
         ],
         tasks: ['Coordinated the welcome desk'],
@@ -346,8 +347,12 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       expect(saved.tasks).toEqual(['Coordinated the welcome desk'])
       const skills = await skillRows(cert.id)
       expect(skills.map(({ courseId }) => courseId)).toEqual([third, first, second])
-      expect(skills.map(({ level }) => level)).toEqual([3, 5, 4])
-      expect(skills[1]?.statement).toBe('Led the welcome desk')
+      expect(skills.map(({ level }) => level)).toEqual(['intermediate', 'advanced', 'good'])
+      expect(saved.snapshot?.skills[1]?.description).toEqual({
+        en: 'en advanced',
+        es: 'es advanced',
+        it: 'it advanced',
+      })
       expect(skills.some(({ courseId }) => courseId === fourth)).toBe(false)
       expect(saved.snapshot?.activity).toMatchObject({ location: 'Rome', tasks: ['Coordinated the welcome desk'] })
       expect(saved.snapshot?.skills.map(({ courseId }) => courseId)).toEqual([third, first, second])
@@ -382,7 +387,7 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       expect((await fixture.reload(cert.id)).status).toBe('in_review')
     })
 
-    it('refuses levels below 2', async () => {
+    it('refuses a level outside the three levels and a level without a description', async () => {
       const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'in_review' })
       fixture.as('tutorA')
       const [first, second, third] = fixture.courseIds
@@ -390,15 +395,23 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       expect(
         (
           await review.approveCertificate(cert.id, {
-            skills: [{ courseId: first ?? 0, level: 1 }, { courseId: second ?? 0 }, { courseId: third ?? 0 }],
+            skills: [
+              { courseId: first ?? 0, level: 'none' as never },
+              { courseId: second ?? 0 },
+              { courseId: third ?? 0 },
+            ],
           })
         ).error?.code
       ).toBe('INVALID_INPUT')
 
       await fixture.db
-        .update(fixture.schema.certificateSkills)
-        .set({ selfLevel: 1 })
-        .where(eq(fixture.schema.certificateSkills.certificateId, cert.id))
+        .delete(fixture.schema.skillLevelDescriptions)
+        .where(
+          and(
+            eq(fixture.schema.skillLevelDescriptions.assessmentId, fixture.assessmentIds[0] ?? 0),
+            eq(fixture.schema.skillLevelDescriptions.level, 'good')
+          )
+        )
       expect((await review.approveCertificate(cert.id, {})).error?.code).toBe('INVALID_INPUT')
       expect((await fixture.reload(cert.id)).status).toBe('in_review')
       expect(putMock).not.toHaveBeenCalled()
@@ -532,7 +545,7 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
         activityLocation: 'Rome',
         comment: 'Good',
         scores: { engagement: 5, evidence: 5, growth: 5, reflection: 5 },
-        skills: [{ courseId: first ?? 0, level: 5 }, { courseId: second ?? 0 }, { courseId: third ?? 0 }],
+        skills: [{ courseId: first ?? 0, level: 'advanced' }, { courseId: second ?? 0 }, { courseId: third ?? 0 }],
         tasks: ['Changed task'],
       })
 
@@ -592,7 +605,7 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'in_review' })
       fixture.as('tutorA')
       const { data, error } = await review.previewCertificatePdf(cert.id, {
-        skills: fixture.courseIds.slice(0, 3).map(courseId => ({ courseId, level: 5, statement: 'Led the desk' })),
+        skills: fixture.courseIds.slice(0, 3).map(courseId => ({ courseId, level: 'advanced' as const })),
         tasks: ['Welcomed new volunteers'],
       })
 
@@ -614,7 +627,7 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'in_review' })
       fixture.as('tutorA')
       const low = await review.previewCertificatePdf(cert.id, {
-        skills: fixture.courseIds.slice(0, 3).map(courseId => ({ courseId, level: 1 })),
+        skills: fixture.courseIds.slice(0, 2).map(courseId => ({ courseId })),
       })
       expect(low.error?.code).toBe('INVALID_INPUT')
       const short = await review.previewCertificatePdf(cert.id, { activityDuration: 10, activityEndDate: '2026-01-20' })

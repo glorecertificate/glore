@@ -34,8 +34,8 @@ describe('certificate snapshot labels', () => {
       tasks: ['Task'],
       user: { birthPlace: null, birthday: null, firstName: 'Ada', lastName: null, nationality: null },
     } as unknown as Parameters<typeof certificateSnapshot>[0]
-    expect(certificateSnapshot(source, '2026-02-02T00:00:00.000Z', labels).labels).toEqual(labels)
-    expect('labels' in certificateSnapshot(source, '2026-02-02T00:00:00.000Z')).toBe(false)
+    expect(certificateSnapshot(source, '2026-02-02T00:00:00.000Z', {}, labels).labels).toEqual(labels)
+    expect('labels' in certificateSnapshot(source, '2026-02-02T00:00:00.000Z', {})).toBe(false)
   })
 
   it('renders with the frozen labels when the snapshot has them', async () => {

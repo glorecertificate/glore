@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { type PersonalField } from '@/components/features/certificates/rules'
+import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { LOCALES } from '@/lib/i18n'
 import appConfig from '~/config/app.json'
 
@@ -10,11 +11,10 @@ export const CERTIFICATE_SECTIONS = ['experience', 'personal', 'skills', 'tasks'
 
 export const MAX_CERTIFICATE_TASKS = 4
 export const MAX_TASK_LENGTH = 110
-export const MAX_STATEMENT_LENGTH = 200
-export const MIN_ISSUED_LEVEL = 2
 
 const isoDate = z.iso.date()
-const level = z.number().int().min(1).max(5)
+const score = z.number().int().min(1).max(5)
+const skillLevel = z.enum(SKILL_LEVELS)
 const language = z.string().refine(value => (LOCALES as string[]).includes(value), 'Unsupported language')
 const reason = z.string().trim().min(10).max(2000)
 
@@ -23,14 +23,13 @@ const taskSchema = z.string().trim().min(1).max(MAX_TASK_LENGTH)
 const skillSchema = z.object({
   courseId: z.number().int().positive(),
   evidence: z.string().trim().max(1000).nullish(),
-  selfLevel: level.nullish(),
 })
 
 const ratingSchema = z.object({
-  certificationSupport: level.nullish(),
+  certificationSupport: score.nullish(),
   comment: z.string().trim().max(400).nullish(),
-  experience: level.nullish(),
-  support: level.nullish(),
+  experience: score.nullish(),
+  support: score.nullish(),
   wouldRecommend: z.boolean().nullish(),
 })
 
@@ -59,7 +58,7 @@ export const certificateEditSchema = z
 export const certificateRequestSchema = z
   .object({
     ...experienceShape,
-    rating: ratingSchema.extend({ experience: level }),
+    rating: ratingSchema.extend({ experience: score }),
     skills: z.array(skillSchema).min(appConfig.minSkills).max(appConfig.maxSkills),
     tasks: z.array(taskSchema).min(1).max(MAX_CERTIFICATE_TASKS),
   })
@@ -87,13 +86,12 @@ export const certificateApprovalSchema = z.object({
   activityLocation: experienceShape.activityLocation.optional(),
   activityStartDate: isoDate.optional(),
   comment: z.string().trim().max(2000).optional(),
-  scores: z.object({ engagement: level, evidence: level, growth: level, reflection: level }).optional(),
+  scores: z.object({ engagement: score, evidence: score, growth: score, reflection: score }).optional(),
   skills: z
     .array(
       z.object({
         courseId: z.number().int().positive(),
-        level: z.number().int().min(MIN_ISSUED_LEVEL).max(5).optional(),
-        statement: z.string().trim().max(MAX_STATEMENT_LENGTH).nullish(),
+        level: skillLevel.optional(),
       })
     )
     .max(appConfig.maxSkills)
@@ -107,6 +105,10 @@ export const certificateChangesSchema = z
   .object({
     comment: z.string().trim().max(2000).optional(),
     sectionComments: z.partialRecord(z.enum(CERTIFICATE_SECTIONS), sectionComment).optional(),
+    skills: z
+      .array(z.object({ courseId: z.number().int().positive(), level: skillLevel.optional() }))
+      .max(appConfig.maxSkills)
+      .optional(),
   })
   .refine(data => Boolean(data.comment) || Object.values(data.sectionComments ?? {}).some(Boolean), {
     path: ['comment'],
@@ -124,7 +126,7 @@ export type CertificateReasonValues = z.infer<typeof certificateReasonSchema>
 export const MAX_EVIDENCE_LENGTH = 1000
 export const MAX_RATING_COMMENT_LENGTH = 400
 
-const formLevel = z.number({ message: 'required' }).int('required').min(1, 'required').max(5, 'required')
+const formScore = z.number({ message: 'required' }).int('required').min(1, 'required').max(5, 'required')
 
 export const wizardSchema = (missing: readonly PersonalField[] = []) =>
   z
@@ -145,10 +147,10 @@ export const wizardSchema = (missing: readonly PersonalField[] = []) =>
         nationality: z.string().trim().max(2, 'required'),
       }),
       rating: z.object({
-        certificationSupport: formLevel.nullish(),
+        certificationSupport: formScore.nullish(),
         comment: z.string().trim().max(MAX_RATING_COMMENT_LENGTH, 'tooLong').nullish(),
-        experience: formLevel,
-        support: formLevel.nullish(),
+        experience: formScore,
+        support: formScore.nullish(),
         wouldRecommend: z.boolean().nullish(),
       }),
       skills: z
@@ -156,7 +158,6 @@ export const wizardSchema = (missing: readonly PersonalField[] = []) =>
           z.object({
             courseId: z.number().int().positive(),
             evidence: z.string().trim().max(MAX_EVIDENCE_LENGTH, 'tooLong'),
-            selfLevel: formLevel,
           })
         )
         .min(appConfig.minSkills, 'minSkills')
@@ -204,10 +205,10 @@ export const reviewFormSchema = z
     activityStartDate: z.iso.date({ message: 'required' }),
     comment: z.string().trim().max(MAX_REVIEW_COMMENT_LENGTH, 'tooLong'),
     scores: z.object({
-      engagement: formLevel,
-      evidence: formLevel,
-      growth: formLevel,
-      reflection: formLevel,
+      engagement: formScore,
+      evidence: formScore,
+      growth: formScore,
+      reflection: formScore,
     }),
     sectionComments: z.object({
       experience: sectionField,
@@ -219,8 +220,7 @@ export const reviewFormSchema = z
       z.object({
         courseId: z.number().int().positive(),
         include: z.boolean(),
-        level: z.number().int().min(1).max(5).optional(),
-        statement: z.string().trim().max(MAX_STATEMENT_LENGTH, 'tooLong'),
+        level: skillLevel.optional(),
       })
     ),
     tasks: z
@@ -236,7 +236,7 @@ export const reviewFormSchema = z
     if (included < appConfig.minSkills) context.addIssue({ code: 'custom', message: 'minSkills', path: ['skills'] })
     if (included > appConfig.maxSkills) context.addIssue({ code: 'custom', message: 'maxSkills', path: ['skills'] })
     for (const [index, skill] of values.skills.entries()) {
-      if (skill.include && !(skill.level && skill.level >= MIN_ISSUED_LEVEL)) {
+      if (skill.include && !skill.level) {
         context.addIssue({ code: 'custom', message: 'levelRequired', path: ['skills', index, 'level'] })
       }
     }

@@ -1,5 +1,6 @@
 import { type Locale } from 'next-intl'
 
+import { type LevelTexts, type SkillLevel } from '@/db/queries/skill-level-description'
 import { type EnumType } from '@/db/types'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 
@@ -181,25 +182,18 @@ export const buildOverview = (row: OverviewRow, language: Locale): CourseOvervie
 }
 
 export interface SkillProgress {
-  averageRating: number | null
   completedCourseIds: number[]
 }
 
 interface SkillEligibilityRules {
-  minRating: number
   minSkills: number
 }
 
-export const evaluateEligibility = (
-  { averageRating: average, completedCourseIds }: SkillProgress,
-  rules: SkillEligibilityRules
-) => {
+export const evaluateEligibility = ({ completedCourseIds }: SkillProgress, rules: SkillEligibilityRules) => {
   const completed = completedCourseIds.length
-  const lowRating = average !== null && average < rules.minRating
   return {
     completed,
-    eligible: completed >= rules.minSkills && !lowRating,
-    lowRating,
+    eligible: completed >= rules.minSkills,
     remaining: Math.max(0, rules.minSkills - completed),
   }
 }
@@ -231,10 +225,10 @@ export interface LearnerEvaluation {
 }
 
 export interface LearnerAssessment {
+  chosenId: string | null
+  choices: { id: string; text: string }[] | null
   id: number
   reflection: string | null
-  text: string | null
-  value: number | null
 }
 
 export interface LearnerLesson {
@@ -249,7 +243,7 @@ export interface LearnerLesson {
 }
 
 export interface LessonDetailRow {
-  assessments: { description: LocaleText | null; id: number }[]
+  assessments: { id: number }[]
   content: unknown
   evaluations: { description: LocaleText; id: number }[]
   id: number
@@ -264,7 +258,7 @@ export interface LessonDetailRow {
 
 export interface LessonStateRow {
   answers: { correct: boolean; optionId: number; questionId: number }[]
-  assessment: { reflection: string | null; value: number } | null
+  assessment: { reflection: string | null; value: SkillLevel } | null
   completed: boolean
   ratings: { evaluationId: number; value: number }[]
 }
@@ -289,7 +283,17 @@ export const pickContent = (content: unknown, language: Locale) => {
   return { language: null, value: null }
 }
 
-export const buildLearnerLesson = (detail: LessonDetailRow, state: LessonStateRow, language: Locale): LearnerLesson => {
+export interface LearnerChoice {
+  cards: { id: string; text: string }[]
+  chosenId: string | null
+}
+
+export const buildLearnerLesson = (
+  detail: LessonDetailRow,
+  state: LessonStateRow,
+  language: Locale,
+  choice: LearnerChoice | null = null
+): LearnerLesson => {
   const content = pickContent(detail.content, language)
   const ratings = new Map(state.ratings.map(({ evaluationId, value }) => [evaluationId, value]))
   const assessment = detail.assessments[0]
@@ -297,10 +301,10 @@ export const buildLearnerLesson = (detail: LessonDetailRow, state: LessonStateRo
   return {
     assessment: assessment
       ? {
+          chosenId: choice?.chosenId ?? null,
+          choices: choice?.cards ?? null,
           id: assessment.id,
           reflection: state.assessment?.reflection ?? null,
-          text: pickLocale(assessment.description, language),
-          value: state.assessment?.value ?? null,
         }
       : null,
     completed: state.completed,
@@ -329,17 +333,21 @@ export const buildLearnerLesson = (detail: LessonDetailRow, state: LessonStateRo
   }
 }
 
-export type CompletionIssue = 'assessment' | 'evaluations' | 'quiz' | 'reflection'
+export type CompletionIssue = 'assessment' | 'descriptions' | 'evaluations' | 'quiz' | 'reflection'
 
 export interface CompletionInput {
-  assessment?: { reflection: string; value: number }
+  assessment?: { choice: string; reflection: string }
   ratings?: { evaluationId: number; value: number }[]
 }
 
 const isRating = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value >= 1 && value <= 5
 
-export const checkCompletion = (lesson: LearnerLesson, input: CompletionInput) => {
+export const checkCompletion = (
+  lesson: LearnerLesson,
+  input: CompletionInput,
+  levelOf: (choice: string) => SkillLevel | null
+) => {
   if (!lesson.questions.every(question => question.solved)) return { issue: 'quiz' as const }
 
   const given = new Map((input.ratings ?? []).map(({ evaluationId, value }) => [evaluationId, value]))
@@ -356,8 +364,10 @@ export const checkCompletion = (lesson: LearnerLesson, input: CompletionInput) =
     }
   }
 
-  const value = lesson.assessment.value ?? input.assessment?.value ?? null
-  if (!isRating(value)) return { issue: 'assessment' as const }
+  if (!lesson.assessment.choices) return { issue: 'descriptions' as const }
+  const choice = lesson.assessment.chosenId ?? input.assessment?.choice
+  const value = choice ? levelOf(choice) : null
+  if (!value) return { issue: 'assessment' as const }
   const reflection = (lesson.assessment.reflection ?? input.assessment?.reflection ?? '').trim()
   if (reflection.length < REFLECTION_MIN_LENGTH || reflection.length > REFLECTION_MAX_LENGTH) {
     return { issue: 'reflection' as const }
@@ -437,16 +447,17 @@ export const pickRecommendation = (
 }
 
 export interface CompletionSkill {
-  level: 1 | 2 | 3 | 4 | 5
+  description: string | null
   title: string
 }
 
 export const buildCompletionSkills = (
-  rows: { title: LocaleText; value: number }[],
+  rows: { title: LocaleText; value: SkillLevel }[],
+  descriptions: LevelTexts | undefined,
   language: Locale
 ): CompletionSkill[] =>
   rows.map(({ title, value }) => ({
-    level: Math.min(5, Math.max(1, Math.round(value))) as CompletionSkill['level'],
+    description: pickLocale(descriptions?.[value], language),
     title: pickLocale(title, language) ?? '',
   }))
 

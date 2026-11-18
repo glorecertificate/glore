@@ -7,7 +7,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Shared primitives live in `src/components/ui/`. They accept root props and localized labels.
 - Feature components own domain data and permission checks.
 - `ArrowsMotif` uses vector paths extracted from the certificate template. It is decorative and hidden from assistive technology.
-- `LevelDots` takes a level from 1 to 5 and a localized level label.
+- `LevelDots` takes a level, a number of `steps`, and a localized level label. It renders only after issue or in the tutor workspace.
 - `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
 - `StatCard` composes `NumberTicker`. Formatting follows next-intl, and the ticker respects reduced motion.
 - `Banner` supplies semantic status variants.

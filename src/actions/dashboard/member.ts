@@ -105,11 +105,8 @@ export const loadMemberSummary = async ({
 
   const result = evaluateEligibility(progress, appConfig)
   const eligibility: EligibilityView = {
-    avgRating: progress.averageRating,
     completedSkillCount: result.completed,
     eligible: result.eligible,
-    hasLowRatings: result.lowRating,
-    minRating: appConfig.minRating,
     minSkills: appConfig.minSkills,
   }
   const inOrganization = (certificates?.data ?? []).filter(item => item.organizationId === organizationId)

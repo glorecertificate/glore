@@ -1,8 +1,10 @@
 import 'server-only'
 
-import { and, asc, avg, count, eq, inArray, isNotNull, isNull, ne } from 'drizzle-orm'
+import { and, asc, count, eq, inArray, isNotNull, isNull, ne } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
+import { buildSkillChoice } from '@/actions/courses/skill-choice'
 import { db } from '@/db/client'
 import { buildAnalytics } from '@/db/queries/course-editing'
 import {
@@ -79,23 +81,15 @@ export const getSkillProgress = async (userId: string): Promise<SkillProgress> =
     if (total > 0 && done === total) ids.push(courseId)
     return ids
   }, [])
-  if (completedCourseIds.length === 0) return { averageRating: null, completedCourseIds }
-
-  const [rating] = await db
-    .select({ average: avg(userAssessments.value) })
-    .from(userAssessments)
-    .innerJoin(assessments, eq(assessments.id, userAssessments.assessmentId))
-    .innerJoin(lessons, eq(lessons.id, assessments.lessonId))
-    .where(and(eq(userAssessments.userId, userId), inArray(lessons.courseId, completedCourseIds)))
-  return { averageRating: rating?.average ? Number(rating.average) : null, completedCourseIds }
+  return { completedCourseIds }
 }
 
 export const findLessonDetail = async (lessonId: number) => {
   const row = await db.query.lessons.findFirst({
-    columns: { content: true, id: true, title: true },
+    columns: { content: true, courseId: true, id: true, title: true },
     where: eq(lessons.id, lessonId),
     with: {
-      assessments: { columns: { description: true, id: true }, orderBy: asc(assessments.id) },
+      assessments: { columns: { id: true }, orderBy: asc(assessments.id) },
       evaluations: { columns: { description: true, id: true }, orderBy: asc(evaluations.id) },
       questions: {
         columns: { description: true, explanation: true, id: true },
@@ -104,7 +98,7 @@ export const findLessonDetail = async (lessonId: number) => {
       },
     },
   })
-  return row as LessonDetailRow | undefined
+  return row as (LessonDetailRow & { courseId: number }) | undefined
 }
 
 export const findLessonState = async (lessonId: number, userId: string): Promise<LessonStateRow> => {
@@ -141,7 +135,17 @@ export const findLessonState = async (lessonId: number, userId: string): Promise
 
 export const loadLearnerLesson = async (lessonId: number, userId: string, language: Locale) => {
   const [detail, state] = await Promise.all([findLessonDetail(lessonId), findLessonState(lessonId, userId)])
-  return detail ? buildLearnerLesson(detail, state, language) : null
+  if (!detail) return null
+  if (detail.assessments.length === 0) return buildLearnerLesson(detail, state, language)
+  const descriptions = await fetchLevelDescriptions([detail.courseId])
+  const choice = buildSkillChoice({
+    chosen: state.assessment?.value ?? null,
+    courseId: detail.courseId,
+    descriptions: descriptions.data?.[detail.courseId],
+    language,
+    userId,
+  })
+  return buildLearnerLesson(detail, state, language, choice)
 }
 
 export const findOptionGrade = async (questionId: number, optionId: number) => {
@@ -291,7 +295,7 @@ export const findCourseAnalytics = async (courseId: number) => {
     enrollmentCount: enrollment?.total ?? 0,
     lessons: lessonRows,
     ratings: ratingRows.map(({ rating }) => rating),
-    selfAssessments: assessmentRows.map(({ value }) => value),
+    levels: assessmentRows.map(({ value }) => value),
   })
 }
 

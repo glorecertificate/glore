@@ -10,11 +10,13 @@ import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm'
 import { getAuthUser } from '@/actions/auth'
 import { certificateOwnerWith, certificatePublicWith, certificateWithUsers } from '@/actions/certificates/helpers'
 import { findLegacyCertificateCode, isLookupLimited } from '@/actions/certificates/public'
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { listCourses } from '@/actions/courses/queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
+import { type SkillLevel, plainDescription, plainDescriptions } from '@/db/queries/skill-level-description'
 import {
   activityEvents,
   assessments,
@@ -26,6 +28,7 @@ import {
   users,
 } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
+import { type IntlRecord } from '@/lib/i18n'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 import appConfig from '~/config/app.json'
 
@@ -266,74 +269,22 @@ export interface CertificateEligibility {
   eligible: boolean
   completedSkillCount: number
   minSkills: number
-  minRating: number
-  hasLowRatings: boolean
-  avgRating: number | null
   completedSkillCourseIds: number[]
-  selfLevels: Record<number, number>
 }
 
 export const getCertificateEligibility = cache(
   async ({ cache: useCache = true } = {}): Promise<CertificateEligibility> => {
-    const { minSkills, minRating } = appConfig
+    const { minSkills } = appConfig
     const { data: courses, error } = await listCourses({ cache: useCache })
-    if (error || !courses) {
-      return {
-        eligible: false,
-        completedSkillCount: 0,
-        minSkills,
-        minRating,
-        hasLowRatings: false,
-        avgRating: null,
-        completedSkillCourseIds: [],
-        selfLevels: {},
-      }
-    }
-
-    const completedSkillCourses = courses.filter(c => c.type === 'skill' && c.completed)
-    const completedSkillCount = completedSkillCourses.length
-    const completedSkillCourseIds = completedSkillCourses.map(c => c.id)
-
-    if (completedSkillCount === 0) {
-      return {
-        eligible: false,
-        completedSkillCount,
-        minSkills,
-        minRating,
-        hasLowRatings: false,
-        avgRating: null,
-        completedSkillCourseIds,
-        selfLevels: {},
-      }
-    }
-
-    const courseRatings = completedSkillCourses.map(c => ({
-      id: c.id,
-      ratings: c.lessons.flatMap(l => (l.assessment?.userRating === undefined ? [] : [l.assessment.userRating])),
-    }))
-    const ratings = courseRatings.flatMap(c => c.ratings)
-    const selfLevels = Object.fromEntries(
-      courseRatings.flatMap(({ id, ratings: values }) =>
-        values.length > 0
-          ? [[id, Math.min(5, Math.max(1, Math.round(values.reduce((sum, r) => sum + r, 0) / values.length)))]]
-          : []
-      )
-    )
-
-    const avgRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : null
-    const hasLowRatings = avgRating !== null && avgRating < minRating
-
-    const eligible = completedSkillCount >= minSkills && !hasLowRatings
+    const completedSkillCourseIds =
+      error || !courses ? [] : courses.flatMap(c => (c.type === 'skill' && c.completed ? [c.id] : []))
+    const completedSkillCount = completedSkillCourseIds.length
 
     return {
-      eligible,
+      eligible: completedSkillCount >= minSkills,
       completedSkillCount,
       minSkills,
-      minRating,
-      hasLowRatings,
-      avgRating,
       completedSkillCourseIds,
-      selfLevels,
     }
   }
 )
@@ -415,12 +366,28 @@ const holderAssessments = async (userId: string) =>
     .where(eq(userAssessments.userId, userId))
     .orderBy(asc(userAssessments.updatedAt))
 
-export const listSkillReflections = async () => {
+export const findHolderLevels = async (userId: string) => {
+  const rows = await holderAssessments(userId)
+  return Object.fromEntries(rows.map(({ courseId, value }) => [courseId, value])) as Record<number, SkillLevel>
+}
+
+export interface SkillSelection {
+  description: IntlRecord | null
+  reflection: string | null
+}
+
+export const listSkillSelections = async () => {
   const authUser = await getAuthUser()
-  if (!authUser) return {} as Record<number, string>
+  if (!authUser) return {} as Record<number, SkillSelection>
 
   const rows = await holderAssessments(authUser.id)
-  return Object.fromEntries(rows.flatMap(({ courseId, reflection }) => (reflection ? [[courseId, reflection]] : [])))
+  const { data: descriptions } = await fetchLevelDescriptions([...new Set(rows.map(({ courseId }) => courseId))])
+  return Object.fromEntries(
+    rows.map(({ courseId, reflection, value }) => [
+      courseId,
+      { description: plainDescription(descriptions?.[courseId]?.[value]), reflection: reflection || null },
+    ])
+  ) as Record<number, SkillSelection>
 }
 
 export interface ReviewHolder {
@@ -434,7 +401,9 @@ export interface ReviewHolder {
 
 export interface HolderCourseResult {
   completedAt: string | null
-  rating: number | null
+  descriptions: ReturnType<typeof plainDescriptions>
+  level: SkillLevel | null
+  pick: SkillLevel | null
   reflection: string | null
 }
 
@@ -446,7 +415,7 @@ export const findReviewContext = async (certificateId: number) => {
       columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
       where: eq(certificates.id, certificateId),
       with: {
-        skills: { columns: { courseId: true } },
+        skills: { columns: { courseId: true, level: true } },
         user: {
           columns: {
             birthPlace: true,
@@ -459,25 +428,27 @@ export const findReviewContext = async (certificateId: number) => {
         },
       },
     })
-    if (!cert?.userId || !cert.user || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
+    if (!cert?.userId || !cert.user || cert.reviewerId !== user.id) throw new Error('Certificate not found')
     const { user: holder, userId } = cert
 
     const courseIds = cert.skills.map(({ courseId }) => courseId)
-    const [completions, assessmentRows] = await Promise.all([
+    const [completions, assessmentRows, descriptions] = await Promise.all([
       db
         .select({ completedAt: userCourses.completedAt, courseId: userCourses.courseId })
         .from(userCourses)
         .where(and(eq(userCourses.userId, userId), inArray(userCourses.courseId, courseIds))),
       holderAssessments(userId),
+      fetchLevelDescriptions(courseIds),
     ])
 
     const results: Record<number, HolderCourseResult> = Object.fromEntries(
       courseIds.map(courseId => {
         const mine = assessmentRows.filter(row => row.courseId === courseId)
-        const rated = mine.map(({ value }) => value)
         const result: HolderCourseResult = {
           completedAt: completions.find(row => row.courseId === courseId)?.completedAt ?? null,
-          rating: rated.length > 0 ? rated.reduce((sum, value) => sum + value, 0) / rated.length : null,
+          descriptions: plainDescriptions(descriptions.data?.[courseId]),
+          level: mine.findLast(row => row.value)?.value ?? null,
+          pick: cert.skills.find(skill => skill.courseId === courseId)?.level ?? null,
           reflection: mine.findLast(row => row.reflection)?.reflection ?? null,
         }
         return [courseId, result]

@@ -18,6 +18,7 @@ import {
   requireRateLimitedUser,
 } from '@/actions/certificates/helpers'
 import { certificateSnapshot, findCertificatePdfSource, renderCertificatePdf } from '@/actions/certificates/pdf'
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { notify } from '@/actions/notifications/notify'
 import { certificatePdfLabels } from '@/components/features/certificates/generate-pdf'
 import { generateCertificateCode, meetsActivityRule } from '@/components/features/certificates/rules'
@@ -25,7 +26,6 @@ import {
   type CertificateApprovalValues,
   type CertificateChangesValues,
   type CertificateReasonValues,
-  MIN_ISSUED_LEVEL,
   certificateApprovalSchema,
   certificateChangesSchema,
   certificateReasonSchema,
@@ -41,6 +41,7 @@ import {
   revertCertificateApproval,
   startCertificateReview,
 } from '@/db/mutations/certificate'
+import { type SkillLevel } from '@/db/queries/skill-level-description'
 import { certificateSkills, certificates } from '@/db/schema'
 import { r2DeleteQuietly, r2Put } from '@/lib/storage'
 import appConfig from '~/config/app.json'
@@ -91,6 +92,7 @@ export const requestCertificateChanges = async (id: number, input: CertificateCh
           id: certificateId,
           reviewerId: authUser.id,
           sectionComments,
+          skills: values.skills,
         }),
       requested =>
         buildEvent(
@@ -162,8 +164,7 @@ type PdfSource = NonNullable<Awaited<ReturnType<typeof findCertificatePdfSource>
 
 interface SkillPick {
   courseId: number
-  level?: number
-  statement?: string | null
+  level?: SkillLevel
 }
 
 const issuedSkills = (source: PdfSource, requested: SkillPick[] | undefined) => {
@@ -184,11 +185,8 @@ const issuedSkills = (source: PdfSource, requested: SkillPick[] | undefined) => 
     const skill = stored.get(pick.courseId)
     if (!skill) throw new CertificateError('INVALID_INPUT', 'Skills must belong to the certificate')
     const level = pick.level ?? skill.level ?? skill.selfLevel
-    if (!level || level < MIN_ISSUED_LEVEL) {
-      throw new CertificateError('INVALID_INPUT', 'Skill levels on an issued certificate must be between 2 and 5')
-    }
-    const statement = pick.statement === undefined ? skill.statement : pick.statement || null
-    return { ...skill, level, sortOrder: index, statement }
+    if (!level) throw new CertificateError('INVALID_INPUT', 'Every skill needs a level')
+    return { ...skill, level, sortOrder: index }
   })
 }
 
@@ -215,8 +213,17 @@ const prepareApproval = async (certificateId: number, values: CertificateApprova
   const skills = issuedSkills(source, values.skills)
   const issuedAt = new Date().toISOString()
   const code = source.code ?? generateCertificateCode()
-  const labels = await certificatePdfLabels(source.language)
-  const snapshot = certificateSnapshot({ ...source, ...experience, skills }, issuedAt, labels)
+  const [labels, { data: descriptions }] = await Promise.all([
+    certificatePdfLabels(source.language),
+    fetchLevelDescriptions(
+      skills.map(({ courseId }) => courseId),
+      { cache: false }
+    ),
+  ])
+  if (skills.some(({ courseId, level }) => !descriptions?.[courseId]?.[level])) {
+    throw new CertificateError('INVALID_INPUT', 'Every issued skill needs its level description')
+  }
+  const snapshot = certificateSnapshot({ ...source, ...experience, skills }, issuedAt, descriptions ?? {}, labels)
   return { code, experience, issuedAt, skills, snapshot, source }
 }
 
@@ -278,7 +285,7 @@ export const approveCertificate = async (id: number, input: CertificateApprovalV
         issuedAt,
         review: { comment: values.comment, scores: values.scores },
         reviewerId: authUser.id,
-        skills: skills.map(({ courseId, level, statement }) => ({ courseId, level, statement })),
+        skills: skills.map(({ courseId, level }) => ({ courseId, level })),
         snapshot,
       })
       const event = await recordEvent(tx, approvedEvent(approved.certificate, null))

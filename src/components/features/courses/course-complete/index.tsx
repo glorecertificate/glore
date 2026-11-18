@@ -5,7 +5,6 @@ import { skillGroupToneVariants } from '@/components/features/courses/skill-grou
 import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
-import { LevelDots } from '@/components/ui/level-dots'
 import { Link } from '@/components/ui/link'
 import { PageHeaderDescription, PageHeaderTitle } from '@/components/ui/page-header'
 import {
@@ -14,10 +13,8 @@ import {
   type CourseRecommendation,
   evaluateEligibility,
 } from '@/db/queries/learning'
-import { SKILL_LEVELS } from '@/lib/constants'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
-import settings from '~/config/app.json'
 
 export interface CourseCompletionData {
   eligibility: ReturnType<typeof evaluateEligibility> | null
@@ -50,11 +47,7 @@ const NextSteps = ({ completion, overview }: { completion: CourseCompletionData;
       {eligibility && !eligibility.eligible && (
         <Banner variant="info">
           <LucideIcon className="mt-0.5 size-4 shrink-0" name="award" />
-          <p className="text-muted-foreground">
-            {eligibility.lowRating
-              ? t('certificateLowRating', { minRating: settings.minRating })
-              : t('certificateRemaining', { remaining: eligibility.remaining })}
-          </p>
+          <p className="text-muted-foreground">{t('certificateRemaining', { remaining: eligibility.remaining })}</p>
         </Banner>
       )}
       {recommendation && (
@@ -96,9 +89,7 @@ export const CourseCompleteView = ({
   ...props
 }: React.ComponentProps<'div'> & { completion: CourseCompletionData; overview: CourseOverview }) => {
   const t = useTranslations('Learning.complete')
-  const tCommon = useTranslations('Common')
   const { skills } = completion
-  const levelLabel = (level: number) => tCommon(`skillLevels.${SKILL_LEVELS[level - 1] ?? 'absent'}`)
 
   return (
     <div className={cn('flex flex-col gap-8', className)} {...props}>
@@ -124,13 +115,10 @@ export const CourseCompleteView = ({
               <p className="text-sm text-muted-foreground">{t('skillsHint')}</p>
             </div>
             <ul className="flex flex-col gap-3">
-              {skills.map(({ level, title }) => (
-                <li
-                  className="flex flex-col gap-1.5 rounded-lg border p-3 sm:flex-row sm:items-center sm:justify-between"
-                  key={title}
-                >
+              {skills.map(({ description, title }) => (
+                <li className="flex flex-col gap-1.5 rounded-lg border p-3" key={title}>
                   <span className="text-sm font-medium">{title}</span>
-                  <LevelDots label={levelLabel(level)} level={level} />
+                  {description && <span className="text-sm text-muted-foreground">{description}</span>}
                 </li>
               ))}
             </ul>

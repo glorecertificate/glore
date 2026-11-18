@@ -11,6 +11,7 @@ import {
   hasEligibilityEvent,
   loadLearnerLesson,
 } from '@/actions/courses/data'
+import { resolveSkillChoice } from '@/actions/courses/skill-choice'
 import { transaction } from '@/db/client'
 import { recordEvent } from '@/db/mutations/activity-event'
 import { completeLessonRecords, replaceSkillCompass, saveAnswer, saveCourseRating } from '@/db/mutations/learning'
@@ -99,10 +100,12 @@ export const finishLesson = async (
   if (!lesson) return { error: 'NOT_FOUND' }
   if (lesson.completed) return { data: { courseCompleted: false, events: [], saved: false } }
 
-  const checkedInput = checkCompletion(lesson, input)
+  const { course } = checked.scope
+  const checkedInput = checkCompletion(lesson, input, choice =>
+    resolveSkillChoice(learner.userId, course.courseId, choice)
+  )
   if (checkedInput.issue) return { error: checkedInput.issue }
 
-  const { course } = checked.scope
   const event: AppEvent<'course.completed'> = {
     actorId: learner.userId,
     data: { courseId: course.courseId, courseSlug: course.slug, userId: learner.userId },

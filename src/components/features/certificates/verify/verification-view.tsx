@@ -4,15 +4,15 @@ import { type Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
 import { type ActiveVerification } from '@/actions/certificates/public'
+import { SkillLevel } from '@/components/features/certificates/skill-level'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { Image } from '@/components/ui/image'
-import { LevelDots } from '@/components/ui/level-dots'
 import { QrCode } from '@/components/ui/qr-code'
-import { SKILL_LEVELS, VERIFY_ROOT } from '@/lib/constants'
+import { VERIFY_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
 import { fullName, serializeJsonLd } from '@/lib/utils'
 import config from '~/config/metadata.json'
@@ -30,11 +30,7 @@ const structuredData = (verification: ActiveVerification, url: string, name: str
 })
 
 export const VerificationView = async ({ verification }: { verification: ActiveVerification }) => {
-  const [t, tCommon, locale] = await Promise.all([
-    getTranslations('CertificateVerify'),
-    getTranslations('Common'),
-    getLocale(),
-  ])
+  const [t, locale] = await Promise.all([getTranslations('CertificateVerify'), getLocale()])
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
   const { activity, holder, organization, skills } = verification
@@ -169,13 +165,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
                   return (
                     <li className="flex flex-col gap-1.5" key={name}>
                       <p className="text-sm font-medium">{name}</p>
-                      {skill.level >= 1 && skill.level <= 5 && (
-                        <LevelDots
-                          label={tCommon(`skillLevels.${SKILL_LEVELS[skill.level - 1]}`)}
-                          level={skill.level as 1 | 2 | 3 | 4 | 5}
-                        />
-                      )}
-                      {skill.statement && <p className="text-sm text-muted-foreground">{skill.statement}</p>}
+                      <SkillLevel locale={certificateLocale} rendering={skill} />
                     </li>
                   )
                 })}

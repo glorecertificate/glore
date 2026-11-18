@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl'
 import { useFieldArray, useFormContext, useFormState, useWatch } from 'react-hook-form'
 
 import { FieldError } from '@/components/features/certificates/field-error'
-import { LevelPicker } from '@/components/features/certificates/level-picker'
 import { SectionNote } from '@/components/features/certificates/new/section-note'
 import { type SkillOption } from '@/components/features/certificates/new/values'
 import { MAX_EVIDENCE_LENGTH, type WizardValues } from '@/components/features/certificates/schemas'
@@ -13,7 +12,6 @@ import { useI18n } from '@/components/providers/i18n'
 import { Checkbox } from '@/components/ui/checkbox'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
-import { SKILL_LEVELS } from '@/lib/constants'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import appConfig from '~/config/app.json'
@@ -45,7 +43,6 @@ const SkillsError = () => {
 
 export const SkillsStep = ({ comment, options }: { comment?: string; options: SkillOption[] }) => {
   const t = useTranslations('CertificateWizard')
-  const tLevels = useTranslations('Common.skillLevels')
   const { localize } = useI18n()
   const { control } = useFormContext<WizardValues>()
   const { append, fields, remove } = useFieldArray({ control, name: 'skills' })
@@ -56,7 +53,6 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
     append({
       courseId: option.id,
       evidence: option.reflection?.slice(0, MAX_EVIDENCE_LENGTH) ?? '',
-      selfLevel: option.selfLevel ?? (undefined as never),
     })
   }
 
@@ -77,7 +73,6 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
           const index = fields.findIndex(field => field.courseId === option.id)
           const selected = index >= 0
           const title = option.title ? localize(option.title, 'en') : option.slug
-          const suggestion = SKILL_LEVELS[(option.selfLevel ?? 0) - 1]
           return (
             <li
               className={cn('rounded-lg border p-4 transition-colors', selected && 'border-primary/50 bg-primary/5')}
@@ -97,25 +92,18 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
                   )}
                   <span className="truncate text-sm font-medium">{title}</span>
                 </label>
-                {suggestion && (
-                  <span className="hidden text-xs text-muted-foreground sm:block">
-                    {t('assessedAs', { level: tLevels(suggestion) })}
-                  </span>
-                )}
               </div>
               {selected && (
                 <div className="mt-4 grid gap-4 border-t pt-4">
-                  <FormField
-                    control={control}
-                    name={`skills.${index}.selfLevel`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{t('selfLevel')}</FormLabel>
-                        <LevelPicker aria-label={t('selfLevel')} onValueChange={field.onChange} value={field.value} />
-                        <FieldError />
-                      </FormItem>
-                    )}
-                  />
+                  {option.description && (
+                    <div className="flex flex-col gap-1.5">
+                      <p className="text-sm font-medium">{t('chosenDescription')}</p>
+                      <p className="rounded-lg border bg-muted/40 p-3 text-sm leading-relaxed">
+                        {localize(option.description)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{t('chosenDescriptionHint')}</p>
+                    </div>
+                  )}
                   <FormField
                     control={control}
                     name={`skills.${index}.evidence`}

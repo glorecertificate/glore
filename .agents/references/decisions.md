@@ -52,7 +52,7 @@ glorecertificate.net claims 25 skills, and all 8 of its skill pages (`/soft-skil
 
 ### Certificate lifecycle
 
-- D2: Levels 1 to 5: Absent, Basic, Intermediate, Good, Advanced. Level 1 is not allowed on an issued certificate. The tutor removes the skill instead.
+- D2: Three levels: Intermediate, Good, Advanced (changed 2026-11 from five). There is no lower level and no "none of these" choice. A tutor who cannot confirm a skill removes it.
   - Runner-up: Numeric labels only.
 - D3: States: `draft`, `submitted`, `in_review`, `changes_requested`, `approved`, `rejected`, `withdrawn`, `revoked`. Reject is terminal with a reason. Revoke keeps the record and shows "Revoked on date".
   - No expiry.
@@ -62,11 +62,11 @@ glorecertificate.net claims 25 skills, and all 8 of its skill pages (`/soft-skil
 - D5: Public `code`: Crockford base32 `XXXX-XXXX-XXXX` (60 random bits), unique. `/verify/[code]` is canonical. Legacy `/{username}?v={handle}` redirects.
   - Runner-up: `XXXX-XXXX-XXXX-XXXX`.
 - D6: `/verify/[code]` shows the holder's full name, is `noindex`, and is rate limited. `/{username}` profiles are opt-in, off by default (GDPR article 25). Runner-up: Youthpass name check, if GloRe's DPO asks.
-- D9: Method elements return: required reflection at each self-assessment, tutor-confirmed level and statement per skill, blind tutor evaluation, anonymous org rating shown only as an aggregate of 3 or more.
+- D9: Method elements return: required reflection at each self-assessment, blind choice of a level description per skill, tutor-confirmed description, blind tutor evaluation, anonymous org rating shown only as an aggregate of 3 or more.
 
 ### Certificate PDF
 
-- D7: PDF content mirrors the template: holder snapshot, period, hours, location, partner org, 1 to 4 tasks (110 chars each), signatory, issue date, 3 to 4 skills (statement up to 200 chars, level).
+- D7: PDF content mirrors the template: holder snapshot, period, hours, location, partner org, 1 to 4 tasks (110 chars each), signatory, issue date, 3 to 4 skills (level and description).
   - Labels follow its language.
 - D19: PDF engine stays `@react-pdf/renderer` with bundled Roboto TTFs, vector logo and arrows from the template, and the template's Erasmus+ PNG. The banner text is localized.
   - Runner-up: `pdf-lib` over a static base PDF, if fidelity fails.
@@ -87,7 +87,7 @@ glorecertificate.net claims 25 skills, and all 8 of its skill pages (`/soft-skil
 - D1: Framework: the 25 skills of U8, one skill course each. "Work" becomes "Work skills".
   - The 4 skills outside the framework PDFs go to Work skills, inferred from the old platform's list, which is ordered by group.
   - Runner-up: Problem solving and Decision making in Personal skills, if GloRe answers #40 that way.
-- D8: Eligibility: `minSkills` (3) completed skill courses, average self-assessment of at least `minRating` (3), and an activity of `minActivityHours` (100) or `minActivityMonths` (3).
+- D8: Eligibility: `minSkills` (3) completed skill courses and an activity of `minActivityHours` (100) or `minActivityMonths` (3).
   - All live in `config/app.json`.
   - Confirmed by U9.
 - D15: Course overview with explicit Start, resume, server-side quiz grading with explanations and retries, completion screen with rating, learner language switch, skill compass. No streaks or leaderboards.

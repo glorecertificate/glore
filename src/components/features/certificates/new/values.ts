@@ -17,10 +17,10 @@ import { type IntlRecord } from '@/lib/i18n'
 export type WizardDraft = DefaultValues<WizardValues>
 
 export interface SkillOption {
+  description: IntlRecord | null
   icon: string | null
   id: number
   reflection: string | null
-  selfLevel: number | null
   slug: string
   title: IntlRecord | null
 }
@@ -34,7 +34,7 @@ export interface HolderProfile {
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/u
 
-const isLevel = (value: unknown): value is number =>
+const isScore = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value >= 1 && value <= 5
 
 export const emptyWizardValues = (language: string, holder: HolderProfile): WizardDraft => ({
@@ -60,36 +60,28 @@ export const emptyWizardValues = (language: string, holder: HolderProfile): Wiza
   tasks: [{ text: '' }],
 })
 
-export const certificateWizardValues = (
-  certificate: Certificate,
-  base: WizardDraft,
-  options: SkillOption[]
-): WizardDraft => {
-  const selfLevels = new Map(options.map(({ id, selfLevel }) => [id, selfLevel]))
-  return {
-    ...base,
-    activityDuration: certificate.activityDuration > 0 ? certificate.activityDuration : undefined,
-    activityEndDate: certificate.activityEndDate,
-    activityLocation: certificate.activityLocation,
-    activityStartDate: certificate.activityStartDate,
-    language: certificate.language,
-    rating: {
-      certificationSupport: certificate.rating?.certificationSupport ?? undefined,
-      comment: certificate.rating?.comment ?? '',
-      experience: certificate.rating?.experience ?? undefined,
-      support: certificate.rating?.support ?? undefined,
-      wouldRecommend: certificate.rating?.wouldRecommend ?? undefined,
-    },
-    skills: certificate.skills
-      .toSorted((a, b) => a.sortOrder - b.sortOrder)
-      .map(skill => ({
-        courseId: skill.course.id,
-        evidence: skill.evidence ?? '',
-        selfLevel: skill.selfLevel ?? selfLevels.get(skill.course.id) ?? undefined,
-      })) as WizardDraft['skills'],
-    tasks: certificate.tasks.length > 0 ? certificate.tasks.map(text => ({ text })) : [{ text: '' }],
-  }
-}
+export const certificateWizardValues = (certificate: Certificate, base: WizardDraft): WizardDraft => ({
+  ...base,
+  activityDuration: certificate.activityDuration > 0 ? certificate.activityDuration : undefined,
+  activityEndDate: certificate.activityEndDate,
+  activityLocation: certificate.activityLocation,
+  activityStartDate: certificate.activityStartDate,
+  language: certificate.language,
+  rating: {
+    certificationSupport: certificate.rating?.certificationSupport ?? undefined,
+    comment: certificate.rating?.comment ?? '',
+    experience: certificate.rating?.experience ?? undefined,
+    support: certificate.rating?.support ?? undefined,
+    wouldRecommend: certificate.rating?.wouldRecommend ?? undefined,
+  },
+  skills: certificate.skills
+    .toSorted((a, b) => a.sortOrder - b.sortOrder)
+    .map(skill => ({
+      courseId: skill.course.id,
+      evidence: skill.evidence ?? '',
+    })) as WizardDraft['skills'],
+  tasks: certificate.tasks.length > 0 ? certificate.tasks.map(text => ({ text })) : [{ text: '' }],
+})
 
 export const toEditValues = (values: WizardDraft): CertificateEditValues => {
   const duration = Number(values.activityDuration)
@@ -101,10 +93,10 @@ export const toEditValues = (values: WizardDraft): CertificateEditValues => {
     activityStartDate: ISO_DATE.test(values.activityStartDate ?? '') ? values.activityStartDate : '',
     language: values.language,
     rating: {
-      certificationSupport: isLevel(rating?.certificationSupport) ? rating.certificationSupport : null,
+      certificationSupport: isScore(rating?.certificationSupport) ? rating.certificationSupport : null,
       comment: (rating?.comment ?? '').trim().slice(0, MAX_RATING_COMMENT_LENGTH) || null,
-      experience: isLevel(rating?.experience) ? rating.experience : null,
-      support: isLevel(rating?.support) ? rating.support : null,
+      experience: isScore(rating?.experience) ? rating.experience : null,
+      support: isScore(rating?.support) ? rating.support : null,
       wouldRecommend: typeof rating?.wouldRecommend === 'boolean' ? rating.wouldRecommend : null,
     },
     skills: (values.skills ?? []).flatMap(skill =>
@@ -113,7 +105,6 @@ export const toEditValues = (values: WizardDraft): CertificateEditValues => {
             {
               courseId: skill.courseId,
               evidence: (skill.evidence ?? '').trim().slice(0, MAX_EVIDENCE_LENGTH) || null,
-              selfLevel: isLevel(skill.selfLevel) ? skill.selfLevel : null,
             },
           ]
         : []

@@ -7,8 +7,8 @@ Certificate lifecycle, screens, PDF, and public verification. Roles and the othe
 ### Eligibility
 
 - A volunteer can request a certificate after completing at least `minSkills` (3) skill courses.
-- The average assessment rating across completed skill courses must be at least `minRating` (3 of 5).
-- Assessment ratings of 1 to 5 come from the final assessment of each skill course.
+- Nothing else gates eligibility: there is no rating threshold (`minRating` is gone).
+- The final assessment of each skill course is a blind choice among its three level descriptions (`skill-choice.ts`). The volunteer never sees a level name, dots, or an average before issue.
 
 ### Status flow
 
@@ -30,7 +30,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Submit also validates the experience rating and eligibility (D8).
 - Submit also validates the activity rule: 100 hours, or an end date three months after the start (error `ACTIVITY_TOO_SHORT`).
 - Submit also validates the personal data: last name, birthday, birth place, nationality. The volunteer may fill them inline (error `PERSONAL_DATA_MISSING`).
-- A missing `selfLevel` comes from the course assessment average.
+- The server derives each skill's `selfLevel` from the stored course choice (`findHolderLevels`) and ignores any level the client sends.
 - Submit generates the public `code` and keeps it on resubmit. The code is Crockford base32 `XXXX-XXXX-XXXX` (`rules.ts`), and certificates never expire.
 
 ### Reviewer assignment
@@ -49,7 +49,7 @@ draft -> submitted -> in_review -> approved -> revoked
 
 - The assigned tutor claims the request (`in_review`), requests changes (section comments stored on the review row), rejects, or approves.
 - Reject needs a reason of 10 or more characters and works from any open status.
-- Approval merges the tutor's edits, requires levels 2 (Basic) to 5 (Advanced) on 3 to 4 skills, rechecks the activity rule, and renders the PDF.
+- Approval merges the tutor's edits, requires a level and its description on 3 to 4 skills (a missing description fails with `INVALID_INPUT`), rechecks the activity rule, and renders the PDF.
 - Approval commits the status, review row, and event in one transaction, then uploads to R2.
 - An upload failure reverts the whole approval and returns `STORAGE_FAILED`. The certificate caches expire even when the revert fails too.
 - The first approved certificate becomes the default on the public profile.
@@ -59,13 +59,23 @@ draft -> submitted -> in_review -> approved -> revoked
 - Revocation clears `documentUrl` in its transaction and deletes the PDF object from R2 after the commit (`r2DeleteQuietly`), and the latest approved certificate becomes the default.
 - A failed delete is logged and never undoes the revoke. The orphan sweeper removes the object later, because it treats the PDF of a revoked certificate as unreferenced.
 
+### Blind level choice
+
+- Levels are the `skill_level` enum: `intermediate`, `good`, `advanced`. There is no lower level and no "none of these" option.
+- The last lesson of a skill course shows the three descriptions of the course as an accessible radio group. Cards carry opaque HMAC ids (`skillChoiceToken`) sorted by id, so the order says nothing about the level. The choice is final.
+- The server resolves the token to a level (`resolveSkillChoice`) and stores it in `user_assessments.value`. A level sent by the client is ignored.
+- `parseCertificate` nulls `level` and `selfLevel` until the certificate is `approved` or `revoked`. Tutor changes stay hidden until issue.
+- A published skill course without all three descriptions shows "descriptions missing" in its final step, and the editor refuses to publish it (`DESCRIPTIONS_MISSING`).
+- The snapshot keeps the description in every locale. Old snapshots keep numeric levels and `statement`, and `renderSnapshotSkill` renders both.
+- Committed guards: `skill-choice.test.ts`, `db/queries/certificate.test.ts`, and the blind cases in `queries.test.ts` and `learning.test.ts`.
+
 ## Screens
 
 ### Request wizard
 
 - Route: `/certificates/new`, for volunteers of the active org.
 - Experience: dates, hours, location, 1 to 4 tasks of 110 characters.
-- Skills: 3 to 4 completed skill courses. Self-level is prefilled from the course assessment and adjustable, and the reflection is prefilled as evidence.
+- Skills: 3 to 4 completed skill courses. The chosen description is shown read-only (the choice in the course is final), with no level name, and the reflection is prefilled as evidence.
 - Your organization: anonymous rating, shown to the org only as an aggregate of 3 or more.
   - Fields: `experience`, `support`, `certificationSupport` (1 to 5), `wouldRecommend`, and a `comment` of up to 400 characters.
 - Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
@@ -101,8 +111,8 @@ draft -> submitted -> in_review -> approved -> revoked
 ### Review workspace
 
 - Route: `/certificates/[id]/review`, for the assigned tutor only.
-- Left side: the volunteer, experience, tasks, and skills with self level, evidence, and course results (`findReviewContext`), plus the previous feedback.
-- Right side, the form: editable experience and tasks, per-skill include, confirmed level of at least Intermediate and a 200 character statement, four blind scores, a note per section, and a general comment.
+- Left side: the volunteer, experience, tasks, and skills with the chosen description, evidence, and the reflection (`findReviewContext`, reviewer only), plus the previous feedback.
+- Right side, the form: editable experience and tasks, per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a note per section, and a general comment.
 - Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
 - `Start review` claims a `submitted` request.
@@ -135,7 +145,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ## Public verification
 
 - `/verify` takes a code (any case, dashes optional, normalized by `normalizeCertificateCode`) and redirects to `/verify/<code>`.
-- `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with levels and statements, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
+- `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with their level and description, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.
 - `findPublicCertificate` (the `/{username}` page, its metadata, and its image) is limited to 60 reads a minute per IP under `profile:<ip>`, deduped per request. The image answers 429 and the page answers not found.
@@ -155,7 +165,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - `eraseAccount` (`deleteUser` in `db/mutations/user.ts`) deletes the holder's drafts and open requests.
 - In the same transaction it detaches every issued (`approved` or `revoked`) certificate instead of deleting it.
 - Detaching sets `user_id` to null, sets `holder_deleted_at` (a dedicated marker, so `revoked` keeps meaning an organization decision), and clears `is_default`. Nothing else changes.
-- The row keeps its `snapshot`, description, location, tasks, skills with `evidence` and `statement`, review comments, rating, event metadata, and `documentUrl`.
+- The row keeps its `snapshot`, description, location, tasks, skills with `evidence`, review comments, rating, event metadata, and `documentUrl`.
 - The certificate therefore stays valid, and organization stats and tutor history still count it.
 - Open reviews of a deleted tutor return to the pool in the same transaction (`in_review` goes back to `submitted`, `certificate.unassigned` is recorded) through `releaseTutorAssignments`.
 - `settleDeletedUser` deletes the avatar, expires the certificate caches of every affected organization and reviewer, the organizations and team caches and the admin overview, then notifies the unassign events.

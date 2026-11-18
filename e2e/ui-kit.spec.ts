@@ -70,7 +70,7 @@ test.describe('public certificate UI', () => {
     await pool.query('insert into certificate_skills (certificate_id, course_id, level) values ($1, $2, $3)', [
       certificates[0].id,
       courses[0].id,
-      4,
+      'good',
     ])
   })
 

@@ -200,7 +200,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 ## Static data
 
-- `config/app.json`: feature settings (`minSkills`, `minRating`, `maxAvatarSize`, and the rest).
+- `config/app.json`: feature settings (`minSkills`, `maxAvatarSize`, and the rest).
 - `config/i18n.json`: locales.
 - `config/icons.json`: icon-picker metadata.
 - `config/metadata.json`: app metadata and the default for every app setting. Keep `name`, `url`, `slug`, `version`, and `themeColor` here only.

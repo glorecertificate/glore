@@ -73,7 +73,7 @@ export const ReviewWorkspace = ({
   const canRequestChanges = canApprove
 
   const form = useForm<ReviewFormValues>({
-    defaultValues: reviewDefaults(certificate),
+    defaultValues: reviewDefaults(certificate, results),
     mode: 'onTouched',
     resolver: zodResolver(reviewFormSchema),
   })
@@ -178,7 +178,7 @@ export const ReviewWorkspace = ({
               <SectionComment section="tasks" />
             </section>
 
-            <SkillsSection certificate={certificate} />
+            <SkillsSection certificate={certificate} results={results} />
             <SectionComment section="skills" />
 
             <section aria-labelledby="personal-title" className="flex flex-col gap-3">

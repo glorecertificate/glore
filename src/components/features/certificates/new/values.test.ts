@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  type SkillOption,
   type WizardDraft,
   certificateWizardValues,
   emptyWizardValues,
@@ -58,18 +57,18 @@ describe('toEditValues', () => {
     expect(edit.rating).toMatchObject({ experience: null, wouldRecommend: null })
   })
 
-  it('keeps self levels and evidence per skill and nulls invalid levels', () => {
+  it('keeps the evidence per skill and carries no level', () => {
     const edit = toEditValues(
       complete({
         skills: [
-          { courseId: 1, evidence: ' example ', selfLevel: 4 },
-          { courseId: 2, evidence: '', selfLevel: 9 },
+          { courseId: 1, evidence: ' example ' },
+          { courseId: 2, evidence: '' },
         ],
       })
     )
     expect(edit.skills).toEqual([
-      { courseId: 1, evidence: 'example', selfLevel: 4 },
-      { courseId: 2, evidence: null, selfLevel: null },
+      { courseId: 1, evidence: 'example' },
+      { courseId: 2, evidence: null },
     ])
   })
 })
@@ -83,7 +82,7 @@ describe('wizardSchema', () => {
     const result = wizardSchema().safeParse(
       complete({
         activityEndDate: '2025-01-01',
-        skills: [{ courseId: 1, evidence: '', selfLevel: 3 }],
+        skills: [{ courseId: 1, evidence: '' }],
         tasks: [{ text: '' }],
       })
     )
@@ -111,9 +110,7 @@ describe('wizardSchema', () => {
 })
 
 describe('certificateWizardValues', () => {
-  const options: SkillOption[] = [{ icon: null, id: 2, reflection: null, selfLevel: 4, slug: 'two', title: null }]
-
-  it('restores a stored draft in skill order and falls back to the assessed level', () => {
+  it('restores a stored draft in skill order without any level', () => {
     const certificate = {
       activityDuration: 0,
       activityEndDate: '',
@@ -122,19 +119,19 @@ describe('certificateWizardValues', () => {
       language: 'it',
       rating: null,
       skills: [
-        { course: { id: 2 }, evidence: null, selfLevel: null, sortOrder: 1 },
-        { course: { id: 1 }, evidence: 'a', selfLevel: 5, sortOrder: 0 },
+        { course: { id: 2 }, evidence: null, sortOrder: 1 },
+        { course: { id: 1 }, evidence: 'a', sortOrder: 0 },
       ],
       tasks: [],
     } as unknown as Certificate
 
-    const values = certificateWizardValues(certificate, emptyWizardValues('en', holder), options)
+    const values = certificateWizardValues(certificate, emptyWizardValues('en', holder))
     expect(values.language).toBe('it')
     expect(values.activityDuration).toBeUndefined()
     expect(values.tasks).toEqual([{ text: '' }])
     expect(values.skills).toEqual([
-      { courseId: 1, evidence: 'a', selfLevel: 5 },
-      { courseId: 2, evidence: '', selfLevel: 4 },
+      { courseId: 1, evidence: 'a' },
+      { courseId: 2, evidence: '' },
     ])
   })
 })

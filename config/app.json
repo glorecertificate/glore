@@ -2,7 +2,6 @@
   "aiFirstTokenMs": 8000,
   "aiModels": ["gemini-3.8-flash", "gemini-3.5-flash-lite"],
   "minSkills": 3,
-  "minRating": 3,
   "maxSkills": 4,
   "minActivityHours": 100,
   "minActivityMonths": 3,

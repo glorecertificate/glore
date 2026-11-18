@@ -17,10 +17,22 @@ import { Progress } from '@/components/ui/progress'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type CourseAnalyticsStats } from '@/db/queries/course-editing'
+import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
+import { cn } from '@/lib/utils'
 
-const RatingBar = ({ count, label, max }: { count: number; label: string; max: number }) => (
+const RatingBar = ({
+  count,
+  label,
+  labelClassName = 'w-4',
+  max,
+}: {
+  count: number
+  label: string
+  labelClassName?: string
+  max: number
+}) => (
   <div className="flex items-center gap-2">
-    <span className="w-4 shrink-0 text-right text-xs text-muted-foreground">{label}</span>
+    <span className={cn('shrink-0 text-right text-xs text-muted-foreground', labelClassName)}>{label}</span>
     <Progress
       className="h-2 flex-1"
       color={count > 0 ? 'brand' : 'default'}
@@ -39,6 +51,7 @@ const AnalyticsContent = ({
 }) => {
   const t = useTranslations('CourseEditor')
   const tEditor = useTranslations('Learning.editor')
+  const tLevels = useTranslations('Common.skillLevels')
   const { localize } = useI18n()
 
   const isSkill = course.type === 'skill'
@@ -59,19 +72,10 @@ const AnalyticsContent = ({
       label: t('analyticsAvgRating'),
       value: data.avgRating === null ? empty : `${data.avgRating} / 5`,
     },
-    ...(isSkill
-      ? ([
-          {
-            icon: 'star',
-            key: 'selfAssessment',
-            label: tEditor('analyticsSelfAssessment'),
-            value: data.avgSelfAssessment === null ? empty : `${data.avgSelfAssessment} / 5`,
-          },
-        ] satisfies StatCard[])
-      : []),
   ]
 
   const maxRatingCount = Math.max(...data.ratingDistribution.map(r => r.count), 1)
+  const maxLevelCount = Math.max(...Object.values(data.levelCounts), 1)
 
   if (data.enrollmentCount === 0) {
     return (
@@ -136,6 +140,23 @@ const AnalyticsContent = ({
           ))}
         </div>
       </div>
+
+      {isSkill && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-xs font-medium text-muted-foreground">{tEditor('analyticsLevels')}</h3>
+          <div className="flex flex-col gap-2 rounded-lg border p-3">
+            {SKILL_LEVELS.toReversed().map(level => (
+              <RatingBar
+                count={data.levelCounts[level]}
+                key={level}
+                label={tLevels(level)}
+                labelClassName="w-24"
+                max={maxLevelCount}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

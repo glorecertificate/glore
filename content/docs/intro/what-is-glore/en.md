@@ -7,7 +7,7 @@ GloRe, short for Global Recognition, helps you show what volunteering taught you
 
 ## How it works in short
 
-You take short online courses on soft skills such as teamwork, empathy or problem solving. Each course ends with a self-assessment, where you rate your own level and describe a real moment when you used the skill. Once you have finished enough courses and your volunteering was long enough, you ask for a certificate. A tutor from your organization reads your request and decides. If they approve it, GloRe creates a PDF and a public page with a QR code, so an employer or a school can check that it is real.
+You take short online courses on soft skills such as teamwork, empathy or problem solving. Each course ends with a final step, where you choose the description that fits you best and describe a real moment when you used the skill. Once you have finished enough courses and your volunteering was long enough, you ask for a certificate. A tutor from your organization reads your request and decides. If they approve it, GloRe creates a PDF and a public page with a QR code, so an employer or a school can check that it is real.
 
 ## Who is behind it
 

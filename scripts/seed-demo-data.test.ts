@@ -224,7 +224,7 @@ describe('demo certificates', () => {
     expect(deleted[0]).toMatchObject({ holder: null, status: 'approved' })
     expect(deleted[0]?.activity.tasks.length).toBeGreaterThan(0)
     expect(deleted[0]?.activity.description).not.toBe('')
-    expect(deleted[0]?.skills.every(({ evidence, statement }) => evidence && statement)).toBe(true)
+    expect(deleted[0]?.skills.every(({ description, evidence }) => evidence && description)).toBe(true)
   })
 
   it('have unique handles and valid unique codes', () => {
@@ -266,9 +266,8 @@ describe('demo certificates', () => {
       if (certificate.status !== 'draft') expect(courses.length).toBeGreaterThanOrEqual(3)
       expect(courses.length).toBeLessThanOrEqual(4)
       for (const { level, selfLevel } of certificate.skills) {
-        expect(selfLevel).toBeGreaterThanOrEqual(1)
-        expect(selfLevel).toBeLessThanOrEqual(5)
-        if (level !== null) expect(level).toBeGreaterThanOrEqual(2)
+        expect(['intermediate', 'good', 'advanced']).toContain(selfLevel)
+        if (level !== null) expect(['intermediate', 'good', 'advanced']).toContain(level)
       }
       const issued = ['approved', 'revoked'].includes(certificate.status)
       expect(certificate.skills.every(({ level }) => (level !== null) === issued)).toBe(true)

@@ -161,7 +161,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 
 1. Dashboard and `/certificates` show the queue with ages; the request older than 7 days is flagged.
 2. Open the `volunteer-review` request and click "Start review": it moves to "In review" and the volunteer gets a notification.
-3. Lower one skill level, edit a statement, fill the blind evaluation, and request changes with a comment on tasks.
+3. Pick another level description for one skill, fill the blind evaluation, and request changes with a comment on tasks.
 4. As `volunteer-changes` (another browser), resubmit; back as `tutor`, approve after previewing the PDF.
 5. Reject the `member-01` request with a reason and check the volunteer's email.
 6. Self-assign the `member-09` request from the "Unassigned" tab.

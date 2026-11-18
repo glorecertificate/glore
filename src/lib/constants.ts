@@ -34,7 +34,6 @@ export const DASHBOARD_ROOTS = [
 
 /* App */
 export const IMPERSONATION_LOCKED = 'NOT_ALLOWED_WHILE_IMPERSONATING'
-export const SKILL_LEVELS = ['absent', 'basic', 'intermediate', 'good', 'advanced'] as const
 export const AUTH_VIEWS = [
   'login',
   'password_request',

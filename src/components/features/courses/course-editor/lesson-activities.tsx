@@ -294,7 +294,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
     const assessment = {
       id: tempId(),
       description: INTL_PLACEHOLDER,
-      userRating: 0,
+      answered: false,
       userAssessments: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

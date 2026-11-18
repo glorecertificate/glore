@@ -76,7 +76,7 @@ describe.skipIf(!isLocalDatabase)('content translation actions', () => {
     context = await loadContext('editor')
     state.userId = context.userId
     const [fixtureCourse, ai, review, skillGroups, courseManagement] = await Promise.all([
-      createFixtureCourse(context),
+      createFixtureCourse(context, { descriptions: true }),
       import('./ai'),
       import('./states'),
       import('@/actions/courses/skill-groups'),

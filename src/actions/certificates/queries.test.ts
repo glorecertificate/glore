@@ -190,7 +190,7 @@ describe.skipIf(!isLocalDatabase)('certificate queries', () => {
         .returning({ id: schema.assessments.id })
       await db
         .insert(schema.userAssessments)
-        .values([{ assessmentId: assessment!.id, reflection: null, userId: fixture.ids.author, value: 3 }])
+        .values([{ assessmentId: assessment!.id, reflection: null, userId: fixture.ids.author, value: 'intermediate' }])
 
       try {
         fixture.as('tutorA')
@@ -201,8 +201,8 @@ describe.skipIf(!isLocalDatabase)('certificate queries', () => {
             .map(Number)
             .toSorted()
         ).toEqual(fixture.courseIds.slice(0, 3).toSorted())
-        expect(data?.results[courseId]?.rating).toBe(3)
-        expect(data?.results[courseId]?.reflection).toBeNull()
+        expect(data?.results[courseId]?.level).toBe('intermediate')
+        expect(data?.results[courseId]?.reflection).not.toBeNull()
         expect(data?.results[courseId]?.completedAt).toBeNull()
       } finally {
         await db.delete(schema.userAssessments).where(eq(schema.userAssessments.assessmentId, assessment!.id))
@@ -218,8 +218,8 @@ describe.skipIf(!isLocalDatabase)('certificate queries', () => {
     })
   })
 
-  describe('listSkillReflections', () => {
-    it('returns the latest reflection per skill course for the signed-in user', async () => {
+  describe('listSkillSelections', () => {
+    it('returns only the chosen description and reflection per skill course for the signed-in user', async () => {
       const { db, schema } = fixture
       const [courseId] = fixture.courseIds as [number]
       const [lesson] = await db
@@ -234,18 +234,23 @@ describe.skipIf(!isLocalDatabase)('certificate queries', () => {
         assessmentId: assessment!.id,
         reflection: 'I coordinated the desk',
         userId: fixture.ids.author,
-        value: 4,
+        value: 'good',
       })
 
       try {
         fixture.as('author')
-        expect(await queries.listSkillReflections()).toEqual({ [courseId]: 'I coordinated the desk' })
+        const selections = await queries.listSkillSelections()
+        expect(selections[courseId]).toEqual({
+          description: { en: 'en good', es: 'es good', it: 'it good' },
+          reflection: 'I coordinated the desk',
+        })
+        expect(JSON.stringify(selections)).not.toMatch(/intermediate|advanced/u)
 
         fixture.as('otherAuthor')
-        expect(await queries.listSkillReflections()).toEqual({})
+        expect((await queries.listSkillSelections())[courseId]?.reflection).not.toBe('I coordinated the desk')
 
         session.authUser = null
-        expect(await queries.listSkillReflections()).toEqual({})
+        expect(await queries.listSkillSelections()).toEqual({})
       } finally {
         await db.delete(schema.userAssessments).where(eq(schema.userAssessments.assessmentId, assessment!.id))
         await db.delete(schema.assessments).where(eq(schema.assessments.id, assessment!.id))

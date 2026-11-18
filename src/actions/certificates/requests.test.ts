@@ -187,24 +187,24 @@ describe.skipIf(!isLocalDatabase)('certificate requests', () => {
     })
 
     it('derives the self level of each skill from the course assessments', async () => {
-      session.courses = stubCourses(fixture.courseIds, 5)
+      await fixture.assess('advanced')
       const created = await draft()
       await requests.submitCertificate(created.id)
 
       const saved = await fixture.reload(created.id)
-      expect(saved.skills.map(({ selfLevel }) => selfLevel)).toEqual([5, 5, 5])
+      expect(saved.skills.map(({ selfLevel }) => selfLevel)).toEqual(['advanced', 'advanced', 'advanced'])
     })
 
-    it('keeps a self level the volunteer chose', async () => {
+    it('ignores a level sent by the client', async () => {
       const created = await draft({
         skills: fixture.courseIds
           .slice(0, 3)
-          .map((courseId, index) => ({ courseId, evidence: 'Example', selfLevel: index + 2 })),
+          .map(courseId => ({ courseId, evidence: 'Example', selfLevel: 'advanced', level: 'advanced' })),
       })
       await requests.submitCertificate(created.id)
 
       const saved = await fixture.reload(created.id)
-      expect(saved.skills.map(({ selfLevel }) => selfLevel)).toEqual([2, 3, 4])
+      expect(saved.skills.map(({ selfLevel }) => selfLevel)).toEqual(['good', 'good', 'good'])
     })
 
     it('sends the request to the pool when the organization has no available tutor', async () => {
@@ -239,13 +239,10 @@ describe.skipIf(!isLocalDatabase)('certificate requests', () => {
     it('requires the learning eligibility of D8', async () => {
       const created = await draft()
 
-      session.courses = stubCourses(fixture.courseIds, 2)
-      expect((await requests.submitCertificate(created.id)).error?.code).toBe('NOT_ELIGIBLE')
-
       session.courses = stubCourses(fixture.courseIds.slice(0, 2))
       expect((await requests.submitCertificate(created.id)).error?.code).toBe('INVALID_INPUT')
 
-      session.courses = stubCourses(fixture.courseIds, 3)
+      session.courses = stubCourses(fixture.courseIds)
       expect((await requests.submitCertificate(created.id)).error).toBeNull()
     })
 

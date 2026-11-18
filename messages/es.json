@@ -37,8 +37,6 @@
     "theme": "Tema",
     "item": "Elemento",
     "skillLevels": {
-      "absent": "Ausente",
-      "basic": "Básico",
       "intermediate": "Intermedio",
       "good": "Bueno",
       "advanced": "Avanzado"
@@ -1342,7 +1340,7 @@
       },
       "step2": {
         "title": "Cumple los requisitos",
-        "description": "Cuando hayas completado al menos 3 cursos de habilidades con una puntuación media de 3 sobre 5, podrás solicitar un certificado."
+        "description": "Cuando hayas completado al menos 3 cursos de habilidades, puedes solicitar un certificado."
       },
       "step3": {
         "title": "Obtén la validación",
@@ -1395,7 +1393,7 @@
           },
           "step2": {
             "title": "Completa los cursos de habilidades",
-            "description": "Avanza por los cursos de habilidades y sus lecciones. Cada uno termina con una evaluación final que puntúa la habilidad de 1 a 5."
+            "description": "Sigue los cursos de habilidades y sus lecciones. Cada uno termina con un paso final en el que eliges la descripción que mejor te representa."
           },
           "step3": {
             "title": "Autoevalúa tus habilidades",
@@ -1409,7 +1407,7 @@
         "faqs": {
           "q1": {
             "question": "¿Cuándo puedo solicitar mi certificado?",
-            "answer": "Cuando completes al menos 3 cursos de habilidades con una autoevaluación media de 3 sobre 5 o superior. El botón se desbloquea en cuanto cumples los requisitos."
+            "answer": "Cuando completes al menos 3 cursos de habilidades. El botón se desbloquea al cumplir el requisito."
           },
           "q2": {
             "question": "¿Qué es una autoevaluación?",
@@ -1627,7 +1625,7 @@
       "description": "El certificado convierte tu voluntariado en una credencial verificable.",
       "eligibility": {
         "title": "Requisitos",
-        "description": "Completa al menos 3 cursos de habilidades con una autoevaluación media de 3 sobre 5 o superior para desbloquear la solicitud de certificado."
+        "description": "Completa al menos 3 cursos de habilidades para desbloquear la solicitud del certificado."
       },
       "lifecycle": {
         "title": "Ciclo de revisión",
@@ -1780,9 +1778,6 @@
     "openDescription": "Puedes tener una solicitud abierta por organización. Síguela o retírala para empezar otra.",
     "courses": "Completa {min} cursos de habilidades",
     "coursesDetail": "{count} de {min} completados",
-    "rating": "Autoevaluación media de al menos {min} sobre 5",
-    "ratingNone": "Valórate al final de cada curso de habilidades.",
-    "ratingDetail": "Tu media es {average} sobre 5. Necesitas al menos {min}.",
     "activity": "Al menos {hours} horas o {months} meses de voluntariado",
     "activityDetail": "Lo comprobamos cuando introduces las fechas y horas de tu experiencia.",
     "viewRequest": "Ver solicitud",
@@ -1797,12 +1792,12 @@
     "tooLong": "Este texto es demasiado largo.",
     "minSkills": "Elige al menos 3 habilidades.",
     "maxSkills": "Elige como máximo 4 habilidades.",
-    "levelRequired": "Elige un nivel de al menos Intermedio.",
+    "levelRequired": "Elige una descripción para esta habilidad.",
     "commentRequired": "Añade un comentario o una nota de sección para que la persona voluntaria sepa qué cambiar."
   },
   "CertificateList": {
     "backTo": "Volver a todos los certificados",
-    "description": "Los certificados de GloRe son un reconocimiento oficial de tu experiencia de voluntariado y de las habilidades blandas adquiridas. Los emite GloRe y puedes compartirlos en tus perfiles de redes sociales o añadirlos a tu CV. Puedes solicitar tu certificado después de completar al menos 3 cursos con una autoevaluación media de 3 sobre 5 como mínimo.",
+    "description": "Los certificados de GloRe son un reconocimiento oficial de tu experiencia de voluntariado y de las habilidades blandas adquiridas. Los emite GloRe y puedes compartirlos en tus redes sociales o añadirlos a tu CV. Puedes solicitar tu certificado tras completar al menos 3 cursos de habilidades.",
     "detailTitle": "Certificado",
     "notFound": "Certificado no encontrado",
     "notFoundMessage": "El certificado que buscas no existe o se ha movido",
@@ -1913,11 +1908,9 @@
     "ruleUnmet": "No cumple el requisito de actividad.",
     "tasks": "Tareas",
     "skills": "Habilidades",
-    "selfLevel": "Nivel autoevaluado",
-    "selfLevelValue": "Autoevaluación: {level}",
+    "selfLevel": "Elección de la persona voluntaria",
     "completedOn": "Curso completado el {date}",
     "notCompleted": "Curso no completado",
-    "courseRating": "Valoración del curso {rating}",
     "sectionExperience": "Experiencia",
     "sectionPersonal": "Datos personales",
     "sectionSkills": "Habilidades",
@@ -1938,10 +1931,8 @@
     "scoreGrowth": "Crecimiento",
     "scoreGrowthHint": "Progreso entre el inicio y el final.",
     "skillsTitle": "Habilidades a certificar",
-    "skillsDescription": "Selecciona las habilidades a incluir y fija el nivel que confirmas. El nivel mínimo es {level}.",
-    "confirmedLevel": "Nivel confirmado",
-    "statement": "Declaración",
-    "statementPlaceholder": "Una frase sobre lo que demostró la persona voluntaria en esta habilidad.",
+    "skillsDescription": "Selecciona las habilidades que se incluyen. Para cada una, confirma la descripción que mejor encaja o elige otra. Tu elección fija el nivel.",
+    "confirmedLevel": "Nivel y descripción",
     "comment": "Comentario general",
     "commentPlaceholder": "Obligatorio al pedir cambios. Opcional al aprobar.",
     "startReview": "Empezar revisión",
@@ -1970,7 +1961,9 @@
     "errorInvalidState": "Este certificado ha cambiado de estado. Recarga la página.",
     "errorStorage": "No se pudo guardar el PDF. Inténtalo de nuevo.",
     "errorRateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
-    "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
+    "descriptionsMissing": "Este curso de habilidades aún no tiene todas las descripciones de nivel. Pide a un editor que las añada.",
+    "volunteerChoice": "Elegida por la persona voluntaria"
   },
   "CertificateShare": {
     "title": "Comparte tu certificado",
@@ -2051,8 +2044,6 @@
     "addTask": "Añadir una tarea",
     "skillsDescription": "Elige entre {min} y {max} habilidades que desarrollaste en esta experiencia. Solo aparecen los cursos de habilidades completados.",
     "skillsSelected": "{count} de {max} seleccionadas",
-    "assessedAs": "Autoevaluación del curso: {level}",
-    "selfLevel": "Tu nivel",
     "evidence": "Un ejemplo concreto",
     "evidencePlaceholder": "Describe una situación en la que usaste esta habilidad.",
     "anonymousNote": "Tus respuestas sobre {organization} son anónimas. La organización solo las ve como una media cuando han respondido al menos 3 personas voluntarias.",
@@ -2085,7 +2076,7 @@
     "titlesOrganization": "Valora tu organización",
     "titlesReview": "Revisa y envía",
     "descriptionsExperience": "Cuándo, dónde y qué hiciste como voluntario.",
-    "descriptionsSkills": "Indica tu nivel en cada habilidad y añade un ejemplo.",
+    "descriptionsSkills": "Revisa la descripción que elegiste para cada habilidad y añade un ejemplo.",
     "descriptionsOrganization": "Cuéntanos cómo fue la experiencia. Esta opinión es anónima.",
     "descriptionsReview": "Comprueba la vista previa, añade los datos que falten y envía.",
     "changesRequested": "Tu tutor ha pedido cambios",
@@ -2112,7 +2103,9 @@
     "submitErrorsConflict": "Ya tienes una solicitud abierta en esta organización.",
     "submitErrorsRateLimited": "Demasiados intentos. Inténtalo de nuevo en unos minutos.",
     "submitErrorsGeneric": "No se pudo enviar la solicitud. Inténtalo de nuevo.",
-    "submitErrorsSaveFailed": "No se pudo guardar tu solicitud. Inténtalo de nuevo."
+    "submitErrorsSaveFailed": "No se pudo guardar tu solicitud. Inténtalo de nuevo.",
+    "chosenDescription": "Tu elección",
+    "chosenDescriptionHint": "Hiciste esta elección al final del curso. Es definitiva y tu tutor la revisa."
   },
   "CertificatePdf": {
     "title": "Certificado de habilidades blandas",
@@ -2261,7 +2254,6 @@
     "metricStarted": "Cursos iniciados",
     "metricCompleted": "Cursos completados",
     "metricSkillCompleted": "Cursos de habilidades completados",
-    "metricAverageLevel": "Autoevaluación media",
     "notAvailable": "No disponible",
     "noCourses": "Aún no ha empezado ningún curso.",
     "inProgress": "En progreso",
@@ -2418,7 +2410,8 @@
     "insightsRatingNone": "Sin respuestas",
     "insightsRatingValue": "{value} / 5",
     "insightsRatingRecommend": "Te recomendarían",
-    "insightsRatingCount": "Basado en {count, plural, one {# valoración} other {# valoraciones}}"
+    "insightsRatingCount": "Basado en {count, plural, one {# valoración} other {# valoraciones}}",
+    "metricLevelCount": "Elecciones: {level}"
   },
   "Users": {
     "admin": "Usuario admin",
@@ -3592,7 +3585,7 @@
       "noLessons": "Este curso aún no tiene lecciones.",
       "progressValue": "{completed} de {total} lecciones completadas",
       "certificateTitle": "Cuenta para tu certificado",
-      "certificateNote": "Completa {minSkills} cursos de habilidades con una autoevaluación media de {minRating} o más para solicitar tu certificado.",
+      "certificateNote": "Completa {minSkills} cursos de habilidades para solicitar tu certificado.",
       "certificateProgress": "Has completado {completed} de {minSkills} cursos de habilidades.",
       "viewerNote": "Estás previsualizando este curso. Nada de lo que hagas aquí se guarda.",
       "type": {
@@ -3634,7 +3627,7 @@
       "evaluationsTitle": "Valórate",
       "evaluationsHint": "Valora cada afirmación de 1 (nada) a 5 (totalmente).",
       "assessmentTitle": "Evaluación final",
-      "assessmentHint": "Elige tu nivel en esta habilidad y explícalo con tus palabras. Tu reflexión cuenta para tu certificado.",
+      "assessmentHint": "Elige la descripción que mejor te representa hoy. Después explica tu elección con tus palabras. Tu reflexión cuenta para tu certificado.",
       "reflectionLabel": "Tu reflexión",
       "reflectionPlaceholder": "Describe un momento real en el que usaste esta habilidad y qué aprendiste.",
       "reflectionCount": "{count} de {max} caracteres. Escribe al menos {min}.",
@@ -3642,18 +3635,20 @@
       "blocker": {
         "quiz": "Responde bien a todas las preguntas para continuar.",
         "evaluations": "Valora todas las afirmaciones para continuar.",
-        "assessment": "Elige tu nivel para continuar.",
-        "reflection": "Escribe tu reflexión (al menos {min} caracteres) para continuar."
+        "assessment": "Elige una descripción para continuar.",
+        "reflection": "Escribe tu reflexión (al menos {min} caracteres) para continuar.",
+        "descriptions": "Este paso aún no está disponible. Inténtalo más tarde."
       },
-      "viewSummary": "Ver resumen"
+      "viewSummary": "Ver resumen",
+      "descriptionsMissing": "Las descripciones de este paso aún no están completas. No podrás terminar este curso hasta que un editor las añada."
     },
     "complete": {
       "title": "Curso completado",
       "subtitle": "Has terminado {course}. ¡Buen trabajo!",
       "summaryTitle": "Tu resumen",
       "lessonsDone": "{count, plural, one {# lección completada} other {# lecciones completadas}}",
-      "skillsTitle": "Tu autoevaluación",
-      "skillsHint": "El nivel que te diste en la evaluación final de cada lección.",
+      "skillsTitle": "Tu elección",
+      "skillsHint": "La descripción que elegiste en el paso final de este curso.",
       "rateTitle": "¿Qué tal el curso?",
       "rateHint": "Tu valoración nos ayuda a mejorar el curso y a que otras personas elijan.",
       "commentLabel": "Comentario (opcional)",
@@ -3665,17 +3660,15 @@
       "saveError": "No hemos podido guardar tu valoración. Inténtalo de nuevo.",
       "nextTitle": "Qué sigue",
       "certificateTitle": "Ya puedes solicitar tu certificado",
-      "certificateText": "Has completado {completed} cursos de habilidades y tu autoevaluación media es suficiente.",
+      "certificateText": "Has completado {completed} cursos de habilidades.",
       "certificateCta": "Solicitar tu certificado",
       "certificateRemaining": "{remaining, plural, one {Te falta # curso de habilidades} other {Te faltan # cursos de habilidades}} para poder solicitar tu certificado.",
-      "certificateLowRating": "Tu autoevaluación media es inferior a {minRating}. Repasa tus habilidades más débiles antes de solicitar tu certificado.",
       "recommendedTitle": "Recomendados a continuación",
       "recommendedCta": "Ver curso",
       "browse": "Ver todos los cursos",
       "review": "Repasar el curso"
     },
     "editor": {
-      "analyticsSelfAssessment": "Autoevaluación media",
       "analyticsLessonFallback": "Lección {number}",
       "analyticsError": "No se han podido cargar las estadísticas. Comprueba tu conexión e inténtalo de nuevo.",
       "analyticsRetry": "Reintentar",
@@ -3690,7 +3683,9 @@
       "outcomesDescription": "Un resultado por línea, hasta {max}. Aparecen en la presentación del curso.",
       "outcomesPlaceholder": "Reconocer técnicas de escucha activa",
       "reorderFailed": "No se pudo guardar el nuevo orden. Se ha restaurado el orden anterior.",
-      "frameworkLink": "Marco de habilidades"
+      "frameworkLink": "Marco de habilidades",
+      "analyticsLevels": "Niveles elegidos",
+      "publishDescriptionsMissing": "Añade las tres descripciones de nivel antes de publicar este curso de habilidades."
     },
     "framework": {
       "title": "Marco de habilidades",

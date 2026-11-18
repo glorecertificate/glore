@@ -4,7 +4,10 @@ import { cache } from 'react'
 
 import { and, eq, inArray } from 'drizzle-orm'
 
+import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
+import { type SkillRendering, renderSnapshotSkill } from '@/components/features/certificates/snapshot'
 import { db } from '@/db/client'
+import { SKILL_LEVELS, plainDescription } from '@/db/queries/skill-level-description'
 import { type CertificateSnapshot, certificates } from '@/db/schema'
 import { INTL_PLACEHOLDER, type IntlRecord } from '@/lib/i18n'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
@@ -21,7 +24,7 @@ export interface ActiveVerification {
   language: string
   organization: Pick<CertificateSnapshot['organization'], 'legalRepresentative' | 'logoUrl' | 'name' | 'signatureUrl'>
   revokedAt: string | null
-  skills: { icon: string | null; level: number; name: IntlRecord; statement: string | null }[]
+  skills: (SkillRendering & { icon: string | null; name: IntlRecord })[]
   status: 'revoked' | 'valid'
 }
 
@@ -78,16 +81,17 @@ const findVerification = async (code: string): Promise<ActiveVerification | null
       },
       revokedAt: row.revokedAt,
       skills: snapshot.skills.map(skill => ({
+        ...renderSnapshotSkill(skill, snapshot.labels?.levels),
         icon: skill.icon,
-        level: skill.level,
         name: toIntlRecord(skill.name),
-        statement: skill.statement,
       })),
       status,
     }
   }
 
   if (!row.user) return null
+
+  const { data: descriptions } = await fetchLevelDescriptions(row.skills.map(({ courseId }) => courseId))
 
   return {
     activity: {
@@ -112,12 +116,17 @@ const findVerification = async (code: string): Promise<ActiveVerification | null
     revokedAt: row.revokedAt,
     skills: row.skills
       .toSorted((a, b) => a.sortOrder - b.sortOrder)
-      .map(skill => ({
-        icon: skill.course.icon,
-        level: skill.level ?? skill.selfLevel ?? 1,
-        name: toIntlRecord(skill.course.title),
-        statement: skill.statement,
-      })),
+      .map(skill => {
+        const level = skill.level ?? skill.selfLevel ?? 'intermediate'
+        return {
+          description: plainDescription(descriptions?.[skill.courseId]?.[level]),
+          icon: skill.course.icon,
+          label: null,
+          level: SKILL_LEVELS.indexOf(level) + 1,
+          name: toIntlRecord(skill.course.title),
+          steps: SKILL_LEVELS.length,
+        }
+      }),
     status,
   }
 }

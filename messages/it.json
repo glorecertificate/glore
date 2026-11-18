@@ -37,8 +37,6 @@
     "theme": "Tema",
     "item": "Elemento",
     "skillLevels": {
-      "absent": "Assente",
-      "basic": "Base",
       "intermediate": "Intermedio",
       "good": "Buono",
       "advanced": "Avanzato"
@@ -1342,7 +1340,7 @@
       },
       "step2": {
         "title": "Raggiungi i requisiti",
-        "description": "Una volta completati almeno 3 corsi sulle competenze con un punteggio medio di 3 su 5, puoi richiedere un certificato."
+        "description": "Dopo aver completato almeno 3 corsi sulle competenze, puoi richiedere un certificato."
       },
       "step3": {
         "title": "Ottieni la convalida",
@@ -1395,7 +1393,7 @@
           },
           "step2": {
             "title": "Completa i corsi sulle competenze",
-            "description": "Affronta i corsi sulle competenze e le relative lezioni. Ognuno si conclude con una valutazione finale che assegna alla competenza un punteggio da 1 a 5."
+            "description": "Segui i corsi sulle competenze e le loro lezioni. Ognuno termina con un passaggio finale in cui scegli la descrizione che ti rappresenta meglio."
           },
           "step3": {
             "title": "Autovaluta le tue competenze",
@@ -1409,7 +1407,7 @@
         "faqs": {
           "q1": {
             "question": "Quando posso richiedere il mio certificato?",
-            "answer": "Dopo aver completato almeno 3 corsi sulle competenze con un'autovalutazione media di 3 su 5 o superiore. Il pulsante si sblocca una volta raggiunti i requisiti."
+            "answer": "Dopo aver completato almeno 3 corsi sulle competenze. Il pulsante si sblocca quando soddisfi il requisito."
           },
           "q2": {
             "question": "Che cos'è un'autovalutazione?",
@@ -1627,7 +1625,7 @@
       "description": "Il certificato trasforma il tuo volontariato in una credenziale verificabile.",
       "eligibility": {
         "title": "Requisiti",
-        "description": "Completa almeno 3 corsi sulle competenze con un'autovalutazione media di 3 su 5 o superiore per sbloccare la richiesta del certificato."
+        "description": "Completa almeno 3 corsi sulle competenze per sbloccare la richiesta del certificato."
       },
       "lifecycle": {
         "title": "Ciclo di revisione",
@@ -1780,9 +1778,6 @@
     "openDescription": "Puoi avere una richiesta aperta per organizzazione. Seguila o ritirala per iniziarne un'altra.",
     "courses": "Completa {min} corsi sulle competenze",
     "coursesDetail": "{count} di {min} completati",
-    "rating": "Autovalutazione media di almeno {min} su 5",
-    "ratingNone": "Autovalutati alla fine di ogni corso sulle competenze.",
-    "ratingDetail": "La tua media è {average} su 5. Te ne servono almeno {min}.",
     "activity": "Almeno {hours} ore o {months} mesi di volontariato",
     "activityDetail": "Lo verifichiamo quando inserisci date e ore della tua esperienza.",
     "viewRequest": "Vedi richiesta",
@@ -1797,12 +1792,12 @@
     "tooLong": "Questo testo è troppo lungo.",
     "minSkills": "Scegli almeno 3 competenze.",
     "maxSkills": "Scegli al massimo 4 competenze.",
-    "levelRequired": "Scegli un livello di almeno Intermedio.",
+    "levelRequired": "Scegli una descrizione per questa competenza.",
     "commentRequired": "Aggiungi un commento o una nota di sezione così il volontario sa cosa modificare."
   },
   "CertificateList": {
     "backTo": "Torna a tutti i certificati",
-    "description": "I certificati GloRe sono un riconoscimento ufficiale della tua esperienza di volontariato e delle soft skill acquisite. Sono emessi da GloRe e puoi condividerli sui tuoi profili social o aggiungerli al tuo CV. Puoi richiedere un certificato dopo aver completato almeno 3 corsi con un'autovalutazione media di almeno 3 su 5.",
+    "description": "I certificati GloRe sono un riconoscimento ufficiale della tua esperienza di volontariato e delle soft skill acquisite. Li rilascia GloRe e puoi condividerli sui tuoi profili social o aggiungerli al CV. Puoi richiedere il certificato dopo aver completato almeno 3 corsi sulle competenze.",
     "detailTitle": "Certificato",
     "notFound": "Certificato non trovato",
     "notFoundMessage": "Il certificato che stai cercando non esiste o è stato spostato",
@@ -1913,11 +1908,9 @@
     "ruleUnmet": "Non soddisfa il requisito di attività.",
     "tasks": "Attività",
     "skills": "Competenze",
-    "selfLevel": "Livello autovalutato",
-    "selfLevelValue": "Autovalutazione: {level}",
+    "selfLevel": "Scelta del volontario",
     "completedOn": "Corso completato in data {date}",
     "notCompleted": "Corso non completato",
-    "courseRating": "Valutazione del corso {rating}",
     "sectionExperience": "Esperienza",
     "sectionPersonal": "Dati personali",
     "sectionSkills": "Competenze",
@@ -1938,10 +1931,8 @@
     "scoreGrowth": "Crescita",
     "scoreGrowthHint": "Progressi mostrati tra l'inizio e la fine.",
     "skillsTitle": "Competenze da certificare",
-    "skillsDescription": "Seleziona le competenze da includere e imposta il livello che confermi. Il livello minimo è {level}.",
-    "confirmedLevel": "Livello confermato",
-    "statement": "Dichiarazione",
-    "statementPlaceholder": "Una frase su ciò che il volontario ha dimostrato per questa competenza.",
+    "skillsDescription": "Seleziona le competenze da includere. Per ognuna, conferma la descrizione più adatta o scegline un'altra. La tua scelta fissa il livello.",
+    "confirmedLevel": "Livello e descrizione",
     "comment": "Commento generale",
     "commentPlaceholder": "Obbligatorio quando richiedi modifiche. Facoltativo quando approvi.",
     "startReview": "Inizia la revisione",
@@ -1970,7 +1961,9 @@
     "errorInvalidState": "Questo certificato ha cambiato stato. Ricarica la pagina.",
     "errorStorage": "Impossibile salvare il PDF. Riprova.",
     "errorRateLimited": "Troppi tentativi. Attendi un momento e riprova.",
-    "errorGeneric": "Qualcosa è andato storto. Riprova."
+    "errorGeneric": "Qualcosa è andato storto. Riprova.",
+    "descriptionsMissing": "Questo corso sulle competenze non ha ancora tutte le descrizioni dei livelli. Chiedi a un editor di aggiungerle.",
+    "volunteerChoice": "Scelta dal volontario"
   },
   "CertificateShare": {
     "title": "Condividi il tuo certificato",
@@ -2051,8 +2044,6 @@
     "addTask": "Aggiungi un'attività",
     "skillsDescription": "Scegli da {min} a {max} competenze sviluppate in questa esperienza. Sono elencati solo i corsi sulle competenze completati.",
     "skillsSelected": "{count} di {max} selezionate",
-    "assessedAs": "Autovalutazione del corso: {level}",
-    "selfLevel": "Il tuo livello",
     "evidence": "Un esempio concreto",
     "evidencePlaceholder": "Descrivi una situazione in cui hai usato questa competenza.",
     "anonymousNote": "Le tue risposte su {organization} sono anonime. L'organizzazione le vede solo come media quando hanno risposto almeno 3 volontari.",
@@ -2085,7 +2076,7 @@
     "titlesOrganization": "Valuta la tua organizzazione",
     "titlesReview": "Controlla e invia",
     "descriptionsExperience": "Quando, dove e cosa hai fatto come volontario.",
-    "descriptionsSkills": "Indica il tuo livello per ogni competenza e aggiungi un esempio.",
+    "descriptionsSkills": "Controlla la descrizione scelta per ogni competenza e aggiungi un esempio.",
     "descriptionsOrganization": "Raccontaci com'è andata. Questo feedback è anonimo.",
     "descriptionsReview": "Controlla l'anteprima, aggiungi i dati mancanti e invia.",
     "changesRequested": "Il tuo tutor ha chiesto modifiche",
@@ -2112,7 +2103,9 @@
     "submitErrorsConflict": "Hai già una richiesta aperta in questa organizzazione.",
     "submitErrorsRateLimited": "Troppi tentativi. Riprova tra qualche minuto.",
     "submitErrorsGeneric": "Impossibile inviare la richiesta. Riprova.",
-    "submitErrorsSaveFailed": "Impossibile salvare la richiesta. Riprova."
+    "submitErrorsSaveFailed": "Impossibile salvare la richiesta. Riprova.",
+    "chosenDescription": "La tua scelta",
+    "chosenDescriptionHint": "Hai fatto questa scelta alla fine del corso. È definitiva e il tutor la verifica."
   },
   "CertificatePdf": {
     "title": "Certificato di soft skill",
@@ -2261,7 +2254,6 @@
     "metricStarted": "Corsi iniziati",
     "metricCompleted": "Corsi completati",
     "metricSkillCompleted": "Corsi sulle competenze completati",
-    "metricAverageLevel": "Autovalutazione media",
     "notAvailable": "Non disponibile",
     "noCourses": "Nessun corso iniziato.",
     "inProgress": "In corso",
@@ -2418,7 +2410,8 @@
     "insightsRatingNone": "Nessuna risposta",
     "insightsRatingValue": "{value} / 5",
     "insightsRatingRecommend": "Ti consiglierebbero",
-    "insightsRatingCount": "Basato su {count, plural, one {# valutazione} other {# valutazioni}}"
+    "insightsRatingCount": "Basato su {count, plural, one {# valutazione} other {# valutazioni}}",
+    "metricLevelCount": "Scelte: {level}"
   },
   "Users": {
     "admin": "Utente admin",
@@ -3592,7 +3585,7 @@
       "noLessons": "Questo corso non ha ancora lezioni.",
       "progressValue": "{completed} lezioni su {total} completate",
       "certificateTitle": "Conta per il tuo certificato",
-      "certificateNote": "Completa {minSkills} corsi sulle competenze con un'autovalutazione media di {minRating} o superiore per richiedere il tuo certificato.",
+      "certificateNote": "Completa {minSkills} corsi sulle competenze per richiedere il tuo certificato.",
       "certificateProgress": "Hai completato {completed} di {minSkills} corsi sulle competenze.",
       "viewerNote": "Stai visualizzando l'anteprima di questo corso. Nulla di ciò che fai qui viene salvato.",
       "type": {
@@ -3634,7 +3627,7 @@
       "evaluationsTitle": "Autovalutati",
       "evaluationsHint": "Valuta ogni affermazione da 1 (per niente) a 5 (del tutto).",
       "assessmentTitle": "Valutazione finale",
-      "assessmentHint": "Scegli il tuo livello in questa competenza e spiegalo con parole tue. La tua riflessione conta per il tuo certificato.",
+      "assessmentHint": "Scegli la descrizione che ti rappresenta meglio oggi. Poi spiega la tua scelta con parole tue. La tua riflessione conta per il tuo certificato.",
       "reflectionLabel": "La tua riflessione",
       "reflectionPlaceholder": "Descrivi un momento reale in cui hai usato questa competenza e cosa hai imparato.",
       "reflectionCount": "{count} caratteri su {max}. Scrivine almeno {min}.",
@@ -3642,18 +3635,20 @@
       "blocker": {
         "quiz": "Rispondi correttamente a tutte le domande per continuare.",
         "evaluations": "Valuta tutte le affermazioni per continuare.",
-        "assessment": "Scegli il tuo livello per continuare.",
-        "reflection": "Scrivi la tua riflessione (almeno {min} caratteri) per continuare."
+        "assessment": "Scegli una descrizione per continuare.",
+        "reflection": "Scrivi la tua riflessione (almeno {min} caratteri) per continuare.",
+        "descriptions": "Questo passaggio non è ancora disponibile. Riprova più tardi."
       },
-      "viewSummary": "Vedi riepilogo"
+      "viewSummary": "Vedi riepilogo",
+      "descriptionsMissing": "Le descrizioni di questo passaggio non sono ancora complete. Non potrai concludere il corso finché un editor non le aggiunge."
     },
     "complete": {
       "title": "Corso completato",
       "subtitle": "Hai terminato {course}. Ottimo lavoro!",
       "summaryTitle": "Il tuo riepilogo",
       "lessonsDone": "{count, plural, one {# lezione completata} other {# lezioni completate}}",
-      "skillsTitle": "La tua autovalutazione",
-      "skillsHint": "Il livello che ti sei dato nella valutazione finale di ogni lezione.",
+      "skillsTitle": "La tua scelta",
+      "skillsHint": "La descrizione che hai scelto nel passaggio finale di questo corso.",
       "rateTitle": "Com'è andato il corso?",
       "rateHint": "La tua valutazione ci aiuta a migliorare il corso e aiuta gli altri a scegliere.",
       "commentLabel": "Commento (facoltativo)",
@@ -3665,17 +3660,15 @@
       "saveError": "Non siamo riusciti a salvare la tua valutazione. Riprova.",
       "nextTitle": "Cosa fare ora",
       "certificateTitle": "Puoi richiedere il tuo certificato",
-      "certificateText": "Hai completato {completed} corsi sulle competenze e la tua autovalutazione media è sufficiente.",
+      "certificateText": "Hai completato {completed} corsi sulle competenze.",
       "certificateCta": "Richiedi il tuo certificato",
       "certificateRemaining": "{remaining, plural, one {Manca # corso sulle competenze} other {Mancano # corsi sulle competenze}} per poter richiedere il tuo certificato.",
-      "certificateLowRating": "La tua autovalutazione media è inferiore a {minRating}. Ripassa le competenze più deboli prima di richiedere il tuo certificato.",
       "recommendedTitle": "Prossimo corso consigliato",
       "recommendedCta": "Vedi corso",
       "browse": "Vedi tutti i corsi",
       "review": "Rivedi il corso"
     },
     "editor": {
-      "analyticsSelfAssessment": "Autovalutazione media",
       "analyticsLessonFallback": "Lezione {number}",
       "analyticsError": "Non è stato possibile caricare le statistiche. Controlla la connessione e riprova.",
       "analyticsRetry": "Riprova",
@@ -3690,7 +3683,9 @@
       "outcomesDescription": "Un risultato per riga, fino a {max}. Compaiono nella presentazione del corso.",
       "outcomesPlaceholder": "Riconoscere le tecniche di ascolto attivo",
       "reorderFailed": "Non è stato possibile salvare il nuovo ordine. È stato ripristinato l'ordine precedente.",
-      "frameworkLink": "Quadro delle competenze"
+      "frameworkLink": "Quadro delle competenze",
+      "analyticsLevels": "Livelli scelti",
+      "publishDescriptionsMissing": "Aggiungi le tre descrizioni dei livelli prima di pubblicare questo corso sulle competenze."
     },
     "framework": {
       "title": "Quadro delle competenze",

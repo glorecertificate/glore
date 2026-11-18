@@ -138,20 +138,16 @@ describe('buildOverview', () => {
 })
 
 describe('evaluateEligibility', () => {
-  const rules = { minRating: 3, minSkills: 3 }
+  const rules = { minSkills: 3 }
 
-  it('needs enough completed skills and a high enough average', () => {
-    expect(evaluateEligibility({ averageRating: 4, completedCourseIds: [1, 2, 3] }, rules)).toMatchObject({
+  it('needs enough completed skill courses and nothing else', () => {
+    expect(evaluateEligibility({ completedCourseIds: [1, 2, 3] }, rules)).toMatchObject({
       eligible: true,
       remaining: 0,
     })
-    expect(evaluateEligibility({ averageRating: 4, completedCourseIds: [1] }, rules)).toMatchObject({
+    expect(evaluateEligibility({ completedCourseIds: [1] }, rules)).toMatchObject({
       eligible: false,
       remaining: 2,
-    })
-    expect(evaluateEligibility({ averageRating: 2.5, completedCourseIds: [1, 2, 3] }, rules)).toMatchObject({
-      eligible: false,
-      lowRating: true,
     })
   })
 })

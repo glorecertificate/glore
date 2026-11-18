@@ -17,7 +17,7 @@ I tutor esaminano le richieste di certificato. Sei tu a confermare che un certif
 1. Apri la richiesta. Passa a In revisione e il volontario riceve una notifica.
 2. Leggi la richiesta e i risultati dei corsi del volontario, comprese le sue riflessioni.
 3. Controlla l'esperienza: date, ore, luogo e attività. Puoi modificare ciò che non va.
-4. Per ogni competenza, imposta il livello e scrivi una breve affermazione su ciò che il volontario ha dimostrato. Puoi confermare, alzare o abbassare il livello che il volontario si è dato. Un certificato mantiene 3 o 4 competenze, e una competenza di livello Assente non può comparirvi, quindi togli quella competenza.
+4. Per ogni competenza vedi le tre descrizioni con il nome del livello e quella scelta dal volontario. Confermala o scegli un'altra descrizione, il che cambia il livello. Il volontario non vede la tua modifica finché il certificato non viene rilasciato. Un certificato mantiene 3 o 4 competenze, quindi togli una competenza se non puoi confermarla.
 5. Compila i punteggi della valutazione.
 
 ## Decidi

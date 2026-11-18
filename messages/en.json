@@ -894,7 +894,18 @@
     "visibleLanguages": "{count, plural, =0 {Not visible to learners} =1 {Visible in 1 language} other {Visible in # languages}}",
     "lessonsCount": "{count, plural, =1 {1 lesson} other {# lessons}}",
     "lessonsTitle": "Lessons",
-    "titleLength": "{count}/{max} characters"
+    "titleLength": "{count}/{max} characters",
+    "moveLessonUp": "Move lesson up",
+    "moveLessonDown": "Move lesson down",
+    "lessonsSheetDescription": "Choose, rename, reorder or delete the lessons of this course.",
+    "moreActions": "More",
+    "blockMenu": "Block",
+    "blockMenuLabel": "Block actions",
+    "moveBlockUp": "Move up",
+    "moveBlockDown": "Move down",
+    "descriptionShowMore": "Show more",
+    "descriptionShowLess": "Show less",
+    "saveBarLabel": "Save and publish"
   },
   "CourseList": {
     "active": "Active",

@@ -20,7 +20,7 @@ const EvidenceLength = ({ index }: { index: number }) => {
   const { control } = useFormContext<WizardValues>()
   const text = useWatch({ control, name: `skills.${index}.evidence` })
   return (
-    <span className="text-xs text-muted-foreground tabular-nums">
+    <span className="type-caption text-muted-foreground tabular-nums">
       {(text ?? '').length}
       {'/'}
       {MAX_EVIDENCE_LENGTH}
@@ -35,7 +35,7 @@ const SkillsError = () => {
   if (!code) return null
 
   return (
-    <p className="text-sm text-destructive-text" role="alert">
+    <p className="text-sm text-danger-text" role="alert">
       {t(code as never)}
     </p>
   )
@@ -68,14 +68,17 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
         </p>
       </div>
       <SkillsError />
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-3 outline-none" id="skills-list" tabIndex={-1}>
         {options.map(option => {
           const index = fields.findIndex(field => field.courseId === option.id)
           const selected = index >= 0
           const title = option.title ? localize(option.title, 'en') : option.slug
           return (
             <li
-              className={cn('rounded-lg border p-4 transition-colors', selected && 'border-primary/50 bg-primary/5')}
+              className={cn(
+                'rounded-lg border p-4 transition-colors',
+                selected && 'border-action-border bg-action-subtle'
+              )}
               key={option.id}
             >
               <div className="flex items-center gap-3">
@@ -90,18 +93,18 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
                   {option.icon && (
                     <LucideIcon className="size-4 shrink-0 text-brand-secondary-text" name={option.icon as IconName} />
                   )}
-                  <span className="truncate text-sm font-medium">{title}</span>
+                  <span className="truncate type-label">{title}</span>
                 </label>
               </div>
               {selected && (
                 <div className="mt-4 grid gap-4 border-t pt-4">
                   {option.description && (
                     <div className="flex flex-col gap-1.5">
-                      <p className="text-sm font-medium">{t('chosenDescription')}</p>
-                      <p className="rounded-lg border bg-muted/40 p-3 text-sm leading-relaxed">
+                      <p className="type-label">{t('chosenDescription')}</p>
+                      <p className="rounded-lg border bg-surface-muted p-3 text-sm leading-relaxed">
                         {localize(option.description)}
                       </p>
-                      <p className="text-xs text-muted-foreground">{t('chosenDescriptionHint')}</p>
+                      <p className="type-caption text-muted-foreground">{t('chosenDescriptionHint')}</p>
                     </div>
                   )}
                   <FormField

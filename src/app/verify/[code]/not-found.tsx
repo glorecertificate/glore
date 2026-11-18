@@ -14,7 +14,7 @@ const VerifyNotFound = async () => {
   return (
     <VerifyShell>
       <div className="space-y-3 text-center">
-        <h1 className="text-3xl font-semibold tracking-tight">{t('unknownTitle')}</h1>
+        <h1 className="type-title text-balance text-fg-title">{t('unknownTitle')}</h1>
         <p className="mx-auto max-w-prose text-muted-foreground">{t('unknownMessage')}</p>
       </div>
       <LookupForm />

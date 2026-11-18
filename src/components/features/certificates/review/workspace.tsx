@@ -15,6 +15,8 @@ import {
   rejectCertificate,
   requestCertificateChanges,
 } from '@/actions/certificates/review'
+import { AgeBadge } from '@/components/features/certificates/age-badge'
+import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { ExperienceFields, TaskFields } from '@/components/features/certificates/experience-fields'
 import { FieldError } from '@/components/features/certificates/field-error'
 import { EvaluationSection } from '@/components/features/certificates/review/evaluation-section'
@@ -29,6 +31,7 @@ import {
   hasChangeRequest,
   reviewDefaults,
 } from '@/components/features/certificates/review/values'
+import { ageTone, daysBetween } from '@/components/features/certificates/rules'
 import { type ReviewFormValues, reviewFormSchema } from '@/components/features/certificates/schemas'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
@@ -69,6 +72,7 @@ export const ReviewWorkspace = ({
   const [busy, setBusy] = useState<Busy>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [rejecting, setRejecting] = useState(false)
+  const age = daysBetween(certificate.submittedAt ?? certificate.createdAt)
   const canApprove = certificate.isSubmitted || certificate.isInReview
   const canRequestChanges = canApprove
 
@@ -151,6 +155,10 @@ export const ReviewWorkspace = ({
         <PageHeaderHeading>
           <PageHeaderTitle>{fullName(holder)}</PageHeaderTitle>
           <PageHeaderDescription>{certificate.organization.name}</PageHeaderDescription>
+          <div className="flex flex-wrap items-center gap-2">
+            <CertificateStatusBadge status={certificate.status} />
+            {certificate.isPending && <AgeBadge days={age} tone={ageTone(age)} />}
+          </div>
         </PageHeaderHeading>
         {certificate.isSubmitted && (
           <PageHeaderActions>
@@ -163,11 +171,13 @@ export const ReviewWorkspace = ({
 
       {certificate.isChangesRequested && <Banner variant="warning">{t('waitingForVolunteer')}</Banner>}
 
-      <div className="grid items-start gap-6 lg:grid-cols-2">
-        <RequestPanel certificate={certificate} holder={holder} previous={previous} results={results} />
+      <div className="grid items-start gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-2">
+          <RequestPanel certificate={certificate} holder={holder} previous={previous} results={results} />
+        </div>
 
         <Form {...form}>
-          <div className="flex flex-col gap-8 rounded-xl border p-4 sm:p-6">
+          <div className="flex flex-col gap-8 rounded-xl border bg-card p-4 shadow-2xs sm:p-6 lg:col-span-3">
             <section aria-labelledby="experience-title" className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold" id="experience-title">
                 {t('experienceTitle')}
@@ -204,7 +214,7 @@ export const ReviewWorkspace = ({
               )}
             />
 
-            <div className="sticky bottom-0 -mx-4 -mb-4 flex items-center justify-end gap-2 rounded-b-xl border-t bg-background/95 p-2 backdrop-blur-sm sm:-mx-6 sm:-mb-6 sm:flex-wrap sm:px-6 sm:py-4">
+            <div className="sticky bottom-0 -mx-4 -mb-4 flex items-center justify-end gap-2 rounded-b-xl border-t bg-surface-0/95 p-2 backdrop-blur-sm sm:-mx-6 sm:-mb-6 sm:flex-wrap sm:px-6 sm:py-4">
               <Button
                 disabled={busy !== null}
                 icon="ban"

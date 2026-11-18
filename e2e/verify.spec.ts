@@ -64,7 +64,7 @@ test.describe('certificate verification', () => {
 
   test('rejects a malformed code on the lookup page', async ({ page }) => {
     await page.goto('/verify?code=not-a-code')
-    await expect(page.getByText(/not a valid code/u)).toBeVisible()
+    await expect(page.getByText(/is not valid/u)).toBeVisible()
   })
 
   test('hides a private profile and redirects legacy links to the verify page', async ({ page }) => {

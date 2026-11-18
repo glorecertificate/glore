@@ -12,11 +12,13 @@ import { ageTone, daysBetween } from '@/components/features/certificates/rules'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useI18n } from '@/components/providers/i18n'
 import { DataTable } from '@/components/ui/data-table'
-import { Input } from '@/components/ui/input'
+import { FilterBar } from '@/components/ui/filter-bar'
+import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/ui/stat-card'
 import { type Certificate, type CertificateStatus } from '@/db/queries/certificate'
 import { useReveal } from '@/hooks/use-reveal'
+import { SHORTCUTS } from '@/lib/shortcuts'
 import { cn, fullName } from '@/lib/utils'
 
 const ALL = 'all'
@@ -55,6 +57,12 @@ export const OrganizationCertificates = ({
   const [status, setStatus] = useState(ALL)
   const [reviewer, setReviewer] = useState(ALL)
   const reveal = useReveal(loading)
+  const filtered = Boolean(query.trim()) || status !== ALL || reviewer !== ALL
+  const clear = () => {
+    setQuery('')
+    setStatus(ALL)
+    setReviewer(ALL)
+  }
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
   const counts = Object.fromEntries(
@@ -139,21 +147,23 @@ export const OrganizationCertificates = ({
             sortValue: certificate => new Date(certificate.submittedAt ?? certificate.createdAt),
           },
         ]}
-        emptyDescription={t('emptyDescription')}
-        emptyTitle={t('emptyTitle')}
+        emptyDescription={filtered ? t('emptyFilteredDescription') : t('emptyDescription')}
+        emptyTitle={filtered ? t('emptyFilteredTitle') : t('emptyTitle')}
         loading={loading}
+        skeleton
         filters={
-          <div className="flex flex-wrap items-center gap-2">
-            <Input
+          <FilterBar active={filtered} onClear={clear}>
+            <SearchInput
               aria-label={t('search')}
-              className="w-56"
-              onChange={event => setQuery(event.target.value)}
+              className="w-64"
+              hotkey={SHORTCUTS.filter.key}
+              onValueChange={setQuery}
               placeholder={t('search')}
-              type="search"
+              size="sm"
               value={query}
             />
             <Select onValueChange={setStatus} value={status}>
-              <SelectTrigger aria-label={t('status')} className="w-44">
+              <SelectTrigger aria-label={t('status')} className="w-44" size="sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -166,7 +176,7 @@ export const OrganizationCertificates = ({
               </SelectContent>
             </Select>
             <Select onValueChange={setReviewer} value={reviewer}>
-              <SelectTrigger aria-label={t('reviewer')} className="w-44">
+              <SelectTrigger aria-label={t('reviewer')} className="w-44" size="sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -179,7 +189,7 @@ export const OrganizationCertificates = ({
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </FilterBar>
         }
         getRowId={certificate => certificate.id}
         label={t('title')}

@@ -29,10 +29,10 @@ const VerifyContent = async ({ searchParams }: Pick<PageProps<'/verify'>, 'searc
   return (
     <VerifyShell>
       <div className="space-y-4 text-center">
-        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-brand/10 text-brand-text">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-action-subtle text-action-text">
           <LucideIcon name="shield-check" className="size-6" />
         </div>
-        <h1 className="text-3xl font-semibold tracking-tight">{t('title')}</h1>
+        <h1 className="type-title text-balance text-fg-title">{t('title')}</h1>
         <p className="mx-auto max-w-prose text-muted-foreground">{t('description')}</p>
       </div>
       <LookupForm defaultValue={input} />

@@ -52,7 +52,7 @@ import { type Certificate } from '@/db/queries/certificate'
 import { useDebounce } from '@/hooks/use-debounce'
 import appConfig from '~/config/app.json'
 
-type SaveState = 'error' | 'idle' | 'saved' | 'saving'
+type SaveState = 'error' | 'idle' | 'limit' | 'saved' | 'saving'
 
 const Autosave = ({
   control,
@@ -94,6 +94,9 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const missing = missingPersonalData(holder)
   const [submitting, setSubmitting] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [advancing, setAdvancing] = useState(false)
+  const [invalid, setInvalid] = useState(false)
+  const [attempts, setAttempts] = useState(0)
   const [saveState, setSaveState] = useState<SaveState>('idle')
   const draftId = useRef(certificate?.isDraft ? certificate.id : undefined)
   const latest = useRef<WizardDraft | null>(null)
@@ -115,11 +118,22 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     if (moved.current) heading.current?.focus()
   }, [step])
 
+  const skillsError: unknown = form.formState.errors.skills
+  const skillsRootError = Boolean(skillsError) && !(Array.isArray(skillsError) && skillsError.some(Boolean))
+
+  const focusSkills = useEffectEvent(() => {
+    if (skillsRootError) document.getElementById('skills-list')?.focus()
+  })
+
+  useEffect(() => {
+    if (attempts > 0) focusSkills()
+  }, [attempts])
+
   const persist = async (values: WizardDraft) => {
     setSaveState('saving')
     const { data, error } = await saveCertificateDraft({ id: draftId.current, values: toEditValues(values) })
     if (error || !data) {
-      setSaveState('error')
+      setSaveState(error?.code === 'CONFLICT' && !draftId.current ? 'limit' : 'error')
       return
     }
     if (draftId.current !== data.id) {
@@ -146,19 +160,30 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     return loop.current
   }
 
+  const { isDirty } = form.formState
+
   const autosave = (values: WizardDraft) => {
-    if (resubmit) return
+    if (resubmit || !(isDirty || draftId.current)) return
     latest.current = values
     void flush()
   }
 
   const goTo = (next: number) => {
     moved.current = true
+    setInvalid(false)
     setStep(next)
   }
 
   const advance = async () => {
-    if (await form.trigger([...WIZARD_STEP_FIELDS[step]!])) goTo(step + 1)
+    setAdvancing(true)
+    const valid = await form.trigger([...WIZARD_STEP_FIELDS[step]!], { shouldFocus: true })
+    setAdvancing(false)
+    setInvalid(!valid)
+    if (!valid) {
+      setAttempts(count => count + 1)
+      return
+    }
+    goTo(step + 1)
   }
 
   const submitError = (code: string) => {
@@ -257,11 +282,17 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
         {!resubmit && <Autosave control={form.control} onChange={autosave} />}
         <form className="flex flex-col gap-6" noValidate onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-1">
-            <h2 className="text-lg font-semibold outline-none" ref={heading} tabIndex={-1}>
+            <h2 className="type-heading outline-none" ref={heading} tabIndex={-1}>
               {stepTitles[WIZARD_STEPS[step]!]}
             </h2>
             <p className="text-sm text-muted-foreground">{stepDescriptions[WIZARD_STEPS[step]!]}</p>
           </div>
+
+          {invalid && Object.keys(form.formState.errors).length > 0 && (
+            <Banner role="alert" variant="destructive">
+              {t('stepInvalid')}
+            </Banner>
+          )}
 
           {step === 0 && <ExperienceStep comments={comments} />}
           {step === 1 && <SkillsStep comment={comments.skills} options={skills} />}
@@ -293,6 +324,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                   {saveState === 'saving' && t('saving')}
                   {saveState === 'saved' && t('saved')}
                   {saveState === 'error' && t('saveError')}
+                  {saveState === 'limit' && t('draftLimit')}
                 </output>
               )}
             </div>
@@ -332,6 +364,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                   icon="arrow-right"
                   iconPlacement="right"
                   key="next"
+                  loading={advancing}
                   onClick={() => void advance()}
                   type="button"
                   variant="brand"

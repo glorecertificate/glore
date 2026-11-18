@@ -51,12 +51,12 @@ const navigatedToDetail = async (page: Page) => {
   }
 }
 
-export const submitFromLastStep = async (page: Page, label = 'Submit request') => {
+export const submitFromLastStep = async (page: Page, label = 'Send request') => {
   if (!(await navigatedToDetail(page))) {
     await page.getByRole('button', { name: label }).click()
     await expect(page).toHaveURL(/\/certificates\/\d+$/u)
   }
-  await expect(page.getByText('Waiting for a reviewer to start.')).toBeVisible()
+  await expect(page.getByText('Waiting for a tutor to start.')).toBeVisible()
 }
 
 export const completeWizard = async (page: Page) => {

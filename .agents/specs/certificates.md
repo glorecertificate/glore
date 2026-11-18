@@ -79,7 +79,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Your organization: anonymous rating, shown to the org only as an aggregate of 3 or more.
   - Fields: `experience`, `support`, `certificationSupport` (1 to 5), `wouldRecommend`, and a `comment` of up to 400 characters.
 - Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
-- Drafts autosave through `saveCertificateDraft`. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
+- Drafts autosave through `saveCertificateDraft` only after the volunteer edits a field, so opening the wizard never creates a draft. Hitting the 5 draft cap shows a dedicated message. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
 - A `changes_requested` id opens the same wizard in resubmit mode with the tutor's comments.
 - `EligibilityPanel` replaces the wizard when eligibility fails or a request is already open.
 
@@ -90,6 +90,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - The featured (`isDefault`) approved certificate leads as a `FeaturedCredentialCard`.
 - `EligibilityPanel` replaces the page when nothing exists and the volunteer is not eligible.
 - `featureCertificate` moves the flag between approved certificates.
+- The list filters by status (only statuses that exist) and sort in a `FilterBar`.
 
 ### Detail
 
@@ -104,15 +105,18 @@ draft -> submitted -> in_review -> approved -> revoked
 
 - Route: `/certificates`, for tutors.
 - Tabs: assigned to me (open), unassigned (org pool, self-claim), and completed, in a `DataTable`.
-- Search and the status and waiting-time filters are nuqs params (`tab`, `q`, `status`, `age`).
-- The age badge counts days since `submittedAt`. It turns due at 3 days and overdue at 7 (`reviewReminderDays`).
+- Search and the status and waiting-time filters are nuqs params (`tab`, `q`, `status`, `age`) in a `FilterBar` with Clear filters. `/` focuses the search.
+- A filtered empty table shows its own "No matches" state.
+- Claim is optimistic: the row leaves the unassigned tab at once and returns with an error toast if the claim fails. The unassigned tab uses `DataTable` row selection: selected rows show a count and a "Claim N reviews" bulk action, and the table announces the count. The organization table shows a skeleton while it loads.
+- The age badge (`StatusBadge`: neutral, then warning at 3 days, danger at 7, `reviewReminderDays`) counts days since `submittedAt`.
 - `changes_requested` rows show "waiting for volunteer".
 
 ### Review workspace
 
 - Route: `/certificates/[id]/review`, for the assigned tutor only.
 - Left side: the volunteer, experience, tasks, and skills with the chosen description, evidence, and the reflection (`findReviewContext`, reviewer only), plus the previous feedback.
-- Right side, the form: editable experience and tasks, per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a note per section, and a general comment.
+- The header shows the status and the waiting time.
+- Right side (3 of 5 columns), the form: editable experience and tasks, per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a note per section, and a general comment.
 - Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
 - `Start review` claims a `submitted` request.
@@ -145,6 +149,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ## Public verification
 
 - `/verify` takes a code (any case, dashes optional, normalized by `normalizeCertificateCode`) and redirects to `/verify/<code>`.
+- `/verify/<code>` and the public profile render one credential card (status, `type-display` name, facts, tasks, skills, code with an icon-only copy button, QR).
 - `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with their level and description, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.

@@ -1781,9 +1781,9 @@
     "resubmitButton": "Editar y reenviar",
     "assignTutor": "Asignar tutor",
     "assignTutorError": "No se pudo asignar el tutor. Inténtalo de nuevo.",
-    "assignTutorSuccess": "Tutor asignado correctamente",
+    "assignTutorSuccess": "Tutor asignado.",
     "noTutorsAvailable": "No hay tutores disponibles en esta organización",
-    "reviewer": "Revisor",
+    "reviewer": "Tutor",
     "reviewerUnassigned": "Sin asignar",
     "selfRelease": "Liberar asignación",
     "selfReleaseSuccess": "Ya no estás asignado a este certificado.",
@@ -1810,9 +1810,9 @@
     },
     "statusMessage": {
       "draft": "Solo tú ves este borrador hasta que lo envíes.",
-      "submitted": "Esperando a que un revisor empiece.",
-      "in_review": "Un revisor está comprobando esta solicitud.",
-      "changes_requested": "El revisor ha pedido cambios antes de aprobar.",
+      "submitted": "Esperando a que un tutor empiece.",
+      "in_review": "Un tutor está comprobando esta solicitud.",
+      "changes_requested": "El tutor ha pedido cambios antes de aprobar.",
       "approved": "Aprobado y emitido.",
       "rejected": "Esta solicitud se ha rechazado.",
       "withdrawn": "Esta solicitud se ha retirado.",
@@ -1848,7 +1848,7 @@
     "featureError": "No se pudo destacar este certificado. Inténtalo de nuevo.",
     "withdraw": "Retirar",
     "withdrawTitle": "¿Retirar esta solicitud?",
-    "withdrawDescription": "El revisor dejará de trabajar en ella. Podrás crear una solicitud nueva más tarde.",
+    "withdrawDescription": "El tutor dejará de trabajar en ella. Podrás crear una solicitud nueva más tarde.",
     "withdrawConfirm": "Retirar solicitud",
     "withdrawn": "Solicitud retirada.",
     "withdrawError": "No se pudo retirar la solicitud. Inténtalo de nuevo.",
@@ -1865,7 +1865,7 @@
   },
   "CertificateEligibility": {
     "title": "Todavía no puedes solicitar un certificado",
-    "description": "Cumple estos requisitos y vuelve.",
+    "description": "Cumple los requisitos siguientes y vuelve para solicitar tu certificado.",
     "openTitle": "Ya tienes una solicitud abierta",
     "openDescription": "Puedes tener una solicitud abierta por organización. Síguela o retírala para empezar otra.",
     "courses": "Completa {min} cursos de habilidades",
@@ -1889,7 +1889,7 @@
   },
   "CertificateList": {
     "backTo": "Volver a todos los certificados",
-    "description": "Los certificados de GloRe son un reconocimiento oficial de tu experiencia de voluntariado y de las habilidades blandas adquiridas. Los emite GloRe y puedes compartirlos en tus redes sociales o añadirlos a tu CV. Puedes solicitar tu certificado tras completar al menos 3 cursos de habilidades.",
+    "description": "Tus solicitudes de certificado y tus credenciales emitidas.",
     "detailTitle": "Certificado",
     "notFound": "Certificado no encontrado",
     "notFoundMessage": "El certificado que buscas no existe o se ha movido",
@@ -1913,23 +1913,25 @@
   },
   "CertificateOrg": {
     "title": "Certificados",
-    "unassignedCount": "{count, plural, one {# sin revisor} other {# sin revisor}}",
+    "unassignedCount": "{count} sin tutor",
     "closedCount": "{count, plural, one {# cerrado} other {# cerrados}} sin emitir",
     "volunteer": "Persona voluntaria",
     "holderDeleted": "Ya no está en GloRe",
     "status": "Estado",
-    "reviewer": "Revisor",
+    "reviewer": "Tutor",
     "waiting": "Espera",
     "search": "Buscar por nombre, correo o código",
     "allStatuses": "Todos los estados",
-    "allReviewers": "Todos los revisores",
-    "noReviewer": "Sin revisor",
-    "reassign": "Reasignar revisor",
-    "reassigned": "Revisor actualizado.",
-    "reassignError": "No se pudo cambiar el revisor. Inténtalo de nuevo.",
+    "allReviewers": "Todos los tutores",
+    "noReviewer": "Sin tutor",
+    "reassign": "Reasignar tutor",
+    "reassigned": "Tutor actualizado.",
+    "reassignError": "No se pudo cambiar el tutor. Inténtalo de nuevo.",
     "view": "Ver",
     "emptyTitle": "No hay certificados",
-    "emptyDescription": "Ningún certificado coincide con estos filtros."
+    "emptyDescription": "Ningún certificado coincide con estos filtros.",
+    "emptyFilteredTitle": "Sin resultados",
+    "emptyFilteredDescription": "Ningún certificado coincide con los filtros. Quítalos para ver toda la lista."
   },
   "CertificatePublic": {
     "publicNotFound": "Perfil no encontrado",
@@ -1938,10 +1940,10 @@
     "publicIssuedBy": "Emitido por GloRe Certificate",
     "publicScanToVerify": "Escanea para verificar",
     "publicJoinTitle": "Obtén tu propio certificado",
-    "publicJoinDescription": "Únete a la red GloRe, completa cursos de voluntariado y obtén tu certificación oficial.",
+    "publicJoinDescription": "Únete a la red GloRe, completa los cursos de habilidades y recibe un certificado que cualquiera puede verificar.",
     "publicJoinButton": "Únete a GloRe",
     "publicAccessApp": "¿Ya eres miembro? Inicia sesión",
-    "publicOgDescription": "GloRe Certificate ha certificado oficialmente a {name} por su actividad de voluntariado en {org}."
+    "publicOgDescription": "{name} ha hecho voluntariado con {org}. Verifica este certificado en GloRe."
   },
   "CertificateQueue": {
     "tabs": {
@@ -1965,8 +1967,8 @@
     "waitingVolunteer": "Esperando a la persona voluntaria",
     "notApplicable": "Cerrado",
     "claim": "Reclamar revisión",
-    "claimSuccess": "Certificado reclamado. Ahora está en tu lista de asignados.",
-    "claimError": "No se pudo reclamar este certificado. Inténtalo de nuevo.",
+    "claimSuccess": "{count, plural, one {Certificado reclamado. Ya está en tu lista asignada.} other {# certificados reclamados. Ya están en tu lista asignada.}}",
+    "claimError": "{count, plural, one {No se pudo reclamar este certificado. Inténtalo de nuevo.} other {No se pudieron reclamar # certificados. Inténtalo de nuevo en unos minutos.}}",
     "review": "Revisar",
     "view": "Ver",
     "empty": {
@@ -1976,12 +1978,18 @@
       },
       "pool": {
         "title": "No hay certificados sin asignar",
-        "description": "Todos los certificados enviados de esta organización tienen revisor."
+        "description": "Todos los certificados enviados de esta organización tienen tutor."
       },
       "completed": {
         "title": "No hay revisiones completadas",
         "description": "Los certificados aprobados, rechazados y revocados aparecen aquí."
       }
+    },
+    "description": "Revisa las solicitudes de certificado de las personas voluntarias de tu organización.",
+    "claimSelected": "{count, plural, one {Reclamar # revisión} other {Reclamar # revisiones}}",
+    "emptyFiltered": {
+      "title": "Sin resultados",
+      "description": "Ningún certificado coincide con los filtros. Quítalos para ver toda la lista."
     }
   },
   "CertificateReview": {
@@ -2050,10 +2058,10 @@
     "backToEditing": "Volver a editar",
     "confirmApprove": "Aprobar y emitir",
     "errorActivityTooShort": "La actividad debe durar al menos {hours} horas o {months} meses.",
-    "errorInvalidState": "Este certificado ha cambiado de estado. Recarga la página.",
+    "errorInvalidState": "El estado de este certificado ha cambiado. Recarga la página para continuar.",
     "errorStorage": "No se pudo guardar el PDF. Inténtalo de nuevo.",
     "errorRateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
-    "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
+    "errorGeneric": "No se pudo completar la acción. Inténtalo de nuevo.",
     "descriptionsMissing": "Este curso de habilidades aún no tiene todas las descripciones de nivel. Pide a un editor que las añada.",
     "volunteerChoice": "Elegida por la persona voluntaria"
   },
@@ -2063,7 +2071,11 @@
     "qrLabel": "Código QR que abre la página de verificación",
     "copyLink": "Copiar enlace",
     "linkCopied": "Copiado",
-    "copyField": "Copiar {field}",
+    "copyName": "Copiar nombre",
+    "copyOrganization": "Copiar organización emisora",
+    "copyIssued": "Copiar fecha de emisión",
+    "copyUrl": "Copiar URL de la credencial",
+    "copyId": "Copiar ID de la credencial",
     "downloadPdf": "Descargar PDF",
     "shareLinkedin": "Compartir en LinkedIn",
     "shareFacebook": "Compartir en Facebook",
@@ -2093,16 +2105,16 @@
     "codeLabel": "Código del certificado",
     "codePlaceholder": "XXXX-XXXX-XXXX",
     "submit": "Verificar",
-    "invalidCode": "Este código no es válido. Un código tiene 12 letras y números, como ABCD-EFGH-JKMN.",
+    "invalidCode": "Este código no es válido. Un código tiene 12 letras y números, por ejemplo ABCD-EFGH-JKMN.",
     "tooManyRequests": "Demasiadas comprobaciones desde tu red. Espera un minuto e inténtalo de nuevo.",
     "unknownTitle": "Certificado no encontrado",
-    "unknownMessage": "Ningún certificado coincide con este código. Revisa que no haya errores al escribirlo e inténtalo de nuevo.",
+    "unknownMessage": "Ningún certificado coincide con este código. Revisa el código e inténtalo de nuevo.",
     "valid": "Certificado válido",
     "revoked": "Certificado revocado",
-    "validMessage": "Emitido el {date} y verificado por GloRe.",
+    "validMessage": "GloRe emitió este certificado el {date}.",
     "revokedOn": "Este certificado fue revocado el {date} y ya no es válido.",
     "revokedMessage": "Este certificado se ha revocado y ya no es válido.",
-    "holderLeft": "La persona titular ya no tiene una cuenta de GloRe. Esto no afecta al certificado.",
+    "holderLeft": "La persona titular ya no tiene una cuenta de GloRe. Esto no afecta al registro del certificado.",
     "downloadPdf": "Descargar PDF",
     "period": "Periodo",
     "periodValue": "{start} - {end}",
@@ -2112,6 +2124,7 @@
     "tasks": "Tareas principales",
     "skills": "Habilidades certificadas",
     "code": "Código del certificado",
+    "copyCode": "Copiar código de verificación",
     "issued": "Fecha de emisión",
     "signatory": "Firmado por",
     "qrLabel": "Código QR de esta página de verificación",
@@ -2119,7 +2132,7 @@
     "ogDescription": "Certificado de {name} por su voluntariado en {org}. Comprueba el certificado en GloRe."
   },
   "CertificateWizard": {
-    "reviewerNote": "Nota de tu revisor",
+    "reviewerNote": "Nota de tu tutor",
     "startDate": "Fecha de inicio",
     "endDate": "Fecha de fin",
     "hours": "Horas totales",
@@ -2186,7 +2199,7 @@
     "submit": "Enviar solicitud",
     "resubmit": "Reenviar",
     "submitting": "Enviando…",
-    "submitted": "Solicitud enviada. Tu tutor la revisará pronto.",
+    "submitted": "Solicitud enviada. Un tutor de tu organización la revisará.",
     "resubmitted": "Solicitud reenviada para su revisión.",
     "continueDraft": "Seguir editando",
     "submitErrorsActivityTooShort": "Tu voluntariado debe durar al menos {hours} horas o {months} meses para poder obtener el certificado.",
@@ -2197,7 +2210,9 @@
     "submitErrorsGeneric": "No se pudo enviar la solicitud. Inténtalo de nuevo.",
     "submitErrorsSaveFailed": "No se pudo guardar tu solicitud. Inténtalo de nuevo.",
     "chosenDescription": "Tu elección",
-    "chosenDescriptionHint": "Hiciste esta elección al final del curso. Es definitiva y tu tutor la revisa."
+    "chosenDescriptionHint": "Hiciste esta elección al final del curso. Es definitiva y tu tutor la revisa.",
+    "draftLimit": "Tienes demasiados borradores. Continúa o descarta uno desde tus certificados para guardar este.",
+    "stepInvalid": "Algunos campos necesitan tu atención. Corrige los campos resaltados para continuar."
   },
   "CertificatePdf": {
     "title": "Certificado de habilidades blandas",
@@ -3287,9 +3302,9 @@
       "detailsChanges": "Se han solicitado los siguientes cambios: {comment}",
       "footer": "Recibes este correo porque enviaste un certificado para revisión en GloRe.",
       "introApproved": "Tu certificado se ha revisado y aprobado.",
-      "introChanges": "Tu revisor ha examinado tu certificado y ha pedido algunos cambios.",
+      "introChanges": "Tu tutor ha examinado tu certificado y ha pedido algunos cambios.",
       "previewApproved": "Tu certificado de GloRe se ha aprobado.",
-      "previewChanges": "Tu revisor ha solicitado algunos cambios en tu certificado de GloRe.",
+      "previewChanges": "Tu tutor ha solicitado algunos cambios en tu certificado de GloRe.",
       "subjectApproved": "Se ha aprobado tu certificado de GloRe",
       "subjectChanges": "Se han solicitado cambios en tu certificado de GloRe"
     },

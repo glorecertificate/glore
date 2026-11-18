@@ -51,7 +51,7 @@ export const CertificateSummary = ({ certificate }: { certificate: Certificate }
       {certificate.tasks.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">{tDetail('tasks')}</CardTitle>
+            <CardTitle className="type-label text-muted-foreground">{tDetail('tasks')}</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-disc space-y-1 pl-5 text-sm">
@@ -65,7 +65,7 @@ export const CertificateSummary = ({ certificate }: { certificate: Certificate }
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
+          <CardTitle className="type-label text-muted-foreground">{t('skills')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="flex flex-col gap-4">

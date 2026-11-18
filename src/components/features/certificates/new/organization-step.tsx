@@ -17,7 +17,7 @@ const CommentLength = () => {
   const { control } = useFormContext<WizardValues>()
   const text = useWatch({ control, name: 'rating.comment' })
   return (
-    <span className="text-xs text-muted-foreground tabular-nums">
+    <span className="type-caption text-muted-foreground tabular-nums">
       {(text ?? '').length}
       {'/'}
       {MAX_RATING_COMMENT_LENGTH}
@@ -39,7 +39,7 @@ export const OrganizationStep = ({ organization }: { organization: string }) => 
   return (
     <div className="flex flex-col gap-5">
       <Banner>
-        <LucideIcon name="shield-check" className="mt-0.5 size-4 shrink-0 text-brand-text" />
+        <LucideIcon name="shield-check" className="mt-0.5 size-4 shrink-0 text-info-text" />
         <p>{t('anonymousNote', { organization })}</p>
       </Banner>
       {SCORES.map(score => (

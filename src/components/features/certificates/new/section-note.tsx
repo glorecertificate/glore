@@ -11,7 +11,7 @@ export const SectionNote = ({ comment }: { comment?: string | null }) => {
 
   return (
     <Banner role="note" variant="warning">
-      <LucideIcon name="message-square" className="mt-0.5 size-4 shrink-0 text-warning" />
+      <LucideIcon name="message-square" className="mt-0.5 size-4 shrink-0 text-warning-text" />
       <div className="min-w-0 space-y-0.5">
         <p className="font-medium">{t('reviewerNote')}</p>
         <p className="whitespace-pre-wrap text-muted-foreground">{comment}</p>

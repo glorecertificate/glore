@@ -82,7 +82,7 @@ test('volunteer withdraws the request and submits a new one', async () => {
   await expect(page).toHaveURL(/\/certificates\/new/u)
   await completeWizard(page)
   certificateId = certificateIdFromUrl(page)
-  await expect(page.getByText('Waiting for a reviewer to start.')).toBeVisible()
+  await expect(page.getByText('Waiting for a tutor to start.')).toBeVisible()
 })
 
 test('tutor sees the request in the queue and starts the review', async () => {
@@ -121,7 +121,7 @@ test('tutor picks another description, requests changes with a comment, and the 
 
   const volunteerPage = volunteer.page
   await volunteerPage.goto(`/certificates/${certificateId}`)
-  await expect(volunteerPage.getByText('The reviewer asked for changes before approving.')).toBeVisible()
+  await expect(volunteerPage.getByText('The tutor asked for changes before approving.')).toBeVisible()
   await expect(volunteerPage.getByText('Please describe your tasks in more detail.').first()).toBeVisible()
   await openDialog(
     volunteerPage.getByRole('link', { name: 'Edit and resubmit' }),

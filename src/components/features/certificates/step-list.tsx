@@ -51,7 +51,7 @@ export const StepList = ({
         <div className="w-full min-w-0">
           <p
             className={cn(
-              'text-[11px] leading-tight font-medium text-balance wrap-break-word sm:text-sm',
+              'type-label text-balance wrap-break-word',
               item.state === 'upcoming' ? 'text-muted-foreground' : 'text-foreground'
             )}
           >

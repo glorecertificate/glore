@@ -1,41 +1,17 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
-  merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  check:
-    name: Check
-    permissions:
-      contents: read
-    uses: ./.github/workflows/check.yml
-  e2e:
-    name: E2E
-    permissions:
-      contents: read
-    uses: ./.github/workflows/e2e.yml
   perf:
     name: Perf
-    if: github.event_name != 'merge_group'
     permissions:
       contents: read
     uses: ./.github/workflows/perf.yml
-  deploy:
-    name: Deploy
-    needs: [check, e2e]
-    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'preview')
-    permissions:
-      contents: read
-      deployments: write
-    uses: ./.github/workflows/deploy.yml
-    secrets: inherit

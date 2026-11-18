@@ -49,6 +49,12 @@ test.describe('course editor', () => {
     await expect(page.getByText('E2E course').first()).toBeVisible()
   })
 
+  test('replaces an out-of-range lesson in the URL with the lesson on screen', async ({ page }) => {
+    await page.goto(`/courses/${slug}?lesson=99`)
+    await expect(page.locator('textarea').first()).toBeVisible()
+    await expect(page).toHaveURL(/lesson=1(&|$)/u)
+  })
+
   test('previews the saved course as a learner without saving anything', async ({ page }) => {
     await page.goto(`/courses/${slug}/learn`)
     await expect(page).toHaveURL(new RegExp(`/courses/${slug}/learn`, 'u'))

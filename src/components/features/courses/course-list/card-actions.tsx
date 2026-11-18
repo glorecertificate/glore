@@ -178,9 +178,7 @@ export const CourseCardActions = ({
         ) : (
           <>
             <Button asChild className="flex-1" variant="outline">
-              <Link href={coursePath as Route} prefetch>
-                {actionLabel}
-              </Link>
+              <Link href={coursePath as Route}>{actionLabel}</Link>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

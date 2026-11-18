@@ -40,7 +40,6 @@ export const SkillSeals = ({ className, min, skills }: { className?: string; min
       {skills.map(skill => (
         <li key={skill.id}>
           <Link
-            prefetch
             className="group flex w-22 flex-col items-center gap-2 rounded-md text-center focus-visible:focus-ring"
             href={`/courses/${skill.slug}` as Route}
           >

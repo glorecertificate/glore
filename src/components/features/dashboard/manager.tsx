@@ -70,9 +70,7 @@ export const ManagerDashboard = ({
           <div className="flex items-center gap-3">
             <AgeBadge days={waiting.oldest.days} tone={waiting.oldest.tone} />
             <Button asChild size="sm" variant="brand">
-              <Link prefetch href="/organization?tab=certificates">
-                {t('manager.assign')}
-              </Link>
+              <Link href="/organization?tab=certificates">{t('manager.assign')}</Link>
             </Button>
           </div>
         </Banner>
@@ -121,7 +119,7 @@ export const ManagerDashboard = ({
           <CardHeader>
             <CardTitle>{t('manager.activity')}</CardTitle>
             <CardAction>
-              <Link prefetch className="text-sm font-medium" href="/organization?tab=activity" variant="primary">
+              <Link className="text-sm font-medium" href="/organization?tab=activity" variant="primary">
                 {t('viewAll')}
               </Link>
             </CardAction>

@@ -18,7 +18,7 @@ export const DashboardSection = ({
     <div className="flex items-center justify-between gap-3">
       <h2 className="type-heading text-foreground">{title}</h2>
       {action && (
-        <Link prefetch className="shrink-0 text-sm font-medium" href={action.href} variant="primary">
+        <Link className="shrink-0 text-sm font-medium" href={action.href} variant="primary">
           {action.label}
         </Link>
       )}
@@ -34,7 +34,7 @@ export const StatLink = ({
 }: React.ComponentProps<typeof StatCard> & {
   href: Route
 }) => (
-  <Link prefetch className="block min-w-0 rounded-xl outline-none focus-visible:focus-ring" href={href}>
+  <Link className="block min-w-0 rounded-xl outline-none focus-visible:focus-ring" href={href}>
     <StatCard className={cn('h-full gap-4 p-5 transition-colors hover:bg-accent/40', className)} {...props} />
   </Link>
 )

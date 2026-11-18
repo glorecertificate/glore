@@ -23,9 +23,7 @@ export const NoOrganization = () => {
         </EmptyHeader>
         <EmptyContent>
           <Button asChild variant="outline">
-            <Link prefetch href="/help">
-              {t('none.help')}
-            </Link>
+            <Link href="/help">{t('none.help')}</Link>
           </Button>
         </EmptyContent>
       </Empty>

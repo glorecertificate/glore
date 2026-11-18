@@ -10,6 +10,10 @@ import { createAdminFixture, isLocalDatabase } from './test-harness'
 
 const current = vi.hoisted(() => ({ cookie: '' }))
 
+vi.mock('next/server', async importOriginal => ({
+  ...(await importOriginal<typeof import('next/server')>()),
+  connection: () => Promise.resolve(),
+}))
 vi.mock('next/headers', async importOriginal => ({
   ...(await importOriginal<typeof import('next/headers')>()),
   headers: () => Promise.resolve(new Headers({ cookie: current.cookie })),

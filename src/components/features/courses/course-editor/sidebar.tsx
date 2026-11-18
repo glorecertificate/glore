@@ -223,7 +223,6 @@ const CourseSidebarItem = ({
               <>
                 <Button
                   aria-label={t('moveLessonUp')}
-                  className="relative before:absolute before:-inset-1.5 before:content-['']"
                   disabled={step === 1}
                   onClick={() => onMove(-1)}
                   size="icon-sm"
@@ -233,7 +232,6 @@ const CourseSidebarItem = ({
                 </Button>
                 <Button
                   aria-label={t('moveLessonDown')}
-                  className="relative before:absolute before:-inset-1.5 before:content-['']"
                   disabled={isLast}
                   onClick={() => onMove(1)}
                   size="icon-sm"
@@ -246,7 +244,7 @@ const CourseSidebarItem = ({
             {canRemove && (
               <Button
                 aria-label={t('removeLesson')}
-                className="relative text-destructive before:absolute before:-inset-1.5 before:content-['']"
+                className="text-destructive"
                 onClick={() => onRemove(lesson.id!)}
                 size="icon-sm"
                 variant="outline"
@@ -375,7 +373,7 @@ export const CourseSidebar = ({
                           {user.canEdit && (
                             <SortableItemHandle
                               aria-label={t('reorderLesson')}
-                              className="absolute top-4 -left-6 z-10 cursor-grab touch-none text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:-inset-x-3.5 pointer-coarse:before:-inset-y-3.5 pointer-coarse:before:content-['']"
+                              className="touch-hit absolute top-4 -left-6 z-10 cursor-grab touch-none text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 pointer-coarse:opacity-100"
                             >
                               <LucideIcon name="grip-vertical" className="size-4" />
                             </SortableItemHandle>

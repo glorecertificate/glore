@@ -39,8 +39,6 @@ import { COURSE_TITLE_MAX_LENGTH } from '@/lib/constants'
 import { type IntlRecord } from '@/lib/i18n'
 import { isTempId } from '@/lib/utils'
 
-const BAR_STYLE = { paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }
-
 export const CourseHeader = () => {
   const { replace } = useRouter()
   const { localeItems } = useI18n()
@@ -238,12 +236,7 @@ export const CourseHeader = () => {
                   <div className="ml-auto md:hidden">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-label={t('moreActions')}
-                          className="relative before:absolute before:-inset-1 before:content-['']"
-                          size="icon"
-                          variant="band-secondary"
-                        >
+                        <Button aria-label={t('moreActions')} size="icon" variant="band-secondary">
                           <LucideIcon name="ellipsis" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -284,8 +277,7 @@ export const CourseHeader = () => {
         createPortal(
           <section
             aria-label={t('saveBarLabel')}
-            className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 px-page pt-2 backdrop-blur-sm md:hidden"
-            style={BAR_STYLE}
+            className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 px-page pt-2 pb-bar-safe backdrop-blur-sm md:hidden"
           >
             <div className="flex items-center justify-between gap-3">
               <PublishControl

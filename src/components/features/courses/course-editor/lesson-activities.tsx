@@ -191,7 +191,7 @@ const QuestionItem = ({
                 aria-label={t('activityOptionCorrect')}
                 aria-pressed={option.isCorrect}
                 className={cn(
-                  "relative flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors pointer-coarse:before:absolute pointer-coarse:before:-inset-3 pointer-coarse:before:content-['']",
+                  'touch-hit flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                   option.isCorrect
                     ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border-strong hover:border-primary'

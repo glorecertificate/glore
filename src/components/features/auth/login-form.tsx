@@ -65,7 +65,6 @@ export const LoginForm = ({
     mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
-  form.watch()
   const formDisabled = errored || loading
 
   const setPasswordInvalid = () => {

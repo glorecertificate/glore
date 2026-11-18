@@ -93,7 +93,7 @@ export const PasswordResetForm = ({
                   <FormControl>
                     <PasswordInput autoComplete="new-password" autoFocus open variant="floating" {...field} />
                   </FormControl>
-                  <FormDescription>{t('passwordRequirements')}</FormDescription>
+                  {!form.formState.errors.password && <FormDescription>{t('passwordRequirements')}</FormDescription>}
                   <FormMessage />
                 </FormItem>
               )}

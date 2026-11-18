@@ -23,7 +23,7 @@ export const SessionRow = ({
   const now = useNow({ updateInterval: 60_000 })
   const { browser, system } = describeUserAgent(session.userAgent)
   const formattedIp = session.ipAddress ? formatIpAddress(session.ipAddress) : ''
-  const ip = formattedIp.replaceAll(':', '') ? formattedIp : ''
+  const ip = formattedIp.replaceAll(':', '').replace(/^0*1?$/u, '') ? formattedIp : ''
   const mobile = system === 'iOS' || system === 'Android'
   const device =
     browser && system ? t('sessionDevice', { browser, system }) : (browser ?? system ?? t('sessionUnknown'))

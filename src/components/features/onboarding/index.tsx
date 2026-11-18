@@ -137,7 +137,7 @@ export const OnboardingForm = ({
             <>
               <div className="space-y-2">
                 <Label htmlFor="onboarding-email">{t('emailLabel')}</Label>
-                <Input autoComplete="email" disabled id="onboarding-email" readOnly value={email} />
+                <Input autoComplete="email" id="onboarding-email" readOnly value={email} />
               </div>
               <NameStep disabled={submitting} />
             </>

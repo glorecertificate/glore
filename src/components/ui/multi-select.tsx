@@ -229,7 +229,7 @@ export const MultiSelectBadge = ({
         {children ?? label}
         <span
           className={cn(
-            'translate-x-0.75 rounded-full p-[1.5px] transition-all',
+            'translate-x-0.75 rounded-full p-px transition-[background-color,translate]',
             !disabled && [
               'group-hover/multi-select-badge:border-destructive-accent group-hover/multi-select-badge:bg-destructive/75 group-hover/multi-select-badge:text-destructive-foreground',
               'group-focus/multi-select-badge:border-destructive-accent group-focus/multi-select-badge:bg-destructive/75 group-focus/multi-select-badge:text-destructive-foreground',

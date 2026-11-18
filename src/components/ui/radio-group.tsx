@@ -12,7 +12,7 @@ export const RadioGroup = ({ className, ...props }: React.ComponentProps<typeof 
 export const RadioGroupItem = ({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) => (
   <RadioGroupPrimitive.Item
     className={cn(
-      'aspect-square size-4 shrink-0 rounded-full border border-border-strong bg-field text-brand-secondary shadow-xs transition-[color,border-color] outline-none focus-visible:focus-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive',
+      'aspect-square size-4 shrink-0 rounded-full border border-border-strong bg-field text-action shadow-xs transition-[color,border-color] duration-150 outline-none focus-visible:focus-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive data-[state=checked]:border-action motion-reduce:transition-none',
       className
     )}
     data-slot="radio-group-item"
@@ -22,7 +22,7 @@ export const RadioGroupItem = ({ className, ...props }: React.ComponentProps<typ
       className="relative flex items-center justify-center"
       data-slot="radio-group-indicator"
     >
-      <LucideIcon name="circle" className="absolute top-1/2 left-1/2 size-2 -translate-1/2 fill-brand-secondary" />
+      <LucideIcon className="absolute top-1/2 left-1/2 size-2 -translate-1/2 fill-action" name="circle" />
     </RadioGroupPrimitive.Indicator>
   </RadioGroupPrimitive.Item>
 )

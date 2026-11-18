@@ -50,7 +50,7 @@ export const EmptyMedia = ({
 )
 
 export const EmptyTitle = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('text-lg font-medium tracking-tight', className)} data-slot="empty-title" {...props} />
+  <div className={cn('type-heading', className)} data-slot="empty-title" {...props} />
 )
 
 export const EmptyDescription = ({ className, ...props }: React.ComponentProps<'p'>) => (

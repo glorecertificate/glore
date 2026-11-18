@@ -11,35 +11,40 @@ export const Progress = ({
   value,
   ...props
 }: Omit<React.ComponentProps<typeof ProgressPrimitive.Root>, keyof VariantProps<typeof progressVariants>> &
-  VariantProps<typeof progressVariants>) => (
-  <ProgressPrimitive.Root
-    className={cn(progressVariants({ className, color }), className)}
-    data-slot="progress"
-    value={value}
-    {...props}
-  >
-    <ProgressPrimitive.Indicator
-      data-slot="progress-indicator"
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-    />
-  </ProgressPrimitive.Root>
-)
+  VariantProps<typeof progressVariants>) => {
+  const percent = Math.min(100, Math.max(0, value || 0))
+  return (
+    <ProgressPrimitive.Root
+      className={cn(progressVariants({ color }), className)}
+      data-slot="progress"
+      value={value}
+      {...props}
+    >
+      <ProgressPrimitive.Indicator
+        className="size-full rounded-full bg-(--progress-fill) transition-transform duration-300 ease-out motion-reduce:transition-none"
+        data-slot="progress-indicator"
+        style={{ transform: `translateX(-${100 - percent}%)` }}
+      />
+    </ProgressPrimitive.Root>
+  )
+}
 
-const progressVariants = cva(
-  `relative h-2 w-full overflow-hidden rounded-full bg-brand-secondary/20 [&>div]:size-full [&>div]:flex-1 [&>div]:transition-all`,
-  {
-    defaultVariants: {
-      color: 'default',
+const progressVariants = cva('relative h-2 w-full overflow-hidden rounded-full bg-(--progress-track)', {
+  defaultVariants: {
+    color: 'default',
+  },
+  variants: {
+    color: {
+      action: '[--progress-fill:var(--action)] [--progress-track:var(--action-subtle)]',
+      brand: '[--progress-fill:var(--brand)] [--progress-track:color-mix(in_oklab,var(--brand)_20%,transparent)]',
+      'brand-secondary':
+        '[--progress-fill:var(--brand-secondary-accent)] [--progress-track:color-mix(in_oklab,var(--brand-secondary-accent)_20%,transparent)]',
+      'brand-tertiary':
+        '[--progress-fill:var(--brand-tertiary)] [--progress-track:color-mix(in_oklab,var(--brand-tertiary)_20%,transparent)]',
+      default:
+        '[--progress-fill:var(--muted-foreground)] [--progress-track:color-mix(in_oklab,var(--muted-foreground)_20%,transparent)]',
+      success: '[--progress-fill:var(--success)] [--progress-track:color-mix(in_oklab,var(--success)_20%,transparent)]',
+      warning: '[--progress-fill:var(--warning)] [--progress-track:color-mix(in_oklab,var(--warning)_20%,transparent)]',
     },
-    variants: {
-      color: {
-        brand: 'bg-brand/20 [&>div]:bg-brand',
-        'brand-secondary': 'bg-brand-secondary-accent/20 [&>div]:bg-brand-secondary-accent',
-        'brand-tertiary': 'bg-brand-tertiary/20 [&>div]:bg-brand-tertiary',
-        default: 'bg-muted-foreground/20 [&>div]:bg-muted-foreground',
-        success: 'bg-success/20 [&>div]:bg-success',
-        warning: 'bg-warning/20 [&>div]:bg-warning',
-      },
-    },
-  }
-)
+  },
+})

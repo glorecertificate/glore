@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 export const TooltipPortal = TooltipPrimitive.Portal
 
 export const TooltipProvider = ({
-  delayDuration = 0,
+  delayDuration = 200,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Provider>) => (
   <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
@@ -39,7 +39,7 @@ export const TooltipTrigger = ({
 )
 
 const tooltipContentVariants = cva(
-  `z-50 max-w-sm animate-in cursor-default rounded-xl transition-none fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95`,
+  `z-50 max-w-sm animate-in cursor-default rounded-md transition-none fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95`,
   {
     defaultVariants: {
       size: 'md',
@@ -47,8 +47,8 @@ const tooltipContentVariants = cva(
     },
     variants: {
       size: {
-        xs: 'px-1.75 py-[3.5px] text-[10.5px]',
-        sm: 'px-2 py-0.5 text-[11px]',
+        xs: 'px-1.75 py-0.5 text-xs',
+        sm: 'px-2 py-0.5 text-xs',
         md: 'px-2.5 py-1.5 text-xs',
         lg: 'px-4 py-2 text-sm',
       },

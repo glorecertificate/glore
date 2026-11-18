@@ -54,7 +54,10 @@ export const TutorCertificatesContent = ({
       hide(ids)
       setSelected(current => current.filter(id => !ids.includes(id)))
       const failed = await failedClaims(ids, selfAssignCertificate)
-      if (failed.length > 0) toast.error(t('claimError', { count: failed.length }))
+      if (failed.length > 0) {
+        setSelected(current => [...current, ...failed.filter(id => !current.includes(id))])
+        toast.error(t('claimError', { count: failed.length }))
+      }
       if (failed.length < ids.length) toast.success(t('claimSuccess', { count: ids.length - failed.length }))
       refresh()
     })
@@ -130,6 +133,7 @@ export const TutorCertificatesContent = ({
         className="gap-4"
         onValueChange={value => {
           setTab(value as TutorQueueTab)
+          setSelected([])
           setStatus(null)
           setAge(null)
         }}

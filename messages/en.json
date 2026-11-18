@@ -1978,7 +1978,7 @@
       },
       "pool": {
         "title": "No unassigned certificates",
-        "description": "Every submitted certificate in this organization has a reviewer."
+        "description": "Every submitted certificate in this organization has a tutor."
       },
       "completed": {
         "title": "No completed reviews",
@@ -2071,7 +2071,11 @@
     "qrLabel": "QR code that opens the verification page",
     "copyLink": "Copy link",
     "linkCopied": "Copied",
-    "copyField": "Copy {field}",
+    "copyName": "Copy name",
+    "copyOrganization": "Copy issuing organization",
+    "copyIssued": "Copy issue date",
+    "copyUrl": "Copy credential URL",
+    "copyId": "Copy credential ID",
     "downloadPdf": "Download PDF",
     "shareLinkedin": "Share on LinkedIn",
     "shareFacebook": "Share on Facebook",
@@ -2120,7 +2124,7 @@
     "tasks": "Main tasks",
     "skills": "Certified skills",
     "code": "Certificate code",
-    "copyCode": "Copy code",
+    "copyCode": "Copy verification code",
     "issued": "Issue date",
     "signatory": "Signed by",
     "qrLabel": "QR code of this verification page",
@@ -2194,7 +2198,7 @@
     "cancel": "Cancel",
     "submit": "Send request",
     "resubmit": "Resubmit",
-    "submitting": "Submitting…",
+    "submitting": "Sending…",
     "submitted": "Request submitted. A tutor from your organization will review it.",
     "resubmitted": "Request resubmitted for review.",
     "continueDraft": "Continue editing",
@@ -3298,9 +3302,9 @@
       "detailsChanges": "The following changes were requested: {comment}",
       "footer": "You're receiving this email because you submitted a certificate for review on GloRe.",
       "introApproved": "Your certificate has been reviewed and approved.",
-      "introChanges": "Your reviewer has reviewed your certificate and requested some changes.",
+      "introChanges": "Your tutor has reviewed your certificate and requested some changes.",
       "previewApproved": "Your GloRe certificate has been approved.",
-      "previewChanges": "Your reviewer has requested some changes on your GloRe certificate.",
+      "previewChanges": "Your tutor has requested some changes on your GloRe certificate.",
       "subjectApproved": "Your GloRe certificate has been approved",
       "subjectChanges": "Changes requested on your GloRe certificate"
     },

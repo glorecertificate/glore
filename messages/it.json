@@ -1978,7 +1978,7 @@
       },
       "pool": {
         "title": "Nessun certificato in attesa di assegnazione",
-        "description": "Ogni certificato inviato in questa organizzazione ha un revisore."
+        "description": "Ogni certificato inviato in questa organizzazione ha un tutor."
       },
       "completed": {
         "title": "Nessuna revisione completata",
@@ -2071,7 +2071,11 @@
     "qrLabel": "Codice QR che apre la pagina di verifica",
     "copyLink": "Copia il link",
     "linkCopied": "Copiato",
-    "copyField": "Copia {field}",
+    "copyName": "Copia nome",
+    "copyOrganization": "Copia organizzazione emittente",
+    "copyIssued": "Copia data di emissione",
+    "copyUrl": "Copia URL della credenziale",
+    "copyId": "Copia ID della credenziale",
     "downloadPdf": "Scarica il PDF",
     "shareLinkedin": "Condividi su LinkedIn",
     "shareFacebook": "Condividi su Facebook",
@@ -2120,7 +2124,7 @@
     "tasks": "Attività principali",
     "skills": "Competenze certificate",
     "code": "Codice del certificato",
-    "copyCode": "Copia il codice",
+    "copyCode": "Copia il codice di verifica",
     "issued": "Data di emissione",
     "signatory": "Firmato da",
     "qrLabel": "Codice QR di questa pagina di verifica",
@@ -3298,9 +3302,9 @@
       "detailsChanges": "Sono state richieste le seguenti modifiche: {comment}",
       "footer": "Ricevi questa email perché hai inviato un certificato per la revisione su GloRe.",
       "introApproved": "Il tuo certificato è stato esaminato e approvato.",
-      "introChanges": "Il tuo revisore ha esaminato il tuo certificato e ha richiesto alcune modifiche.",
+      "introChanges": "Il tuo tutor ha esaminato il tuo certificato e ha richiesto alcune modifiche.",
       "previewApproved": "Il tuo certificato GloRe è stato approvato.",
-      "previewChanges": "Il tuo revisore ha richiesto alcune modifiche al tuo certificato GloRe.",
+      "previewChanges": "Il tuo tutor ha richiesto alcune modifiche al tuo certificato GloRe.",
       "subjectApproved": "Il tuo certificato GloRe è stato approvato",
       "subjectChanges": "Sono state richieste modifiche al tuo certificato GloRe"
     },

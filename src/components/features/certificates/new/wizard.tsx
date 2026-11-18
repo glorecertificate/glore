@@ -179,8 +179,11 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     const valid = await form.trigger([...WIZARD_STEP_FIELDS[step]!], { shouldFocus: true })
     setAdvancing(false)
     setInvalid(!valid)
-    if (valid) goTo(step + 1)
-    else setAttempts(count => count + 1)
+    if (!valid) {
+      setAttempts(count => count + 1)
+      return
+    }
+    goTo(step + 1)
   }
 
   const submitError = (code: string) => {

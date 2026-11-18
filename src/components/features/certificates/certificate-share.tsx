@@ -35,11 +35,11 @@ export const CertificateShare = ({
   const pdfHref = certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf`
 
   const fields = [
-    { key: 'name', label: t('fieldName'), value: credentialName },
-    { key: 'organization', label: t('fieldOrganization'), value: config.name },
-    { key: 'issued', label: t('fieldIssued'), value: issued },
-    { key: 'url', label: t('fieldUrl'), value: url },
-    { key: 'id', label: t('fieldId'), value: certificate.code },
+    { copy: t('copyName'), key: 'name', label: t('fieldName'), value: credentialName },
+    { copy: t('copyOrganization'), key: 'organization', label: t('fieldOrganization'), value: config.name },
+    { copy: t('copyIssued'), key: 'issued', label: t('fieldIssued'), value: issued },
+    { copy: t('copyUrl'), key: 'url', label: t('fieldUrl'), value: url },
+    { copy: t('copyId'), key: 'id', label: t('fieldId'), value: certificate.code },
   ]
 
   return (
@@ -110,7 +110,7 @@ export const CertificateShare = ({
           </div>
           <DescriptionList className="gap-2" columns={2}>
             {fields.map(field => (
-              <DescriptionItem className="relative rounded-md bg-surface-muted py-1.5 pr-10 pl-3" key={field.key}>
+              <DescriptionItem className="relative rounded-md bg-surface-muted py-1.5 pr-12 pl-3" key={field.key}>
                 <DescriptionTerm>{field.label}</DescriptionTerm>
                 <DescriptionDetails className="wrap-anywhere">
                   {field.value}
@@ -118,7 +118,7 @@ export const CertificateShare = ({
                     className="absolute top-1/2 right-1.5 -translate-y-1/2"
                     copiedLabel={t('linkCopied')}
                     iconOnly
-                    label={t('copyField', { field: field.label })}
+                    label={field.copy}
                     value={field.value}
                   />
                 </DescriptionDetails>

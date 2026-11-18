@@ -90,6 +90,8 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 
 ## Rules for UI work
 
+- A warm sidebar click must commit no fallback. Measure with a production build: `LoadingFallback` appears only after 300 ms, so a fallback in the DOM is a data wait to fix, not a style choice.
+
 - Measure the affected cases before and after each change with `PERF_RUNS=5`, and put both tables in the pull request.
 - A block is done when its cases meet the targets on both profiles. If not, the pull request names the blocker.
 - Never trade a metric for another without a reason in the pull request.

@@ -98,3 +98,8 @@ Dashboard layout with an extra gate:
 - Never re-add `'unsafe-eval'` to production. If a dependency needs it at runtime, report it first.
 - `object-src` allows only `blob:`, for the review PDF preview (`<object>` on a `blob:` URL). Chrome refuses PDFs in sandboxed iframes, and lint requires `sandbox` on iframes.
 - `frame-src` also lists the video hosts Plate's `parseVideoUrl` embeds (YouTube, Vimeo, Dailymotion, Youku, Coub). `media-src` allows `blob:` and `https:` for R2 audio and video.
+
+## Navigation cache
+
+- `/login` is not reachable with a revoked session: `getViewer` and `getCurrentUser` redirect to `/api/v1/session`, which signs the session out and lands on `/login?expired=true`.
+- `LiveRefresh` in the dashboard layout calls `router.refresh()` once for each rise of the unread count, so a decision made by another user shows when its notification arrives.

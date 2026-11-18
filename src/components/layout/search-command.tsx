@@ -35,6 +35,8 @@ import {
   CommandShortcut,
 } from '@/components/ui/command'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
+import { Spinner } from '@/components/ui/spinner'
 import { type Course } from '@/db/queries/course'
 import { useDebounce } from '@/hooks/use-debounce'
 import { APP_ROOT } from '@/lib/constants'
@@ -184,8 +186,18 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
           <CommandInput onValueChange={setQuery} placeholder={placeholder} value={query} />
           <CommandList>
             {!hasResults && searching && !pendingRemote && <CommandEmpty>{t('noResults')}</CommandEmpty>}
-            {pendingRemote && <p className="px-4 py-3 text-sm text-muted-foreground">{t('searching')}</p>}
-            {remoteResults?.failed && <p className="px-4 py-3 text-sm text-destructive-text">{t('failed')}</p>}
+            {pendingRemote && (
+              <output className="flex items-center gap-2 px-4 py-3 text-sm text-muted-foreground">
+                <Spinner aria-hidden size="sm" />
+                {t('searching')}
+              </output>
+            )}
+            {remoteResults?.failed && (
+              <p className="flex items-center gap-2 px-4 py-3 text-sm text-destructive-text" role="alert">
+                <LucideIcon className="size-4 shrink-0" name="triangle-alert" />
+                {t('failed')}
+              </p>
+            )}
 
             {groups.map(({ entries, group }) =>
               entries.length > 0 ? (
@@ -295,6 +307,29 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
               </>
             )}
           </CommandList>
+          <div className="hidden items-center gap-4 border-t px-4 py-2 text-xs text-muted-foreground sm:flex">
+            <span className="flex items-center gap-1.5">
+              <KbdGroup>
+                <Kbd>
+                  <LucideIcon className="size-3" name="arrow-up" />
+                  <span className="sr-only">{t('keyUp')}</span>
+                </Kbd>
+                <Kbd>
+                  <LucideIcon className="size-3" name="arrow-down" />
+                  <span className="sr-only">{t('keyDown')}</span>
+                </Kbd>
+              </KbdGroup>
+              {t('hintNavigate')}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Kbd>{t('keyEnter')}</Kbd>
+              {t('hintOpen')}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Kbd>{t('keyEscape')}</Kbd>
+              {t('hintClose')}
+            </span>
+          </div>
         </Command>
       </DialogContent>
     </Dialog>

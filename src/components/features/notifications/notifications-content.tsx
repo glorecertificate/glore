@@ -1,6 +1,6 @@
 'use client'
 
-import { startTransition } from 'react'
+import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { useQueryState } from 'nuqs'
@@ -18,9 +18,19 @@ import {
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { FilterBar } from '@/components/ui/filter-bar'
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderDescription,
+  PageHeaderHeading,
+  PageHeaderTitle,
+} from '@/components/ui/page-header'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { toast } from '@/components/ui/toast'
 import { NOTIFICATION_CATEGORIES } from '@/db/queries/notification'
 import { usePoll } from '@/hooks/use-poll'
 
@@ -32,65 +42,127 @@ const CATEGORY_OPTIONS = [ALL_CATEGORIES, ...NOTIFICATION_CATEGORIES] as const
 
 export const NotificationsContent = () => {
   const t = useTranslations('Notifications')
+  const tCommon = useTranslations('Common')
   const [filter, setFilter] = useQueryState('filter', { ...notificationFilterParser, startTransition })
   const [category, setCategory] = useQueryState('category', { ...notificationCategoryParser, startTransition })
   const [limit, setLimit] = useQueryState('limit', { ...notificationLimitParser, startTransition })
+  const [failed, setFailed] = useState(false)
+  const [marking, setMarking] = useState(false)
 
   const read = async () => {
     const { data, error } = await listNotifications({ category: category ?? undefined, filter, limit })
+    setFailed(Boolean(error))
     if (error) throw new Error(error.message)
     return data
   }
 
   const { data, refresh } = usePoll(read, { interval: 60_000, key: `${filter}:${category}:${limit}` })
+  const filtering = filter !== 'all' || category !== null
+  const hasUnread = data?.items.some(({ read: isRead }) => !isRead) ?? false
 
   const markAll = async () => {
-    await markAllNotificationsRead()
-    announceNotificationsChanged()
-    refresh()
+    setMarking(true)
+    try {
+      await markAllNotificationsRead()
+      announceNotificationsChanged()
+      refresh()
+    } catch {
+      toast.error(t('markAllFailed'))
+    } finally {
+      setMarking(false)
+    }
   }
+
+  const emptyTitle = (() => {
+    if (category) return t('emptyFilteredTitle')
+    return t(filter === 'unread' ? 'emptyUnreadTitle' : 'emptyTitle')
+  })()
+
+  const emptyDescription = (() => {
+    if (category) return t('emptyFilteredDescription')
+    return t(filter === 'unread' ? 'emptyUnreadDescription' : 'emptyDescription')
+  })()
 
   const resetLimit = () => setLimit(null)
 
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <SegmentedControl
-            aria-label={t('filterStatus')}
-            onValueChange={value => {
-              void setFilter(value as (typeof NOTIFICATION_FILTERS)[number])
-              void resetLimit()
-            }}
-            value={filter}
-          >
-            {NOTIFICATION_FILTERS.map(value => (
-              <SegmentedControlItem key={value} value={value}>
-                {t(`filter_${value}`)}
-              </SegmentedControlItem>
-            ))}
-          </SegmentedControl>
-          <SegmentedControl
-            aria-label={t('filterCategory')}
-            onValueChange={value => {
-              void setCategory(value === ALL_CATEGORIES ? null : (value as (typeof NOTIFICATION_CATEGORIES)[number]))
-              void resetLimit()
-            }}
-            value={category ?? ALL_CATEGORIES}
-          >
-            {CATEGORY_OPTIONS.map(value => (
-              <SegmentedControlItem key={value} value={value}>
-                {t(`category_${value}`)}
-              </SegmentedControlItem>
-            ))}
-          </SegmentedControl>
-        </div>
-        <Button onClick={markAll} size="sm" variant="outline">
-          {t('markAllRead')}
-        </Button>
-      </div>
+  const clearFilters = () => {
+    void setFilter(null)
+    void setCategory(null)
+    void resetLimit()
+  }
 
-      {data === null && <LoadingFallback className="py-16" />}
+  const retry = () => {
+    setFailed(false)
+    refresh()
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader>
+        <PageHeaderHeading>
+          <PageHeaderTitle>{t('title')}</PageHeaderTitle>
+          <PageHeaderDescription>{t('description')}</PageHeaderDescription>
+        </PageHeaderHeading>
+        <PageHeaderActions>
+          <Button disabled={!hasUnread} loading={marking} onClick={markAll} size="sm" variant="outline">
+            {t('markAllRead')}
+          </Button>
+        </PageHeaderActions>
+      </PageHeader>
+
+      <FilterBar active={filtering} onClear={clearFilters}>
+        <SegmentedControl
+          aria-label={t('filterStatus')}
+          onValueChange={value => {
+            void setFilter(value as (typeof NOTIFICATION_FILTERS)[number])
+            void resetLimit()
+          }}
+          value={filter}
+        >
+          {NOTIFICATION_FILTERS.map(value => (
+            <SegmentedControlItem key={value} value={value}>
+              {t(`filter_${value}`)}
+            </SegmentedControlItem>
+          ))}
+        </SegmentedControl>
+        <Select
+          onValueChange={value => {
+            void setCategory(value === ALL_CATEGORIES ? null : (value as (typeof NOTIFICATION_CATEGORIES)[number]))
+            void resetLimit()
+          }}
+          value={category ?? ALL_CATEGORIES}
+        >
+          <SelectTrigger aria-label={t('filterCategory')} className="w-auto gap-1.5" size="sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {CATEGORY_OPTIONS.map(value => (
+              <SelectItem key={value} value={value}>
+                {t(`category_${value}`)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </FilterBar>
+
+      {data === null && !failed && <LoadingFallback className="py-16" />}
+
+      {data === null && failed && (
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <LucideIcon name="triangle-alert" />
+            </EmptyMedia>
+            <EmptyTitle>{t('errorTitle')}</EmptyTitle>
+            <EmptyDescription>{t('errorDescription')}</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button onClick={retry} variant="outline">
+              {t('retry')}
+            </Button>
+          </EmptyContent>
+        </Empty>
+      )}
 
       {data && data.items.length === 0 && (
         <Empty className="border">
@@ -98,11 +170,16 @@ export const NotificationsContent = () => {
             <EmptyMedia variant="icon">
               <LucideIcon name="bell-off" />
             </EmptyMedia>
-            <EmptyTitle>{filter === 'unread' ? t('emptyUnreadTitle') : t('emptyTitle')}</EmptyTitle>
-            <EmptyDescription>
-              {filter === 'unread' ? t('emptyUnreadDescription') : t('emptyDescription')}
-            </EmptyDescription>
+            <EmptyTitle>{emptyTitle}</EmptyTitle>
+            <EmptyDescription>{emptyDescription}</EmptyDescription>
           </EmptyHeader>
+          {filtering && (
+            <EmptyContent>
+              <Button onClick={clearFilters} variant="outline">
+                {tCommon('clearFilters')}
+              </Button>
+            </EmptyContent>
+          )}
         </Empty>
       )}
 

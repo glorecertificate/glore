@@ -29,9 +29,7 @@ export const NotificationList = ({ className, notifications, onNavigate, onRead,
     <div className={cn('space-y-4', className)} {...props}>
       {groups.map(group => (
         <section key={group.key}>
-          <h3 className="px-3 pb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            {label(group)}
-          </h3>
+          <h3 className="px-3 pb-1 type-label text-fg-2">{label(group)}</h3>
           <ul className="space-y-0.5">
             {group.items.map(notification => (
               <NotificationItem

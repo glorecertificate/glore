@@ -1,13 +1,13 @@
 import { notFound, redirect } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, cache } from 'react'
 
 import { getOrganizationPanel } from '@/actions/organizations/queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { OrganizationPanel } from '@/components/features/organization/panel'
 import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
-import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { Spinner } from '@/components/ui/spinner'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -15,7 +15,7 @@ export const generateMetadata = generateIntlMetadata({
   title: 'title',
 })
 
-const OrganizationContent = async () => {
+const loadPanel = cache(async () => {
   const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
   if (user.isAdmin) redirect('/admin')
   if (user.canEdit) notFound()
@@ -29,28 +29,36 @@ const OrganizationContent = async () => {
   const { data, error } = await getOrganizationPanel()
   if (error || !data) notFound()
 
+  return data
+})
+
+const OrganizationTabsBar = async () => {
+  const data = await loadPanel()
+
   return (
-    <OrganizationTabs>
-      <DashboardPage
-        title={<PageTitle namespace="Organization" name="title" />}
-        breadcrumb={
-          <OrganizationTabsList
-            invitationCount={data.pendingInvitationsCount}
-            isOrgAdmin={data.isOrgAdmin}
-            joinRequestCount={data.pendingJoinRequestsCount}
-          />
-        }
-      >
-        <OrganizationPanel initialData={data} />
-      </DashboardPage>
-    </OrganizationTabs>
+    <OrganizationTabsList
+      invitationCount={data.pendingInvitationsCount}
+      isOrgAdmin={data.isOrgAdmin}
+      joinRequestCount={data.pendingJoinRequestsCount}
+    />
   )
 }
 
+const OrganizationContent = async () => <OrganizationPanel initialData={await loadPanel()} />
+
 const OrganizationPage = () => (
-  <Suspense fallback={<DashboardLoading />}>
-    <OrganizationContent />
-  </Suspense>
+  <OrganizationTabs>
+    <DashboardPage
+      title={<PageTitle namespace="Organization" name="title" />}
+      breadcrumb={
+        <Suspense fallback={<Spinner size="md" />}>
+          <OrganizationTabsBar />
+        </Suspense>
+      }
+    >
+      <OrganizationContent />
+    </DashboardPage>
+  </OrganizationTabs>
 )
 
 export default OrganizationPage

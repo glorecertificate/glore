@@ -184,6 +184,8 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Labels, titles, and other static text stay real in a skeleton. Only data becomes `SkeletonText`.
 - A region whose size depends on data, such as a list or a table body, shows `LoadingFallback` inside the exact skeleton.
 - The header bar never waits for data. A layout or page fallback is `DashboardLoading` (the bar and a spinner), never a full-page spinner.
+- When a page knows its header before its data loads, it renders `DashboardPage` once, outside its `Suspense`. Its fallback then holds no second bar. On `/organization`, a second header tree in the static shell raised mobile TBT.
+- A header part that needs data, such as the `/organization` tabs, gets its own `Suspense` with a small `Spinner`.
 - `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
 - A `Spinner` without `size` takes its size from the parent, as in a `Button`. Pass `size` when it stands alone.
 - Put `animate-reveal` on content that replaces a loading state the user saw. It fades in for 150 ms and is off with reduced motion.

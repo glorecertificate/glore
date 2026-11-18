@@ -4191,6 +4191,9 @@
     "category_reminders": "Promemoria",
     "subject": "Oggetto: {subject}",
     "frameTitle": "Anteprima di {template}",
+    "device": "Dimensione dell'anteprima",
+    "devicePhone": "Telefono",
+    "deviceDesktop": "Desktop",
     "renderError": "Non è stato possibile generare questo modello. Controlla i log del server per i dettagli."
   },
   "Translations": {

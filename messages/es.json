@@ -4191,6 +4191,9 @@
     "category_reminders": "Recordatorios",
     "subject": "Asunto: {subject}",
     "frameTitle": "Vista previa de {template}",
+    "device": "Tamaño de la vista previa",
+    "devicePhone": "Móvil",
+    "deviceDesktop": "Escritorio",
     "renderError": "No se pudo generar esta plantilla. Consulta los registros del servidor para ver los detalles."
   },
   "Translations": {

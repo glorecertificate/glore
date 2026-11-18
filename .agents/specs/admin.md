@@ -106,6 +106,7 @@
 - Each key is validated alone. A missing or invalid stored value falls back to `config/metadata.json`.
 - `saveAppSettings` (`db/mutations/app-settings.ts`) stores only keys that differ from the effective value and records `settings.updated` with the changed keys. The action then calls `updateTag(CacheTag.Settings)`.
 - `loadSettings()` (`lib/settings.ts`) is a plain cached read with a defaults fallback, so emails and cron use it. The root layout feeds `SettingsProvider`, and client code calls `useSettings()`.
+- The `/emails` preview has a Phone (390 px) and Desktop (640 px) toggle. The sandboxed frame scales down to fit the card, so it never scrolls the page sideways.
 - Emails take `settings` as a prop (`EmailBaseProps`) and default to the config values, so React Email previews work unchanged.
 
 ## Overview
@@ -184,6 +185,7 @@
 - `/admin/translations` redirects to it (`next.config.ts`). The nav entry `admin-translations` (group `admin`, `visible: isTeam`) sits before `admin-emails`.
 - `loadTranslations` (`actions/translations.ts`) calls `authorizeEditor`, then returns the three bundled catalogs and every override. `maxDuration` is 60.
 - The table (`features/translations/`) is a real `<table>` virtualized with `@tanstack/react-virtual`: one row per `en` key, a cell per locale, and state badges.
+- Below `md` the list scrolls with the page through `useWindowVirtualizer` (`translation-list.tsx`, `'use no memo'` because the React Compiler would cache the visible rows). From `md` it keeps the fixed-height inner scroller with a sticky header. The choice follows `matchMedia`, and the editor sheet is the same on both.
 - URL params (`translations-params.ts`): `filter`, `key` (opens the editor sheet), `namespace`, `q`.
 - Filters (`TRANSLATION_STATES`): missing, overridden, outdated, incompatible, orphaned, unreviewed. Rows, filters, and counts are pure helpers in `lib/translation-table.ts`.
 

@@ -85,6 +85,8 @@ export const FieldCatalog = () => (
       <CatalogRow label="Switch">
         <Switch aria-label="off" />
         <Switch aria-label="on" defaultChecked />
+        <Switch aria-label="sm" size="sm" />
+        <Switch aria-label="sm on" defaultChecked size="sm" />
         <Switch aria-label="disabled" disabled />
         <Switch aria-label="disabled on" defaultChecked disabled />
       </CatalogRow>

@@ -13,18 +13,19 @@ import { authParsers } from '@/components/features/auth/params'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
 import { ResendEmailButton } from '@/components/features/auth/resend-email-button'
-import { LucideIcon } from '@/components/icons/lucide'
-import { type IconName } from '@/components/icons/registry'
 import { Button } from '@/components/ui/button'
+import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Logo } from '@/components/ui/logo'
 import { MotionFeatures } from '@/components/ui/motion-features'
 import { toast } from '@/components/ui/toast'
 import { useMetadata } from '@/hooks/use-metadata'
+import { useTheme } from '@/hooks/use-theme'
 import { MessageKey } from '@/lib/i18n'
 import { EASE_IN_OUT, EASE_OUT } from '@/lib/motion'
 import { AuthView, type Enum } from '@/lib/types'
-import { camelize, cn } from '@/lib/utils'
+import { camelize, cn, hexToRgb } from '@/lib/utils'
+import theme from '~/config/theme.json'
 
 const STEP_VARIANTS = {
   exit: { filter: 'blur(2px)', opacity: 0, transition: { duration: 0.15, ease: EASE_OUT }, y: -4 },
@@ -219,37 +220,27 @@ const AuthMessage = ({
   )
 }
 
-interface ViewMedia {
-  icon: IconName
-  tone: 'danger' | 'success' | 'warning'
-}
+const useGlobeOptions = ({ errored, view }: { errored: boolean; view: Enum<AuthView> }) => {
+  const { resolvedTheme } = useTheme()
+  const colors = hexToRgb(theme.colors[resolvedTheme ?? 'light'])
+  const options: GlobeColorOptions = { glowColor: colors.background }
 
-const VIEW_MEDIA: Partial<Record<Enum<AuthView>, ViewMedia>> = {
-  email_sent: { icon: 'mail-check', tone: 'success' },
-  invalid_password_reset: { icon: 'shield-alert', tone: 'danger' },
-  invalid_token: { icon: 'shield-alert', tone: 'danger' },
-  password_request: { icon: 'key-round', tone: 'warning' },
-  password_reset: { icon: 'key-round', tone: 'warning' },
-  password_updated: { icon: 'circle-check', tone: 'success' },
-}
+  if (errored || view === 'invalid_token' || view === 'invalid_password_reset') {
+    return { ...options, baseColor: colors.destructive }
+  }
 
-const MEDIA_TONES = {
-  danger: 'bg-danger-subtle text-danger-text',
-  success: 'bg-success-subtle text-success-text',
-  warning: 'bg-warning-subtle text-warning-text',
-} satisfies Record<ViewMedia['tone'], string>
-
-const AuthMedia = ({ view }: { view: Enum<AuthView> }) => {
-  const media = view ? VIEW_MEDIA[view] : undefined
-  if (!media) return null
-  return (
-    <div
-      aria-hidden
-      className={cn('mx-auto flex size-12 items-center justify-center rounded-full', MEDIA_TONES[media.tone])}
-    >
-      <LucideIcon className="size-6" name={media.icon} />
-    </div>
-  )
+  switch (view) {
+    case 'login':
+      return { ...options, baseColor: [colors.brand, colors.brandSecondary, colors.brandTertiary] }
+    case 'password_request':
+    case 'password_reset':
+      return { ...options, baseColor: colors.warning }
+    case 'password_updated':
+    case 'email_sent':
+      return { ...options, baseColor: colors.success }
+    default:
+      return options
+  }
 }
 
 export const AuthFlow = ({
@@ -268,6 +259,7 @@ export const AuthFlow = ({
   const [height, setHeight] = useState<number>()
   const [animate, setAnimate] = useState(false)
   const [errored, setErrored] = useState(false)
+  const globeOptions = useGlobeOptions({ errored, view })
 
   const ref = useRef<HTMLDivElement>(null)
   const key = camelize(view)
@@ -311,7 +303,8 @@ export const AuthFlow = ({
             initial={false}
             transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
           >
-            <div className="flex flex-col gap-8 p-2" ref={ref}>
+            <div className="flex min-h-164 flex-col gap-8 p-2" ref={ref}>
+              <Globe className="mx-auto size-48 sm:size-80" transitionDuration={600} {...globeOptions} />
               <AnimatePresence initial={false} mode="wait">
                 <AuthStep
                   animate="visible"
@@ -322,7 +315,6 @@ export const AuthFlow = ({
                   variants={STEP_VARIANTS}
                 >
                   <m.div className="flex flex-col gap-3 text-center" variants={STEP_ITEM_VARIANTS}>
-                    <AuthMedia view={view} />
                     {title && <h1 className="type-title text-balance">{title}</h1>}
                     <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
                   </m.div>

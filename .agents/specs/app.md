@@ -60,7 +60,7 @@ Three domain facts shape recurring decisions:
 
 - Email and password through Better Auth: verification, password reset, and profile management.
 - The login field takes the email or the username (3 characters or more).
-- Every `(auth)` page sits in a layout that draws the arrows motif.
+- The auth flow shows the animated globe above the form. Its color follows the view (`decisions.md`, U18).
 - Sessions live in signed HTTP-only cookies (`gl_` prefix). There is no SSO or OAuth.
 
 ### Registration and onboarding

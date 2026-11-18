@@ -3767,6 +3767,7 @@
       "previewNote": "Stai visualizzando l'anteprima di questo corso. Le risposte vengono controllate, ma non viene salvato nulla.",
       "fallbackLanguage": "Questa lezione non è ancora disponibile nella tua lingua. La stai leggendo in {language}.",
       "noContent": "Questa lezione non ha ancora contenuti.",
+      "locked": "Completa la lezione precedente per aprire questa.",
       "quizTitle": "Verifica quello che hai imparato",
       "quizHint": "{count, plural, one {Rispondi alla domanda per continuare.} other {Rispondi a tutte le # domande per continuare.}} Se sbagli, puoi leggere la spiegazione e riprovare.",
       "quizHintOpen": "{count, plural, one {Rispondi alla domanda per verificarla.} other {Rispondi alle # domande per verificarle.}} Se sbagli, puoi leggere la spiegazione e riprovare.",

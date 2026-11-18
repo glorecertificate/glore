@@ -5,8 +5,8 @@ import { skillGroupToneVariants } from '@/components/features/courses/skill-grou
 import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
-import { PageHeaderDescription, PageHeaderTitle } from '@/components/ui/page-header'
 import {
   type CompletionSkill,
   type CourseOverview,
@@ -28,7 +28,7 @@ const NextSteps = ({ completion, overview }: { completion: CourseCompletionData;
   const { eligibility, recommendation } = completion
 
   return (
-    <section className="flex flex-col gap-4">
+    <Card className="gap-4">
       <h2 className="type-heading">{t('nextTitle')}</h2>
       {eligibility?.eligible && (
         <Banner variant="success">
@@ -78,7 +78,7 @@ const NextSteps = ({ completion, overview }: { completion: CourseCompletionData;
           <Link href={`/courses/${overview.slug}?lang=${overview.language}`}>{t('review')}</Link>
         </Button>
       </div>
-    </section>
+    </Card>
   )
 }
 
@@ -93,21 +93,19 @@ export const CourseCompleteView = ({
 
   return (
     <div className={cn('flex flex-col gap-8', className)} {...props}>
-      <section className="flex flex-col items-center gap-4 rounded-2xl border bg-card p-8 text-center shadow-2xs">
-        <span className="flex size-16 items-center justify-center rounded-full bg-brand/15 text-brand-text">
-          <LucideIcon className="size-8" name="trophy" />
-        </span>
-        <div className="flex flex-col gap-1">
-          <PageHeaderTitle>{t('title')}</PageHeaderTitle>
-          <PageHeaderDescription>{t('subtitle', { course: overview.title })}</PageHeaderDescription>
+      <Card className="gap-4 p-6 sm:p-8">
+        <div className="flex items-center gap-4">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-stat-tile text-stat-foreground stat-accent-green">
+            <LucideIcon className="size-6" name="trophy" />
+          </span>
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <h2 className="type-heading">{t('summaryTitle')}</h2>
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <LucideIcon className="size-4 text-success-text" name="circle-check" />
+              {t('lessonsDone', { count: overview.progress.completed })}
+            </p>
+          </div>
         </div>
-      </section>
-      <section className="flex flex-col gap-4">
-        <h2 className="type-heading">{t('summaryTitle')}</h2>
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          <LucideIcon className="size-4 text-success-text" name="circle-check" />
-          {t('lessonsDone', { count: overview.progress.completed })}
-        </p>
         {skills.length > 0 && (
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
@@ -116,7 +114,10 @@ export const CourseCompleteView = ({
             </div>
             <ul className="flex flex-col gap-3">
               {skills.map(({ description, title }) => (
-                <li className="flex flex-col gap-1.5 rounded-lg border p-3" key={title}>
+                <li
+                  className="flex flex-col gap-1.5 rounded-lg border border-border-subtle bg-surface-muted p-3"
+                  key={title}
+                >
                   <span className="text-sm font-medium">{title}</span>
                   {description && <span className="text-sm text-muted-foreground">{description}</span>}
                 </li>
@@ -124,8 +125,10 @@ export const CourseCompleteView = ({
             </ul>
           </div>
         )}
-      </section>
-      <CourseRatingForm courseId={overview.id} initial={completion.myRating} />
+      </Card>
+      <Card>
+        <CourseRatingForm courseId={overview.id} initial={completion.myRating} />
+      </Card>
       <NextSteps completion={completion} overview={overview} />
     </div>
   )

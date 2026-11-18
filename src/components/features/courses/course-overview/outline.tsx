@@ -18,7 +18,7 @@ export const CourseOutline = ({
       {lessons.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t('noLessons')}</p>
       ) : (
-        <ol className="flex flex-col divide-y rounded-xl border bg-card">
+        <ol className="flex flex-col divide-y overflow-hidden rounded-xl border border-border-subtle bg-card shadow-card">
           {lessons.map((lesson, index) => (
             <li className="flex items-center gap-3 px-4 py-3" key={lesson.id}>
               <span

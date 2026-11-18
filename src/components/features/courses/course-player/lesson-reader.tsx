@@ -26,6 +26,8 @@ const ReaderProvider = dynamic(
 
 export const LessonReader = ({ content, version }: { content: unknown[]; version: string }) => (
   <ReaderProvider value={content as Value} version={version}>
-    <RichTextEditor variant="fullWidth" />
+    <div className="[&_[data-slate-editor]]:rounded-none [&_[data-slate-editor]]:border-0 [&_[data-slate-editor]]:p-0">
+      <RichTextEditor variant="fullWidth" />
+    </div>
   </ReaderProvider>
 )

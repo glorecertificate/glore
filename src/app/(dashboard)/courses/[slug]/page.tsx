@@ -4,8 +4,7 @@ import { Suspense } from 'react'
 import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsStringEnum } from 'nuqs/server'
 
-import { getSkillProgress } from '@/actions/courses/data'
-import { loadCourseOverview } from '@/actions/courses/learner'
+import { loadCourseOverview, loadSkillProgress } from '@/actions/courses/learner'
 import { getViewerContext } from '@/actions/viewer'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { CourseEditorView } from '@/components/features/courses/course-editor/view'
@@ -49,7 +48,7 @@ const CourseOverviewContent = async ({
   if (!data) return notFound()
 
   const isSkillLearner = data.access === 'learner' && data.overview.type === 'skill'
-  const completedSkills = isSkillLearner ? (await getSkillProgress(userId)).completedCourseIds.length : null
+  const completedSkills = isSkillLearner ? (await loadSkillProgress(userId)).completedCourseIds.length : null
 
   return <CourseOverviewView access={data.access} completedSkills={completedSkills} overview={data.overview} />
 }

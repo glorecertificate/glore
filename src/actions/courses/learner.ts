@@ -43,6 +43,14 @@ const fetchCourseOverview = async (slug: string, userId: string) => {
   return await findCourseOverview(slug, userId)
 }
 
+export const loadSkillProgress = async (userId: string) => {
+  'use cache'
+  cacheTag(CacheTag.Courses, progressUserTag(userId))
+  cacheLife(LIVE_LIFE)
+
+  return await getSkillProgress(userId)
+}
+
 export const loadCourseOverview = cache(async (slug: string, requested: Locale | null, preferred: Locale) => {
   const { role, user } = await getViewerContext()
   const row = await fetchCourseOverview(slug, user.id)

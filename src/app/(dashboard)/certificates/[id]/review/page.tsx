@@ -11,16 +11,17 @@ const ReviewPageContent = async ({ params }: { params: PageProps<'/certificates/
   const certificateId = Number(id)
   if (!certificateId || Number.isNaN(certificateId)) notFound()
 
-  const [user, { data: certificate }] = await Promise.all([getCurrentUser(), findCertificate(certificateId)])
+  const [user, { data: certificate }, { data: context }, { data: activity }] = await Promise.all([
+    getCurrentUser(),
+    findCertificate(certificateId),
+    findReviewContext(certificateId),
+    findCertificateActivity(certificateId),
+  ])
   if (!certificate) notFound()
 
   const reviewable = certificate.isSubmitted || certificate.isInReview || certificate.isChangesRequested
   if (certificate.reviewerId !== user.id || !reviewable) redirect(`/certificates/${certificate.id}`)
 
-  const [{ data: context }, { data: activity }] = await Promise.all([
-    findReviewContext(certificate.id),
-    findCertificateActivity(certificate.id),
-  ])
   if (!context) notFound()
 
   return (

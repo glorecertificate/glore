@@ -117,6 +117,14 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     if (moved.current) heading.current?.focus()
   }, [step])
 
+  const skillsError: unknown = form.formState.errors.skills
+
+  useEffect(() => {
+    if (!(invalid && skillsError)) return
+    const items = Array.isArray(skillsError) ? skillsError.filter(Boolean) : []
+    if (items.length === 0) document.getElementById('skills-list')?.focus()
+  }, [invalid, skillsError])
+
   const persist = async (values: WizardDraft) => {
     setSaveState('saving')
     const { data, error } = await saveCertificateDraft({ id: draftId.current, values: toEditValues(values) })
@@ -167,9 +175,6 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     const valid = await form.trigger([...WIZARD_STEP_FIELDS[step]!], { shouldFocus: true })
     setAdvancing(false)
     setInvalid(!valid)
-    if (!valid && form.formState.errors.skills && !Array.isArray(form.formState.errors.skills)) {
-      document.getElementById('skills-list')?.focus()
-    }
     if (valid) goTo(step + 1)
   }
 

@@ -22,8 +22,8 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 
 - Pull request #20 is merged. GitHub refused "Rebase and merge" (`rebaseable: false` without conflicts), so `main` was fast-forwarded to `10f627ed` by a push, which kept the hashes and signatures.
 - The preview domain serves `10f627ed`.
-- Neon `staging` has all 33 migrations. Preview `DATABASE_URL` points to it (no branch scope) and Preview `APP_URL` is the preview domain.
-- Production lacks migrations 0013 to 0032, has no database comment, and holds 0 certificates.
+- Neon `staging` had all 33 migrations at the v0.7 cut. `main` now has 36, so staging needs 0033 to 0035 ("Preview", step 6). Preview `DATABASE_URL` points to it (no branch scope) and Preview `APP_URL` is the preview domain.
+- Production lacks migrations 0013 to 0035, has no database comment, and holds 0 certificates.
 - Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).
 
 ## Preview
@@ -33,6 +33,8 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 3. CI deploys the preview domain once check and e2e pass on `main`.
 4. Import the catalog and seed the demo data per `manual-testing.md`, "Setup", step 6.
 5. Validate the preview with `manual-testing.md`, then run "Verify" below against the preview domain.
+6. When `main` gains a migration, migrate staging before you validate: `DATABASE_URL='<staging url>' pnpm run db migrate`. The preview build runs new code against staging, so a missing table breaks its pages.
+7. After 0033, insert the level description drafts with the same prefix: `pnpm run content:levels --target staging`.
 
 ## Production env vars
 
@@ -52,13 +54,14 @@ The schema is `envSchema` in `next.config.ts`. Production builds always send mai
 
 1. Back up production: in the Neon console create a branch `pre-v0.7-<date>` from `production`, or take a snapshot. The backup keeps the plaintext `team_invitations.token` column, so delete it once the release is stable.
 2. Migrate from a local shell, with the production URL in front so it wins over `.env.local`: `DATABASE_URL='<production url>' pnpm run db migrate`.
-3. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 33.
+3. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 36.
 4. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --bootstrap --dry-run`.
 5. Run the same command without `--dry-run`. Production always imports courses as drafts.
-6. Run `pnpm run release` on `main` and release `0.7.0`. It runs check and build, bumps the version, updates `CHANGELOG.md`, and pushes `main` with the `v0.7.0` tag.
-7. The tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
+6. Insert the level description drafts: `DATABASE_URL='<production url>' pnpm run content:levels --target production --dry-run`, then the same command without `--dry-run`. It never overwrites edited text.
+7. Run `pnpm run release` on `main` and release `0.7.0`. It runs check and build, bumps the version, updates `CHANGELOG.md`, and pushes `main` with the `v0.7.0` tag.
+8. The tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
 
-Run steps 2 and 6 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes.
+Run steps 2 and 7 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes. 0035 drops `certificate_skills.statement`, so certificate pages also fail on the old build.
 
 The import refuses production once any course or doc exists, so steps 4 and 5 pass `--bootstrap`. After this release the team edits content in the app, and nobody passes the flag again.
 
@@ -70,6 +73,10 @@ The import refuses production once any course or doc exists, so steps 4 and 5 pa
 - 0027 backfills the hash in SQL, so the 4 open production team invitation links keep working.
 - 0029 to 0032 only add tables (message overrides, legal, content translations, app settings) and `doc_articles.languages`, which defaults to all three locales.
 - Release step 5 seeds the empty legal tables from `content/legal`.
+- 0033 adds the `skill_level` enum and the `skill_level_descriptions` table.
+- 0034 maps the 1 to 5 values to levels: 1 to 3 become `intermediate`, 4 becomes `good`, and 5 becomes `advanced`.
+- 0034 stops when an issued certificate without a snapshot still has a tutor statement. With 0 production certificates, it passes.
+- 0035 converts the level columns to the enum and drops `certificate_skills.statement`.
 
 ## Verify
 

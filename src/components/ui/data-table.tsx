@@ -185,7 +185,7 @@ export const DataTable = <T,>({
       aria-label={selectable ? label : undefined}
       {...props}
     >
-      <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
+      <div className="flex min-h-8 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         {filters}
         <span aria-live="polite" className="sr-only" role="status">
           {hasSelection ? t('selected', { count: selection.length }) : !loading && t('count', { count: total })}
@@ -204,7 +204,7 @@ export const DataTable = <T,>({
             </Button>
           </div>
         ) : (
-          <span aria-hidden className="text-sm text-muted-foreground">
+          <span aria-hidden className="text-sm text-muted-foreground max-sm:order-last">
             {!loading && t('count', { count: total })}
           </span>
         )}

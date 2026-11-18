@@ -6,7 +6,7 @@ import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
 
 const DEFAULT_HOTKEY = ['Escape']
-const DEFAULT_OFFSET = { top: '5rem' }
+const DEFAULT_OFFSET = { top: 'calc(5rem + env(safe-area-inset-top))' }
 
 export const Toaster = ({
   className,

@@ -25,11 +25,14 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
   const updatedAt = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(article.updatedAt))
 
   return (
-    <Link className={cn('block w-full text-left', className)} href={`/docs/articles/${article.slug}`}>
-      <Card className="h-full transition-shadow hover:shadow-sm">
-        <CardHeader className="pb-2">
+    <Link
+      className={cn('block w-full rounded-xl text-left focus-visible:focus-ring', className)}
+      href={`/docs/articles/${article.slug}`}
+    >
+      <Card className="h-full transition-colors hover:bg-surface-hover">
+        <CardHeader>
           <div className="flex items-start justify-between gap-2">
-            <CardTitle className="text-[15px] leading-snug">{title}</CardTitle>
+            <CardTitle className="type-heading text-fg-1">{title}</CardTitle>
             {article.isDraft && (
               <Badge className="shrink-0" size="sm" variant="muted">
                 {t('draft')}
@@ -39,8 +42,8 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
         </CardHeader>
         {(excerpt || updatedAt) && (
           <CardContent className="flex flex-col gap-2">
-            {excerpt && <p className="line-clamp-2 text-sm text-muted-foreground">{excerpt}</p>}
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            {excerpt && <p className="line-clamp-2 text-sm text-fg-2">{excerpt}</p>}
+            <div className="flex items-center gap-1.5 type-caption text-fg-2">
               <LucideIcon name="calendar" className="size-3 shrink-0" />
               <span>{t('lastUpdated', { date: updatedAt })}</span>
             </div>

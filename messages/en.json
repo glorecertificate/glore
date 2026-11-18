@@ -1361,12 +1361,17 @@
       "manage": "Manage categories",
       "back": "Back to the docs"
     },
+    "search": {
+      "noMatches": "No article matches “{query}”. Try a different word.",
+      "results": "{count, plural, one {# article} other {# articles}}"
+    },
     "article": {
       "fallbackLanguage": "This article is not translated yet. You are reading the {language} version.",
       "noContent": "This article has no content yet.",
       "navigation": "More in this category",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "onThisPage": "On this page"
     }
   },
   "About": {

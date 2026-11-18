@@ -1361,12 +1361,17 @@
       "manage": "Gestionar categorías",
       "back": "Volver a la documentación"
     },
+    "search": {
+      "noMatches": "Ningún artículo coincide con «{query}». Prueba con otra palabra.",
+      "results": "{count, plural, one {# artículo} other {# artículos}}"
+    },
     "article": {
       "fallbackLanguage": "Este artículo aún no está traducido. Estás leyendo la versión en {language}.",
       "noContent": "Este artículo todavía no tiene contenido.",
       "navigation": "Más en esta categoría",
       "previous": "Anterior",
-      "next": "Siguiente"
+      "next": "Siguiente",
+      "onThisPage": "En esta página"
     }
   },
   "About": {

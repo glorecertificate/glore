@@ -8,7 +8,8 @@ import { DocsSection } from '@/components/features/docs/docs-section'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
 import { LucideIcon } from '@/components/icons/lucide'
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { Input } from '@/components/ui/input'
 import { type DocCategory } from '@/db/queries/doc'
 
@@ -22,6 +23,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
 
   const tCommon = useTranslations('Common')
   const tSearch = useTranslations('Search')
+  const t = useTranslations('Docs')
 
   const docs = useDocsSearch(categories)
   const matches = query.trim() ? new Set(docs.search(query, 500).map(({ articleId }) => articleId)) : null
@@ -34,26 +36,35 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
       }, [])
     : categories
 
+  const term = query.trim()
+  const total = filteredCategories.reduce((sum, category) => sum + category.articles.length, 0)
+
   return (
     <>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Input
-          className="sm:max-w-sm"
-          icon="search"
-          placeholder={tCommon('searchItems')}
-          value={query}
-          onChange={event => setQuery(event.target.value)}
-        />
+        <FilterBar active={term.length > 0} onClear={() => setQuery('')}>
+          <Input
+            aria-label={tCommon('searchItems')}
+            className="sm:max-w-sm"
+            hotkey="/"
+            icon="search"
+            placeholder={tCommon('searchItems')}
+            value={query}
+            onChange={event => setQuery(event.target.value)}
+          />
+          {term && <output className="type-caption text-fg-2">{t('search.results', { count: total })}</output>}
+        </FilterBar>
         {canEdit && <CategoryManagerTrigger categories={categories} />}
       </div>
 
       {filteredCategories.length === 0 ? (
-        <Empty className="py-12">
+        <Empty className="border py-12">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <LucideIcon name="search-x" />
             </EmptyMedia>
             <EmptyTitle>{tSearch('noResults')}</EmptyTitle>
+            <EmptyDescription>{t('search.noMatches', { query: term })}</EmptyDescription>
           </EmptyHeader>
         </Empty>
       ) : (

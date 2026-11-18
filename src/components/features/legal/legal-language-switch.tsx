@@ -32,7 +32,7 @@ export const LegalLanguageSwitch = ({ locale }: { locale: Locale }) => {
           type="button"
           variant={value === locale ? 'outline' : 'ghost'}
         >
-          <span className="text-[15px]">{icon}</span>
+          <span>{icon}</span>
           {value.toUpperCase()}
         </Button>
       ))}

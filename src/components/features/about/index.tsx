@@ -1,9 +1,12 @@
 import { getMessages, getTranslations } from 'next-intl/server'
 
+import { InfoCard, InfoSection, type InfoTone } from '@/components/features/about/blocks'
 import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName } from '@/components/icons/registry'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { SOCIAL_LABELS, socialLinks } from '@/lib/app-settings'
 import { loadSettings } from '@/lib/settings'
-import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
 interface TitledText {
@@ -11,36 +14,12 @@ interface TitledText {
   title: string
 }
 
-const SECTIONS = [
-  {
-    icon: 'award',
-    key: 'mission',
-    accent: 'text-brand-text',
-    chip: 'bg-brand/10 text-brand-text',
-    ring: 'border-brand/20 bg-brand/[0.03]',
-  },
-  {
-    icon: 'compass',
-    key: 'vision',
-    accent: 'text-info-text',
-    chip: 'bg-info/10 text-info-text',
-    ring: 'border-info/20 bg-info/[0.03]',
-  },
-  {
-    icon: 'heart',
-    key: 'values',
-    accent: 'text-brand-secondary-text',
-    chip: 'bg-brand-secondary/15 text-brand-secondary-text',
-    ring: 'border-brand-secondary/25 bg-brand-secondary/[0.04]',
-  },
-  {
-    icon: 'network',
-    key: 'network',
-    accent: 'text-brand-tertiary-text',
-    chip: 'bg-brand-tertiary/10 text-brand-tertiary-text',
-    ring: 'border-brand-tertiary/20 bg-brand-tertiary/[0.03]',
-  },
-] as const
+const SECTIONS: { icon: IconName; key: 'mission' | 'network' | 'values' | 'vision'; tone: InfoTone }[] = [
+  { icon: 'award', key: 'mission', tone: 'action' },
+  { icon: 'compass', key: 'vision', tone: 'info' },
+  { icon: 'heart', key: 'values', tone: 'earned' },
+  { icon: 'network', key: 'network', tone: 'navy' },
+]
 
 const SKILL_KEYS = [
   'problemSolving',
@@ -53,11 +32,13 @@ const SKILL_KEYS = [
   'leadership',
 ] as const
 
-const TRUST_ITEMS = [
-  { icon: 'user-check', key: 'validation', chip: 'bg-brand/10 text-brand-text' },
-  { icon: 'lock', key: 'immutable', chip: 'bg-info/10 text-info-text' },
-  { icon: 'qr-code', key: 'verifiable', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
-] as const
+const TRUST_ITEMS: { icon: IconName; key: string; tone: InfoTone }[] = [
+  { icon: 'user-check', key: 'validation', tone: 'action' },
+  { icon: 'lock', key: 'immutable', tone: 'info' },
+  { icon: 'qr-code', key: 'verifiable', tone: 'navy' },
+]
+
+const LINK = 'font-medium text-link underline underline-offset-4 hover:text-brand-text focus-visible:focus-ring'
 
 export const AboutContent = async () => {
   const messages = (await getMessages()) as { About: AboutMessages }
@@ -71,157 +52,114 @@ export const AboutContent = async () => {
   )
 
   return (
-    <div className="flex flex-col gap-14">
-      <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/8 via-card to-brand-tertiary/5 p-8 sm:p-10">
-        <div className="flex flex-col items-start gap-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand-text">
-            <LucideIcon name="sparkles" className="size-3.5" />
-            {content.intro.tagline}
-          </span>
-          <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h2>
-          <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted-foreground">{content.intro.body}</p>
-        </div>
+    <div className="flex flex-col gap-12">
+      <section className="flex flex-col gap-3">
+        <p className="type-label text-action-text">{content.intro.tagline}</p>
+        <p className="max-w-prose text-lg/8 text-pretty text-fg-1">{content.intro.body}</p>
       </section>
 
-      <section className="flex items-start gap-4 rounded-xl border bg-card p-6 shadow-2xs">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-tertiary/10 text-brand-tertiary">
-          <LucideIcon name="history" className="size-4.5" />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-base font-semibold tracking-tight">{content.story.title}</h2>
-          <p className="text-sm leading-relaxed text-muted-foreground">{content.story.description}</p>
-        </div>
+      <section className="flex flex-col gap-4 border-t pt-8 sm:flex-row sm:gap-8">
+        <h2 className="shrink-0 type-heading text-fg-title sm:w-40">{content.story.title}</h2>
+        <p className="max-w-prose text-base/7 text-pretty text-fg-2">{content.story.description}</p>
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {SECTIONS.map(({ accent, chip, icon, key, ring }) => (
-          <div key={key} className={cn('flex flex-col gap-3 rounded-xl border p-6 shadow-2xs', ring)}>
-            <div className="flex items-center gap-3">
-              <div className={cn('flex size-9 items-center justify-center rounded-lg', chip)}>
-                <LucideIcon name={icon} className="size-4.5" />
-              </div>
-              <h2 className={cn('text-base font-semibold tracking-tight', accent)}>{content.sections[key].title}</h2>
-            </div>
-            <p className="text-sm leading-relaxed text-muted-foreground">{content.sections[key].description}</p>
-          </div>
+        {SECTIONS.map(({ icon, key, tone }) => (
+          <InfoCard
+            description={content.sections[key].description}
+            icon={icon}
+            key={key}
+            title={content.sections[key].title}
+            tone={tone}
+          />
         ))}
       </section>
 
-      <section className="flex flex-col gap-7">
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-xl font-semibold tracking-tight">{content.howItWorks.title}</h2>
-          <p className="text-sm text-muted-foreground">{content.howItWorks.description}</p>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, i) => (
-            <div key={step.title} className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-2xs">
-              <span className="flex size-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-brand-foreground tabular-nums">
-                {i + 1}
-              </span>
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-semibold">{step.title}</p>
-                <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
-              </div>
-            </div>
+      <InfoSection description={content.howItWorks.description} title={content.howItWorks.title}>
+        <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step, index) => (
+            <li className="flex" key={step.title}>
+              <Card className="size-full gap-4">
+                <span
+                  aria-hidden
+                  className="flex size-8 items-center justify-center rounded-full bg-action text-sm font-semibold text-fg-on-fill tabular-nums"
+                >
+                  {index + 1}
+                </span>
+                <div className="flex flex-col gap-1.5">
+                  <h3 className="type-heading text-fg-1">{step.title}</h3>
+                  <p className="text-sm/relaxed text-pretty text-fg-2">{step.description}</p>
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ol>
+      </InfoSection>
+
+      <InfoSection description={content.trust.description} title={content.trust.title}>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {TRUST_ITEMS.map(({ icon, key, tone }) => (
+            <InfoCard
+              description={content.trust.items[key]?.description ?? ''}
+              icon={icon}
+              key={key}
+              title={content.trust.items[key]?.title ?? ''}
+              tone={tone}
+            />
           ))}
         </div>
-      </section>
+      </InfoSection>
 
-      <section className="flex flex-col gap-7">
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-xl font-semibold tracking-tight">{content.trust.title}</h2>
-          <p className="text-sm text-muted-foreground">{content.trust.description}</p>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {TRUST_ITEMS.map(({ chip, icon, key }) => {
-            const item = content.trust.items[key]
-
-            return (
-              <div key={key} className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-2xs">
-                <div className={cn('flex size-9 items-center justify-center rounded-lg', chip)}>
-                  <LucideIcon name={icon} className="size-4.5" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-semibold">{item.title}</p>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-7">
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-xl font-semibold tracking-tight">{content.skills.title}</h2>
-          <p className="text-sm text-muted-foreground">{content.skills.description}</p>
-        </div>
-        <div className="flex flex-wrap gap-2.5">
+      <InfoSection description={content.skills.description} title={content.skills.title}>
+        <ul className="flex flex-wrap gap-2">
           {SKILL_KEYS.map(skill => (
-            <span
+            <li
+              className="inline-flex items-center rounded-full border bg-card px-3 py-1.5 text-sm font-medium text-fg-1"
               key={skill}
-              className="inline-flex items-center rounded-full border bg-card px-3.5 py-1.5 text-sm font-medium text-foreground/80 shadow-2xs"
             >
               {content.skills.items[skill]}
-            </span>
+            </li>
+          ))}
+        </ul>
+      </InfoSection>
+
+      <Card className="gap-5 bg-surface-sunken p-6 shadow-none sm:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1.5">
+            <h2 className="font-display text-xl font-semibold tracking-tight text-fg-title">{content.contact.title}</h2>
+            <p className="max-w-prose text-sm/relaxed text-pretty text-fg-2">
+              {t.rich('contact.description', {
+                email: chunks => (
+                  <a className={LINK} href={`mailto:${settings.email}`}>
+                    {chunks}
+                  </a>
+                ),
+              })}
+            </p>
+          </div>
+          <Button asChild className="shrink-0">
+            <a href={settings.website} rel="noopener noreferrer" target="_blank">
+              {metadata.shortName}
+              <LucideIcon name="arrow-up-right" />
+            </a>
+          </Button>
+        </div>
+        <div className="flex items-center gap-2 border-t pt-4 text-sm text-fg-2">
+          <LucideIcon name="shield-check" className="size-4 shrink-0" />
+          {content.contact.coordinator}
+        </div>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+          <a className={`inline-flex items-center gap-1.5 ${LINK}`} href={`tel:${settings.phone}`}>
+            <LucideIcon name="phone" className="size-4 shrink-0" />
+            {settings.phone}
+          </a>
+          {links.map(({ href, platform }) => (
+            <a className={LINK} href={href} key={platform} rel="noopener noreferrer" target="_blank">
+              {SOCIAL_LABELS[platform]}
+            </a>
           ))}
         </div>
-      </section>
-
-      <section className="overflow-hidden rounded-2xl border border-brand/20 bg-linear-to-br from-brand/10 via-card to-card p-7 sm:p-8">
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-1.5">
-              <h2 className="text-lg font-semibold tracking-tight">{content.contact.title}</h2>
-              <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-                {t.rich('contact.description', {
-                  email: chunks => (
-                    <a
-                      className="font-medium text-link underline-offset-4 hover:underline"
-                      href={`mailto:${settings.email}`}
-                    >
-                      {chunks}
-                    </a>
-                  ),
-                })}
-              </p>
-            </div>
-            <a
-              className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground shadow-2xs transition-colors hover:bg-brand-accent"
-              href={settings.website}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {metadata.shortName}
-              <LucideIcon name="arrow-up-right" className="size-3.5" />
-            </a>
-          </div>
-          <div className="flex items-center gap-2 border-t border-brand/15 pt-4 text-xs text-muted-foreground">
-            <LucideIcon name="shield-check" className="size-3.5 shrink-0" />
-            {content.contact.coordinator}
-          </div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
-            <a
-              className="inline-flex items-center gap-1.5 font-medium text-link underline-offset-4 hover:underline"
-              href={`tel:${settings.phone}`}
-            >
-              <LucideIcon name="phone" className="size-3.5 shrink-0" />
-              {settings.phone}
-            </a>
-            {links.map(({ href, platform }) => (
-              <a
-                className="font-medium text-link underline-offset-4 hover:underline"
-                href={href}
-                key={platform}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {SOCIAL_LABELS[platform]}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+      </Card>
     </div>
   )
 }

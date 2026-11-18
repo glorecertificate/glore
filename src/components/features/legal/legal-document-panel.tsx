@@ -55,10 +55,11 @@ export const LegalDocumentPanel = ({ canPublish, document }: { canPublish: boole
               {current.material && <Badge variant="warning">{t('material')}</Badge>}
             </>
           )}
-          {!(document.draft || pending) && (
+          {!document.draft && (
             <Button
               className="ml-auto"
               data-testid="legal-create-draft"
+              loading={pending}
               onClick={handleCreate}
               type="button"
               variant="outline"

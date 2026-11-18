@@ -136,7 +136,7 @@ export const LegalDraftEditor = ({
                 <div className="grid gap-2">
                   <Label htmlFor={`legal-body-${item.value}`}>{t('bodyLabel')}</Label>
                   <Textarea
-                    className="min-h-96 font-mono text-sm"
+                    className="min-h-96 font-mono text-base md:text-sm"
                     disabled={pending}
                     id={`legal-body-${item.value}`}
                     onChange={event => update(item.value, { body: event.target.value })}

@@ -14,25 +14,32 @@ const ORDER: LegalDocument[] = ['terms', 'privacy', 'quality-charter']
 
 const documentParser = parseAsStringEnum([...LEGAL_DOCUMENTS]).withDefault('terms')
 
-export const LegalManager = ({ canPublish, documents }: { canPublish: boolean; documents: LegalDocumentRow[] }) => {
-  const t = useTranslations('LegalAdmin')
+export const LegalTabs = (props: React.ComponentProps<typeof Tabs>) => {
   const [slug, setSlug] = useQueryState('document', documentParser)
-  const ordered = documents.toSorted((a, b) => ORDER.indexOf(a.slug) - ORDER.indexOf(b.slug))
+
+  return <Tabs className="gap-0" onValueChange={value => setSlug(value as LegalDocument)} value={slug} {...props} />
+}
+
+export const LegalTabsList = () => {
+  const t = useTranslations('LegalAdmin')
 
   return (
-    <Tabs onValueChange={value => setSlug(value as LegalDocument)} value={slug}>
-      <TabsList>
-        {ordered.map(document => (
-          <TabsTrigger key={document.slug} value={document.slug}>
-            {t(`documents.${KEYS[document.slug]}`)}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {ordered.map(document => (
-        <TabsContent className="mt-4 space-y-6" key={document.slug} value={document.slug}>
-          <LegalDocumentPanel canPublish={canPublish} document={document} />
-        </TabsContent>
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto">
+      {ORDER.map(slug => (
+        <TabsTrigger key={slug} value={slug}>
+          {t(`documents.${KEYS[slug]}`)}
+        </TabsTrigger>
       ))}
-    </Tabs>
+    </TabsList>
   )
+}
+
+export const LegalManager = ({ canPublish, documents }: { canPublish: boolean; documents: LegalDocumentRow[] }) => {
+  const ordered = documents.toSorted((a, b) => ORDER.indexOf(a.slug) - ORDER.indexOf(b.slug))
+
+  return ordered.map(document => (
+    <TabsContent className="space-y-6" key={document.slug} value={document.slug}>
+      <LegalDocumentPanel canPublish={canPublish} document={document} />
+    </TabsContent>
+  ))
 }

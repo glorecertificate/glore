@@ -123,7 +123,7 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
           />
         </AdminSettingsSection>
 
-        <div className="sticky bottom-0 -mx-page flex flex-wrap items-center justify-end gap-3 border-t bg-background/95 px-page py-3 backdrop-blur-sm">
+        <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-end gap-3 rounded-xl border border-border-subtle bg-card/95 px-4 py-3 shadow-card backdrop-blur-sm">
           <output aria-live="polite" className="mr-auto text-sm text-muted-foreground max-sm:sr-only">
             {form.formState.isDirty ? t('unsaved') : t('upToDate')}
           </output>

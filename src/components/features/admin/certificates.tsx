@@ -8,6 +8,7 @@ import { debounce, useQueryStates } from 'nuqs'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { OrganizationCertificatesPanel } from '@/components/features/organization/certificates-panel'
+import { Card } from '@/components/ui/card'
 import { DataTable } from '@/components/ui/data-table'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
@@ -78,10 +79,10 @@ export const AdminCertificates = ({
 
   if (scoped && params.org !== null) {
     return (
-      <div className="flex flex-col gap-6">
+      <Card className="gap-4 p-4">
         <div className="flex flex-wrap items-center gap-2">{organizationSelect}</div>
         <OrganizationCertificatesPanel key={params.org} organizationId={params.org} />
-      </div>
+      </Card>
     )
   }
 

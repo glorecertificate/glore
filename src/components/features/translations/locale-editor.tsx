@@ -136,7 +136,7 @@ export const LocaleEditor = ({
         <Textarea
           aria-describedby={`${id}-status`}
           aria-invalid={!valid && dirty}
-          className="min-h-28 font-mono text-sm"
+          className="min-h-28 font-mono text-base md:text-sm"
           disabled={!canEdit || orphaned || pending}
           id={`${id}-text`}
           lang={locale}

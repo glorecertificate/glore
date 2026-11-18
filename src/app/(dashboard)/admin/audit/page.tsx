@@ -8,7 +8,6 @@ import { adminAuditParsers } from '@/components/features/admin/audit-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
-import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(adminAuditParsers)
@@ -26,12 +25,14 @@ const AdminAuditContent = async ({ searchParams }: { searchParams: PageProps<'/a
 }
 
 const AdminAuditPage = ({ searchParams }: PageProps<'/admin/audit'>) => (
-  <DashboardPage title={<PageTitle namespace="Admin.audit" name="title" />}>
-    <PageIntro description={<PageTitle namespace="Admin.audit" name="description" />}>
-      <Suspense fallback={<LoadingFallback />}>
-        <AdminAuditContent searchParams={searchParams} />
-      </Suspense>
-    </PageIntro>
+  <DashboardPage
+    overlap
+    description={<PageTitle namespace="Admin.audit" name="description" />}
+    title={<PageTitle namespace="Admin.audit" name="title" />}
+  >
+    <Suspense fallback={<LoadingFallback />}>
+      <AdminAuditContent searchParams={searchParams} />
+    </Suspense>
   </DashboardPage>
 )
 

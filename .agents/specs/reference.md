@@ -139,6 +139,9 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - In a server action whose caller must see its own write, use `updateTag(tag)`. `updateTag` throws outside server actions.
 - A read in a later request (a client reload after a mutation, or a live work queue) passes `{ cache: false }`: dev can serve that request the pre-write entry.
 - Elsewhere use `revalidateTag(tag, 'max')`.
+- Render paths read the session with `getSessionUser()` (`'use cache: private'`, `cacheLife({ stale: 30, revalidate: 60, expire: 600 })`). It passes `disableCookieCache` and `disableRefresh` and never calls `connection()`, so each render and prefetch checks the session in the database, and a revoked, banned, or signed-out session stops rendering at once.
+- The 30 s `stale` is the lowest value that stays in prefetches (Next.js drops a private scope below 30 s) and equals `staleTimes.dynamic`. It leaves the scope out of the App Shell (5 minutes needed), so links to pages that read it use `prefetch`. A page already in the client router cache can outlive the session by up to 30 s. `logout` and every cache-tag action clear that cache.
+- Role, ban, and editor checks read `getSessionUser()` plus the tag-invalidated `fetchUser`, never the cookie-cached session. Actions keep `getAuthUser()` and the `requireX` guards.
 - Role and membership writes call `expireUserAccess` (org actions) or `revalidateUserAccess` (admin actions).
 - Progress writes expire `progressUserTag(userId)`.
 - Never mutate during render: enrollment is an explicit Start click calling `startCourse`, never a page effect.

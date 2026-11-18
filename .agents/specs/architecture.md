@@ -152,7 +152,7 @@ src/
 - `next dev` logs a blocking-route error when a navigation would wait on uncached data.
 - Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so never pass `prefetch` to a `Link`.
 - Content joins the shell only behind `'use cache'` with a stale time of at least 5 minutes or behind `'use cache: private'`. Uncached reads, `params`, and `searchParams` stream in after the click.
-- Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache, 5 minute stale time), which keeps `CoursesProvider` in the shell.
+- Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache, 30 s stale time, fresh database check). Links to pages that read it use `prefetch`, since 30 s stays out of the App Shell.
 
 ### Session and caching
 

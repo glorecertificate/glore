@@ -4,6 +4,7 @@ import { DataCatalog } from '@/components/features/dev/data-catalog'
 import { FeedbackCatalog } from '@/components/features/dev/feedback-catalog'
 import { FieldCatalog } from '@/components/features/dev/field-catalog'
 import { NavigationCatalog } from '@/components/features/dev/navigation-catalog'
+import { OverlayCatalog } from '@/components/features/dev/overlay-catalog'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 
 export const metadata = { robots: { follow: false, index: false }, title: 'UI kit' }
@@ -17,6 +18,7 @@ const UiCatalogPage = () => (
       <NavigationCatalog />
       <FeedbackCatalog />
       <DataCatalog />
+      <OverlayCatalog />
     </div>
   </DashboardPage>
 )

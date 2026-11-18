@@ -668,6 +668,11 @@
     "DataTable": {
       "count": "{count, plural, one {# risultato} other {# risultati}}",
       "actions": "Azioni della riga",
+      "bulkActions": "Azioni di gruppo",
+      "clearSelection": "Deseleziona",
+      "selectAll": "Seleziona tutto in questa pagina",
+      "selectRow": "Seleziona riga",
+      "selected": "{count, plural, one {# selezionato} other {# selezionati}}",
       "loading": "Caricamento dei risultati",
       "page": "Pagina {page} di {total}",
       "previous": "Precedente",

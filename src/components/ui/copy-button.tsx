@@ -7,15 +7,19 @@ import { useTranslations } from 'next-intl'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const CopyButton = ({
   copiedLabel,
   disabled,
+  iconOnly = false,
   label,
+  size,
   value,
   ...props
 }: Omit<React.ComponentProps<typeof Button>, 'asChild' | 'children' | 'icon' | 'loading' | 'onClick'> & {
   copiedLabel?: string
+  iconOnly?: boolean
   label?: string
   value: string
 }) => {
@@ -56,10 +60,45 @@ export const CopyButton = ({
     }
   }
 
+  const text = copied ? (copiedLabel ?? t('copied')) : (label ?? t('copy'))
+
+  if (iconOnly) {
+    return (
+      <>
+        <Tooltip>
+          <TooltipTrigger asChild pointerEvents="auto">
+            <Button
+              aria-label={label ?? t('copy')}
+              disabled={disabled || pending}
+              onClick={() => void copy()}
+              size={size ?? 'icon-sm'}
+              type="button"
+              variant="ghost"
+              {...props}
+            >
+              <LucideIcon name={copied ? 'check' : 'copy'} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+        <span aria-live="polite" className="sr-only">
+          {copied ? text : ''}
+        </span>
+      </>
+    )
+  }
+
   return (
-    <Button disabled={disabled || pending} onClick={() => void copy()} type="button" variant="outline" {...props}>
+    <Button
+      disabled={disabled || pending}
+      onClick={() => void copy()}
+      size={size}
+      type="button"
+      variant="outline"
+      {...props}
+    >
       <LucideIcon name={copied ? 'check' : 'copy'} />
-      <span aria-live="polite">{copied ? (copiedLabel ?? t('copied')) : (label ?? t('copy'))}</span>
+      <span aria-live="polite">{text}</span>
     </Button>
   )
 }

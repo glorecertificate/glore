@@ -135,7 +135,7 @@ export const MultiSelectTrigger = ({
       <div
         aria-disabled={disabled || undefined}
         className={cn(
-          'flex h-9 w-fit items-center justify-between rounded-md border border-border-strong bg-field text-sm transition-[border-color] aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
+          'flex h-8 w-fit max-w-full min-w-0 items-center justify-between rounded-md border border-border-strong bg-field text-sm transition-[border-color] aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
           className
         )}
         data-slot="multi-select-trigger"

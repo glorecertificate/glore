@@ -84,6 +84,9 @@ export const BadgeCatalog = () => (
         <KbdShortcut shortcut={SHORTCUTS.search} />
         <KbdShortcut shortcut={SHORTCUTS.sidebar} />
         <KbdShortcut shortcut={SHORTCUTS.filter} />
+        <KbdShortcut shortcut={SHORTCUTS.submit} />
+        <KbdShortcut shortcut={SHORTCUTS.next} />
+        <KbdShortcut shortcut={SHORTCUTS.previous} />
       </CatalogRow>
     </CatalogSection>
   </>

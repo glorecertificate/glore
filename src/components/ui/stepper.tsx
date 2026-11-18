@@ -23,7 +23,7 @@ const StepperContext = createContext<{
   focusPrev: (currentIdx: number) => void
   indicators: StepIndicators | undefined
   orientation: StepperOrientation
-  registerTrigger: (node: HTMLButtonElement | null) => void
+  setTriggerNodes: React.Dispatch<React.SetStateAction<HTMLButtonElement[]>>
   setActiveStep: (step: number) => void
   stepsCount: number
   triggerNodes: HTMLButtonElement[]
@@ -65,19 +65,10 @@ export const Stepper = ({
   indicators?: StepIndicators
 }) => {
   const [activeStep, setActiveStep] = useState(defaultValue)
-  const [triggerNodes, setTriggerNodes] = useState<HTMLButtonElement[]>([])
-
-  const registerTrigger = (node: HTMLButtonElement | null) => {
-    setTriggerNodes(prev => {
-      if (node && !prev.includes(node)) {
-        return [...prev, node]
-      }
-      if (!node && prev.includes(node!)) {
-        return prev.filter(n => n !== node)
-      }
-      return prev
-    })
-  }
+  const [registeredNodes, setTriggerNodes] = useState<HTMLButtonElement[]>([])
+  const triggerNodes = [...registeredNodes].sort((a, b) =>
+    a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+  )
 
   const handleSetActiveStep = (step: number) => {
     if (value === undefined) {
@@ -107,7 +98,7 @@ export const Stepper = ({
     focusPrev,
     indicators,
     orientation,
-    registerTrigger,
+    setTriggerNodes,
     setActiveStep: handleSetActiveStep,
     stepsCount: Children.toArray(children).filter(
       (child): child is React.ReactElement =>
@@ -177,7 +168,7 @@ export const StepperTrigger = ({
 }) => {
   const { state, isLoading } = useStepItem()
   const stepperCtx = useStepper()
-  const { setActiveStep, activeStep, registerTrigger, triggerNodes, focusNext, focusPrev, focusFirst, focusLast } =
+  const { setActiveStep, activeStep, setTriggerNodes, triggerNodes, focusNext, focusPrev, focusFirst, focusLast } =
     stepperCtx
   const { step, isDisabled } = useStepItem()
   const selected = activeStep === step
@@ -186,10 +177,11 @@ export const StepperTrigger = ({
   const buttonRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (buttonRef.current) {
-      registerTrigger(buttonRef.current as unknown as HTMLButtonElement)
-    }
-  }, [registerTrigger])
+    const node = buttonRef.current as unknown as HTMLButtonElement | null
+    if (!node) return
+    setTriggerNodes(prev => (prev.includes(node) ? prev : [...prev, node]))
+    return () => setTriggerNodes(prev => prev.filter(item => item !== node))
+  }, [setTriggerNodes])
 
   const myIdx = buttonRef.current ? triggerNodes.indexOf(buttonRef.current as unknown as HTMLButtonElement) : -1
 

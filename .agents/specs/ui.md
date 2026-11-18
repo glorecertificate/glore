@@ -46,6 +46,10 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - It sorts and paginates the supplied rows locally, announces counts, and provides loading and empty states.
 - While `loading`, it shows a spinner in place of the header row and the rows, and hides the count. Column widths depend on the rows.
 - Pass `pagination` (page, pageCount, total, onPageChange) for server-paged rows.
+- `skeleton` with `loading` keeps the real header and shows `pageSize` placeholder rows that follow the column layout, instead of a spinner. Use it for server-paged lists.
+- `selectable` adds a checkbox column with select all on the page. Selection spans pages by row id. Control it with `selectedIds` and `onSelectionChange`, or leave it to the table. `rowLabel(row)` names each checkbox and is required with `selectable`.
+- Without `pagination`, the selection is the stored ids that still exist in `rows`. `onSelectionChange` fires only on user actions, never on a prune, so a controlled parent filters its own ids by the rows it holds before it acts; `bulkActions` always receives the pruned ids. With `pagination`, the caller clears the selection when a filter or the query changes, because the table cannot see the other pages.
+- While rows are selected, the toolbar shows the count, `bulkActions(ids)`, and "Clear selection". Escape inside the table clears the selection. Below `sm`, a labeled checkbox above the list selects the page.
 - Below `sm` each row becomes a labeled card (cells carry `data-label`), so status and actions stay reachable.
 - Below `sm` a compact sort select plus a direction toggle replaces the hidden column sorts (`data-table-sort.ts`).
 
@@ -160,6 +164,14 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Inputs, textareas, selects, checkboxes, and radios use `border-border-strong` on `bg-field`. Outline buttons, badges, and toolbars use `border-border`.
 - A checkbox is a rounded square (`rounded-sm`) and a radio is a circle. `checked="indeterminate"` shows a minus.
 - `Switch` is a 36x20 track (`size="sm"`: 28x16) with a 2px inset, a thumb of track height minus 4px, and `action` when on. Both states move over 150ms with `--ease-out`.
+- `PageIntro` takes `description`, `actions`, and children: a description row with an actions slot, then the page content, in one `gap-6` column.
+- `CopyButton` takes `iconOnly`: a ghost icon button (`icon-sm`) whose `label` is its accessible name and tooltip, and "Copied" after a copy.
+- `SHORTCUTS` also holds `submit` (Mod+Enter), `next` (j), and `previous` (k). `KbdShortcut` shows Enter as the return symbol.
+- `MultiSelectTrigger` is 32px (the `FilterBar` control size) and shrinks with its container.
+- `InlineInput` takes `size="title"` for the `type-title` role. Its placeholder uses the `placeholder:text-muted-foreground` input token.
+- `Markdown` is a server component with a static `react-markdown` import. Use it from server components, where static content renders on the server.
+- A client component uses `MarkdownLazy` (`markdown-lazy.tsx`), which loads `Markdown` with `next/dynamic` and no loading state, so `react-markdown` stays out of its route bundle. Call `preloadMarkdown()` when the client surface mounts, so the text appears with the content. Never import `Markdown` from a `'use client'` file.
+- `DialogContent` keeps its close button in a sticky corner anchor, so it stays put while a long dialog scrolls. `DialogTitle` reserves space for it. On open, focus goes to an existing autofocus target, else to the first visible field outside the footer, else to the dialog itself. It never scrolls, and never lands on the close button or a link.
 - `Badge` takes `count` (and `max`, default 99) for a counter: a pill with `tabular-nums` and a `min-w` equal to its height, capped as `99+`. Pass `count`, never `size-*` or `p-0`. Children render after the number, for a screen-reader label.
 - `Progress` clamps its value to 0..100, animates the fill with a transform, and takes `color` `action`, `brand`, `brand-secondary`, `brand-tertiary`, `success`, `warning`, or `default`.
 - A radio dot and its checked border use `action`. Tabs and segmented items darken their text on hover.

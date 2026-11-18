@@ -49,7 +49,7 @@ export const CountrySelect = ({
           aria-label={props.id ? undefined : t('countryLabel')}
           {...props}
           aria-controls={contentId}
-          className={cn('w-full justify-between font-normal', !value && 'text-muted-foreground')}
+          className={cn('w-full justify-between text-base font-normal md:text-sm', !value && 'text-muted-foreground')}
           role="combobox"
           aria-expanded={open}
           variant="outline"

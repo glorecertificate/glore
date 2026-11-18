@@ -10,7 +10,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Link } from '@/components/ui/link'
-import { Markdown } from '@/components/ui/markdown'
+import Markdown from '@/components/ui/markdown'
 import {
   PageHeader,
   PageHeaderActions,

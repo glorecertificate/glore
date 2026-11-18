@@ -3,12 +3,14 @@
 import { CatalogRow } from '@/components/features/dev/catalog-row'
 import { CatalogSection } from '@/components/features/dev/catalog-section'
 import { AvatarStack } from '@/components/ui/avatar-stack'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DataTable, type DataTableColumn } from '@/components/ui/data-table'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { Input } from '@/components/ui/input'
 import { LevelDots } from '@/components/ui/level-dots'
+import { PageIntro } from '@/components/ui/page-header'
 import { StatCard } from '@/components/ui/stat-card'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { Timeline } from '@/components/ui/timeline'
@@ -47,6 +49,21 @@ const LAYOUTS = ['stacked', 'rows', 'inline'] as const satisfies NonNullable<
 const AVATARS = MEMBERS.map(({ id, name }) => ({ id, placeholder: name }))
 
 const getMemberId = (member: CatalogMember) => member.id
+
+const getMemberName = (member: CatalogMember) => member.name
+
+const rowActions = () => (
+  <Button size="icon-sm" type="button" variant="ghost">
+    <span className="sr-only">{'actions'}</span>
+    {'...'}
+  </Button>
+)
+
+const bulkActions = () => (
+  <Button size="sm" type="button" variant="outline">
+    {'Approve'}
+  </Button>
+)
 
 const clearFilters = () => undefined
 
@@ -110,6 +127,35 @@ export const DataCatalog = () => (
           rows={[]}
         />
       </CatalogRow>
+      <CatalogRow label="loading, skeleton">
+        <DataTable
+          className="w-full"
+          columns={COLUMNS}
+          emptyDescription="emptyDescription"
+          emptyTitle="emptyTitle"
+          getRowId={getMemberId}
+          label="loading skeleton"
+          loading
+          pageSize={4}
+          rowActions={rowActions}
+          rows={[]}
+          skeleton
+        />
+      </CatalogRow>
+      <CatalogRow label="selectable, bulkActions">
+        <DataTable
+          bulkActions={bulkActions}
+          className="w-full"
+          columns={COLUMNS}
+          emptyDescription="emptyDescription"
+          emptyTitle="emptyTitle"
+          getRowId={getMemberId}
+          label="selectable"
+          rowLabel={getMemberName}
+          rows={MEMBERS}
+          selectable
+        />
+      </CatalogRow>
       <CatalogRow label="empty">
         <DataTable
           className="w-full"
@@ -120,6 +166,21 @@ export const DataCatalog = () => (
           label="empty"
           rows={[]}
         />
+      </CatalogRow>
+    </CatalogSection>
+    <CatalogSection id="page-intro" name="PageIntro">
+      <CatalogRow label="description, actions">
+        <PageIntro
+          actions={
+            <Button size="sm" type="button">
+              {'Action'}
+            </Button>
+          }
+          className="w-full"
+          description="description"
+        >
+          <div className="rounded-lg border p-4 text-sm">{'children'}</div>
+        </PageIntro>
       </CatalogRow>
     </CatalogSection>
     <CatalogSection id="level-dots" name="LevelDots, Timeline, AvatarStack">

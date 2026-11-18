@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation'
 
-import { findCertificate, findCertificateActivity } from '@/actions/certificates/queries'
-import { listOrgTutors } from '@/actions/organizations/queries'
-import { getCurrentUser } from '@/actions/user'
+import { loadCertificate, loadCertificateActivity } from '@/actions/certificates/detail-data'
+import { loadOrgTutors } from '@/actions/organizations/panel-data'
+import { getViewer } from '@/actions/viewer'
 import { CertificateDetail } from '@/components/features/certificates/certificate-detail'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -13,13 +13,13 @@ const CertificatePageContent = async ({ params }: { params: PageProps<'/certific
   const certificateId = Number(id)
   if (!certificateId || Number.isNaN(certificateId)) notFound()
 
-  const { data: certificate } = await findCertificate(certificateId)
+  const certificate = await loadCertificate(certificateId)
   if (!certificate) notFound()
 
-  const [user, { data: tutors }, { data: activity }] = await Promise.all([
-    getCurrentUser(),
-    listOrgTutors(certificate.organizationId),
-    findCertificateActivity(certificate.id),
+  const [user, { data: tutors }, activity] = await Promise.all([
+    getViewer(),
+    loadOrgTutors(certificate.organizationId),
+    loadCertificateActivity(certificate.id),
   ])
   const canManage =
     user.isAdmin ||

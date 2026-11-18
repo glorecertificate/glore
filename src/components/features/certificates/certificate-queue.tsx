@@ -19,22 +19,42 @@ export const certificateAge = (certificate: Certificate) =>
 export const CertificateQueue = ({
   filtered,
   filters,
+  claiming,
   onClaim,
+  onSelectionChange,
   rows,
+  selectedIds,
   tab,
 }: {
+  claiming: boolean
   filtered: boolean
   filters: React.ReactNode
-  onClaim: (id: number) => void
+  onClaim: (ids: number[]) => void
+  onSelectionChange: (ids: number[]) => void
   rows: Certificate[]
+  selectedIds: number[]
   tab: TutorQueueTab
 }) => {
   const t = useTranslations('CertificateQueue')
   const { locale } = useI18n()
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
+  const selectable = tab === 'pool'
+
   return (
     <DataTable
+      bulkActions={ids => (
+        <Button
+          disabled={claiming}
+          icon="user-plus"
+          loading={claiming}
+          onClick={() => onClaim(ids.map(Number))}
+          size="sm"
+          variant="outline"
+        >
+          {t('claimSelected', { count: ids.length })}
+        </Button>
+      )}
       columns={[
         {
           cell: certificate => (
@@ -87,10 +107,11 @@ export const CertificateQueue = ({
       filters={filters}
       getRowId={certificate => certificate.id}
       label={t(`tabs.${tab}`)}
+      onSelectionChange={ids => onSelectionChange(ids.map(Number))}
       rowActions={certificate => {
         if (tab === 'pool') {
           return (
-            <Button icon="user-plus" onClick={() => onClaim(certificate.id)} size="sm" variant="outline">
+            <Button icon="user-plus" onClick={() => onClaim([certificate.id])} size="sm" variant="outline">
               {t('claim')}
             </Button>
           )
@@ -109,7 +130,10 @@ export const CertificateQueue = ({
           </Button>
         )
       }}
+      rowLabel={certificate => (certificate.user ? fullName(certificate.user) : t('unknownVolunteer'))}
       rows={rows}
+      selectable={selectable}
+      selectedIds={selectedIds}
     />
   )
 }

@@ -1986,7 +1986,7 @@
       }
     },
     "description": "Esamina le richieste di certificato dei volontari della tua organizzazione.",
-    "claimAll": "{count, plural, one {Prendi in carico # revisione} other {Prendi in carico # revisioni}}",
+    "claimSelected": "{count, plural, one {Prendi in carico # revisione} other {Prendi in carico # revisioni}}",
     "emptyFiltered": {
       "title": "Nessun risultato",
       "description": "Nessun certificato corrisponde ai filtri. Rimuovili per vedere tutto l'elenco."
@@ -2120,6 +2120,7 @@
     "tasks": "Attività principali",
     "skills": "Competenze certificate",
     "code": "Codice del certificato",
+    "copyCode": "Copia il codice",
     "issued": "Data di emissione",
     "signatory": "Firmato da",
     "qrLabel": "Codice QR di questa pagina di verifica",

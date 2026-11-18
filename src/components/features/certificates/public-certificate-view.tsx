@@ -144,7 +144,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
                   <DescriptionTerm>{tVerify('code')}</DescriptionTerm>
                   <DescriptionDetails className="flex flex-wrap items-center gap-2 font-mono font-medium">
                     {certificate.code}
-                    <CopyButton size="2xs" value={certificate.code} variant="ghost" />
+                    <CopyButton iconOnly label={tVerify('copyCode')} size="icon-2xs" value={certificate.code} />
                   </DescriptionDetails>
                 </DescriptionItem>
               )}

@@ -1986,7 +1986,7 @@
       }
     },
     "description": "Review certificate requests from the volunteers of your organization.",
-    "claimAll": "{count, plural, one {Claim # review} other {Claim all # reviews}}",
+    "claimSelected": "{count, plural, one {Claim # review} other {Claim # reviews}}",
     "emptyFiltered": {
       "title": "No matches",
       "description": "No certificate matches your filters. Clear them to see the whole list."
@@ -2120,6 +2120,7 @@
     "tasks": "Main tasks",
     "skills": "Certified skills",
     "code": "Certificate code",
+    "copyCode": "Copy code",
     "issued": "Issue date",
     "signatory": "Signed by",
     "qrLabel": "QR code of this verification page",
@@ -2174,7 +2175,7 @@
     "titlesExperience": "Tell us about your experience",
     "titlesSkills": "Choose the skills to certify",
     "titlesOrganization": "Rate your organization",
-    "titlesReview": "Review and send",
+    "titlesReview": "Check and send",
     "descriptionsExperience": "When, where, and what you did as a volunteer.",
     "descriptionsSkills": "Review the description you chose for each skill and add an example.",
     "descriptionsOrganization": "Share how the experience went. This feedback is anonymous.",
@@ -2191,7 +2192,7 @@
     "discardError": "Could not discard the draft. Try again.",
     "discarded": "Draft discarded",
     "cancel": "Cancel",
-    "submit": "Submit request",
+    "submit": "Send request",
     "resubmit": "Resubmit",
     "submitting": "Submitting…",
     "submitted": "Request submitted. A tutor from your organization will review it.",

@@ -1986,7 +1986,7 @@
       }
     },
     "description": "Revisa las solicitudes de certificado de las personas voluntarias de tu organización.",
-    "claimAll": "{count, plural, one {Reclamar # revisión} other {Reclamar las # revisiones}}",
+    "claimSelected": "{count, plural, one {Reclamar # revisión} other {Reclamar # revisiones}}",
     "emptyFiltered": {
       "title": "Sin resultados",
       "description": "Ningún certificado coincide con los filtros. Quítalos para ver toda la lista."
@@ -2120,6 +2120,7 @@
     "tasks": "Tareas principales",
     "skills": "Habilidades certificadas",
     "code": "Código del certificado",
+    "copyCode": "Copiar código",
     "issued": "Fecha de emisión",
     "signatory": "Firmado por",
     "qrLabel": "Código QR de esta página de verificación",
@@ -2174,7 +2175,7 @@
     "titlesExperience": "Cuéntanos tu experiencia",
     "titlesSkills": "Elige las habilidades a certificar",
     "titlesOrganization": "Valora tu organización",
-    "titlesReview": "Revisa y envía",
+    "titlesReview": "Revisar y enviar",
     "descriptionsExperience": "Cuándo, dónde y qué hiciste como voluntario.",
     "descriptionsSkills": "Revisa la descripción que elegiste para cada habilidad y añade un ejemplo.",
     "descriptionsOrganization": "Cuéntanos cómo fue la experiencia. Esta opinión es anónima.",

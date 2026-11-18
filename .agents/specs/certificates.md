@@ -107,7 +107,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Tabs: assigned to me (open), unassigned (org pool, self-claim), and completed, in a `DataTable`.
 - Search and the status and waiting-time filters are nuqs params (`tab`, `q`, `status`, `age`) in a `FilterBar` with Clear filters. `/` focuses the search.
 - A filtered empty table shows its own "No matches" state.
-- Claim is optimistic: the row leaves the unassigned tab at once and returns with an error toast if the claim fails. With 2 or more rows, the unassigned tab offers a bulk claim of the rows shown.
+- Claim is optimistic: the row leaves the unassigned tab at once and returns with an error toast if the claim fails. The unassigned tab uses `DataTable` row selection: selected rows show a count and a "Claim N reviews" bulk action, and the table announces the count. The organization table shows a skeleton while it loads.
 - The age badge (`StatusBadge`: neutral, then warning at 3 days, danger at 7, `reviewReminderDays`) counts days since `submittedAt`.
 - `changes_requested` rows show "waiting for volunteer".
 
@@ -149,7 +149,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ## Public verification
 
 - `/verify` takes a code (any case, dashes optional, normalized by `normalizeCertificateCode`) and redirects to `/verify/<code>`.
-- `/verify/<code>` and the public profile render one credential card (status, `type-display` name, facts, tasks, skills, code with copy, QR).
+- `/verify/<code>` and the public profile render one credential card (status, `type-display` name, facts, tasks, skills, code with an icon-only copy button, QR).
 - `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with their level and description, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.

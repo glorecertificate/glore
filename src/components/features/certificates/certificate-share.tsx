@@ -54,7 +54,7 @@ export const CertificateShare = ({
           <div className="flex min-w-0 flex-1 flex-col gap-3">
             <div className="flex items-center gap-2 rounded-md border bg-surface-muted px-3 py-2">
               <span className="min-w-0 flex-1 truncate font-mono text-xs">{url}</span>
-              <CopyButton copiedLabel={t('linkCopied')} label={t('copyLink')} size="sm" value={url} />
+              <CopyButton copiedLabel={t('linkCopied')} iconOnly label={t('copyLink')} value={url} />
             </div>
             <div className="flex flex-wrap gap-2">
               <Button asChild icon="download" size="sm" variant="outline">
@@ -110,15 +110,15 @@ export const CertificateShare = ({
           </div>
           <DescriptionList className="gap-2" columns={2}>
             {fields.map(field => (
-              <DescriptionItem className="relative rounded-md bg-surface-muted py-1.5 pr-28 pl-3" key={field.key}>
+              <DescriptionItem className="relative rounded-md bg-surface-muted py-1.5 pr-10 pl-3" key={field.key}>
                 <DescriptionTerm>{field.label}</DescriptionTerm>
                 <DescriptionDetails className="wrap-anywhere">
                   {field.value}
                   <CopyButton
-                    aria-label={t('copyField', { field: field.label })}
                     className="absolute top-1/2 right-1.5 -translate-y-1/2"
                     copiedLabel={t('linkCopied')}
-                    size="sm"
+                    iconOnly
+                    label={t('copyField', { field: field.label })}
                     value={field.value}
                   />
                 </DescriptionDetails>

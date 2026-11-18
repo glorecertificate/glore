@@ -147,7 +147,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
               <DescriptionTerm>{t('code')}</DescriptionTerm>
               <DescriptionDetails className="flex flex-wrap items-center gap-2 font-mono font-medium">
                 {verification.code}
-                <CopyButton size="2xs" value={verification.code} variant="ghost" />
+                <CopyButton iconOnly label={t('copyCode')} size="icon-2xs" value={verification.code} />
               </DescriptionDetails>
             </DescriptionItem>
             <DescriptionItem>

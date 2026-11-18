@@ -13,11 +13,12 @@ import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useI18n } from '@/components/providers/i18n'
 import { DataTable } from '@/components/ui/data-table'
 import { FilterBar } from '@/components/ui/filter-bar'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/ui/stat-card'
 import { type Certificate, type CertificateStatus } from '@/db/queries/certificate'
 import { useReveal } from '@/hooks/use-reveal'
+import { SHORTCUTS } from '@/lib/shortcuts'
 import { cn, fullName } from '@/lib/utils'
 
 const ALL = 'all'
@@ -149,15 +150,16 @@ export const OrganizationCertificates = ({
         emptyDescription={filtered ? t('emptyFilteredDescription') : t('emptyDescription')}
         emptyTitle={filtered ? t('emptyFilteredTitle') : t('emptyTitle')}
         loading={loading}
+        skeleton
         filters={
           <FilterBar active={filtered} onClear={clear}>
-            <Input
+            <SearchInput
               aria-label={t('search')}
               className="w-64"
-              size="sm"
-              onChange={event => setQuery(event.target.value)}
+              hotkey={SHORTCUTS.filter.key}
+              onValueChange={setQuery}
               placeholder={t('search')}
-              type="search"
+              size="sm"
               value={query}
             />
             <Select onValueChange={setStatus} value={status}>

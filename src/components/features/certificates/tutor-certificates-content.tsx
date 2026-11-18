@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useOptimistic, useTransition } from 'react'
+import { useOptimistic, useState, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -18,7 +18,6 @@ import {
 import { ageTone } from '@/components/features/certificates/rules'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useTutorQueueAge, useTutorQueueStatus, useTutorQueueTab } from '@/components/features/certificates/use-params'
-import { Button } from '@/components/ui/button'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { PageHeaderDescription } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search'
@@ -48,10 +47,12 @@ export const TutorCertificatesContent = ({
   const { refresh } = useRouter()
   const [pool, hide] = useOptimistic(unassigned, (list, ids: number[]) => list.filter(({ id }) => !ids.includes(id)))
   const [claiming, startClaim] = useTransition()
+  const [selected, setSelected] = useState<number[]>([])
 
   const claim = (ids: number[]) =>
     startClaim(async () => {
       hide(ids)
+      setSelected(current => current.filter(id => !ids.includes(id)))
       const failed = await failedClaims(ids, selfAssignCertificate)
       if (failed.length > 0) toast.error(t('claimError', { count: failed.length }))
       if (failed.length < ids.length) toast.success(t('claimSuccess', { count: ids.length - failed.length }))
@@ -147,26 +148,15 @@ export const TutorCertificatesContent = ({
           return (
             <TabsContent className="flex flex-col gap-3" key={key} value={key}>
               <CertificateQueue
+                claiming={claiming}
                 filtered={isFiltered}
                 filters={filters}
-                onClaim={id => claim([id])}
+                onClaim={claim}
+                onSelectionChange={setSelected}
                 rows={rows}
+                selectedIds={selected}
                 tab={key}
               />
-              {key === 'pool' && rows.length > 1 && (
-                <div className="flex justify-end">
-                  <Button
-                    disabled={claiming}
-                    icon="user-plus"
-                    loading={claiming}
-                    onClick={() => claim(rows.map(({ id }) => id))}
-                    size="sm"
-                    variant="outline"
-                  >
-                    {t('claimAll', { count: rows.length })}
-                  </Button>
-                </div>
-              )}
             </TabsContent>
           )
         })}

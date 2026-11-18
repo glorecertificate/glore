@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useOptimistic, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -46,29 +46,20 @@ export const TutorCertificatesContent = ({
   const { age, setAge } = useTutorQueueAge()
   const { matchSearch, searchValue, setSearch } = useSearch()
   const { refresh } = useRouter()
-  const [claimState, setClaim] = useState<{ ids: number[]; source: Certificate[] }>({ ids: [], source: unassigned })
+  const [pool, hide] = useOptimistic(unassigned, (list, ids: number[]) => list.filter(({ id }) => !ids.includes(id)))
   const [claiming, startClaim] = useTransition()
-  if (claimState.source !== unassigned) setClaim({ ids: [], source: unassigned })
-  const claimed = claimState.ids
-
-  const release = (ids: number[]) =>
-    setClaim(current => ({ ...current, ids: current.ids.filter(id => !ids.includes(id)) }))
 
   const claim = (ids: number[]) =>
     startClaim(async () => {
-      setClaim(current => ({ ...current, ids: [...current.ids, ...ids] }))
+      hide(ids)
       const failed = await failedClaims(ids, selfAssignCertificate)
-      if (failed.length > 0) {
-        release(failed)
-        toast.error(t('claimError', { count: failed.length }))
-      }
+      if (failed.length > 0) toast.error(t('claimError', { count: failed.length }))
       if (failed.length < ids.length) toast.success(t('claimSuccess', { count: ids.length - failed.length }))
       refresh()
     })
 
   const open = assigned.filter(({ isOpen }) => isOpen)
   const completed = assigned.filter(({ isOpen }) => !isOpen)
-  const pool = unassigned.filter(({ id }) => !claimed.includes(id))
   const sources = { assigned: open, completed, pool } satisfies Record<TutorQueueTab, Certificate[]>
   const counts = {
     assigned: open.length,

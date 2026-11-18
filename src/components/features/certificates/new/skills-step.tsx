@@ -68,7 +68,7 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
         </p>
       </div>
       <SkillsError />
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-3 outline-none" id="skills-list" tabIndex={-1}>
         {options.map(option => {
           const index = fields.findIndex(field => field.courseId === option.id)
           const selected = index >= 0

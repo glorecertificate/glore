@@ -167,6 +167,9 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     const valid = await form.trigger([...WIZARD_STEP_FIELDS[step]!], { shouldFocus: true })
     setAdvancing(false)
     setInvalid(!valid)
+    if (!valid && form.formState.errors.skills && !Array.isArray(form.formState.errors.skills)) {
+      document.getElementById('skills-list')?.focus()
+    }
     if (valid) goTo(step + 1)
   }
 

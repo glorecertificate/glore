@@ -52,7 +52,9 @@ export const CopyLinkButton = ({ label, load }: CopyLinkButtonProps) => {
     setStatus('pending')
     try {
       if (typeof ClipboardItem === 'undefined') await navigator.clipboard.writeText(await resolveUrl())
-      else await navigator.clipboard.write([new ClipboardItem({ 'text/plain': toBlob() })])
+      if (typeof ClipboardItem !== 'undefined') {
+        await navigator.clipboard.write([new ClipboardItem({ 'text/plain': toBlob() })])
+      }
       setStatus('copied')
       if (timer.current) clearTimeout(timer.current)
       timer.current = setTimeout(() => setStatus('idle'), 2000)

@@ -219,8 +219,9 @@ const syncLessonRows = async (ctx: Context, courseId: number, lessons: CatalogLe
   const surplus: number[] = []
   for (const row of rows) {
     const order = row.sort_order as number
-    if (keep.has(order) || order > lessons.length || order < 1) surplus.push(row.id)
-    else keep.set(order, row)
+    const duplicate = keep.has(order) || order > lessons.length || order < 1
+    if (duplicate) surplus.push(row.id)
+    if (!duplicate) keep.set(order, row)
   }
   await deleteLessons(ctx, surplus)
 
@@ -268,22 +269,22 @@ const syncQuestions = async (ctx: Context, lessonId: number, lesson: CatalogLess
   for (const [index, question] of lesson.questions.entries()) {
     const existing = questions.rows[index]
     let questionId = existing?.id
-    if (existing) {
-      if (same(existing.description, question.description) && same(existing.explanation, question.explanation)) {
-        stats.questions.unchanged++
-      } else {
-        await client.query(
-          'update questions set description = $2::jsonb, explanation = $3::jsonb, updated_at = now() where id = $1',
-          [existing.id, json(question.description), json(question.explanation)]
-        )
-        stats.questions.updated++
-        await deleteProgress(
-          ctx,
-          'delete from user_answers where option_id in (select id from question_options where question_id = $1)',
-          [existing.id]
-        )
-      }
-    } else {
+    const unchanged =
+      existing && same(existing.description, question.description) && same(existing.explanation, question.explanation)
+    if (unchanged) stats.questions.unchanged++
+    if (existing && !unchanged) {
+      await client.query(
+        'update questions set description = $2::jsonb, explanation = $3::jsonb, updated_at = now() where id = $1',
+        [existing.id, json(question.description), json(question.explanation)]
+      )
+      stats.questions.updated++
+      await deleteProgress(
+        ctx,
+        'delete from user_answers where option_id in (select id from question_options where question_id = $1)',
+        [existing.id]
+      )
+    }
+    if (!existing) {
       const created = await run(
         client,
         'insert into questions (lesson_id, description, explanation) values ($1, $2::jsonb, $3::jsonb) returning id',

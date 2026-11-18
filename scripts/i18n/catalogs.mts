@@ -34,7 +34,7 @@ const difference = (left: string[], right: string[]) => {
   for (const token of left) {
     const index = remaining.indexOf(token)
     if (index === -1) missing.push(token)
-    else remaining.splice(index, 1)
+    if (index !== -1) remaining.splice(index, 1)
   }
   return missing
 }

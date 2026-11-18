@@ -57,7 +57,7 @@ export const summarizeOverrides = ({ catalogs, defaultLocale, locales, rows }: S
     if (row.draftValue !== null) summary.drafts += 1
     const state = classifyOverride({ bundled: flat[row.locale] ?? {}, en, locale: row.locale, override: row })
     if (state === null) summary.current += 1
-    else summary.stale[state] += 1
+    if (state !== null) summary.stale[state] += 1
   }
 
   return { locales: [...summaries.values()], unknown: [...unknown].sort() }

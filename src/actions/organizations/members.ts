@@ -109,7 +109,7 @@ export const leaveOrganization = async (organizationId: number) =>
     const next = nextUser.organizations[0]
     if (activeId === id || !nextUser.organizations.some(item => item.id === activeId)) {
       if (next) await setCookie('org', next.id, { httpOnly: false })
-      else await deleteCookie('org')
+      if (!next) await deleteCookie('org')
     }
     return { user: nextUser }
   })

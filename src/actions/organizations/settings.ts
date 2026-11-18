@@ -192,6 +192,6 @@ export const deleteOrganization = async (organizationId?: number) =>
 
     const next = user.organizations[0]
     if (next) await setCookie('org', next.id, { httpOnly: false })
-    else await deleteCookie('org')
+    if (!next) await deleteCookie('org')
     return { organizationId: access.organizationId, user }
   })

@@ -20,7 +20,6 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { queryError } from '@/db/helpers'
 import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course, type CourseSummary } from '@/db/queries/course'
 import { COURSE_DURATION_MAX, OUTCOMES_MAX, parseOutcomesText, sanitizeOutcomes } from '@/db/queries/course-editing'
@@ -372,36 +371,25 @@ export const CourseSettings = ({
             </div>
           </div>
         </div>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              className="w-full [&_svg]:size-4"
-              disabled={disabled}
-              effect="gooeyLeft"
-              loading={form.formState.isSubmitting}
-              type="submit"
-              variant="brand"
-            >
-              {submitMessage}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="top" sideOffset={8} size="sm">
-            {t('selectSkillGroupToSave')}
-          </TooltipContent>
-          {errors.length > 0 ? (
-            <TooltipContent side="top" sideOffset={8} size="sm">
-              {errors.map(error => (
-                <div key={error}>{error}</div>
-              ))}
-            </TooltipContent>
-          ) : (
-            !(isIntro || form.getValues('skillGroupId')) && (
-              <TooltipContent side="top" sideOffset={8} size="sm">
-                {t('selectSkillGroupToSave')}
-              </TooltipContent>
-            )
+        <div className="sticky bottom-0 -mx-8 -mb-8 flex flex-col gap-2 border-t bg-background px-8 py-4">
+          {(errors.length > 0 || !(isIntro || form.getValues('skillGroupId'))) && (
+            <output className="flex flex-col gap-0.5 text-sm text-muted-foreground">
+              {errors.length > 0
+                ? errors.map(error => <p key={error}>{error}</p>)
+                : !(isIntro || form.getValues('skillGroupId')) && <p>{t('selectSkillGroupToSave')}</p>}
+            </output>
           )}
-        </Tooltip>
+          <Button
+            className="w-full [&_svg]:size-4"
+            disabled={disabled}
+            effect="gooeyLeft"
+            loading={form.formState.isSubmitting}
+            type="submit"
+            variant="brand"
+          >
+            {submitMessage}
+          </Button>
+        </div>
       </form>
     </Form>
   )

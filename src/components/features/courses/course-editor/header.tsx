@@ -7,12 +7,14 @@ import { useTranslations } from 'next-intl'
 
 import { CourseDialog } from '@/components/features/courses/course-dialog'
 import { CourseAnalyticsSheet } from '@/components/features/courses/course-editor/analytics'
+import { CourseBarTitle } from '@/components/features/courses/course-editor/bar-title'
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
 import { CourseHeading } from '@/components/features/courses/course-editor/heading'
 import { CourseLanguageTabs } from '@/components/features/courses/course-editor/language-tabs'
 import { PublishControl } from '@/components/features/courses/course-editor/publish-control'
 import { CourseTranslation } from '@/components/features/courses/course-editor/translation'
 import { LucideIcon } from '@/components/icons/lucide'
+import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
@@ -27,7 +29,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
-import { PageHeader, PageHeaderActions } from '@/components/ui/page-header'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -142,86 +143,105 @@ export const CourseHeader = () => {
 
   return (
     <>
-      <PageHeader className="gap-4 lg:flex-row lg:items-start">
-        <CourseHeading>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
-            <StatusBadge
-              icon={languageStatus.published ? 'circle-check' : 'circle-dashed'}
-              tone={languageStatus.published ? 'success' : 'neutral'}
-            >
-              {languageStatus.published ? t('publishSwitchPublished') : t('publishSwitchDraft')}
-            </StatusBadge>
-            {languageStatus.hasUpdates && (
-              <StatusBadge icon="pencil" tone="warning">
-                {t('unsavedChanges')}
-              </StatusBadge>
-            )}
-            <span>{t('visibleLanguages', { count: publishedLanguageCount })}</span>
-            <span>{t('lessonsCount', { count: course.lessons.length })}</span>
-          </div>
-        </CourseHeading>
-        <PageHeaderActions className="lg:justify-end">
-          <CourseDialog
-            course={course}
-            onOpenChange={setSettingsOpen}
-            onSuccess={updated => {
-              if (updated.slug !== course.slug) {
-                replace(`/courses/${updated.slug}?lesson=${step}&lang=${language}`)
-              }
-            }}
-            open={settingsOpen}
-          >
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DialogTrigger asChild>
-                  <Button aria-label={tCourseCommon('settings')} size="icon" variant="outline">
-                    <LucideIcon name="settings" />
-                  </Button>
-                </DialogTrigger>
-              </TooltipTrigger>
-              <TooltipContent>{tCourseCommon('settings')}</TooltipContent>
-            </Tooltip>
-          </CourseDialog>
-          <CourseAnalyticsSheet />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button asChild variant="outline">
-                <Link href={previewHref}>
-                  <LucideIcon name="eye" />
-                  {tEditor('previewAsLearner')}
-                </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-72 text-center">{tEditor('previewHint')}</TooltipContent>
-          </Tooltip>
-          <PublishControl
-            disabled={saving}
-            language={languageLabel}
-            onChange={setPublishTarget}
-            published={publishTarget}
-          />
-          {saveDisabled ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>
-                  <Button disabled icon="save" variant="brand">
+      <CourseHeading>
+        {({ counter, description, icon, title }) => (
+          <DashboardHeader
+            actions={
+              <>
+                <CourseDialog
+                  course={course}
+                  onOpenChange={setSettingsOpen}
+                  onSuccess={updated => {
+                    if (updated.slug !== course.slug) {
+                      replace(`/courses/${updated.slug}?lesson=${step}&lang=${language}`)
+                    }
+                  }}
+                  open={settingsOpen}
+                >
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DialogTrigger asChild>
+                        <Button aria-label={tCourseCommon('settings')} size="icon" variant="band-secondary">
+                          <LucideIcon name="settings" />
+                        </Button>
+                      </DialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>{tCourseCommon('settings')}</TooltipContent>
+                  </Tooltip>
+                </CourseDialog>
+                <CourseAnalyticsSheet />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button asChild variant="band-secondary">
+                      <Link href={previewHref}>
+                        <LucideIcon name="eye" />
+                        {tEditor('previewAsLearner')}
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-72 text-center">{tEditor('previewHint')}</TooltipContent>
+                </Tooltip>
+                <PublishControl
+                  disabled={saving}
+                  language={languageLabel}
+                  onChange={setPublishTarget}
+                  published={publishTarget}
+                />
+                {saveDisabled ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button disabled icon="save" variant="band">
+                          {t('save')}
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>{t('nothingToSave')}</TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <Button icon="save" loading={saving} onClick={handleSave} variant="band">
                     {t('save')}
                   </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>{t('nothingToSave')}</TooltipContent>
-            </Tooltip>
-          ) : (
-            <Button icon="save" loading={saving} onClick={handleSave} variant="brand">
-              {t('save')}
-            </Button>
-          )}
-        </PageHeaderActions>
-      </PageHeader>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <CourseLanguageTabs />
-        <CourseTranslation />
-      </div>
+                )}
+                {saveDisabled && (
+                  <span className="hidden basis-full text-right text-xs text-band-text pointer-coarse:block">
+                    {t('nothingToSave')}
+                  </span>
+                )}
+              </>
+            }
+            breadcrumb={
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-band-text">
+                  {icon}
+                  <StatusBadge
+                    icon={languageStatus.published ? 'circle-check' : 'circle-dashed'}
+                    tone={languageStatus.published ? 'success' : 'neutral'}
+                  >
+                    {languageStatus.published ? t('publishSwitchPublished') : t('publishSwitchDraft')}
+                  </StatusBadge>
+                  {languageStatus.hasUpdates && (
+                    <StatusBadge icon="pencil" tone="warning">
+                      {t('unsavedChanges')}
+                    </StatusBadge>
+                  )}
+                  <span>{t('visibleLanguages', { count: publishedLanguageCount })}</span>
+                  <span>{t('lessonsCount', { count: course.lessons.length })}</span>
+                  {counter}
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <CourseLanguageTabs />
+                  <CourseTranslation />
+                </div>
+              </div>
+            }
+            description={description}
+            heading={title}
+            parent="courses"
+            title={<CourseBarTitle />}
+          />
+        )}
+      </CourseHeading>
       <AlertDialog onOpenChange={open => !open && handleAlertCancel()} open={incompleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

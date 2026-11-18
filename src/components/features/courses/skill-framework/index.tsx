@@ -2,12 +2,10 @@ import { useLocale, useTranslations } from 'next-intl'
 
 import { AssignSkillGroup } from '@/components/features/courses/skill-framework/assign-select'
 import { SkillGroupControls } from '@/components/features/courses/skill-framework/group-controls'
-import { SkillGroupDialog } from '@/components/features/courses/skill-framework/group-dialog'
 import { skillGroupTone, skillGroupToneVariants } from '@/components/features/courses/skill-group'
 import { LucideIcon } from '@/components/icons/lucide'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
-import { PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderHeading } from '@/components/ui/page-header'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { pickCourseTitle, pickLocale } from '@/db/queries/learning'
 import { type IntlRecord } from '@/lib/i18n'
@@ -75,24 +73,11 @@ export const SkillFramework = ({
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <PageHeader>
-        <PageHeaderHeading>
-          <PageHeaderDescription>{t('description')}</PageHeaderDescription>
-        </PageHeaderHeading>
-        <PageHeaderActions>
-          <SkillGroupDialog>
-            <Button variant="brand">
-              <LucideIcon className="size-4" name="plus" />
-              {t('addGroup')}
-            </Button>
-          </SkillGroupDialog>
-        </PageHeaderActions>
-      </PageHeader>
       {groups.map((group, index) => {
         const name = pickLocale(group.name, locale) ?? group.slug
         const description = pickLocale(group.description ?? undefined, locale)
         return (
-          <section className="flex flex-col gap-3 rounded-2xl border bg-card p-5 shadow-2xs" key={group.id}>
+          <Card key={group.id}>
             <header className="flex flex-wrap items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
                 <span
@@ -132,11 +117,11 @@ export const SkillFramework = ({
                 ))}
               </ul>
             )}
-          </section>
+          </Card>
         )
       })}
       {ungrouped.length > 0 && (
-        <section className="flex flex-col gap-3 rounded-2xl border border-dashed p-5">
+        <Card className="border-dashed shadow-none">
           <header className="flex flex-col gap-1">
             <h2 className="type-heading">{t('ungroupedTitle')}</h2>
             <p className="text-sm text-muted-foreground">{t('ungroupedHint')}</p>
@@ -146,7 +131,7 @@ export const SkillFramework = ({
               <CourseRow course={course} groupId={null} groups={options} key={course.id} />
             ))}
           </ul>
-        </section>
+        </Card>
       )}
     </div>
   )

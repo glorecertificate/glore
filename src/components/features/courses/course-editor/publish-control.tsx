@@ -21,14 +21,19 @@ export const PublishControl = ({
   return (
     <SegmentedControl
       aria-label={t('publishStatus', { language })}
-      className="shrink-0"
+      className="shrink-0 bg-band-scrim"
       disabled={disabled}
       onValueChange={value => onChange(value === 'published')}
       value={published ? 'published' : 'draft'}
     >
-      <SegmentedControlItem value="draft">{t('publishSwitchDraft')}</SegmentedControlItem>
       <SegmentedControlItem
-        className="data-[state=checked]:bg-success-subtle data-[state=checked]:text-success-text dark:data-[state=checked]:bg-success-subtle"
+        className="text-band-text data-[state=checked]:bg-band-foreground data-[state=checked]:text-band-from dark:data-[state=checked]:bg-band-foreground"
+        value="draft"
+      >
+        {t('publishSwitchDraft')}
+      </SegmentedControlItem>
+      <SegmentedControlItem
+        className="text-band-text data-[state=checked]:bg-band-action data-[state=checked]:text-band-action-foreground dark:data-[state=checked]:bg-band-action"
         value="published"
       >
         {t('publishSwitchPublished')}

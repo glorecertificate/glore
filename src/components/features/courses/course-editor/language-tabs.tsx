@@ -32,6 +32,9 @@ export const CourseLanguageTabs = ({ className, ...props }: React.ComponentProps
                   />
                   {label}
                   {hasUpdates && <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-warning" />}
+                  <span aria-hidden className="hidden text-xs pointer-coarse:inline">
+                    {`${coverage[value].done}/${coverage[value].total}`}
+                  </span>
                   <span className="sr-only">
                     {published ? t('publishSwitchPublished') : t('publishSwitchDraft')}
                     {hasUpdates && `, ${t('unsavedChanges')}`}

@@ -115,8 +115,14 @@ export const CourseHeader = () => {
       await saveCourse({ locale: language, publish })
       toast.success(t('saveSuccess'))
     } catch (error) {
-      const missing = (error as { code?: string } | null)?.code === 'DESCRIPTIONS_MISSING'
-      toast.error(missing ? tEditor('publishDescriptionsMissing') : t('saveError'))
+      const code = (error as { code?: string } | null)?.code
+      toast.error(
+        code === 'DESCRIPTIONS_MISSING'
+          ? tEditor('publishDescriptionsMissing')
+          : code === 'TITLE_TOO_LONG'
+            ? t('titleTooLong', { max: 100 })
+            : t('saveError')
+      )
     } finally {
       setSaving(false)
     }

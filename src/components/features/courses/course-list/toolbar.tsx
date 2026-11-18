@@ -15,12 +15,15 @@ import { FilterBar } from '@/components/ui/filter-bar'
 import { PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderHeading } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search'
 import { SHORTCUTS } from '@/lib/shortcuts'
+import settings from '~/config/app.json'
 
 export const CourseListToolbar = () => {
   const { user } = useSession()
   const t = useTranslations('CourseList')
   const { hasFilters, resetFilters } = useCourseListFilters()
-  const description = t(user.isAdmin ? 'descriptionAdmin' : user.isEditor ? 'descriptionEditor' : 'description')
+  const description = t(user.isAdmin ? 'descriptionAdmin' : user.isEditor ? 'descriptionEditor' : 'description', {
+    minSkills: settings.minSkills,
+  })
 
   return (
     <div className="mb-6 flex flex-col gap-4">

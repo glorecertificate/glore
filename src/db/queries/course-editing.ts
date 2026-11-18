@@ -10,6 +10,12 @@ const OUTCOME_MAX_LENGTH = 160
 
 const RESERVED_COURSE_SLUGS = new Set(['skills'])
 
+export const COURSE_TITLE_MAX_LENGTH = 100
+
+const courseTitleSchema = z.record(z.string(), z.string().max(COURSE_TITLE_MAX_LENGTH))
+
+export const isCourseTitleValid = (title: unknown) => title === undefined || courseTitleSchema.safeParse(title).success
+
 export const isReservedSlug = (slug: string) => RESERVED_COURSE_SLUGS.has(slug)
 
 export const sanitizeDuration = (value: unknown) =>

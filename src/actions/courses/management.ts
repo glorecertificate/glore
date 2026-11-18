@@ -23,7 +23,7 @@ import {
 } from '@/db/mutations/course'
 import { languageChanges } from '@/db/queries/content-translation'
 import { type Course, parseCourse } from '@/db/queries/course'
-import { isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
+import { isCourseTitleValid, isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
 import { hasEveryLevelDescription } from '@/db/queries/skill-choice'
 import { SKILL_LEVELS, SKILL_LEVEL_DESCRIPTION_MAX_LENGTH } from '@/db/queries/skill-level-description'
@@ -152,6 +152,9 @@ export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
 
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
   if (isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
+  if (!isCourseTitleValid(course.title)) {
+    return { error: { code: 'TITLE_TOO_LONG', message: 'Course title is too long' } }
+  }
   const [authUser, sortOrder] = await Promise.all([requireEditor(), nextActiveSortOrder()])
 
   const values = sanitizeDetails(
@@ -199,6 +202,9 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
 
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
   if (course.slug && isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
+  if (!isCourseTitleValid(course.title)) {
+    return { error: { code: 'TITLE_TOO_LONG', message: 'Course title is too long' } }
+  }
   const authUser = await requireEditor()
 
   const values = await resolveCourseUpdate(

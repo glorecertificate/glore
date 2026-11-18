@@ -15,11 +15,13 @@ import { PageHeaderDescription, PageHeaderHeading, PageHeaderTitle } from '@/com
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { COURSE_TITLE_MAX_LENGTH } from '@/db/queries/course-editing'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn, debounce } from '@/lib/utils'
 
-const MAX_TITLE_LENGTH = 100
+const MAX_TITLE_LENGTH = COURSE_TITLE_MAX_LENGTH
+const TITLE_COUNTER_FROM = 80
 const DEBOUNCE_DELAY = 400
 
 export const CourseHeading = ({ children }: React.PropsWithChildren) => {
@@ -48,19 +50,26 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
     }
   }, [description])
 
-  const commitTitle = debounce((value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      title: { ...prev.title, [language]: value } as IntlRecord,
-    }))
-  }, DEBOUNCE_DELAY)
+  const languageRef = useRef(language)
+  languageRef.current = language
 
-  const commitDescription = debounce((value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      description: { ...prev.description, [language]: value } as IntlRecord,
-    }))
-  }, DEBOUNCE_DELAY)
+  const [commitTitle] = useState(() =>
+    debounce((value: string) => {
+      setCourse(prev => ({
+        ...prev,
+        title: { ...prev.title, [languageRef.current]: value } as IntlRecord,
+      }))
+    }, DEBOUNCE_DELAY)
+  )
+
+  const [commitDescription] = useState(() =>
+    debounce((value: string) => {
+      setCourse(prev => ({
+        ...prev,
+        description: { ...prev.description, [languageRef.current]: value } as IntlRecord,
+      }))
+    }, DEBOUNCE_DELAY)
+  )
 
   useEffect(
     () => () => {
@@ -71,12 +80,8 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
   )
 
   const onTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value.slice(0, MAX_TITLE_LENGTH)
-    if (e.target.value.length > MAX_TITLE_LENGTH) {
-      toast.warning(t('titleTooLong'))
-    }
-    setEditingTitle(value)
-    commitTitle(value)
+    setEditingTitle(e.target.value)
+    commitTitle(e.target.value)
   }
 
   const onTitleFocus = () => setEditingTitle(title)
@@ -141,6 +146,7 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
             <InlineInput
               aria-label={t('renameCourse')}
               className="-my-0.5 px-1.5 py-0.5 type-title!"
+              maxLength={MAX_TITLE_LENGTH}
               onBlur={onTitleBlur}
               placeholder={fallbackTitle}
               onChange={onTitleChange}
@@ -153,6 +159,11 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
         </PageHeaderTitle>
         {course.archivedAt && <StatusBadge tone="neutral">{tList('archived')}</StatusBadge>}
       </div>
+      {canEdit && draftTitle.length >= TITLE_COUNTER_FROM && (
+        <output aria-live="polite" className="type-caption text-muted-foreground">
+          {t('titleLength', { count: draftTitle.length, max: MAX_TITLE_LENGTH })}
+        </output>
+      )}
       {canEdit ? (
         <InlineInput
           aria-label={t('updateDescription')}

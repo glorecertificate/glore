@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInviteLinkPreview } from '@/actions/organizations/previews'
-import { getCurrentUser } from '@/actions/user'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { JoinLinkCard } from '@/components/features/organization/invite/join-link-card'
 import { PublicShell } from '@/components/features/organization/invite/public-shell'
@@ -18,8 +17,8 @@ export const generateMetadata = () =>
   })
 
 const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['params'] }) => {
-  const { token } = await params
-  const [user, link] = await Promise.all([getAuthUser(), getInviteLinkPreview(token)])
+  const [{ token }, user] = await Promise.all([params, getAuthUser()])
+  const link = await getInviteLinkPreview(token, user?.id)
   const signedIn = Boolean(user)
 
   if (!link) return <InvitationStatus signedIn={signedIn} status="invalid" />
@@ -27,12 +26,7 @@ const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['par
     return <InvitationStatus organization={link.organization.name} signedIn={signedIn} status={link.state} />
   }
 
-  if (user) {
-    const { organizations } = await getCurrentUser()
-    if (organizations.some(({ id }) => id === link.organization.id)) {
-      return <InvitationStatus organization={link.organization.name} signedIn status="member" />
-    }
-  }
+  if (link.isMember) return <InvitationStatus organization={link.organization.name} signedIn status="member" />
 
   return (
     <JoinLinkCard

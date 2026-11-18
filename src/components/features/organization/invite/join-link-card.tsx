@@ -20,8 +20,8 @@ import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
 import { APP_ROOT, AUTH_ROOT, EMAIL_REGEX } from '@/lib/constants'
 
-import { StatusMedia } from './invitation-status'
 import { OrganizationBadge } from './organization-badge'
+import { StatusMedia } from './status-media'
 
 type Outcome = 'requested' | 'sent'
 

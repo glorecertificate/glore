@@ -4,8 +4,8 @@ import { and, eq, gt } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { hashProof, normalizeEmail, proofIdentifier } from '@/db/mutations/invitation'
-import { invitationState, inviteLinkState } from '@/db/queries/organization'
-import { organizationInvitations, organizationInviteLinks, users, verifications } from '@/db/schema'
+import { invitationState, parseInviteLinkPreview } from '@/db/queries/organization'
+import { memberships, organizationInvitations, organizationInviteLinks, users, verifications } from '@/db/schema'
 import { hashToken } from '@/lib/secret-token'
 import { fullName } from '@/lib/utils'
 
@@ -59,7 +59,7 @@ export const getInvitationPreview = async (token: string, proof?: string) => {
   }
 }
 
-export const getInviteLinkPreview = async (token: string) => {
+export const getInviteLinkPreview = async (token: string, userId?: string) => {
   const link = await db.query.organizationInviteLinks.findFirst({
     where: eq(organizationInviteLinks.tokenHash, hashToken(token)),
     with: {
@@ -69,16 +69,14 @@ export const getInviteLinkPreview = async (token: string) => {
       },
     },
   })
-  if (!link?.organization.approvedAt) return null
+  if (!link) return null
 
-  return {
-    organization: {
-      avatarUrl: link.organization.profile?.avatarUrl ?? null,
-      id: link.organization.id,
-      name: link.organization.name,
-    },
-    requiresApproval: link.requiresApproval,
-    role: link.role,
-    state: inviteLinkState(link),
-  }
+  const membership = userId
+    ? await db.query.memberships.findFirst({
+        columns: { id: true },
+        where: and(eq(memberships.userId, userId), eq(memberships.organizationId, link.organizationId)),
+      })
+    : null
+
+  return parseInviteLinkPreview(link, Boolean(membership))
 }

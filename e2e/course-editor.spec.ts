@@ -29,7 +29,7 @@ test.describe('course editor', () => {
     await title.fill('E2E course')
     await title.blur()
     await page.getByRole('button', { name: 'Save' }).click()
-    await expect(page.getByText('Course saved successfully')).toBeVisible()
+    await expect(page.getByText('Course saved')).toBeVisible()
 
     await page.getByRole('tab', { name: /Spanish/u }).click()
     const spanishTitle = page.locator('textarea').first()
@@ -37,7 +37,7 @@ test.describe('course editor', () => {
     await spanishTitle.fill('Curso E2E')
     await spanishTitle.blur()
     await page.getByRole('button', { name: 'Save' }).click()
-    await expect(page.getByText('Course saved successfully')).toBeVisible()
+    await expect(page.getByText('Course saved')).toBeVisible()
 
     await page.getByRole('switch', { name: 'Draft' }).click()
     await page.getByRole('button', { name: 'Save' }).click()

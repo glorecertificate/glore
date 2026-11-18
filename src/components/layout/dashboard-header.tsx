@@ -34,7 +34,7 @@ export const DashboardHeader = ({
         )}
         {breadcrumb && title && <h1 className="sr-only">{barTitle}</h1>}
       </div>
-      <HeaderLogo className={cn((breadcrumb || parent) && 'max-sm:hidden')} href={APP_ROOT}>
+      <HeaderLogo className={cn((breadcrumb || parent) && 'max-sm:hidden')} href={APP_ROOT} prefetch={false}>
         <Logo className="mr-1 w-18 transition-[width,height]" />
       </HeaderLogo>
     </Header>

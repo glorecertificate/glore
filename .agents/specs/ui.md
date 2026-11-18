@@ -156,6 +156,8 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - A composite field such as `InputGroup` draws the ring on the group and passes `ring={false}` to its control.
 - Inputs, textareas, selects, checkboxes, and radios use `border-border-strong` on `bg-field`. Outline buttons, badges, and toolbars use `border-border`.
 - `src/components/ui/control-size.test.ts` holds the scale.
+- A checkbox is a rounded square (`rounded-sm`) and a radio is a circle. `checked="indeterminate"` shows a minus.
+- An SVG gradient or pattern takes its id from `useId()`, so two copies on one page keep their fills.
 
 ## Elevation and motion
 

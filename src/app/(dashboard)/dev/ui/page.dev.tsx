@@ -1,4 +1,5 @@
 import { BadgeCatalog } from '@/components/features/dev/badge-catalog'
+import { BrandCatalog } from '@/components/features/dev/brand-catalog'
 import { ButtonCatalog } from '@/components/features/dev/button-catalog'
 import { DataCatalog } from '@/components/features/dev/data-catalog'
 import { FeedbackCatalog } from '@/components/features/dev/feedback-catalog'
@@ -12,6 +13,7 @@ export const metadata = { robots: { follow: false, index: false }, title: 'UI ki
 const UiCatalogPage = () => (
   <DashboardPage fallback={null} title="UI kit" width="wide">
     <div className="flex flex-col gap-10">
+      <BrandCatalog />
       <ButtonCatalog />
       <BadgeCatalog />
       <FieldCatalog />

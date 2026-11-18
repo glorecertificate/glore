@@ -24,12 +24,26 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 - "Looks the same" is a failed UI PR. Name the screens that changed and the screens that did not.
 - A lane may change the shared kit in `src/components/ui/` when the bar needs it. It keeps the kit consistent and documents the change here and in `/dev/ui`.
 
+## Direction B: brand-forward
+
+The owner chose this look on 2026-11-18. `DESIGN.md` holds the visual rules. Every value lives in `config/theme.json` (`system.palette`, a light and a dark hex per token), and `pnpm run theme` writes the tokens.
+
+- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a teal gradient active item (`bg-gradient-action`, `shadow-glow-nav`), a white `logo-chip`, and a green `sidebar-badge` count. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
+- Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1522`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
+- `DashboardHeader` renders `PageBand`: gradient `bg-band`, inline SVG globe, breadcrumb, `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). `Main` is pulled up 64px over it, so the first block of a page is a card, never loose text. `DashboardPage` takes `actions`, `description`, `title`, and `header` (for a band that needs data, such as `DashboardBand`).
+- `Button` `primary` and `brand` are the teal gradient with white text. `band` (green, navy text) and `band-secondary` (scrim) sit on the band. Press scales to `.98` in 80 ms.
+- `StatCard` takes `accent` (`teal`, `navy`, `green`, `amber`) and `icon`: a 4px gradient strip and a 32px gradient tile. `stat-accent-*` classes set the `--stat-*` variables for any element that needs them.
+- `Badge` is a pill. `success` is green with navy text, `info` is navy with white text, `muted` is the draft grey. `highlight` (`bg-highlight`) is the navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
+- `Chart` draws 3px lines with gradient areas and bars with a 4px radius, from `chart-teal` and `chart-green`.
+- `PageIntro` writes its description in `band-text`, because it sits on the band. Move a page's description and actions into `DashboardPage` instead.
+- Text on a gradient passes 4.5:1 on its darkest stop in each theme. `check:theme` enforces every pair, and the table lives in `PALETTE_PAIRS` in `scripts/theme/tokens.ts`.
+
 ## Release UI kit
 
 - Shared primitives live in `src/components/ui/`. They accept root props and localized labels.
 - `/dev/ui` (development and previews only) shows each primitive in each state, with the prop that sets the state as the row label. Add or update a specimen in `features/dev/` with each primitive change.
 - Feature components own domain data and permission checks.
-- `ArrowsMotif` uses vector paths extracted from the certificate template. It is decorative and hidden from assistive technology.
+- `ArrowsMotif` is decorative vector art from the certificate template, hidden from assistive technology.
 - `LevelDots` takes a level, a number of `steps`, and a localized level label. It renders only after issue or in the tutor workspace.
 - `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
 - `StatCard` composes `NumberTicker`. Formatting follows next-intl, and the ticker respects reduced motion.
@@ -70,7 +84,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 - `pnpm run check:theme` fails on a stale generated file or on a contrast pair below its minimum.
 - The generator (`scripts/theme/`) solves text, fill, and ring lightness in OKLCH against the targets in `system.contrast`.
 - Targets are 4.5:1 for text, 6:1 for `fg-2`, 5:1 for colored text, and 3:1 for non-text. Declare a pair in the generator before you use a new combination.
-- Surface roles: `surface-0` to `surface-3`, `surface-sunken` (sidebar and canvas), `surface-muted`, `surface-hover`, and `surface-selected`.
+- Surface roles: `surface-0` to `surface-3`, `surface-sunken` (canvas), `surface-muted`, `surface-hover`, and `surface-selected`.
 - Text and border roles: `fg-1` to `fg-3`, `fg-disabled`, `fg-title` (navy), `fg-on-fill`, `fg-on-bright`, `fg-on-danger`, `border-subtle`, `border`, and `border-strong` (3:1).
 - `action` (blue) marks actions only. It has `-hover`, `-subtle`, `-border`, and `-text`.
 - `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current-fill` (navy) marks the current stage, with `current-subtle`. Tailwind reserves `current` for `currentColor`.
@@ -94,7 +108,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 - The Tailwind numeric text scale is unchanged, because the vendored editor and the mobile textarea need `text-base` at 16px.
 - Body text is `text-sm` (14px).
-- Bricolage roles: `type-display` (36/40), `type-title` (28/34), `type-heading` (16/24), and `type-stage` (32/38, 44/48 from `lg`) for the one stage title of a page. Geist roles: `type-label` (13/20, 500) and `type-caption` (12/16).
+- Bricolage roles: `type-display` (36/40), `type-band` (28/34, 34/40 from `sm`, the band title), `type-stat` (34/38), `type-title` (28/34), `type-heading` (17/24), and `type-stage` (32/38, 44/48 from `lg`) for the one stage title of a page. Geist roles: `type-label` (13/20, 500), `type-caption` (12/16), and `type-overline` (11/16, uppercase).
 - Name a type role `type-*`, never `text-*`. `cn()` reads an unknown `text-*` class as a color and drops it next to another color.
 
 ### Brand roles and fonts
@@ -105,9 +119,9 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 - Never use raw Tailwind palette colors (`amber-500`) for state. Use `StatusBadge`, the `Badge` variants, or `bg-<status>-subtle text-<status>-text`.
 - Fonts are variables on `<html>`: Geist (`--font-geist-sans`) for UI text and Bricolage Grotesque (`font-display`).
 - `globals.css` applies `font-display` to `h1` to `h3` and every `[data-slot$='-title']`.
-- `HeaderBreadcrumb` renders the page `h1` unless `backHref` is set. Then the content owns the only `h1`.
+- `DashboardHeader` renders the page `h1` in the band. Content never adds a second `h1`.
 - `--ring` is `action` in light and `brand` in dark. The base outline is full strength in both themes.
-- `--radius` is `0.6rem` with `sm`, `md`, `lg`, and `xl` derivatives.
+- `--radius` is `0.625rem` with `sm`, `md`, `lg`, and `xl` derivatives.
 - `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
 - The mobile breakpoint is 768px, sourced from `config/theme.json`.
 - Email templates take their colors from `EMAIL_COLORS` and `EMAIL_COLORS_DARK`. Detail: `.agents/references/ui-components.md`, "Email colors".
@@ -128,10 +142,6 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 - `CopyButton` takes `iconOnly`: a ghost icon button (`icon-sm`) whose `label` is its accessible name and tooltip, and "Copied" after a copy.
 - `SHORTCUTS` also holds `submit` (Mod+Enter), `next` (j), and `previous` (k). `KbdShortcut` shows Enter as the return symbol.
 - `MultiSelectTrigger` is 32px (the `FilterBar` control size) and shrinks with its container.
-- `InlineInput` takes `size="title"` for the `type-title` role. Its placeholder uses the `placeholder:text-muted-foreground` input token.
-- `Markdown` is a server component with a static `react-markdown` import. Use it from server components, where static content renders on the server.
-- A client component uses `MarkdownLazy` (`markdown-lazy.tsx`), which loads `Markdown` with `next/dynamic` and no loading state, so `react-markdown` stays out of its route bundle. Call `preloadMarkdown()` when the client surface mounts, so the text appears with the content. Never import `Markdown` from a `'use client'` file.
-- `DialogContent` keeps its close button in a sticky corner anchor, so it stays put while a long dialog scrolls. `DialogTitle` reserves space for it. On open, focus goes to an existing autofocus target, else to the first visible field outside the footer, else to the dialog itself. It never scrolls, and never lands on the close button or a link.
 - `Badge` takes `count` (and `max`, default 99) for a counter: a pill with `tabular-nums` and a `min-w` equal to its height, capped as `99+`. Pass `count`, never `size-*` or `p-0`. Children render after the number, for a screen-reader label.
 - `Progress` clamps its value to 0..100, animates the fill with a transform, and takes `color` `action`, `brand`, `brand-secondary`, `brand-tertiary`, `success`, `warning`, or `default`.
 - A radio dot and its checked border use `action`. Tabs and segmented items darken their text on hover.
@@ -154,25 +164,16 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 ## Loading states
 
-- A loading state either reproduces its content exactly, or it is a `Spinner`. Never ship an approximate or generic `Skeleton`.
-- An exact skeleton has the layout, element count, heights, and widths of the content, so nothing moves when the content arrives.
-- Build the skeleton from the layout components and size tokens of the content, so the two cannot drift apart.
-- Use a `Spinner` when the shape depends on the data, for example an unknown row count or text of variable length.
-- The swap from the loading state to the content is a short fade, never a pop. With reduced motion it is instant.
-- Check each loading state in a browser on a throttled network. Nothing on the page may move or resize when the content arrives.
-- A feature with a fixed layout renders itself as its skeleton: give it a `loading` prop and placeholder data (`AdminOverviewSkeleton`, organization insights and certificates).
-- `StatCard` and `Chart` take `loading`. `SkeletonText` wraps placeholder text, so the skeleton has the line count and width of real text.
-- Labels, titles, and other static text stay real in a skeleton. Only data becomes `SkeletonText`.
-- A region whose size depends on data, such as a list or a table body, shows `LoadingFallback` inside the exact skeleton.
-- The header bar never waits for data. A layout or page fallback is `DashboardLoading` (the bar and a spinner), never a full-page spinner.
-- `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
-- A `Spinner` without `size` takes its size from the parent, as in a `Button`. Pass `size` when it stands alone.
-- Put `animate-reveal` on content that replaces a loading state the user saw. It fades in for 150 ms and is off with reduced motion.
-- A fade from opacity 0 delays LCP by its length, so content of a first render or a server stream paints at once. A component with a `loading` prop fades through `useReveal(loading)`.
-- React holds a streamed boundary up to 300 ms after the first frame. `InstantReveal` in the root layout keeps `$RT` unset, so each boundary paints in the frame after it arrives.
+- A loading state either reproduces its content exactly, or it is a `Spinner`. Never ship an approximate `Skeleton`.
+- Nothing moves when content arrives. The swap is a short fade, and instant with reduced motion.
+- The header band never waits for data. A layout fallback is `DashboardLoading`, never a full-page spinner.
+- Detail (exact skeletons, `loading` props, `InstantReveal`): `.agents/references/ui-components.md`, "Loading states".
+
+## Moved detail
+
+- `Markdown`, `MarkdownLazy`, `DialogContent`, and `InlineInput` rules: `.agents/references/ui-components.md`, "Controls detail".
 
 ## Design briefs
 
 - Impeccable surface briefs live in `.impeccable/surfaces/`, one per surface, and stay untracked.
 - The volunteer dashboard brief records the Journey rail direction chosen in #84.
-- Impeccable mocks, reviews, and question state stay ignored.

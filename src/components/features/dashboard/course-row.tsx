@@ -17,6 +17,7 @@ export const CourseRow = ({
   type: React.ComponentProps<typeof CourseIcon>['type']
 }>) => (
   <Link
+    prefetch
     className="group/row flex items-center gap-3 rounded-xl border bg-card p-4 shadow-2xs transition-colors outline-none hover:bg-accent/40 focus-visible:focus-ring"
     href={`/courses/${slug}` as Route}
   >

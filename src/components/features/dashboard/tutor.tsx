@@ -74,6 +74,7 @@ export const TutorDashboard = ({
             <AgeBadge days={oldest.days} tone={oldest.tone} />
             <Button asChild size="sm" variant="brand">
               <Link
+                prefetch
                 href={
                   (oldest.source === 'assigned'
                     ? `/certificates/${oldest.id}/review`
@@ -153,11 +154,15 @@ export const TutorDashboard = ({
           rowActions={item =>
             item.source === 'assigned' ? (
               <Button asChild icon="clipboard-check" size="sm" variant="brand">
-                <Link href={`/certificates/${item.id}/review`}>{t('tutor.review')}</Link>
+                <Link prefetch href={`/certificates/${item.id}/review`}>
+                  {t('tutor.review')}
+                </Link>
               </Button>
             ) : (
               <Button asChild icon="user-plus" size="sm" variant="outline">
-                <Link href="/certificates?tab=pool">{t('tutor.claim')}</Link>
+                <Link prefetch href="/certificates?tab=pool">
+                  {t('tutor.claim')}
+                </Link>
               </Button>
             )
           }

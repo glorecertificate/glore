@@ -36,7 +36,7 @@ export const JourneyPath = ({
       <ul className="-mx-2 flex flex-col">
         {compass && (
           <li>
-            <Link className={ROW} href="/courses">
+            <Link prefetch className={ROW} href="/courses">
               <span
                 aria-hidden
                 className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-action-subtle text-action-text"
@@ -49,7 +49,7 @@ export const JourneyPath = ({
         )}
         {items.map(course => (
           <li key={course.slug}>
-            <Link className={ROW} href={`/courses/${course.slug}` as Route}>
+            <Link prefetch className={ROW} href={`/courses/${course.slug}` as Route}>
               <CourseIcon className="size-7" icon={course.icon} type={course.type} />
               <span className="min-w-0 flex-1 truncate text-sm text-fg-1">{course.title}</span>
               <span className="type-caption text-fg-2 tabular-nums">

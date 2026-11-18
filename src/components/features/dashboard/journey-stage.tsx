@@ -24,6 +24,7 @@ const CodeBlock = ({ code, href }: { code: string; href?: Route }) => {
       <span className="type-label text-fg-2">{t('code.label')}</span>
       {href ? (
         <Link
+          prefetch
           className="w-fit rounded-sm font-mono text-lg tracking-wide text-action-text underline-offset-4 hover:underline focus-visible:focus-ring"
           href={href}
         >
@@ -153,7 +154,7 @@ export const JourneyStage = ({
         <div className="flex flex-wrap items-center gap-3">
           {action && (
             <Button asChild className="max-w-full" variant="primary">
-              <Link href={action.href}>
+              <Link prefetch href={action.href}>
                 <span className="truncate">{action.label}</span>
               </Link>
             </Button>
@@ -186,12 +187,16 @@ export const JourneyStage = ({
           )}
           {showRequest && certificate && (
             <Button asChild variant="outline">
-              <Link href={requestHref}>{t('actions.viewRequest')}</Link>
+              <Link prefetch href={requestHref}>
+                {t('actions.viewRequest')}
+              </Link>
             </Button>
           )}
           {phase === 'revoked' && certificate && (
             <Button asChild variant="outline">
-              <Link href={requestHref}>{t('actions.viewCertificate')}</Link>
+              <Link prefetch href={requestHref}>
+                {t('actions.viewCertificate')}
+              </Link>
             </Button>
           )}
         </div>

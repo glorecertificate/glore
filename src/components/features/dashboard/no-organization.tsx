@@ -29,7 +29,9 @@ export const NoOrganization = ({ firstName }: { firstName: string }) => {
         </EmptyHeader>
         <EmptyContent>
           <Button asChild variant="outline">
-            <Link href="/help">{t('none.help')}</Link>
+            <Link prefetch href="/help">
+              {t('none.help')}
+            </Link>
           </Button>
         </EmptyContent>
       </Empty>

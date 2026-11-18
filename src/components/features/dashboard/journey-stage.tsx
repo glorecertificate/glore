@@ -96,17 +96,17 @@ export const JourneyStage = ({
   return (
     <section
       aria-labelledby="journey-stage-title"
-      className={cn('flex min-w-0 flex-col gap-6 rounded-xl bg-card p-5 shadow-card sm:p-6', className)}
+      className={cn('flex min-w-0 flex-col gap-6', className)}
       data-phase={phase}
       data-slot="journey-stage"
     >
       <div className="flex flex-col gap-2">
-        <h2 className="type-title text-fg-title" id="journey-stage-title">
+        <h1 className="type-stage text-fg-title" id="journey-stage-title">
           {t(`phases.${phase}.title`)}
-        </h2>
+        </h1>
         <p className="max-w-prose text-base text-fg-2">{lead()}</p>
       </div>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 rounded-xl bg-surface-0 p-5 shadow-md sm:p-6 dark:bg-surface-1">
         {SEAL_PHASES.has(phase) && (
           <div className="flex flex-col gap-4">
             <p className="type-label text-fg-2">

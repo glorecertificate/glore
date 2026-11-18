@@ -6,7 +6,13 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { Link } from '@/components/ui/link'
-import { PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderHeading } from '@/components/ui/page-header'
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderDescription,
+  PageHeaderHeading,
+  PageHeaderTitle,
+} from '@/components/ui/page-header'
 import { useTheme } from '@/hooks/use-theme'
 import { hexToRgb } from '@/lib/utils'
 import theme from '~/config/theme.json'
@@ -31,7 +37,7 @@ export const DashboardHero = ({
   }
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border-subtle bg-card bg-linear-to-br from-brand/12 via-card to-brand-secondary/10 p-6 shadow-card sm:p-7">
+    <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/10 via-card to-brand-secondary/8 p-6 shadow-2xs sm:p-7">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-24 -right-20 opacity-25 select-none sm:-top-28 sm:-right-24 sm:opacity-30"
@@ -40,7 +46,7 @@ export const DashboardHero = ({
       </div>
       <PageHeader className="relative z-10 gap-5 sm:items-center">
         <PageHeaderHeading>
-          <h2 className="type-title text-balance text-foreground">{title}</h2>
+          <PageHeaderTitle>{title}</PageHeaderTitle>
           <PageHeaderDescription>{subtitle}</PageHeaderDescription>
           {organization && (
             <p className="flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground">

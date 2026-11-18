@@ -57,7 +57,7 @@ export const JourneyRail = ({
   return (
     <section
       aria-labelledby="journey-rail-title"
-      className={cn('flex flex-col gap-6 rounded-xl bg-card p-5 shadow-card', className)}
+      className={cn('flex flex-col gap-6 rounded-xl bg-surface-sunken p-5', className)}
       data-slot="journey-rail"
     >
       <div className="flex flex-col gap-0.5">

@@ -13,12 +13,14 @@ export const DashboardHeader = ({
   actions,
   breadcrumb,
   description,
+  heading,
   parent,
   title,
 }: {
   actions?: React.ReactNode
   breadcrumb?: React.ReactNode
   description?: React.ReactNode
+  heading?: React.ReactNode
   parent?: NavigationId
   title?: React.ReactNode
 }) => (
@@ -43,15 +45,13 @@ export const DashboardHeader = ({
       </HeaderLogo>
     </div>
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
-      <div className="flex min-w-0 flex-col gap-2">
-        {title && (
-          <h1 className="type-band text-band-foreground">
-            <Suspense>{title}</Suspense>
-          </h1>
+      <div className="flex min-w-0 grow flex-col gap-2">
+        {(heading ?? title) && (
+          <h1 className="type-band text-band-foreground">{heading ?? <Suspense>{title}</Suspense>}</h1>
         )}
         {description && <p className="max-w-prose text-base text-pretty text-band-text">{description}</p>}
       </div>
-      {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
+      {actions && <div className="flex max-w-full shrink-0 flex-wrap items-center gap-2">{actions}</div>}
     </div>
     {breadcrumb && <div className="min-w-0 band-tabs">{breadcrumb}</div>}
   </PageBand>

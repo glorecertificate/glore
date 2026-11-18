@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { usePoll } from '@/hooks/use-poll'
 import { cn } from '@/lib/utils'
 
-const readUnread = async () => {
+export const readUnread = async () => {
   const { data, error } = await countUnreadNotifications()
   if (error) throw new Error(error.message)
   return data

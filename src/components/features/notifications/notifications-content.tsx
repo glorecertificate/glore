@@ -1,12 +1,13 @@
 'use client'
 
-import { startTransition, useState } from 'react'
+import { startTransition, useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { useQueryState } from 'nuqs'
 
-import { countUnreadNotifications, listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
-import { announceNotificationsChanged } from '@/components/features/notifications/events'
+import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
+import { NOTIFICATIONS_CHANGED, announceNotificationsChanged } from '@/components/features/notifications/events'
+import { readUnread } from '@/components/features/notifications/notification-bell'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import {
   NOTIFICATION_FILTERS,
@@ -40,12 +41,6 @@ const ALL_CATEGORIES = 'all'
 
 const CATEGORY_OPTIONS = [ALL_CATEGORIES, ...NOTIFICATION_CATEGORIES] as const
 
-const readUnread = async () => {
-  const { data, error } = await countUnreadNotifications()
-  if (error) throw new Error(error.message)
-  return data
-}
-
 export const NotificationsContent = () => {
   const t = useTranslations('Notifications')
   const [filter, setFilter] = useQueryState('filter', { ...notificationFilterParser, startTransition })
@@ -54,22 +49,44 @@ export const NotificationsContent = () => {
   const [failed, setFailed] = useState(false)
   const [marking, setMarking] = useState(false)
 
+  const latest = useRef(0)
+  const [unread, setUnread] = useState(0)
+
+  const loadUnread = async () => {
+    try {
+      setUnread((await readUnread()) ?? 0)
+    } catch {
+      setUnread(0)
+    }
+  }
+
   const read = async () => {
+    latest.current += 1
+    const request = latest.current
     try {
       const { data, error } = await listNotifications({ category: category ?? undefined, filter, limit })
-      setFailed(Boolean(error))
       if (error) throw new Error(error.message)
+      if (request === latest.current) setFailed(false)
+      void loadUnread()
       return data
     } catch (error) {
-      setFailed(true)
+      if (request === latest.current) setFailed(true)
       throw error
     }
   }
 
   const { data, refresh } = usePoll(read, { interval: 60_000, key: `${filter}:${category}:${limit}` })
   const filtering = filter !== 'all' || category !== null
-  const { data: unread, refresh: refreshUnread } = usePoll(readUnread, { interval: 60_000 })
-  const hasUnread = (unread ?? 0) > 0
+  const hasUnread = unread > 0
+
+  const onChanged = useEffectEvent(() => {
+    void loadUnread()
+  })
+
+  useEffect(() => {
+    window.addEventListener(NOTIFICATIONS_CHANGED, onChanged)
+    return () => window.removeEventListener(NOTIFICATIONS_CHANGED, onChanged)
+  }, [])
 
   const markAll = async () => {
     setMarking(true)
@@ -81,7 +98,8 @@ export const NotificationsContent = () => {
       }
       announceNotificationsChanged()
       refresh()
-      refreshUnread()
+    } catch {
+      toast.error(t('markAllFailed'))
     } finally {
       setMarking(false)
     }
@@ -192,14 +210,7 @@ export const NotificationsContent = () => {
 
       {data && !failed && data.items.length > 0 && (
         <>
-          <NotificationList
-            className="animate-reveal"
-            notifications={data.items}
-            onRead={() => {
-              refresh()
-              refreshUnread()
-            }}
-          />
+          <NotificationList className="animate-reveal" notifications={data.items} onRead={refresh} />
           {data.hasMore && limit < MAX_LIMIT && (
             <div className="flex justify-center">
               <Button onClick={() => setLimit(limit + PAGE_SIZE)} variant="outline">

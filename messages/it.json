@@ -1179,7 +1179,7 @@
     },
     "recommended": {
       "title": "Consigliati per te",
-      "emptyTitle": "Ancora nessun consiglio",
+      "emptyTitle": "Nessun consiglio per ora",
       "emptyDescription": "Hai iniziato tutti i corsi disponibili. Quelli nuovi compariranno qui.",
       "goal": "In linea con i tuoi obiettivi",
       "type": {
@@ -3834,7 +3834,7 @@
     "emptyTitle": "Hai letto tutto",
     "emptyDescription": "Qui troverai gli aggiornamenti su certificati, corsi e organizzazioni.",
     "emptyUnreadTitle": "Nessuna notifica non letta",
-    "emptyUnreadDescription": "Tutto quello che c'è in questa vista è già stato letto.",
+    "emptyUnreadDescription": "Hai già letto tutto qui.",
     "description": "Aggiornamenti su certificati, corsi e organizzazioni.",
     "markAllFailed": "Impossibile segnare le notifiche come lette. Riprova.",
     "errorTitle": "Impossibile caricare le notifiche",

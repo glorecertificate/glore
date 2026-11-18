@@ -102,7 +102,7 @@ export const OrganizationSwitcher = () => {
                   </span>
                 )}
               </div>
-              {!open && !isMobile && <span className="sr-only">{organization?.name ?? t('noOrganization')}</span>}
+              {!open && <span className="sr-only">{organization?.name ?? t('noOrganization')}</span>}
               <div className={cn('grid flex-1 text-left leading-tight', !open && 'hidden')}>
                 <span className="truncate font-semibold">{organization?.name ?? t('noOrganization')}</span>
                 {organization && (

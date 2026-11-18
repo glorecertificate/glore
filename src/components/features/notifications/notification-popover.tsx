@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -10,6 +10,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/toast'
 import { usePoll } from '@/hooks/use-poll'
 
 const POPOVER_LIMIT = 10
@@ -24,14 +25,18 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
   const t = useTranslations('Notifications')
   const [failed, setFailed] = useState(false)
 
+  const latest = useRef(0)
+
   const readLatest = async () => {
+    latest.current += 1
+    const request = latest.current
     try {
       const { data: page, error } = await listNotifications({ limit: POPOVER_LIMIT })
-      setFailed(Boolean(error))
       if (error) throw new Error(error.message)
+      if (request === latest.current) setFailed(false)
       return page
     } catch (error) {
-      setFailed(true)
+      if (request === latest.current) setFailed(true)
       throw error
     }
   }
@@ -44,8 +49,16 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
   }
 
   const markAll = async () => {
-    await markAllNotificationsRead()
-    reload()
+    try {
+      const { error } = await markAllNotificationsRead()
+      if (error) {
+        toast.error(t('markAllFailed'))
+        return
+      }
+      reload()
+    } catch {
+      toast.error(t('markAllFailed'))
+    }
   }
 
   return (
@@ -58,7 +71,7 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {data === null && !failed && <LoadingFallback className="py-10" />}
-        {data === null && failed && (
+        {failed && (
           <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
             <LucideIcon className="size-6 text-muted-foreground" name="triangle-alert" />
             <p className="type-label">{t('errorTitle')}</p>
@@ -67,14 +80,14 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
             </Button>
           </div>
         )}
-        {data && data.items.length === 0 && (
+        {data && !failed && data.items.length === 0 && (
           <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
             <LucideIcon className="size-6 text-muted-foreground" name="bell-off" />
             <p className="type-label">{t('emptyTitle')}</p>
             <p className="text-[13px] text-muted-foreground">{t('emptyDescription')}</p>
           </div>
         )}
-        {data && data.items.length > 0 && (
+        {data && !failed && data.items.length > 0 && (
           <NotificationList
             className="animate-reveal"
             notifications={data.items}

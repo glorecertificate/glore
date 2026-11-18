@@ -278,9 +278,9 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
 
-  const { isMobile, open, openMobile, setOpenMobile } = useSidebar()
+  const { open, openMobile, setOpenMobile } = useSidebar()
   const { user } = useSession()
-  const collapsed = !open && !isMobile
+  const collapsed = !open
 
   const [loggingOut, setLoggingOut] = useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)

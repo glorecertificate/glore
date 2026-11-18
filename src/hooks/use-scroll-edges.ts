@@ -36,16 +36,14 @@ export const useScrollEdges = <T extends HTMLElement>() => {
       setEdges(last.current)
     }
 
-    if (attachment.current?.node === node) {
-      attachment.current.released = false
-    } else {
+    const attach = (): Attachment => {
       attachment.current?.teardown()
       node.addEventListener('scroll', update, { passive: true })
       const observer = new ResizeObserver(update)
       observer.observe(node)
       for (const child of node.children) observer.observe(child)
       update()
-      attachment.current = {
+      return {
         node,
         released: false,
         teardown: () => {
@@ -55,7 +53,10 @@ export const useScrollEdges = <T extends HTMLElement>() => {
       }
     }
 
-    const current = attachment.current
+    const reused = attachment.current?.node === node ? attachment.current : null
+    if (reused) reused.released = false
+    const current = reused ?? attach()
+    attachment.current = current
 
     return () => {
       current.released = true

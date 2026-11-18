@@ -5,7 +5,8 @@ import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsStringEnum } from 'nuqs/server'
 
 import { getSkillProgress } from '@/actions/courses/data'
-import { getLearningContext, loadCourseOverview } from '@/actions/courses/learner'
+import { loadCourseOverview } from '@/actions/courses/learner'
+import { getViewerContext } from '@/actions/viewer'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { CourseEditorView } from '@/components/features/courses/course-editor/view'
 import { CourseOverviewView } from '@/components/features/courses/course-overview'
@@ -54,7 +55,7 @@ const CourseOverviewContent = async ({
 }
 
 const CoursePageContent = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
-  const [{ slug }, { user }] = await Promise.all([params, getLearningContext()])
+  const [{ slug }, { user }] = await Promise.all([params, getViewerContext()])
   if (user.canEdit) return <CourseEditorView basePath={`/courses/${slug}`} searchParams={searchParams} slug={slug} />
 
   return (

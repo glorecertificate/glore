@@ -2,14 +2,22 @@
 
 import 'server-only'
 
-import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
-import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm'
+import { and, asc, eq, inArray, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { certificateOwnerWith, certificatePublicWith, certificateWithUsers } from '@/actions/certificates/helpers'
 import { holderAssessments } from '@/actions/certificates/holder-levels'
+import {
+  fetchOrganizationCertificates,
+  fetchTutorCertificates,
+  fetchUnassignedOrgCertificates,
+  fetchUserCertificates,
+  queryOrganizationCertificates,
+  queryTutorCertificates,
+  queryUnassignedOrgCertificates,
+} from '@/actions/certificates/lists'
 import { findLegacyCertificateCode, isLookupLimited } from '@/actions/certificates/public'
 import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { listCourses } from '@/actions/courses/queries'
@@ -19,26 +27,9 @@ import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
 import { type SkillLevel, plainDescription, plainDescriptions } from '@/db/queries/skill-level-description'
 import { activityEvents, certificateReviews, certificates, userCourses, users } from '@/db/schema'
-import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import { type IntlRecord } from '@/lib/i18n'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 import appConfig from '~/config/app.json'
-
-const fetchUserCertificates = cache(async (userId: string) => {
-  'use cache'
-  cacheTag(certificatesUserTag(userId))
-  cacheLife('max')
-
-  return await safeQuery(async () => {
-    const result = await db.query.certificates.findMany({
-      where: eq(certificates.userId, userId),
-      with: certificateOwnerWith,
-      orderBy: (certs, { desc }) => [desc(certs.createdAt)],
-      limit: 500,
-    })
-    return result.map(parseCertificate)
-  })
-})
 
 export const listUserCertificates = async ({ cache: useCache = true }: { cache?: boolean } = {}): Promise<{
   data: Certificate[] | null
@@ -57,30 +48,6 @@ export const listUserCertificates = async ({ cache: useCache = true }: { cache?:
   }
   return await fetchUserCertificates(authUser.id)
 }
-
-const queryTutorCertificates = async (reviewerId: string, organizationId: number) => {
-  const result = await db.query.certificates.findMany({
-    where: and(
-      eq(certificates.reviewerId, reviewerId),
-      eq(certificates.organizationId, organizationId),
-      ne(certificates.userId, reviewerId),
-      isNull(certificates.holderDeletedAt),
-      ne(certificates.status, 'draft')
-    ),
-    with: certificateWithUsers,
-    orderBy: (certs, { desc }) => [desc(certs.updatedAt)],
-    limit: 500,
-  })
-  return result.map(parseCertificate)
-}
-
-const fetchTutorCertificates = cache(async (reviewerId: string, organizationId: number) => {
-  'use cache'
-  cacheTag(certificatesTutorTag(reviewerId))
-  cacheLife('max')
-
-  return await safeQuery(() => queryTutorCertificates(reviewerId, organizationId))
-})
 
 export const listTutorCertificates = async ({ cache: useCache = true }: { cache?: boolean } = {}): Promise<{
   data: Certificate[] | null
@@ -281,28 +248,6 @@ export const getCertificateEligibility = cache(
   }
 )
 
-const queryUnassignedOrgCertificates = async (orgId: number) => {
-  const result = await db.query.certificates.findMany({
-    where: and(
-      eq(certificates.organizationId, orgId),
-      isNull(certificates.reviewerId),
-      eq(certificates.status, 'submitted')
-    ),
-    with: certificateWithUsers,
-    orderBy: (c, { asc: byAsc }) => [byAsc(c.createdAt)],
-    limit: 500,
-  })
-  return result.map(parseCertificate)
-}
-
-const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
-  'use cache'
-  cacheTag(certificatesOrgTag(orgId))
-  cacheLife('max')
-
-  return await safeQuery(() => queryUnassignedOrgCertificates(orgId))
-})
-
 export const listUnassignedOrgCertificates = async ({ cache: useCache = true }: { cache?: boolean } = {}): Promise<{
   data: Certificate[] | null
   error: unknown
@@ -318,24 +263,6 @@ export const listUnassignedOrgCertificates = async ({ cache: useCache = true }: 
     : { data: await queryUnassignedOrgCertificates(orgId), error: null }
   return { data: data?.filter(({ userId }) => userId !== user.id) ?? null, error }
 }
-
-const queryOrganizationCertificates = async (organizationId: number) => {
-  const result = await db.query.certificates.findMany({
-    where: and(eq(certificates.organizationId, organizationId), ne(certificates.status, 'draft')),
-    with: certificateWithUsers,
-    orderBy: (c, { desc: byDesc }) => [byDesc(c.updatedAt)],
-    limit: 500,
-  })
-  return result.map(parseCertificate)
-}
-
-const fetchOrganizationCertificates = cache(async (organizationId: number) => {
-  'use cache'
-  cacheTag(certificatesOrgTag(organizationId))
-  cacheLife('max')
-
-  return await safeQuery(() => queryOrganizationCertificates(organizationId))
-})
 
 export const listOrganizationCertificates = async (
   organizationId: number,

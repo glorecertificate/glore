@@ -95,7 +95,7 @@ const deliver = async <K extends EventType>(event: AppEvent<K>) => {
       .where(inArray(notifications.id, emailedIds))
   }
 
-  for (const userId of plan.inAppIds) revalidateTag(notificationsUserTag(userId), 'max')
+  for (const userId of plan.inAppIds) revalidateTag(notificationsUserTag(userId), { expire: 0 })
 
   return { emailed: sent.length, inApp: rows.length }
 }

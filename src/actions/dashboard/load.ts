@@ -3,37 +3,40 @@ import 'server-only'
 import { type Locale } from 'next-intl'
 import { getLocale } from 'next-intl/server'
 
-import { getPendingCounts } from '@/actions/admin/pending'
+import { loadPendingCounts } from '@/actions/admin/pending-core'
 import { type DashboardBase, type DashboardData, resolveView } from '@/actions/dashboard/core'
 import { loadEditorSummary } from '@/actions/dashboard/editor'
 import { loadManagerSummary } from '@/actions/dashboard/manager'
 import { loadLearnerSummary, loadVolunteerSummary } from '@/actions/dashboard/member'
+import { readClock } from '@/actions/dashboard/now'
 import { loadTutorSummary } from '@/actions/dashboard/tutor'
-import { listNotifications } from '@/actions/notifications/inbox'
-import { getActiveOrgId, getCurrentUser } from '@/actions/user'
+import { fetchNotificationPreview } from '@/actions/notifications/preview'
+import { getViewer, getViewerOrgId } from '@/actions/viewer'
 
 export const loadDashboard = async (): Promise<DashboardData> => {
-  const [user, organizationId, locale] = await Promise.all([getCurrentUser(), getActiveOrgId(), getLocale()])
+  const [user, organizationId, locale] = await Promise.all([getViewer(), getViewerOrgId(), getLocale()])
   const organization = user.organizations.find(({ id }) => id === organizationId) ?? null
   const view = resolveView({ canEdit: user.canEdit, role: organization?.role ?? null })
   const base: DashboardBase = { firstName: user.firstName, organization: organization?.name ?? null }
-  const now = Date.now()
 
   if (view === 'editor') {
     const [summary, pending] = await Promise.all([
       loadEditorSummary(locale as Locale),
-      user.isAdmin ? getPendingCounts() : null,
+      user.isAdmin ? loadPendingCounts() : null,
     ])
     return { ...base, editor: { ...summary, pending }, view }
   }
 
   if (view === 'manager') {
-    const manager = await loadManagerSummary(now)
+    const manager = await loadManagerSummary(await readClock())
     return manager ? { ...base, manager, view } : { ...base, view: 'none' }
   }
 
   if (view === 'tutor') {
-    const [tutor, notifications] = await Promise.all([loadTutorSummary(now), listNotifications({ limit: 5 })])
+    const [tutor, notifications] = await Promise.all([
+      loadTutorSummary(await readClock()),
+      fetchNotificationPreview(user.id, 5),
+    ])
     return { ...base, notifications: notifications.data?.items ?? [], tutor, view }
   }
 

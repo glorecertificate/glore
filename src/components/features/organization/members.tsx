@@ -210,7 +210,7 @@ export const OrganizationMembers = ({
           emptyTitle={members.length === 0 ? t('noMembers') : t('noMembersFiltered')}
           filters={
             <FilterBar active={filtersActive} onClear={clearFilters}>
-              <div className="w-full sm:w-64 [&>div]:w-full">
+              <div className="grid w-full sm:w-64">
                 <SearchInput
                   aria-label={t('searchMembers')}
                   className="w-full"

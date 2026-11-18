@@ -59,7 +59,7 @@ export const ApplicationForm = () => {
   const [loading, setLoading] = useState(false)
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
   const headingRef = useRef<HTMLDivElement>(null)
-  const mounted = useRef(false)
+  const previousStep = useRef(0)
 
   const resolver: Resolver<ApplicationInput> = async (values, context, options) => {
     const result = await (zodResolver(applicationSchema) as unknown as Resolver<ApplicationInput>)(
@@ -86,10 +86,8 @@ export const ApplicationForm = () => {
   const isLast = stepIndex === APPLICATION_STEPS.length - 1
 
   useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true
-      return
-    }
+    if (previousStep.current === stepIndex) return
+    previousStep.current = stepIndex
     headingRef.current?.focus()
   }, [stepIndex])
 

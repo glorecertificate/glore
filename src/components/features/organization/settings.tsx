@@ -173,6 +173,7 @@ export const OrganizationSettings = ({
   return (
     <div className="flex flex-col gap-8">
       {!platform && <TabHeader description={t('settingsPageDescription')} title={t('settings')} />}
+      {platform && <h2 className="sr-only">{t('settings')}</h2>}
       <Form {...form}>
         <form className="flex flex-col gap-8" onSubmit={form.handleSubmit(handleSubmit)}>
           <SettingsSection description={t('brandingDescription')} title={t('branding')}>
@@ -418,7 +419,7 @@ export const OrganizationSettings = ({
               </Button>
             )}
             <Button
-              disabled={disabled || !form.formState.isDirty || form.formState.isSubmitting}
+              disabled={disabled || form.formState.isSubmitting}
               loading={form.formState.isSubmitting}
               loadingText={t('saving')}
               size="sm"

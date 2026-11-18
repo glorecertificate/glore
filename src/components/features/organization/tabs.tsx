@@ -64,9 +64,13 @@ export const OrganizationTabsList = ({
   const listRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    listRef.current
-      ?.querySelector<HTMLElement>('[role="tab"][data-state="active"]')
-      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    const list = listRef.current
+    const active = list?.querySelector<HTMLElement>('[role="tab"][data-state="active"]')
+    if (!(list && active)) return
+    const start = active.offsetLeft
+    const end = start + active.offsetWidth
+    if (start >= list.scrollLeft && end <= list.scrollLeft + list.clientWidth) return
+    list.scrollLeft = start - (list.clientWidth - active.offsetWidth) / 2
   }, [tab])
 
   return (

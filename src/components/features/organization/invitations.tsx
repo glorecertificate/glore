@@ -206,7 +206,6 @@ export const OrganizationInvitations = ({
                     />
                   )}
                   <Button
-                    disabled={activeId === invitation.id}
                     loading={activeId === invitation.id}
                     onClick={() => handleResend(invitation)}
                     size="sm"

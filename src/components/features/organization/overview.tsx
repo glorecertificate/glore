@@ -104,7 +104,7 @@ export const OrganizationOverview = ({
         />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.35fr_0.95fr]">
+      <div className="grid items-start gap-4 xl:grid-cols-[1.35fr_0.95fr]">
         <Card>
           <CardHeader>
             <CardTitle className="type-heading">{t('contactDetails')}</CardTitle>

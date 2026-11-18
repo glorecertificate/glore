@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 interface PollOptions {
   enabled?: boolean
@@ -11,11 +11,14 @@ interface PollOptions {
 export const usePoll = <T>(read: () => Promise<T>, { enabled = true, interval, key }: PollOptions) => {
   const [data, setData] = useState<T | null>(null)
   const [version, setVersion] = useState(0)
+  const latest = useRef(0)
 
   const load = useEffectEvent(async (isActive: () => boolean) => {
+    latest.current += 1
+    const request = latest.current
     try {
       const next = await read()
-      if (isActive()) setData(next)
+      if (isActive() && request === latest.current) setData(next)
     } catch (error) {
       console.error('Polling failed', error)
     }

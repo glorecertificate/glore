@@ -59,7 +59,7 @@ export const NotificationsContent = () => {
     try {
       const { data, error } = await listNotifications({ category: category ?? undefined, filter, limit })
       if (error) throw new Error(error.message)
-      if (request !== latest.current) return await new Promise<never>(() => {})
+      if (request !== latest.current) return data
       setFailed(false)
       setRetrying(false)
       return data

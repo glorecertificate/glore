@@ -90,8 +90,15 @@ export const TutorCertificatesContent = ({
   const isFiltered = Boolean(searchValue.trim() || status || age)
 
   const filters = (
-    <FilterBar active={isFiltered} onClear={clearFilters}>
-      <SearchInput aria-label={t('search')} hotkey={SHORTCUTS.filter.key} placeholder={t('search')} size="sm" />
+    <FilterBar
+      active={isFiltered}
+      onClear={clearFilters}
+      count={Number(Boolean(status)) + Number(Boolean(age))}
+      size="sm"
+      search={
+        <SearchInput aria-label={t('search')} hotkey={SHORTCUTS.filter.key} placeholder={t('search')} size="sm" />
+      }
+    >
       {statusOptions.length > 0 && (
         <Select onValueChange={value => setStatus(value === ALL ? null : value)} value={status ?? ALL}>
           <SelectTrigger aria-label={t('status')} className="w-44" size="sm">

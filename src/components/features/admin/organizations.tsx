@@ -252,16 +252,23 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
                 <TabsTrigger value="rejected">{t('filter_rejected')}</TabsTrigger>
               </TabsList>
             </Tabs>
-            <FilterBar active={hasFilters} onClear={resetFilters}>
-              <SearchInput
-                aria-label={t('searchPlaceholder')}
-                className="w-full sm:w-56"
-                hotkey={SHORTCUTS.filter.key}
-                onValueChange={setSearch}
-                placeholder={t('searchPlaceholder')}
-                size="sm"
-                value={search}
-              />
+            <FilterBar
+              active={hasFilters}
+              onClear={resetFilters}
+              count={Number(country !== 'all')}
+              size="sm"
+              search={
+                <SearchInput
+                  aria-label={t('searchPlaceholder')}
+                  className="w-full sm:w-56"
+                  hotkey={SHORTCUTS.filter.key}
+                  onValueChange={setSearch}
+                  placeholder={t('searchPlaceholder')}
+                  size="sm"
+                  value={search}
+                />
+              }
+            >
               {countryOptions.length > 0 && (
                 <Select onValueChange={setCountry} value={country}>
                   <SelectTrigger aria-label={t('filterCountry')} className="w-auto gap-1.5" size="sm">

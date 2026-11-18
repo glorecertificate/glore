@@ -78,7 +78,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
       )}
 
       {hasCertificates && (
-        <FilterBar active={Boolean(status)} onClear={() => setStatus(null)}>
+        <FilterBar active={Boolean(status)} onClear={() => setStatus(null)} count={Number(Boolean(status))}>
           <Select
             onValueChange={value => setStatus(value === 'all' ? null : (value as CertListStatus))}
             value={status ?? 'all'}

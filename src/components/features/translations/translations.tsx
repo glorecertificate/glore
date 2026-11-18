@@ -80,15 +80,22 @@ export const Translations = ({
 
   return (
     <Card className="min-w-0 gap-4 p-4">
-      <FilterBar active={filtersActive} onClear={handleClear}>
-        <SearchInput
-          aria-label={t('searchPlaceholder')}
-          className="w-full sm:w-80"
-          size="sm"
-          onValueChange={handleSearch}
-          placeholder={t('searchPlaceholder')}
-          value={search}
-        />
+      <FilterBar
+        active={filtersActive}
+        onClear={handleClear}
+        count={Number(Boolean(params.filter)) + Number(Boolean(params.namespace))}
+        size="sm"
+        search={
+          <SearchInput
+            aria-label={t('searchPlaceholder')}
+            className="w-full sm:w-80"
+            size="sm"
+            onValueChange={handleSearch}
+            placeholder={t('searchPlaceholder')}
+            value={search}
+          />
+        }
+      >
         <Select
           onValueChange={value => setParams({ filter: value === ALL ? null : (value as TranslationState) })}
           value={filter}

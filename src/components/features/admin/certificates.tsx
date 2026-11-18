@@ -153,15 +153,22 @@ export const AdminCertificates = ({
       emptyDescription={filtersActive ? t('noResultsDescription') : t('noCertificatesDescription')}
       emptyTitle={filtersActive ? t('noResults') : t('noCertificates')}
       filters={
-        <FilterBar active={filtersActive} onClear={handleClear}>
-          <SearchInput
-            aria-label={t('searchPlaceholder')}
-            className="w-full sm:w-80"
-            size="sm"
-            onValueChange={handleSearch}
-            placeholder={t('searchPlaceholder')}
-            value={search}
-          />
+        <FilterBar
+          active={filtersActive}
+          onClear={handleClear}
+          count={Number(Boolean(params.status))}
+          size="sm"
+          search={
+            <SearchInput
+              aria-label={t('searchPlaceholder')}
+              className="w-full sm:w-80"
+              size="sm"
+              onValueChange={handleSearch}
+              placeholder={t('searchPlaceholder')}
+              value={search}
+            />
+          }
+        >
           <Select
             onValueChange={value =>
               setParams({ page: 1, status: value === ALL ? null : (value as AdminCertificateStatus) })

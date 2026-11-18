@@ -12,23 +12,23 @@ GloRe looks like a confident, friendly product built around its brand: a navy sh
 
 ## Palette
 
-Light is direction B. Dark is direction E, "light blue" (owner decision, 2026-11-18).
+Light is direction B. Dark is direction E (light blue base) with B's gradients and green touches kept (owner decision, 2026-11-18).
 
 | Role            | Light                           | Dark                               |
 | --------------- | ------------------------------- | ---------------------------------- |
 | Canvas          | `#e9f1f6`                       | `#0b1826`                          |
 | Card            | `#ffffff`                       | `#12263a`                          |
 | Sidebar         | `#16304f`                       | `#0f2234`                          |
-| Active nav item | gradient `#107ea4` to `#0b6f92` | solid `#3bb6dc`, text `#04202f`    |
+| Active nav item | gradient `#107ea4` to `#0b6f92` | same gradient, white text, glow    |
 | Band gradient   | `#16304f`, `#1a5a82`, `#1f9ac4` | `#0f3550`, `#166c92`, `#2196bf`    |
-| Primary button  | `#107ea4` to `#0b6f92`, white   | `#5cc4e4`, text `#04202f`          |
-| Band action     | `#a2c439`, navy text            | `#8fd6ec`, text `#06202f`          |
-| Highlight card  | navy gradient                   | `#13628a` to `#166f98`, white text |
-| Earned panel    | green, teal, navy               | `#13628a`, `#2196bf`, `#5cc4e4`    |
+| Primary button  | `#107ea4` to `#0b6f92`, white   | same gradient, white text, glow    |
+| Band action     | `#a2c439`, navy text            | same green, navy text              |
+| Highlight card  | navy gradient                   | `#0f2a47` to `#164c72`, white text |
+| Earned panel    | green, teal, navy               | `#8fb32a`, `#1d90b5`, `#0b1c33`    |
 | Approved pill   | `#a2c439`, navy text            | green tint, `#c9e27a` text         |
 | Stat accents    | gradient tiles, white or navy   | tinted tiles, light accent text    |
 
-The light action gradient starts at `#107ea4`, not the logo teal, because white text on `#24a7cf` is 2.8:1. The dark highlight stop is `#166f98` (spec `#2196bf`) so muted text keeps 4.5:1. `check:theme` verifies every pair in both themes.
+The light action gradient starts at `#107ea4`, not the logo teal, because white text on `#24a7cf` is 2.8:1. `check:theme` verifies every pair in both themes.
 
 ## Type
 

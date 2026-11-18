@@ -96,3 +96,27 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - `Markdown` is a server component with a static `react-markdown` import. Use it from server components, where static content renders on the server.
 - A client component uses `MarkdownLazy` (`markdown-lazy.tsx`), which loads `Markdown` with `next/dynamic` and no loading state, so `react-markdown` stays out of its route bundle. Call `preloadMarkdown()` when the client surface mounts, so the text appears with the content. Never import `Markdown` from a `'use client'` file.
 - `DialogContent` keeps its close button in a sticky corner anchor, so it stays put while a long dialog scrolls. `DialogTitle` reserves space for it. On open, focus goes to an existing autofocus target, else to the first visible field outside the footer, else to the dialog itself. It never scrolls, and never lands on the close button or a link.
+
+## Band migration example
+
+`/admin/users`, before:
+
+```tsx
+<DashboardPage title={<PageTitle namespace="Admin.users" name="title" />}>
+  <PageIntro description={<PageTitle namespace="Admin.users" name="description" />}>
+    <AdminUsersContent />
+  </PageIntro>
+</DashboardPage>
+```
+
+After (the first block is a `DataTable` card, so `overlap` is set):
+
+```tsx
+<DashboardPage
+  overlap
+  description={<PageTitle namespace="Admin.users" name="description" />}
+  title={<PageTitle namespace="Admin.users" name="title" />}
+>
+  <AdminUsersContent />
+</DashboardPage>
+```

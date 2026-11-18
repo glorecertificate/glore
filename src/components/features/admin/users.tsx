@@ -12,9 +12,11 @@ import { useSession } from '@/components/providers/session'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { type AdminPage, type AdminUserRow, type PlatformRole, isBanActive } from '@/db/queries/admin-user'
 import { timestampMillis } from '@/db/queries/organization'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -25,7 +27,7 @@ import { useAdminError } from './use-admin-error'
 import { UserActions } from './user-actions'
 import { type UsersFilterValues, UsersFilters } from './users-filters'
 import { adminUsersParsers } from './users-params'
-import { userInitials, userLabel } from './utils'
+import { listFocusTarget, userInitials, userLabel } from './utils'
 
 const ROLE_ICONS = {
   admin: 'shield-user',
@@ -57,6 +59,7 @@ export const AdminUsers = ({
   })
   const [search, setSearch] = useState(params.q)
   const [dialog, setDialog] = useState<Dialog | null>(null)
+  const { remember, restore } = useReturnFocus()
   const [busyId, setBusyId] = useState<string | null>(null)
 
   const filtersActive = Boolean(params.banned || params.org || params.q || params.role || params.status)
@@ -94,7 +97,9 @@ export const AdminUsers = ({
   return (
     <>
       <DataTable
-        className={cn(pending && 'opacity-60 transition-opacity')}
+        tabIndex={-1}
+        aria-busy={pending}
+        className={cn('outline-none', pending && 'opacity-60 transition-opacity')}
         columns={[
           {
             cell: user => (
@@ -136,7 +141,9 @@ export const AdminUsers = ({
               if (isBanActive(user)) {
                 return (
                   <div className="flex flex-col items-start gap-1">
-                    <Badge variant="destructive">{t('status_banned')}</Badge>
+                    <StatusBadge icon="ban" tone="danger">
+                      {t('status_banned')}
+                    </StatusBadge>
                     {user.banExpires && (
                       <span className="text-xs text-muted-foreground">
                         {t('bannedUntil', {
@@ -152,8 +159,18 @@ export const AdminUsers = ({
                   </div>
                 )
               }
-              if (!user.onboardedAt) return <Badge variant="warning">{t('status_pending')}</Badge>
-              return <Badge variant="success">{t('status_active')}</Badge>
+              if (!user.onboardedAt) {
+                return (
+                  <StatusBadge icon="clock" tone="warning">
+                    {t('status_pending')}
+                  </StatusBadge>
+                )
+              }
+              return (
+                <StatusBadge icon="circle-check" tone="success">
+                  {t('status_active')}
+                </StatusBadge>
+              )
             },
             header: t('columns.status'),
             id: 'status',
@@ -201,10 +218,19 @@ export const AdminUsers = ({
           user.id === currentUser.id ? null : (
             <UserActions
               busy={busyId === user.id}
-              onBan={target => setDialog({ kind: 'ban', user: target })}
-              onImpersonate={target => setDialog({ kind: 'impersonate', user: target })}
+              onBan={target => {
+                remember()
+                setDialog({ kind: 'ban', user: target })
+              }}
+              onImpersonate={target => {
+                remember()
+                setDialog({ kind: 'impersonate', user: target })
+              }}
               onRole={handleRole}
-              onUnban={target => setDialog({ kind: 'unban', user: target })}
+              onUnban={target => {
+                remember()
+                setDialog({ kind: 'unban', user: target })
+              }}
               user={user}
             />
           )
@@ -214,17 +240,20 @@ export const AdminUsers = ({
 
       <BanDialog
         key={dialog?.kind === 'ban' ? dialog.user.id : 'ban'}
+        onCloseAutoFocus={event => restore(event, listFocusTarget)}
         onDone={() => startNavigation(refresh)}
         onOpenChange={handleDialog}
         user={dialog?.kind === 'ban' ? dialog.user : null}
       />
       <UnbanDialog
+        onCloseAutoFocus={event => restore(event, listFocusTarget)}
         onDone={() => startNavigation(refresh)}
         onOpenChange={handleDialog}
         user={dialog?.kind === 'unban' ? dialog.user : null}
       />
       <ImpersonateDialog
         key={dialog?.kind === 'impersonate' ? dialog.user.id : 'impersonate'}
+        onCloseAutoFocus={event => restore(event, listFocusTarget)}
         onOpenChange={handleDialog}
         user={dialog?.kind === 'impersonate' ? dialog.user : null}
       />

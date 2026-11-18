@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { type Locale, useTranslations } from 'next-intl'
+import { type Locale, useFormatter, useTranslations } from 'next-intl'
 
 import {
   deleteTeamMember,
@@ -14,46 +14,50 @@ import {
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
-import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { DataTable } from '@/components/ui/data-table'
 import { FilterBar } from '@/components/ui/filter-bar'
+import { PageIntro } from '@/components/ui/page-header'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { StatCard } from '@/components/ui/stat-card'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 
 import {
   DeleteDialog,
+  ROLE_ICONS,
   TeamInviteDialog,
-  TeamMemberRow,
+  TeamMemberActions,
   type TeamRole,
-  TeamStatCard,
   type TeamStatus,
   getDisplayName,
   getUserRole,
   getUserStatus,
 } from './team-items'
 import { useAdminError } from './use-admin-error'
-
-type SortField = 'name' | 'role' | 'date'
+import { listFocusTarget } from './utils'
 
 export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   const t = useTranslations('Admin.team')
-  const tCommon = useTranslations('Common')
+  const { dateTime } = useFormatter()
   const { locale } = useI18n()
   const { user: currentUser } = useSession()
   const adminError = useAdminError()
 
   const [users, setUsers] = useState(initialUsers)
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set())
-  const [sortBy, setSortBy] = useState<SortField>('name')
+  const [busyId, setBusyId] = useState<string | null>(null)
   const [filterRole, setFilterRole] = useState<TeamRole | 'all'>('all')
   const [filterStatus, setFilterStatus] = useState<TeamStatus | 'all'>('all')
   const [inviteOpen, setInviteOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
+  const { remember, restore } = useReturnFocus()
+  const returnFocus = (event: Event) => restore(event, listFocusTarget)
 
   const activeUsers = users.filter(u => !deletedIds.has(u.id))
 
@@ -75,12 +79,16 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
       filtered = filtered.filter(u => getUserStatus(u) === filterStatus)
     }
 
-    return filtered.toSorted((a, b) => {
-      if (sortBy === 'name') return getDisplayName(a).localeCompare(getDisplayName(b))
-      if (sortBy === 'role') return getUserRole(a).localeCompare(getUserRole(b))
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    })
+    return filtered
   })()
+
+  const runBusy = async <T,>(action: () => Promise<T>) => {
+    try {
+      return await action()
+    } finally {
+      setBusyId(null)
+    }
+  }
 
   const refreshTeam = async () => {
     const { data } = await getTeamMembers({ cache: false })
@@ -107,7 +115,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   }
 
   const handleChangeRole = async (user: User, role: TeamRole) => {
-    const { error } = await updateTeamMemberRole(user.id, role)
+    setBusyId(user.id)
+    const { error } = await runBusy(() => updateTeamMemberRole(user.id, role))
 
     if (error) {
       toast.error(adminError(error.code))
@@ -115,11 +124,12 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
     }
 
     toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role }))
-    refreshTeam()
+    await refreshTeam()
   }
 
   const handleResend = async (user: User) => {
-    const { error, data } = await resendInvitation(user.id)
+    setBusyId(user.id)
+    const { error, data } = await runBusy(() => resendInvitation(user.id))
 
     if (error) {
       toast.error(adminError(error.code))
@@ -152,63 +162,101 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <PageIntro
+      actions={
+        <Button
+          onClick={() => {
+            remember()
+            setInviteOpen(true)
+          }}
+          variant="brand"
+        >
+          <LucideIcon name="user-plus" />
+          {t('inviteMember')}
+        </Button>
+      }
+      description={t('description')}
+    >
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <TeamStatCard accent="brand" icon="users" label={t('statMembers')} value={stats.total} />
-        <TeamStatCard icon="shield-user" label={t('statAdmins')} value={stats.admins} />
-        <TeamStatCard icon="pencil" label={t('statEditors')} value={stats.editors} />
-        <TeamStatCard accent="warning" icon="clock" label={t('statPending')} value={stats.pending} />
+        <StatCard label={t('statMembers')} value={stats.total} />
+        <StatCard label={t('statAdmins')} value={stats.admins} />
+        <StatCard label={t('statEditors')} value={stats.editors} />
+        <StatCard label={t('statPending')} value={stats.pending} />
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-card shadow-2xs">
-        <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold">{t('members')}</h2>
-            <Badge size="sm" variant="muted">
-              {activeUsers.length}
-            </Badge>
-          </div>
-          <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
-            <LucideIcon name="user-plus" className="mr-1.5 size-3.5" />
-            {t('inviteMember')}
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-5 py-3">
+      <DataTable
+        className="outline-none"
+        tabIndex={-1}
+        pageResetKey={`${filterRole}|${filterStatus}`}
+        columns={[
+          {
+            cell: user => (
+              <div className="flex min-w-0 items-center gap-3">
+                <Avatar className="size-9 rounded-full">
+                  {user.avatarUrl && <AvatarImage alt="" src={user.avatarUrl} />}
+                  <AvatarFallback className="rounded-full">
+                    {user.initials || <LucideIcon name="user" />}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex min-w-0 flex-col">
+                  <span className="flex items-center gap-1.5 truncate font-medium">
+                    {getDisplayName(user)}
+                    {user.id === currentUser.id && (
+                      <Badge size="sm" variant="outline">
+                        {t('you')}
+                      </Badge>
+                    )}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+                </div>
+              </div>
+            ),
+            header: t('columns.member'),
+            id: 'name',
+            sortValue: user => getDisplayName(user).toLowerCase(),
+          },
+          {
+            cell: user => {
+              const role = getUserRole(user)
+              return (
+                <Badge variant="ghost">
+                  <LucideIcon name={ROLE_ICONS[role]} />
+                  {t(`role_${role}`)}
+                </Badge>
+              )
+            },
+            header: t('columns.role'),
+            id: 'role',
+            sortValue: user => getUserRole(user),
+          },
+          {
+            cell: user =>
+              getUserStatus(user) === 'pending' ? (
+                <StatusBadge icon="clock" tone="warning">
+                  {t('status_pending')}
+                </StatusBadge>
+              ) : (
+                <StatusBadge icon="circle-check" tone="success">
+                  {t('status_joined')}
+                </StatusBadge>
+              ),
+            header: t('columns.status'),
+            id: 'status',
+            sortValue: user => getUserStatus(user),
+          },
+          {
+            cell: user => dateTime(new Date(user.createdAt), { dateStyle: 'medium' }),
+            header: t('columns.added'),
+            id: 'added',
+            sortValue: user => new Date(user.createdAt),
+          },
+        ]}
+        emptyDescription={hasActiveFilters ? t('tryAdjustingFilters') : t('noMembersDescription')}
+        emptyTitle={hasActiveFilters ? t('noMembersFiltered') : t('noMembers')}
+        filters={
           <FilterBar active={hasActiveFilters} onClear={clearFilters}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="outline">
-                  <LucideIcon name="arrow-up-down" className="mr-1.5 size-3.5" />
-                  {t(`sort_${sortBy}`)}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => setSortBy('name')}>
-                  <LucideIcon name="user" className="mr-2 size-3.5" />
-                  {t('sort_name')}
-                  {sortBy === 'name' && <LucideIcon name="check" className="ml-auto size-3.5" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy('role')}>
-                  <LucideIcon name="shield" className="mr-2 size-3.5" />
-                  {t('sort_role')}
-                  {sortBy === 'role' && <LucideIcon name="check" className="ml-auto size-3.5" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy('date')}>
-                  <LucideIcon name="calendar" className="mr-2 size-3.5" />
-                  {t('sort_date')}
-                  {sortBy === 'date' && <LucideIcon name="check" className="ml-auto size-3.5" />}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <Select onValueChange={v => setFilterRole(v as TeamRole | 'all')} value={filterRole}>
-              <SelectTrigger
-                aria-label={t('filterRoleLabel')}
-                className="w-auto gap-1.5 border-dashed px-3 text-sm"
-                size="sm"
-              >
-                <LucideIcon name="funnel" className="size-3.5" />
+              <SelectTrigger aria-label={t('filterRoleLabel')} className="w-auto gap-1.5" size="sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -217,14 +265,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
                 <SelectItem value="editor">{t('role_editor')}</SelectItem>
               </SelectContent>
             </Select>
-
             <Select onValueChange={v => setFilterStatus(v as TeamStatus | 'all')} value={filterStatus}>
-              <SelectTrigger
-                aria-label={t('filterStatusLabel')}
-                className="w-auto gap-1.5 border-dashed px-3 text-sm"
-                size="sm"
-              >
-                <LucideIcon name="funnel" className="size-3.5" />
+              <SelectTrigger aria-label={t('filterStatusLabel')} className="w-auto gap-1.5" size="sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -234,59 +276,41 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
               </SelectContent>
             </Select>
           </FilterBar>
-        </div>
-        {displayUsers.length === 0 ? (
-          <Empty className="py-16">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <LucideIcon name="user" />
-              </EmptyMedia>
-              <EmptyTitle>{t('noMembers')}</EmptyTitle>
-              {hasActiveFilters && <EmptyDescription>{t('tryAdjustingFilters')}</EmptyDescription>}
-            </EmptyHeader>
-            {hasActiveFilters && (
-              <EmptyContent>
-                <Button onClick={clearFilters} size="sm" variant="outline">
-                  {tCommon('clearFilters')}
-                </Button>
-              </EmptyContent>
-            )}
-          </Empty>
-        ) : (
-          <div className="divide-y">
-            <AnimatedList>
-              {displayUsers.map(user => (
-                <AnimatedListItem key={user.id} variant="row">
-                  <TeamMemberRow
-                    isCurrentUser={user.id === currentUser.id}
-                    onChangeRole={handleChangeRole}
-                    onDelete={setDeleteTarget}
-                    onResend={handleResend}
-                    user={user}
-                  />
-                </AnimatedListItem>
-              ))}
-            </AnimatedList>
-          </div>
-        )}
+        }
+        getRowId={user => user.id}
+        label={t('tableLabel')}
+        rowActions={user =>
+          user.id === currentUser.id ? null : (
+            <TeamMemberActions
+              busy={busyId === user.id}
+              onChangeRole={handleChangeRole}
+              onDelete={member => {
+                remember()
+                setDeleteTarget(member)
+              }}
+              onResend={handleResend}
+              user={user}
+            />
+          )
+        }
+        rows={displayUsers}
+      />
 
-        {displayUsers.length > 0 && (
-          <div className="border-t px-5 py-3">
-            <p className="text-xs text-muted-foreground">
-              {t('memberCount', { count: displayUsers.length, total: activeUsers.length })}
-            </p>
-          </div>
-        )}
-      </div>
-
-      <TeamInviteDialog defaultLocale={locale} onInvite={handleInvite} onOpenChange={setInviteOpen} open={inviteOpen} />
+      <TeamInviteDialog
+        onCloseAutoFocus={returnFocus}
+        defaultLocale={locale}
+        onInvite={handleInvite}
+        onOpenChange={setInviteOpen}
+        open={inviteOpen}
+      />
 
       <DeleteDialog
+        onCloseAutoFocus={returnFocus}
         onConfirm={handleDelete}
         onOpenChange={open => !open && setDeleteTarget(null)}
         open={!!deleteTarget}
         user={deleteTarget}
       />
-    </div>
+    </PageIntro>
   )
 }

@@ -54,9 +54,10 @@ test('takes an application from the register form to onboarding', async ({ brows
     storageState: authFile('admin'),
   })
   await adminPage.goto('/admin/organizations')
-  const row = adminPage.getByRole('link', { name: organizationName }).locator('..')
+  const row = adminPage.getByRole('row').filter({ has: adminPage.getByRole('link', { name: organizationName }) })
   await expect(async () => {
     await adminPage.reload()
+    await adminPage.getByRole('textbox', { name: 'Search organizations' }).fill(organizationName)
     await expect(row).toBeVisible({ timeout: 2000 })
   }).toPass()
   await row.getByRole('button', { name: 'Actions' }).click()
@@ -66,7 +67,7 @@ test('takes an application from the register form to onboarding', async ({ brows
   await expect(sheet.getByText(`IT-${stamp}`)).toBeVisible()
   await expect(sheet.getByText('Maria Rossi')).toBeVisible()
   await sheet.getByRole('button', { name: 'Approve' }).click()
-  await adminPage.getByRole('alertdialog').getByRole('button', { name: 'Approve' }).click()
+  await adminPage.getByRole('dialog', { name: 'Approve organization' }).getByRole('button', { name: 'Approve' }).click()
   await expect(adminPage.getByText(`${organizationName} has been approved.`)).toBeVisible()
   await adminPage.close()
 

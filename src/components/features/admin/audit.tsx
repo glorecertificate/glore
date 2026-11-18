@@ -6,14 +6,15 @@ import { useState, useTransition } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 import { debounce, useQueryStates } from 'nuqs'
 
+import { type IconName } from '@/components/icons/registry'
 import { useI18n } from '@/components/providers/i18n'
-import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { StatusBadge, type StatusMeta } from '@/components/ui/status-badge'
 import {
   AUDIT_CATEGORIES,
   type AdminAuditPage,
@@ -49,17 +50,17 @@ const EVENT_KEYS = {
   'team.role_changed': 'events.team_role_changed',
 } as const satisfies Record<AuditAction, string>
 
-const CATEGORY_VARIANTS = {
-  access: 'info',
-  certificates: 'muted',
-  content: 'success',
-  impersonation: 'warning',
-  legal: 'success',
-  messages: 'outline',
-  moderation: 'destructive',
-  organizations: 'brand-soft',
-  settings: 'muted',
-} as const satisfies Record<AuditCategory, React.ComponentProps<typeof Badge>['variant']>
+const CATEGORY_META = {
+  access: { icon: 'shield-user', tone: 'info' },
+  certificates: { icon: 'badge-check', tone: 'neutral' },
+  content: { icon: 'pencil', tone: 'success' },
+  impersonation: { icon: 'eye', tone: 'warning' },
+  legal: { icon: 'file-text', tone: 'success' },
+  messages: { icon: 'languages', tone: 'neutral' },
+  moderation: { icon: 'ban', tone: 'danger' },
+  organizations: { icon: 'building-2', tone: 'info' },
+  settings: { icon: 'settings', tone: 'neutral' },
+} as const satisfies Record<AuditCategory, { icon: IconName; tone: StatusMeta['tone'] }>
 
 export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
   const t = useTranslations('Admin.audit')
@@ -129,25 +130,32 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
 
   return (
     <DataTable
+      aria-busy={pending}
       className={cn(pending && 'opacity-60 transition-opacity')}
       columns={[
         {
           cell: row => (
-            <span className="whitespace-nowrap">
-              {dateTime(new Date(timestampMillis(row.createdAt)), { dateStyle: 'medium', timeStyle: 'short' })}
-            </span>
+            <div className="flex flex-col">
+              <span className="whitespace-nowrap">
+                {dateTime(new Date(timestampMillis(row.createdAt)), { dateStyle: 'medium' })}
+              </span>
+              <span className="text-xs whitespace-nowrap text-muted-foreground">
+                {dateTime(new Date(timestampMillis(row.createdAt)), { timeStyle: 'short' })}
+              </span>
+            </div>
           ),
           header: t('columns.date'),
           id: 'date',
         },
         {
           cell: row => (
-            <Badge
+            <StatusBadge
               className="max-w-full max-sm:text-left max-sm:whitespace-normal"
-              variant={CATEGORY_VARIANTS[row.category]}
+              icon={CATEGORY_META[row.category].icon}
+              tone={CATEGORY_META[row.category].tone}
             >
               {t(`categories.${row.category}`)}
-            </Badge>
+            </StatusBadge>
           ),
           header: t('columns.category'),
           id: 'category',

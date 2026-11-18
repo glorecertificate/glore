@@ -46,6 +46,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - It sorts and paginates the supplied rows locally, announces counts, and provides loading and empty states.
 - While `loading`, it shows a spinner in place of the header row and the rows, and hides the count. Column widths depend on the rows.
 - Pass `pagination` (page, pageCount, total, onPageChange) for server-paged rows.
+- `pageResetKey` returns a client-paged table to its first page when the value changes, with a render-time state compare. Pass the search and filter values. Never use `key` for this, because `filters` renders inside the table and would remount.
 - `skeleton` with `loading` keeps the real header and shows `pageSize` placeholder rows that follow the column layout, instead of a spinner. Use it for server-paged lists.
 - `selectable` adds a checkbox column with select all on the page. Selection spans pages by row id. Control it with `selectedIds` and `onSelectionChange`, or leave it to the table. `rowLabel(row)` names each checkbox and is required with `selectable`.
 - Without `pagination`, the selection is the stored ids that still exist in `rows`. `onSelectionChange` fires only on user actions, never on a prune, so a controlled parent filters its own ids by the rows it holds before it acts; `bulkActions` always receives the pruned ids. With `pagination`, the caller clears the selection when a filter or the query changes, because the table cannot see the other pages.

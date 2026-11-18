@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { useTranslations } from 'next-intl'
+import { useFormatter, useTranslations } from 'next-intl'
 
 import {
   approveOrganization,
@@ -13,42 +13,46 @@ import {
 } from '@/actions/admin/organizations'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
-import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { countryCodeToFlag } from '@/components/ui/country-select'
+import { DataTable } from '@/components/ui/data-table'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { FilterBar } from '@/components/ui/filter-bar'
-import { SearchInput } from '@/components/ui/search'
+import { Link } from '@/components/ui/link'
+import { PageIntro } from '@/components/ui/page-header'
+import { SearchHighlight, SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 import { SHORTCUTS } from '@/lib/shortcuts'
 
 import { ApplicationSheet } from './application-sheet'
-import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, OrgRow, RejectDialog } from './organization-items'
+import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, RejectDialog } from './organization-items'
+import { listFocusTarget } from './utils'
 
 type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
-type SortField = 'name' | 'country' | 'members'
 
 export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganization[] }) => {
   const { locale } = useI18n()
+  const { dateTime } = useFormatter()
   const t = useTranslations('Admin.organizations')
-  const tCommon = useTranslations('Common')
 
   const [orgs, setOrgs] = useState(initialOrgs)
   const [filter, setFilter] = useState<OrgFilter>('all')
   const [search, setSearch] = useState('')
   const [country, setCountry] = useState('all')
-  const [sort, setSort] = useState<SortField | null>(null)
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [approveTarget, setApproveTarget] = useState<AdminOrganization | null>(null)
   const [rejectTarget, setRejectTarget] = useState<AdminOrganization | null>(null)
   const [viewTarget, setViewTarget] = useState<AdminOrganization | null>(null)
   const [inviteOpen, setInviteOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
+  const { remember, restore } = useReturnFocus()
+  const returnFocus = (event: Event) => restore(event, listFocusTarget)
 
   const translateCountry = useCountryName()
 
@@ -61,7 +65,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       .toSorted((a, b) => a.label.localeCompare(b.label, locale))
   })()
 
-  const hasFilters = search.trim() !== '' || country !== 'all' || sort !== null
+  const hasFilters = search.trim() !== '' || country !== 'all' || filter !== 'all'
 
   const displayOrgs = (() => {
     let list = orgs
@@ -76,18 +80,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       list = list.filter(o => [o.name, o.email, o.city].some(value => value?.toLowerCase().includes(needle)))
     }
 
-    if (!sort) return list
-
-    const factor = sortDir === 'asc' ? 1 : -1
-    return list.toSorted((a, b) => {
-      if (sort === 'members') return (a.memberCount - b.memberCount) * factor
-      if (sort === 'country') {
-        const ca = a.country ? translateCountry(a.country) : ''
-        const cb = b.country ? translateCountry(b.country) : ''
-        return ca.localeCompare(cb, locale) * factor
-      }
-      return a.name.localeCompare(b.name, locale) * factor
-    })
+    return list
   })()
 
   const refreshOrgs = async () => {
@@ -98,16 +91,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const resetFilters = () => {
     setSearch('')
     setCountry('all')
-    setSort(null)
-  }
-
-  const handleSort = (field: SortField) => {
-    if (sort === field) {
-      setSortDir(dir => (dir === 'asc' ? 'desc' : 'asc'))
-      return
-    }
-    setSort(field)
-    setSortDir('asc')
+    setFilter('all')
   }
 
   const handleApprove = async (comment?: string) => {
@@ -177,140 +161,212 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     refreshOrgs()
   }
 
-  const sortLabel = sort ? t(`sort_${sort}`) : t('sortBy')
+  const formatDate = (value: string) => dateTime(new Date(value), { dateStyle: 'medium' })
+
+  const actions = (
+    <>
+      <Button
+        onClick={() => {
+          remember()
+          setCreateOpen(true)
+        }}
+        variant="brand"
+      >
+        <LucideIcon name="plus" />
+        {t('createOrg')}
+      </Button>
+      <Button
+        onClick={() => {
+          remember()
+          setInviteOpen(true)
+        }}
+        variant="outline"
+      >
+        <LucideIcon name="user-plus" />
+        {t('inviteOrg')}
+      </Button>
+    </>
+  )
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <Tabs onValueChange={value => setFilter(value as OrgFilter)} value={filter}>
-          <TabsList>
-            <TabsTrigger value="all">{t('filter_all')}</TabsTrigger>
-            <TabsTrigger count={pendingCount} value="pending">
-              {t('filter_pending')}
-            </TabsTrigger>
-            <TabsTrigger value="active">{t('filter_active')}</TabsTrigger>
-            <TabsTrigger value="rejected">{t('filter_rejected')}</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button className="gap-2" onClick={() => setCreateOpen(true)} size="sm" variant="brand">
-            <LucideIcon name="plus" className="size-4" />
-            {t('createOrg')}
-          </Button>
-          <Button className="gap-2" onClick={() => setInviteOpen(true)} size="sm" variant="outline">
-            <LucideIcon name="user-plus" className="size-4" />
-            {t('inviteOrg')}
-          </Button>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-xl border bg-card shadow-2xs">
-        <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-4 py-3">
-          <FilterBar active={hasFilters} onClear={resetFilters}>
-            <SearchInput
-              className="w-full sm:w-64"
-              size="sm"
-              hotkey={SHORTCUTS.filter.key}
-              onValueChange={setSearch}
-              placeholder={t('searchPlaceholder')}
-              value={search}
-            />
-
-            {countryOptions.length > 0 && (
-              <Select onValueChange={setCountry} value={country}>
-                <SelectTrigger
-                  aria-label={t('filterCountry')}
-                  className="w-auto gap-1.5 border-dashed text-sm"
-                  size="sm"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('allCountries')}</SelectItem>
-                  {countryOptions.map(({ code, label }) => (
-                    <SelectItem key={code} value={code}>
-                      <span className="mr-1">{countryCodeToFlag(code)}</span>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="gap-1.5 border-dashed" size="sm" variant="outline">
-                  <LucideIcon name="arrow-up-down" className="size-3.5" />
-                  {sortLabel}
-                  {sort &&
-                    (sortDir === 'asc' ? (
-                      <LucideIcon name="arrow-up" className="size-3" />
-                    ) : (
-                      <LucideIcon name="arrow-down" className="size-3" />
+    <PageIntro actions={actions} description={t('description')}>
+      <DataTable
+        className="outline-none"
+        tabIndex={-1}
+        pageResetKey={`${search}|${country}|${filter}`}
+        columns={[
+          {
+            cell: org => (
+              <div className="flex min-w-0 items-center gap-3">
+                <Avatar className="size-9 shrink-0 rounded-lg">
+                  {org.avatarUrl && <AvatarImage alt="" src={org.avatarUrl} />}
+                  <AvatarFallback className="rounded-lg">{org.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="flex min-w-0 flex-col">
+                  <Link className="truncate font-medium hover:underline" href={`/admin/organizations/${org.id}`}>
+                    <SearchHighlight query={search} value={org.name} />
+                  </Link>
+                  <span className="truncate text-xs text-muted-foreground">{org.email}</span>
+                </div>
+              </div>
+            ),
+            header: t('columns.organization'),
+            id: 'name',
+            sortValue: org => org.name.toLowerCase(),
+          },
+          {
+            cell: org => {
+              if (org.isPending) {
+                return (
+                  <StatusBadge icon="clock" tone="warning">
+                    {t('statusPending')}
+                  </StatusBadge>
+                )
+              }
+              if (org.isRejected) {
+                return (
+                  <StatusBadge icon="circle-x" tone="danger">
+                    {t('statusRejected')}
+                  </StatusBadge>
+                )
+              }
+              return (
+                <StatusBadge icon="circle-check" tone="success">
+                  {t('statusActive')}
+                </StatusBadge>
+              )
+            },
+            header: t('columns.status'),
+            id: 'status',
+            sortValue: org => (org.isPending ? 0 : org.isRejected ? 2 : 1),
+          },
+          {
+            cell: org => {
+              const place = [
+                org.city,
+                org.country && `${translateCountry(org.country)} ${countryCodeToFlag(org.country)}`,
+              ]
+              return place.filter(Boolean).join(', ') || <span className="text-muted-foreground">{t('app_none')}</span>
+            },
+            className: 'max-w-56 truncate',
+            header: t('columns.location'),
+            id: 'country',
+            sortValue: org => (org.country ? translateCountry(org.country) : ''),
+          },
+          {
+            cell: org => <span className="tabular-nums">{org.memberCount}</span>,
+            header: t('columns.members'),
+            id: 'members',
+            sortValue: org => org.memberCount,
+          },
+          {
+            cell: org => formatDate(org.createdAt),
+            header: t('columns.created'),
+            id: 'created',
+            sortValue: org => new Date(org.createdAt),
+          },
+        ]}
+        emptyDescription={orgs.length === 0 ? t('emptyMessage') : t('emptyFilteredMessage')}
+        emptyTitle={orgs.length === 0 ? t('emptyTitle') : t('emptyFilteredTitle')}
+        filters={
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+            <Tabs onValueChange={value => setFilter(value as OrgFilter)} value={filter}>
+              <TabsList>
+                <TabsTrigger value="all">{t('filter_all')}</TabsTrigger>
+                <TabsTrigger count={pendingCount} value="pending">
+                  {t('filter_pending')}
+                </TabsTrigger>
+                <TabsTrigger value="active">{t('filter_active')}</TabsTrigger>
+                <TabsTrigger value="rejected">{t('filter_rejected')}</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <FilterBar active={hasFilters} onClear={resetFilters}>
+              <SearchInput
+                aria-label={t('searchPlaceholder')}
+                className="w-full sm:w-56"
+                hotkey={SHORTCUTS.filter.key}
+                onValueChange={setSearch}
+                placeholder={t('searchPlaceholder')}
+                size="sm"
+                value={search}
+              />
+              {countryOptions.length > 0 && (
+                <Select onValueChange={setCountry} value={country}>
+                  <SelectTrigger aria-label={t('filterCountry')} className="w-auto gap-1.5" size="sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('allCountries')}</SelectItem>
+                    {countryOptions.map(({ code, label }) => (
+                      <SelectItem key={code} value={code}>
+                        <span className="mr-1">{countryCodeToFlag(code)}</span>
+                        {label}
+                      </SelectItem>
                     ))}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                {(['name', 'country', 'members'] as SortField[]).map(field => (
-                  <DropdownMenuItem key={field} onClick={() => handleSort(field)}>
-                    {t(`sort_${field}`)}
-                    {sort === field && <LucideIcon name="check" className="ml-auto size-3.5" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </FilterBar>
-
-          <span className="ml-auto hidden text-xs text-muted-foreground sm:block">
-            {t('resultsCount', { count: displayOrgs.length })}
-          </span>
-        </div>
-
-        {orgs.length === 0 ? (
-          <Empty className="border">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <LucideIcon name="building-2" />
-              </EmptyMedia>
-              <EmptyTitle>{t('emptyTitle')}</EmptyTitle>
-              <EmptyDescription>{t('emptyMessage')}</EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        ) : displayOrgs.length === 0 ? (
-          <Empty className="border">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <LucideIcon name="search-x" />
-              </EmptyMedia>
-              <EmptyTitle>{t('emptyFilteredTitle')}</EmptyTitle>
-              <EmptyDescription>{t('emptyFilteredMessage')}</EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button onClick={resetFilters} size="sm" variant="outline">
-                {tCommon('clearFilters')}
-              </Button>
-            </EmptyContent>
-          </Empty>
-        ) : (
-          <div className="divide-y">
-            <AnimatedList>
-              {displayOrgs.map(org => (
-                <AnimatedListItem key={org.id} variant="row">
-                  <OrgRow
-                    onApprove={setApproveTarget}
-                    onReject={setRejectTarget}
-                    onView={setViewTarget}
-                    org={org}
-                    query={search}
-                  />
-                </AnimatedListItem>
-              ))}
-            </AnimatedList>
+                  </SelectContent>
+                </Select>
+              )}
+            </FilterBar>
           </div>
+        }
+        getRowId={org => org.id}
+        label={t('tableLabel')}
+        rowActions={org => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button aria-label={`${t('actions')}: ${org.name}`} size="icon" variant="ghost">
+                <LucideIcon name="ellipsis" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/organizations/${org.id}`}>
+                  <LucideIcon name="building-2" />
+                  {t('openOrg')}
+                </Link>
+              </DropdownMenuItem>
+              {org.registrationRequest && (
+                <DropdownMenuItem
+                  onSelect={() => {
+                    remember()
+                    setViewTarget(org)
+                  }}
+                >
+                  <LucideIcon name="file-text" />
+                  {t('app_view')}
+                </DropdownMenuItem>
+              )}
+              {org.isPending && (
+                <>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      remember()
+                      setApproveTarget(org)
+                    }}
+                  >
+                    <LucideIcon name="check" />
+                    {t('approve')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      remember()
+                      setRejectTarget(org)
+                    }}
+                    variant="destructive"
+                  >
+                    <LucideIcon name="x" />
+                    {t('reject')}
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
-      </div>
+        rows={displayOrgs}
+      />
 
       <ApplicationSheet
+        onCloseAutoFocus={returnFocus}
         onApprove={org => {
           setViewTarget(null)
           setApproveTarget(org)
@@ -323,19 +379,31 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         org={viewTarget}
       />
       <ApproveDialog
+        onCloseAutoFocus={returnFocus}
         onConfirm={handleApprove}
         onOpenChange={open => !open && setApproveTarget(null)}
         open={!!approveTarget}
         org={approveTarget}
       />
       <RejectDialog
+        onCloseAutoFocus={returnFocus}
         onConfirm={handleReject}
         onOpenChange={open => !open && setRejectTarget(null)}
         open={!!rejectTarget}
         org={rejectTarget}
       />
-      <OrgInviteDialog onInvite={handleInvite} onOpenChange={setInviteOpen} open={inviteOpen} />
-      <OrgCreateDialog onCreate={handleCreate} onOpenChange={setCreateOpen} open={createOpen} />
-    </div>
+      <OrgInviteDialog
+        onCloseAutoFocus={returnFocus}
+        onInvite={handleInvite}
+        onOpenChange={setInviteOpen}
+        open={inviteOpen}
+      />
+      <OrgCreateDialog
+        onCloseAutoFocus={returnFocus}
+        onCreate={handleCreate}
+        onOpenChange={setCreateOpen}
+        open={createOpen}
+      />
+    </PageIntro>
   )
 }

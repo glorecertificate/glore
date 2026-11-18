@@ -5,6 +5,9 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { timestampMillis } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
+import { isHttpUrl } from '@/lib/url'
+
+import { MailLink } from './mail-link'
 
 export interface ApplicationSummaryData {
   charterAcceptedAt: string | null
@@ -30,9 +33,9 @@ export interface ApplicationRequestData {
   status: 'accepted' | 'pending' | 'rejected'
 }
 
-type Pair = readonly [string, string]
+type Pair = readonly [string, React.ReactNode]
 
-const Row = ({ label, value }: { label: string; value: string }) => (
+const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <DescriptionItem>
     <DescriptionTerm>{label}</DescriptionTerm>
     <DescriptionDetails className="whitespace-pre-wrap">{value}</DescriptionDetails>
@@ -77,8 +80,23 @@ export const ApplicationSummary = ({
         [t('app_legalName'), organization.legalName ?? none],
         [t('app_registryId'), organization.registryId ?? none],
         [t('app_location'), [organization.city, country].filter(Boolean).join(', ')],
-        [t('app_email'), organization.email],
-        [t('app_website'), organization.url ?? none],
+        [t('app_email'), <MailLink email={organization.email} key="email" />],
+        [
+          t('app_website'),
+          organization.url && isHttpUrl(organization.url) ? (
+            <a
+              className="underline-offset-2 hover:underline focus-visible:focus-ring"
+              href={organization.url}
+              key="website"
+              rel="noreferrer"
+              target="_blank"
+            >
+              {organization.url.replace(/^https?:\/\//u, '')}
+            </a>
+          ) : (
+            (organization.url ?? none)
+          ),
+        ],
         [t('app_volunteers'), organization.volunteersPerYear === null ? none : number(organization.volunteersPerYear)],
       ],
       title: t('app_organization'),
@@ -86,9 +104,12 @@ export const ApplicationSummary = ({
     {
       rows: [
         [t('app_representative'), request?.fullName || none],
-        [t('app_representativeEmail'), request?.email ?? none],
+        [t('app_representativeEmail'), request?.email ? <MailLink email={request.email} key="rep" /> : none],
         [t('app_contactName'), organization.contactName ?? none],
-        [t('app_contactEmail'), organization.contactEmail ?? none],
+        [
+          t('app_contactEmail'),
+          organization.contactEmail ? <MailLink email={organization.contactEmail} key="contact" /> : none,
+        ],
       ],
       title: t('app_people'),
     },
@@ -102,7 +123,7 @@ export const ApplicationSummary = ({
     <div className="space-y-4">
       {groups.map(group => (
         <section className="rounded-lg border bg-card p-4" key={group.title}>
-          <h3 className="text-sm font-semibold">{group.title}</h3>
+          <h3 className="type-label">{group.title}</h3>
           <DescriptionList className="mt-1" layout="rows">
             {group.rows.map(([label, value]) => (
               <Row key={label} label={label} value={value} />

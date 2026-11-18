@@ -5,26 +5,20 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { unbanUser } from '@/actions/admin/users'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { toast } from '@/components/ui/toast'
 import { type AdminUserRow } from '@/db/queries/admin-user'
 
+import { ActionDialog } from './action-dialog'
 import { useAdminError } from './use-admin-error'
 import { userLabel } from './utils'
 
 export const UnbanDialog = ({
+  onCloseAutoFocus,
   onDone,
   onOpenChange,
   user,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   onDone: () => void
   onOpenChange: (open: boolean) => void
   user: AdminUserRow | null
@@ -36,35 +30,35 @@ export const UnbanDialog = ({
   const handleConfirm = async () => {
     if (!user) return
     setBusy(true)
-    const { error } = await unbanUser(user.id)
-    setBusy(false)
+    try {
+      const { error } = await unbanUser(user.id)
+      if (error) {
+        toast.error(adminError(error.code))
+        return
+      }
 
-    if (error) {
-      toast.error(adminError(error.code))
-      return
+      toast.success(t('unbanSuccess', { name: userLabel(user) }))
+      onOpenChange(false)
+      onDone()
+    } catch {
+      toast.error(t('unbanError'))
+    } finally {
+      setBusy(false)
     }
-
-    toast.success(t('unbanSuccess', { name: userLabel(user) }))
-    onOpenChange(false)
-    onDone()
   }
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={Boolean(user)}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t('unbanTitle', { name: user ? userLabel(user) : '' })}</DialogTitle>
-          <DialogDescription>{t('unbanDescription', { name: user ? userLabel(user) : '' })}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button disabled={busy} onClick={() => onOpenChange(false)} type="button" variant="outline">
-            {t('cancel')}
-          </Button>
-          <Button loading={busy} loadingText={t('unbanning')} onClick={handleConfirm} type="button">
-            {t('confirmUnban')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
+      busy={busy}
+      cancelLabel={t('cancel')}
+      confirmLabel={t('confirmUnban')}
+      description={t('unbanDescription', { name: user ? userLabel(user) : '' })}
+      loadingLabel={t('unbanning')}
+      onConfirm={handleConfirm}
+      onOpenChange={onOpenChange}
+      open={Boolean(user)}
+      title={t('unbanTitle', { name: user ? userLabel(user) : '' })}
+    />
   )
 }

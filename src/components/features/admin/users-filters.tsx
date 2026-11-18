@@ -46,7 +46,7 @@ export const UsersFilters = ({
     <FilterBar active={active} onClear={onClear}>
       <SearchInput
         aria-label={t('searchPlaceholder')}
-        className="w-full sm:w-56"
+        className="w-full sm:w-72"
         size="sm"
         onValueChange={onSearch}
         placeholder={t('searchPlaceholder')}

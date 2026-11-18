@@ -87,10 +87,19 @@ export const AdminCertificates = ({
 
   return (
     <DataTable
-      className={cn(pending && 'opacity-60 transition-opacity')}
+      tabIndex={-1}
+      aria-busy={pending}
+      className={cn('outline-none', pending && 'opacity-60 transition-opacity')}
       columns={[
         {
-          cell: certificate => <span className="font-mono text-xs">{certificate.code ?? t('codeNone')}</span>,
+          cell: certificate =>
+            certificate.code ? (
+              <Link className="font-mono text-xs hover:underline" href={`/certificates/${certificate.id}`}>
+                {certificate.code}
+              </Link>
+            ) : (
+              <span className="text-xs text-muted-foreground">{t('codeNone')}</span>
+            ),
           header: t('columns.code'),
           id: 'code',
         },

@@ -39,7 +39,7 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
         <div className="flex min-w-60 flex-col gap-1.5">
           <Label htmlFor={templateId}>{t('template')}</Label>
           <Select onValueChange={value => setParams({ template: value })} value={template}>
-            <SelectTrigger id={templateId}>
+            <SelectTrigger className="w-full" id={templateId}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -77,7 +77,7 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
             }
             value={category ?? NO_CATEGORY}
           >
-            <SelectTrigger id={categoryId}>
+            <SelectTrigger className="w-full" id={categoryId}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -97,17 +97,12 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
           {t('renderError')}
         </Banner>
       ) : (
-        <>
-          <p className="text-sm font-medium">{t('subject', { subject })}</p>
-          <div className="overflow-x-auto rounded-xl border bg-card">
-            <iframe
-              className="h-[75vh] w-full min-w-160"
-              sandbox=""
-              srcDoc={html}
-              title={t('frameTitle', { template })}
-            />
+        <div className="overflow-hidden rounded-xl border bg-card">
+          <p className="border-b px-4 py-3 type-label">{t('subject', { subject })}</p>
+          <div className="overflow-x-auto">
+            <iframe className="h-176 w-full min-w-160" sandbox="" srcDoc={html} title={t('frameTitle', { template })} />
           </div>
-        </>
+        </div>
       )}
     </div>
   )

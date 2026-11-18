@@ -7,6 +7,7 @@ import { AdminEmails } from '@/components/features/admin/emails'
 import { emailPreviewParsers } from '@/components/features/admin/emails-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(emailPreviewParsers)
@@ -25,11 +26,10 @@ const EmailsPageContent = async ({ searchParams }: PageProps<'/emails'>) => {
 }
 
 const EmailsPage = (props: PageProps<'/emails'>) => (
-  <DashboardPage
-    description={<PageTitle namespace="AdminEmails" name="description" />}
-    title={<PageTitle namespace="AdminEmails" name="title" />}
-  >
-    <EmailsPageContent {...props} />
+  <DashboardPage title={<PageTitle namespace="AdminEmails" name="title" />}>
+    <PageIntro description={<PageTitle namespace="AdminEmails" name="description" />}>
+      <EmailsPageContent {...props} />
+    </PageIntro>
   </DashboardPage>
 )
 

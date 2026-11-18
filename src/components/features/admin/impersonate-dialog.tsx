@@ -5,28 +5,22 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { startImpersonation } from '@/actions/admin/impersonation'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { toast } from '@/components/ui/toast'
 import { type AdminUserRow, MIN_ADMIN_REASON_LENGTH } from '@/db/queries/admin-user'
 import { APP_ROOT } from '@/lib/constants'
 import appConfig from '~/config/app.json'
 
+import { ActionDialog } from './action-dialog'
 import { ReasonField } from './reason-field'
 import { useAdminError } from './use-admin-error'
 import { userLabel } from './utils'
 
 export const ImpersonateDialog = ({
+  onCloseAutoFocus,
   onOpenChange,
   user,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   user: AdminUserRow | null
 }) => {
@@ -39,48 +33,42 @@ export const ImpersonateDialog = ({
   const handleConfirm = async () => {
     if (!(user && ready)) return
     setBusy(true)
-    const { error } = await startImpersonation({ reason: reason.trim(), userId: user.id })
+    try {
+      const { error } = await startImpersonation({ reason: reason.trim(), userId: user.id })
+      if (error) {
+        setBusy(false)
+        toast.error(adminError(error.code))
+        return
+      }
 
-    if (error) {
+      window.location.assign(APP_ROOT)
+    } catch {
       setBusy(false)
-      toast.error(adminError(error.code))
-      return
+      toast.error(t('impersonateError'))
     }
-
-    window.location.assign(APP_ROOT)
   }
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={Boolean(user)}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{t('impersonateTitle', { name: user ? userLabel(user) : '' })}</DialogTitle>
-          <DialogDescription>
-            {t('impersonateDescription', { minutes: appConfig.impersonationMinutes })}
-          </DialogDescription>
-        </DialogHeader>
-        <ReasonField
-          disabled={busy}
-          id="impersonate-reason"
-          onChange={setReason}
-          placeholder={t('impersonateReasonPlaceholder')}
-          value={reason}
-        />
-        <DialogFooter>
-          <Button disabled={busy} onClick={() => onOpenChange(false)} type="button" variant="outline">
-            {t('cancel')}
-          </Button>
-          <Button
-            disabled={!ready}
-            loading={busy}
-            loadingText={t('impersonating')}
-            onClick={handleConfirm}
-            type="button"
-          >
-            {t('confirmImpersonate')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
+      busy={busy}
+      cancelLabel={t('cancel')}
+      confirmDisabled={!ready}
+      confirmLabel={t('confirmImpersonate')}
+      description={t('impersonateDescription', { minutes: appConfig.impersonationMinutes })}
+      loadingLabel={t('impersonating')}
+      onConfirm={handleConfirm}
+      onOpenChange={onOpenChange}
+      open={Boolean(user)}
+      title={t('impersonateTitle', { name: user ? userLabel(user) : '' })}
+    >
+      <ReasonField
+        disabled={busy}
+        id="impersonate-reason"
+        onChange={setReason}
+        placeholder={t('impersonateReasonPlaceholder')}
+        value={reason}
+      />
+    </ActionDialog>
   )
 }

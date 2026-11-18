@@ -25,7 +25,7 @@ export const TranslationRowItem = ({
   return (
     <tr
       className={cn(
-        'grid cursor-pointer gap-3 border-b p-3 transition-colors hover:bg-muted/40 md:items-start md:gap-4',
+        'grid cursor-pointer gap-3 border-b p-3 transition-colors hover:bg-surface-hover md:items-start md:gap-4',
         TRANSLATION_GRID,
         className
       )}

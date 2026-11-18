@@ -17,6 +17,7 @@ export const MIN_REASON_LENGTH = 10
 const MAX_REASON_LENGTH = 2000
 
 export const ReasonDialog = ({
+  onCloseAutoFocus,
   busy,
   cancelLabel,
   confirmLabel,
@@ -31,6 +32,7 @@ export const ReasonDialog = ({
   placeholder,
   title,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   busy: boolean
   cancelLabel: string
   confirmLabel: string
@@ -55,7 +57,7 @@ export const ReasonDialog = ({
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg" onCloseAutoFocus={onCloseAutoFocus}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

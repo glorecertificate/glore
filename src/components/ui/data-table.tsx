@@ -75,6 +75,7 @@ export const DataTable = <T,>({
   loading = false,
   onSelectionChange,
   pageSize = 10,
+  pageResetKey,
   pagination,
   rowActions,
   rowLabel,
@@ -93,6 +94,7 @@ export const DataTable = <T,>({
   label: string
   loading?: boolean
   onSelectionChange?: (ids: DataTableRowId[]) => void
+  pageResetKey?: string
   pageSize?: number
   pagination?: DataTablePagination
   rowActions?: (row: T) => React.ReactNode
@@ -104,6 +106,11 @@ export const DataTable = <T,>({
   const locale = useLocale()
   const { number } = useFormatter()
   const [page, setPage] = useState(0)
+  const [previousResetKey, setPreviousResetKey] = useState(pageResetKey)
+  if (previousResetKey !== pageResetKey) {
+    setPreviousResetKey(pageResetKey)
+    setPage(0)
+  }
   const [sort, setSort] = useState<DataTableSort | null>(null)
   const [ownSelection, setOwnSelection] = useState<DataTableRowId[]>([])
   const reveal = useReveal(loading)

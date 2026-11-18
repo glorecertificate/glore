@@ -51,10 +51,13 @@ export const AdminOverviewShortcuts = ({
         <CardDescription>{t('shortcutsDescription')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-2">
+        <ul className="flex flex-col gap-2">
           {shortcuts.map(({ badge = 0, description, href, icon, label }) => (
             <li key={href}>
-              <Link className="flex items-center gap-3 rounded-lg border p-3 text-sm hover:bg-muted/50" href={href}>
+              <Link
+                className="flex items-center gap-3 rounded-lg border p-3 text-sm transition-colors hover:bg-surface-hover focus-visible:focus-ring"
+                href={href}
+              >
                 <LucideIcon className="size-4 shrink-0 text-muted-foreground" name={icon} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-medium">{label}</span>

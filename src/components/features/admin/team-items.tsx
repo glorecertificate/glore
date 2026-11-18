@@ -6,29 +6,14 @@ import { type Locale, useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -36,43 +21,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
-import { cn } from '@/lib/utils'
+
+import { ActionDialog } from './action-dialog'
 
 export type TeamRole = 'admin' | 'editor'
 export type TeamStatus = 'joined' | 'pending'
 
-const STAT_ACCENTS = {
-  brand: 'border-brand/20 bg-brand/10 text-brand-text',
-  warning: 'border-warning/25 bg-warning/15 text-warning-text',
-  success: 'border-success/25 bg-success/10 text-success-text',
-} as const
-
-export const TeamStatCard = ({
-  accent,
-  icon,
-  label,
-  value,
-}: {
-  accent?: keyof typeof STAT_ACCENTS
-  icon: IconName
-  label: string
-  value: number
-}) => (
-  <Card className="flex-row items-center justify-start gap-3.5 p-4">
-    <div
-      className={cn(
-        'flex size-10 shrink-0 items-center justify-center rounded-lg border',
-        accent && STAT_ACCENTS[accent]
-      )}
-    >
-      <LucideIcon className="size-5" name={icon} />
-    </div>
-    <div className="flex flex-col gap-1">
-      <span className="text-2xl leading-none font-semibold tabular-nums">{value}</span>
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
-    </div>
-  </Card>
-)
+export const ROLE_ICONS = {
+  admin: 'shield-user',
+  editor: 'pencil',
+} as const satisfies Record<TeamRole, IconName>
 
 export const getUserRole = (user: User): TeamRole => (user.isAdmin ? 'admin' : 'editor')
 
@@ -85,106 +43,59 @@ export const getDisplayName = (user: User) => {
   return user.email
 }
 
-export const TeamMemberRow = ({
-  isCurrentUser,
+export const TeamMemberActions = ({
+  busy,
   onChangeRole,
   onDelete,
   onResend,
   user,
 }: {
-  user: TeamMember
-  isCurrentUser: boolean
+  busy: boolean
   onChangeRole: (user: User, role: TeamRole) => void
   onDelete: (user: User) => void
   onResend: (user: User) => void
+  user: TeamMember
 }) => {
   const t = useTranslations('Admin.team')
   const role = getUserRole(user)
-  const status = getUserStatus(user)
   const targetRole = role === 'admin' ? 'editor' : 'admin'
 
   return (
-    <div className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-accent/40">
-      <div className="flex min-w-0 items-center gap-3.5">
-        <div className="relative shrink-0">
-          <Avatar className="size-10 rounded-full ring-2 ring-background">
-            {user.avatarUrl && <AvatarImage alt={getDisplayName(user)} src={user.avatarUrl} />}
-            <AvatarFallback className="rounded-full bg-muted text-sm font-medium">
-              {user.initials || <LucideIcon name="user" className="size-4" />}
-            </AvatarFallback>
-          </Avatar>
-        </div>
-        <div className="min-w-0">
-          <p className="flex items-center gap-1.5 truncate text-sm font-medium">
-            {getDisplayName(user)}
-            {isCurrentUser && (
-              <Badge className="px-1.5" size="sm" variant="muted">
-                {t('you')}
-              </Badge>
-            )}
-            {status === 'pending' && (
-              <Badge className="px-1.5" size="sm" variant="warning">
-                {t('status_pending')}
-              </Badge>
-            )}
-          </p>
-          <p className="truncate text-[13px] text-muted-foreground">{user.email}</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-2 sm:gap-2.5">
-        <Badge className={cn('gap-1 border')} variant="ghost">
-          {role === 'admin' ? (
-            <LucideIcon name="shield-user" className="size-3" />
-          ) : (
-            <LucideIcon name="pencil" className="size-3" />
-          )}
-          {t(`role_${role}`)}
-        </Badge>
-        {!isCurrentUser && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                aria-label={t('actions')}
-                className={cn(isCurrentUser && 'pointer-events-none opacity-0')}
-                size="icon"
-                variant="ghost"
-              >
-                <LucideIcon name="ellipsis" className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
-              <DropdownMenuItem className="text-[13px]" onClick={() => onChangeRole(user, targetRole)}>
-                {targetRole === 'admin' ? (
-                  <LucideIcon name="shield-user" className="size-3" />
-                ) : (
-                  <LucideIcon name="pencil" className="size-3" />
-                )}
-                {t('makeRole', { role: t(`role_${targetRole}`) })}
-              </DropdownMenuItem>
-              {status === 'pending' && user.invitationOpen && (
-                <DropdownMenuItem className="text-[13px]" onClick={() => onResend(user)}>
-                  <LucideIcon name="mail" className="size-3" />
-                  {t('resendInvite')}
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem className="text-[13px]" onClick={() => onDelete(user)} variant="destructive">
-                <LucideIcon name="trash-2" className="size-3" />
-                {t('removeMember')}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-label={`${t('actions')}: ${getDisplayName(user)}`} disabled={busy} size="icon" variant="ghost">
+          <LucideIcon name="ellipsis" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onSelect={() => onChangeRole(user, targetRole)}>
+          <LucideIcon name={ROLE_ICONS[targetRole]} />
+          {t('makeRole', { role: t(`role_${targetRole}`) })}
+        </DropdownMenuItem>
+        {getUserStatus(user) === 'pending' && user.invitationOpen && (
+          <DropdownMenuItem onSelect={() => onResend(user)}>
+            <LucideIcon name="mail" />
+            {t('resendInvite')}
+          </DropdownMenuItem>
         )}
-      </div>
-    </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => onDelete(user)} variant="destructive">
+          <LucideIcon name="trash-2" />
+          {t('removeMember')}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
 export const TeamInviteDialog = ({
+  onCloseAutoFocus,
   defaultLocale,
   onInvite,
   onOpenChange,
   open,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   defaultLocale: Locale
   onInvite: (data: {
     firstName: string
@@ -241,84 +152,83 @@ export const TeamInviteDialog = ({
   }
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t('inviteTitle')}</DialogTitle>
-          <DialogDescription>{t('inviteDescription')}</DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-3 py-2">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-first-name">{t('firstNameLabel')}</Label>
-              <Input
-                disabled={submitting}
-                id="invite-first-name"
-                onChange={e => setFirstName(e.target.value)}
-                placeholder={t('firstNamePlaceholder')}
-                value={firstName}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-last-name">{t('lastNameLabel')}</Label>
-              <Input
-                disabled={submitting}
-                id="invite-last-name"
-                onChange={e => setLastName(e.target.value)}
-                placeholder={t('lastNamePlaceholder')}
-                value={lastName}
-              />
-            </div>
-          </div>
+    <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
+      busy={submitting}
+      cancelLabel={t('cancel')}
+      confirmLabel={t('sendInvite')}
+      description={t('inviteDescription')}
+      loadingLabel={t('inviting')}
+      onConfirm={handleSubmit}
+      onOpenChange={handleOpenChange}
+      open={open}
+      title={t('inviteTitle')}
+    >
+      <div className="grid gap-3 py-2">
+        <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-y-2">
-            <Label htmlFor="invite-email">{t('emailLabel')}</Label>
+            <Label htmlFor="invite-first-name">{t('firstNameLabel')}</Label>
             <Input
               disabled={submitting}
-              id="invite-email"
-              onChange={e => setEmail(e.target.value)}
-              placeholder={t('emailPlaceholder')}
-              type="email"
-              value={email}
+              id="invite-first-name"
+              onChange={e => setFirstName(e.target.value)}
+              placeholder={t('firstNamePlaceholder')}
+              value={firstName}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-role">{t('roleLabel')}</Label>
-              <Select disabled={submitting} onValueChange={v => setRole(v as TeamRole)} value={role}>
-                <SelectTrigger id="invite-role">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">{t('role_admin')}</SelectItem>
-                  <SelectItem value="editor">{t('role_editor')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-y-2">
-              <Label>{t('languageLabel')}</Label>
-              <LanguageSelect controlled disabled={submitting} onChange={setLocale} value={locale} />
-            </div>
+          <div className="flex flex-col gap-y-2">
+            <Label htmlFor="invite-last-name">{t('lastNameLabel')}</Label>
+            <Input
+              disabled={submitting}
+              id="invite-last-name"
+              onChange={e => setLastName(e.target.value)}
+              placeholder={t('lastNamePlaceholder')}
+              value={lastName}
+            />
           </div>
         </div>
-        <DialogFooter>
-          <Button disabled={submitting} onClick={() => handleOpenChange(false)} variant="outline">
-            {t('cancel')}
-          </Button>
-          <Button disabled={submitting} loading={submitting} onClick={handleSubmit} variant="brand">
-            {t('sendInvite')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <div className="flex flex-col gap-y-2">
+          <Label htmlFor="invite-email">{t('emailLabel')}</Label>
+          <Input
+            disabled={submitting}
+            id="invite-email"
+            onChange={e => setEmail(e.target.value)}
+            placeholder={t('emailPlaceholder')}
+            type="email"
+            value={email}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-y-2">
+            <Label htmlFor="invite-role">{t('roleLabel')}</Label>
+            <Select disabled={submitting} onValueChange={v => setRole(v as TeamRole)} value={role}>
+              <SelectTrigger id="invite-role">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">{t('role_admin')}</SelectItem>
+                <SelectItem value="editor">{t('role_editor')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <Label>{t('languageLabel')}</Label>
+            <LanguageSelect controlled disabled={submitting} onChange={setLocale} value={locale} />
+          </div>
+        </div>
+      </div>
+    </ActionDialog>
   )
 }
 
 export const DeleteDialog = ({
+  onCloseAutoFocus,
   onConfirm,
   onOpenChange,
   open,
   user,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   user: User | null
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -327,8 +237,7 @@ export const DeleteDialog = ({
   const t = useTranslations('Admin.team')
   const [deleting, setDeleting] = useState(false)
 
-  const handleConfirm = async (event: React.MouseEvent) => {
-    event.preventDefault()
+  const handleConfirm = async () => {
     try {
       setDeleting(true)
       await onConfirm()
@@ -338,21 +247,18 @@ export const DeleteDialog = ({
   }
 
   return (
-    <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent onEscapeKeyDown={event => deleting && event.preventDefault()}>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t('deleteTitle')}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t('deleteDescription', { name: user ? getDisplayName(user) : '' })}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleting}>{t('cancel')}</AlertDialogCancel>
-          <AlertDialogAction loading={deleting} onClick={handleConfirm} variant="destructive">
-            {t('confirmDelete')}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
+      busy={deleting}
+      cancelLabel={t('cancel')}
+      confirmLabel={t('confirmDelete')}
+      description={t('deleteDescription', { name: user ? getDisplayName(user) : '' })}
+      loadingLabel={t('removing')}
+      onConfirm={handleConfirm}
+      onOpenChange={onOpenChange}
+      open={open}
+      title={t('deleteTitle')}
+      tone="destructive"
+    />
   )
 }

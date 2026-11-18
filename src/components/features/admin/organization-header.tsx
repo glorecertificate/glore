@@ -4,9 +4,9 @@ import { useFormatter, useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { countryCodeToFlag } from '@/components/ui/country-select'
-import { PageHeaderTitle } from '@/components/ui/page-header'
+import { PageHeader, PageHeaderActions, PageHeaderHeading, PageHeaderTitle } from '@/components/ui/page-header'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { type Organization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
 import { isHttpUrl } from '@/lib/url'
@@ -31,60 +31,69 @@ export const OrganizationHeader = ({
   const isRejected =
     !organization.approvedAt &&
     organization.joinRequests.some(request => request.role === 'admin' && request.isRejected)
-  const statusLabel = organization.approvedAt ? 'filter_active' : isRejected ? 'statusRejected' : 'statusPending'
-  const statusVariant = organization.approvedAt ? 'success' : isRejected ? 'destructive' : 'warning'
+  const status = organization.approvedAt
+    ? ({ icon: 'circle-check', label: 'statusActive', tone: 'success' } as const)
+    : isRejected
+      ? ({ icon: 'circle-x', label: 'statusRejected', tone: 'danger' } as const)
+      : ({ icon: 'clock', label: 'statusPending', tone: 'warning' } as const)
   const isPending = !(organization.approvedAt || isRejected)
 
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
-      <div className="h-20 bg-linear-to-r from-brand/15 via-brand/5 to-transparent" />
-      <div className="flex flex-col gap-4 px-6 pb-5 sm:flex-row sm:items-end">
-        <Avatar className="-mt-12 size-20 shrink-0 rounded-2xl border border-border shadow-2xs">
-          {organization.avatarUrl && (
-            <AvatarImage alt={organization.name} className="object-cover" src={organization.avatarUrl} />
-          )}
-          <AvatarFallback className="rounded-2xl bg-muted text-2xl font-semibold">
+    <PageHeader className="sm:items-center">
+      <div className="flex min-w-0 items-center gap-4">
+        <Avatar className="size-16 shrink-0 rounded-xl">
+          {organization.avatarUrl && <AvatarImage alt="" className="object-cover" src={organization.avatarUrl} />}
+          <AvatarFallback className="rounded-xl text-xl font-medium">
             {organization.name.slice(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-        <div className="min-w-0 flex-1 space-y-1.5">
+        <PageHeaderHeading className="min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
             <PageHeaderTitle>{organization.name}</PageHeaderTitle>
-            <Badge variant={statusVariant}>{t(statusLabel)}</Badge>
+            <StatusBadge icon={status.icon} tone={status.tone}>
+              {t(status.label)}
+            </StatusBadge>
           </div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
+          <ul className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
             {location && (
-              <span className="flex items-center gap-1.25">
-                <LucideIcon className="size-3.5 shrink-0" name="map-pin" />
+              <li className="flex items-center gap-1.5">
+                <LucideIcon className="shrink-0" name="map-pin" />
                 {location}
-              </span>
+              </li>
             )}
-            <span className="flex min-w-0 items-center gap-1">
-              <LucideIcon className="size-3.5 shrink-0" name="mail" />
+            <li className="flex min-w-0 items-center gap-1.5">
+              <LucideIcon className="shrink-0" name="mail" />
               <span className="truncate">{organization.email}</span>
-            </span>
+            </li>
             {organization.url && isHttpUrl(organization.url) && (
-              <a className="group flex items-center gap-1.25" href={organization.url} rel="noreferrer" target="_blank">
-                <LucideIcon className="size-3.5 shrink-0" name="globe" />
-                <span className="transition-colors group-hover:text-foreground group-hover:underline">
+              <li>
+                <a
+                  className="flex items-center gap-1.5 hover:text-foreground hover:underline"
+                  href={organization.url}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <LucideIcon className="shrink-0" name="globe" />
                   {organization.url.replace(/^https?:\/\//u, '')}
-                </span>
-              </a>
+                </a>
+              </li>
             )}
-            <span className="flex items-center gap-1.25">
-              <LucideIcon className="size-3.5 shrink-0" name="users" />
+            <li className="flex items-center gap-1.5">
+              <LucideIcon className="shrink-0" name="users" />
               {t('memberCount', { count: organization.memberships.length })}
-            </span>
-            <span className="flex items-center gap-1.25">
-              <LucideIcon className="size-3.5 shrink-0" name="calendar" />
+            </li>
+            <li className="flex items-center gap-1.5">
+              <LucideIcon className="shrink-0" name="calendar" />
               {dateTime(new Date(organization.createdAt), { dateStyle: 'long' })}
-            </span>
-          </div>
-        </div>
-        {isPending && (
-          <OrganizationReviewActions id={organization.id} name={organization.name} onReviewed={onReviewed} />
-        )}
+            </li>
+          </ul>
+        </PageHeaderHeading>
       </div>
-    </div>
+      {isPending && (
+        <PageHeaderActions>
+          <OrganizationReviewActions id={organization.id} name={organization.name} onReviewed={onReviewed} />
+        </PageHeaderActions>
+      )}
+    </PageHeader>
   )
 }

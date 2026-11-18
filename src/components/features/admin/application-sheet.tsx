@@ -12,11 +12,13 @@ import { ApplicationSummary } from './application-summary'
 
 export const ApplicationSheet = ({
   onApprove,
+  onCloseAutoFocus,
   onOpenChange,
   onReject,
   org,
 }: {
   onApprove: (org: AdminOrganization) => void
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   onReject: (org: AdminOrganization) => void
   org: AdminOrganization | null
@@ -25,7 +27,11 @@ export const ApplicationSheet = ({
 
   return (
     <Sheet onOpenChange={onOpenChange} open={Boolean(org)}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-lg" closeSrText={t('app_close')}>
+      <SheetContent
+        className="w-full overflow-y-auto sm:max-w-lg"
+        closeSrText={t('app_close')}
+        onCloseAutoFocus={onCloseAutoFocus}
+      >
         <SheetHeader>
           <SheetTitle>{org?.name ?? t('app_title')}</SheetTitle>
           <SheetDescription>{t('app_description')}</SheetDescription>

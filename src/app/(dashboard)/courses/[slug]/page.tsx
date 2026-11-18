@@ -55,7 +55,7 @@ const CourseOverviewContent = async ({
 
 const CoursePageContent = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
   const [{ slug }, { user }] = await Promise.all([params, getViewerContext()])
-  if (user.canEdit) return <CourseEditorView basePath={`/courses/${slug}`} searchParams={searchParams} slug={slug} />
+  if (user.canEdit) return <CourseEditorView slug={slug} />
 
   return (
     <DashboardPage parent="courses" title={<CourseTitle searchParams={searchParams} slug={slug} />} width="content">

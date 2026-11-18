@@ -9,7 +9,6 @@ import { adminUsersParsers } from '@/components/features/admin/users-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
-import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(adminUsersParsers)
@@ -37,12 +36,13 @@ const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/a
 }
 
 const AdminUsersPage = ({ searchParams }: PageProps<'/admin/users'>) => (
-  <DashboardPage title={<PageTitle namespace="Admin.users" name="title" />}>
-    <PageIntro description={<PageTitle namespace="Admin.users" name="description" />}>
-      <Suspense fallback={<LoadingFallback />}>
-        <AdminUsersContent searchParams={searchParams} />
-      </Suspense>
-    </PageIntro>
+  <DashboardPage
+    description={<PageTitle namespace="Admin.users" name="description" />}
+    title={<PageTitle namespace="Admin.users" name="title" />}
+  >
+    <Suspense fallback={<LoadingFallback />}>
+      <AdminUsersContent searchParams={searchParams} />
+    </Suspense>
   </DashboardPage>
 )
 

@@ -6,9 +6,12 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
+import { STAT_ACCENTS, type StatAccent } from '@/components/ui/stat-card'
 import { type IconName } from '@/lib/types'
+import { cn } from '@/lib/utils'
 
 interface Shortcut {
+  accent: StatAccent
   badge?: number
   description: string
   href: Route
@@ -26,8 +29,15 @@ export const AdminOverviewShortcuts = ({
   const t = useTranslations('Admin.overview')
 
   const shortcuts: Shortcut[] = [
-    { description: t('shortcutUsersHint'), href: '/admin/users' as Route, icon: 'users', label: t('shortcutUsers') },
     {
+      accent: 'teal',
+      description: t('shortcutUsersHint'),
+      href: '/admin/users' as Route,
+      icon: 'users',
+      label: t('shortcutUsers'),
+    },
+    {
+      accent: 'navy',
       badge: pendingOrganizations,
       description: t('shortcutOrganizationsHint'),
       href: '/admin/organizations?tab=pending' as Route,
@@ -35,13 +45,20 @@ export const AdminOverviewShortcuts = ({
       label: t('shortcutOrganizations'),
     },
     {
+      accent: 'green',
       badge: waitingCertificates,
       description: t('shortcutCertificatesHint'),
       href: '/admin/certificates',
       icon: 'badge-check',
       label: t('shortcutCertificates'),
     },
-    { description: t('shortcutAuditHint'), href: '/admin/audit', icon: 'clipboard-list', label: t('shortcutAudit') },
+    {
+      accent: 'amber',
+      description: t('shortcutAuditHint'),
+      href: '/admin/audit',
+      icon: 'clipboard-list',
+      label: t('shortcutAudit'),
+    },
   ]
 
   return (
@@ -51,20 +68,33 @@ export const AdminOverviewShortcuts = ({
         <CardDescription>{t('shortcutsDescription')}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ul className="flex flex-col gap-2">
-          {shortcuts.map(({ badge = 0, description, href, icon, label }) => (
+        <ul className="-mx-2 flex flex-col">
+          {shortcuts.map(({ accent, badge = 0, description, href, icon, label }) => (
             <li key={href}>
               <Link
-                className="flex items-center gap-3 rounded-lg border p-3 text-sm transition-colors hover:bg-surface-hover focus-visible:focus-ring"
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors duration-100 hover:bg-surface-hover focus-visible:focus-ring"
                 href={href}
               >
-                <LucideIcon className="size-4 shrink-0 text-muted-foreground" name={icon} />
+                <span
+                  aria-hidden
+                  className={cn(
+                    'flex size-9 shrink-0 items-center justify-center rounded-lg bg-stat-tile text-stat-foreground',
+                    STAT_ACCENTS[accent]
+                  )}
+                >
+                  <LucideIcon className="size-4" name={icon} />
+                </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate font-medium">{label}</span>
+                  <span className="block truncate font-semibold">{label}</span>
                   <span className="block truncate text-xs text-muted-foreground">{description}</span>
                 </span>
-                {badge > 0 && <Badge variant="brand">{badge}</Badge>}
-                <LucideIcon className="size-4 shrink-0 text-muted-foreground" name="chevron-right" />
+                {badge > 0 && (
+                  <Badge
+                    className={cn('bg-stat-tile font-bold text-stat-foreground', STAT_ACCENTS[accent])}
+                    count={badge}
+                    variant="ghost"
+                  />
+                )}
               </Link>
             </li>
           ))}

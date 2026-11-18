@@ -61,6 +61,11 @@ References live in `.agents/references/`: product decisions, the certificate PDF
 - Reuse the release UI kit in `ui/` before adding primitives (`ui.md`).
 - Locales are `en` (default), `es`, `it`. Add or remove a key in all three `messages/{locale}.json` catalogs in the same change.
 
+## UI quality bar
+
+- The owner's UI bar is non-negotiable in every run: enterprise-grade, instant, themed, beautiful. Rules: `ui.md`, "Quality bar".
+- A UI PR attaches before and after screenshots, and "looks the same" fails it.
+
 ## Conventions
 
 Apply these on the first pass in every file, legacy included. Lint detail: `code.md`.
@@ -95,8 +100,8 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 12. Never add manual `useMemo` or `useCallback`: the React Compiler runs in builds.
 13. Never revert the dev-performance flags in `workflow.md`, "Dev environment and performance".
 14. Certificate state changes go through `certificateAction` and `commitTransition` in `@/actions/certificates/helpers` (`certificates.md`).
-15. Invitations never create memberships. Accepting one does (`db/mutations/invitation.ts`). Never `signUpEmail` or insert a membership for an invitee.
-16. Role changes, removals, leaving, and ownership transfers live in `db/mutations/organization.ts`. Org actions take an optional `organizationId` (`organizations.md`).
+15. Invitations never create memberships. Accepting one does (`organizations.md`, "Invitation rules").
+16. Membership changes live in `db/mutations/organization.ts` (`organizations.md`).
 17. Call admin `auth.api.*` only from `actions/admin/*` after `requireAdmin` (`admin.md`).
 
 ## Verification
@@ -104,7 +109,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 Run the rungs in order and report which ones ran:
 
 1. `pnpm run check` exits 0.
-2. Prove a fix or a feature with a temporary test outside the repository, in the session temp directory. Commit a test only when it guards a rule that must run again: certificate, invitation, role, or auth logic. Then run the test suites.
+2. Prove a fix or a feature with a temporary test, then run the suites (`workflow.md`, "Testing").
 3. Test email flows yourself with Mailpit, never handing them to the user (`workflow.md`).
 4. Verify UI, layout, or animation in a real browser with `agent-browser` at `https://glore.localhost` as a seeded user. A typecheck is not visual verification.
 

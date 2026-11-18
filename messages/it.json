@@ -2798,7 +2798,6 @@
       "statAdmins": "Admin",
       "statEditors": "Editor",
       "statPending": "In sospeso",
-      "members": "Membri",
       "description": "Gestisci gli amministratori e gli editor della piattaforma.",
       "columns": {
         "member": "Membro",
@@ -2808,7 +2807,8 @@
       },
       "tableLabel": "Membri del team",
       "noMembersDescription": "Invita un amministratore o un editor per iniziare.",
-      "noMembersFiltered": "Nessun membro trovato"
+      "noMembersFiltered": "Nessun membro trovato",
+      "removing": "Rimozione…"
     },
     "organizations": {
       "title": "Organizzazioni",
@@ -2861,7 +2861,6 @@
       "inviteTitle": "Invita organizzazione",
       "inviting": "Invito in corso…",
       "memberCount": "{count, plural, =0 {Nessun membro} one {# membro} other {# membri}}",
-      "optional": "facoltativo",
       "reject": "Rifiuta",
       "rejectCommentPlaceholder": "Spiega perché la registrazione non è stata approvata…",
       "rejectDescription": "Rifiutare la richiesta di registrazione di {name}? Il rappresentante riceverà una notifica via email e l'organizzazione risulterà rifiutata.",
@@ -2911,7 +2910,8 @@
         "created": "Registrata"
       },
       "tableLabel": "Organizzazioni",
-      "openOrg": "Apri organizzazione"
+      "openOrg": "Apri organizzazione",
+      "commentLabelOptional": "Commento (facoltativo)"
     },
     "users": {
       "title": "Utenti",
@@ -3044,7 +3044,8 @@
       "noCertificatesDescription": "Qui compariranno i certificati inviati da tutte le organizzazioni.",
       "view": "Vedi",
       "openOrganization": "Mostra il flusso di {name}",
-      "description": "Cerca qualsiasi certificato richiesto o emesso e revocalo quando serve."
+      "description": "Cerca qualsiasi certificato richiesto o emesso e revocalo quando serve.",
+      "actions": "Azioni"
     },
     "audit": {
       "title": "Registro di audit",
@@ -3132,7 +3133,9 @@
       "required": "Questo campo è obbligatorio.",
       "invalidEmail": "Inserisci un indirizzo email valido.",
       "invalidPhone": "Inserisci un numero in formato internazionale, come +390256568779.",
-      "invalidUrl": "Inserisci un indirizzo web valido che inizi con http o https."
+      "invalidUrl": "Inserisci un indirizzo web valido che inizi con http o https.",
+      "unsaved": "Hai modifiche non salvate.",
+      "upToDate": "Tutte le modifiche sono salvate."
     },
     "overview": {
       "title": "Panoramica",

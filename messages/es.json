@@ -2798,7 +2798,6 @@
       "statAdmins": "Admins",
       "statEditors": "Editores",
       "statPending": "Pendientes",
-      "members": "Miembros",
       "description": "Gestiona los administradores y editores de la plataforma.",
       "columns": {
         "member": "Miembro",
@@ -2808,7 +2807,8 @@
       },
       "tableLabel": "Miembros del equipo",
       "noMembersDescription": "Invita a un administrador o editor para empezar.",
-      "noMembersFiltered": "No se encontraron miembros"
+      "noMembersFiltered": "No se encontraron miembros",
+      "removing": "Eliminando…"
     },
     "organizations": {
       "title": "Organizaciones",
@@ -2861,7 +2861,6 @@
       "inviteTitle": "Invitar organización",
       "inviting": "Invitando…",
       "memberCount": "{count, plural, =0 {Sin miembros} one {# miembro} other {# miembros}}",
-      "optional": "opcional",
       "reject": "Rechazar",
       "rejectCommentPlaceholder": "Explica por qué no se aprobó el registro…",
       "rejectDescription": "¿Rechazar la solicitud de registro de {name}? Se notificará al representante por correo y la organización aparecerá como rechazada.",
@@ -2911,7 +2910,8 @@
         "created": "Registro"
       },
       "tableLabel": "Organizaciones",
-      "openOrg": "Abrir organización"
+      "openOrg": "Abrir organización",
+      "commentLabelOptional": "Comentario (opcional)"
     },
     "users": {
       "title": "Usuarios",
@@ -3044,7 +3044,8 @@
       "noCertificatesDescription": "Aquí aparecerán los certificados enviados por todas las organizaciones.",
       "view": "Ver",
       "openOrganization": "Ver el flujo de {name}",
-      "description": "Consulta cualquier certificado solicitado o emitido y revócalo cuando haga falta."
+      "description": "Consulta cualquier certificado solicitado o emitido y revócalo cuando haga falta.",
+      "actions": "Acciones"
     },
     "audit": {
       "title": "Registro de auditoría",
@@ -3132,7 +3133,9 @@
       "required": "Este campo es obligatorio.",
       "invalidEmail": "Introduce un correo electrónico válido.",
       "invalidPhone": "Introduce un teléfono en formato internacional, como +390256568779.",
-      "invalidUrl": "Introduce una dirección web válida que empiece por http o https."
+      "invalidUrl": "Introduce una dirección web válida que empiece por http o https.",
+      "unsaved": "Tienes cambios sin guardar.",
+      "upToDate": "Todos los cambios están guardados."
     },
     "overview": {
       "title": "Resumen",

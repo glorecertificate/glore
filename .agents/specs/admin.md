@@ -14,6 +14,11 @@
 - States are `StatusBadge` tones: pending `warning`, active or joined `success`, rejected or banned `danger`. Roles and audit categories stay `Badge`.
 - The organization record header is a `PageHeader` (avatar, `PageHeaderTitle`, status, meta list) with the review actions in `PageHeaderActions`. The application tab links the website and emails.
 - Row actions are one `ellipsis` menu with a destructive item last, and a confirm dialog for every destructive or irreversible action.
+- `/admin/organizations` and `/admin/team` page locally at 10 rows (the `DataTable` default). They were unpaginated before.
+- Every admin confirm dialog (approve, reject, ban, unban, impersonate, remove member, invite, create) is `ActionDialog` (`action-dialog.tsx`): a form (Enter submits), `destructive` tone for reject, ban, and removal, a pending state that blocks closing, and focus return.
+- A dialog opened from a row menu calls `selectFromMenu` (`menu-focus.ts`) so focus returns to that row's trigger on close. The revoke dialog (`ReasonDialog`) restores it after its close animation.
+- Settings sections are cards with a sticky save bar that shows the unsaved state.
+- Audit categories use `StatusBadge` with a per-category icon and tone map (`CATEGORY_META`).
 
 ## Users
 

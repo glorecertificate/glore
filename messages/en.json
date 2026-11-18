@@ -2798,7 +2798,6 @@
       "statAdmins": "Admins",
       "statEditors": "Editors",
       "statPending": "Pending",
-      "members": "Members",
       "description": "Manage the platform admins and editors.",
       "columns": {
         "member": "Member",
@@ -2808,7 +2807,8 @@
       },
       "tableLabel": "Team members",
       "noMembersDescription": "Invite an admin or an editor to get started.",
-      "noMembersFiltered": "No team members found"
+      "noMembersFiltered": "No team members found",
+      "removing": "Removing…"
     },
     "organizations": {
       "title": "Organizations",
@@ -2861,7 +2861,6 @@
       "inviteTitle": "Invite organization",
       "inviting": "Inviting…",
       "memberCount": "{count, plural, =0 {No members} one {# member} other {# members}}",
-      "optional": "optional",
       "reject": "Reject",
       "rejectCommentPlaceholder": "Please explain why the registration was not approved…",
       "rejectDescription": "Reject the registration request for {name}? The representative will be notified by email and the organization will be listed as rejected.",
@@ -2911,7 +2910,8 @@
         "created": "Registered"
       },
       "tableLabel": "Organizations",
-      "openOrg": "Open organization"
+      "openOrg": "Open organization",
+      "commentLabelOptional": "Comment (optional)"
     },
     "users": {
       "title": "Users",
@@ -3044,7 +3044,8 @@
       "noCertificatesDescription": "Submitted certificates from every organization will appear here.",
       "view": "View",
       "openOrganization": "Show the pipeline of {name}",
-      "description": "Look up any requested or issued certificate and revoke it when needed."
+      "description": "Look up any requested or issued certificate and revoke it when needed.",
+      "actions": "Actions"
     },
     "audit": {
       "title": "Audit log",
@@ -3132,7 +3133,9 @@
       "required": "This field is required.",
       "invalidEmail": "Enter a valid email address.",
       "invalidPhone": "Enter a phone number in international format, like +390256568779.",
-      "invalidUrl": "Enter a valid web address starting with http or https."
+      "invalidUrl": "Enter a valid web address starting with http or https.",
+      "unsaved": "You have unsaved changes.",
+      "upToDate": "All changes are saved."
     },
     "overview": {
       "title": "Overview",

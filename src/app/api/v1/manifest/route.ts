@@ -15,6 +15,7 @@ export const GET = async (request: NextRequest) => {
 
   const manifest: MetadataRoute.Manifest = {
     background_color: metadata.themeColor,
+    id: '/',
     description: t('pwaDescription'),
     display: 'standalone',
     icons: [
@@ -26,6 +27,12 @@ export const GET = async (request: NextRequest) => {
       },
       {
         purpose: 'any',
+        sizes: '512x512',
+        src: publicFile('/web-app-icon-512x512.png'),
+        type: 'image/png',
+      },
+      {
+        purpose: 'maskable',
         sizes: '512x512',
         src: publicFile('/web-app-icon-512x512.png'),
         type: 'image/png',

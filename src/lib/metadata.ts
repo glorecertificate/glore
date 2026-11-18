@@ -77,9 +77,11 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   initialScale: 1,
+  interactiveWidget: 'resizes-content',
+  viewportFit: 'cover',
   themeColor: [
-    { color: '#efefef', media: '(prefers-color-scheme: light)' },
-    { color: '#141414', media: '(prefers-color-scheme: dark)' },
+    { color: config.themeColor, media: '(prefers-color-scheme: light)' },
+    { color: config.themeColorDark, media: '(prefers-color-scheme: dark)' },
   ],
   width: 'device-width',
 }

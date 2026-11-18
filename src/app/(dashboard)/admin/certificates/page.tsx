@@ -4,12 +4,12 @@ import { createSearchParamsCache } from 'nuqs/server'
 
 import { searchAdminCertificates } from '@/actions/admin/certificates'
 import { listAdminOrganizationOptions } from '@/actions/admin/options'
-import { AdminPage } from '@/components/features/admin/admin-page'
+import { AdminTableSkeleton } from '@/components/features/admin/admin-table-skeleton'
 import { AdminCertificates } from '@/components/features/admin/certificates'
 import { adminCertificatesParsers } from '@/components/features/admin/certificates-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
+import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(adminCertificatesParsers)
@@ -37,11 +37,20 @@ const AdminCertificatesContent = async ({
 
 const AdminCertificatesPage = ({ searchParams }: PageProps<'/admin/certificates'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.certificates" name="title" />}>
-    <AdminPage description={<PageTitle namespace="Admin.certificates" name="description" />}>
-      <Suspense fallback={<LoadingFallback />}>
+    <PageIntro description={<PageTitle namespace="Admin.certificates" name="description" />}>
+      <Suspense
+        fallback={
+          <AdminTableSkeleton
+            columns={['code', 'holder', 'organization', 'status', 'date']}
+            namespace="Admin.certificates"
+            pageSize={20}
+            rowActions
+          />
+        }
+      >
         <AdminCertificatesContent searchParams={searchParams} />
       </Suspense>
-    </AdminPage>
+    </PageIntro>
   </DashboardPage>
 )
 

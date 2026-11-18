@@ -1,8 +1,8 @@
 import { getSettings } from '@/actions/admin/settings'
-import { AdminPage } from '@/components/features/admin/admin-page'
 import { AdminSettingsForm } from '@/components/features/admin/settings-form'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -19,9 +19,9 @@ const AdminSettingsContent = async () => {
 
 const AdminSettingsPage = () => (
   <DashboardPage title={<PageTitle namespace="Admin.settings" name="title" />} width="content">
-    <AdminPage description={<PageTitle namespace="Admin.settings" name="description" />}>
+    <PageIntro description={<PageTitle namespace="Admin.settings" name="description" />}>
       <AdminSettingsContent />
-    </AdminPage>
+    </PageIntro>
   </DashboardPage>
 )
 

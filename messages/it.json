@@ -2797,7 +2797,7 @@
       "statMembers": "Membri totali",
       "statAdmins": "Admin",
       "statEditors": "Editor",
-      "statPending": "In sospeso",
+      "statPending": "In attesa",
       "description": "Gestisci gli amministratori e gli editor della piattaforma.",
       "columns": {
         "member": "Membro",
@@ -2808,7 +2808,8 @@
       "tableLabel": "Membri del team",
       "noMembersDescription": "Invita un amministratore o un editor per iniziare.",
       "noMembersFiltered": "Nessun membro trovato",
-      "removing": "Rimozione…"
+      "removing": "Rimozione…",
+      "inviting": "Invio in corso…"
     },
     "organizations": {
       "title": "Organizzazioni",
@@ -2984,7 +2985,10 @@
       "confirmImpersonate": "Inizia a visualizzare",
       "impersonating": "Avvio in corso…",
       "cancel": "Annulla",
-      "description": "Cerca qualsiasi account, cambia i ruoli della piattaforma e sospendi o impersona le persone."
+      "description": "Cerca qualsiasi account, cambia i ruoli della piattaforma e sospendi o impersona le persone.",
+      "banError": "Impossibile sospendere l'utente. Riprova.",
+      "unbanError": "Impossibile revocare la sospensione. Riprova.",
+      "impersonateError": "Impossibile avviare la sessione di visualizzazione. Riprova."
     },
     "impersonation": {
       "label": "Sessione di visualizzazione",

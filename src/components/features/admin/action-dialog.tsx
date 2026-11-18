@@ -1,5 +1,14 @@
 'use client'
 
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,8 +19,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-import { restoreMenuTrigger } from './menu-focus'
-
 export const ActionDialog = ({
   busy = false,
   cancelLabel,
@@ -20,6 +27,7 @@ export const ActionDialog = ({
   confirmLabel,
   description,
   loadingLabel,
+  onCloseAutoFocus,
   onConfirm,
   onOpenChange,
   open,
@@ -32,12 +40,15 @@ export const ActionDialog = ({
   confirmLabel: string
   description: React.ReactNode
   loadingLabel: string
+  onCloseAutoFocus?: (event: Event) => void
   onConfirm: () => void
   onOpenChange: (open: boolean) => void
   open: boolean
   title: React.ReactNode
   tone?: 'default' | 'destructive'
 }>) => {
+  const destructive = tone === 'destructive'
+
   const handleOpenChange = (next: boolean) => {
     if (busy) return
     onOpenChange(next)
@@ -49,9 +60,41 @@ export const ActionDialog = ({
     onConfirm()
   }
 
+  const confirm = (
+    <Button
+      disabled={confirmDisabled}
+      loading={busy}
+      loadingText={loadingLabel}
+      type="submit"
+      variant={destructive ? 'destructive' : 'brand'}
+    >
+      {confirmLabel}
+    </Button>
+  )
+
+  if (destructive) {
+    return (
+      <AlertDialog onOpenChange={handleOpenChange} open={open}>
+        <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
+          <form className="contents" onSubmit={handleSubmit}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{title}</AlertDialogTitle>
+              <AlertDialogDescription>{description}</AlertDialogDescription>
+            </AlertDialogHeader>
+            {children}
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={busy}>{cancelLabel}</AlertDialogCancel>
+              {confirm}
+            </AlertDialogFooter>
+          </form>
+        </AlertDialogContent>
+      </AlertDialog>
+    )
+  }
+
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogContent className="sm:max-w-lg" onCloseAutoFocus={event => restoreMenuTrigger() && event.preventDefault()}>
+      <DialogContent className="sm:max-w-lg" onCloseAutoFocus={onCloseAutoFocus}>
         <form className="contents" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
@@ -62,15 +105,7 @@ export const ActionDialog = ({
             <Button disabled={busy} onClick={() => handleOpenChange(false)} type="button" variant="outline">
               {cancelLabel}
             </Button>
-            <Button
-              disabled={confirmDisabled}
-              loading={busy}
-              loadingText={loadingLabel}
-              type="submit"
-              variant={tone === 'destructive' ? 'destructive' : 'brand'}
-            >
-              {confirmLabel}
-            </Button>
+            {confirm}
           </DialogFooter>
         </form>
       </DialogContent>

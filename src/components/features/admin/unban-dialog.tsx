@@ -13,10 +13,12 @@ import { useAdminError } from './use-admin-error'
 import { userLabel } from './utils'
 
 export const UnbanDialog = ({
+  onCloseAutoFocus,
   onDone,
   onOpenChange,
   user,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   onDone: () => void
   onOpenChange: (open: boolean) => void
   user: AdminUserRow | null
@@ -28,21 +30,26 @@ export const UnbanDialog = ({
   const handleConfirm = async () => {
     if (!user) return
     setBusy(true)
-    const { error } = await unbanUser(user.id)
-    setBusy(false)
+    try {
+      const { error } = await unbanUser(user.id)
+      if (error) {
+        toast.error(adminError(error.code))
+        return
+      }
 
-    if (error) {
-      toast.error(adminError(error.code))
-      return
+      toast.success(t('unbanSuccess', { name: userLabel(user) }))
+      onOpenChange(false)
+      onDone()
+    } catch {
+      toast.error(t('unbanError'))
+    } finally {
+      setBusy(false)
     }
-
-    toast.success(t('unbanSuccess', { name: userLabel(user) }))
-    onOpenChange(false)
-    onDone()
   }
 
   return (
     <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
       busy={busy}
       cancelLabel={t('cancel')}
       confirmLabel={t('confirmUnban')}

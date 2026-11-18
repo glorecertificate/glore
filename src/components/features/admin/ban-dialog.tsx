@@ -41,10 +41,12 @@ const tomorrow = () => {
 }
 
 export const BanDialog = ({
+  onCloseAutoFocus,
   onDone,
   onOpenChange,
   user,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   onDone: () => void
   onOpenChange: (open: boolean) => void
   user: AdminUserRow | null
@@ -67,21 +69,26 @@ export const BanDialog = ({
   const handleConfirm = async () => {
     if (!(user && ready)) return
     setBusy(true)
-    const { error } = await banUser({ expiresAt: resolveExpiry(), reason: reason.trim(), userId: user.id })
-    setBusy(false)
+    try {
+      const { error } = await banUser({ expiresAt: resolveExpiry(), reason: reason.trim(), userId: user.id })
+      if (error) {
+        toast.error(adminError(error.code))
+        return
+      }
 
-    if (error) {
-      toast.error(adminError(error.code))
-      return
+      toast.success(t('banSuccess', { name: userLabel(user) }))
+      onOpenChange(false)
+      onDone()
+    } catch {
+      toast.error(t('banError'))
+    } finally {
+      setBusy(false)
     }
-
-    toast.success(t('banSuccess', { name: userLabel(user) }))
-    onOpenChange(false)
-    onDone()
   }
 
   return (
     <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
       busy={busy}
       cancelLabel={t('cancel')}
       confirmDisabled={!ready}

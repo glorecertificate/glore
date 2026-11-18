@@ -9,3 +9,9 @@ export const userInitials = (user: Pick<AdminUserRow, 'firstName' | 'lastName'>)
     .flatMap(name => (name?.trim() ? [name.trim().charAt(0).toUpperCase()] : []))
     .slice(0, 2)
     .join('')
+
+export const listFocusTarget = () => {
+  const list = document.querySelector<HTMLElement>('[data-slot="data-table"]')
+  if (list) list.tabIndex = -1
+  return list
+}

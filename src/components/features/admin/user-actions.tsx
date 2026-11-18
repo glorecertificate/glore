@@ -14,7 +14,6 @@ import {
 import { type AdminUserRow, PLATFORM_ROLES, type PlatformRole, isBanActive } from '@/db/queries/admin-user'
 import { type IconName } from '@/lib/types'
 
-import { selectFromMenu } from './menu-focus'
 import { userLabel } from './utils'
 
 const ROLE_ICONS = {
@@ -63,19 +62,19 @@ export const UserActions = ({
         )}
         <DropdownMenuSeparator />
         {canImpersonate && (
-          <DropdownMenuItem onSelect={selectFromMenu(() => onImpersonate(user))}>
+          <DropdownMenuItem onSelect={() => onImpersonate(user)}>
             <LucideIcon name="eye" />
             {t('impersonate')}
           </DropdownMenuItem>
         )}
         {banned && (
-          <DropdownMenuItem onSelect={selectFromMenu(() => onUnban(user))}>
+          <DropdownMenuItem onSelect={() => onUnban(user)}>
             <LucideIcon name="user-round-check" />
             {t('unban')}
           </DropdownMenuItem>
         )}
         {!(banned || isAdmin) && (
-          <DropdownMenuItem onSelect={selectFromMenu(() => onBan(user))} variant="destructive">
+          <DropdownMenuItem onSelect={() => onBan(user)} variant="destructive">
             <LucideIcon name="ban" />
             {t('ban')}
           </DropdownMenuItem>

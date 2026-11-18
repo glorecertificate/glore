@@ -4,12 +4,12 @@ import { createSearchParamsCache } from 'nuqs/server'
 
 import { listAdminOrganizationOptions } from '@/actions/admin/options'
 import { listAdminUsers } from '@/actions/admin/users'
-import { AdminPage } from '@/components/features/admin/admin-page'
+import { AdminTableSkeleton } from '@/components/features/admin/admin-table-skeleton'
 import { AdminUsers } from '@/components/features/admin/users'
 import { adminUsersParsers } from '@/components/features/admin/users-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
+import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(adminUsersParsers)
@@ -38,11 +38,20 @@ const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/a
 
 const AdminUsersPage = ({ searchParams }: PageProps<'/admin/users'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.users" name="title" />}>
-    <AdminPage description={<PageTitle namespace="Admin.users" name="description" />}>
-      <Suspense fallback={<LoadingFallback />}>
+    <PageIntro description={<PageTitle namespace="Admin.users" name="description" />}>
+      <Suspense
+        fallback={
+          <AdminTableSkeleton
+            columns={['user', 'role', 'status', 'organizations', 'joined']}
+            namespace="Admin.users"
+            pageSize={20}
+            rowActions
+          />
+        }
+      >
         <AdminUsersContent searchParams={searchParams} />
       </Suspense>
-    </AdminPage>
+    </PageIntro>
   </DashboardPage>
 )
 

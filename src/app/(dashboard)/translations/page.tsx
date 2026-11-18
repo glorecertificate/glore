@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 
 import { loadTranslations } from '@/actions/translations'
-import { AdminPage } from '@/components/features/admin/admin-page'
 import { Translations } from '@/components/features/translations/translations'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const maxDuration = 60
@@ -23,9 +23,9 @@ const TranslationsPageContent = async () => {
 
 const TranslationsPage = () => (
   <DashboardPage title={<PageTitle namespace="Translations" name="title" />}>
-    <AdminPage description={<PageTitle namespace="Translations" name="description" />}>
+    <PageIntro description={<PageTitle namespace="Translations" name="description" />}>
       <TranslationsPageContent />
-    </AdminPage>
+    </PageIntro>
   </DashboardPage>
 )
 

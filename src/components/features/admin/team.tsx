@@ -19,14 +19,15 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 import { FilterBar } from '@/components/ui/filter-bar'
+import { PageIntro } from '@/components/ui/page-header'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/ui/stat-card'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 
-import { AdminPage } from './admin-page'
 import {
   DeleteDialog,
   ROLE_ICONS,
@@ -39,6 +40,7 @@ import {
   getUserStatus,
 } from './team-items'
 import { useAdminError } from './use-admin-error'
+import { listFocusTarget } from './utils'
 
 export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   const t = useTranslations('Admin.team')
@@ -54,6 +56,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   const [filterStatus, setFilterStatus] = useState<TeamStatus | 'all'>('all')
   const [inviteOpen, setInviteOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
+  const { remember, restore } = useReturnFocus()
+  const returnFocus = (event: Event) => restore(event, listFocusTarget)
 
   const activeUsers = users.filter(u => !deletedIds.has(u.id))
 
@@ -158,9 +162,15 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   }
 
   return (
-    <AdminPage
+    <PageIntro
       actions={
-        <Button onClick={() => setInviteOpen(true)} variant="brand">
+        <Button
+          onClick={() => {
+            remember()
+            setInviteOpen(true)
+          }}
+          variant="brand"
+        >
           <LucideIcon name="user-plus" />
           {t('inviteMember')}
         </Button>
@@ -175,6 +185,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
       </div>
 
       <DataTable
+        key={`${filterRole}|${filterStatus}`}
         columns={[
           {
             cell: user => (
@@ -271,7 +282,10 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
             <TeamMemberActions
               busy={busyId === user.id}
               onChangeRole={handleChangeRole}
-              onDelete={setDeleteTarget}
+              onDelete={member => {
+                remember()
+                setDeleteTarget(member)
+              }}
               onResend={handleResend}
               user={user}
             />
@@ -280,14 +294,21 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
         rows={displayUsers}
       />
 
-      <TeamInviteDialog defaultLocale={locale} onInvite={handleInvite} onOpenChange={setInviteOpen} open={inviteOpen} />
+      <TeamInviteDialog
+        onCloseAutoFocus={returnFocus}
+        defaultLocale={locale}
+        onInvite={handleInvite}
+        onOpenChange={setInviteOpen}
+        open={inviteOpen}
+      />
 
       <DeleteDialog
+        onCloseAutoFocus={returnFocus}
         onConfirm={handleDelete}
         onOpenChange={open => !open && setDeleteTarget(null)}
         open={!!deleteTarget}
         user={deleteTarget}
       />
-    </AdminPage>
+    </PageIntro>
   )
 }

@@ -14,12 +14,14 @@ import { type AdminOrganization } from '@/db/queries/organization'
 import { ActionDialog } from './action-dialog'
 
 const ReviewDialog = ({
+  onCloseAutoFocus,
   mode,
   onConfirm,
   onOpenChange,
   open,
   org,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   mode: 'approve' | 'reject'
   onConfirm: (comment?: string) => Promise<boolean>
   onOpenChange: (open: boolean) => void
@@ -49,6 +51,7 @@ const ReviewDialog = ({
 
   return (
     <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
       busy={loading}
       cancelLabel={t('cancel')}
       confirmLabel={approving ? t('approve') : t('reject')}
@@ -84,10 +87,12 @@ export const RejectDialog = (props: Omit<React.ComponentProps<typeof ReviewDialo
 )
 
 export const OrgInviteDialog = ({
+  onCloseAutoFocus,
   onInvite,
   onOpenChange,
   open,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   open: boolean
   onOpenChange: (open: boolean) => void
   onInvite: (data: {
@@ -150,6 +155,7 @@ export const OrgInviteDialog = ({
 
   return (
     <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
       busy={loading}
       cancelLabel={t('cancel')}
       confirmLabel={t('inviteSubmit')}
@@ -231,10 +237,12 @@ export const OrgInviteDialog = ({
 }
 
 export const OrgCreateDialog = ({
+  onCloseAutoFocus,
   onCreate,
   onOpenChange,
   open,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   open: boolean
   onOpenChange: (open: boolean) => void
   onCreate: (data: { name: string; email: string; city: string; country: string; url?: string }) => Promise<void>
@@ -287,6 +295,7 @@ export const OrgCreateDialog = ({
 
   return (
     <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
       busy={loading}
       cancelLabel={t('cancel')}
       confirmLabel={t('createSubmit')}

@@ -20,6 +20,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
+import { PageIntro } from '@/components/ui/page-header'
 import { SearchHighlight, SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusBadge } from '@/components/ui/status-badge'
@@ -27,12 +28,12 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 import { SHORTCUTS } from '@/lib/shortcuts'
 
-import { AdminPage } from './admin-page'
 import { ApplicationSheet } from './application-sheet'
-import { selectFromMenu } from './menu-focus'
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, RejectDialog } from './organization-items'
+import { listFocusTarget } from './utils'
 
 type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
 
@@ -50,6 +51,8 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const [viewTarget, setViewTarget] = useState<AdminOrganization | null>(null)
   const [inviteOpen, setInviteOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
+  const { remember, restore } = useReturnFocus()
+  const returnFocus = (event: Event) => restore(event, listFocusTarget)
 
   const translateCountry = useCountryName()
 
@@ -162,11 +165,23 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
   const actions = (
     <>
-      <Button onClick={() => setCreateOpen(true)} variant="brand">
+      <Button
+        onClick={() => {
+          remember()
+          setCreateOpen(true)
+        }}
+        variant="brand"
+      >
         <LucideIcon name="plus" />
         {t('createOrg')}
       </Button>
-      <Button onClick={() => setInviteOpen(true)} variant="outline">
+      <Button
+        onClick={() => {
+          remember()
+          setInviteOpen(true)
+        }}
+        variant="outline"
+      >
         <LucideIcon name="user-plus" />
         {t('inviteOrg')}
       </Button>
@@ -174,8 +189,9 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   )
 
   return (
-    <AdminPage actions={actions} description={t('description')}>
+    <PageIntro actions={actions} description={t('description')}>
       <DataTable
+        key={`${search}|${country}|${filter}`}
         columns={[
           {
             cell: org => (
@@ -308,18 +324,34 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
                 </Link>
               </DropdownMenuItem>
               {org.registrationRequest && (
-                <DropdownMenuItem onSelect={selectFromMenu(() => setViewTarget(org))}>
+                <DropdownMenuItem
+                  onSelect={() => {
+                    remember()
+                    setViewTarget(org)
+                  }}
+                >
                   <LucideIcon name="file-text" />
                   {t('app_view')}
                 </DropdownMenuItem>
               )}
               {org.isPending && (
                 <>
-                  <DropdownMenuItem onSelect={selectFromMenu(() => setApproveTarget(org))}>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      remember()
+                      setApproveTarget(org)
+                    }}
+                  >
                     <LucideIcon name="check" />
                     {t('approve')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={selectFromMenu(() => setRejectTarget(org))} variant="destructive">
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      remember()
+                      setRejectTarget(org)
+                    }}
+                    variant="destructive"
+                  >
                     <LucideIcon name="x" />
                     {t('reject')}
                   </DropdownMenuItem>
@@ -332,6 +364,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       />
 
       <ApplicationSheet
+        onCloseAutoFocus={returnFocus}
         onApprove={org => {
           setViewTarget(null)
           setApproveTarget(org)
@@ -344,19 +377,31 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         org={viewTarget}
       />
       <ApproveDialog
+        onCloseAutoFocus={returnFocus}
         onConfirm={handleApprove}
         onOpenChange={open => !open && setApproveTarget(null)}
         open={!!approveTarget}
         org={approveTarget}
       />
       <RejectDialog
+        onCloseAutoFocus={returnFocus}
         onConfirm={handleReject}
         onOpenChange={open => !open && setRejectTarget(null)}
         open={!!rejectTarget}
         org={rejectTarget}
       />
-      <OrgInviteDialog onInvite={handleInvite} onOpenChange={setInviteOpen} open={inviteOpen} />
-      <OrgCreateDialog onCreate={handleCreate} onOpenChange={setCreateOpen} open={createOpen} />
-    </AdminPage>
+      <OrgInviteDialog
+        onCloseAutoFocus={returnFocus}
+        onInvite={handleInvite}
+        onOpenChange={setInviteOpen}
+        open={inviteOpen}
+      />
+      <OrgCreateDialog
+        onCloseAutoFocus={returnFocus}
+        onCreate={handleCreate}
+        onOpenChange={setCreateOpen}
+        open={createOpen}
+      />
+    </PageIntro>
   )
 }

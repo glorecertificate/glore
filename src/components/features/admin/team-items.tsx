@@ -8,14 +8,6 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -31,7 +23,6 @@ import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
 
 import { ActionDialog } from './action-dialog'
-import { rememberMenuTrigger } from './menu-focus'
 
 export type TeamRole = 'admin' | 'editor'
 export type TeamStatus = 'joined' | 'pending'
@@ -88,13 +79,7 @@ export const TeamMemberActions = ({
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={() => {
-            rememberMenuTrigger()
-            onDelete(user)
-          }}
-          variant="destructive"
-        >
+        <DropdownMenuItem onSelect={() => onDelete(user)} variant="destructive">
           <LucideIcon name="trash-2" />
           {t('removeMember')}
         </DropdownMenuItem>
@@ -104,11 +89,13 @@ export const TeamMemberActions = ({
 }
 
 export const TeamInviteDialog = ({
+  onCloseAutoFocus,
   defaultLocale,
   onInvite,
   onOpenChange,
   open,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   defaultLocale: Locale
   onInvite: (data: {
     firstName: string
@@ -165,84 +152,83 @@ export const TeamInviteDialog = ({
   }
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t('inviteTitle')}</DialogTitle>
-          <DialogDescription>{t('inviteDescription')}</DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-3 py-2">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-first-name">{t('firstNameLabel')}</Label>
-              <Input
-                disabled={submitting}
-                id="invite-first-name"
-                onChange={e => setFirstName(e.target.value)}
-                placeholder={t('firstNamePlaceholder')}
-                value={firstName}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-last-name">{t('lastNameLabel')}</Label>
-              <Input
-                disabled={submitting}
-                id="invite-last-name"
-                onChange={e => setLastName(e.target.value)}
-                placeholder={t('lastNamePlaceholder')}
-                value={lastName}
-              />
-            </div>
-          </div>
+    <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
+      busy={submitting}
+      cancelLabel={t('cancel')}
+      confirmLabel={t('sendInvite')}
+      description={t('inviteDescription')}
+      loadingLabel={t('inviting')}
+      onConfirm={handleSubmit}
+      onOpenChange={handleOpenChange}
+      open={open}
+      title={t('inviteTitle')}
+    >
+      <div className="grid gap-3 py-2">
+        <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-y-2">
-            <Label htmlFor="invite-email">{t('emailLabel')}</Label>
+            <Label htmlFor="invite-first-name">{t('firstNameLabel')}</Label>
             <Input
               disabled={submitting}
-              id="invite-email"
-              onChange={e => setEmail(e.target.value)}
-              placeholder={t('emailPlaceholder')}
-              type="email"
-              value={email}
+              id="invite-first-name"
+              onChange={e => setFirstName(e.target.value)}
+              placeholder={t('firstNamePlaceholder')}
+              value={firstName}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-role">{t('roleLabel')}</Label>
-              <Select disabled={submitting} onValueChange={v => setRole(v as TeamRole)} value={role}>
-                <SelectTrigger id="invite-role">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">{t('role_admin')}</SelectItem>
-                  <SelectItem value="editor">{t('role_editor')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-y-2">
-              <Label>{t('languageLabel')}</Label>
-              <LanguageSelect controlled disabled={submitting} onChange={setLocale} value={locale} />
-            </div>
+          <div className="flex flex-col gap-y-2">
+            <Label htmlFor="invite-last-name">{t('lastNameLabel')}</Label>
+            <Input
+              disabled={submitting}
+              id="invite-last-name"
+              onChange={e => setLastName(e.target.value)}
+              placeholder={t('lastNamePlaceholder')}
+              value={lastName}
+            />
           </div>
         </div>
-        <DialogFooter>
-          <Button disabled={submitting} onClick={() => handleOpenChange(false)} variant="outline">
-            {t('cancel')}
-          </Button>
-          <Button disabled={submitting} loading={submitting} onClick={handleSubmit} variant="brand">
-            {t('sendInvite')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <div className="flex flex-col gap-y-2">
+          <Label htmlFor="invite-email">{t('emailLabel')}</Label>
+          <Input
+            disabled={submitting}
+            id="invite-email"
+            onChange={e => setEmail(e.target.value)}
+            placeholder={t('emailPlaceholder')}
+            type="email"
+            value={email}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-y-2">
+            <Label htmlFor="invite-role">{t('roleLabel')}</Label>
+            <Select disabled={submitting} onValueChange={v => setRole(v as TeamRole)} value={role}>
+              <SelectTrigger id="invite-role">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">{t('role_admin')}</SelectItem>
+                <SelectItem value="editor">{t('role_editor')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <Label>{t('languageLabel')}</Label>
+            <LanguageSelect controlled disabled={submitting} onChange={setLocale} value={locale} />
+          </div>
+        </div>
+      </div>
+    </ActionDialog>
   )
 }
 
 export const DeleteDialog = ({
+  onCloseAutoFocus,
   onConfirm,
   onOpenChange,
   open,
   user,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   user: User | null
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -262,6 +248,7 @@ export const DeleteDialog = ({
 
   return (
     <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
       busy={deleting}
       cancelLabel={t('cancel')}
       confirmLabel={t('confirmDelete')}

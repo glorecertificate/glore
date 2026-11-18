@@ -13,8 +13,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Link } from '@/components/ui/link'
 import { toast } from '@/components/ui/toast'
 import { type AdminCertificateRow } from '@/db/queries/admin-certificate'
+import { useReturnFocus } from '@/hooks/use-return-focus'
+import { fullName } from '@/lib/utils'
 
-import { rememberMenuTrigger, restoreMenuTrigger } from './menu-focus'
+import { listFocusTarget } from './utils'
 
 export const AdminCertificateActions = ({ certificate }: { certificate: AdminCertificateRow }) => {
   const t = useTranslations('Admin.certificates')
@@ -22,6 +24,7 @@ export const AdminCertificateActions = ({ certificate }: { certificate: AdminCer
   const { refresh } = useRouter()
   const [pending, startTransition] = useTransition()
   const [revoking, setRevoking] = useState(false)
+  const { remember, restore } = useReturnFocus()
 
   const revoke = (reason: string) =>
     startTransition(async () => {
@@ -37,7 +40,7 @@ export const AdminCertificateActions = ({ certificate }: { certificate: AdminCer
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            aria-label={`${t('actions')}: ${certificate.code ?? ''}`}
+            aria-label={`${t('actions')}: ${certificate.code ?? fullName(certificate.holder) ?? certificate.id}`}
             disabled={pending}
             size="icon"
             variant="ghost"
@@ -55,7 +58,7 @@ export const AdminCertificateActions = ({ certificate }: { certificate: AdminCer
           {certificate.status === 'approved' && (
             <DropdownMenuItem
               onSelect={() => {
-                rememberMenuTrigger()
+                remember()
                 setRevoking(true)
               }}
               variant="destructive"
@@ -77,10 +80,8 @@ export const AdminCertificateActions = ({ certificate }: { certificate: AdminCer
         label={tDetail('revokeReason')}
         loadingLabel={tDetail('revoking')}
         onConfirm={revoke}
-        onOpenChange={open => {
-          setRevoking(open)
-          if (!open) setTimeout(restoreMenuTrigger, 250)
-        }}
+        onCloseAutoFocus={event => restore(event, listFocusTarget)}
+        onOpenChange={setRevoking}
         open={revoking}
         placeholder={tDetail('revokePlaceholder')}
         title={tDetail('revokeTitle')}

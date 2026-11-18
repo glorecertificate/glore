@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const SettingsSection = ({
+export const AdminSettingsSection = ({
   children,
   description,
   title,

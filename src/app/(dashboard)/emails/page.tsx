@@ -3,11 +3,11 @@ import { notFound } from 'next/navigation'
 import { createSearchParamsCache } from 'nuqs/server'
 
 import { loadEmailPreview } from '@/actions/emails/preview'
-import { AdminPage } from '@/components/features/admin/admin-page'
 import { AdminEmails } from '@/components/features/admin/emails'
 import { emailPreviewParsers } from '@/components/features/admin/emails-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(emailPreviewParsers)
@@ -27,9 +27,9 @@ const EmailsPageContent = async ({ searchParams }: PageProps<'/emails'>) => {
 
 const EmailsPage = (props: PageProps<'/emails'>) => (
   <DashboardPage title={<PageTitle namespace="AdminEmails" name="title" />}>
-    <AdminPage description={<PageTitle namespace="AdminEmails" name="description" />}>
+    <PageIntro description={<PageTitle namespace="AdminEmails" name="description" />}>
       <EmailsPageContent {...props} />
-    </AdminPage>
+    </PageIntro>
   </DashboardPage>
 )
 

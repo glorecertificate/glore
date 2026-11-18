@@ -2766,7 +2766,7 @@
       "deleteTitle": "Remove team member",
       "emailLabel": "Email address",
       "emailPlaceholder": "john.doe@email.com",
-      "errorInvalidInput": "Enter a first name and a valid email address.",
+      "errorInvalidInput": "Enter a name and a valid email address.",
       "filter_allRoles": "All roles",
       "filter_allStatuses": "All statuses",
       "filterRoleLabel": "Filter by role",
@@ -2808,7 +2808,8 @@
       "tableLabel": "Team members",
       "noMembersDescription": "Invite an admin or an editor to get started.",
       "noMembersFiltered": "No team members found",
-      "removing": "Removing…"
+      "removing": "Removing…",
+      "inviting": "Sending…"
     },
     "organizations": {
       "title": "Organizations",
@@ -2984,7 +2985,10 @@
       "confirmImpersonate": "Start viewing",
       "impersonating": "Starting…",
       "cancel": "Cancel",
-      "description": "Search every account, change platform roles, and suspend or impersonate people."
+      "description": "Search every account, change platform roles, and suspend or impersonate people.",
+      "banError": "Could not suspend the user. Try again.",
+      "unbanError": "Could not lift the suspension. Try again.",
+      "impersonateError": "Could not start the viewing session. Try again."
     },
     "impersonation": {
       "label": "Viewing session",

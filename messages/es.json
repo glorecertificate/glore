@@ -2762,7 +2762,7 @@
       "cancel": "Cancelar",
       "confirmDelete": "Eliminar miembro",
       "deleteDescription": "{name} pierde el acceso de inmediato y su cuenta se elimina. No se puede deshacer.",
-      "deleteSuccess": "Miembro del equipo eliminado correctamente.",
+      "deleteSuccess": "Miembro del equipo eliminado.",
       "deleteTitle": "Eliminar miembro del equipo",
       "emailLabel": "Dirección de email",
       "emailPlaceholder": "juan.perez@email.com",
@@ -2808,7 +2808,8 @@
       "tableLabel": "Miembros del equipo",
       "noMembersDescription": "Invita a un administrador o editor para empezar.",
       "noMembersFiltered": "No se encontraron miembros",
-      "removing": "Eliminando…"
+      "removing": "Eliminando…",
+      "inviting": "Enviando…"
     },
     "organizations": {
       "title": "Organizaciones",
@@ -2900,7 +2901,7 @@
       "app_decision": "Decisión",
       "app_decisionAccepted": "Aprobada el {date}",
       "app_decisionRejected": "Rechazada el {date}",
-      "app_decisionComment": "Comentario de revisión",
+      "app_decisionComment": "Comentario del administrador",
       "description": "Revisa solicitudes y gestiona todas las organizaciones de la plataforma.",
       "columns": {
         "organization": "Organización",
@@ -2984,7 +2985,10 @@
       "confirmImpersonate": "Empezar a ver",
       "impersonating": "Iniciando…",
       "cancel": "Cancelar",
-      "description": "Busca cualquier cuenta, cambia roles de la plataforma y suspende o suplanta personas."
+      "description": "Busca cualquier cuenta, cambia roles de la plataforma y suspende o suplanta personas.",
+      "banError": "No se pudo suspender al usuario. Inténtalo de nuevo.",
+      "unbanError": "No se pudo levantar la suspensión. Inténtalo de nuevo.",
+      "impersonateError": "No se pudo iniciar la sesión de visualización. Inténtalo de nuevo."
     },
     "impersonation": {
       "label": "Sesión de visualización",

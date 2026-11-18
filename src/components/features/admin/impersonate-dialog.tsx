@@ -16,9 +16,11 @@ import { useAdminError } from './use-admin-error'
 import { userLabel } from './utils'
 
 export const ImpersonateDialog = ({
+  onCloseAutoFocus,
   onOpenChange,
   user,
 }: {
+  onCloseAutoFocus?: (event: Event) => void
   onOpenChange: (open: boolean) => void
   user: AdminUserRow | null
 }) => {
@@ -31,19 +33,24 @@ export const ImpersonateDialog = ({
   const handleConfirm = async () => {
     if (!(user && ready)) return
     setBusy(true)
-    const { error } = await startImpersonation({ reason: reason.trim(), userId: user.id })
+    try {
+      const { error } = await startImpersonation({ reason: reason.trim(), userId: user.id })
+      if (error) {
+        setBusy(false)
+        toast.error(adminError(error.code))
+        return
+      }
 
-    if (error) {
+      window.location.assign(APP_ROOT)
+    } catch {
       setBusy(false)
-      toast.error(adminError(error.code))
-      return
+      toast.error(t('impersonateError'))
     }
-
-    window.location.assign(APP_ROOT)
   }
 
   return (
     <ActionDialog
+      onCloseAutoFocus={onCloseAutoFocus}
       busy={busy}
       cancelLabel={t('cancel')}
       confirmDisabled={!ready}

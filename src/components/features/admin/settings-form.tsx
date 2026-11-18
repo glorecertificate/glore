@@ -19,8 +19,8 @@ import {
   createSettingsSchema,
 } from '@/lib/app-settings'
 
+import { AdminSettingsSection } from './admin-settings-section'
 import { SettingsField } from './settings-field'
-import { SettingsSection } from './settings-section'
 import { useAdminError } from './use-admin-error'
 
 export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
@@ -56,7 +56,7 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
   return (
     <Form {...form}>
       <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(handleSubmit)}>
-        <SettingsSection description={t('contactDescription')} title={t('contactTitle')}>
+        <AdminSettingsSection description={t('contactDescription')} title={t('contactTitle')}>
           <SettingsField
             control={form.control}
             label={t('email')}
@@ -80,9 +80,9 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
             placeholder={t('websitePlaceholder')}
             type="url"
           />
-        </SettingsSection>
+        </AdminSettingsSection>
 
-        <SettingsSection description={t('socialDescription')} title={t('socialTitle')}>
+        <AdminSettingsSection description={t('socialDescription')} title={t('socialTitle')}>
           {SOCIAL_PLATFORMS.map(platform => (
             <SettingsField
               control={form.control}
@@ -93,9 +93,9 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
               type="url"
             />
           ))}
-        </SettingsSection>
+        </AdminSettingsSection>
 
-        <SettingsSection description={t('entityDescription')} title={t('entityTitle')}>
+        <AdminSettingsSection description={t('entityDescription')} title={t('entityTitle')}>
           <SettingsField
             className="sm:col-span-2"
             control={form.control}
@@ -121,7 +121,7 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
               </FormItem>
             )}
           />
-        </SettingsSection>
+        </AdminSettingsSection>
 
         <div className="sticky bottom-0 -mx-page flex flex-wrap items-center justify-end gap-3 border-t bg-background/95 px-page py-3 backdrop-blur-sm">
           <output aria-live="polite" className="mr-auto text-sm text-muted-foreground max-sm:sr-only">

@@ -1,6 +1,5 @@
 import { useFormatter, useTranslations } from 'next-intl'
 
-import { AdminPage } from '@/components/features/admin/admin-page'
 import { AdminOverviewPipeline } from '@/components/features/admin/overview-pipeline'
 import { AdminOverviewShortcuts } from '@/components/features/admin/overview-shortcuts'
 import { hasMonthlyActivity, monthStart, toDuration } from '@/components/features/admin/overview-utils'
@@ -8,6 +7,7 @@ import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
+import { PageIntro } from '@/components/ui/page-header'
 import { SkeletonText } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
 import { type AdminOverview as AdminOverviewData } from '@/db/queries/admin-overview'
@@ -41,7 +41,7 @@ export const AdminOverview = ({ loading = false, overview }: { loading?: boolean
   const placeholder = (value: React.ReactNode) => (loading ? <SkeletonText>{value}</SkeletonText> : value)
 
   return (
-    <AdminPage aria-busy={loading || undefined} description={t('description')}>
+    <PageIntro aria-busy={loading || undefined} description={t('description')}>
       {loading && <LoadingFallback className="sr-only" spinner={false} />}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
@@ -145,7 +145,7 @@ export const AdminOverview = ({ loading = false, overview }: { loading?: boolean
         </Card>
         <AdminOverviewShortcuts pendingOrganizations={organizations.pending} waitingCertificates={review.waiting} />
       </div>
-    </AdminPage>
+    </PageIntro>
   )
 }
 

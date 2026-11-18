@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { EmailText } from '@/components/ui/email-text'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -193,7 +194,7 @@ export const OrganizationMembers = ({
               sortValue: member => getDisplayName(member.user),
             },
             {
-              cell: member => <span className="wrap-anywhere text-muted-foreground">{member.user.email}</span>,
+              cell: member => <EmailText className="text-muted-foreground" email={member.user.email} />,
               header: t('email'),
               id: 'email',
               sortValue: member => member.user.email,

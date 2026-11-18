@@ -163,3 +163,10 @@ Owner decisions, 2026-11-18. Controls keep their visible size on every device.
 - `Kbd` and `KbdGroup` are hidden on coarse pointers.
 - A scrolling `TabsList`, the table container, and the sidebar content add vertical padding with a matching negative margin on coarse pointers, so the hit areas are not clipped and the layout does not move. `tabs-scroll-band` repaints the list background to its original height.
 - The offline promise is the offline page only. The service worker caches no course or certificate data.
+
+## Course editor on phones and tablets
+
+- Below `lg` the lesson picker opens a bottom `Sheet` with `CourseSidebar variant="sheet"`. The same component serves the inline sidebar from `lg`. On coarse pointers each row adds Move up, Move down, and Delete, next to the drag handle. Choosing a lesson closes the sheet.
+- Below `md` the band shows the title, the status chips, and the language tabs. Settings, analytics, and preview sit in a More menu. Save and the Draft or Published switch sit in a bottom bar portalled to `body` with the safe-area inset. The description shows 2 lines and expands on tap.
+- `course-editor/block-actions.tsx` is a touch-only Block menu (Move up, Move down, Duplicate, Turn into, Ask AI, Delete). It acts on the top-level block at the caret through the Plate editor API and replaces the context menu that `block-context-menu.tsx` turns off on touch.
+- `lesson-editor.tsx` wraps the vendored editor. Below `lg` the fixed toolbar is one row that scrolls sideways and sticks to the viewport. On coarse pointers the floating selection toolbar is hidden.

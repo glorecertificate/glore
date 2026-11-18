@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 
-import { findCertificate, findCertificateActivity, findReviewContext } from '@/actions/certificates/queries'
-import { getCurrentUser } from '@/actions/user'
+import { loadCertificate, loadCertificateActivity, loadReviewContext } from '@/actions/certificates/detail-data'
+import { getViewer } from '@/actions/viewer'
 import { ReviewWorkspace } from '@/components/features/certificates/review/workspace'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -11,11 +11,11 @@ const ReviewPageContent = async ({ params }: { params: PageProps<'/certificates/
   const certificateId = Number(id)
   if (!certificateId || Number.isNaN(certificateId)) notFound()
 
-  const [user, { data: certificate }, { data: context }, { data: activity }] = await Promise.all([
-    getCurrentUser(),
-    findCertificate(certificateId),
-    findReviewContext(certificateId),
-    findCertificateActivity(certificateId),
+  const [user, certificate, context, activity] = await Promise.all([
+    getViewer(),
+    loadCertificate(certificateId),
+    loadReviewContext(certificateId),
+    loadCertificateActivity(certificateId),
   ])
   if (!certificate) notFound()
 

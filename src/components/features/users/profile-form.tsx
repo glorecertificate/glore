@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -50,6 +50,9 @@ export const ProfileForm = () => {
   const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
   const returnFocus = useRef<HTMLElement | null>(null)
   const avatarRef = useRef<HTMLDivElement>(null)
+  const focusFrame = useRef(0)
+
+  useEffect(() => () => cancelAnimationFrame(focusFrame.current), [])
   const [removingAvatar, setRemovingAvatar] = useState(false)
 
   const formSchema = z.object({
@@ -136,7 +139,8 @@ export const ProfileForm = () => {
       setAvatarPreview(null)
       if (data) setUser(data)
       toast.success(t('profileUpdated'))
-      requestAnimationFrame(() => {
+      cancelAnimationFrame(focusFrame.current)
+      focusFrame.current = requestAnimationFrame(() => {
         if (document.activeElement && document.activeElement !== document.body) return
         avatarRef.current?.querySelector('button')?.focus()
       })

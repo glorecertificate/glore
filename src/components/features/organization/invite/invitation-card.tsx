@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { startTransition, useRef, useState } from 'react'
+import { startTransition, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -26,6 +26,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
@@ -74,7 +75,6 @@ export const InvitationCard = ({
   const [pending, setPending] = useState<Pending | null>(null)
   const [password, setPassword] = useState('')
   const [declineOpen, setDeclineOpen] = useState(false)
-  const returnFocus = useRef<HTMLElement | null>(null)
   const [proofSent, setProofSent] = useState(false)
 
   const roleLabel = tRoles(`role_${role}`)
@@ -164,11 +164,6 @@ export const InvitationCard = ({
     }
   }
 
-  const openDecline = (event: React.MouseEvent<HTMLElement>) => {
-    returnFocus.current = event.currentTarget
-    setDeclineOpen(true)
-  }
-
   const handleSignOut = async () => {
     setPending('sign_out')
     try {
@@ -182,7 +177,7 @@ export const InvitationCard = ({
   }
 
   return (
-    <>
+    <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col items-center gap-4 text-center">
           <OrganizationBadge avatarUrl={organization.avatarUrl} name={organization.name} />
@@ -222,9 +217,11 @@ export const InvitationCard = ({
             <Button disabled={busy} loading={pending === 'accept'} onClick={handleAccept} size="lg" variant="brand">
               {t('accept')}
             </Button>
-            <Button disabled={busy} onClick={openDecline} variant="ghost">
-              {t('decline')}
-            </Button>
+            <AlertDialogTrigger asChild>
+              <Button disabled={busy} type="button" variant="ghost">
+                {t('decline')}
+              </Button>
+            </AlertDialogTrigger>
           </div>
         )}
 
@@ -255,9 +252,11 @@ export const InvitationCard = ({
               <Link className="text-action-text underline-offset-4 hover:underline" href={AUTH_ROOT}>
                 {t('forgotPassword')}
               </Link>
-              <Button disabled={busy} onClick={openDecline} size="sm" type="button" variant="ghost">
-                {t('decline')}
-              </Button>
+              <AlertDialogTrigger asChild>
+                <Button disabled={busy} size="sm" type="button" variant="ghost">
+                  {t('decline')}
+                </Button>
+              </AlertDialogTrigger>
             </div>
           </form>
         )}
@@ -291,42 +290,36 @@ export const InvitationCard = ({
                 </Button>
               </>
             )}
-            <Button disabled={busy} onClick={openDecline} variant="ghost">
-              {t('decline')}
-            </Button>
+            <AlertDialogTrigger asChild>
+              <Button disabled={busy} type="button" variant="ghost">
+                {t('decline')}
+              </Button>
+            </AlertDialogTrigger>
           </div>
         )}
 
         <p className="text-center type-caption text-muted-foreground">{t('expires', { date: expires })}</p>
       </div>
 
-      <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>
-        <AlertDialogContent
-          onCloseAutoFocus={event => {
-            if (!returnFocus.current?.isConnected) return
-            event.preventDefault()
-            returnFocus.current.focus()
-          }}
-        >
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('declineTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('declineDescription', { organization: organization.name })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={pending === 'decline'}>{t('cancel')}</AlertDialogCancel>
-            <AlertDialogAction
-              loading={pending === 'decline'}
-              loadingText={t('declining')}
-              onClick={handleDecline}
-              variant="destructive"
-            >
-              {t('decline')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t('declineTitle')}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t('declineDescription', { organization: organization.name })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={pending === 'decline'}>{t('cancel')}</AlertDialogCancel>
+          <AlertDialogAction
+            loading={pending === 'decline'}
+            loadingText={t('declining')}
+            onClick={handleDecline}
+            variant="destructive"
+          >
+            {t('decline')}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

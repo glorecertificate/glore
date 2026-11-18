@@ -15,8 +15,6 @@ import {
   rejectCertificate,
   requestCertificateChanges,
 } from '@/actions/certificates/review'
-import { AgeBadge } from '@/components/features/certificates/age-badge'
-import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { ExperienceFields, TaskFields } from '@/components/features/certificates/experience-fields'
 import { FieldError } from '@/components/features/certificates/field-error'
 import { EvaluationSection } from '@/components/features/certificates/review/evaluation-section'
@@ -31,22 +29,13 @@ import {
   hasChangeRequest,
   reviewDefaults,
 } from '@/components/features/certificates/review/values'
-import { ageTone, daysBetween } from '@/components/features/certificates/rules'
 import { type ReviewFormValues, reviewFormSchema } from '@/components/features/certificates/schemas'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import {
-  PageHeader,
-  PageHeaderActions,
-  PageHeaderDescription,
-  PageHeaderHeading,
-  PageHeaderTitle,
-} from '@/components/ui/page-header'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
-import { fullName } from '@/lib/utils'
 import appConfig from '~/config/app.json'
 
 type Busy = 'approve' | 'changes' | 'claim' | 'preview' | 'reject' | null
@@ -72,7 +61,6 @@ export const ReviewWorkspace = ({
   const [busy, setBusy] = useState<Busy>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [rejecting, setRejecting] = useState(false)
-  const age = daysBetween(certificate.submittedAt ?? certificate.createdAt)
   const canApprove = certificate.isSubmitted || certificate.isInReview
   const canRequestChanges = canApprove
 
@@ -151,24 +139,6 @@ export const ReviewWorkspace = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader>
-        <PageHeaderHeading>
-          <PageHeaderTitle>{fullName(holder)}</PageHeaderTitle>
-          <PageHeaderDescription>{certificate.organization.name}</PageHeaderDescription>
-          <div className="flex flex-wrap items-center gap-2">
-            <CertificateStatusBadge status={certificate.status} />
-            {certificate.isPending && <AgeBadge days={age} tone={ageTone(age)} />}
-          </div>
-        </PageHeaderHeading>
-        {certificate.isSubmitted && (
-          <PageHeaderActions>
-            <Button icon="play" loading={busy === 'claim'} onClick={() => void claim()} type="button" variant="outline">
-              {t('startReview')}
-            </Button>
-          </PageHeaderActions>
-        )}
-      </PageHeader>
-
       {certificate.isChangesRequested && <Banner variant="warning">{t('waitingForVolunteer')}</Banner>}
 
       <div className="grid items-start gap-6 lg:grid-cols-5">
@@ -177,7 +147,7 @@ export const ReviewWorkspace = ({
         </div>
 
         <Form {...form}>
-          <div className="flex flex-col gap-8 rounded-xl border bg-card p-4 shadow-2xs sm:p-6 lg:col-span-3">
+          <div className="flex flex-col gap-8 rounded-xl border border-border-subtle bg-card p-4 shadow-card sm:p-6 lg:col-span-3">
             <section aria-labelledby="experience-title" className="flex flex-col gap-4">
               <h3 className="text-sm font-semibold" id="experience-title">
                 {t('experienceTitle')}
@@ -214,17 +184,31 @@ export const ReviewWorkspace = ({
               )}
             />
 
-            <div className="sticky bottom-0 -mx-4 -mb-4 flex items-center justify-end gap-2 rounded-b-xl border-t bg-surface-0/95 p-2 backdrop-blur-sm sm:-mx-6 sm:-mb-6 sm:flex-wrap sm:px-6 sm:py-4">
+            <div className="sticky bottom-0 -mx-4 -mb-4 flex flex-wrap items-center justify-end gap-2 rounded-b-xl border-t bg-card p-2 shadow-card sm:-mx-6 sm:-mb-6 sm:px-6 sm:py-4">
+              {certificate.isSubmitted && (
+                <Button
+                  className="mr-auto max-sm:basis-full"
+                  icon="play"
+                  loading={busy === 'claim'}
+                  onClick={() => void claim()}
+                  type="button"
+                  variant="outline"
+                >
+                  {t('startReview')}
+                </Button>
+              )}
               <Button
+                className="max-sm:flex-1"
                 disabled={busy !== null}
                 icon="ban"
                 onClick={() => setRejecting(true)}
                 type="button"
                 variant="ghost"
               >
-                <span className="max-sm:sr-only">{t('reject')}</span>
+                {t('reject')}
               </Button>
               <Button
+                className="max-sm:flex-1"
                 disabled={busy !== null || !canRequestChanges}
                 icon="message-square-warning"
                 loading={busy === 'changes'}
@@ -232,7 +216,7 @@ export const ReviewWorkspace = ({
                 type="button"
                 variant="outline"
               >
-                <span className="max-sm:sr-only">{t('requestChanges')}</span>
+                {t('requestChanges')}
               </Button>
               <Button
                 className="max-sm:flex-1"

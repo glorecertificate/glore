@@ -96,6 +96,11 @@ export const SkillsStep = ({ comment, options }: { comment?: string; options: Sk
                   <span className="truncate type-label">{title}</span>
                 </label>
               </div>
+              {!selected && atMax && (
+                <p className="mt-2 pl-7 type-caption text-muted-foreground">
+                  {t('skillsMaxReached', { max: appConfig.maxSkills })}
+                </p>
+              )}
               {selected && (
                 <div className="mt-4 grid gap-4 border-t pt-4">
                   {option.description && (

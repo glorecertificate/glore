@@ -46,6 +46,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
@@ -266,7 +267,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const comments = notes?.sectionComments ?? {}
 
   return (
-    <div className="flex flex-col gap-6">
+    <Card className="gap-6 p-4 sm:p-6">
       <StepList aria-label={t('stepsLabel')} items={items} />
 
       {resubmit && notes && (
@@ -376,7 +377,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
           </div>
         </form>
       </Form>
-    </div>
+    </Card>
   )
 }
 

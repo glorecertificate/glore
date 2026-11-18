@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CopyButton } from '@/components/ui/copy-button'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { QrCode } from '@/components/ui/qr-code'
+import { ShareButton } from '@/components/ui/share-button'
 import { type Certificate } from '@/db/queries/certificate'
 import { cn } from '@/lib/utils'
 import config from '~/config/metadata.json'
@@ -32,7 +33,7 @@ export const CertificateShare = ({
   const issuedAt = certificate.issuedAt ?? certificate.reviewedAt ?? certificate.updatedAt
   const credentialName = t('credentialName')
   const issued = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(issuedAt))
-  const pdfHref = certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf`
+  const pdfHref = certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf?download=1`
 
   const fields = [
     { copy: t('copyName'), key: 'name', label: t('fieldName'), value: credentialName },
@@ -54,15 +55,44 @@ export const CertificateShare = ({
           <div className="flex min-w-0 flex-1 flex-col gap-3">
             <div className="flex items-center gap-2 rounded-md border bg-surface-muted px-3 py-2">
               <span className="min-w-0 flex-1 truncate font-mono text-xs">{url}</span>
-              <CopyButton copiedLabel={t('linkCopied')} iconOnly label={t('copyLink')} value={url} />
+              <CopyButton
+                className="relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1.5"
+                copiedLabel={t('linkCopied')}
+                iconOnly
+                label={t('copyLink')}
+                value={url}
+              />
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button asChild icon="download" size="sm" variant="outline">
-                <a href={pdfHref} rel="noopener noreferrer" target="_blank">
+              <ShareButton
+                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+                copiedLabel={t('linkCopied')}
+                failedLabel={t('shareFailed')}
+                icon="share-2"
+                size="sm"
+                title={t('title')}
+                url={url}
+                variant="outline"
+              >
+                {t('share')}
+              </ShareButton>
+              <Button
+                asChild
+                icon="download"
+                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+                size="sm"
+                variant="outline"
+              >
+                <a download href={pdfHref}>
                   {t('downloadPdf')}
                 </a>
               </Button>
-              <Button asChild size="sm" variant="outline">
+              <Button
+                asChild
+                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+                size="sm"
+                variant="outline"
+              >
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
                   rel="noopener noreferrer"
@@ -72,7 +102,12 @@ export const CertificateShare = ({
                   {t('shareLinkedin')}
                 </a>
               </Button>
-              <Button asChild size="sm" variant="outline">
+              <Button
+                asChild
+                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+                size="sm"
+                variant="outline"
+              >
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
                   rel="noopener noreferrer"
@@ -92,7 +127,13 @@ export const CertificateShare = ({
               <p className="text-sm font-medium">{t('linkedinTitle')}</p>
               <p className="text-xs text-muted-foreground">{t('linkedinHint')}</p>
             </div>
-            <Button asChild icon="external-link" size="sm" variant="brand">
+            <Button
+              asChild
+              icon="external-link"
+              className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+              size="sm"
+              variant="brand"
+            >
               <a
                 href={linkedInProfileUrl({
                   code: certificate.code,
@@ -115,7 +156,7 @@ export const CertificateShare = ({
                 <DescriptionDetails className="wrap-anywhere">
                   {field.value}
                   <CopyButton
-                    className="absolute top-1/2 right-1.5 -translate-y-1/2"
+                    className="absolute top-1/2 right-1.5 -translate-y-1/2 pointer-coarse:before:absolute pointer-coarse:before:-inset-1.5"
                     copiedLabel={t('linkCopied')}
                     iconOnly
                     label={field.copy}

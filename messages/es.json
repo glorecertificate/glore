@@ -1010,40 +1010,15 @@
       "editor": "Estado del contenido y participación",
       "manager": "Tu organización de un vistazo",
       "tutor": "Tu cola de revisión y tu carga de trabajo",
-      "volunteer": "Tu camino hacia el certificado GloRe",
       "learner": "Sigue aprendiendo a tu ritmo"
     },
     "viewAll": "Ver todo",
-    "viewRequest": "Ver solicitud",
     "viewCourses": "Todos los cursos",
-    "requestCertificate": "Solicitar certificado",
     "resumeLearning": "Seguir aprendiendo",
     "browseCourses": "Explorar cursos",
     "checklist": {
       "title": "Primeros pasos",
       "progress": "{completed} de {total} pasos completados",
-      "volunteer": {
-        "compass": {
-          "title": "Configura tu brújula de habilidades",
-          "description": "Elige hasta 3 fortalezas y 5 objetivos para que te recomendemos los cursos adecuados.",
-          "action": "Abrir brújula"
-        },
-        "start": {
-          "title": "Empieza tu primer curso",
-          "description": "Los cursos introductorios explican cómo funciona GloRe.",
-          "action": "Buscar un curso"
-        },
-        "skills": {
-          "title": "Completa tus cursos de habilidades",
-          "description": "Termina al menos tres cursos de habilidades y valórate con sinceridad.",
-          "action": "Ir a los cursos"
-        },
-        "request": {
-          "title": "Solicita tu certificado",
-          "description": "Describe tu experiencia de voluntariado y envíala a un tutor.",
-          "action": "Abrir solicitudes"
-        }
-      },
       "learner": {
         "start": {
           "title": "Empieza tu primer curso",
@@ -1063,32 +1038,126 @@
       }
     },
     "journey": {
-      "title": "Tu camino al certificado",
-      "learn": "Aprende",
-      "learnDescription": "Completa los cursos de habilidades",
-      "request": "Solicita",
-      "requestDescription": "Envía tu experiencia",
-      "review": "Revisión",
-      "reviewDescription": "Un tutor revisa tu solicitud",
-      "issued": "Certificado",
-      "issuedDescription": "Descárgalo y compártelo"
-    },
-    "certificate": {
-      "issued": "Tu certificado está emitido y se puede verificar en línea.",
-      "view": "Ver certificado",
-      "changes": "Tu tutor ha pedido cambios. Actualiza la solicitud y vuelve a enviarla.",
-      "waiting": "Tu solicitud está pendiente de revisión. Te avisaremos cuando haya una decisión.",
-      "continueDraft": "Continuar borrador",
-      "readyTitle": "Ya puedes solicitar tu certificado",
-      "readyMessage": "Has completado los cursos de habilidades. Añade tu experiencia de voluntariado para enviar la solicitud."
+      "title": "Tu certificado",
+      "position": "Paso {current} de {total}",
+      "stages": {
+        "learn": "Aprende",
+        "request": "Solicita",
+        "review": "Revisión",
+        "certificate": "Certificado"
+      },
+      "status": {
+        "learn": "{count} de {min} cursos de habilidades",
+        "learned": "{count, plural, one {# curso de habilidades completado} other {# cursos de habilidades completados}}",
+        "ready": "Sin empezar",
+        "draft": "Borrador guardado",
+        "changes": "Cambios solicitados",
+        "sent": "Enviada el {date}",
+        "tutor": "Con {name}",
+        "waiting": "Esperando a un tutor",
+        "approved": "Aprobada el {date}",
+        "rejected": "No aprobada",
+        "withdrawn": "Retirada",
+        "issued": "Emitido el {date}",
+        "revoked": "Revocado"
+      },
+      "stepsLabel": "Pasos de la solicitud",
+      "stepsToggle": "Pasos de la solicitud",
+      "stepState": {
+        "done": "Hecho",
+        "flagged": "Necesita cambios"
+      },
+      "phases": {
+        "learn": {
+          "title": "Completa tus cursos de habilidades",
+          "lead": "Termina {min} cursos de habilidades. Después podrás solicitar tu certificado."
+        },
+        "ready": {
+          "title": "Solicita tu certificado",
+          "lead": "Has completado los cursos de habilidades. Describe tu voluntariado en cuatro pasos y envíalo a un tutor."
+        },
+        "draft": {
+          "title": "Termina tu solicitud",
+          "lead": "Tu borrador está guardado. Continúa con {step}."
+        },
+        "changes": {
+          "title": "Actualiza tu solicitud",
+          "lead": "Tu tutor ha pedido cambios. Actualiza los pasos marcados y vuelve a enviar la solicitud.",
+          "leadTutor": "{name} ha pedido cambios. Actualiza los pasos marcados y vuelve a enviar la solicitud."
+        },
+        "review": {
+          "title": "Tu solicitud está en revisión",
+          "lead": "Un tutor revisará tu solicitud. Te avisaremos cuando haya una decisión.",
+          "leadTutor": "{name} está revisando tu solicitud. Te avisaremos cuando haya una decisión."
+        },
+        "issued": {
+          "title": "Tu certificado está listo",
+          "lead": "Emitido el {date}. Cualquiera puede verificarlo con su código."
+        },
+        "rejected": {
+          "title": "Tu solicitud no fue aprobada",
+          "lead": "Tu tutor no aprobó esta solicitud."
+        },
+        "withdrawn": {
+          "title": "Retiraste tu solicitud",
+          "lead": "Puedes enviar una nueva solicitud cuando quieras."
+        },
+        "revoked": {
+          "title": "Tu certificado fue revocado",
+          "lead": "Su código ya no se puede verificar."
+        }
+      },
+      "seals": {
+        "label": "Cursos de habilidades completados",
+        "title": "Cursos de habilidades: {count} de {min}",
+        "missing": "Pendiente"
+      },
+      "note": {
+        "from": "Nota de {name}",
+        "tutor": "Nota de tu tutor",
+        "steps": "Pasos que actualizar: {steps}."
+      },
+      "code": {
+        "label": "Código de verificación",
+        "pending": "Se puede verificar cuando se emita el certificado.",
+        "verify": "Abre la página pública de verificación."
+      },
+      "sent": "Enviada el {date}.",
+      "path": {
+        "title": "También en tu camino",
+        "compass": "Define tu brújula de habilidades",
+        "percent": "{percent} %"
+      },
+      "preview": {
+        "title": "Vista previa del certificado",
+        "description": "Tu certificado con los datos que has introducido hasta ahora."
+      },
+      "actions": {
+        "continueCourse": "Continuar {course}",
+        "startCourse": "Empezar {course}",
+        "browseCourses": "Ir a los cursos",
+        "start": "Empezar la solicitud",
+        "continueDraft": "Continuar borrador",
+        "resubmit": "Volver a enviar",
+        "newRequest": "Empezar una nueva solicitud",
+        "viewRequest": "Ver solicitud",
+        "viewCertificate": "Ver certificado",
+        "download": "Descargar PDF",
+        "share": "Compartir",
+        "shareTitle": "Mi certificado GloRe",
+        "copied": "Enlace copiado",
+        "copyFailed": "No se pudo copiar el enlace",
+        "preview": "Vista previa del certificado"
+      },
+      "reason": {
+        "label": "Motivo"
+      }
     },
     "stats": {
       "enrolled": "Inscritos",
       "inProgress": "En progreso",
       "completed": "Completados",
-      "available": "Cursos disponibles",
-      "skills": "Cursos de habilidades completados",
-      "skillsRequired": "Se necesitan {count} para el certificado"
+      "available": "Cursos disponibles"
     },
     "continue": {
       "title": "Sigue aprendiendo",
@@ -2069,7 +2138,7 @@
     "stepsExperience": "Experiencia",
     "stepsSkills": "Habilidades",
     "stepsOrganization": "Tu organización",
-    "stepsReview": "Revisión",
+    "stepsReview": "Revisar y enviar",
     "stepsLabel": "Progreso de la solicitud",
     "titlesExperience": "Cuéntanos tu experiencia",
     "titlesSkills": "Elige las habilidades a certificar",

@@ -2,7 +2,7 @@ import { type Route } from 'next'
 
 import { type Locale } from 'next-intl'
 
-import { type AgeTone, ageTone, journeySteps } from '@/components/features/certificates/rules'
+import { type AgeTone, WIZARD_STEPS, type WizardStep, ageTone } from '@/components/features/certificates/rules'
 import { type Certificate, type CertificateStatus, OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
 import { type LocaleCoverage } from '@/db/queries/content-translation'
 import { type SkillOption } from '@/db/queries/learning'
@@ -156,42 +156,106 @@ export const pickCurrentCertificate = <T extends Pick<Certificate, 'isDefault' |
       millis(b.updatedAt) - millis(a.updatedAt)
   )[0] ?? null
 
-type JourneyKey = 'issued' | 'learn' | 'request' | 'review'
-type JourneyState = 'current' | 'done' | 'failed' | 'upcoming'
-type JourneyOutcome = 'changes_requested' | 'rejected' | 'revoked'
+type JourneyPhase = 'changes' | 'draft' | 'issued' | 'learn' | 'ready' | 'rejected' | 'review' | 'revoked' | 'withdrawn'
 
-export interface MemberJourneyStep {
-  key: JourneyKey
-  outcome: JourneyOutcome | null
-  state: JourneyState
+type JourneyStageKey = 'certificate' | 'learn' | 'request' | 'review'
+
+export type JourneyStageState = 'current' | 'done' | 'ended' | 'upcoming'
+
+export type JourneyStepState = 'current' | 'done' | 'flagged' | 'upcoming'
+
+export type ReviewSection = 'experience' | 'personal' | 'skills' | 'tasks'
+
+export interface JourneyStage {
+  key: JourneyStageKey
+  state: JourneyStageState
 }
 
-const toOutcome = (outcome: string | null): JourneyOutcome | null =>
-  outcome === 'changes_requested' || outcome === 'rejected' || outcome === 'revoked' ? outcome : null
+export interface JourneyWizardStep {
+  key: WizardStep
+  state: JourneyStepState
+}
 
-export const memberJourney = ({
+export interface VolunteerJourney {
+  current: number
+  phase: JourneyPhase
+  stages: JourneyStage[]
+  steps: JourneyWizardStep[]
+}
+
+const JOURNEY_STAGES: JourneyStageKey[] = ['learn', 'request', 'review', 'certificate']
+
+const PHASE_STAGE: Record<JourneyPhase, number> = {
+  changes: 1,
+  draft: 1,
+  issued: 3,
+  learn: 0,
+  ready: 1,
+  rejected: 2,
+  review: 2,
+  revoked: 3,
+  withdrawn: 2,
+}
+
+const ENDED_PHASES = new Set<JourneyPhase>(['rejected', 'revoked', 'withdrawn'])
+
+const REQUEST_PHASES = new Set<JourneyPhase>(['changes', 'draft', 'ready'])
+
+const SECTION_STEPS: Record<ReviewSection, WizardStep> = {
+  experience: 'experience',
+  personal: 'review',
+  skills: 'skills',
+  tasks: 'experience',
+}
+
+const STATUS_PHASES: Partial<Record<CertificateStatus, JourneyPhase>> = {
+  approved: 'issued',
+  changes_requested: 'changes',
+  draft: 'draft',
+  in_review: 'review',
+  rejected: 'rejected',
+  revoked: 'revoked',
+  submitted: 'review',
+  withdrawn: 'withdrawn',
+}
+
+const journeyPhase = ({ eligible, status }: { eligible: boolean; status: CertificateStatus | null }) =>
+  (status && STATUS_PHASES[status]) ?? (eligible ? 'ready' : 'learn')
+
+const stageState = (phase: JourneyPhase, index: number): JourneyStageState => {
+  const current = PHASE_STAGE[phase]
+  if (index < current || phase === 'issued') return 'done'
+  if (index > current) return 'upcoming'
+  return ENDED_PHASES.has(phase) ? 'ended' : 'current'
+}
+
+const stepState = (phase: JourneyPhase, flagged: Set<WizardStep>, resume: number, index: number) => {
+  if (phase === 'changes') return flagged.has(WIZARD_STEPS[index] ?? 'experience') ? 'flagged' : 'done'
+  if (index < resume) return 'done'
+  return index === resume ? 'current' : 'upcoming'
+}
+
+export const volunteerJourney = ({
   eligible,
+  resume = 0,
+  sections = [],
   status,
 }: {
   eligible: boolean
+  resume?: number
+  sections?: ReviewSection[]
   status: CertificateStatus | null
-}): MemberJourneyStep[] => {
-  if (!status || status === 'draft' || status === 'withdrawn') {
-    const ready = eligible || status === 'draft'
-    return [
-      { key: 'learn', outcome: null, state: ready ? 'done' : 'current' },
-      { key: 'request', outcome: null, state: ready ? 'current' : 'upcoming' },
-      { key: 'review', outcome: null, state: 'upcoming' },
-      { key: 'issued', outcome: null, state: 'upcoming' },
-    ]
+}): VolunteerJourney => {
+  const phase = journeyPhase({ eligible, status })
+  const flagged = new Set(sections.map(section => SECTION_STEPS[section]))
+  return {
+    current: PHASE_STAGE[phase],
+    phase,
+    stages: JOURNEY_STAGES.map((key, index) => ({ key, state: stageState(phase, index) })),
+    steps: REQUEST_PHASES.has(phase)
+      ? WIZARD_STEPS.map((key, index) => ({ key, state: stepState(phase, flagged, resume, index) }))
+      : [],
   }
-  const [, , review, issued] = journeySteps(status)
-  return [
-    { key: 'learn', outcome: null, state: 'done' },
-    { key: 'request', outcome: null, state: 'done' },
-    { key: 'review', outcome: toOutcome(review?.outcome ?? null), state: review?.state ?? 'upcoming' },
-    { key: 'issued', outcome: toOutcome(issued?.outcome ?? null), state: issued?.state ?? 'upcoming' },
-  ]
 }
 
 export interface MemberCourseRow {
@@ -301,34 +365,23 @@ export interface ChecklistItem {
   key: string
 }
 
-export interface MemberProgress {
-  compassSet: boolean
-  eligible: boolean
-  hasRequested: boolean
-  summary: Pick<MemberCourseSummary, 'completedByType' | 'enrolled'>
-  skillsCompleted: number
-  skillsRequired: number
-}
+export const learnerChecklist = ({
+  completedByType,
+  enrolled,
+}: Pick<MemberCourseSummary, 'completedByType' | 'enrolled'>): ChecklistItem[] => [
+  { done: enrolled > 0, href: '/courses', key: 'start' },
+  { done: completedByType.intro > 0, href: '/courses', key: 'intro' },
+  { done: completedByType.learner > 0, href: '/courses', key: 'learner' },
+]
 
-export const memberChecklist = (role: 'learner' | 'volunteer', progress: MemberProgress): ChecklistItem[] => {
-  const { completedByType, enrolled } = progress.summary
-  if (role === 'learner') {
-    return [
-      { done: enrolled > 0, href: '/courses', key: 'start' },
-      { done: completedByType.intro > 0, href: '/courses', key: 'intro' },
-      { done: completedByType.learner > 0, href: '/courses', key: 'learner' },
-    ]
-  }
-  return [
-    { done: progress.compassSet, href: '/courses', key: 'compass' },
-    { done: enrolled > 0, href: '/courses', key: 'start' },
-    { done: progress.skillsCompleted >= progress.skillsRequired, href: '/courses', key: 'skills' },
-    {
-      done: progress.hasRequested,
-      href: progress.eligible ? '/certificates/new' : '/certificates',
-      key: 'request',
-    },
-  ]
+export const nextSkillCourse = ({
+  continuing,
+  recommendations,
+}: Pick<MemberCourseSummary, 'continuing' | 'recommendations'>) => {
+  const started = continuing.find(({ type }) => type === 'skill')
+  if (started) return { slug: started.slug, started: true, title: started.title }
+  const suggested = recommendations.find(({ type }) => type === 'skill')
+  return suggested ? { slug: suggested.slug, started: false, title: suggested.title } : null
 }
 
 export interface EditorCourseRow {
@@ -486,19 +539,38 @@ export interface DashboardBase {
   organization: string | null
 }
 
-export interface EligibilityView {
+interface EligibilityView {
   completedSkillCount: number
   eligible: boolean
   minSkills: number
 }
 
 export interface MemberSummary {
-  certificate: Certificate | null
   checklist: ChecklistItem[]
   courses: MemberCourseSummary
-  eligibility: EligibilityView | null
-  journey: MemberJourneyStep[] | null
   notifications: Notification[]
+}
+
+export interface EarnedSkill {
+  icon: string | null
+  id: number
+  slug: string
+  title: string
+}
+
+interface JourneyReview {
+  comment: string | null
+  tutor: string | null
+}
+
+export interface VolunteerSummary {
+  certificate: Certificate | null
+  compassSet: boolean
+  courses: MemberCourseSummary
+  eligibility: EligibilityView
+  journey: VolunteerJourney
+  review: JourneyReview | null
+  skills: EarnedSkill[]
 }
 
 export interface EditorSummary {
@@ -514,5 +586,6 @@ export type DashboardData =
   | (DashboardBase & { view: 'none' })
   | (DashboardBase & { editor: EditorSummary; view: 'editor' })
   | (DashboardBase & { manager: ManagerSummary; view: 'manager' })
-  | (DashboardBase & { member: MemberSummary; view: 'learner' | 'volunteer' })
+  | (DashboardBase & { member: MemberSummary; view: 'learner' })
+  | (DashboardBase & { view: 'volunteer'; volunteer: VolunteerSummary })
   | (DashboardBase & { notifications: Notification[]; tutor: TutorSummary; view: 'tutor' })

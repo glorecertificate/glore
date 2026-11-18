@@ -7,7 +7,7 @@ import { getPendingCounts } from '@/actions/admin/pending'
 import { type DashboardBase, type DashboardData, resolveView } from '@/actions/dashboard/core'
 import { loadEditorSummary } from '@/actions/dashboard/editor'
 import { loadManagerSummary } from '@/actions/dashboard/manager'
-import { loadMemberSummary } from '@/actions/dashboard/member'
+import { loadLearnerSummary, loadVolunteerSummary } from '@/actions/dashboard/member'
 import { loadTutorSummary } from '@/actions/dashboard/tutor'
 import { listNotifications } from '@/actions/notifications/inbox'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
@@ -37,14 +37,19 @@ export const loadDashboard = async (): Promise<DashboardData> => {
     return { ...base, notifications: notifications.data?.items ?? [], tutor, view }
   }
 
-  if (view === 'volunteer' || view === 'learner') {
-    const member = await loadMemberSummary({
+  if (view === 'learner') {
+    const member = await loadLearnerSummary({ language: locale as Locale, userId: user.id })
+    return { ...base, member, view }
+  }
+
+  if (view === 'volunteer') {
+    const volunteer = await loadVolunteerSummary({
+      holder: user,
       language: locale as Locale,
       organizationId,
-      role: view,
       userId: user.id,
     })
-    return { ...base, member, view }
+    return { ...base, view, volunteer }
   }
 
   return { ...base, view: 'none' }

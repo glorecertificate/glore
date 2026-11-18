@@ -151,7 +151,8 @@ Three domain facts shape recurring decisions:
 ### Dashboard
 
 - `/dashboard` renders one server-loaded view per role (`loadDashboard` in `actions/dashboard/`, reusing the certificate, course, organization, and notification reads).
-- Volunteer: first-run checklist, journey, eligibility, certificate status, continue learning, goal-based recommendations, latest updates.
+- Volunteer: the Journey rail (learn, request, review, certificate) with the wizard steps of an open request, and one stage panel with the next action. Below `lg`, a bar replaces the rail.
+- The stage panel shows the earned skill seals, the tutor note and flagged steps, the verification code, or the reason for a stop. The courses still on the path follow.
 - Learner: checklist, continue, recommendations.
 - Tutor: assigned and pool counts, oldest waiting, average review time over 90 days, oldest requests table.
 - Representative and owner: waiting-for-tutor banner, setup checklist, members, invitations, requests, pipeline, activity.

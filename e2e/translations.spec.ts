@@ -64,10 +64,10 @@ test.describe('published overrides on a production build @prod', () => {
   })
 
   test('interpolates the placeholders of a compiled override', async ({ browser }) => {
-    const context = await browser.newContext({ baseURL: BASE_URL, storageState: await localAuthState('volunteer') })
+    const context = await browser.newContext({ baseURL: BASE_URL, storageState: await localAuthState('tutor') })
     const page = await context.newPage()
     await page.goto('/dashboard')
-    await expect(page.getByRole('heading', { name: 'Hi again, Valentina!' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Hi again, Tomas!' })).toBeVisible()
     await expect(page.getByText('{name}')).toHaveCount(0)
     await context.close()
   })
@@ -88,10 +88,10 @@ test.describe('published overrides on a production build @prod', () => {
       stdio: 'ignore',
     })
     await waitForServer(server)
-    const context = await browser.newContext({ baseURL: BASE_URL, storageState: await localAuthState('volunteer') })
+    const context = await browser.newContext({ baseURL: BASE_URL, storageState: await localAuthState('tutor') })
     const page = await context.newPage()
     await page.goto('/dashboard')
-    await expect(page.getByRole('heading', { name: 'Welcome back, Valentina' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Welcome back, Tomas' })).toBeVisible()
     await context.close()
   })
 })

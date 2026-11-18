@@ -4,6 +4,7 @@ import { ManagerDashboard } from '@/components/features/dashboard/manager'
 import { MemberDashboard } from '@/components/features/dashboard/member'
 import { NoOrganization } from '@/components/features/dashboard/no-organization'
 import { TutorDashboard } from '@/components/features/dashboard/tutor'
+import { VolunteerDashboard } from '@/components/features/dashboard/volunteer'
 
 export const DashboardContent = ({ data }: { data: DashboardData }) => {
   if (data.view === 'editor') {
@@ -22,15 +23,9 @@ export const DashboardContent = ({ data }: { data: DashboardData }) => {
       />
     )
   }
-  if (data.view === 'volunteer' || data.view === 'learner') {
-    return (
-      <MemberDashboard
-        firstName={data.firstName}
-        member={data.member}
-        organization={data.organization}
-        view={data.view}
-      />
-    )
+  if (data.view === 'volunteer') return <VolunteerDashboard volunteer={data.volunteer} />
+  if (data.view === 'learner') {
+    return <MemberDashboard firstName={data.firstName} member={data.member} organization={data.organization} />
   }
   return <NoOrganization firstName={data.firstName} />
 }

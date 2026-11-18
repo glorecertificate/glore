@@ -67,6 +67,13 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - Team members get neither. Drafts are visible to their holder only. Queries shorter than 2 characters return nothing.
 - The bell stays in the sidebar's top group under Search, as the second row.
 
+## Brand shell: pages without the sidebar
+
+- `features/auth/brand-shell.tsx` (`BrandShell`) is the frame for the register, onboarding, invitation, join, legal document, legal acceptance, verify, public certificate, error, not-found and offline pages. The login page keeps its own layout with the globe.
+- It renders the band with the globe, the logo chip and optional `actions`, then the content in one centered column. `size` sets the column width: `xs`, `sm`, `md` (default) or `lg`.
+- `title` and `description` go in the band. The content column overlaps the band by 4rem, so its first block must be an opaque card.
+- Pages with the sidebar use `DashboardPage` instead.
+
 ## Email colors
 
 - Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`: `EMAIL_COLORS` (light) and `EMAIL_COLORS_DARK`, each with `action`, `actionText`, `border`, `canvas`, `danger`, `faint`, `muted`, `onDanger`, `onFill`, `sunken`, `surface`, `text`, and `title`. Dark names carry a `-dark` suffix and apply through `dark:` classes. Class strings live in `src/emails/classes.ts` (`EMAIL_CLASSES`), so a template never writes a hex value. The `brand` color is the `action` blue, because email buttons carry white text.

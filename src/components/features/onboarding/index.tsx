@@ -22,7 +22,6 @@ import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Logo } from '@/components/ui/logo'
 import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/toast'
 import { type OnboardingNextStep } from '@/db/queries/onboarding'
@@ -115,7 +114,6 @@ export const OnboardingForm = ({
   return (
     <>
       <div className="flex flex-col items-center gap-6">
-        <Logo className="w-44" />
         <div className="space-y-2 text-center">
           <h1 className="type-title text-balance">{t(`step_${stepName}_title`)}</h1>
           <p className="text-pretty text-muted-foreground">{t(`step_${stepName}_description`)}</p>

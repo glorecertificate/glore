@@ -187,15 +187,22 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
       emptyDescription={filtersActive ? t('noResultsDescription') : t('noEventsDescription')}
       emptyTitle={filtersActive ? t('noResults') : t('noEvents')}
       filters={
-        <FilterBar active={filtersActive} onClear={handleClear}>
-          <SearchInput
-            aria-label={t('searchPlaceholder')}
-            className="w-full sm:w-72"
-            size="sm"
-            onValueChange={handleSearch}
-            placeholder={t('searchPlaceholder')}
-            value={search}
-          />
+        <FilterBar
+          active={filtersActive}
+          onClear={handleClear}
+          count={Number(Boolean(params.category)) + Number(Boolean(params.from)) + Number(Boolean(params.to))}
+          size="sm"
+          search={
+            <SearchInput
+              aria-label={t('searchPlaceholder')}
+              className="w-full sm:w-72"
+              size="sm"
+              onValueChange={handleSearch}
+              placeholder={t('searchPlaceholder')}
+              value={search}
+            />
+          }
+        >
           <Select
             onValueChange={value => setParams({ category: value === ALL ? null : (value as AuditCategory), page: 1 })}
             value={params.category ?? ALL}

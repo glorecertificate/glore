@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 
-export const CourseListSort = () => {
+export const CourseListSort = ({ className }: { className?: string }) => {
   const tCommon = useTranslations('Common')
   const t = useTranslations('CourseList')
 
@@ -69,7 +69,7 @@ export const CourseListSort = () => {
   return (
     <DropdownMenu onOpenChange={setOpen} open={open}>
       <DropdownMenuTrigger asChild>
-        <Button className="group" variant="outline">
+        <Button className={cn('group justify-between', className)} variant="outline">
           <span className="mr-1.5">{t('sortBy')}</span>
           {sort && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{options[sort]}</span>}
           {icon}

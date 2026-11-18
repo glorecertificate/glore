@@ -27,7 +27,7 @@ const descriptionKey = (user: { isAdmin: boolean; isEditor: boolean; isLearner: 
 export const CourseListToolbar = () => {
   const { user } = useSession()
   const t = useTranslations('CourseList')
-  const { hasFilters, resetFilters } = useCourseListFilters()
+  const { filterCount, hasFilters, resetFilters } = useCourseListFilters()
   const description = t(descriptionKey(user), { minSkills: settings.minSkills })
 
   return (
@@ -45,20 +45,24 @@ export const CourseListToolbar = () => {
       </PageHeader>
       <CourseListTabsList />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <FilterBar active={hasFilters} onClear={resetFilters}>
-          <SearchInput
-            className="w-full sm:w-72"
-            hotkey={SHORTCUTS.filter.key}
-            placeholder={t('searchPlaceholder')}
-            urlKey="q"
-          />
+        <FilterBar
+          active={hasFilters}
+          count={filterCount}
+          onClear={resetFilters}
+          search={
+            <SearchInput
+              className="w-full sm:w-72"
+              hotkey={SHORTCUTS.filter.key}
+              placeholder={t('searchPlaceholder')}
+              urlKey="q"
+            />
+          }
+        >
           <CourseListLanguageSelect />
           <CourseListTypeSelect />
           <CourseListGroupSelect />
+          <CourseListSort className="sm:ml-auto" />
         </FilterBar>
-        <div className="flex shrink-0">
-          <CourseListSort />
-        </div>
       </div>
     </div>
   )

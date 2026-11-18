@@ -73,15 +73,17 @@ export const normalizeContent = (content: unknown): unknown => {
   return content
 }
 
+const stripNodeId = (key: string, value: unknown) => (key === 'id' && typeof value === 'string' ? undefined : value)
+
 const contentStringCache = new WeakMap<object, string>()
 
 const stringifyContent = (content: unknown): string => {
   const normalized = normalizeContent(content)
   if (!normalized) return ''
-  if (!Array.isArray(normalized)) return JSON.stringify(normalized)
+  if (!Array.isArray(normalized)) return JSON.stringify(normalized, stripNodeId)
   const cached = contentStringCache.get(normalized)
   if (cached !== undefined) return cached
-  const result = JSON.stringify(normalized)
+  const result = JSON.stringify(normalized, stripNodeId)
   contentStringCache.set(normalized, result)
   return result
 }

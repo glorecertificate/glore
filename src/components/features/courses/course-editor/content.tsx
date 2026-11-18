@@ -64,7 +64,9 @@ const CourseEditor = ({
     [version]
   )
 
-  const setValue = (newValue: { value?: Value }) => {
+  const setValue = (newValue: { editor?: { operations: { type: string }[] }; value?: Value }) => {
+    const hasEdit = newValue.editor?.operations.some(operation => operation.type !== 'set_selection')
+    if (!hasEdit) return
     const value = newValue.value ?? (newValue as unknown as Value)
     clearTimeout(timerRef.current)
     pendingRef.current = { commit: onChangeRef.current, value }
@@ -79,7 +81,7 @@ const CourseEditor = ({
 }
 
 export const CourseContent = () => {
-  const { contentFlushRef, course, currentLesson, language, setLesson, step } = useCourse()
+  const { contentFlushRef, course, currentLesson, language, setLesson } = useCourse()
   const { user } = useSession()
 
   const canEdit = user.canEdit && !course.archivedAt
@@ -99,7 +101,7 @@ export const CourseContent = () => {
   }
 
   const initialContent = currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }]
-  const editorVersion = `${step}-${language}`
+  const editorVersion = `${currentLesson.id}-${language}`
 
   return (
     <>

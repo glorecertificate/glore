@@ -163,10 +163,15 @@ Owner decisions, 2026-11-18. Controls keep their visible size on every device.
 - `Kbd` and `KbdGroup` are hidden on coarse pointers.
 - A scrolling `TabsList`, the table container, and the sidebar content add vertical padding with a matching negative margin on coarse pointers, so the hit areas are not clipped and the layout does not move. `tabs-scroll-band` repaints the list background to its original height.
 - The offline promise is the offline page only. The service worker caches no course or certificate data.
+- `pb-bar-safe` pads a fixed bottom bar with at least 8px or the safe-area inset. Course editor controls take `touch-hit`, never a hand-written `before:` hit area.
+- `DataTable` stacks its count under the filters below `sm`, so the count never squeezes the search field.
+- `EmailText` renders an email with break points after `@` and before each dot. Use it where a long email wraps in a card.
+- The install prompt is a toast on pointer devices, shown only while no dialog is open. On touch it is `PwaInstallBanner`, a dismissible banner at the top of `SidebarInset`, so it never covers content.
+- Band tab lists read `--tabs-list-bg` (set by `band-tabs`), so the scrolling tab list on touch keeps the band scrim.
 
 ## Course editor on phones and tablets
 
-- Below `lg` the lesson picker opens a bottom `Sheet` with `CourseSidebar variant="sheet"`. The same component serves the inline sidebar from `lg`. On coarse pointers each row adds Move up, Move down, and Delete, next to the drag handle. Choosing a lesson closes the sheet.
+- Below `xl` (1280px, because the full sidebar takes 256px at 1024px) the lesson picker opens a bottom `Sheet` with `CourseSidebar variant="sheet"`. The same component serves the inline sidebar from `lg`. On coarse pointers each row adds Move up, Move down, and Delete, next to the drag handle. Choosing a lesson closes the sheet.
 - Below `md` the band shows the title, the status chips, and the language tabs. Settings, analytics, and preview sit in a More menu. Save and the Draft or Published switch sit in a bottom bar portalled to `body` with the safe-area inset. The description shows 2 lines and expands on tap.
 - `course-editor/block-actions.tsx` is a touch-only Block menu (Move up, Move down, Duplicate, Turn into, Ask AI, Delete). It acts on the top-level block at the caret through the Plate editor API and replaces the context menu that `block-context-menu.tsx` turns off on touch.
-- `lesson-editor.tsx` wraps the vendored editor. Below `lg` the fixed toolbar is one row that scrolls sideways and sticks to the viewport. On coarse pointers the floating selection toolbar is hidden.
+- `lesson-editor.tsx` wraps the vendored editor. Below `xl` the fixed toolbar is one row that scrolls sideways and sticks to the viewport. On coarse pointers the floating selection toolbar is hidden.

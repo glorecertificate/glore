@@ -3,7 +3,7 @@
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
 import { redirect, usePathname, useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -79,6 +79,36 @@ const preloadSearchCommand = () => {
   void loadSearchCommand()
 }
 
+const PREFETCH_HOLD_MS = 4000
+
+const prefetchHold = { listeners: new Set<() => void>(), quiet: true, timer: 0 }
+
+const setPrefetchQuiet = (quiet: boolean) => {
+  if (prefetchHold.quiet === quiet) return
+  prefetchHold.quiet = quiet
+  for (const listener of prefetchHold.listeners) listener()
+}
+
+const holdPrefetch = () => {
+  window.clearTimeout(prefetchHold.timer)
+  setPrefetchQuiet(false)
+  prefetchHold.timer = window.setTimeout(() => setPrefetchQuiet(true), PREFETCH_HOLD_MS)
+}
+
+const subscribePrefetchHold = (listener: () => void) => {
+  prefetchHold.listeners.add(listener)
+  return () => {
+    prefetchHold.listeners.delete(listener)
+  }
+}
+
+const usePrefetchQuiet = () =>
+  useSyncExternalStore(
+    subscribePrefetchHold,
+    () => prefetchHold.quiet,
+    () => true
+  )
+
 interface PendingCounts {
   organizations: number
   team: number
@@ -111,6 +141,7 @@ const DashboardSidebarItem = ({
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const pressed = useRef(false)
+  const quiet = usePrefetchQuiet()
 
   const isActivePath = route === activePath && searchParams.size === 0
 
@@ -125,6 +156,7 @@ const DashboardSidebarItem = ({
   const press = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (e.button !== 0) return
     pressed.current = true
+    holdPrefetch()
     setActivePath(route)
   }
 
@@ -159,7 +191,7 @@ const DashboardSidebarItem = ({
         onPointerLeave={cancelPress}
         tooltip={label}
       >
-        <Link href={route} prefetch>
+        <Link href={route} prefetch={quiet || undefined}>
           {icon && <LucideIcon name={icon} />}
           {label}
           {badge > 0 && <DashboardSidebarBadge count={badge} />}
@@ -503,6 +535,16 @@ const DashboardSidebarBrand = () => {
 
 export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
   const { organization, user } = useSession()
+  const pathname = usePathname()
+  const mounted = useRef(false)
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+    holdPrefetch()
+  }, [pathname])
 
   return (
     <Sidebar collapsible="icon">

@@ -6,10 +6,11 @@ import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs
 
 import { getCourse } from '@/actions/courses/queries'
 import { getCurrentUser } from '@/actions/user'
-import { CourseBarTitle } from '@/components/features/courses/course-editor/bar-title'
 import { CourseProvider } from '@/components/features/courses/course-editor/context'
+import { CourseHeader } from '@/components/features/courses/course-editor/header'
 import { CourseEditor } from '@/components/features/courses/course-editor/lazy'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
+import { CourseEditorTabs } from '@/components/features/courses/course-editor/tabs'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { getCookie } from '@/lib/cookie-store'
 import { LOCALES } from '@/lib/i18n'
@@ -75,7 +76,7 @@ export const CourseEditorView = async (props: {
 
   return (
     <CourseProvider value={{ course, language, step }}>
-      <DashboardPage parent="courses" title={<CourseBarTitle />}>
+      <DashboardPage header={<CourseHeader />} provider={CourseEditorTabs}>
         <ViewTransition default="none" enter={{ 'course-created': 'grid-enter', default: 'none' }}>
           <CourseEditor />
         </ViewTransition>

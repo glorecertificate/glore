@@ -41,7 +41,7 @@ export const LegalAcceptForm = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-start gap-3 rounded-lg border p-4">
+      <div className="flex items-start gap-3 rounded-lg border bg-card p-4 transition-colors has-[:focus-visible]:border-border-strong">
         <Checkbox
           checked={accepted}
           className="mt-0.5"
@@ -50,13 +50,14 @@ export const LegalAcceptForm = () => {
           id="legal-accept"
           onCheckedChange={checked => setAccepted(checked === true)}
         />
-        <Label className="leading-5" htmlFor="legal-accept">
+        <Label className="cursor-pointer text-sm/6 text-fg-1" htmlFor="legal-accept">
           {t('accept')}
         </Label>
       </div>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <Button
           data-testid="legal-accept-submit"
+          className="sm:min-w-40"
           disabled={!accepted}
           loading={pending}
           onClick={handleAccept}
@@ -65,7 +66,7 @@ export const LegalAcceptForm = () => {
         >
           {t('submit')}
         </Button>
-        <Button disabled={pending} onClick={handleLogout} type="button" variant="ghost">
+        <Button className="sm:min-w-28" disabled={pending} onClick={handleLogout} type="button" variant="ghost">
           {t('logout')}
         </Button>
       </div>

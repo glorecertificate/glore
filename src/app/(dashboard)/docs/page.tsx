@@ -47,7 +47,11 @@ const DocsPageContent = async () => {
 }
 
 const DocsPage = () => (
-  <DashboardPage className="space-y-10" title={<PageTitle namespace="Layout" name="docs" />}>
+  <DashboardPage
+    className="space-y-8"
+    description={<PageTitle namespace="Docs" name="description" />}
+    title={<PageTitle namespace="Layout" name="docs" />}
+  >
     <DocsPageContent />
   </DashboardPage>
 )

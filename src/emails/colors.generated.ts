@@ -1,9 +1,31 @@
 export const EMAIL_COLORS = {
   action: '#037fa8',
+  actionText: '#027092',
   border: '#e6eaee',
   canvas: '#f7f9fc',
+  danger: '#da3834',
   faint: '#686f78',
   muted: '#545c67',
+  onDanger: '#ffffff',
+  onFill: '#ffffff',
+  sunken: '#f0f3f6',
   surface: '#ffffff',
   text: '#121922',
+  title: '#16304f',
+} as const
+
+export const EMAIL_COLORS_DARK = {
+  action: '#44b5dc',
+  actionText: '#59bcdf',
+  border: '#21272f',
+  canvas: '#070a0e',
+  danger: '#da3834',
+  faint: '#838991',
+  muted: '#9aa0a7',
+  onDanger: '#ffffff',
+  onFill: '#0b1016',
+  sunken: '#1b2026',
+  surface: '#0b0f14',
+  text: '#f2f4f6',
+  title: '#e0ebf8',
 } as const

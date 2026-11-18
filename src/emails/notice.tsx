@@ -2,6 +2,7 @@ import { type ReactNode } from 'react'
 
 import { Button, Link, Section, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps, emailTranslator } from '@/emails/translate'
 import { DEFAULT_SETTINGS } from '@/lib/app-settings'
@@ -19,12 +20,6 @@ interface NoticeProps extends EmailBaseProps {
 }
 
 const NO_DETAILS: string[] = []
-
-const quoteStyle: React.CSSProperties = {
-  borderLeft: '3px solid #d4d4d8',
-  margin: '16px 0',
-  paddingLeft: '12px',
-}
 
 export const Notice = ({
   action,
@@ -47,9 +42,9 @@ export const Notice = ({
     <EmailLayout
       category={category}
       footer={
-        <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
+        <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>
           {footer}{' '}
-          <Link className="text-[#71717a] underline" href={`mailto:${settings.email}`}>
+          <Link className={EMAIL_CLASSES.fineLink} href={`mailto:${settings.email}`}>
             {common('contactUs')}
           </Link>
         </Text>
@@ -59,33 +54,33 @@ export const Notice = ({
       preview={preview}
       settings={settings}
     >
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
+      <Text className={`m-0 ${EMAIL_CLASSES.body}`}>
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{intro}</Text>
+      <Text className={EMAIL_CLASSES.body}>{intro}</Text>
       {details.map(detail => (
-        <Text className="text-[13px] leading-5.5 text-[#71717a]" key={detail}>
+        <Text className={EMAIL_CLASSES.detail} key={detail}>
           {detail}
         </Text>
       ))}
       {quote && (
-        <Section style={quoteStyle}>
-          {quote.label && <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{quote.label}</Text>}
-          <Text className="m-0 text-[14px] leading-6 whitespace-pre-line text-[#3f3f46]">{quote.text}</Text>
+        <Section className={EMAIL_CLASSES.quote}>
+          {quote.label && <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>{quote.label}</Text>}
+          <Text className={EMAIL_CLASSES.quoteText}>{quote.text}</Text>
         </Section>
       )}
       {children}
       {action && (
         <Section className="my-6 text-center">
           <Button
-            className={`rounded-lg ${action.tone === 'danger' ? 'bg-[#dc2626]' : 'bg-brand'} px-6 py-3 text-[14px] font-semibold text-white no-underline`}
+            className={action.tone === 'danger' ? EMAIL_CLASSES.buttonDanger : EMAIL_CLASSES.button}
             href={action.href}
           >
             {action.label}
           </Button>
         </Section>
       )}
-      {note && <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{note}</Text>}
+      {note && <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>{note}</Text>}
     </EmailLayout>
   )
 }

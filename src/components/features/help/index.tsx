@@ -2,24 +2,24 @@
 
 import { useMessages, useTranslations } from 'next-intl'
 
+import { InfoCard } from '@/components/features/about/info-card'
+import { InfoSection } from '@/components/features/about/info-section'
+import { type InfoTone } from '@/components/features/about/info-tone'
 import { Faq } from '@/components/features/help/faq'
 import { type HelpRole, useHelpRole } from '@/components/features/help/use-help-role'
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
 import { useSettings } from '@/components/providers/settings'
-import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 interface TitledText {
   description: string
   title: string
 }
 
-const STEP_ACCENTS = [
-  'bg-brand text-brand-foreground',
-  'bg-brand-secondary text-brand-secondary-foreground',
-  'bg-info text-info-foreground',
-  'bg-brand-tertiary text-brand-tertiary-foreground',
-] as const
+const STEP_TONES: InfoTone[] = ['action', 'earned', 'info', 'navy']
 
 const STEP_ICONS: Record<HelpRole, [IconName, IconName, IconName, IconName]> = {
   volunteer: ['users', 'graduation-cap', 'sparkles', 'clipboard-check'],
@@ -29,11 +29,11 @@ const STEP_ICONS: Record<HelpRole, [IconName, IconName, IconName, IconName]> = {
   team: ['file-plus-corner', 'layers', 'rocket', 'settings'],
 }
 
-const CERTIFICATE_FACETS = [
-  { icon: 'badge-check', key: 'eligibility', chip: 'bg-brand/10 text-brand-text' },
-  { icon: 'refresh-cw', key: 'lifecycle', chip: 'bg-info/10 text-info-text' },
-  { icon: 'scroll-text', key: 'verification', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
-] as const
+const CERTIFICATE_FACETS: { icon: IconName; key: 'eligibility' | 'lifecycle' | 'verification'; tone: InfoTone }[] = [
+  { icon: 'badge-check', key: 'eligibility', tone: 'action' },
+  { icon: 'refresh-cw', key: 'lifecycle', tone: 'info' },
+  { icon: 'scroll-text', key: 'verification', tone: 'navy' },
+]
 
 const FEATURE_ICONS: Record<string, IconName> = {
   organizations: 'square-stack',
@@ -43,6 +43,8 @@ const FEATURE_ICONS: Record<string, IconName> = {
   notifications: 'bell',
   pwa: 'smartphone',
 }
+
+const LINK = 'font-medium text-link underline underline-offset-4 hover:text-brand-text focus-visible:focus-ring'
 
 export const HelpContent = () => {
   const messages = useMessages() as { Help: HelpMessages }
@@ -56,141 +58,98 @@ export const HelpContent = () => {
   const faqItems = Object.values(roleContent.faqs)
 
   return (
-    <div className="flex flex-col gap-14">
-      <section className="flex flex-col items-center gap-3 text-center">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand-text">
-          <LucideIcon name="badge-check" className="size-3.5" />
+    <div className="flex flex-col gap-12">
+      <section className="flex flex-col items-start gap-3">
+        <Badge size="lg" variant="info">
+          <LucideIcon name="badge-check" />
           {roleContent.label}
-        </span>
-        <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h2>
-        <p className="max-w-xl text-[15px] leading-relaxed text-balance text-muted-foreground">{roleContent.intro}</p>
+        </Badge>
+        <p className="max-w-prose text-lg/8 text-pretty text-fg-1">{roleContent.intro}</p>
       </section>
 
-      <section className="flex flex-col gap-7">
-        <h2 className="text-xl font-semibold tracking-tight">{content.gettingStartedTitle}</h2>
-        <ol className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {steps.map((step, i) => {
-            const icon = STEP_ICONS[role][i]
-
-            return (
-              <li
-                key={step.title}
-                className="flex gap-4 rounded-xl border bg-card p-5 shadow-2xs transition-shadow hover:shadow-sm"
-              >
-                <div className="flex flex-col items-center gap-2">
-                  <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-xl', STEP_ACCENTS[i])}>
-                    <LucideIcon name={icon} className="size-5" />
-                  </span>
-                  <span className="text-xs font-semibold text-muted-foreground tabular-nums">{`0${i + 1}`}</span>
-                </div>
-                <div className="flex flex-col gap-1 pt-0.5">
-                  <p className="text-sm font-semibold">{step.title}</p>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
-                </div>
-              </li>
-            )
-          })}
+      <InfoSection title={content.gettingStartedTitle}>
+        <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {steps.map((step, index) => (
+            <li className="flex" key={step.title}>
+              <InfoCard
+                className="w-full"
+                description={step.description}
+                icon={STEP_ICONS[role][index]}
+                title={`${index + 1}. ${step.title}`}
+                tone={STEP_TONES[index]}
+              />
+            </li>
+          ))}
         </ol>
-      </section>
+      </InfoSection>
 
-      <section className="flex flex-col gap-7">
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-xl font-semibold tracking-tight">{content.certificate.title}</h2>
-          <p className="text-sm text-muted-foreground">{content.certificate.description}</p>
-        </div>
+      <InfoSection description={content.certificate.description} title={content.certificate.title}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {CERTIFICATE_FACETS.map(({ chip, icon, key }) => {
-            const facet = content.certificate[key]
-
-            return (
-              <div key={key} className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-2xs">
-                <div className={cn('flex size-9 items-center justify-center rounded-lg', chip)}>
-                  <LucideIcon name={icon} className="size-4.5" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-semibold">{facet.title}</p>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{facet.description}</p>
-                </div>
-              </div>
-            )
-          })}
+          {CERTIFICATE_FACETS.map(({ icon, key, tone }) => (
+            <InfoCard
+              description={content.certificate[key].description}
+              icon={icon}
+              key={key}
+              title={content.certificate[key].title}
+              tone={tone}
+            />
+          ))}
         </div>
-      </section>
+      </InfoSection>
 
-      <section className="flex flex-col gap-7">
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-xl font-semibold tracking-tight">{content.faqsTitle}</h2>
-          <p className="text-sm text-muted-foreground">{content.faqsDescription}</p>
-        </div>
+      <InfoSection description={content.faqsDescription} title={content.faqsTitle}>
         <Faq items={faqItems} />
-      </section>
+      </InfoSection>
 
-      <section className="flex flex-col gap-7">
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-xl font-semibold tracking-tight">{content.features.title}</h2>
-          <p className="text-sm text-muted-foreground">{content.features.description}</p>
-        </div>
+      <InfoSection description={content.features.description} title={content.features.title}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Object.entries(content.features.items).map(([key, item]) => {
-            const icon = FEATURE_ICONS[key] ?? 'square-stack'
-
-            return (
-              <div key={key} className="flex gap-3 rounded-xl border bg-card p-4 shadow-2xs">
-                <LucideIcon name={icon} className="mt-0.5 size-4.5 shrink-0 text-muted-foreground" />
-                <div className="flex flex-col gap-0.5">
-                  <p className="text-sm font-medium">{item.title}</p>
-                  <p className="text-xs leading-relaxed text-muted-foreground">{item.description}</p>
-                </div>
-              </div>
-            )
-          })}
+          {Object.entries(content.features.items).map(([key, item]) => (
+            <InfoCard
+              description={item.description}
+              icon={FEATURE_ICONS[key] ?? 'square-stack'}
+              key={key}
+              title={item.title}
+              tone="navy"
+            />
+          ))}
         </div>
-      </section>
+      </InfoSection>
 
-      <section className="overflow-hidden rounded-2xl border border-brand/20 bg-linear-to-br from-brand/10 via-card to-card p-7 sm:p-8">
-        <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="gap-5 bg-surface-sunken p-6 shadow-none sm:p-8">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1.5">
-            <h2 className="text-lg font-semibold tracking-tight">{content.contact.title}</h2>
-            <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+            <h2 className="font-display text-xl font-semibold tracking-tight text-fg-title">{content.contact.title}</h2>
+            <p className="max-w-prose text-sm/relaxed text-pretty text-fg-2">
               {t.rich('contact.description', {
                 email: chunks => (
-                  <a className="font-medium text-link underline-offset-4 hover:underline" href={`mailto:${email}`}>
+                  <a className={LINK} href={`mailto:${email}`}>
                     {chunks}
                   </a>
                 ),
                 website: chunks => (
-                  <a
-                    className="font-medium text-link underline-offset-4 hover:underline"
-                    href={website}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
+                  <a className={LINK} href={website} rel="noopener noreferrer" target="_blank">
                     {chunks}
                   </a>
                 ),
               })}
             </p>
           </div>
-          <div className="flex shrink-0 flex-col gap-2 sm:items-end">
-            <a
-              className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground shadow-2xs transition-colors hover:bg-brand-accent"
-              href={`mailto:${email}`}
-            >
-              <LucideIcon name="mail" className="size-4" />
-              {content.contact.emailLabel}
-            </a>
-            <a
-              className="inline-flex items-center gap-1.5 px-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              href={website}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {content.contact.websiteLabel}
-              <LucideIcon name="arrow-up-right" className="size-3.5" />
-            </a>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Button asChild>
+              <a href={`mailto:${email}`}>
+                <LucideIcon name="mail" />
+                {content.contact.emailLabel}
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href={website} rel="noopener noreferrer" target="_blank">
+                {content.contact.websiteLabel}
+                <LucideIcon name="arrow-up-right" />
+              </a>
+            </Button>
           </div>
         </div>
-      </section>
+      </Card>
     </div>
   )
 }

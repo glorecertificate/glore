@@ -30,7 +30,7 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold capitalize">{title}</h2>
+        <h2 className="type-heading text-fg-title capitalize">{title}</h2>
         {canEdit && (
           <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
             <LucideIcon name="plus" className="size-4" />
@@ -40,7 +40,7 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
       </div>
 
       {category.articles.length === 0 ? (
-        <Empty className="py-10">
+        <Empty className="border py-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <LucideIcon name="file-text" />
@@ -59,7 +59,7 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {category.articles.map(article => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.id} article={article} className="h-full" />
           ))}
         </div>
       )}

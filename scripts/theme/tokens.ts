@@ -34,7 +34,7 @@ interface PairResult {
 
 export interface Theme {
   css: Record<Mode, [string, string][]>
-  email: Record<string, string>
+  email: { dark: Record<string, string>; light: Record<string, string> }
   pairs: Record<Mode, PairResult[]>
 }
 
@@ -452,22 +452,29 @@ export const buildTheme = (config: SystemConfig): Theme => {
   const darkCss = dark.tokens
     .map(name => [name, dark.resolved.get(name)?.css ?? ''] as [string, string])
     .filter(([name, value]) => light.resolved.get(name)?.css !== value)
-  const hex = (name: string) => {
-    const value = light.resolved.get(name)?.color
+  const hexOf = (mode: typeof light, name: string) => {
+    const value = mode.resolved.get(name)?.color
     if (!value) throw new Error(`Token ${name} has no color`)
     return formatHex(value)
   }
+  const emailOf = (mode: typeof light, border: string) => ({
+    action: hexOf(mode, 'action'),
+    actionText: hexOf(mode, 'action-text'),
+    border: hexOf(mode, border),
+    canvas: hexOf(mode, 'surface-sunken'),
+    danger: hexOf(mode, 'danger-fill'),
+    faint: hexOf(mode, 'fg-3'),
+    muted: hexOf(mode, 'fg-2'),
+    onDanger: hexOf(mode, 'fg-on-danger'),
+    onFill: hexOf(mode, 'fg-on-fill'),
+    sunken: hexOf(mode, 'surface-muted'),
+    surface: hexOf(mode, 'surface-0'),
+    text: hexOf(mode, 'fg-1'),
+    title: hexOf(mode, 'fg-title'),
+  })
   return {
     css: { dark: darkCss, light: lightCss },
-    email: {
-      action: hex('action'),
-      border: hex('border-subtle'),
-      canvas: hex('surface-sunken'),
-      faint: hex('fg-3'),
-      muted: hex('fg-2'),
-      surface: hex('surface-0'),
-      text: hex('fg-1'),
-    },
+    email: { dark: emailOf(dark, 'surface-selected'), light: emailOf(light, 'border-subtle') },
     pairs: { dark: dark.pairs, light: light.pairs },
   }
 }
@@ -483,12 +490,15 @@ const block = (selector: string, entries: [string, string][]) =>
 export const renderCss = (theme: Theme) =>
   ['@layer base {', block(':root', theme.css.light), '', block('.dark', theme.css.dark), '}', ''].join('\n')
 
+const emailBlock = (name: string, entries: Record<string, string>) => [
+  `export const ${name} = {`,
+  ...Object.entries(entries)
+    .toSorted(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `  ${key}: '${value}',`),
+  '} as const',
+]
+
 export const renderEmail = (theme: Theme) =>
-  [
-    'export const EMAIL_COLORS = {',
-    ...Object.entries(theme.email)
-      .toSorted(([a], [b]) => a.localeCompare(b))
-      .map(([name, value]) => `  ${name}: '${value}',`),
-    '} as const',
-    '',
-  ].join('\n')
+  [...emailBlock('EMAIL_COLORS', theme.email.light), '', ...emailBlock('EMAIL_COLORS_DARK', theme.email.dark), ''].join(
+    '\n'
+  )

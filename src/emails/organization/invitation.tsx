@@ -1,5 +1,6 @@
 import { Link, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { Notice } from '@/emails/notice'
 import { type EmailBaseProps, emailTranslator } from '@/emails/translate'
 import metadata from '~/config/metadata.json'
@@ -51,8 +52,8 @@ const OrganizationInvitationEmail = ({
       }
       userName={userName}
     >
-      <Text className="m-0 mt-2 text-[12px] leading-5 text-[#71717a]">{t('manualLink')}</Text>
-      <Link className="text-[12px] break-all text-[#3bb5da]" href={url}>
+      <Text className={`m-0 mt-2 ${EMAIL_CLASSES.fine}`}>{t('manualLink')}</Text>
+      <Link className={EMAIL_CLASSES.manualLink} href={url}>
         {url}
       </Link>
     </Notice>

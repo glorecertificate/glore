@@ -1,6 +1,7 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { Button, Section, Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
 import { DEFAULT_SETTINGS } from '@/lib/app-settings'
@@ -40,7 +41,7 @@ const CertificateReviewEmail = ({
   })
 
   const isApproved = status === 'approved'
-  const footer = <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('footer')}</Text>
+  const footer = <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>{t('footer')}</Text>
 
   return (
     <EmailLayout
@@ -51,23 +52,18 @@ const CertificateReviewEmail = ({
       preview={isApproved ? t('previewApproved') : t('previewChanges')}
       settings={settings}
     >
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
+      <Text className={`m-0 ${EMAIL_CLASSES.body}`}>
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">
-        {isApproved ? t('introApproved') : t('introChanges')}
-      </Text>
+      <Text className={EMAIL_CLASSES.body}>{isApproved ? t('introApproved') : t('introChanges')}</Text>
       {isApproved ? (
         <>
-          <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsApproved')}</Text>
+          <Text className={EMAIL_CLASSES.detail}>{t('detailsApproved')}</Text>
           {documentUrl && (
             <>
-              <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsApprovedDownload')}</Text>
+              <Text className={EMAIL_CLASSES.detail}>{t('detailsApprovedDownload')}</Text>
               <Section className="my-6 text-center">
-                <Button
-                  className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-                  href={documentUrl}
-                >
+                <Button className={EMAIL_CLASSES.button} href={documentUrl}>
                   {t('buttonApproved')}
                 </Button>
               </Section>
@@ -75,10 +71,7 @@ const CertificateReviewEmail = ({
           )}
           {!documentUrl && (
             <Section className="my-6 text-center">
-              <Button
-                className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-                href={url}
-              >
+              <Button className={EMAIL_CLASSES.button} href={url}>
                 {t('buttonApproved')}
               </Button>
             </Section>
@@ -86,14 +79,9 @@ const CertificateReviewEmail = ({
         </>
       ) : (
         <>
-          {comment && (
-            <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsChanges', { comment })}</Text>
-          )}
+          {comment && <Text className={EMAIL_CLASSES.detail}>{t('detailsChanges', { comment })}</Text>}
           <Section className="my-6 text-center">
-            <Button
-              className="rounded-lg bg-[#ef4444] px-6 py-3 text-[14px] font-semibold text-white no-underline"
-              href={url}
-            >
+            <Button className={EMAIL_CLASSES.buttonDanger} href={url}>
               {t('buttonChanges')}
             </Button>
           </Section>

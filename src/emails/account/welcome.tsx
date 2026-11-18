@@ -1,5 +1,6 @@
 import { Text } from 'react-email'
 
+import { EMAIL_CLASSES } from '@/emails/classes'
 import { Notice } from '@/emails/notice'
 import { type EmailBaseProps, emailTranslator } from '@/emails/translate'
 import metadata from '~/config/metadata.json'
@@ -22,10 +23,8 @@ const AccountWelcomeEmail = ({ url, userName, username, ...base }: AccountWelcom
       preview={t('preview')}
       userName={userName}
     >
-      <Text className="my-4 rounded-lg bg-[#f4f4f5] px-4 py-3 text-center font-mono text-[16px] font-semibold text-[#0a0a0a]">
-        {username}
-      </Text>
-      <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('details')}</Text>
+      <Text className={EMAIL_CLASSES.chip}>{username}</Text>
+      <Text className={EMAIL_CLASSES.detail}>{t('details')}</Text>
     </Notice>
   )
 }

@@ -15,18 +15,18 @@ export const Faq = ({ className, items, ...props }: React.ComponentProps<'div'> 
   const [open, setOpen] = useState<string | null>(items[0]?.question ?? null)
 
   return (
-    <div className={cn('divide-y rounded-xl border bg-card shadow-2xs', className)} {...props}>
+    <div className={cn('divide-y overflow-hidden rounded-xl border bg-card shadow-2xs', className)} {...props}>
       {items.map(({ answer, question }) => {
         const isOpen = open === question
 
         return (
           <Collapsible key={question} onOpenChange={value => setOpen(value ? question : null)} open={isOpen}>
-            <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-accent/50">
-              <span className="text-sm font-medium">{question}</span>
+            <CollapsibleTrigger className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-hover focus-visible:focus-ring-inset">
+              <span className="type-label text-fg-1">{question}</span>
               <LucideIcon
                 name="chevron-down"
                 className={cn(
-                  'size-4 shrink-0 text-muted-foreground transition-transform duration-200',
+                  'size-4 shrink-0 text-fg-2 transition-transform duration-200 motion-reduce:transition-none',
                   isOpen && 'rotate-180'
                 )}
               />
@@ -36,7 +36,7 @@ export const Faq = ({ className, items, ...props }: React.ComponentProps<'div'> 
               className="grid transition-[grid-template-rows] duration-200 ease-out data-[state=closed]:grid-rows-[0fr] data-[state=open]:grid-rows-[1fr]"
             >
               <div className="overflow-hidden">
-                <p className="px-5 pb-4 text-sm leading-relaxed text-muted-foreground">{answer}</p>
+                <p className="max-w-prose px-5 pb-4 text-sm/relaxed text-pretty text-fg-2">{answer}</p>
               </div>
             </CollapsibleContent>
           </Collapsible>

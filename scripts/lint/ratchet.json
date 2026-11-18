@@ -8,10 +8,6 @@
   "src/app/legal/accept": {
     "no-arbitrary-value": 1
   },
-  "src/components/features/about": {
-    "no-arbitrary-value": 1,
-    "no-restricted-classes": 1
-  },
   "src/components/features/admin": {
     "no-arbitrary-value": 10,
     "no-restricted-classes": 8
@@ -41,16 +37,13 @@
     "no-arbitrary-value": 1
   },
   "src/components/features/docs": {
-    "no-arbitrary-value": 2,
-    "no-restricted-classes": 1
+    "no-arbitrary-value": 1
   },
   "src/components/features/help": {
-    "no-arbitrary-value": 3,
-    "no-restricted-classes": 2
+    "no-arbitrary-value": 1
   },
   "src/components/features/legal": {
-    "no-arbitrary-value": 2,
-    "no-restricted-classes": 1
+    "no-arbitrary-value": 1
   },
   "src/components/features/notifications": {
     "no-arbitrary-value": 4,

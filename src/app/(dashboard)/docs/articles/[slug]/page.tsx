@@ -24,7 +24,7 @@ const ArticlePageContent = async ({ params }: PageProps<'/docs/articles/[slug]'>
 }
 
 const ArticlePage = (props: PageProps<'/docs/articles/[slug]'>) => (
-  <DashboardPage parent="docs" title={<ArticleTitle params={props.params} />} width="prose">
+  <DashboardPage parent="docs" title={<ArticleTitle params={props.params} />} width="content">
     <ArticlePageContent {...props} />
   </DashboardPage>
 )

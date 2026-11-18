@@ -120,6 +120,9 @@ src/
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`).
 - `db/schema/<table>.ts` holds Drizzle table definitions.
 - `features/docs/use-docs-search.ts` is the docs search hook for the command palette.
+- Articles and legal documents share `features/docs/` `headings.ts`, `reading-*.tsx`, and `toc-links.tsx`. Heading ids map by source line, so the table of contents and the anchors agree.
+- `extractHeadings` reads ATX headings (`#` to `###`, up to 3 spaces of indent), CRLF, fences, and duplicates. It skips setext headings, so write headings with `#`.
+- `features/about/` holds `InfoSection`, `InfoCard`, and `info-tone.ts` for About and Help.
 - `features/translations/` holds the `/translations` table and editor sheet.
 
 ## Layer boundaries (lint-enforced)
@@ -179,7 +182,7 @@ src/
 
 - `sendMail` (`src/lib/email.ts`) takes `template`, `category`, and `unsubscribeUrl`.
 - Every template forwards the `category` and `settings` base props (`EmailBaseProps`) to `EmailLayout`, which prints the reason and the preference link.
-- `EmailLayout` also prints the legal entity, website, and social links from `settings`. `renderEmail` loads it, and it defaults to the config values.
+- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the logo and motif header.
 - Mail renders in the RSC layer, which has no `createContext`, so templates never use React context.
 - Optional mail carries `List-Unsubscribe` headers. The POST at `/api/v1/mail-preferences` turns that category off for the user named in a signed token (`src/lib/unsubscribe.ts`).
 - A GET on that route opens `/settings?tab=notifications`.
@@ -197,4 +200,4 @@ src/
 - `organization/{application-decision,invitation (invite and reminder),join-request,join-request-received,membership,registration-request}`.
 - `team/{invite,role-changed}`.
 - Each has `PreviewProps` for `pnpm run email` and `Email.<name>` copy in all catalogs.
-- `Notice` (`src/emails/notice.tsx`) is the shared body, and `public/email/header.png` is the logo and motif header.
+- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the logo and motif header.

@@ -33,7 +33,7 @@ jobs:
   deploy:
     name: Deploy
     needs: [check, e2e]
-    if: github.event_name != 'merge_group'
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'preview')
     permissions:
       contents: read
       deployments: write

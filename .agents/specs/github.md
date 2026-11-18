@@ -54,6 +54,7 @@ The org project "GloRe" is a view. Its workflows keep it, so agents never add it
 - The GitHub default names hold the other areas: `dependencies` and `documentation`. `.github/labeler.yml` sets all area labels from the changed paths.
 - `agent`: start the `Claude` workflow on the issue. The workflow runs only when the Status is Ready.
 - `needs-human`: an agent is blocked on a decision. The agent writes one comment with the question, then stops.
+- `preview`: deploy a Vercel preview of the PR. Without it, a PR gets no preview, which keeps Vercel storage low.
 - Issue types (Task, Bug, Feature) classify issues, and the issue forms set them. Close reasons mark duplicates and work that is not planned.
 - Dependabot PRs get `dependencies`. Do not add labels for types, close reasons, or priority.
 
@@ -73,7 +74,8 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 
 ## Workflows
 
-- `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then the preview `deploy.yml` runs, except in the queue.
+- `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then `deploy.yml` deploys a preview on a push to `main`, and on a PR only when it has the `preview` label.
+- `preview.yml` deploys a PR preview when the PR gets the `preview` label. Later pushes to that PR deploy again through `ci.yml`.
 - Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
 - `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - `perf.yml` runs outside the merge queue. Four `Measure` shards use the same setup, build the base commit too, and measure both on one runner with `test:perf --shard`. The final job `Perf` merges the shard results and writes the report once (`performance.md`).
@@ -89,6 +91,6 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 - Only CI deploys. `vercel.json` sets `git.deploymentEnabled: false`, so Vercel makes no Git builds and no `Vercel` check.
 - Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails.
 - The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, and CodeQL.
-- The ruleset requires no deployment, because the merge queue rejects a PR when a ruleset requires one. `E2E / E2E` builds and starts the app instead, and the preview deploy runs on each PR without a merge gate.
+- The ruleset requires no deployment, because the merge queue rejects a PR when a ruleset requires one. `E2E / E2E` builds and starts the app instead, and a PR preview deploy runs only with the `preview` label, without a merge gate.
 - The ruleset also requires a PR with all conversations resolved, squash merges through the merge queue, and no force-push. Admins can bypass it on request.
 - Build detail and the flags that MUST stay: `workflow.md`, "CI builds".

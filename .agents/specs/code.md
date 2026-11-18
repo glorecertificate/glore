@@ -4,6 +4,9 @@ Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt)
 
 ## Config traps
 
+- `next.config.ts` MUST never import from `src/`, since that restarts dev on every edit.
+- A default export is a named `const` first, then `export default Name`, because inline default exports break HMR.
+- Omit return types and inferrable annotations, except where narrowing needs them.
 - Keep both configs as JSON: oxlint and oxfmt auto-discover only the JSON names, and a `.ts` config silently falls back to built-in defaults without an explicit `-c`.
 - Never pin an oxc binary path in `.vscode/settings.json`. Its only config pin is `oxc.configPath` (`workflow.md`, "Editor lint and save chain").
 - Never reintroduce `vite-plus`: its `oxlint` bin collided with the direct `oxlint` dependency and silently dropped every editor rule.

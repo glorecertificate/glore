@@ -50,5 +50,9 @@ export const createInsightsCache = <T>(
     return next.pending
   }
 
-  return { prefetch, read }
+  const invalidate = () => {
+    entry = null
+  }
+
+  return { invalidate, prefetch, read }
 }

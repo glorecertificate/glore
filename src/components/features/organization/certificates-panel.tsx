@@ -12,6 +12,7 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { type Certificate } from '@/db/queries/certificate'
 
+import { type InsightsScope, createInsightsCache } from './insights-cache'
 import { TabHeader } from './tab-header'
 
 interface LoadedCertificates {
@@ -28,7 +29,17 @@ const fetchCertificates = async (organizationId: number, cache = true): Promise<
   return { certificates: certificates.data ?? [], tutors: tutors.data ?? [] }
 }
 
-export const OrganizationCertificatesPanel = ({ organizationId }: { organizationId: number }) => {
+const certificatesCache = createInsightsCache<LoadedCertificates>(organizationId => fetchCertificates(organizationId))
+
+export const prefetchCertificates = (scope: InsightsScope) => certificatesCache.prefetch(scope)
+
+export const OrganizationCertificatesPanel = ({
+  organizationId,
+  viewerId,
+}: {
+  organizationId: number
+  viewerId?: string
+}) => {
   const [attempt, setAttempt] = useState(0)
 
   return (
@@ -36,20 +47,32 @@ export const OrganizationCertificatesPanel = ({ organizationId }: { organization
       key={`${organizationId}-${attempt}`}
       onRetry={() => setAttempt(current => current + 1)}
       organizationId={organizationId}
+      viewerId={viewerId}
     />
   )
 }
 
-const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void; organizationId: number }) => {
+const CertificatesContent = ({
+  onRetry,
+  organizationId,
+  viewerId,
+}: {
+  onRetry: () => void
+  organizationId: number
+  viewerId?: string
+}) => {
   const t = useTranslations('Organization')
-  const [loaded, setLoaded] = useState<LoadedCertificates | null>(null)
+  const scope = { organizationId, userId: viewerId ?? '' }
+  const [loaded, setLoaded] = useState<LoadedCertificates | null>(() => certificatesCache.read(scope))
   const [failed, setFailed] = useState(false)
   const header = <TabHeader description={t('certificatesDescription')} title={t('certificates')} />
 
   useEffect(() => {
+    if (loaded) return
     let active = true
     const load = async () => {
-      const next = await fetchCertificates(organizationId)
+      await certificatesCache.prefetch({ organizationId, userId: viewerId ?? '' })
+      const next = certificatesCache.read({ organizationId, userId: viewerId ?? '' })
       if (!active) return
       setFailed(!next)
       setLoaded(next)
@@ -58,9 +81,10 @@ const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void;
     return () => {
       active = false
     }
-  }, [organizationId])
+  }, [loaded, organizationId, viewerId])
 
   const reload = async () => {
+    certificatesCache.invalidate()
     const next = await fetchCertificates(organizationId, false)
     if (next) setLoaded(next)
   }

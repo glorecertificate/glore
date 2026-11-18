@@ -87,8 +87,16 @@ export const settingsTab = createLazyTab(
   async () => (await import('./settings-skeleton')).SettingsSkeleton
 )
 
+const certificatesTab = {
+  preload: async (scope: OrganizationScope) => {
+    const { prefetchCertificates } = await import('./certificates-panel')
+    await prefetchCertificates(scope)
+  },
+}
+
 const TABS_BY_NAME: Partial<Record<OrganizationTab, { preload: (scope: OrganizationScope) => Promise<void> }>> = {
   activity: activityTab,
+  certificates: certificatesTab,
   insights: insightsTab,
   invitations: invitationsTab,
   members: membersTab,

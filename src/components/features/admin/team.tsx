@@ -78,6 +78,14 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
     return filtered
   })()
 
+  const runBusy = async <T,>(action: () => Promise<T>) => {
+    try {
+      return await action()
+    } finally {
+      setBusyId(null)
+    }
+  }
+
   const refreshTeam = async () => {
     const { data } = await getTeamMembers({ cache: false })
     if (data) setUsers(data)
@@ -104,8 +112,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
 
   const handleChangeRole = async (user: User, role: TeamRole) => {
     setBusyId(user.id)
-    const { error } = await updateTeamMemberRole(user.id, role)
-    setBusyId(null)
+    const { error } = await runBusy(() => updateTeamMemberRole(user.id, role))
 
     if (error) {
       toast.error(adminError(error.code))
@@ -118,8 +125,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
 
   const handleResend = async (user: User) => {
     setBusyId(user.id)
-    const { error, data } = await resendInvitation(user.id)
-    setBusyId(null)
+    const { error, data } = await runBusy(() => resendInvitation(user.id))
 
     if (error) {
       toast.error(adminError(error.code))

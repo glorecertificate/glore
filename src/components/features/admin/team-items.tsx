@@ -6,16 +6,6 @@ import { type Locale, useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -39,6 +29,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
+
+import { ActionDialog } from './action-dialog'
+import { rememberMenuTrigger } from './menu-focus'
 
 export type TeamRole = 'admin' | 'editor'
 export type TeamStatus = 'joined' | 'pending'
@@ -95,7 +88,13 @@ export const TeamMemberActions = ({
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => onDelete(user)} variant="destructive">
+        <DropdownMenuItem
+          onSelect={() => {
+            rememberMenuTrigger()
+            onDelete(user)
+          }}
+          variant="destructive"
+        >
           <LucideIcon name="trash-2" />
           {t('removeMember')}
         </DropdownMenuItem>
@@ -252,8 +251,7 @@ export const DeleteDialog = ({
   const t = useTranslations('Admin.team')
   const [deleting, setDeleting] = useState(false)
 
-  const handleConfirm = async (event: React.MouseEvent) => {
-    event.preventDefault()
+  const handleConfirm = async () => {
     try {
       setDeleting(true)
       await onConfirm()
@@ -263,21 +261,17 @@ export const DeleteDialog = ({
   }
 
   return (
-    <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent onEscapeKeyDown={event => deleting && event.preventDefault()}>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t('deleteTitle')}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t('deleteDescription', { name: user ? getDisplayName(user) : '' })}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleting}>{t('cancel')}</AlertDialogCancel>
-          <AlertDialogAction loading={deleting} onClick={handleConfirm} variant="destructive">
-            {t('confirmDelete')}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ActionDialog
+      busy={deleting}
+      cancelLabel={t('cancel')}
+      confirmLabel={t('confirmDelete')}
+      description={t('deleteDescription', { name: user ? getDisplayName(user) : '' })}
+      loadingLabel={t('removing')}
+      onConfirm={handleConfirm}
+      onOpenChange={onOpenChange}
+      open={open}
+      title={t('deleteTitle')}
+      tone="destructive"
+    />
   )
 }

@@ -5,21 +5,13 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { banUser } from '@/actions/admin/users'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { toast } from '@/components/ui/toast'
 import { type AdminUserRow, MIN_ADMIN_REASON_LENGTH } from '@/db/queries/admin-user'
 
+import { ActionDialog } from './action-dialog'
 import { ReasonField } from './reason-field'
 import { useAdminError } from './use-admin-error'
 import { userLabel } from './utils'
@@ -89,64 +81,55 @@ export const BanDialog = ({
   }
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={Boolean(user)}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{t('banTitle', { name: user ? userLabel(user) : '' })}</DialogTitle>
-          <DialogDescription>{t('banDescription', { name: user ? userLabel(user) : '' })}</DialogDescription>
-        </DialogHeader>
-        <ReasonField
+    <ActionDialog
+      busy={busy}
+      cancelLabel={t('cancel')}
+      confirmDisabled={!ready}
+      confirmLabel={t('confirmBan')}
+      description={t('banDescription', { name: user ? userLabel(user) : '' })}
+      loadingLabel={t('banning')}
+      onConfirm={handleConfirm}
+      onOpenChange={onOpenChange}
+      open={Boolean(user)}
+      title={t('banTitle', { name: user ? userLabel(user) : '' })}
+      tone="destructive"
+    >
+      <ReasonField
+        disabled={busy}
+        id="ban-reason"
+        onChange={setReason}
+        placeholder={t('banReasonPlaceholder')}
+        value={reason}
+      />
+      <div className="grid gap-2">
+        <Label>{t('banDuration')}</Label>
+        <RadioGroup
+          className="grid grid-cols-2 gap-2"
           disabled={busy}
-          id="ban-reason"
-          onChange={setReason}
-          placeholder={t('banReasonPlaceholder')}
-          value={reason}
-        />
-        <div className="grid gap-2">
-          <Label>{t('banDuration')}</Label>
-          <RadioGroup
-            className="grid grid-cols-2 gap-2"
-            disabled={busy}
-            onValueChange={value => setDuration(value as Duration)}
-            value={duration}
-          >
-            {DURATIONS.map(option => (
-              <Label className="flex items-center gap-2 font-normal" key={option}>
-                <RadioGroupItem value={option} />
-                {t(`duration_${option}`)}
-              </Label>
-            ))}
-          </RadioGroup>
-          {duration === 'custom' && (
-            <div className="grid gap-2">
-              <Label htmlFor="ban-date">{t('banEndsOn')}</Label>
-              <Input
-                disabled={busy}
-                id="ban-date"
-                min={tomorrow()}
-                onChange={event => setDate(event.target.value)}
-                type="date"
-                value={date}
-              />
-            </div>
-          )}
-        </div>
-        <DialogFooter>
-          <Button disabled={busy} onClick={() => onOpenChange(false)} type="button" variant="outline">
-            {t('cancel')}
-          </Button>
-          <Button
-            disabled={!ready}
-            loading={busy}
-            loadingText={t('banning')}
-            onClick={handleConfirm}
-            type="button"
-            variant="destructive"
-          >
-            {t('confirmBan')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          onValueChange={value => setDuration(value as Duration)}
+          value={duration}
+        >
+          {DURATIONS.map(option => (
+            <Label className="flex items-center gap-2 font-normal" key={option}>
+              <RadioGroupItem value={option} />
+              {t(`duration_${option}`)}
+            </Label>
+          ))}
+        </RadioGroup>
+        {duration === 'custom' && (
+          <div className="grid gap-2">
+            <Label htmlFor="ban-date">{t('banEndsOn')}</Label>
+            <Input
+              disabled={busy}
+              id="ban-date"
+              min={tomorrow()}
+              onChange={event => setDate(event.target.value)}
+              type="date"
+              value={date}
+            />
+          </div>
+        )}
+      </div>
+    </ActionDialog>
   )
 }

@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetT
 import { type AdminOrganization } from '@/db/queries/organization'
 
 import { ApplicationSummary } from './application-summary'
+import { restoreMenuTrigger } from './menu-focus'
 
 export const ApplicationSheet = ({
   onApprove,
@@ -25,7 +26,11 @@ export const ApplicationSheet = ({
 
   return (
     <Sheet onOpenChange={onOpenChange} open={Boolean(org)}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-lg" closeSrText={t('app_close')}>
+      <SheetContent
+        className="w-full overflow-y-auto sm:max-w-lg"
+        closeSrText={t('app_close')}
+        onCloseAutoFocus={event => restoreMenuTrigger() && event.preventDefault()}
+      >
         <SheetHeader>
           <SheetTitle>{org?.name ?? t('app_title')}</SheetTitle>
           <SheetDescription>{t('app_description')}</SheetDescription>

@@ -7,6 +7,8 @@ import { timestampMillis } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
 import { isHttpUrl } from '@/lib/url'
 
+import { MailLink } from './mail-link'
+
 export interface ApplicationSummaryData {
   charterAcceptedAt: string | null
   city: string
@@ -32,12 +34,6 @@ export interface ApplicationRequestData {
 }
 
 type Pair = readonly [string, React.ReactNode]
-
-const MailLink = ({ email }: { email: string }) => (
-  <a className="underline-offset-2 hover:underline focus-visible:focus-ring" href={`mailto:${email}`}>
-    {email}
-  </a>
-)
 
 const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <DescriptionItem>

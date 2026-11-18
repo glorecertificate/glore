@@ -31,6 +31,7 @@ import { SHORTCUTS } from '@/lib/shortcuts'
 
 import { AdminPage } from './admin-page'
 import { ApplicationSheet } from './application-sheet'
+import { selectFromMenu } from './menu-focus'
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, RejectDialog } from './organization-items'
 
 type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
@@ -307,18 +308,18 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
                 </Link>
               </DropdownMenuItem>
               {org.registrationRequest && (
-                <DropdownMenuItem onSelect={() => setViewTarget(org)}>
+                <DropdownMenuItem onSelect={selectFromMenu(() => setViewTarget(org))}>
                   <LucideIcon name="file-text" />
                   {t('app_view')}
                 </DropdownMenuItem>
               )}
               {org.isPending && (
                 <>
-                  <DropdownMenuItem onSelect={() => setApproveTarget(org)}>
+                  <DropdownMenuItem onSelect={selectFromMenu(() => setApproveTarget(org))}>
                     <LucideIcon name="check" />
                     {t('approve')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => setRejectTarget(org)} variant="destructive">
+                  <DropdownMenuItem onSelect={selectFromMenu(() => setRejectTarget(org))} variant="destructive">
                     <LucideIcon name="x" />
                     {t('reject')}
                   </DropdownMenuItem>

@@ -5,18 +5,10 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { unbanUser } from '@/actions/admin/users'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { toast } from '@/components/ui/toast'
 import { type AdminUserRow } from '@/db/queries/admin-user'
 
+import { ActionDialog } from './action-dialog'
 import { useAdminError } from './use-admin-error'
 import { userLabel } from './utils'
 
@@ -50,21 +42,16 @@ export const UnbanDialog = ({
   }
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={Boolean(user)}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t('unbanTitle', { name: user ? userLabel(user) : '' })}</DialogTitle>
-          <DialogDescription>{t('unbanDescription', { name: user ? userLabel(user) : '' })}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button disabled={busy} onClick={() => onOpenChange(false)} type="button" variant="outline">
-            {t('cancel')}
-          </Button>
-          <Button loading={busy} loadingText={t('unbanning')} onClick={handleConfirm} type="button">
-            {t('confirmUnban')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ActionDialog
+      busy={busy}
+      cancelLabel={t('cancel')}
+      confirmLabel={t('confirmUnban')}
+      description={t('unbanDescription', { name: user ? userLabel(user) : '' })}
+      loadingLabel={t('unbanning')}
+      onConfirm={handleConfirm}
+      onOpenChange={onOpenChange}
+      open={Boolean(user)}
+      title={t('unbanTitle', { name: user ? userLabel(user) : '' })}
+    />
   )
 }

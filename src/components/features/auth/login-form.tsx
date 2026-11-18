@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { toast } from '@/components/ui/toast'
+import { useAutoFocus } from '@/hooks/use-auto-focus'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { AuthView } from '@/lib/types'
 import { cn, isValidUsername } from '@/lib/utils'
@@ -38,6 +39,7 @@ export const LoginForm = ({
   const t = useTranslations('Auth')
   const [loading, setLoading] = useState(false)
   const [passwordReadOnly, setPasswordReadOnly] = useState(Boolean(loggedOut))
+  useAutoFocus(username ? 'input[name="password"]' : 'input[name="username"]')
 
   const formSchema = z.object({
     password: z
@@ -151,7 +153,6 @@ export const LoginForm = ({
                       autoCapitalize="none"
                       autoComplete="username"
                       autoCorrect="off"
-                      autoFocus={!username}
                       defaultOpen
                       disabled={loading}
                       placeholder={t('userLabel')}
@@ -183,7 +184,6 @@ export const LoginForm = ({
                   <FormControl>
                     <PasswordInput
                       autoComplete="current-password"
-                      autoFocus={Boolean(username)}
                       disabled={loading}
                       readOnly={passwordReadOnly}
                       variant="floating"

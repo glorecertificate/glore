@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
+import { BrandShell } from '@/components/features/auth/brand-shell'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia } from '@/components/ui/empty'
+import { Card } from '@/components/ui/card'
 
 export const OfflineFallback = () => {
   const t = useTranslations('PWA')
@@ -24,23 +25,19 @@ export const OfflineFallback = () => {
   }, [])
 
   return (
-    <main className="flex min-h-svh items-center justify-center px-page py-12">
-      <Empty className="max-w-md flex-none border">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <LucideIcon name="wifi-off" />
-          </EmptyMedia>
-          <h1 className="type-title text-balance text-foreground" data-slot="empty-title">
-            {t('offlineTitle')}
-          </h1>
-          <EmptyDescription>{t('offlineDescription')}</EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button icon="refresh-cw" loading={retrying} onClick={retry} variant="outline">
-            {t('offlineRetry')}
-          </Button>
-        </EmptyContent>
-      </Empty>
-    </main>
+    <BrandShell size="sm">
+      <Card className="items-center gap-6 p-8 text-center">
+        <div className="flex size-14 items-center justify-center rounded-full bg-accent text-brand-text">
+          <LucideIcon className="size-6" name="wifi-off" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="type-title text-balance text-foreground">{t('offlineTitle')}</h1>
+          <p className="text-pretty text-muted-foreground">{t('offlineDescription')}</p>
+        </div>
+        <Button icon="refresh-cw" loading={retrying} onClick={retry} variant="outline">
+          {t('offlineRetry')}
+        </Button>
+      </Card>
+    </BrandShell>
   )
 }

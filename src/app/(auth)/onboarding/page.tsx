@@ -6,9 +6,11 @@ import { type Locale } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
+import { BrandShell } from '@/components/features/auth/brand-shell'
 import { OnboardingForm } from '@/components/features/onboarding'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
+import { Card } from '@/components/ui/card'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -34,8 +36,8 @@ const OnboardingContent = async () => {
   const messages = await getMessages({ locale })
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="mx-auto w-full max-w-lg space-y-8">
+    <BrandShell size="xs">
+      <Card className="gap-8 p-6 sm:p-8">
         <I18nProvider locale={locale} messages={clientMessages(messages)}>
           <OnboardingForm
             email={user.email}
@@ -44,8 +46,8 @@ const OnboardingContent = async () => {
             locale={locale}
           />
         </I18nProvider>
-      </div>
-    </div>
+      </Card>
+    </BrandShell>
   )
 }
 

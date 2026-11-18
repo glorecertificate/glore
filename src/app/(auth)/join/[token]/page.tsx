@@ -2,10 +2,11 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInviteLinkPreview } from '@/actions/organizations/previews'
+import { BrandShell } from '@/components/features/auth/brand-shell'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { JoinLinkCard } from '@/components/features/organization/invite/join-link-card'
-import { PublicShell } from '@/components/features/organization/invite/public-shell'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { Card } from '@/components/ui/card'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -41,11 +42,13 @@ const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['par
 }
 
 const JoinPage = ({ params }: PageProps<'/join/[token]'>) => (
-  <PublicShell>
-    <Suspense fallback={<LoadingFallback />}>
-      <JoinContent params={params} />
-    </Suspense>
-  </PublicShell>
+  <BrandShell size="sm">
+    <Card className="gap-6 p-6 sm:p-8">
+      <Suspense fallback={<LoadingFallback />}>
+        <JoinContent params={params} />
+      </Suspense>
+    </Card>
+  </BrandShell>
 )
 
 export default JoinPage

@@ -6,10 +6,12 @@ import { useFormContext } from 'react-hook-form'
 import { type OnboardingFormValues } from '@/components/features/onboarding/schema'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useAutoFocus } from '@/hooks/use-auto-focus'
 
 export const NameStep = ({ disabled }: { disabled: boolean }) => {
   const t = useTranslations('Onboarding')
   const form = useFormContext<OnboardingFormValues>()
+  useAutoFocus('input[name="firstName"]')
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -20,13 +22,7 @@ export const NameStep = ({ disabled }: { disabled: boolean }) => {
           <FormItem>
             <FormLabel>{t('firstNameLabel')}</FormLabel>
             <FormControl>
-              <Input
-                autoComplete="given-name"
-                autoFocus
-                disabled={disabled}
-                placeholder={t('firstNamePlaceholder')}
-                {...field}
-              />
+              <Input autoComplete="given-name" disabled={disabled} placeholder={t('firstNamePlaceholder')} {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

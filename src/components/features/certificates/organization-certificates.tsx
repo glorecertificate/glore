@@ -154,13 +154,14 @@ export const OrganizationCertificates = ({
             <Input
               aria-label={t('search')}
               className="w-64"
+              size="sm"
               onChange={event => setQuery(event.target.value)}
               placeholder={t('search')}
               type="search"
               value={query}
             />
             <Select onValueChange={setStatus} value={status}>
-              <SelectTrigger aria-label={t('status')} className="w-44">
+              <SelectTrigger aria-label={t('status')} className="w-44" size="sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -173,7 +174,7 @@ export const OrganizationCertificates = ({
               </SelectContent>
             </Select>
             <Select onValueChange={setReviewer} value={reviewer}>
-              <SelectTrigger aria-label={t('reviewer')} className="w-44">
+              <SelectTrigger aria-label={t('reviewer')} className="w-44" size="sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

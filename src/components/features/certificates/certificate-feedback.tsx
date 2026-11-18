@@ -42,10 +42,14 @@ export const CertificateFeedback = ({
   if (!general && sections.length === 0) return null
 
   return (
-    <Card className="border-warning-border bg-warning-subtle">
+    <Card
+      className={
+        kind === 'changes' ? 'border-warning-border bg-warning-subtle' : 'border-danger-border bg-danger-subtle'
+      }
+    >
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sm">
-          <LucideIcon name="message-square" className="size-4" />
+        <CardTitle className="flex items-center gap-2 type-heading">
+          <LucideIcon name={kind === 'changes' ? 'message-square-warning' : 'ban'} className="size-4" />
           {t(`feedback.${kind}`)}
         </CardTitle>
       </CardHeader>

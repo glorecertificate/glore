@@ -97,10 +97,10 @@ export const TutorCertificatesContent = ({
 
   const filters = (
     <FilterBar active={isFiltered} onClear={clearFilters}>
-      <SearchInput aria-label={t('search')} hotkey={SHORTCUTS.filter.key} placeholder={t('search')} />
+      <SearchInput aria-label={t('search')} hotkey={SHORTCUTS.filter.key} placeholder={t('search')} size="sm" />
       {statusOptions.length > 0 && (
         <Select onValueChange={value => setStatus(value === ALL ? null : value)} value={status ?? ALL}>
-          <SelectTrigger aria-label={t('status')} className="w-44">
+          <SelectTrigger aria-label={t('status')} className="w-44" size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -115,7 +115,7 @@ export const TutorCertificatesContent = ({
       )}
       {tab !== 'completed' && (
         <Select onValueChange={value => setAge(value === ALL ? null : (value as TutorQueueAge))} value={age ?? ALL}>
-          <SelectTrigger aria-label={t('age')} className="w-44">
+          <SelectTrigger aria-label={t('age')} className="w-44" size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

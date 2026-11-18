@@ -70,9 +70,11 @@ export const CertificateDetail = ({
             )}
           </div>
           <PageHeaderHeading>
-            <PageHeaderTitle>{certificate.organization.name}</PageHeaderTitle>
+            <PageHeaderTitle>
+              {!isOwner && certificate.holder ? fullName(certificate.holder) : certificate.organization.name}
+            </PageHeaderTitle>
             {!isOwner && certificate.holder && (
-              <p className="text-sm text-muted-foreground">{fullName(certificate.holder)}</p>
+              <p className="text-base text-muted-foreground">{certificate.organization.name}</p>
             )}
             <div className="flex flex-wrap items-center gap-2">
               <CertificateStatusBadge status={certificate.status} />

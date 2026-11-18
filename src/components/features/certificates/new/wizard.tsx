@@ -272,7 +272,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
             <p className="text-sm text-muted-foreground">{stepDescriptions[WIZARD_STEPS[step]!]}</p>
           </div>
 
-          {invalid && (
+          {invalid && Object.keys(form.formState.errors).length > 0 && (
             <Banner role="alert" variant="destructive">
               {t('stepInvalid')}
             </Banner>

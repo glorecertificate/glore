@@ -17,6 +17,13 @@ import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { LOCALES } from '@/lib/i18n'
 
+const STATE_STATS = [
+  { accent: 'green', icon: 'circle-check', state: 'published' },
+  { accent: 'teal', icon: 'layers', state: 'partial' },
+  { accent: 'amber', icon: 'pencil', state: 'draft' },
+  { accent: 'navy', icon: 'archive', state: 'archived' },
+] as const
+
 export const EditorDashboard = ({
   editor,
   firstName,
@@ -60,30 +67,38 @@ export const EditorDashboard = ({
 
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatLink
+          accent="teal"
           description={t('editor.coursesDescription')}
           href="/courses"
+          icon="book-open"
           label={t('editor.courses')}
           value={health.total}
         />
         <StatLink
+          accent="green"
           description={t('editor.publishedDescription', { partial: health.states.partial, draft: health.states.draft })}
           href="/courses"
+          icon="circle-check"
           label={t('editor.published')}
           value={health.states.published}
         />
         <StatLink
+          accent="navy"
           description={t('editor.completionDescription')}
           format={{ maximumFractionDigits: 0, style: 'percent' }}
           href="/courses"
+          icon="trending-up"
           label={t('editor.completion')}
           value={(stats.completionRate ?? 0) / 100}
         />
         <StatLink
+          accent="amber"
           description={
             stats.ratings > 0 ? t('editor.ratingsDescription', { count: stats.ratings }) : t('editor.ratingsEmpty')
           }
           format={{ maximumFractionDigits: 1 }}
           href="/courses"
+          icon="star"
           label={t('editor.rating')}
           value={stats.averageRating ?? 0}
         />
@@ -222,10 +237,12 @@ export const EditorDashboard = ({
 
       <DashboardSection title={t('editor.statesTitle')}>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {(['published', 'partial', 'draft', 'archived'] as const).map(state => (
+          {STATE_STATS.map(({ accent, icon, state }) => (
             <StatLink
+              accent={accent}
               description={t(`editor.state.${state}Description`)}
               href="/courses"
+              icon={icon}
               key={state}
               label={t(`editor.state.${state}`)}
               value={health.states[state]}

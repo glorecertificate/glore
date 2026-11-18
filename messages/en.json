@@ -1861,7 +1861,8 @@
     "revokeConfirm": "Revoke certificate",
     "revoking": "Revoking…",
     "revoked": "Certificate revoked.",
-    "revokeError": "Could not revoke this certificate. Try again."
+    "revokeError": "Could not revoke this certificate. Try again.",
+    "viewFull": "View full certificate"
   },
   "CertificateEligibility": {
     "title": "You cannot request a certificate yet",
@@ -2063,7 +2064,12 @@
     "errorRateLimited": "Too many attempts. Wait a moment and try again.",
     "errorGeneric": "The action could not be completed. Try again.",
     "descriptionsMissing": "This skill course has no complete set of level descriptions yet. Ask an editor to add them.",
-    "volunteerChoice": "Chosen by the volunteer"
+    "volunteerChoice": "Chosen by the volunteer",
+    "viewLabel": "Section",
+    "viewRequest": "Request",
+    "viewReview": "Review",
+    "previewLabel": "Preview of the certificate for {organization}",
+    "openPdf": "Open PDF"
   },
   "CertificateShare": {
     "title": "Share your certificate",

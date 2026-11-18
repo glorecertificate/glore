@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useState } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -18,6 +18,7 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import { Link } from '@/components/ui/link'
+import { preloadMarkdown } from '@/components/ui/markdown-lazy'
 import { PageHeaderHeading, PageHeaderTitle } from '@/components/ui/page-header'
 import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/toast'
@@ -152,6 +153,10 @@ export const CoursePlayer = ({
 }) => {
   const t = useTranslations('Learning.player')
   const { language, languages, progress, slug } = overview
+
+  useEffect(() => {
+    void preloadMarkdown()
+  }, [])
 
   return (
     <div className={cn('grid gap-8 md:grid-cols-[16rem_1fr]', className)} {...props}>

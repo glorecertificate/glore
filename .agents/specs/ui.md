@@ -48,7 +48,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Pass `pagination` (page, pageCount, total, onPageChange) for server-paged rows.
 - `skeleton` with `loading` keeps the real header and shows `pageSize` placeholder rows that follow the column layout, instead of a spinner. Use it for server-paged lists.
 - `selectable` adds a checkbox column with select all on the page. Selection spans pages by row id. Control it with `selectedIds` and `onSelectionChange`, or leave it to the table. `rowLabel(row)` names each checkbox and is required with `selectable`.
-- Without `pagination`, the selection is the stored ids that still exist in `rows`. With `pagination`, the caller clears the selection when a filter or the query changes, because the table cannot see the other pages.
+- Without `pagination`, the selection is the stored ids that still exist in `rows`. `onSelectionChange` fires only on user actions, never on a prune, so a controlled parent filters its own ids by the rows it holds before it acts; `bulkActions` always receives the pruned ids. With `pagination`, the caller clears the selection when a filter or the query changes, because the table cannot see the other pages.
 - While rows are selected, the toolbar shows the count, `bulkActions(ids)`, and "Clear selection". Escape inside the table clears the selection. Below `sm`, a labeled checkbox above the list selects the page.
 - Below `sm` each row becomes a labeled card (cells carry `data-label`), so status and actions stay reachable.
 - Below `sm` a compact sort select plus a direction toggle replaces the hidden column sorts (`data-table-sort.ts`).

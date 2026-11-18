@@ -7,18 +7,22 @@ import { useTranslations } from 'next-intl'
 import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
-const FIELDS =
-  'input:not([type=hidden]):not([disabled]), textarea:not([disabled]), select:not([disabled]), [contenteditable]:not([contenteditable=false])'
+const VISIBLE = ':not([aria-hidden=true]):not([tabindex="-1"])'
+
+const FIELDS = [
+  `input:not([type=hidden]):not([disabled])${VISIBLE}`,
+  `textarea:not([disabled])${VISIBLE}`,
+  `select:not([disabled])${VISIBLE}`,
+  `[contenteditable]:not([contenteditable=false])${VISIBLE}`,
+].join(', ')
 
 const focusInitial = (root: HTMLElement) => {
   const active = document.activeElement
   if (active && active !== root && root.contains(active)) return
   const field = [...root.querySelectorAll<HTMLElement>(FIELDS)].find(
-    element => element.checkVisibility() && !element.closest('[data-slot=dialog-footer]')
+    element => (element.checkVisibility?.() ?? true) && !element.closest('[data-slot=dialog-footer]')
   )
-  if (field) return field.focus({ preventScroll: true })
-  root.tabIndex = -1
-  root.focus({ preventScroll: true })
+  ;(field ?? root).focus({ preventScroll: true })
 }
 
 export const Dialog = (props: React.ComponentProps<typeof DialogPrimitive.Root>) => (
@@ -76,7 +80,7 @@ export const DialogContent = ({
     <>
       {overlay && <DialogOverlay opacity={overlay} />}
       <DialogPrimitive.Content
-        className={cn(dialogContentVariants({ size }), className)}
+        className={cn(dialogContentVariants({ size }), showClose && 'pt-2', className)}
         data-close={showClose}
         data-slot="dialog-content"
         aria-describedby={undefined}
@@ -89,8 +93,8 @@ export const DialogContent = ({
         {...props}
       >
         {showClose && (
-          <div className="pointer-events-none sticky top-0 z-10 h-0 [&+*]:-mt-4" data-slot="dialog-close-anchor">
-            <DialogClose className="pointer-events-auto absolute -top-3 -right-3 flex size-8 cursor-pointer items-center justify-center rounded-md bg-background text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+          <div className="pointer-events-none sticky top-0 z-10 h-0" data-slot="dialog-close-anchor">
+            <DialogClose className="pointer-events-auto absolute top-1 -right-3 flex size-8 cursor-pointer items-center justify-center rounded-md bg-background text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
               <LucideIcon name="x" />
               <span className="sr-only">{t('close')}</span>
             </DialogClose>
@@ -109,7 +113,7 @@ export const DialogContent = ({
 }
 
 const dialogContentVariants = cva(
-  'group/dialog fixed top-[50%] left-[50%] z-51 grid max-h-dialog w-full max-w-[calc(100%-2rem)] translate-[-50%] gap-4 overflow-y-auto rounded-xl border bg-background p-6 shadow-lg duration-200 ease-out data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
+  'group/dialog fixed top-[50%] left-[50%] z-51 grid max-h-dialog w-full max-w-[calc(100%-2rem)] translate-[-50%] gap-4 overflow-y-auto rounded-xl border bg-background p-6 shadow-lg duration-200 ease-out focus-visible:outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
   {
     defaultVariants: {
       size: 'default',

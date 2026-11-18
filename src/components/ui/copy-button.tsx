@@ -64,25 +64,27 @@ export const CopyButton = ({
 
   if (iconOnly) {
     return (
-      <Tooltip>
-        <TooltipTrigger asChild pointerEvents="auto">
-          <Button
-            aria-label={label ?? t('copy')}
-            disabled={disabled || pending}
-            onClick={() => void copy()}
-            size={size ?? 'icon-sm'}
-            type="button"
-            variant="ghost"
-            {...props}
-          >
-            <LucideIcon name={copied ? 'check' : 'copy'} />
-            <span aria-live="polite" className="sr-only">
-              {copied ? text : ''}
-            </span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>{text}</TooltipContent>
-      </Tooltip>
+      <>
+        <Tooltip>
+          <TooltipTrigger asChild pointerEvents="auto">
+            <Button
+              aria-label={label ?? t('copy')}
+              disabled={disabled || pending}
+              onClick={() => void copy()}
+              size={size ?? 'icon-sm'}
+              type="button"
+              variant="ghost"
+              {...props}
+            >
+              <LucideIcon name={copied ? 'check' : 'copy'} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+        <span aria-live="polite" className="sr-only">
+          {copied ? text : ''}
+        </span>
+      </>
     )
   }
 

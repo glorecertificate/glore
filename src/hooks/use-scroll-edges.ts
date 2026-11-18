@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 const TOLERANCE = 1
 
@@ -12,8 +12,16 @@ interface ScrollEdges {
 
 const NO_EDGES: ScrollEdges = { end: false, scrollable: false, start: false }
 
+interface Attachment {
+  node: HTMLElement
+  released: boolean
+  teardown: () => void
+}
+
 export const useScrollEdges = <T extends HTMLElement>() => {
   const [edges, setEdges] = useState(NO_EDGES)
+  const last = useRef(NO_EDGES)
+  const attachment = useRef<Attachment | null>(null)
 
   const [ref] = useState(() => (node: T | null) => {
     if (!node) return
@@ -22,20 +30,40 @@ export const useScrollEdges = <T extends HTMLElement>() => {
       const scrollable = node.scrollWidth - node.clientWidth > TOLERANCE
       const start = scrollable && node.scrollLeft > TOLERANCE
       const end = scrollable && node.scrollLeft + node.clientWidth < node.scrollWidth - TOLERANCE
-      setEdges(prev =>
-        prev.end === end && prev.scrollable === scrollable && prev.start === start ? prev : { end, scrollable, start }
-      )
+      const prev = last.current
+      if (prev.end === end && prev.scrollable === scrollable && prev.start === start) return
+      last.current = { end, scrollable, start }
+      setEdges(last.current)
     }
 
-    update()
-    node.addEventListener('scroll', update, { passive: true })
-    const observer = new ResizeObserver(update)
-    observer.observe(node)
-    for (const child of node.children) observer.observe(child)
+    if (attachment.current?.node === node) {
+      attachment.current.released = false
+    } else {
+      attachment.current?.teardown()
+      node.addEventListener('scroll', update, { passive: true })
+      const observer = new ResizeObserver(update)
+      observer.observe(node)
+      for (const child of node.children) observer.observe(child)
+      update()
+      attachment.current = {
+        node,
+        released: false,
+        teardown: () => {
+          node.removeEventListener('scroll', update)
+          observer.disconnect()
+        },
+      }
+    }
+
+    const current = attachment.current
 
     return () => {
-      node.removeEventListener('scroll', update)
-      observer.disconnect()
+      current.released = true
+      queueMicrotask(() => {
+        if (!current.released || attachment.current !== current) return
+        current.teardown()
+        attachment.current = null
+      })
     }
   })
 

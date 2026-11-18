@@ -29,9 +29,9 @@ import { usePoll } from '@/hooks/use-poll'
 import { APP_ROOT, OPEN_INVITATION_ROOT, REGISTER_ROOT } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-const INVITATIONS_POLL_INTERVAL = 120_000
+export const INVITATIONS_POLL_INTERVAL = 120_000
 
-const readInvitations = async () => {
+export const readInvitations = async () => {
   const { data, error } = await listMyPendingInvitations()
   if (error) throw new Error(error.message)
   return data

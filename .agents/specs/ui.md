@@ -21,6 +21,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - `FilterBar` holds the controls of a filter row. Pass `active` and `onClear` to show "Clear filters" (`Common.clearFilters`).
 - After a clear, `FilterBar` moves focus to its first control, so focus never drops to the page.
 - Import `toast` from `@/components/ui/toast`. Errors stay 8s, warnings 6s, info 4s, and success 2.5s. A caller can still set `duration`.
+- `ShareButton` opens the native share sheet. Without one, it copies the URL and shows a toast. Use `CopyButton` when the action only copies.
 
 ### Layout rules
 
@@ -104,7 +105,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Surface roles: `surface-0` to `surface-3`, `surface-sunken` (sidebar and canvas), `surface-muted`, `surface-hover`, and `surface-selected`.
 - Text and border roles: `fg-1` to `fg-3`, `fg-disabled`, `fg-title` (navy), `fg-on-fill`, `fg-on-bright`, `fg-on-danger`, `border-subtle`, `border`, and `border-strong` (3:1).
 - `action` (blue) marks actions only. It has `-hover`, `-subtle`, `-border`, and `-text`.
-- `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current` (navy) marks the current stage, with `-subtle`.
+- `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current-fill` (navy) marks the current stage, with `current-subtle`. Tailwind reserves `current` for `currentColor`.
 - `success`, `warning`, `danger`, and `info` each have `-fill`, `-fill-hover`, `-subtle`, `-border`, and `-text`.
 - The shadcn names (`background`, `primary`, `muted-foreground`, `destructive`, and the rest) alias these roles. New code uses the roles.
 - Fields sit on `field` (`surface-0` in light, `surface-1` in dark) with a `border-strong` border. `input` stays only for the vendored editor.
@@ -125,7 +126,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 
 - The Tailwind numeric text scale is unchanged, because the vendored editor and the mobile textarea need `text-base` at 16px.
 - Body text is `text-sm` (14px).
-- Bricolage roles: `type-display` (36/40), `type-title` (28/34), and `type-heading` (16/24). Geist roles: `type-label` (13/20, 500) and `type-caption` (12/16).
+- Bricolage roles: `type-display` (36/40), `type-title` (28/34), `type-heading` (16/24), and `type-stage` (32/38, 44/48 from `lg`) for the one stage title of a page. Geist roles: `type-label` (13/20, 500) and `type-caption` (12/16).
 - Name a type role `type-*`, never `text-*`. `cn()` reads an unknown `text-*` class as a color and drops it next to another color.
 
 ### Brand roles and fonts

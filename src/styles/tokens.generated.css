@@ -34,7 +34,7 @@
     --earned-subtle: oklch(0.962 0.04 125.2);
     --earned-border: oklch(0.84 0.09 125.2);
     --earned-text: oklch(0.508 0.124 125.2);
-    --current: oklch(0.306 0.065 254.1);
+    --current-fill: oklch(0.306 0.065 254.1);
     --current-subtle: oklch(0.952 0.016 254.1);
     --success-fill: oklch(0.551 0.13 150);
     --success-fill-hover: oklch(0.511 0.13 150);
@@ -164,7 +164,7 @@
     --earned-subtle: oklch(0.26 0.05 125.2);
     --earned-border: oklch(0.45 0.09 125.2);
     --earned-text: oklch(0.81 0.15 125.2);
-    --current: oklch(0.82 0.06 254.1);
+    --current-fill: oklch(0.82 0.06 254.1);
     --current-subtle: oklch(0.27 0.03 254.1);
     --success-fill: oklch(0.68 0.15 150);
     --success-fill-hover: oklch(0.72 0.15 150);

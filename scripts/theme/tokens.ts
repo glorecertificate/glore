@@ -190,7 +190,7 @@ const credentialSpecs = (config: SystemConfig, mode: Mode): [string, Spec][] => 
       ['earned-subtle', fixed(0.962, 0.04, earnedHue)],
       ['earned-border', fixed(0.84, 0.09, earnedHue)],
       ['earned-text', solve(earned.c * 0.95, earnedHue, ['surface-0', 'surface-sunken', 'earned-subtle'], coloredText)],
-      ['current', fixed(navy.l, navy.c, navyHue)],
+      ['current-fill', fixed(navy.l, navy.c, navyHue)],
       ['current-subtle', fixed(0.952, 0.016, navyHue)],
     ]
   }
@@ -199,7 +199,7 @@ const credentialSpecs = (config: SystemConfig, mode: Mode): [string, Spec][] => 
     ['earned-subtle', fixed(0.26, 0.05, earnedHue)],
     ['earned-border', fixed(0.45, 0.09, earnedHue)],
     ['earned-text', fixed(0.81, 0.15, earnedHue)],
-    ['current', fixed(0.82, 0.06, navyHue)],
+    ['current-fill', fixed(0.82, 0.06, navyHue)],
     ['current-subtle', fixed(0.27, 0.03, navyHue)],
   ]
 }
@@ -384,8 +384,8 @@ const declaredPairs = (config: SystemConfig, mode: Mode): [string, string, numbe
     ['ring', 'surface-sunken', nonText],
     ['earned', 'surface-0', nonText],
     ['earned', 'earned-subtle', nonText],
-    ['current', 'surface-0', nonText],
-    ['current', 'current-subtle', nonText],
+    ['current-fill', 'surface-0', nonText],
+    ['current-fill', 'current-subtle', nonText],
     ['brand-tertiary', 'brand-tertiary-foreground', text],
     ['brand-quaternary', 'brand-quaternary-foreground', text],
     ['brand-secondary', 'fg-on-bright', text],

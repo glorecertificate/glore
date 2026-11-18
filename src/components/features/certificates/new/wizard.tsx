@@ -29,7 +29,7 @@ import {
   resumeStep,
   toEditValues,
 } from '@/components/features/certificates/new/values'
-import { missingPersonalData } from '@/components/features/certificates/rules'
+import { WIZARD_STEPS, missingPersonalData } from '@/components/features/certificates/rules'
 import { type PersonalDataValues, type WizardValues, wizardSchema } from '@/components/features/certificates/schemas'
 import { type StepItem, StepList } from '@/components/features/certificates/step-list'
 import { useI18n } from '@/components/providers/i18n'
@@ -51,8 +51,6 @@ import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useDebounce } from '@/hooks/use-debounce'
 import appConfig from '~/config/app.json'
-
-const STEPS = ['experience', 'skills', 'organization', 'review'] as const
 
 type SaveState = 'error' | 'idle' | 'saved' | 'saving'
 
@@ -178,7 +176,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   }
 
   const onSubmit = async (values: WizardValues) => {
-    if (step < STEPS.length - 1) {
+    if (step < WIZARD_STEPS.length - 1) {
       await advance()
       return
     }
@@ -234,12 +232,12 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     review: t('descriptionsReview'),
     skills: t('descriptionsSkills'),
   }
-  const items: StepItem[] = STEPS.map((key, index) => ({
+  const items: StepItem[] = WIZARD_STEPS.map((key, index) => ({
     key,
     label: stepLabels[key],
     state: index < step ? 'done' : index === step ? 'current' : 'upcoming',
   }))
-  const last = step === STEPS.length - 1
+  const last = step === WIZARD_STEPS.length - 1
   const comments = notes?.sectionComments ?? {}
 
   return (
@@ -260,9 +258,9 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
         <form className="flex flex-col gap-6" noValidate onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-semibold outline-none" ref={heading} tabIndex={-1}>
-              {stepTitles[STEPS[step]!]}
+              {stepTitles[WIZARD_STEPS[step]!]}
             </h2>
-            <p className="text-sm text-muted-foreground">{stepDescriptions[STEPS[step]!]}</p>
+            <p className="text-sm text-muted-foreground">{stepDescriptions[WIZARD_STEPS[step]!]}</p>
           </div>
 
           {step === 0 && <ExperienceStep comments={comments} />}

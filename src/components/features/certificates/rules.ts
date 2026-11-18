@@ -60,6 +60,10 @@ const compareTutorLoad = (a: TutorLoad, b: TutorLoad) =>
   compareAssignment(a.lastAssignedAt, b.lastAssignedAt) ||
   a.userId.localeCompare(b.userId)
 
+export const WIZARD_STEPS = ['experience', 'skills', 'organization', 'review'] as const
+
+export type WizardStep = (typeof WIZARD_STEPS)[number]
+
 export const chooseTutor = (loads: TutorLoad[]) => loads.toSorted(compareTutorLoad)[0]?.userId ?? null
 
 interface PersonalData {

@@ -123,7 +123,7 @@
   --color-earned-subtle: var(--earned-subtle);
   --color-earned-border: var(--earned-border);
   --color-earned-text: var(--earned-text);
-  --color-current: var(--current);
+  --color-current-fill: var(--current-fill);
   --color-current-subtle: var(--current-subtle);
   --color-success-fill: var(--success-fill);
   --color-success-fill-hover: var(--success-fill-hover);
@@ -169,6 +169,21 @@
   font-weight: 700;
   line-height: 2.5rem;
   letter-spacing: -0.025em;
+}
+
+@utility type-stage {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 2.375rem;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+
+  @media (width >= 64rem) {
+    font-size: 2.75rem;
+    line-height: 3rem;
+    letter-spacing: -0.03em;
+  }
 }
 
 @utility type-title {
@@ -271,6 +286,10 @@
       @apply bg-brand/30;
     }
   }
+}
+
+@utility sheet-fit {
+  width: min(100%, calc((100dvh - 11rem) * 595 / 842));
 }
 
 @utility animate-reveal {

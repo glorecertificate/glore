@@ -1010,40 +1010,15 @@
       "editor": "Content health and learner engagement",
       "manager": "Your organization at a glance",
       "tutor": "Your review queue and workload",
-      "volunteer": "Your path to a GloRe certificate",
       "learner": "Keep learning at your own pace"
     },
     "viewAll": "View all",
-    "viewRequest": "View request",
     "viewCourses": "All courses",
-    "requestCertificate": "Request certificate",
     "resumeLearning": "Resume learning",
     "browseCourses": "Browse courses",
     "checklist": {
       "title": "Getting started",
       "progress": "{completed} of {total} steps done",
-      "volunteer": {
-        "compass": {
-          "title": "Set your skill compass",
-          "description": "Pick up to 3 strengths and 5 goals so we can recommend the right courses.",
-          "action": "Open compass"
-        },
-        "start": {
-          "title": "Start your first course",
-          "description": "Introductory courses explain how GloRe works.",
-          "action": "Find a course"
-        },
-        "skills": {
-          "title": "Complete your skill courses",
-          "description": "Finish at least three skill courses and rate yourself honestly.",
-          "action": "Go to courses"
-        },
-        "request": {
-          "title": "Request your certificate",
-          "description": "Describe your volunteering experience and send it to a tutor.",
-          "action": "Open requests"
-        }
-      },
       "learner": {
         "start": {
           "title": "Start your first course",
@@ -1063,32 +1038,126 @@
       }
     },
     "journey": {
-      "title": "Your certificate journey",
-      "learn": "Learn",
-      "learnDescription": "Complete the skill courses",
-      "request": "Request",
-      "requestDescription": "Send your experience",
-      "review": "Review",
-      "reviewDescription": "A tutor checks your request",
-      "issued": "Certificate",
-      "issuedDescription": "Download and share it"
-    },
-    "certificate": {
-      "issued": "Your certificate is issued and can be verified online.",
-      "view": "View certificate",
-      "changes": "Your tutor asked for changes. Update the request and send it again.",
-      "waiting": "Your request is waiting for review. We will notify you when it is decided.",
-      "continueDraft": "Continue draft",
-      "readyTitle": "You can request your certificate",
-      "readyMessage": "You completed the skill courses. Add your volunteering experience to send the request."
+      "title": "Your certificate",
+      "position": "Step {current} of {total}",
+      "stages": {
+        "learn": "Learn",
+        "request": "Request",
+        "review": "Review",
+        "certificate": "Certificate"
+      },
+      "status": {
+        "learn": "{count} of {min} skill courses",
+        "learned": "{count, plural, one {# skill course} other {# skill courses}} completed",
+        "ready": "Not started",
+        "draft": "Draft saved",
+        "changes": "Changes requested",
+        "sent": "Sent on {date}",
+        "tutor": "With {name}",
+        "waiting": "Waiting for a tutor",
+        "approved": "Approved on {date}",
+        "rejected": "Not approved",
+        "withdrawn": "Withdrawn",
+        "issued": "Issued on {date}",
+        "revoked": "Revoked"
+      },
+      "stepsLabel": "Request steps",
+      "stepsToggle": "Request steps",
+      "stepState": {
+        "done": "Done",
+        "flagged": "Needs changes"
+      },
+      "phases": {
+        "learn": {
+          "title": "Complete your skill courses",
+          "lead": "Finish {min} skill courses. Then you can request your certificate."
+        },
+        "ready": {
+          "title": "Request your certificate",
+          "lead": "You completed the skill courses. Describe your volunteering in four steps and send it to a tutor."
+        },
+        "draft": {
+          "title": "Finish your request",
+          "lead": "Your draft is saved. Continue with {step}."
+        },
+        "changes": {
+          "title": "Update your request",
+          "lead": "Your tutor asked for changes. Update the marked steps and send the request again.",
+          "leadTutor": "{name} asked for changes. Update the marked steps and send the request again."
+        },
+        "review": {
+          "title": "Your request is in review",
+          "lead": "A tutor will review your request. We will notify you when there is a decision.",
+          "leadTutor": "{name} is reviewing your request. We will notify you when there is a decision."
+        },
+        "issued": {
+          "title": "Your certificate is ready",
+          "lead": "Issued on {date}. Anyone can verify it with its code."
+        },
+        "rejected": {
+          "title": "Your request was not approved",
+          "lead": "Your tutor did not approve this request."
+        },
+        "withdrawn": {
+          "title": "You withdrew your request",
+          "lead": "You can send a new request when you are ready."
+        },
+        "revoked": {
+          "title": "Your certificate was revoked",
+          "lead": "Its code no longer verifies."
+        }
+      },
+      "seals": {
+        "label": "Completed skill courses",
+        "title": "Skill courses: {count} of {min}",
+        "missing": "Not yet"
+      },
+      "note": {
+        "from": "Note from {name}",
+        "tutor": "Note from your tutor",
+        "steps": "Steps to update: {steps}."
+      },
+      "code": {
+        "label": "Verification code",
+        "pending": "It verifies once the certificate is issued.",
+        "verify": "Open the public verification page."
+      },
+      "sent": "Sent on {date}.",
+      "path": {
+        "title": "Also on your path",
+        "compass": "Set your skill compass",
+        "percent": "{percent}%"
+      },
+      "preview": {
+        "title": "Certificate preview",
+        "description": "Your certificate with the data you entered so far."
+      },
+      "actions": {
+        "continueCourse": "Continue {course}",
+        "startCourse": "Start {course}",
+        "browseCourses": "Go to courses",
+        "start": "Start request",
+        "continueDraft": "Continue draft",
+        "resubmit": "Resubmit",
+        "newRequest": "Start a new request",
+        "viewRequest": "View request",
+        "viewCertificate": "View certificate",
+        "download": "Download PDF",
+        "share": "Share",
+        "shareTitle": "My GloRe certificate",
+        "copied": "Link copied",
+        "copyFailed": "Could not copy the link",
+        "preview": "Preview certificate"
+      },
+      "reason": {
+        "label": "Reason"
+      }
     },
     "stats": {
       "enrolled": "Enrolled",
       "inProgress": "In progress",
       "completed": "Completed",
-      "available": "Available courses",
-      "skills": "Skill courses done",
-      "skillsRequired": "{count} needed for a certificate"
+      "available": "Available courses"
     },
     "continue": {
       "title": "Continue learning",
@@ -2069,7 +2138,7 @@
     "stepsExperience": "Experience",
     "stepsSkills": "Skills",
     "stepsOrganization": "Your organization",
-    "stepsReview": "Review",
+    "stepsReview": "Check and send",
     "stepsLabel": "Request progress",
     "titlesExperience": "Tell us about your experience",
     "titlesSkills": "Choose the skills to certify",

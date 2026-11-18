@@ -6,8 +6,7 @@ import {
   type QueueCertificate,
   buildContentHealth,
   buildTutorSummary,
-  memberChecklist,
-  memberJourney,
+  learnerChecklist,
   pickCurrentCertificate,
   resolveView,
   summarizeEditorStats,
@@ -16,6 +15,7 @@ import {
   summarizeWaiting,
   toEngagementSeries,
   topCourses,
+  volunteerJourney,
 } from '@/actions/dashboard/core'
 import { recommendFromCompass } from '@/db/queries/learning'
 
@@ -131,54 +131,68 @@ describe('pickCurrentCertificate', () => {
   })
 })
 
-describe('memberJourney', () => {
-  const states = (steps: ReturnType<typeof memberJourney>) => steps.map(({ state }) => state)
+describe('volunteerJourney', () => {
+  const stages = (journey: ReturnType<typeof volunteerJourney>) => journey.stages.map(({ state }) => state)
+  const steps = (journey: ReturnType<typeof volunteerJourney>) => journey.steps.map(({ state }) => state)
 
-  it('starts with learning until the volunteer is eligible', () => {
-    expect(states(memberJourney({ eligible: false, status: null }))).toEqual([
-      'current',
-      'upcoming',
-      'upcoming',
-      'upcoming',
-    ])
-    expect(states(memberJourney({ eligible: true, status: null }))).toEqual(['done', 'current', 'upcoming', 'upcoming'])
+  it('keeps the volunteer on learning until they are eligible', () => {
+    const journey = volunteerJourney({ eligible: false, status: null })
+    expect(journey).toMatchObject({ current: 0, phase: 'learn' })
+    expect(stages(journey)).toEqual(['current', 'upcoming', 'upcoming', 'upcoming'])
+    expect(journey.steps).toEqual([])
   })
 
-  it('keeps the request step open for a draft or a withdrawn request', () => {
-    expect(states(memberJourney({ eligible: false, status: 'draft' }))).toEqual([
-      'done',
-      'current',
-      'upcoming',
-      'upcoming',
-    ])
-    expect(states(memberJourney({ eligible: true, status: 'withdrawn' }))).toEqual([
-      'done',
-      'current',
-      'upcoming',
-      'upcoming',
+  it('opens the request with its first wizard step once the volunteer is eligible', () => {
+    const journey = volunteerJourney({ eligible: true, status: null })
+    expect(journey).toMatchObject({ current: 1, phase: 'ready' })
+    expect(stages(journey)).toEqual(['done', 'current', 'upcoming', 'upcoming'])
+    expect(steps(journey)).toEqual(['current', 'upcoming', 'upcoming', 'upcoming'])
+  })
+
+  it('resumes a draft on its first incomplete step, even after eligibility changes', () => {
+    const journey = volunteerJourney({ eligible: false, resume: 2, status: 'draft' })
+    expect(journey.phase).toBe('draft')
+    expect(journey.steps.map(({ key, state }) => `${key}:${state}`)).toEqual([
+      'experience:done',
+      'skills:done',
+      'organization:current',
+      'review:upcoming',
     ])
   })
 
-  it('follows the review and the outcome', () => {
-    expect(states(memberJourney({ eligible: true, status: 'in_review' }))).toEqual([
+  it('reopens the request and flags the steps with tutor comments', () => {
+    const journey = volunteerJourney({ eligible: true, sections: ['tasks', 'personal'], status: 'changes_requested' })
+    expect(journey).toMatchObject({ current: 1, phase: 'changes' })
+    expect(stages(journey)).toEqual(['done', 'current', 'upcoming', 'upcoming'])
+    expect(steps(journey)).toEqual(['flagged', 'done', 'done', 'flagged'])
+  })
+
+  it('moves to review after submit and finishes on approval', () => {
+    expect(volunteerJourney({ eligible: true, status: 'submitted' })).toMatchObject({
+      current: 2,
+      phase: 'review',
+      steps: [],
+    })
+    expect(volunteerJourney({ eligible: true, status: 'in_review' }).phase).toBe('review')
+    const issued = volunteerJourney({ eligible: true, status: 'approved' })
+    expect(issued).toMatchObject({ current: 3, phase: 'issued' })
+    expect(stages(issued)).toEqual(['done', 'done', 'done', 'done'])
+  })
+
+  it('ends on the stage where the request stopped', () => {
+    expect(stages(volunteerJourney({ eligible: true, status: 'rejected' }))).toEqual([
       'done',
       'done',
-      'current',
+      'ended',
       'upcoming',
     ])
-    expect(memberJourney({ eligible: true, status: 'changes_requested' })[2]).toMatchObject({
-      outcome: 'changes_requested',
-      state: 'current',
-    })
-    expect(states(memberJourney({ eligible: true, status: 'approved' }))).toEqual(['done', 'done', 'done', 'done'])
-    expect(memberJourney({ eligible: true, status: 'rejected' })[3]).toMatchObject({
-      outcome: 'rejected',
-      state: 'failed',
-    })
-    expect(memberJourney({ eligible: true, status: 'revoked' })[3]).toMatchObject({
-      outcome: 'revoked',
-      state: 'failed',
-    })
+    expect(stages(volunteerJourney({ eligible: true, status: 'withdrawn' }))).toEqual([
+      'done',
+      'done',
+      'ended',
+      'upcoming',
+    ])
+    expect(stages(volunteerJourney({ eligible: true, status: 'revoked' }))).toEqual(['done', 'done', 'done', 'ended'])
   })
 })
 
@@ -234,45 +248,9 @@ describe('summarizeMemberCourses', () => {
   })
 })
 
-describe('memberChecklist', () => {
-  const summary = { completedByType: { intro: 0, learner: 0, skill: 0 }, enrolled: 0 }
-  const base = {
-    compassSet: false,
-    eligible: false,
-    hasRequested: false,
-    skillsCompleted: 0,
-    skillsRequired: 3,
-    summary,
-  }
-
-  it('lists the volunteer steps with the request link following eligibility', () => {
-    const items = memberChecklist('volunteer', base)
-    expect(items.map(({ done, key }) => `${key}:${done}`)).toEqual([
-      'compass:false',
-      'start:false',
-      'skills:false',
-      'request:false',
-    ])
-    expect(items[3]?.href).toBe('/certificates')
-    expect(memberChecklist('volunteer', { ...base, eligible: true })[3]?.href).toBe('/certificates/new')
-  })
-
-  it('marks steps done from progress', () => {
-    const items = memberChecklist('volunteer', {
-      ...base,
-      compassSet: true,
-      hasRequested: true,
-      skillsCompleted: 3,
-      summary: { ...summary, enrolled: 4 },
-    })
-    expect(items.every(({ done }) => done)).toBe(true)
-  })
-
-  it('lists the learner steps', () => {
-    const items = memberChecklist('learner', {
-      ...base,
-      summary: { completedByType: { intro: 1, learner: 0, skill: 0 }, enrolled: 2 },
-    })
+describe('learnerChecklist', () => {
+  it('marks the learner steps done from course progress', () => {
+    const items = learnerChecklist({ completedByType: { intro: 1, learner: 0, skill: 0 }, enrolled: 2 })
     expect(items.map(({ done, key }) => `${key}:${done}`)).toEqual(['start:true', 'intro:true', 'learner:false'])
   })
 })

@@ -25,6 +25,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
+import { SHORTCUTS } from '@/lib/shortcuts'
 
 import { ApplicationSheet } from './application-sheet'
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, OrgRow, RejectDialog } from './organization-items'
@@ -209,7 +210,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
             <SearchInput
               className="w-full sm:w-64"
               size="sm"
-              hotkey="/"
+              hotkey={SHORTCUTS.filter.key}
               onValueChange={setSearch}
               placeholder={t('searchPlaceholder')}
               value={search}

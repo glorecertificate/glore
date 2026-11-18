@@ -12,7 +12,5 @@
   "maxBulkInvites": 50,
   "impersonationMinutes": 15,
   "maxAvatarSize": 2048,
-  "mapsUrl": "https://maps.google.com/search",
-  "searchShortcut": "k",
-  "sidebarShortcut": "\\"
+  "mapsUrl": "https://maps.google.com/search"
 }

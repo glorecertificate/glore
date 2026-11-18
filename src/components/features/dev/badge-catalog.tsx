@@ -3,7 +3,9 @@ import { CatalogSection } from '@/components/features/dev/catalog-section'
 import { type IconName } from '@/components/icons/registry'
 import { Badge, type BadgeVariant } from '@/components/ui/badge'
 import { Kbd, KbdGroup } from '@/components/ui/kbd'
+import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { StatusBadge, type StatusMeta } from '@/components/ui/status-badge'
+import { SHORTCUTS } from '@/lib/shortcuts'
 
 const VARIANTS = [
   'primary',
@@ -72,6 +74,11 @@ export const BadgeCatalog = () => (
           <Kbd>{'Shift'}</Kbd>
           <Kbd>{'K'}</Kbd>
         </KbdGroup>
+      </CatalogRow>
+      <CatalogRow label="KbdShortcut">
+        <KbdShortcut shortcut={SHORTCUTS.search} />
+        <KbdShortcut shortcut={SHORTCUTS.sidebar} />
+        <KbdShortcut shortcut={SHORTCUTS.filter} />
       </CatalogRow>
     </CatalogSection>
   </>

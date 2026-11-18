@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -168,12 +168,24 @@ interface StatCard {
   value: number | string
 }
 
-export const CourseAnalyticsSheet = () => {
+export const CourseAnalyticsSheet = ({
+  onOpenChange,
+  open: openProp,
+}: {
+  onOpenChange?: (open: boolean) => void
+  open?: boolean
+}) => {
   const { course } = useCourse()
   const t = useTranslations('CourseEditor')
   const tEditor = useTranslations('Learning.editor')
 
-  const [open, setOpen] = useState(false)
+  const [innerOpen, setInnerOpen] = useState(false)
+  const isControlled = openProp !== undefined
+  const open = isControlled ? openProp : innerOpen
+  const setOpen = (value: boolean) => {
+    setInnerOpen(value)
+    onOpenChange?.(value)
+  }
   const [loading, setLoading] = useState(false)
   const [failed, setFailed] = useState(false)
   const [data, setData] = useState<CourseAnalyticsStats | null>(null)
@@ -193,18 +205,28 @@ export const CourseAnalyticsSheet = () => {
     await load()
   }
 
+  const loadedRef = useRef(false)
+
+  useEffect(() => {
+    if (!isControlled || !open || loadedRef.current) return
+    loadedRef.current = true
+    void load()
+  })
+
   return (
     <>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="icon" variant="band-secondary">
-            <LucideIcon name="chart-no-axes-column" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>{t('analyticsSheet')}</TooltipContent>
-      </Tooltip>
+      {!isControlled && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="icon" variant="band-secondary">
+              <LucideIcon name="chart-no-axes-column" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{t('analyticsSheet')}</TooltipContent>
+        </Tooltip>
+      )}
       <Sheet onOpenChange={setOpen} open={open}>
-        <SheetContent className="flex flex-col gap-0 overflow-y-auto p-0" side="right">
+        <SheetContent className="flex flex-col gap-0 overflow-y-auto p-0 max-sm:w-full" side="right">
           <SheetHeader className="border-b px-6 py-4">
             <SheetTitle className="flex items-center gap-2 text-sm">
               <LucideIcon name="chart-no-axes-column" className="size-4" />

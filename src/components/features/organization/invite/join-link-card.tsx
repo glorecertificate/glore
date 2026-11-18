@@ -20,6 +20,7 @@ import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
 import { APP_ROOT, AUTH_ROOT, EMAIL_REGEX } from '@/lib/constants'
 
+import { StatusMedia } from './invitation-status'
 import { OrganizationBadge } from './organization-badge'
 
 type Outcome = 'requested' | 'sent'
@@ -50,6 +51,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: { email: '', firstName: '', lastName: '' },
+    mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
 
@@ -85,12 +87,12 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
   if (outcome) {
     return (
       <div className="flex flex-col items-center gap-6 text-center">
-        <div className="flex size-16 items-center justify-center rounded-full bg-success/10">
-          <LucideIcon className="size-8 text-success-text" name={outcome === 'sent' ? 'mail-check' : 'circle-check'} />
-        </div>
+        <StatusMedia icon={outcome === 'sent' ? 'mail-check' : 'circle-check'} tone="success" />
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">{t(`${outcome}Title`)}</h1>
-          <p className="text-muted-foreground">{t(`${outcome}Description`, { organization: organization.name })}</p>
+          <h1 className="type-title text-balance">{t(`${outcome}Title`)}</h1>
+          <p className="text-pretty text-muted-foreground">
+            {t(`${outcome}Description`, { organization: organization.name })}
+          </p>
         </div>
         <Button asChild variant="outline">
           <Link href={signedIn ? APP_ROOT : AUTH_ROOT}>{signedIn ? t('goToDashboard') : t('goToLogin')}</Link>
@@ -104,8 +106,8 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
       <div className="flex flex-col items-center gap-4 text-center">
         <OrganizationBadge avatarUrl={organization.avatarUrl} name={organization.name} />
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">{t('title', { organization: organization.name })}</h1>
-          <p className="text-muted-foreground">
+          <h1 className="type-title text-balance">{t('title', { organization: organization.name })}</h1>
+          <p className="text-pretty text-muted-foreground">
             {requiresApproval ? t('descriptionApproval', { role: roleLabel }) : t('description', { role: roleLabel })}
           </p>
         </div>
@@ -159,7 +161,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
                 <FormItem>
                   <FormLabel>{t('email')}</FormLabel>
                   <FormControl>
-                    <Input autoComplete="email" disabled={pending} type="email" {...field} />
+                    <Input autoCapitalize="none" autoComplete="email" disabled={pending} type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -174,7 +176,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {t('haveAccount')}{' '}
-              <Link className="text-brand-text hover:underline" href={AUTH_ROOT}>
+              <Link className="text-action-text underline-offset-4 hover:underline" href={AUTH_ROOT}>
                 {t('signIn')}
               </Link>
             </p>

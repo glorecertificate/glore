@@ -734,8 +734,6 @@
     "emailSentTitle": "¡Te hemos enviado un correo!",
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "goToLogin": "Ir al inicio de sesión",
-    "insertCredentials": "Introduce tus credenciales para continuar",
-    "insertNewPassword": "Introduce una nueva contraseña para continuar",
     "invalidPasswordResetAction": "Solicitar un nuevo enlace",
     "invalidPasswordResetMessage": "Se ha producido un problema al restablecer tu contraseña. Solicita un nuevo enlace e inténtalo de nuevo.",
     "invalidPasswordResetMetaTitle": "No se puede restablecer la contraseña",
@@ -3517,7 +3515,9 @@
     "proofDescription": "Por tu seguridad, confirma que {email} es tuyo antes de crear la cuenta. Te enviaremos un enlace de confirmación por correo.",
     "sendProof": "Envíame un enlace de confirmación",
     "sendProofAgain": "Enviar el enlace de nuevo",
-    "proofSent": "Hemos enviado un enlace de confirmación a {email}. Ábrelo desde tu bandeja de entrada para continuar."
+    "proofSent": "Hemos enviado un enlace de confirmación a {email}. Ábrelo desde tu bandeja de entrada para continuar.",
+    "status_member_title": "Ya eres miembro",
+    "status_member_description": "Ya perteneces a {organization}. Abre tu panel para continuar."
   },
   "JoinLink": {
     "metaTitle": "Unirse a una organización",

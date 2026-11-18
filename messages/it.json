@@ -734,8 +734,6 @@
     "emailSentTitle": "Ti abbiamo inviato un'email!",
     "forgotPassword": "Password dimenticata?",
     "goToLogin": "Vai al login",
-    "insertCredentials": "Inserisci le tue credenziali per continuare",
-    "insertNewPassword": "Inserisci una nuova password per continuare",
     "invalidPasswordResetAction": "Richiedi un nuovo link",
     "invalidPasswordResetMessage": "Si è verificato un problema durante la reimpostazione della password. Richiedi un nuovo link e riprova.",
     "invalidPasswordResetMetaTitle": "Impossibile reimpostare la password",
@@ -3517,7 +3515,9 @@
     "proofDescription": "Per la tua sicurezza, conferma che l'indirizzo {email} è tuo prima di creare l'account. Ti invieremo un link di conferma via email.",
     "sendProof": "Inviami un link di conferma",
     "sendProofAgain": "Invia di nuovo il link",
-    "proofSent": "Abbiamo inviato un link di conferma a {email}. Aprilo dalla tua casella di posta per continuare."
+    "proofSent": "Abbiamo inviato un link di conferma a {email}. Aprilo dalla tua casella di posta per continuare.",
+    "status_member_title": "Sei già un membro",
+    "status_member_description": "Fai già parte di {organization}. Apri la dashboard per continuare."
   },
   "JoinLink": {
     "metaTitle": "Unisciti a un'organizzazione",

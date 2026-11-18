@@ -151,8 +151,8 @@ export const InvitationCard = ({
         <div className="flex flex-col items-center gap-4 text-center">
           <OrganizationBadge avatarUrl={organization.avatarUrl} name={organization.name} />
           <div className="space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight">{t('title', { organization: organization.name })}</h1>
-            <p className="text-muted-foreground">
+            <h1 className="type-title text-balance">{t('title', { organization: organization.name })}</h1>
+            <p className="text-pretty text-muted-foreground">
               {inviterName
                 ? t('invitedBy', { inviter: inviterName, role: roleLabel })
                 : t('invitedAnonymous', { role: roleLabel })}
@@ -161,7 +161,9 @@ export const InvitationCard = ({
         </div>
 
         {message && (
-          <blockquote className="rounded-lg border bg-muted/40 p-4 text-sm whitespace-pre-wrap">{message}</blockquote>
+          <blockquote className="rounded-lg border bg-surface-muted p-4 text-sm wrap-break-word whitespace-pre-wrap">
+            {message}
+          </blockquote>
         )}
 
         {view === 'mismatch' && (
@@ -214,7 +216,7 @@ export const InvitationCard = ({
               {t('signIn')}
             </Button>
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-              <Link className="text-brand-text hover:underline" href={AUTH_ROOT}>
+              <Link className="text-action-text underline-offset-4 hover:underline" href={AUTH_ROOT}>
                 {t('forgotPassword')}
               </Link>
               <Button disabled={busy} onClick={() => setDeclineOpen(true)} size="sm" type="button" variant="ghost">
@@ -259,7 +261,7 @@ export const InvitationCard = ({
           </div>
         )}
 
-        <p className="text-center text-xs text-muted-foreground">{t('expires', { date: expires })}</p>
+        <p className="text-center type-caption text-muted-foreground">{t('expires', { date: expires })}</p>
       </div>
 
       <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>

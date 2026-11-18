@@ -734,8 +734,6 @@
     "emailSentTitle": "We've sent you an email!",
     "forgotPassword": "Forgot your password?",
     "goToLogin": "Go to login",
-    "insertCredentials": "Enter your credentials to continue",
-    "insertNewPassword": "Enter a new password to continue",
     "invalidPasswordResetAction": "Request a new link",
     "invalidPasswordResetMessage": "There was an issue resetting your password. Please request a new link and try again.",
     "invalidPasswordResetMetaTitle": "Cannot reset password",
@@ -3517,7 +3515,9 @@
     "proofDescription": "For your security, confirm that {email} is yours before we create the account. We will email you a confirmation link.",
     "sendProof": "Send me a confirmation link",
     "sendProofAgain": "Send the link again",
-    "proofSent": "We sent a confirmation link to {email}. Open it from your inbox to continue."
+    "proofSent": "We sent a confirmation link to {email}. Open it from your inbox to continue.",
+    "status_member_title": "You are already a member",
+    "status_member_description": "You already belong to {organization}. Open your dashboard to continue."
   },
   "JoinLink": {
     "metaTitle": "Join an organization",

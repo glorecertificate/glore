@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInviteLinkPreview } from '@/actions/organizations/previews'
+import { getCurrentUser } from '@/actions/user'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { JoinLinkCard } from '@/components/features/organization/invite/join-link-card'
 import { PublicShell } from '@/components/features/organization/invite/public-shell'
@@ -24,6 +25,13 @@ const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['par
   if (!link) return <InvitationStatus signedIn={signedIn} status="invalid" />
   if (link.state !== 'active') {
     return <InvitationStatus organization={link.organization.name} signedIn={signedIn} status={link.state} />
+  }
+
+  if (user) {
+    const { organizations } = await getCurrentUser()
+    if (organizations.some(({ id }) => id === link.organization.id)) {
+      return <InvitationStatus organization={link.organization.name} signedIn status="member" />
+    }
   }
 
   return (

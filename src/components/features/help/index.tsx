@@ -10,7 +10,6 @@ import { type HelpRole, useHelpRole } from '@/components/features/help/use-help-
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
 import { useSettings } from '@/components/providers/settings'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
@@ -59,16 +58,8 @@ export const HelpContent = () => {
 
   return (
     <div className="flex flex-col gap-12">
-      <section className="flex flex-col items-start gap-3">
-        <Badge size="lg" variant="info">
-          <LucideIcon name="badge-check" />
-          {roleContent.label}
-        </Badge>
-        <p className="max-w-prose text-lg/8 text-pretty text-fg-1">{roleContent.intro}</p>
-      </section>
-
       <InfoSection title={content.gettingStartedTitle}>
-        <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <ol className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {steps.map((step, index) => (
             <li className="flex" key={step.title}>
               <InfoCard

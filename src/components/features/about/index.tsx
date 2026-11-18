@@ -55,17 +55,16 @@ export const AboutContent = async () => {
 
   return (
     <div className="flex flex-col gap-12">
-      <section className="flex flex-col gap-3">
-        <p className="type-label text-action-text">{content.intro.tagline}</p>
-        <p className="max-w-prose text-lg/8 text-pretty text-fg-1">{content.intro.body}</p>
-      </section>
+      <Card className="gap-0 p-6 sm:p-8">
+        <p className="max-w-3xl text-lg/8 text-pretty text-fg-1">{content.intro.body}</p>
+      </Card>
 
       <section className="flex flex-col gap-4 border-t pt-8 sm:flex-row sm:gap-8">
         <h2 className="shrink-0 type-heading text-fg-title sm:w-40">{content.story.title}</h2>
         <p className="max-w-prose text-base/7 text-pretty text-fg-2">{content.story.description}</p>
       </section>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {SECTIONS.map(({ icon, key, tone }) => (
           <InfoCard
             description={content.sections[key].description}

@@ -78,7 +78,7 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 - `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - `perf.yml` runs outside the merge queue with the same setup. It builds the base commit too, and compares both on one runner with `test:perf` (`performance.md`).
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
-- CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.
+- CI launches Chromium with WebGL off, because software WebGL can take over 8 cores and starve the runner.
 - `release.yml` deploys production after `check.yml` only.
 - `tasks.yml` fails while the PR body has an open task, or when the PR title fails commitlint. Check each template item, or delete it.
 - `claude-review.yml` and `tasks.yml` skip their jobs in the merge queue, and a skipped required check passes. An empty review result fails, except on a PR that changes a Claude workflow.

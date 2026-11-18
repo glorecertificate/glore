@@ -81,7 +81,7 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 
 ## Limits
 
-- CI Chromium runs without WebGL, because SwiftShader draws the cobe globe on the CPU and starves the runner. Measure globe changes locally.
+- CI Chromium runs without WebGL, because SwiftShader draws WebGL on the CPU and starves the runner. Measure WebGL changes locally.
 - From Chromium 158 (Playwright 1.65), the emulated RTT lands before the first byte, so mobile TTFB includes it.
 - A Playwright update can move the mobile timings. The first `main` run after the update sets the new baseline.
 - Local and CI numbers differ, for example in client navigations. Compare local runs only with local runs, and CI runs only with CI runs.

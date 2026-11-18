@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
+import { EmailText } from '@/components/ui/email-text'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
@@ -155,7 +156,7 @@ export const OrganizationInvitations = ({
               {
                 cell: invitation => (
                   <div className="flex min-w-0 flex-col gap-0.5">
-                    <span className="font-medium wrap-anywhere">{invitation.email}</span>
+                    <EmailText className="font-medium" email={invitation.email} />
                     {invitation.inviterName && (
                       <span className="type-caption text-muted-foreground">
                         {t('invitedBy', { name: invitation.inviterName })}

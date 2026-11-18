@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { EmailText } from '@/components/ui/email-text'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -183,7 +184,7 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
                           <span className="font-medium wrap-anywhere">{request.fullName}</span>
                           <Badge variant="outline">{formatRoleLabel(request.role, t)}</Badge>
                         </div>
-                        <span className="text-sm wrap-anywhere text-muted-foreground">{request.email}</span>
+                        <EmailText className="text-sm text-muted-foreground" email={request.email} />
                         {request.message && (
                           <p className="mt-1 text-sm wrap-anywhere whitespace-pre-wrap">{request.message}</p>
                         )}

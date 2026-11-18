@@ -14,7 +14,7 @@ import { getAuthUser } from '@/actions/auth'
 import { getCurrentUser } from '@/actions/user'
 import { queryError } from '@/db/helpers'
 import { auth } from '@/lib/auth'
-import { userTag } from '@/lib/cache'
+import { CacheTag, userTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
 import { isRateLimited } from '@/lib/rate-limit'
 
@@ -64,5 +64,6 @@ export const deleteAccount = async (confirmation: string) => {
 
   await auth.api.signOut({ headers: await headers() })
   updateTag(userTag(user.id))
+  updateTag(CacheTag.AdminUsers)
   redirect(AUTH_ROOT)
 }

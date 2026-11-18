@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
-import { getLegalOverview } from '@/actions/legal/manage'
-import { getCurrentUser } from '@/actions/user'
+import { loadLegalOverview } from '@/actions/legal/overview-core'
+import { getViewer } from '@/actions/viewer'
 import { LegalManager, LegalTabs, LegalTabsList } from '@/components/features/legal/legal-manager'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -13,9 +13,9 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const LegalPageContent = async () => {
-  const user = await getCurrentUser()
+  const user = await getViewer()
   if (!user.canEdit) return notFound()
-  const { data, error } = await getLegalOverview()
+  const { data, error } = await loadLegalOverview()
   if (error || !data) throw new Error(error?.message ?? 'Legal documents unavailable')
 
   return <LegalManager canPublish={user.isAdmin} documents={data} />

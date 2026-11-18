@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
-import { getTeamMembers } from '@/actions/admin/team'
-import { getCurrentUser } from '@/actions/user'
+import { loadAdminTeam } from '@/actions/admin/views'
+import { getViewer } from '@/actions/viewer'
 import { AdminDialogProvider } from '@/components/features/admin/dialog-provider'
 import { AdminTeam } from '@/components/features/admin/team'
 import { AdminTeamActions } from '@/components/features/admin/team-actions'
@@ -15,9 +15,9 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const AdminContent = async () => {
-  const user = await getCurrentUser()
+  const user = await getViewer()
   if (!user.isAdmin) return notFound()
-  const { data, error } = await getTeamMembers()
+  const { data, error } = await loadAdminTeam()
   if (error || !data) throw error
   return <AdminTeam users={data} />
 }

@@ -68,7 +68,7 @@ test('takes an application from the register form to onboarding', async ({ brows
   await expect(sheet.getByText('Maria Rossi')).toBeVisible()
   await sheet.getByRole('button', { name: 'Approve' }).click()
   await adminPage.getByRole('dialog', { name: 'Approve organization' }).getByRole('button', { name: 'Approve' }).click()
-  await expect(adminPage.getByText(`${organizationName} has been approved.`)).toBeVisible()
+  await expect(adminPage.getByText(`${organizationName} has been approved`, { exact: true })).toBeVisible()
   await adminPage.close()
 
   await page.goto(mailLinkPath(await latestMailText(request, applicant), '/invite/'))

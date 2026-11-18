@@ -9,7 +9,7 @@ import { requireEditor } from '@/actions/guards'
 import { queryError } from '@/db/helpers'
 import { isLegalError, legalError } from '@/db/mutations/legal'
 import { isAdminError } from '@/db/mutations/moderation'
-import { legalTag } from '@/lib/cache'
+import { CacheTag, legalTag } from '@/lib/cache'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 const HOUR = 60 * 60 * 1000
@@ -38,13 +38,13 @@ export const requireLegalAdmin = async (action: string, max: number) => {
   return user
 }
 
-export const readLegalEditor = async () =>
-  await requireEditor().catch((error: unknown) => {
-    throw legalError(error instanceof Error && error.message === 'Not authenticated' ? 'UNAUTHORIZED' : 'FORBIDDEN')
-  })
+export const expireLegalOverview = () => {
+  updateTag(CacheTag.LegalAdmin)
+}
 
 export const expireLegal = (slug: string) => {
   updateTag(legalTag(slug))
+  expireLegalOverview()
 }
 
 export const legalAction = async <T>(work: () => Promise<T>) => {

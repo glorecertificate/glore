@@ -194,6 +194,7 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
       [userTag(ids.subject)],
       [userTag(ids.subject)],
       [userTag(ids.subject)],
+      ['admin-users'],
       [certificatesUserTag(ids.subject)],
     ])
     expect(revalidateTag).not.toHaveBeenCalled()

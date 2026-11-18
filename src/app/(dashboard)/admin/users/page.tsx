@@ -2,8 +2,7 @@ import { Suspense } from 'react'
 
 import { createSearchParamsCache } from 'nuqs/server'
 
-import { listAdminOrganizationOptions } from '@/actions/admin/options'
-import { listAdminUsers } from '@/actions/admin/users'
+import { loadAdminOrganizationOptions, loadAdminUsers } from '@/actions/admin/views'
 import { AdminUsers } from '@/components/features/admin/users'
 import { adminUsersParsers } from '@/components/features/admin/users-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -21,7 +20,7 @@ export const generateMetadata = generateIntlMetadata({
 const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/admin/users'>['searchParams'] }) => {
   const params = await parse(searchParams)
   const [users, organizations] = await Promise.all([
-    listAdminUsers({
+    loadAdminUsers({
       banned: params.banned,
       organizationId: params.org,
       page: params.page,
@@ -29,7 +28,7 @@ const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/a
       role: params.role,
       status: params.status,
     }),
-    listAdminOrganizationOptions(),
+    loadAdminOrganizationOptions(),
   ])
   if (users.error || !users.data) throw new Error(users.error?.message ?? 'Users unavailable')
   return <AdminUsers organizations={organizations.data ?? []} page={users.data} />

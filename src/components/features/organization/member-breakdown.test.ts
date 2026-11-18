@@ -29,8 +29,8 @@ describe('member breakdown', () => {
     )
 
     expect(english).toBe('1 owner, 1 representative, 1 tutor, 1 volunteer, 1 learner')
-    expect(spanish).toBe('1 administrador/a, 1 representante, 1 tutor, 1 voluntario, 1 estudiante')
-    expect(italian).toBe('1 amministratore, 1 rappresentante, 1 tutor, 1 volontario, 1 studente')
+    expect(spanish).toBe('1 administrador, 1 representante, 1 tutor, 1 voluntario, 1 participante')
+    expect(italian).toBe('1 amministratore, 1 rappresentante, 1 tutor, 1 volontario, 1 partecipante')
   })
 
   it('uses plural nouns otherwise', () => {

@@ -16,7 +16,7 @@ import { USER_NOT_FOUND, fetchUser, queryUserById } from '@/actions/user-data'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
-import { certificatesUserTag, userTag } from '@/lib/cache'
+import { CacheTag, certificatesUserTag, userTag } from '@/lib/cache'
 import { SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
 import { getCookie } from '@/lib/cookie-store'
 import { sendMail } from '@/lib/email'
@@ -81,6 +81,7 @@ export const updateProfile = async (values: z.input<typeof profileSchema>) => {
   if (Object.keys(parsed.data).length > 0) {
     await db.update(users).set(parsed.data).where(eq(users.id, currentUser.id))
     updateTag(userTag(currentUser.id))
+    updateTag(CacheTag.AdminUsers)
     updateTag(certificatesUserTag(currentUser.id))
   }
 
@@ -141,6 +142,7 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
       return { error: { code: 'USERNAME_TAKEN', message: 'Username is taken' } }
     }
     updateTag(userTag(currentUser.id))
+    updateTag(CacheTag.AdminUsers)
     updateTag(certificatesUserTag(currentUser.id))
   }
 

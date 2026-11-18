@@ -1,9 +1,9 @@
 {
   "Metadata": {
-    "description": "GloRe es una red abierta que pretende ampliar su audiencia, tanto de personas voluntarias como de ONG de todo el mundo, para que los certificados estén al alcance de todos.",
+    "description": "GloRe es una red abierta de ONG que certifican las habilidades blandas que se adquieren con el voluntariado. Haz los cursos, solicita tu certificado y cualquiera podrá verificarlo en línea.",
     "keywords": "GloRe, voluntariado, red global, ONG, certificado, habilidades blandas, cursos, aprendizaje, comunidad",
     "pwaDescription": "Instala GloRe en tu dispositivo para acceder a los cursos y gestionar tus certificados sin conexión.",
-    "title": "GloRe - Red mundial de voluntariado"
+    "title": "GloRe Certificate"
   },
   "Common": {
     "accessApp": "Accede a GloRe",
@@ -14,15 +14,15 @@
     "clearFilters": "Limpiar filtros",
     "clearSort": "Quitar orden",
     "completed": "Completado",
-    "errorMessage": "Inténtalo de nuevo o <contactUs>contáctanos</contactUs> si el problema persiste",
+    "errorMessage": "Inténtalo de nuevo. Si el problema continúa, <contactUs>contáctanos</contactUs>.",
     "loading": "Cargando…",
     "uploadFailed": "No se pudo subir el archivo. Inténtalo de nuevo.",
-    "errorTitle": "¡Ups! Algo salió mal",
+    "errorTitle": "Algo ha fallado",
     "hours": "Horas",
     "impersonationLocked": "Esta acción está bloqueada mientras ves como otro usuario.",
     "rateLimited": "Demasiados intentos. Inténtalo más tarde.",
-    "notFound": "No encontrado",
-    "notFoundMessage": "La página que buscas no existe o se ha movido",
+    "notFound": "Página no encontrada",
+    "notFoundMessage": "Esta página no existe o se ha movido.",
     "open": "Abrir",
     "openDefaultEmailClient": "Abre tu cliente de correo predeterminado",
     "organization": "Organización",
@@ -635,13 +635,13 @@
       "systemTitle": "Cambiar al tema del sistema"
     },
     "ImageCropper": {
-      "avatarTooLarge": "Sube una imagen de menos de {size} MB",
+      "avatarTooLarge": "Sube una imagen de menos de {size} MB.",
       "cancel": "Cancelar",
-      "changeAvatar": "Actualizar avatar",
+      "changeAvatar": "Actualizar imagen",
       "cropTitle": "Recorta tu imagen",
-      "remove": "Eliminar",
-      "saveAvatar": "Guardar avatar",
-      "uploadAvatar": "Subir avatar"
+      "remove": "Quitar",
+      "saveAvatar": "Guardar imagen",
+      "uploadAvatar": "Subir imagen"
     },
     "Breadcrumb": {
       "label": "Ruta de navegación",
@@ -708,9 +708,9 @@
     "logout": "Cerrar sesión",
     "logoutCancel": "Seguir con la sesión iniciada",
     "logoutConfirm": "Cerrar sesión",
-    "logoutConfirmMessage": "Se cerrará tu sesión en GloRe y deberás iniciarla de nuevo para acceder a tu contenido.",
+    "logoutConfirmMessage": "Se cerrará tu sesión. Vuelve a iniciarla para ver tus cursos y certificados.",
     "logoutConfirmTitle": "¿Finalizar sesión?",
-    "logoutFailed": "Se ha producido un error al cerrar sesión. Inténtalo de nuevo.",
+    "logoutFailed": "No se pudo cerrar la sesión. Inténtalo de nuevo.",
     "logoutLoading": "Cerrando sesión…",
     "organization": "Organización",
     "organizations": "Organizaciones",
@@ -766,9 +766,9 @@
     "passwordUpdatedTitle": "Tu contraseña se ha actualizado",
     "resendEmail": "Enviar otro correo",
     "resendTimer": "Enviar otro correo en {seconds}s",
-    "signupDialogMessage": "<p>Para registrarte en GloRe necesitas una invitación de tu organización.</p><p>Si tu organización forma parte de la red GloRe y quieres acceder como voluntario, tutor o coordinador, pide a alguien de tu organización que te envíe una invitación.</p><p>Si tu organización aún no está registrada en GloRe, puedes enviar una solicitud de registro más abajo.</p><p>Para más información, visita <link>nuestro sitio web</link>.</p>",
+    "signupDialogMessage": "<p>Solo puedes registrarte con una invitación de tu organización.</p><p>Si tu organización ya está en GloRe, pide a alguien de tu organización que te invite.</p><p>Si no, envía una solicitud de registro más abajo.</p><p>Para más información, <link>visita nuestro sitio web</link>.</p>",
     "signupDialogRegister": "Registra tu organización",
-    "signupDialogTitle": "Accede a la red GloRe",
+    "signupDialogTitle": "Cómo registrarte en GloRe",
     "signupMessage": "¿No tienes cuenta? Mira <link>cómo registrarte</link>",
     "skipAndLogin": "Omitir e iniciar sesión",
     "userLabel": "Correo o nombre de usuario",
@@ -784,7 +784,7 @@
   },
   "CourseCommon": {
     "courseCreationFailed": "No se pudo crear el curso. Inténtalo de nuevo.",
-    "courseSettingsUpdated": "Configuración del curso guardada",
+    "courseSettingsUpdated": "Ajustes del curso guardados",
     "courseType": "Tipo de curso",
     "courseType-intro": "Introducción",
     "courseType-skill": "Habilidad blanda",
@@ -793,13 +793,13 @@
     "iconUpdateSuccess": "Icono guardado",
     "newCourse": "Crear un curso nuevo",
     "newCourseDescription": "Completa la información básica para crear un nuevo curso. Puedes añadir contenido y traducciones más tarde.",
-    "settings": "Configuración",
+    "settings": "Ajustes",
     "skillGroup": "Grupo",
     "updateIcon": "Actualizar icono",
     "courseUpdateFailed": "No se pudo actualizar el curso. Inténtalo de nuevo.",
-    "courseSettingsDescription": "Gestiona la configuración global de este curso.",
+    "courseSettingsDescription": "Gestiona los ajustes globales de este curso.",
     "delete": "Eliminar",
-    "courseType-learner": "Estudiante"
+    "courseType-learner": "Participante"
   },
   "CourseEditor": {
     "noChangesToSave": "No hay cambios para guardar",
@@ -856,7 +856,7 @@
     "publishAnyway": "Publicar de todos modos",
     "publishIncompleteMessage": "{count, plural, =1 {La lección {lessons} tiene} other {Las lecciones {lessons} tienen}} contenido incompleto que los usuarios no verán. ¿Publicar de todos modos?",
     "publishIncompleteTitle": "¿Publicar con contenido incompleto?",
-    "courseTypeDescription-learner": "Un curso para estudiantes enseña temas prácticos que no dependen de una habilidad blanda.",
+    "courseTypeDescription-learner": "Un curso para participantes enseña temas prácticos que no dependen de una habilidad blanda.",
     "selectSkillGroupToSave": "Selecciona un grupo de habilidades para guardar este curso.",
     "courseDescriptionPlaceholder": "Escribe una descripción en {lang}",
     "updateDescription": "Actualizar descripción",
@@ -952,7 +952,7 @@
     "preview": "Vista previa",
     "previewIn": "Vista previa en {lang}",
     "sortBy-progress": "Progreso",
-    "publishCourseMessage": "Todos los usuarios de la plataforma verán este curso.",
+    "publishCourseMessage": "Todos los miembros verán este curso.",
     "publishIn": "Publicar en…",
     "publishInLanguage": "¿Publicar el curso en {lang}?",
     "published": "Publicados",
@@ -1022,7 +1022,7 @@
     }
   },
   "Dashboard": {
-    "greeting": "Te damos la bienvenida, {name}",
+    "greeting": "Hola de nuevo, {name}",
     "subtitle": {
       "editor": "Estado del contenido y participación",
       "manager": "Tu organización de un vistazo",
@@ -1048,8 +1048,8 @@
           "action": "Ir a los cursos"
         },
         "learner": {
-          "title": "Termina un curso para estudiantes",
-          "description": "Los cursos para estudiantes desarrollan las habilidades que usarás como voluntario.",
+          "title": "Termina un curso para participantes",
+          "description": "Los cursos para participantes desarrollan las habilidades que usarás como voluntario.",
           "action": "Ir a los cursos"
         }
       }
@@ -1112,15 +1112,15 @@
           "lead": "Emitido el {date}. Cualquiera puede verificarlo con su código."
         },
         "rejected": {
-          "title": "Tu solicitud no fue aprobada",
+          "title": "Tu solicitud no ha sido aprobada",
           "lead": "Tu tutor no aprobó esta solicitud."
         },
         "withdrawn": {
-          "title": "Retiraste tu solicitud",
+          "title": "Has retirado tu solicitud",
           "lead": "Puedes enviar una nueva solicitud cuando quieras."
         },
         "revoked": {
-          "title": "Tu certificado fue revocado",
+          "title": "Tu certificado ha sido revocado",
           "lead": "Su código ya no se puede verificar."
         }
       },
@@ -1141,7 +1141,7 @@
       },
       "sent": "Enviada el {date}.",
       "path": {
-        "title": "También en tu camino",
+        "title": "Otras cosas por hacer",
         "compass": "Define tu brújula de habilidades",
         "percent": "{percent} %"
       },
@@ -1190,7 +1190,7 @@
       "type": {
         "intro": "Curso introductorio",
         "skill": "Curso de habilidades",
-        "learner": "Curso para estudiantes"
+        "learner": "Curso para participantes"
       }
     },
     "updates": {
@@ -1287,7 +1287,7 @@
         "partial": "Parciales",
         "partialDescription": "Faltan algunos idiomas",
         "draft": "Borradores",
-        "draftDescription": "No visibles para los estudiantes",
+        "draftDescription": "No visibles para los participantes",
         "archived": "Archivados",
         "archivedDescription": "Ocultos en el catálogo"
       }
@@ -1323,12 +1323,12 @@
       "save": "Guardar cambios",
       "create": "Crear artículo",
       "saving": "Guardando…",
-      "updated": "Artículo actualizado correctamente.",
-      "created": "Artículo creado correctamente.",
+      "updated": "Artículo actualizado",
+      "created": "Artículo creado",
       "error": "No se pudo guardar el artículo. Inténtalo de nuevo.",
       "requiredFields": "El título y el slug son obligatorios.",
       "delete": "Eliminar",
-      "deleted": "Artículo eliminado correctamente.",
+      "deleted": "Artículo eliminado",
       "deleteError": "No se pudo eliminar el artículo. Inténtalo de nuevo.",
       "deleteConfirmTitle": "¿Eliminar artículo?",
       "deleteConfirmMessage": "Esta acción no se puede deshacer. El artículo se eliminará permanentemente."
@@ -1346,8 +1346,8 @@
       "delete": "Eliminar",
       "deleteConfirmTitle": "¿Eliminar categoría?",
       "deleteConfirmMessage": "Esto eliminará permanentemente la categoría y todos sus artículos. Esta acción no se puede deshacer.",
-      "created": "Categoría creada correctamente.",
-      "deleted": "Categoría eliminada correctamente.",
+      "created": "Categoría creada",
+      "deleted": "Categoría eliminada",
       "error": "No se pudo guardar la categoría. Inténtalo de nuevo.",
       "requiredFields": "El nombre y el slug son obligatorios."
     },
@@ -1357,12 +1357,12 @@
     "missing": {
       "title": "Esta sección aún no está disponible",
       "description": "El equipo todavía no ha publicado nada aquí. Vuelve pronto.",
-      "descriptionEditor": "No existe ninguna categoría con el identificador \"{slug}\". Créala en la vista general de la documentación para rellenar esta página.",
+      "descriptionEditor": "No hay ninguna categoría con la dirección \"{slug}\". Créala en la vista general de la documentación para rellenar esta página.",
       "manage": "Gestionar categorías",
       "back": "Volver a la documentación"
     },
     "search": {
-      "noMatches": "Ningún artículo coincide con «{query}». Prueba con otra palabra.",
+      "noMatches": "Ningún artículo coincide con \"{query}\". Prueba con otra palabra.",
       "results": "{count, plural, one {# artículo} other {# artículos}}"
     },
     "article": {
@@ -1378,7 +1378,7 @@
     "title": "Acerca de GloRe",
     "intro": {
       "tagline": "Da valor a tus experiencias de voluntariado.",
-      "body": "GloRe es una red abierta de organizaciones de voluntariado que convierte la experiencia real en competencia reconocida. Los voluntarios aprenden y autoevalúan sus habilidades blandas en línea, un tutor de la organización de acogida valida el resultado y un certificado personalizado documenta las horas, las tareas y las habilidades demostradas."
+      "body": "GloRe es una red abierta de organizaciones de voluntariado. Las personas voluntarias hacen cursos en línea y valoran sus propias habilidades blandas. Un tutor de la organización de acogida revisa el resultado y un certificado recoge las horas, las tareas y las habilidades."
     },
     "sections": {
       "mission": {
@@ -1391,7 +1391,7 @@
       },
       "values": {
         "title": "Nuestros valores",
-        "description": "Apertura, transparencia y confianza. El reconocimiento es gratuito para los voluntarios, la red está abierta a las organizaciones y cada certificado lo valida un tutor real."
+        "description": "La certificación es gratuita para las personas voluntarias y las organizaciones miembro. La red está abierta a las organizaciones que siguen la Carta de Calidad. Un tutor revisa cada certificado."
       },
       "network": {
         "title": "Nuestra red",
@@ -1444,14 +1444,14 @@
     },
     "trust": {
       "title": "Por qué es fiable",
-      "description": "El reconocimiento solo funciona si un tercero lo cree.",
+      "description": "Un certificado solo sirve si quien lo lee puede fiarse de él.",
       "items": {
         "validation": {
           "title": "Validado por un tutor",
           "description": "Cada certificado lo revisa y aprueba un tutor de la organización emisora, que asume la responsabilidad de su contenido."
         },
         "immutable": {
-          "title": "Inmutable una vez aprobado",
+          "title": "Bloqueado tras la aprobación",
           "description": "Tras la aprobación, un certificado no se puede modificar, así que el registro queda exactamente como se emitió."
         },
         "verifiable": {
@@ -1471,8 +1471,8 @@
     },
     "gettingStartedTitle": "Primeros pasos",
     "faqsTitle": "Preguntas frecuentes",
-    "faqsDescription": "Respuestas rápidas a las preguntas que más recibimos.",
-    "description": "Una guía completa de GloRe: tu rol, el certificado y cada parte de la plataforma.",
+    "faqsDescription": "Respuestas breves a las preguntas más habituales.",
+    "description": "Cómo funciona GloRe para tu rol, desde el primer curso hasta el certificado.",
     "roles": {
       "volunteer": {
         "label": "Voluntario",
@@ -1488,7 +1488,7 @@
           },
           "step3": {
             "title": "Autoevalúa tus habilidades",
-            "description": "Responde con sinceridad a las preguntas de autoevaluación. Tus puntuaciones conforman el perfil de competencias en el que se basa tu certificado."
+            "description": "Responde con sinceridad a las preguntas de autoevaluación. Tus puntuaciones se convierten en los niveles de tu certificado y un tutor las confirma."
           },
           "step4": {
             "title": "Solicita tu certificado",
@@ -1502,7 +1502,7 @@
           },
           "q2": {
             "question": "¿Qué es una autoevaluación?",
-            "answer": "Después de un curso de habilidades, valoras tu propio nivel en las habilidades que cubre. Estas puntuaciones forman tu perfil de competencias y las confirma un tutor durante la revisión."
+            "answer": "Después de un curso de habilidades, valoras tu propio nivel en las habilidades que cubre. Un tutor confirma estas puntuaciones durante la revisión."
           },
           "q3": {
             "question": "¿Qué pasa después de enviar un certificado?",
@@ -1514,17 +1514,17 @@
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
-            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización tiene sus propios cursos, rol y certificados."
           },
           "q6": {
             "question": "¿Qué idiomas están disponibles?",
-            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+            "answer": "GloRe está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
           }
         }
       },
       "learner": {
-        "label": "Estudiante",
-        "intro": "Como estudiante puedes hacer cursos introductorios y de estudiante para explorar las habilidades blandas a tu propio ritmo.",
+        "label": "Participante",
+        "intro": "Como participante puedes hacer cursos introductorios y para participantes para explorar las habilidades blandas a tu propio ritmo.",
         "steps": {
           "step1": {
             "title": "Únete a tu organización",
@@ -1532,7 +1532,7 @@
           },
           "step2": {
             "title": "Explora los cursos",
-            "description": "Abre los cursos introductorios y de estudiante disponibles para ti y avanza por sus lecciones."
+            "description": "Abre los cursos introductorios y para participantes disponibles para ti y avanza por sus lecciones."
           },
           "step3": {
             "title": "Sigue tu progreso",
@@ -1546,11 +1546,11 @@
         "faqs": {
           "q1": {
             "question": "¿Por qué no puedo solicitar un certificado?",
-            "answer": "Los certificados están ligados al rol de voluntario y a los cursos de habilidades. Los estudiantes hacen cursos introductorios y de estudiante. Consulta a tu organización si quieres convertirte en voluntario."
+            "answer": "Los certificados están ligados al rol de voluntario y a los cursos de habilidades. Los participantes hacen cursos introductorios y para participantes. Consulta a tu organización si quieres convertirte en voluntario."
           },
           "q2": {
             "question": "¿Qué tipos de cursos puedo hacer?",
-            "answer": "Los cursos introductorios explican cómo funciona GloRe y los cursos de estudiante se adaptan a tu trayectoria. Ambos te permiten explorar las habilidades blandas sin una evaluación final."
+            "answer": "Los cursos introductorios explican cómo funciona GloRe y los cursos para participantes tratan temas prácticos. Ambos te permiten explorar las habilidades blandas sin una evaluación final."
           },
           "q3": {
             "question": "¿Cómo me uno a una organización?",
@@ -1558,11 +1558,11 @@
           },
           "q4": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
-            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización tiene sus propios cursos, rol y certificados."
           },
           "q5": {
             "question": "¿Qué idiomas están disponibles?",
-            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+            "answer": "GloRe está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
           }
         }
       },
@@ -1572,7 +1572,7 @@
         "steps": {
           "step1": {
             "title": "Encuentra tus asignaciones",
-            "description": "Los certificados nuevos se asignan automáticamente al tutor con menos revisiones pendientes. También puedes autoasignarte cualquier certificado sin revisar."
+            "description": "Las solicitudes nuevas van al tutor con menos revisiones abiertas. También puedes tomar cualquier solicitud que nadie haya reclamado."
           },
           "step2": {
             "title": "Abre la revisión",
@@ -1590,7 +1590,7 @@
         "faqs": {
           "q1": {
             "question": "¿Cómo se me asignan los certificados?",
-            "answer": "Los certificados nuevos se asignan automáticamente al tutor con menos revisiones pendientes. También puedes autoasignarte cualquier certificado que aún no se haya revisado."
+            "answer": "Las solicitudes nuevas van al tutor con menos revisiones abiertas. También puedes tomar cualquier solicitud que nadie haya reclamado."
           },
           "q2": {
             "question": "¿Qué puedo cambiar durante una revisión?",
@@ -1598,7 +1598,7 @@
           },
           "q3": {
             "question": "¿Qué hace la aprobación?",
-            "answer": "Genera el PDF, registra la fecha de emisión y hace que el certificado sea inmutable y verificable públicamente. El primer certificado aprobado se convierte en el predeterminado del voluntario."
+            "answer": "Genera el PDF, registra la fecha de emisión y bloquea el certificado para que no pueda cambiar. Después, cualquiera puede verificarlo. El primer certificado aprobado se convierte en el predeterminado del voluntario."
           },
           "q4": {
             "question": "¿Cómo me uno a una organización?",
@@ -1606,17 +1606,17 @@
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
-            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización tiene sus propios cursos, rol y certificados."
           },
           "q6": {
             "question": "¿Qué idiomas están disponibles?",
-            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+            "answer": "GloRe está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
           }
         }
       },
       "manager": {
-        "label": "Administrador/a o representante",
-        "intro": "Como administrador/a o representante gestionas a tus miembros, apruebas las solicitudes de acceso y mantienes las revisiones en marcha.",
+        "label": "Persona administradora o representante",
+        "intro": "Como persona administradora o representante gestionas a tus miembros, apruebas las solicitudes de acceso y mantienes las revisiones en marcha.",
         "steps": {
           "step1": {
             "title": "Revisa las solicitudes de acceso",
@@ -1624,11 +1624,11 @@
           },
           "step2": {
             "title": "Gestiona miembros y roles",
-            "description": "Invita a miembros, cambia roles y asigna tutores. Los voluntarios obtienen certificados; los estudiantes hacen cursos introductorios; los tutores revisan."
+            "description": "Invita a miembros, cambia roles y asigna tutores. Los voluntarios obtienen certificados, los participantes hacen cursos introductorios y los tutores revisan."
           },
           "step3": {
             "title": "Mantén las revisiones equilibradas",
-            "description": "Los certificados se asignan automáticamente a los tutores según la carga. Puedes reasignar una revisión, pero solo los tutores pueden aprobar o solicitar cambios."
+            "description": "Los certificados se reparten entre los tutores según sus revisiones abiertas. Puedes reasignar una revisión, pero solo los tutores pueden aprobar o solicitar cambios."
           },
           "step4": {
             "title": "Mantén tu perfil",
@@ -1638,11 +1638,11 @@
         "faqs": {
           "q1": {
             "question": "¿Quién puede revisar los certificados?",
-            "answer": "Solo los tutores revisan. Como administrador/a o representante puedes asignar o reasignar revisiones, pero no puedes aprobar ni solicitar cambios por tu cuenta."
+            "answer": "Solo los tutores revisan. Como persona administradora o representante puedes asignar o reasignar revisiones, pero no puedes aprobar ni solicitar cambios por tu cuenta."
           },
           "q2": {
             "question": "¿Cómo añado un tutor?",
-            "answer": "Invita a la persona o cambia el rol de un miembro existente a tutor en la página de la organización. Las revisiones se reparten entonces de forma equilibrada entre tus tutores."
+            "answer": "Invita a la persona o cambia el rol de un miembro existente a tutor en la página de la organización. Las revisiones se reparten entonces entre tus tutores."
           },
           "q3": {
             "question": "¿Puedo eliminar mi organización?",
@@ -1654,17 +1654,17 @@
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
-            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización tiene sus propios cursos, rol y certificados."
           },
           "q6": {
             "question": "¿Qué idiomas están disponibles?",
-            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+            "answer": "GloRe está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
           }
         }
       },
       "team": {
         "label": "Equipo",
-        "intro": "Como miembro del equipo creas cursos y, como admin, gestionas organizaciones y usuarios en toda la plataforma.",
+        "intro": "Como miembro del equipo creas cursos y, como admin, gestionas organizaciones y usuarios.",
         "steps": {
           "step1": {
             "title": "Crea cursos",
@@ -1672,14 +1672,14 @@
           },
           "step2": {
             "title": "Estructura las lecciones",
-            "description": "Añade lecciones con texto enriquecido, preguntas y preguntas de autoevaluación. Los cursos de habilidades terminan con una evaluación final."
+            "description": "Añade lecciones con texto enriquecido, preguntas y ejercicios de autoevaluación. Los cursos de habilidades terminan con una evaluación final."
           },
           "step3": {
             "title": "Publica cuando esté listo",
             "description": "Un curso se publica, y queda visible para los miembros, una vez que todas las lecciones tienen contenido. Usa los estados de borrador y parcial mientras trabajas."
           },
           "step4": {
-            "title": "Gestiona la plataforma",
+            "title": "Gestiona organizaciones y usuarios",
             "description": "Los admins aprueban organizaciones, moderan usuarios e invitan a miembros del equipo desde el panel de administración. Los editores se centran en el contenido de los cursos."
           }
         },
@@ -1690,7 +1690,7 @@
           },
           "q2": {
             "question": "¿Quién puede editar cursos?",
-            "answer": "Los admins y los editores editan los cursos. Todos los demás los ven en modo de visualización. Solo los admins acceden al panel de administración de organizaciones y usuarios."
+            "answer": "Los admins y los editores editan los cursos. Los demás roles pueden leerlos, pero no editarlos. Solo los admins acceden al panel de administración de organizaciones y usuarios."
           },
           "q3": {
             "question": "¿Qué es el asistente de IA?",
@@ -1702,11 +1702,11 @@
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
-            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización tiene sus propios cursos, rol y certificados."
           },
           "q6": {
             "question": "¿Qué idiomas están disponibles?",
-            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+            "answer": "GloRe está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
           }
         }
       }
@@ -1728,15 +1728,15 @@
       }
     },
     "features": {
-      "title": "Por la plataforma",
+      "title": "Más sobre GloRe",
       "description": "Algunas cosas que conviene conocer más allá de los cursos y los certificados.",
       "items": {
         "organizations": {
-          "title": "Organizaciones como espacios de trabajo",
+          "title": "Una cuenta, varias organizaciones",
           "description": "Siempre perteneces a GloRe a través de una organización. Cambia entre ellas en la barra lateral, cada una con sus propios cursos y rol."
         },
         "onboarding": {
-          "title": "Bienvenida inicial",
+          "title": "Tu primer inicio de sesión",
           "description": "En tu primer inicio de sesión completas un breve perfil (nombre, fecha de nacimiento, teléfono, idioma) antes de llegar al panel."
         },
         "settings": {
@@ -1753,7 +1753,7 @@
         },
         "pwa": {
           "title": "Instala la aplicación",
-          "description": "GloRe es una aplicación web progresiva (PWA), así que puedes instalarla en tu teléfono o escritorio y abrirla como una aplicación nativa."
+          "description": "Puedes instalar GloRe en tu teléfono o en tu ordenador y abrirla como cualquier otra aplicación."
         }
       }
     }
@@ -1769,7 +1769,7 @@
     "verifiedCredential": "Credencial verificada",
     "credentialStatement": "ha desarrollado y demostrado las siguientes habilidades blandas durante el voluntariado con {organization}.",
     "sealTitle": "GloRe Certificate",
-    "sealSubtitle": "Reconocido oficialmente",
+    "sealSubtitle": "Emitido según la Carta de Calidad",
     "period": "Periodo",
     "location": "Lugar",
     "hours": "Horas"
@@ -1780,12 +1780,12 @@
     "resubmitButton": "Editar y reenviar",
     "assignTutor": "Asignar tutor",
     "assignTutorError": "No se pudo asignar el tutor. Inténtalo de nuevo.",
-    "assignTutorSuccess": "Tutor asignado.",
+    "assignTutorSuccess": "Tutor asignado",
     "noTutorsAvailable": "No hay tutores disponibles en esta organización",
     "reviewer": "Tutor",
     "reviewerUnassigned": "Sin asignar",
     "selfRelease": "Liberar asignación",
-    "selfReleaseSuccess": "Ya no estás asignado a este certificado.",
+    "selfReleaseSuccess": "Ya no tienes asignado este certificado",
     "timeline": "Historial de la solicitud",
     "previewLabel": "Vista previa del certificado de {organization}",
     "periodValue": "{start} - {end}",
@@ -1859,7 +1859,7 @@
     "revokeHint": "Al menos {min} caracteres.",
     "revokeConfirm": "Revocar certificado",
     "revoking": "Revocando…",
-    "revoked": "Certificado revocado.",
+    "revoked": "Certificado revocado",
     "revokeError": "No se pudo revocar el certificado. Inténtalo de nuevo."
   },
   "CertificateEligibility": {
@@ -1894,7 +1894,7 @@
     "notFoundMessage": "El certificado que buscas no existe o se ha movido",
     "requestCertificate": "Solicitar certificado",
     "requestCertificateMessage": "Crea tu certificado y espera a que un miembro de tu organización lo apruebe.",
-    "requestCertificateTitle": "¡Ya puedes solicitar tu certificado GloRe!",
+    "requestCertificateTitle": "Ya puedes solicitar tu certificado de GloRe",
     "noCertificates": "Aún no tienes ningún certificado",
     "noCertificatesMessage": "Cuando solicites un certificado, aparecerá aquí.",
     "noFilteredCertificates": "No hay certificados que coincidan",
@@ -1939,7 +1939,7 @@
     "publicIssuedBy": "Emitido por GloRe Certificate",
     "publicScanToVerify": "Escanea para verificar",
     "publicJoinTitle": "Obtén tu propio certificado",
-    "publicJoinDescription": "Únete a la red GloRe, completa los cursos de habilidades y recibe un certificado que cualquiera puede verificar.",
+    "publicJoinDescription": "Únete a GloRe Network, completa los cursos de habilidades y recibe un certificado que cualquiera puede verificar.",
     "publicJoinButton": "Únete a GloRe",
     "publicAccessApp": "¿Ya eres miembro? Inicia sesión",
     "publicOgDescription": "{name} ha hecho voluntariado con {org}. Verifica este certificado en GloRe."
@@ -2113,7 +2113,7 @@
     "valid": "Certificado válido",
     "revoked": "Certificado revocado",
     "validMessage": "GloRe emitió este certificado el {date}.",
-    "revokedOn": "Este certificado fue revocado el {date} y ya no es válido.",
+    "revokedOn": "Este certificado ha sido revocado el {date} y ya no es válido.",
     "revokedMessage": "Este certificado se ha revocado y ya no es válido.",
     "holderLeft": "La persona titular ya no tiene una cuenta de GloRe. Esto no afecta al registro del certificado.",
     "downloadPdf": "Descargar PDF",
@@ -2248,7 +2248,7 @@
     "inviteMember": "Invitar miembro",
     "firstName": "Nombre",
     "lastName": "Apellidos",
-    "email": "Email",
+    "email": "Correo electrónico",
     "emailPlaceholder": "juan.perez@email.com",
     "role": "Rol",
     "cancel": "Cancelar",
@@ -2256,15 +2256,15 @@
     "you": "Tú",
     "statusPending": "Configuración pendiente",
     "statusJoined": "Activo",
-    "removeMember": "Eliminar miembro",
-    "removeMemberTitle": "Eliminar miembro",
+    "removeMember": "Quitar miembro",
+    "removeMemberTitle": "Quitar miembro",
     "removing": "Eliminando…",
     "memberRoleUpdated": "Rol actualizado",
     "memberRemoved": "Miembro eliminado",
     "joinRequestsTitle": "Solicitudes de acceso",
-    "joinRequestsDescription": "Aprueba o rechaza las solicitudes de estudiantes y voluntarios que quieren unirse.",
+    "joinRequestsDescription": "Aprueba o rechaza las solicitudes de participantes y voluntarios que quieren unirse.",
     "noJoinRequests": "Todavía no hay solicitudes",
-    "noJoinRequestsDescription": "Las nuevas solicitudes de voluntarios y estudiantes aparecerán aquí.",
+    "noJoinRequestsDescription": "Las nuevas solicitudes de voluntarios y participantes aparecerán aquí.",
     "approve": "Aprobar",
     "reject": "Rechazar",
     "rejectRequestTitle": "Rechazar solicitud",
@@ -2309,14 +2309,14 @@
     "saveChanges": "Guardar cambios",
     "settingsUpdated": "Organización actualizada",
     "settingsUpdateError": "No se pudieron guardar los cambios. Inténtalo de nuevo.",
-    "avatarUploadError": "No se pudo subir el avatar. Inténtalo de nuevo.",
-    "avatarUploaded": "Avatar de la organización actualizado",
-    "avatarRemoveError": "No se pudo eliminar el avatar. Inténtalo de nuevo.",
-    "avatarRemoved": "Avatar de la organización eliminado",
+    "avatarUploadError": "No se pudo subir el logotipo. Inténtalo de nuevo.",
+    "avatarUploaded": "Logotipo de la organización actualizado",
+    "avatarRemoveError": "No se pudo quitar el logotipo. Inténtalo de nuevo.",
+    "avatarRemoved": "Logotipo de la organización quitado",
     "deleteOrganizationError": "No se pudo eliminar la organización. Inténtalo de nuevo.",
     "organizationDeleted": "Organización eliminada",
     "memberCount": "Miembros",
-    "memberBreakdown": "{admins, plural, one {# administrador/a} other {# administradores/as}}, {representatives, plural, one {# representante} other {# representantes}}, {tutors, plural, one {# tutor} other {# tutores}}, {volunteers, plural, one {# voluntario} other {# voluntarios}}, {learners, plural, one {# estudiante} other {# estudiantes}}",
+    "memberBreakdown": "{admins, plural, one {# administrador} other {# administradores}}, {representatives, plural, one {# representante} other {# representantes}}, {tutors, plural, one {# tutor} other {# tutores}}, {volunteers, plural, one {# voluntario} other {# voluntarios}}, {learners, plural, one {# participante} other {# participantes}}",
     "pendingJoinRequests": "Solicitudes pendientes",
     "pendingJoinRequestsDescription": "Solicitudes en espera de revisión",
     "pendingCertificates": "Certificados pendientes",
@@ -2325,23 +2325,23 @@
     "approvedCertificatesDescription": "Certificados ya emitidos",
     "location": "Ubicación",
     "teamSnapshot": "Resumen del equipo",
-    "admins": "Administradores/as",
+    "admins": "Administradores",
     "representatives": "Representantes",
     "tutors": "Tutores",
     "volunteers": "Voluntarios",
-    "learners": "Estudiantes",
+    "learners": "Participantes",
     "pendingAccounts": "Cuentas pendientes",
-    "role_admin": "Administrador/a",
-    "role_learner": "Estudiante",
+    "role_admin": "Persona administradora",
+    "role_learner": "Participante",
     "role_representative": "Representante",
     "role_tutor": "Tutor",
     "role_volunteer": "Voluntario",
     "noMembers": "Aún no hay miembros",
     "noMembersDescription": "Invita miembros a tu organización para comenzar.",
-    "updateAvatar": "Actualizar avatar",
-    "removeAvatar": "Eliminar avatar",
-    "removeAvatarTitle": "¿Eliminar avatar?",
-    "removeAvatarDescription": "Esto elimina el avatar de la organización. Puedes subir uno nuevo cuando quieras.",
+    "updateAvatar": "Actualizar logotipo",
+    "removeAvatar": "Quitar logotipo",
+    "removeAvatarTitle": "¿Quitar logotipo?",
+    "removeAvatarDescription": "Esto quita el logotipo de la organización. Puedes subir uno nuevo cuando quieras.",
     "changeRoleTitle": "Cambiar rol",
     "changeRoleDescription": "Elige un nuevo rol para {name}.",
     "newRole": "Nuevo rol",
@@ -2385,7 +2385,7 @@
     "transferHelp": "Entrega la organización a otro representante. Tú pasas a ser representante.",
     "transferOwnership": "Transferir la propiedad",
     "transferDescription": "La nueva persona administradora tiene el control total, incluida la eliminación. Ambas personas recibirán un correo.",
-    "transferNoCandidates": "Solo las personas representantes que han terminado su configuración pueden pasar a ser administradoras. Cambia antes el rol de un miembro a representante.",
+    "transferNoCandidates": "Solo las personas representantes que han completado su perfil pueden pasar a ser administradoras. Cambia antes el rol de un miembro a representante.",
     "transferTarget": "Nueva persona administradora",
     "transferTargetPlaceholder": "Elige un representante",
     "confirmNameLabel": "Escribe {name} para confirmar",
@@ -2397,7 +2397,7 @@
     "memberError_LAST_OWNER": "Una organización necesita una persona administradora. Transfiere antes la propiedad.",
     "memberError_NOT_ELIGIBLE": "Este miembro todavía no puede ser la persona administradora.",
     "memberError_NOT_FOUND": "Este miembro ya no existe.",
-    "memberError_OWNER_ROLE": "El rol de administrador/a solo cambia mediante una transferencia de propiedad.",
+    "memberError_OWNER_ROLE": "El rol de persona administradora solo cambia mediante una transferencia de propiedad.",
     "memberError_RATE_LIMITED": "Demasiados intentos. Inténtalo más tarde.",
     "memberError_SELF": "No puedes hacer esto con tu propia pertenencia.",
     "memberError_generic": "Algo ha salido mal. Inténtalo de nuevo.",
@@ -2449,7 +2449,7 @@
     "activity_certificate_revoked": "{actor} revocó el certificado de {target}",
     "activity_certificate_withdrawn": "{target} retiró una solicitud de certificado",
     "activity_certificate_review_reminder": "Recordatorio enviado a {tutor} sobre la solicitud de {target}",
-    "activity_certificate_review_escalated": "La revisión de la solicitud de {target} se escaló",
+    "activity_certificate_review_escalated": "La revisión de la solicitud de {target} va con retraso",
     "activity_invitation_sent": "{actor} invitó a {target} como {role}",
     "activity_invitation_sent_unnamed": "{actor} envió una invitación como {role}",
     "activity_invitation_accepted": "{target} aceptó una invitación",
@@ -2493,7 +2493,7 @@
     "certificatesError": "No se pudieron cargar los certificados.",
     "retry": "Reintentar",
     "insightsError": "No se pudieron cargar las estadísticas.",
-    "insightsLearningOf": "de {people, plural, one {# estudiante o voluntario} other {# estudiantes y voluntarios}}",
+    "insightsLearningOf": "de {people, plural, one {# participante o voluntario} other {# participantes y voluntarios}}",
     "insightsStarted": "Han empezado a aprender",
     "insightsCoursesCompleted": "{count, plural, one {# curso completado} other {# cursos completados}}",
     "insightsCompleted": "Han completado un curso",
@@ -2524,7 +2524,7 @@
     "insightsDescription": "Progreso de aprendizaje, tiempos de revisión y opiniones de los voluntarios de tu organización.",
     "insightsMonthlyEmpty": "Aún no hay actividad de certificados",
     "insightsMonthlyEmptyDescription": "Los certificados enviados y aprobados aparecerán aquí mes a mes.",
-    "certificatesDescription": "Sigue cada solicitud de certificado, asigna revisores y revoca certificados aprobados.",
+    "certificatesDescription": "Sigue cada solicitud de certificado, asigna tutores y revoca certificados aprobados.",
     "settingsPageDescription": "Actualiza el perfil, el firmante y los datos de contacto de tu organización.",
     "discardChanges": "Descartar cambios",
     "tabLoadError": "No se pudo cargar esta pestaña. Inténtalo de nuevo.",
@@ -2563,7 +2563,7 @@
     "newPasswordPlaceholder": "Introduce una nueva contraseña",
     "nonBinary": "No binario",
     "passwordChangeError": "No se pudo cambiar la contraseña. Inténtalo de nuevo.",
-    "passwordChanged": "Contraseña cambiada correctamente",
+    "passwordChanged": "Contraseña cambiada",
     "passwordMismatch": "Las contraseñas no coinciden",
     "passwordRequirements": "Debe contener una letra minúscula, una mayúscula, un número y un símbolo",
     "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
@@ -2573,7 +2573,7 @@
     "preferences": "Preferencias",
     "profile": "Perfil",
     "profileUpdateError": "No se pudo actualizar el perfil. Inténtalo de nuevo.",
-    "profileUpdated": "Perfil actualizado correctamente",
+    "profileUpdated": "Perfil actualizado",
     "pronouns": "Pronombres",
     "pronouns_heher": "Él/Ella",
     "pronouns_hehim": "Él",
@@ -2593,10 +2593,10 @@
     "usernameInvalid": "El nombre de usuario debe tener al menos 3 caracteres",
     "usernameTaken": "Este nombre de usuario ya está en uso",
     "usernamePlaceholder": "Elige un nombre de usuario",
-    "email": "Email",
+    "email": "Correo electrónico",
     "profilePicture": "Foto de perfil",
     "profilePictureDescription": "Sube una foto para personalizar tu perfil.",
-    "removeAvatar": "Eliminar",
+    "removeAvatar": "Quitar",
     "personalInfoDescription": "Tu nombre, biografía y otros datos personales.",
     "personalDetails": "Datos personales",
     "personalDetailsDescription": "Fecha de nacimiento, sexo, pronombres e información de contacto.",
@@ -2604,18 +2604,18 @@
     "spokenLanguages": "Idiomas hablados",
     "spokenLanguagesDescription": "Selecciona los idiomas que hablas.",
     "selectLanguages": "Seleccionar idiomas",
-    "preferencesDescription": "Elige tu idioma preferido para la plataforma.",
+    "preferencesDescription": "Elige el idioma que usas en GloRe.",
     "account": "Cuenta",
-    "accountDescription": "Tu dirección de email y nombre de usuario.",
-    "accountUpdated": "Cuenta actualizada correctamente",
+    "accountDescription": "Tu dirección de correo electrónico y nombre de usuario.",
+    "accountUpdated": "Cuenta actualizada",
     "accountUpdateError": "No se pudo actualizar la cuenta. Inténtalo de nuevo.",
     "emailChangeRequested": "Revisa {email} y abre el enlace para confirmar tu nueva dirección.",
-    "usernameDescription": "Puedes iniciar sesión con él en lugar de tu correo. También es la dirección de tu perfil público, así que cambiarlo rompe los enlaces antiguos.",
+    "usernameDescription": "Puedes iniciar sesión con él en lugar de tu correo. También es la dirección de tu perfil público, así que si lo cambias, los enlaces antiguos dejan de funcionar.",
     "reset": "Restablecer",
-    "avatarUploadError": "No se pudo subir el avatar. Inténtalo de nuevo.",
-    "avatarUploaded": "Avatar actualizado correctamente",
+    "avatarUploadError": "No se pudo subir tu foto. Inténtalo de nuevo.",
+    "avatarUploaded": "Foto actualizada",
     "dangerZone": "Zona de peligro",
-    "dangerZoneDescription": "Si eliminas tu cuenta, no hay vuelta atrás. Asegúrate de que es lo que quieres.",
+    "dangerZoneDescription": "Eliminar tu cuenta no se puede deshacer.",
     "deleteAccount": "Eliminar cuenta",
     "deleteAccountTitle": "Eliminar tu cuenta",
     "deleteAccountDescription": "Elimina de forma permanente tu cuenta, tus borradores y solicitudes abiertas, y tu progreso de aprendizaje. Los certificados emitidos se conservan y siguen siendo válidos.",
@@ -2629,8 +2629,8 @@
     "noLanguagesSelected": "Aún no has seleccionado ningún idioma.",
     "languagesSelected": "{count, plural, =1 {# idioma seleccionado} other {# idiomas seleccionados}}",
     "removeLanguage": "Quitar {language}",
-    "removeAvatarTitle": "¿Eliminar foto?",
-    "removeAvatarDescription": "Esto elimina la foto de tu perfil. Puedes subir una nueva cuando quieras.",
+    "removeAvatarTitle": "¿Quitar foto?",
+    "removeAvatarDescription": "Esto quita la foto de tu perfil. Puedes subir una nueva cuando quieras.",
     "privacy": "Privacidad",
     "notifications": "Notificaciones",
     "data": "Tus datos",
@@ -2654,8 +2654,8 @@
     "publicProfileLabel": "Hacer público mi perfil",
     "publicProfileOn": "Cualquiera con el enlace de tu perfil puede ver tu certificado destacado.",
     "publicProfileOff": "Tu perfil es privado. Los certificados siguen siendo verificables con su propio código y enlace.",
-    "privacyError": "No se pudo guardar tu configuración de privacidad. Inténtalo de nuevo.",
-    "privacySaved": "Configuración de privacidad guardada",
+    "privacyError": "No se pudieron guardar tus ajustes de privacidad. Inténtalo de nuevo.",
+    "privacySaved": "Ajustes de privacidad guardados",
     "featuredCertificate": "Certificado destacado",
     "featuredCertificateDescription": "El certificado que se muestra primero en tu perfil público.",
     "featuredCertificateEmpty": "Todavía no tienes ningún certificado aprobado.",
@@ -2669,8 +2669,8 @@
     "notificationsCategory_reminders": "Recordatorios",
     "notificationsCategory_reminders_description": "Revisiones pendientes e invitaciones a punto de caducar.",
     "notificationsMandatory": "La seguridad de la cuenta, las invitaciones y las decisiones sobre certificados siempre se envían por correo.",
-    "notificationsSaved": "Configuración de notificaciones guardada",
-    "notificationsError": "No se pudo guardar tu configuración de notificaciones. Inténtalo de nuevo.",
+    "notificationsSaved": "Ajustes de notificaciones guardados",
+    "notificationsError": "No se pudieron guardar tus ajustes de notificaciones. Inténtalo de nuevo.",
     "export": "Exporta tus datos",
     "exportDescription": "Descarga un archivo JSON con tu perfil, tus pertenencias a organizaciones, tus certificados, tu progreso de aprendizaje y tus notificaciones.",
     "exportButton": "Descargar mis datos",
@@ -2737,7 +2737,7 @@
     "contactEmail": "Correo de contacto",
     "contactEmailPlaceholder": "contacto@tuorg.org",
     "motivation": "Motivación",
-    "motivationPlaceholder": "Cuéntanos sobre tu organización, los voluntarios con los que trabajas y por qué quieres unirte a GloRe…",
+    "motivationPlaceholder": "Describe tu organización, a sus voluntarios y por qué quieres unirte.",
     "motivationHelp": "Al menos {min} caracteres.",
     "reviewEmpty": "No indicado",
     "edit": "Editar",
@@ -2748,13 +2748,13 @@
     "next": "Continuar",
     "submit": "Enviar solicitud",
     "submitting": "Enviando…",
-    "submitError": "Algo salió mal. Inténtalo de nuevo.",
+    "submitError": "Algo ha salido mal. Inténtalo de nuevo.",
     "rateLimited": "Demasiadas solicitudes. Inténtalo más tarde.",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "login": "Inicia sesión",
     "goToLogin": "Ir al inicio de sesión",
     "successTitle": "Solicitud recibida",
-    "successMessage": "Gracias. Hemos enviado una confirmación a {email}. Nuestro equipo revisa cada solicitud y te escribirá con la decisión.",
+    "successMessage": "Hemos enviado una confirmación a {email}. Nuestro equipo te escribirá con su decisión.",
     "error_required": "Este campo es obligatorio.",
     "error_tooLong": "Este texto es demasiado largo.",
     "error_tooShort": "Este texto es demasiado corto.",
@@ -2772,11 +2772,11 @@
       "cancel": "Cancelar",
       "confirmDelete": "Eliminar miembro",
       "deleteDescription": "{name} pierde el acceso de inmediato y su cuenta se elimina. No se puede deshacer.",
-      "deleteSuccess": "Miembro del equipo eliminado.",
+      "deleteSuccess": "Miembro del equipo eliminado",
       "deleteTitle": "Eliminar miembro del equipo",
-      "emailLabel": "Dirección de email",
+      "emailLabel": "Dirección de correo electrónico",
       "emailPlaceholder": "juan.perez@email.com",
-      "errorInvalidInput": "Introduce un nombre y un email válidos.",
+      "errorInvalidInput": "Introduce un nombre y un correo válidos.",
       "filter_allRoles": "Todos los roles",
       "filter_allStatuses": "Todos los estados",
       "filterRoleLabel": "Filtrar por rol",
@@ -2800,9 +2800,9 @@
       "tryAdjustingFilters": "Prueba a ajustar los filtros.",
       "languageLabel": "Idioma",
       "resendInvite": "Reenviar invitación",
-      "resendSuccess": "Invitación reenviada a {email}.",
+      "resendSuccess": "Invitación reenviada a {email}",
       "makeRole": "Convertir en {role}",
-      "roleUpdateSuccess": "{name} ahora es {role, select, admin {admin} other {editor}}.",
+      "roleUpdateSuccess": "{name} ahora es {role, select, admin {admin} other {editor}}",
       "you": "Tú",
       "statMembers": "Total de miembros",
       "statAdmins": "Admins",
@@ -2826,9 +2826,9 @@
       "actions": "Acciones",
       "allCountries": "Todos los países",
       "approve": "Aprobar",
-      "approveDescription": "¿Aprobar el registro de {name}? El representante recibirá un email con las instrucciones de acceso.",
+      "approveDescription": "¿Aprobar el registro de {name}? El representante recibirá un correo con las instrucciones de acceso.",
       "approveError": "No se pudo aprobar la organización. Inténtalo de nuevo.",
-      "approveSuccess": "Se ha aprobado {name}.",
+      "approveSuccess": "Se ha aprobado {name}",
       "approveTitle": "Aprobar organización",
       "approving": "Aprobando…",
       "cancel": "Cancelar",
@@ -2838,7 +2838,7 @@
       "createError": "No se pudo crear la organización. Inténtalo de nuevo.",
       "createOrg": "Crear organización",
       "createSubmit": "Crear organización",
-      "createSuccess": "Se ha creado {name}.",
+      "createSuccess": "Se ha creado {name}",
       "createTitle": "Crear organización",
       "creating": "Creando…",
       "emptyFilteredMessage": "Prueba a ajustar la búsqueda o los filtros.",
@@ -2857,18 +2857,18 @@
       "inviteError": "No se pudo invitar a la organización. Inténtalo de nuevo.",
       "inviteErrorMissingFields": "Completa todos los campos obligatorios.",
       "inviteOrg": "Invitar organización",
-      "inviteOrgEmail": "Email de la organización",
+      "inviteOrgEmail": "Correo de la organización",
       "inviteOrgEmailPlaceholder": "info@tuorg.org",
       "inviteOrgName": "Nombre de la organización",
       "inviteOrgNamePlaceholder": "Nombre de tu organización",
       "inviteOrgSection": "Detalles de la organización",
       "inviteOrgUrl": "Sitio web",
       "inviteOrgUrlPlaceholder": "https://tuorg.org",
-      "inviteRepEmail": "Email del representante",
+      "inviteRepEmail": "Correo del representante",
       "inviteRepEmailPlaceholder": "juana.perez@email.com",
       "inviteRepSection": "Detalles del representante",
       "inviteSubmit": "Enviar invitación",
-      "inviteSuccess": "Se ha añadido {name} y se ha avisado al representante.",
+      "inviteSuccess": "Se ha añadido {name} y se ha avisado al representante",
       "inviteTitle": "Invitar organización",
       "inviting": "Invitando…",
       "memberCount": "{count, plural, =0 {Sin miembros} one {# miembro} other {# miembros}}",
@@ -2877,7 +2877,7 @@
       "rejectDescription": "¿Rechazar la solicitud de registro de {name}? Se notificará al representante por correo y la organización aparecerá como rechazada.",
       "rejectError": "No se pudo rechazar la organización. Inténtalo de nuevo.",
       "rejecting": "Rechazando…",
-      "rejectSuccess": "Se ha rechazado {name}.",
+      "rejectSuccess": "Se ha rechazado {name}",
       "rejectTitle": "Rechazar organización",
       "searchPlaceholder": "Buscar organizaciones",
       "statusPending": "Pendiente",
@@ -2965,7 +2965,7 @@
       "tryAdjustingFiltersDescription": "Cambia o quita los filtros para ver más usuarios.",
       "you": "Tú",
       "makeRole": "Convertir en {role}",
-      "roleUpdateSuccess": "{name} ahora es {role}.",
+      "roleUpdateSuccess": "{name} ahora es {role}",
       "ban": "Suspender usuario",
       "banTitle": "Suspender a {name}",
       "banDescription": "{name} se desconecta de inmediato y no podrá iniciar sesión hasta que termine la suspensión o la levantes. Los admins de la plataforma no se pueden suspender.",
@@ -2981,13 +2981,13 @@
       "banEndsOn": "La suspensión termina el",
       "confirmBan": "Suspender usuario",
       "banning": "Suspendiendo…",
-      "banSuccess": "{name} está suspendido.",
+      "banSuccess": "{name} está suspendido",
       "unban": "Levantar suspensión",
       "unbanTitle": "Levantar la suspensión de {name}",
       "unbanDescription": "{name} podrá iniciar sesión de nuevo de inmediato. La suspensión queda en el registro de auditoría.",
       "confirmUnban": "Levantar suspensión",
       "unbanning": "Levantando…",
-      "unbanSuccess": "{name} puede iniciar sesión de nuevo.",
+      "unbanSuccess": "{name} puede iniciar sesión de nuevo",
       "impersonate": "Ver como usuario",
       "impersonateTitle": "Ver como {name}",
       "impersonateDescription": "Ves la plataforma como este usuario durante {minutes} minutos. El inicio y el final se registran con tu motivo. Quedan bloqueados los cambios de contraseña, correo, nombre de usuario, sesiones y privacidad, la transferencia y la eliminación de organizaciones, la revocación de certificados y la eliminación de la cuenta.",
@@ -3028,7 +3028,7 @@
       "TARGET_BANNED": "No puedes ver como un usuario suspendido.",
       "TARGET_IS_ADMIN": "Los admins de la plataforma no se pueden suspender. Quita primero el rol de admin.",
       "UNAUTHORIZED": "Tu sesión ha terminado. Inicia sesión de nuevo.",
-      "UNKNOWN": "Algo salió mal. Inténtalo de nuevo.",
+      "UNKNOWN": "Algo ha salido mal. Inténtalo de nuevo.",
       "USER_NOT_FOUND": "Este usuario ya no existe.",
       "EMAIL_TAKEN": "Ya existe una cuenta con este correo.",
       "SEND_FAILED": "No se pudo enviar el correo. Inténtalo de nuevo en un minuto.",
@@ -3222,7 +3222,7 @@
     "phonePlaceholder": "Escribe tu número de teléfono",
     "phoneDescription": "Solo tu organización puede verlo.",
     "preferredLanguageLabel": "Idioma preferido",
-    "preferredLanguageDescription": "El idioma de la plataforma y de nuestros correos.",
+    "preferredLanguageDescription": "El idioma de GloRe y de nuestros correos.",
     "passwordLabel": "Contraseña",
     "passwordPlaceholder": "Crea una contraseña",
     "confirmPasswordLabel": "Confirmar contraseña",
@@ -3242,7 +3242,7 @@
     "next": "Continuar",
     "submit": "Finalizar",
     "submitting": "Configurando…",
-    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "error": "Algo ha salido mal. Inténtalo de nuevo.",
     "alreadyOnboarded": "Tu perfil ya está completo.",
     "welcomeTitle": "Te damos la bienvenida, {name}",
     "welcomeDescription": "Tu perfil está listo. También te hemos enviado un correo de bienvenida.",
@@ -3261,31 +3261,31 @@
       "subject": "Confirma tu correo para continuar con tu invitación",
       "preview": "Confirma tu dirección de correo para continuar con tu invitación a GloRe.",
       "intro": "Confirma tu dirección de correo para continuar con tu invitación a GloRe.",
-      "buttonInstruction": "Haz clic en el botón de abajo para continuar y crear tu cuenta:",
+      "buttonInstruction": "Toca o haz clic en el botón de abajo para continuar y crear tu cuenta:",
       "button": "Continuar con mi invitación",
       "manualLink": "Si el botón de arriba no funciona, abre este enlace en tu navegador:",
       "instructions": "Este enlace funciona hasta que caduque tu invitación.",
-      "footer": "Recibes este correo porque pediste continuar con una invitación a GloRe. Si no fuiste tú, puedes ignorarlo o <emailLink>avisarnos</emailLink>."
+      "footer": "Recibes este correo porque has pedido continuar con una invitación a GloRe. Si no has sido tú, puedes ignorarlo o <emailLink>avisarnos</emailLink>."
     },
     "auth/recovery": {
       "button": "Restablece tu contraseña",
-      "buttonInstruction": "Haz clic en el botón de abajo para restablecerla:",
-      "footer": "Recibes este correo porque se solicitó restablecer la contraseña de tu cuenta de GloRe. Si no lo solicitaste, ignora este correo o <emailLink>avísanos</emailLink>.",
+      "buttonInstruction": "Toca o haz clic en el botón de abajo para elegir una nueva:",
+      "footer": "Recibes este correo porque has solicitado restablecer la contraseña de tu cuenta de GloRe. Si no has sido tú, ignóralo o <emailLink>avísanos</emailLink>.",
       "instructions": "Este enlace para restablecer la contraseña es válido durante la próxima hora.",
-      "intro": "Hace poco solicitaste restablecer la contraseña de tu cuenta.",
+      "intro": "Has pedido restablecer la contraseña de tu cuenta.",
       "manualLink": "Si el botón anterior no funciona, abre el siguiente enlace en tu navegador:",
-      "preview": "Hace poco solicitaste restablecer la contraseña de tu cuenta de GloRe. Para completar este proceso, sigue el enlace seguro de este correo para crear una nueva contraseña y recuperar el acceso a tu cuenta.",
+      "preview": "Usa este enlace para elegir una nueva contraseña para tu cuenta de GloRe.",
       "subject": "Restablece tu contraseña de GloRe"
     },
     "team/invite": {
       "button": "Únete al equipo",
-      "buttonInstruction": "Haz clic en el botón de abajo para completar tu perfil y comenzar:",
-      "description": "Como parte del equipo, podrás gestionar cursos, revisar contenido y contribuir a la experiencia de aprendizaje en la plataforma.",
+      "buttonInstruction": "Toca o haz clic en el botón de abajo para completar tu perfil y empezar:",
+      "description": "Como parte del equipo, podrás gestionar cursos, revisar contenido y contribuir a la experiencia de aprendizaje.",
       "expiry": "Este enlace de invitación es válido durante {days, plural, one {un día} other {# días}}.",
-      "footer": "Recibes este correo porque {inviter} te invitó a unirte al equipo GloRe. Si no esperabas esta invitación, puedes ignorar este correo o <emailLink>ponerte en contacto con nuestro equipo</emailLink>.",
+      "footer": "Recibes este correo porque {inviter} te ha invitado a unirte al equipo de GloRe. Si no esperabas esta invitación, puedes ignorar este correo o <emailLink>ponerte en contacto con nosotros</emailLink>.",
       "intro": "{inviter} te ha invitado a unirte a GloRe como {role}.",
       "manualLink": "Si el botón anterior no funciona, abre el siguiente enlace en tu navegador:",
-      "preview": "Te han invitado a unirte al equipo de GloRe. Completa tu perfil para empezar a colaborar en la plataforma.",
+      "preview": "Te han invitado a unirte al equipo de GloRe. Completa tu perfil para empezar a colaborar.",
       "role_admin": "admin",
       "role_editor": "editor",
       "subject": "Te han invitado a unirte al equipo de GloRe"
@@ -3293,27 +3293,27 @@
     "account/password-changed": {
       "subject": "Se ha cambiado tu contraseña",
       "preview": "Hace poco se actualizó la contraseña de tu cuenta de GloRe.",
-      "intro": "Tu contraseña se ha cambiado correctamente.",
-      "details": "Si no has hecho este cambio, restablece tu contraseña de inmediato o ponte en contacto con el equipo de soporte.",
-      "footer": "Recibes este correo porque se ha cambiado la contraseña de tu cuenta de GloRe. Si no has hecho este cambio, <emailLink>contáctanos de inmediato</emailLink>."
+      "intro": "Tu contraseña se ha cambiado.",
+      "details": "Si no has hecho este cambio, restablece tu contraseña ahora o ponte en contacto con el equipo de soporte.",
+      "footer": "Recibes este correo porque se ha cambiado la contraseña de tu cuenta de GloRe. Si no has hecho este cambio, <emailLink>contáctanos ahora</emailLink>."
     },
     "account/email-changed": {
       "subject": "Se solicitó un cambio de correo electrónico en tu cuenta",
       "preview": "Alguien pidió cambiar el correo electrónico de tu cuenta de GloRe.",
       "intro": "Recibimos una solicitud para cambiar el correo electrónico de tu cuenta de GloRe a {email}.",
       "details": "El cambio se aplicará cuando se confirme {newEmail}. Mientras tanto, sigue iniciando sesión con {oldEmail}.",
-      "security": "Si no has hecho este cambio, ponte en contacto con el soporte de inmediato.",
-      "footer": "Recibes este correo porque se solicitó cambiar el correo electrónico de tu cuenta de GloRe. Si no lo solicitaste, <emailLink>contáctanos de inmediato</emailLink>."
+      "security": "Si no has hecho este cambio, ponte en contacto con el soporte ahora.",
+      "footer": "Recibes este correo porque se ha pedido cambiar el correo de tu cuenta de GloRe. Si no has sido tú, <emailLink>contáctanos ahora</emailLink>."
     },
     "auth/verify-email": {
-      "button": "Verificar dirección de email",
-      "buttonInstruction": "Haz clic en el botón de abajo para verificar tu nueva dirección de email:",
-      "footer": "Recibes este correo porque se realizó una solicitud para cambiar el email de tu cuenta GloRe. Si no lo solicitaste, ignora este correo o <emailLink>contáctanos</emailLink>.",
+      "button": "Verificar dirección de correo electrónico",
+      "buttonInstruction": "Toca o haz clic en el botón de abajo para verificar tu nueva dirección de correo electrónico:",
+      "footer": "Recibes este correo porque se ha pedido cambiar el correo de tu cuenta de GloRe. Si no has sido tú, ignóralo o <emailLink>avísanos</emailLink>.",
       "instructions": "Este enlace de verificación es válido durante la próxima hora.",
-      "intro": "Se realizó una solicitud para cambiar la dirección de email de tu cuenta.",
+      "intro": "Se realizó una solicitud para cambiar la dirección de correo electrónico de tu cuenta.",
       "manualLink": "Si el botón anterior no funciona, abre el siguiente enlace en tu navegador:",
-      "preview": "Se realizó una solicitud para cambiar el email de tu cuenta GloRe. Haz clic en el enlace para verificar tu nueva dirección.",
-      "subject": "Verifica tu nueva dirección de email"
+      "preview": "Se realizó una solicitud para cambiar el correo de tu cuenta GloRe. Haz clic en el enlace para verificar tu nueva dirección.",
+      "subject": "Verifica tu nueva dirección de correo electrónico"
     },
     "certificate/assigned": {
       "subject_submitted": "Hay una nueva solicitud de certificado por revisar",
@@ -3331,13 +3331,13 @@
     "certificate/review": {
       "buttonApproved": "Ver tu certificado",
       "buttonChanges": "Actualizar tu certificado",
-      "detailsApproved": "Tu certificado ya está disponible. Puedes iniciar sesión en la plataforma GloRe para descargarlo.",
+      "detailsApproved": "Tu certificado está listo para descargar.",
       "detailsApprovedDownload": "O haz clic en el botón de abajo para descargarlo directamente:",
       "detailsChanges": "Se han solicitado los siguientes cambios: {comment}",
-      "footer": "Recibes este correo porque enviaste un certificado para revisión en GloRe.",
-      "introApproved": "Tu certificado se ha revisado y aprobado.",
-      "introChanges": "Tu tutor ha examinado tu certificado y ha pedido algunos cambios.",
-      "previewApproved": "Tu certificado de GloRe se ha aprobado.",
+      "footer": "Recibes este correo porque has enviado un certificado para revisión en GloRe.",
+      "introApproved": "Tu tutor ha aprobado tu certificado.",
+      "introChanges": "Tu tutor ha pedido cambios en tu certificado.",
+      "previewApproved": "Tu certificado de GloRe está aprobado.",
       "previewChanges": "Tu tutor ha solicitado algunos cambios en tu certificado de GloRe.",
       "subjectApproved": "Se ha aprobado tu certificado de GloRe",
       "subjectChanges": "Se han solicitado cambios en tu certificado de GloRe"
@@ -3345,12 +3345,12 @@
     "organization/join-request": {
       "button": "Iniciar sesión en GloRe",
       "buttonSetup": "Configura tu cuenta",
-      "detailsAccepted": "Ahora puedes acceder a la organización en la plataforma GloRe.",
-      "detailsAcceptedNew": "Usa el botón de abajo para configurar tu cuenta y empezar a usar la plataforma.",
-      "detailsComment": "Mensaje del revisor: {comment}",
+      "detailsAccepted": "Ahora puedes acceder a la organización en GloRe.",
+      "detailsAcceptedNew": "Usa el botón de abajo para configurar tu cuenta y empezar a usar GloRe.",
+      "detailsComment": "Mensaje de la organización: {comment}",
       "detailsPending": "Nuestro equipo revisará tu solicitud y te avisará por correo cuando se haya tomado una decisión.",
       "expiry": "Este enlace es válido durante {days, plural, one {un día} other {# días}}.",
-      "footer": "Recibes este correo porque enviaste una solicitud para unirte a una organización en GloRe.",
+      "footer": "Recibes este correo porque has enviado una solicitud para unirte a una organización en GloRe.",
       "introAccepted": "Tu solicitud para unirte a {organizationName} ha sido aprobada.",
       "introPending": "Hemos recibido tu solicitud de registro para {organizationName}.",
       "introRejected": "Tu solicitud para unirte a {organizationName} ha sido rechazada.",
@@ -3365,7 +3365,7 @@
       "button": "Revisar la solicitud",
       "details": "Enviada por {registrantName} ({registrantEmail}).",
       "footer": "Recibes este correo porque eres admin de la plataforma GloRe.",
-      "intro": "{organizationName} ha enviado una solicitud para unirse a la red GloRe.",
+      "intro": "{organizationName} ha enviado una solicitud para unirse a GloRe Network.",
       "location": "Con sede en {location}.",
       "message": "Mensaje del solicitante: {message}",
       "preview": "{organizationName} ha solicitado unirse a GloRe y está pendiente de revisión.",
@@ -3384,24 +3384,24 @@
       "topic_learning": "aprendizaje",
       "topic_organization": "organización",
       "topic_reminders": "recordatorios",
-      "role_admin": "Administrador/a",
-      "role_learner": "Estudiante",
+      "role_admin": "Persona administradora",
+      "role_learner": "Participante",
       "role_representative": "Representante",
       "role_tutor": "Tutor",
       "role_volunteer": "Voluntario"
     },
     "certificate/decision": {
-      "subject_rejected": "Tu solicitud de certificado ha sido rechazada",
+      "subject_rejected": "Tu solicitud de certificado no ha sido aprobada",
       "subject_revoked": "Tu certificado ha sido revocado",
-      "preview_rejected": "Tu tutor ha rechazado tu solicitud de certificado de GloRe.",
+      "preview_rejected": "Tu tutor no ha aprobado tu solicitud de certificado de GloRe.",
       "preview_revoked": "Tu certificado de GloRe ha sido revocado.",
-      "intro_rejected": "Tu tutor ha rechazado tu solicitud de certificado.",
+      "intro_rejected": "Tu tutor no ha aprobado tu solicitud de certificado.",
       "intro_revoked": "Tu certificado ha sido revocado.",
       "details_rejected": "El motivo está abajo. Cuando lo hayas resuelto, puedes enviar una nueva solicitud.",
       "details_revoked": "Sigue en tu lista de certificados marcado como revocado, y su página de verificación ahora muestra la revocación.",
       "reasonLabel": "Motivo",
       "button": "Ver los detalles",
-      "footer": "Recibes este correo porque solicitaste un certificado en GloRe."
+      "footer": "Recibes este correo porque has solicitado un certificado en GloRe."
     },
     "certificate/reminder": {
       "subject_reminder": "Un certificado espera tu revisión desde hace {days, plural, one {# día} other {# días}}",
@@ -3410,7 +3410,7 @@
       "preview_escalated": "Una solicitud de certificado de tu organización espera revisión desde hace {days, plural, one {# día} other {# días}}.",
       "intro_reminder": "Una solicitud de certificado que te asignaron espera desde hace {days, plural, one {# día} other {# días}}.",
       "intro_escalated": "Una solicitud de certificado de tu organización lleva {days, plural, one {# día} other {# días}} sin revisión.",
-      "details_reminder": "Revísala pronto o pide a tu organización que la reasigne si no puedes.",
+      "details_reminder": "Revísala pronto o pide a tu organización que la reasigne.",
       "details_escalated": "Puedes reasignarla a otro tutor o hablar con el tutor asignado.",
       "button_reminder": "Abrir la revisión",
       "button_escalated": "Abrir el certificado",
@@ -3430,11 +3430,11 @@
       "subject_rejected": "El registro de {organizationName} ha sido rechazado",
       "preview_approved": "{organizationName} está aprobada y lista para configurarse en GloRe.",
       "preview_rejected": "El registro de {organizationName} en GloRe ha sido rechazado.",
-      "intro_approved": "Buenas noticias: el registro de {organizationName} ha sido aprobado.",
+      "intro_approved": "{organizationName} ha sido aprobada.",
       "intro_rejected": "Hemos revisado el registro de {organizationName} y no hemos podido aprobarlo.",
       "details_approved": "Inicia sesión para invitar a tus miembros y empezar a emitir certificados.",
       "details_approved_new": "Usa el botón de abajo para crear tu cuenta y configurar tu organización.",
-      "detailsComment": "Mensaje del revisor: {comment}",
+      "detailsComment": "Mensaje del equipo de GloRe: {comment}",
       "button": "Iniciar sesión en GloRe",
       "buttonSetup": "Configura tu cuenta",
       "expiry": "Este enlace es válido durante {days, plural, one {un día} other {# días}}.",
@@ -3448,11 +3448,11 @@
       "intro": "Te invitan a unirte a {organizationName} en GloRe como {role}.",
       "introInviter": "{inviter} te ha invitado a unirte a {organizationName} en GloRe como {role}.",
       "introReminder": "Tu invitación para unirte a {organizationName} en GloRe como {role} sigue abierta.",
-      "about": "GloRe es la plataforma donde las personas voluntarias obtienen certificados de las habilidades blandas que desarrollan en su voluntariado.",
+      "about": "GloRe es donde las personas voluntarias obtienen certificados por las habilidades blandas que desarrollan con el voluntariado.",
       "messageLabel": "Mensaje de {inviter}",
       "messageAnonymous": "Mensaje de la organización",
       "expiry": "Esta invitación es válida hasta el {expiresAt, date, long}.",
-      "expiryReminder": "Caduca el {expiresAt, date, long}, así que responde antes de esa fecha.",
+      "expiryReminder": "Caduca el {expiresAt, date, long}. Responde antes de esa fecha.",
       "button": "Ver la invitación",
       "manualLink": "Si el botón no funciona, abre este enlace en tu navegador:",
       "footer": "Recibes este correo porque alguien te invitó a unirte a una organización en GloRe. Si no lo esperabas, puedes ignorarlo o escribirnos."
@@ -3505,7 +3505,7 @@
       "intro": "Te damos la bienvenida a GloRe. Tu cuenta está lista. Este es tu nombre de usuario:",
       "details": "Puedes iniciar sesión con tu correo o con tu nombre de usuario.",
       "button": "Abrir GloRe",
-      "footer": "Recibes este correo porque creaste una cuenta de GloRe."
+      "footer": "Recibes este correo porque has creado una cuenta de GloRe."
     },
     "account/status": {
       "subject_suspended": "Tu cuenta de GloRe ha sido suspendida",
@@ -3513,7 +3513,7 @@
       "preview_suspended": "Tu cuenta de GloRe ha sido suspendida.",
       "preview_deleted": "Tu cuenta de GloRe ha sido eliminada.",
       "intro_suspended": "Tu cuenta de GloRe ha sido suspendida.",
-      "intro_deleted": "Tu cuenta de GloRe se ha eliminado, como pediste.",
+      "intro_deleted": "Tu cuenta de GloRe se ha eliminado, como has pedido.",
       "details_suspended": "La suspensión no tiene fecha de fin. Escríbenos si crees que es un error.",
       "details_suspended_until": "La suspensión termina el {expiresAt, date, long}. Escríbenos si crees que es un error.",
       "details_deleted": "Se eliminaron tu perfil, tu progreso, tus borradores y tus solicitudes abiertas. Los certificados emitidos se conservaron y siguen siendo válidos, así que sus enlaces de verificación siguen funcionando.",
@@ -3587,9 +3587,9 @@
     "guestDescription": "Introduce tus datos para continuar sin cuenta.",
     "firstName": "Nombre",
     "lastName": "Apellidos (opcional)",
-    "email": "Email",
-    "emailRequired": "Introduce tu email",
-    "emailInvalid": "Introduce un email válido",
+    "email": "Correo electrónico",
+    "emailRequired": "Introduce tu correo",
+    "emailInvalid": "Introduce un correo válido",
     "firstNameRequired": "Introduce tu nombre",
     "guestNote": "Te enviaremos un enlace por email. Ábrelo para unirte y crear tu cuenta.",
     "guestNoteApproval": "Tu solicitud llegará a la organización. Si la aprueba, te enviaremos un enlace por email.",
@@ -3599,7 +3599,7 @@
     "sentTitle": "Revisa tu bandeja de entrada",
     "sentDescription": "Si el enlace es válido, te hemos enviado los siguientes pasos por email. Abre el mensaje para unirte a {organization}.",
     "requestedTitle": "Solicitud enviada",
-    "requestedDescription": "El equipo de {organization} la revisará. Te avisaremos por email de su decisión.",
+    "requestedDescription": "El equipo de {organization} la revisará. Te avisaremos por correo de su decisión.",
     "goToDashboard": "Ir al panel",
     "goToLogin": "Ir al inicio de sesión"
   },
@@ -3608,7 +3608,7 @@
     "title": "Invitaciones",
     "description": "Consulta las invitaciones pendientes, reenvíalas o revócalas antes de que se acepten.",
     "invitePeople": "Invitar personas",
-    "colEmail": "Email",
+    "colEmail": "Correo electrónico",
     "colRole": "Rol",
     "colStatus": "Estado",
     "colUsage": "Uso",
@@ -3651,7 +3651,7 @@
     "linkState_revoked": "Revocado",
     "createdBy": "Creado por {name}",
     "linksEmpty": "No hay enlaces de invitación",
-    "linksEmptyDescription": "Crea un enlace para que estudiantes o voluntarios puedan unirse o solicitar acceso.",
+    "linksEmptyDescription": "Crea un enlace para que participantes o voluntarios puedan unirse o solicitar acceso.",
     "revokeLinkTitle": "¿Revocar este enlace?",
     "revokeLinkDescription": "Quienes ya se han unido conservan su acceso. El enlace dejará de funcionar de inmediato.",
     "linkRevoked": "Enlace de invitación revocado",
@@ -3663,7 +3663,7 @@
     "approvalHint": "Quien use el enlace enviará una solicitud que podrás aprobar o rechazar.",
     "expiryLabel": "Caduca",
     "expiryNever": "Nunca",
-    "expiryDays": "{count, plural, =1 {En # día} other {En # días}}",
+    "expiryDays": "{count, plural, one {En # día} other {En # días}}",
     "maxUsesLabel": "Usos máximos",
     "maxUsesPlaceholder": "Ilimitados",
     "done": "Listo",
@@ -3672,13 +3672,13 @@
     "modeLabel": "Modo de invitación",
     "modeSingle": "Una persona",
     "modeBulk": "Varias personas",
-    "emailLabel": "Dirección de email",
-    "bulkLabel": "Direcciones de email",
+    "emailLabel": "Dirección de correo electrónico",
+    "bulkLabel": "Direcciones de correo electrónico",
     "bulkPlaceholder": "nombre@ejemplo.com, otra@ejemplo.com",
-    "bulkHint": "{count, plural, =0 {Pega hasta {max} direcciones, separadas por comas, espacios o saltos de línea.} =1 {# dirección lista (máximo {max}).} other {# direcciones listas (máximo {max}).}}",
+    "bulkHint": "{count, plural, =0 {Pega hasta {max} direcciones, separadas por comas, espacios o saltos de línea.} one {# dirección lista (máximo {max}).} other {# direcciones listas (máximo {max}).}}",
     "bulkTooMany": "Puedes invitar a un máximo de {max} personas a la vez.",
     "roleLabel": "Rol",
-    "languageLabel": "Idioma del email",
+    "languageLabel": "Idioma del correo",
     "messageLabel": "Mensaje",
     "optional": "(opcional)",
     "messagePlaceholder": "Añade una nota breve para las personas invitadas",
@@ -3693,7 +3693,7 @@
     "row_role_taken": "Rol ocupado",
     "row_failed": "Error",
     "requestApprovedInvited": "Solicitud aprobada. Se ha enviado una invitación a la persona solicitante.",
-    "requestInviteHint": "Esta solicitud no se hizo desde una cuenta con sesión iniciada. Al aprobarla se envía una invitación por email.",
+    "requestInviteHint": "Esta solicitud no se ha hecho desde una cuenta con sesión iniciada. Al aprobarla se envía una invitación por correo.",
     "error_ACCEPTED": "Esta invitación ya se aceptó.",
     "error_ACCOUNT_EXISTS": "Ya existe una cuenta con este email. Inicia sesión para aceptar la invitación.",
     "error_ALREADY_INVITED": "Esta persona ya tiene una invitación pendiente.",
@@ -3714,7 +3714,7 @@
     "error_REVOKED": "Esta invitación se revocó.",
     "error_ROLE_TAKEN": "Este rol ya está ocupado en la organización.",
     "error_TOO_SOON": "Espera un minuto antes de volver a enviar esta invitación.",
-    "error_generic": "Algo salió mal. Inténtalo de nuevo.",
+    "error_generic": "Algo ha salido mal. Inténtalo de nuevo.",
     "error_PROOF_REQUIRED": "Abre el enlace del correo de invitación o pídenos que te enviemos un nuevo enlace de confirmación."
   },
   "Learning": {
@@ -3740,7 +3740,7 @@
       "viewerNote": "Estás previsualizando este curso. Nada de lo que hagas aquí se guarda.",
       "type": {
         "intro": "Introducción",
-        "learner": "Curso para estudiantes",
+        "learner": "Curso para participantes",
         "skill": "Curso de habilidades"
       },
       "status": {
@@ -3807,7 +3807,7 @@
       "commentCount": "{count} de {max} caracteres",
       "submit": "Enviar valoración",
       "update": "Actualizar valoración",
-      "saved": "Gracias por tu valoración",
+      "saved": "Valoración guardada",
       "saveError": "No hemos podido guardar tu valoración. Inténtalo de nuevo.",
       "nextTitle": "Qué sigue",
       "certificateTitle": "Ya puedes solicitar tu certificado",
@@ -3823,8 +3823,8 @@
       "analyticsLessonFallback": "Lección {number}",
       "analyticsError": "No se han podido cargar las estadísticas. Comprueba tu conexión e inténtalo de nuevo.",
       "analyticsRetry": "Reintentar",
-      "previewAsLearner": "Ver como estudiante",
-      "previewHint": "Abre la versión guardada del curso en el reproductor. Nada de lo que hagas allí se guarda.",
+      "previewAsLearner": "Ver como participante",
+      "previewHint": "Abre la versión guardada del curso tal como la ven los miembros. Nada de lo que hagas allí se guarda.",
       "coverage": "{language}: {done} de {total} elementos traducidos",
       "durationLabel": "Duración",
       "durationDescription": "Tiempo estimado para completar el curso, en minutos.",
@@ -3924,8 +3924,8 @@
     "category_account": "Cuenta",
     "fallbackTitle": "Tienes una novedad",
     "roles": {
-      "admin": "Administrador/a",
-      "learner": "Estudiante",
+      "admin": "Persona administradora",
+      "learner": "Participante",
       "representative": "Representante",
       "tutor": "Tutor",
       "volunteer": "Voluntario"
@@ -3957,7 +3957,7 @@
       },
       "certificate_resubmitted": {
         "title": "Un certificado volvió a enviarse para revisión",
-        "body": "La persona voluntaria hizo los cambios pedidos."
+        "body": "La persona voluntaria ha hecho los cambios que pediste."
       },
       "certificate_approved": {
         "title": "Se aprobó un certificado",
@@ -4001,11 +4001,11 @@
       },
       "invitation_accepted": {
         "title": "Se aceptó una invitación",
-        "body": "Una persona nueva se unió a tu organización."
+        "body": "Una persona nueva se ha unido a tu organización."
       },
       "invitation_accepted_platform": {
         "title": "Se aceptó una invitación",
-        "body": "La persona que invitaste se unió a la organización."
+        "body": "La persona que has invitado se ha unido a la organización."
       },
       "invitation_declined": {
         "title": "Se rechazó una invitación",
@@ -4037,7 +4037,7 @@
       },
       "organization_ownership_transferred": {
         "title": "Ha cambiado la propiedad de la organización",
-        "body": "La propiedad se ha traspasado a una nueva persona administradora."
+        "body": "La propiedad ha pasado a otro miembro."
       },
       "organization_ownership_transferred_gained": {
         "title": "Ahora eres la persona administradora de la organización",
@@ -4067,7 +4067,7 @@
   },
   "Legal": {
     "privacy": "Política de privacidad",
-    "terms": "Términos de uso",
+    "terms": "Condiciones de uso",
     "qualityCharter": "Carta de Calidad",
     "navigation": "Documentos legales",
     "home": "Ir a GloRe",
@@ -4139,7 +4139,7 @@
       "NOT_FOUND": "Esta versión ya no existe.",
       "RATE_LIMITED": "Demasiados intentos. Inténtalo de nuevo más tarde.",
       "UNAUTHORIZED": "Tu sesión ha terminado. Inicia sesión de nuevo.",
-      "UNKNOWN": "Algo salió mal. Inténtalo de nuevo."
+      "UNKNOWN": "Algo ha salido mal. Inténtalo de nuevo."
     }
   },
   "LegalAccept": {
@@ -4286,7 +4286,7 @@
       "NO_DRAFT": "No hay ningún borrador que publicar.",
       "ORPHANED": "Este mensaje ya no existe en la aplicación.",
       "RATE_LIMITED": "Demasiadas sugerencias. Inténtalo de nuevo en un rato.",
-      "UNKNOWN": "Algo salió mal. Inténtalo de nuevo."
+      "UNKNOWN": "Algo ha salido mal. Inténtalo de nuevo."
     }
   }
 }

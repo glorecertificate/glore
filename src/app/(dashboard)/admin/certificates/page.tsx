@@ -2,8 +2,7 @@ import { Suspense } from 'react'
 
 import { createSearchParamsCache } from 'nuqs/server'
 
-import { searchAdminCertificates } from '@/actions/admin/certificates'
-import { listAdminOrganizationOptions } from '@/actions/admin/options'
+import { loadAdminCertificates, loadAdminOrganizationOptions } from '@/actions/admin/views'
 import { AdminCertificates } from '@/components/features/admin/certificates'
 import { adminCertificatesParsers } from '@/components/features/admin/certificates-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -25,9 +24,9 @@ const AdminCertificatesContent = async ({
 }) => {
   const params = await parse(searchParams)
   const [organizations, certificates] = await Promise.all([
-    listAdminOrganizationOptions(),
+    loadAdminOrganizationOptions(),
     params.org === null
-      ? searchAdminCertificates({ page: params.page, q: params.q, status: params.status })
+      ? loadAdminCertificates({ page: params.page, q: params.q, status: params.status })
       : Promise.resolve({ data: null, error: null }),
   ])
   if (certificates.error) throw new Error(certificates.error.message)

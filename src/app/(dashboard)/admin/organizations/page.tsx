@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
-import { getOrganizations } from '@/actions/admin/organizations'
-import { getCurrentUser } from '@/actions/user'
+import { loadAdminOrganizations } from '@/actions/admin/views'
+import { getViewer } from '@/actions/viewer'
 import { AdminDialogProvider } from '@/components/features/admin/dialog-provider'
 import { AdminOrganizations } from '@/components/features/admin/organizations'
 import { AdminOrganizationsActions } from '@/components/features/admin/organizations-actions'
@@ -15,9 +15,9 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const AdminOrganizationsContent = async () => {
-  const user = await getCurrentUser()
+  const user = await getViewer()
   if (!user.isAdmin) return notFound()
-  const { data, error } = await getOrganizations()
+  const { data, error } = await loadAdminOrganizations()
   if (error || !data) throw error
   return <AdminOrganizations orgs={data} />
 }

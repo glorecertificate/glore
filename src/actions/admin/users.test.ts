@@ -43,7 +43,6 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
     auth: typeof import('@/lib/auth').auth
     client: typeof import('@/db/client')
     impersonation: typeof import('@/actions/admin/impersonation')
-    options: typeof import('@/actions/admin/options')
     moderation: typeof import('@/db/mutations/moderation')
     schema: typeof import('@/db/schema')
     ids: Record<Key, string>
@@ -89,14 +88,13 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
 
   beforeAll(async () => {
     vi.stubEnv('APP_URL', 'http://localhost:3000')
-    const [actions, { auth }, client, impersonation, moderation, schema, options] = await Promise.all([
+    const [actions, { auth }, client, impersonation, moderation, schema] = await Promise.all([
       import('@/actions/admin/users'),
       import('@/lib/auth'),
       import('@/db/client'),
       import('@/actions/admin/impersonation'),
       import('@/db/mutations/moderation'),
       import('@/db/schema'),
-      import('@/actions/admin/options'),
     ])
     const ids = {} as Record<Key, string>
     for (const key of KEYS) {
@@ -149,7 +147,6 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
       ids,
       impersonation,
       moderation,
-      options,
       organizationId: organization.id,
       schema,
     }
@@ -196,13 +193,12 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
       as(key)
       const results = await Promise.all([
         context.actions.listAdminUsers({}),
-        context.options.listAdminOrganizationOptions(),
         context.actions.banUser({ reason: 'A valid reason', userId: context.ids.target }),
         context.actions.unbanUser(context.ids.banned),
         context.actions.updateUserRole(context.ids.target, 'editor'),
         context.impersonation.startImpersonation({ reason: 'A valid reason', userId: context.ids.target }),
       ])
-      expect(results.map(result => result.error?.code)).toEqual(Array(6).fill('FORBIDDEN'))
+      expect(results.map(result => result.error?.code)).toEqual(Array(5).fill('FORBIDDEN'))
       expect((await findUser('target')).banned).toBe(false)
       expect((await findUser('target')).isEditor).toBe(false)
       expect((await findUser('banned')).banned).toBe(true)

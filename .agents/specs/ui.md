@@ -80,6 +80,7 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 ### Page titles
 
 - Each page has one `h1`. A section page passes `title`, and the header bar renders it as the `h1`.
+- A page that renders a `PageHeader` passes no title to the bar, so the content owns the `h1`.
 - A record page also passes `parent`, a navigation id. The bar shows the parent link, then the title with `aria-current="page"`, and the content owns the `h1`.
 - `navigationHref` and `NavigationLabel` give the parent its href and label from the navigation table.
 - Build a content title with `PageHeader`: `PageHeaderHeading` (title, description, meta) and `PageHeaderActions`.

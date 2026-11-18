@@ -160,7 +160,7 @@ Three domain facts shape recurring decisions:
 - Users without an organization see an empty state.
 - Each view owns the page `h1` and the header bar shows no title, on purpose (#151): two `h1` elements would repeat the page name.
 - The learner, tutor, representative and owner, and editor views open with `DashboardHero`, the welcome card (decisions.md, U22): a gradient card with the greeting as `h1`, the subtitle, the organization, one action, and the animated globe at 25 to 30% opacity in the top-right corner. The volunteer view opens with the stage title.
-- `DashboardHero` is a client island. `Globe` renders its canvas in the server HTML and loads `cobe` after hydration at pixel ratio 0.5, because a `next/dynamic` mount added about 100 ms to the dashboard client navigation and the full ratio starved the main thread in software WebGL. The card renders without the globe when WebGL is off.
+- `DashboardHero` is a client island. `Globe` renders its canvas in the server HTML and loads `cobe` after hydration at pixel ratio 0.5 (1.5 at most on phones), because a `next/dynamic` mount added about 100 ms to the dashboard client navigation and the full ratio starved the main thread in software WebGL. The card renders without the globe when WebGL is off.
 - Empty cards use `DashboardEmpty` (icon and title).
 
 ### Documentation

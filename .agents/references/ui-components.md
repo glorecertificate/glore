@@ -120,3 +120,29 @@ After (the first block is a `DataTable` card, so `overlap` is set):
   <AdminUsersContent />
 </DashboardPage>
 ```
+
+## Mobile and touch
+
+Owner decisions, 2026-11-18. Controls keep their visible size on every device.
+
+- `touch-hit` adds a centered 44px pseudo-element hit area on coarse pointers. `touch-hit-y` extends only the height, for controls that sit edge to edge.
+- Button, select trigger, checkbox, switch, rating item, tabs trigger, toolbar button, sidebar menu button, dialog close, sheet close, and password toggle carry it.
+- Neighbouring hit areas must not overlap. `SidebarMenu` and `ToolbarGroup` add gap on coarse pointers. `ButtonGroup` children use the height-only form.
+- Touch growth is exactly 44px and never more. A touch gap is the smallest step that keeps neighbouring hit areas apart: 44px minus the control height. A 32px control gets 12px, a 36px control gets 8px.
+- Contiguous lists and grids cannot hold 44px hit areas without growing. On coarse pointers, menu, select, and command rows use `touch-row`, and calendar cells use `calendar-cell`. Set `--touch-row-min: 0px` and `--touch-cell: --spacing(8)` in `:root` to revert both.
+- Inputs, textareas, and the command input use 16px on coarse pointers. A caller that sets `text-sm` on a field breaks this rule.
+- `viewportFit: 'cover'` and `interactiveWidget: 'resizes-content'` are set in `lib/metadata.ts`. `pt-safe`, `pb-safe`, and `px-page-safe` add the safe-area insets to fixed bars.
+- `Dialog` and `AlertDialog` are bottom sheets below `sm`. The body scrolls, the footer sticks, and the confirm action is last and at the bottom.
+- `DropdownMenu` and `Popover` cap their height with the Radix available-height variable and scroll inside.
+- `InfoTip` opens a popover on tap. Use it instead of a tooltip for text that has no other path on touch. Pass `nested` inside another button. The nested form is hidden from assistive technology and adds the label as screen-reader text, because a control cannot sit inside a button.
+
+### Shell by width
+
+- Below 768px, the sidebar is a drawer. It closes on navigation, has its own close button, and uses `h-dvh`.
+- From 768px to 1023px, the sidebar is an icon rail (`collapsible="icon"`). The expand button at the top of the rail opens the full sidebar as an overlay with a backdrop. It closes on navigation, Escape, or a tap outside.
+- From 1024px, the full sidebar shows. `useDevice` returns `isTablet` for the middle range.
+- `PhoneAppBar` is a fixed bar below `md` with the menu button and the page title. It slides in when the band scrolls out. It stacks under the impersonation notice.
+- The menu button shows a dot for unread notifications and pending invitations. It shows only while the navigation is hidden.
+- `Kbd` and `KbdGroup` are hidden on coarse pointers.
+- A scrolling `TabsList`, the table container, and the sidebar content add vertical padding with a matching negative margin on coarse pointers, so the hit areas are not clipped and the layout does not move. `tabs-scroll-band` repaints the list background to its original height.
+- The offline promise is the offline page only. The service worker caches no course or certificate data.

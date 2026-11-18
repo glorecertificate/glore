@@ -1879,7 +1879,8 @@
     "revokeConfirm": "Revocar certificado",
     "revoking": "Revocando…",
     "revoked": "Certificado revocado",
-    "revokeError": "No se pudo revocar el certificado. Inténtalo de nuevo."
+    "revokeError": "No se pudo revocar el certificado. Inténtalo de nuevo.",
+    "viewFull": "Ver certificado completo"
   },
   "CertificateEligibility": {
     "title": "Todavía no puedes solicitar un certificado",
@@ -2081,7 +2082,12 @@
     "errorRateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
     "errorGeneric": "No se pudo completar la acción. Inténtalo de nuevo.",
     "descriptionsMissing": "Este curso de habilidades aún no tiene todas las descripciones de nivel. Pide a un editor que las añada.",
-    "volunteerChoice": "Elegida por la persona voluntaria"
+    "volunteerChoice": "Elegida por la persona voluntaria",
+    "viewLabel": "Sección",
+    "viewRequest": "Solicitud",
+    "viewReview": "Revisión",
+    "previewLabel": "Vista previa del certificado de {organization}",
+    "openPdf": "Abrir PDF"
   },
   "CertificateShare": {
     "title": "Comparte tu certificado",

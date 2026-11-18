@@ -96,6 +96,7 @@ draft -> submitted -> in_review -> approved -> revoked
 
 - Route: `/certificates/[id]`.
 - It shows a status header with a one-line message and `CertificateJourney` (draft, submitted, review, issued). The stage where a request ended shows its outcome.
+- On phones the owner of a shareable certificate sees the preview above the share card, with View full certificate (opens the PDF inline).
 - It shows reviewer feedback (`CertificateFeedback`: general and per-section notes, rejection and revocation reasons), the reviewer row, the PDF miniature with the summary, and a timeline from `findCertificateActivity`.
 - Actions follow status and role: continue or resubmit through the wizard, withdraw (open), download and make featured (approved), revoke (managers), open review (assigned tutor).
 - The owner of an approved certificate also gets `CertificateShare`: verify link, QR, PDF, LinkedIn "Add to profile" link with `organizationName` and copy fields, and LinkedIn and Facebook share.
@@ -117,7 +118,8 @@ draft -> submitted -> in_review -> approved -> revoked
 - Left side: the volunteer, experience, tasks, and skills with the chosen description, evidence, and the reflection (`findReviewContext`, reviewer only), plus the previous feedback.
 - The header shows the status and the waiting time.
 - Right side (3 of 5 columns), the form: editable experience and tasks, per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a note per section, and a general comment.
-- Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`.
+- Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`. On coarse pointers the dialog shows the HTML `CertificateThumbnail` built from the form values, plus an Open PDF link to the blob, because iOS Safari renders `<object>` PDFs poorly (`useCoarsePointer`). Desktop keeps the `<object>` embed.
+- Below `lg`, a segmented switch selects Request or Review (opens on Review). The hidden side stays mounted, so form state survives, and the sticky decision bar stays in both views.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
 - `Start review` claims a `submitted` request.
 

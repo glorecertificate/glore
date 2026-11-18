@@ -12,8 +12,10 @@ import { CertificateShare } from '@/components/features/certificates/certificate
 import { CertificateSummary } from '@/components/features/certificates/certificate-summary'
 import { CertificateTimeline } from '@/components/features/certificates/certificate-timeline'
 import { useSession } from '@/components/providers/session'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { type Certificate } from '@/db/queries/certificate'
+import { cn } from '@/lib/utils'
 
 export const CertificateDetail = ({
   canManage,
@@ -33,6 +35,8 @@ export const CertificateDetail = ({
   const tDetail = useTranslations('CertificateDetail')
   const { user } = useSession()
   const isOwner = certificate.userId === user.id
+  const showShare = isOwner && Boolean(verifyUrl)
+  const pdfHref = certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf`
 
   return (
     <div className="flex flex-col gap-6">
@@ -44,6 +48,19 @@ export const CertificateDetail = ({
         </CardContent>
       </Card>
 
+      {showShare && (
+        <div className="flex flex-col gap-3 lg:hidden">
+          <CertificatePreview certificate={certificate} />
+          {certificate.isApproved && (
+            <Button asChild className="self-center" icon="external-link" size="sm" variant="outline">
+              <a href={pdfHref} rel="noopener noreferrer" target="_blank">
+                {tDetail('viewFull')}
+              </a>
+            </Button>
+          )}
+        </div>
+      )}
+
       {isOwner && verifyUrl && <CertificateShare certificate={certificate} url={verifyUrl} />}
 
       <CertificateFeedback certificate={certificate} notes={notes} />
@@ -53,7 +70,10 @@ export const CertificateDetail = ({
       )}
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
-        <CertificatePreview certificate={certificate} className="lg:sticky lg:top-20" />
+        <CertificatePreview
+          certificate={certificate}
+          className={cn('lg:sticky lg:top-20', showShare && 'max-lg:hidden')}
+        />
         <div className="flex flex-col gap-6">
           <CertificateSummary certificate={certificate} />
           <Card>

@@ -104,6 +104,7 @@ export const CourseContent = () => {
   return (
     <>
       <CourseEditor
+        key={editorVersion}
         flushRef={contentFlushRef}
         initialValue={initialContent as Value}
         onChange={onContentChange}

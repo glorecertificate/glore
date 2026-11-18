@@ -48,7 +48,7 @@ export const PageIntro = ({
   <div className={cn('flex min-w-0 flex-col gap-6', className)} data-slot="page-intro" {...props}>
     <PageHeader className="sm:items-center">
       <PageHeaderHeading>
-        <PageHeaderDescription>{description}</PageHeaderDescription>
+        <PageHeaderDescription className="text-band-text">{description}</PageHeaderDescription>
       </PageHeaderHeading>
       {actions && <PageHeaderActions>{actions}</PageHeaderActions>}
     </PageHeader>

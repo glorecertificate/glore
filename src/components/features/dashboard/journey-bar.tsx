@@ -15,7 +15,7 @@ export const JourneyBar = ({ className, journey }: { className?: string; journey
   return (
     <section
       aria-labelledby="journey-bar-title"
-      className={cn('flex flex-col gap-4 rounded-xl bg-surface-sunken p-4', className)}
+      className={cn('flex flex-col gap-4 rounded-xl bg-card p-4 shadow-card', className)}
       data-slot="journey-bar"
     >
       <div className="flex items-baseline justify-between gap-3">

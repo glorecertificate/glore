@@ -3189,7 +3189,8 @@
       "shortcutCertificatesHint": "Busca y revoca certificados",
       "shortcutAudit": "Registro de auditoría",
       "shortcutAuditHint": "Acciones sensibles y quién las realizó",
-      "description": "Estado de la plataforma, colas de revisión y accesos directos para el equipo de administración."
+      "description": "Estado de la plataforma, colas de revisión y accesos directos para el equipo de administración.",
+      "reviewAction": "Revisar solicitudes"
     }
   },
   "Join": {

@@ -203,7 +203,7 @@ export const Sidebar = ({
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetContent
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          className="dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sidebar-scope [&>button]:hidden"
           data-mobile="true"
           data-sidebar="sidebar"
           side={side}
@@ -222,7 +222,7 @@ export const Sidebar = ({
 
   return (
     <div
-      className="group peer hidden text-sidebar-foreground md:block"
+      className="group dark peer hidden text-sidebar-foreground sidebar-scope md:block"
       data-collapsible={state === 'collapsed' ? collapsible : ''}
       data-dragging={isDraggingRail}
       data-side={side}
@@ -248,7 +248,7 @@ export const Sidebar = ({
             : 'right-0 group-data-[collapsible=offcanvas]:-right-(--sidebar-width)',
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
           'group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!',
           className
         )}
@@ -282,7 +282,7 @@ export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) =>
       variant="ghost"
       {...props}
     >
-      <LucideIcon name="panel-left" className="size-4.5! text-foreground/64" />
+      <LucideIcon name="panel-left" className="size-4.5! text-current" />
       <span className="sr-only">{action}</span>
     </Button>
   )
@@ -367,7 +367,7 @@ export const SidebarRail = ({
 export const SidebarInset = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'relative flex min-h-svh min-w-0 flex-1 flex-col bg-background',
+      'relative flex min-h-svh min-w-0 flex-1 flex-col bg-canvas',
       'peer-data-[variant=inset]:min-h-[calc(100svh-(--spacing(4)))] md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
       className
     )}
@@ -418,7 +418,7 @@ export const SidebarGroupLabel = ({
   return (
     <Comp
       className={cn(
-        'flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:focus-ring-inset [&>svg]:size-4 [&>svg]:shrink-0',
+        'flex h-6 shrink-0 items-center px-3 type-overline text-sidebar-muted outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:focus-ring-inset [&>svg]:size-4 [&>svg]:shrink-0',
         'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
         className
       )}
@@ -509,7 +509,7 @@ export const SidebarMenuButton = ({
 }
 
 export const sidebarMenuButtonVariants = cva(
-  `peer/menu-button flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left text-foreground/75 outline-hidden transition-[width,height,padding,color,background-color] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-foreground focus-visible:focus-ring-inset disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-sidebar-accent data-active:text-foreground! data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`,
+  `peer/menu-button flex w-full cursor-pointer items-center gap-2.5 overflow-hidden rounded-lg px-3 py-2 text-left font-medium text-sidebar-foreground outline-hidden transition-[width,height,padding,color,background-color,box-shadow] duration-100 group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:focus-ring-inset disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-gradient-nav data-active:font-semibold data-active:text-nav-foreground! data-active:shadow-glow-nav data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`,
   {
     defaultVariants: {
       variant: 'default',
@@ -522,7 +522,7 @@ export const sidebarMenuButtonVariants = cva(
           'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
       },
       size: {
-        default: 'h-8 text-sm',
+        default: 'h-9 text-sm',
         sm: 'h-7 text-xs',
         lg: 'h-12 text-sm group-data-[collapsible=icon]:p-0!',
       },

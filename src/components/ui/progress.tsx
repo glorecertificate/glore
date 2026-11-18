@@ -33,13 +33,13 @@ export const Progress = ({
 }
 
 const FILLS = {
-  action: 'bg-action',
-  brand: 'bg-brand',
+  action: 'bg-gradient-action',
+  brand: 'bg-linear-to-r from-chart-teal to-stat-teal-strip-to',
   'brand-secondary': 'bg-brand-secondary-accent',
-  'brand-tertiary': 'bg-brand-tertiary',
+  'brand-tertiary': 'bg-linear-to-r from-stat-navy-from to-stat-navy-strip-to',
   default: 'bg-muted-foreground',
-  success: 'bg-success',
-  warning: 'bg-warning',
+  success: 'bg-linear-to-r from-stat-green-from to-stat-green-to',
+  warning: 'bg-linear-to-r from-stat-amber-from to-stat-amber-to',
 } as const
 
 const progressVariants = cva('relative h-2 w-full overflow-hidden rounded-full', {

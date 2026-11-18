@@ -10,8 +10,8 @@
     "no-restricted-classes": 1
   },
   "src/components/features/certificates": {
-    "no-arbitrary-value": 38,
-    "no-restricted-classes": 9
+    "no-arbitrary-value": 37,
+    "no-restricted-classes": 8
   },
   "src/components/features/certificates/review": {
     "no-arbitrary-value": 2
@@ -55,11 +55,11 @@
     "no-default-palette": 23
   },
   "src/components/layout": {
-    "no-arbitrary-value": 5,
+    "no-arbitrary-value": 4,
     "no-restricted-classes": 1
   },
   "src/components/ui": {
-    "no-arbitrary-value": 68,
+    "no-arbitrary-value": 66,
     "no-restricted-classes": 11
   }
 }

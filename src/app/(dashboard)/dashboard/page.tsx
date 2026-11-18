@@ -1,5 +1,6 @@
 import { loadDashboard } from '@/actions/dashboard/load'
 import { DashboardContent } from '@/components/features/dashboard'
+import { DashboardBand } from '@/components/features/dashboard/band'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -11,7 +12,7 @@ export const generateMetadata = generateIntlMetadata({
 const DashboardData = async () => <DashboardContent data={await loadDashboard()} />
 
 const DashboardPageContent = () => (
-  <DashboardPage>
+  <DashboardPage header={<DashboardBand />} overlap>
     <DashboardData />
   </DashboardPage>
 )

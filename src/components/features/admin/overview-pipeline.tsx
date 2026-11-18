@@ -7,6 +7,16 @@ import { Progress } from '@/components/ui/progress'
 import { SkeletonText } from '@/components/ui/skeleton'
 import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
 
+const PIPELINE_COLORS = {
+  approved: 'success',
+  changes_requested: 'warning',
+  in_review: 'brand-tertiary',
+  rejected: 'warning',
+  revoked: 'warning',
+  submitted: 'brand',
+  withdrawn: 'default',
+} as const
+
 export const AdminOverviewPipeline = ({
   loading = false,
   pipeline,
@@ -45,8 +55,8 @@ export const AdminOverviewPipeline = ({
                 </div>
                 <Progress
                   aria-label={tCertificates(CERTIFICATE_STATUS[status].labelKey)}
-                  className="h-1.5"
-                  color="brand"
+                  className="h-2"
+                  color={PIPELINE_COLORS[status]}
                   value={(pipeline[status] / total) * 100}
                 />
               </li>

@@ -7,20 +7,24 @@ import { type NavigationId } from '@/components/layout/navigation'
 import { Main } from '@/components/ui/main'
 
 export const DashboardPage = ({
+  actions,
   breadcrumb,
   children,
   description,
   header,
   fallback,
+  overlap,
   parent,
   provider,
   title,
   ...props
 }: Omit<React.ComponentProps<typeof Main>, 'title'> & {
+  actions?: React.ReactNode
   breadcrumb?: React.ReactNode
   description?: React.ReactNode
   header?: React.ReactNode
   fallback?: React.ReactNode
+  overlap?: boolean
   parent?: NavigationId
   provider?: React.ComponentType
   title?: React.ReactNode
@@ -29,8 +33,16 @@ export const DashboardPage = ({
 
   return (
     <Provider>
-      {header ?? <DashboardHeader breadcrumb={breadcrumb} description={description} parent={parent} title={title} />}
-      <Main {...props}>
+      {header ?? (
+        <DashboardHeader
+          actions={actions}
+          breadcrumb={breadcrumb}
+          description={description}
+          parent={parent}
+          title={title}
+        />
+      )}
+      <Main overlap={overlap} {...props}>
         {fallback === null ? children : <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>}
       </Main>
       <DynamicMarker />

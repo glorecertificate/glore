@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 import {
   getCertificateEligibility,
@@ -12,6 +13,7 @@ import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
 import { OrganizationCertificates } from '@/components/features/certificates/organization-certificates'
 import { TutorCertificatesContent } from '@/components/features/certificates/tutor-certificates-content'
+import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 
@@ -40,8 +42,28 @@ const CertificatesPageContent = async () => {
   return <CertificatesContent certificates={certificates ?? []} eligibility={eligibility} />
 }
 
+const CertificatesBand = async () => {
+  const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  const role = user.organizations.find(({ id }) => id === activeOrgId)?.role
+  const manager = activeOrgId && (role === 'admin' || role === 'representative')
+
+  return (
+    <DashboardHeader
+      description={manager ? null : <PageTitle name="description" namespace="CertificateList" />}
+      title={<PageTitle name="certificates" namespace="Layout" />}
+    />
+  )
+}
+
 const CertificatesPage = () => (
-  <DashboardPage title={<PageTitle namespace="Layout" name="certificates" />}>
+  <DashboardPage
+    overlap
+    header={
+      <Suspense fallback={<DashboardHeader title={<PageTitle name="certificates" namespace="Layout" />} />}>
+        <CertificatesBand />
+      </Suspense>
+    }
+  >
     <CertificatesPageContent />
   </DashboardPage>
 )

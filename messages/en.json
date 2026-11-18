@@ -3189,7 +3189,8 @@
       "shortcutCertificatesHint": "Look up and revoke certificates",
       "shortcutAudit": "Audit log",
       "shortcutAuditHint": "Sensitive actions and who took them",
-      "description": "Platform health, review queues, and shortcuts for the admin team."
+      "description": "Platform health, review queues, and shortcuts for the admin team.",
+      "reviewAction": "Review requests"
     }
   },
   "Join": {

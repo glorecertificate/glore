@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 export const Card = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'group flex flex-col gap-3 overflow-hidden rounded-xl border bg-card p-6 text-card-foreground shadow-2xs',
+      'group flex flex-col gap-3 overflow-hidden rounded-xl border border-border-subtle bg-card p-5 text-card-foreground shadow-card',
       className
     )}
     data-slot="card"
@@ -23,7 +23,7 @@ export const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>)
 )
 
 export const CardTitle = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('leading-none font-semibold', className)} data-slot="card-title" {...props} />
+  <div className={cn('type-heading', className)} data-slot="card-title" {...props} />
 )
 
 export const CardDescription = ({ className, ...props }: React.ComponentProps<'div'>) => (

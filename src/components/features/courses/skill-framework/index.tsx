@@ -7,13 +7,7 @@ import { skillGroupTone, skillGroupToneVariants } from '@/components/features/co
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import {
-  PageHeader,
-  PageHeaderActions,
-  PageHeaderDescription,
-  PageHeaderHeading,
-  PageHeaderTitle,
-} from '@/components/ui/page-header'
+import { PageHeader, PageHeaderActions, PageHeaderDescription, PageHeaderHeading } from '@/components/ui/page-header'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { pickCourseTitle, pickLocale } from '@/db/queries/learning'
 import { type IntlRecord } from '@/lib/i18n'
@@ -83,7 +77,6 @@ export const SkillFramework = ({
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <PageHeader>
         <PageHeaderHeading>
-          <PageHeaderTitle>{t('title')}</PageHeaderTitle>
           <PageHeaderDescription>{t('description')}</PageHeaderDescription>
         </PageHeaderHeading>
         <PageHeaderActions>

@@ -70,3 +70,53 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 ## Email colors
 
 - Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`: `EMAIL_COLORS` (light) and `EMAIL_COLORS_DARK`, each with `action`, `actionText`, `border`, `canvas`, `danger`, `faint`, `muted`, `onDanger`, `onFill`, `sunken`, `surface`, `text`, and `title`. Dark names carry a `-dark` suffix and apply through `dark:` classes. Class strings live in `src/emails/classes.ts` (`EMAIL_CLASSES`), so a template never writes a hex value. The `brand` color is the `action` blue, because email buttons carry white text.
+
+## Loading states
+
+- A loading state either reproduces its content exactly, or it is a `Spinner`. Never ship an approximate or generic `Skeleton`.
+- An exact skeleton has the layout, element count, heights, and widths of the content, so nothing moves when the content arrives.
+- Build the skeleton from the layout components and size tokens of the content, so the two cannot drift apart.
+- Use a `Spinner` when the shape depends on the data, for example an unknown row count or text of variable length.
+- The swap from the loading state to the content is a short fade, never a pop. With reduced motion it is instant.
+- Check each loading state in a browser on a throttled network. Nothing on the page may move or resize when the content arrives.
+- A feature with a fixed layout renders itself as its skeleton: give it a `loading` prop and placeholder data (`AdminOverviewSkeleton`, organization insights and certificates).
+- `StatCard` and `Chart` take `loading`. `SkeletonText` wraps placeholder text, so the skeleton has the line count and width of real text.
+- Labels, titles, and other static text stay real in a skeleton. Only data becomes `SkeletonText`.
+- A region whose size depends on data, such as a list or a table body, shows `LoadingFallback` inside the exact skeleton.
+- The header bar never waits for data. A layout or page fallback is `DashboardLoading` (the bar and a spinner), never a full-page spinner.
+- `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
+- A `Spinner` without `size` takes its size from the parent, as in a `Button`. Pass `size` when it stands alone.
+- Put `animate-reveal` on content that replaces a loading state the user saw. It fades in for 150 ms and is off with reduced motion.
+- A fade from opacity 0 delays LCP by its length, so content of a first render or a server stream paints at once. A component with a `loading` prop fades through `useReveal(loading)`.
+- React holds a streamed boundary up to 300 ms after the first frame. `InstantReveal` in the root layout keeps `$RT` unset, so each boundary paints in the frame after it arrives.
+
+## Controls detail
+
+- `InlineInput` takes `size="title"` for the `type-title` role. Its placeholder uses the `placeholder:text-muted-foreground` input token.
+- `Markdown` is a server component with a static `react-markdown` import. Use it from server components, where static content renders on the server.
+- A client component uses `MarkdownLazy` (`markdown-lazy.tsx`), which loads `Markdown` with `next/dynamic` and no loading state, so `react-markdown` stays out of its route bundle. Call `preloadMarkdown()` when the client surface mounts, so the text appears with the content. Never import `Markdown` from a `'use client'` file.
+- `DialogContent` keeps its close button in a sticky corner anchor, so it stays put while a long dialog scrolls. `DialogTitle` reserves space for it. On open, focus goes to an existing autofocus target, else to the first visible field outside the footer, else to the dialog itself. It never scrolls, and never lands on the close button or a link.
+
+## Band migration example
+
+`/admin/users`, before:
+
+```tsx
+<DashboardPage title={<PageTitle namespace="Admin.users" name="title" />}>
+  <PageIntro description={<PageTitle namespace="Admin.users" name="description" />}>
+    <AdminUsersContent />
+  </PageIntro>
+</DashboardPage>
+```
+
+After (the first block is a `DataTable` card, so `overlap` is set):
+
+```tsx
+<DashboardPage
+  overlap
+  description={<PageTitle namespace="Admin.users" name="description" />}
+  title={<PageTitle namespace="Admin.users" name="title" />}
+>
+  <AdminUsersContent />
+</DashboardPage>
+```

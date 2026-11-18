@@ -2,7 +2,7 @@ import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-const mainWidthVariants = cva('mx-auto flex w-full flex-1 flex-col', {
+const mainWidthVariants = cva('flex w-full flex-1 flex-col', {
   defaultVariants: {
     width: 'full',
   },
@@ -19,14 +19,17 @@ const mainWidthVariants = cva('mx-auto flex w-full flex-1 flex-col', {
 export const Main = ({
   children,
   className,
+  overlap = false,
   width = 'full',
   ...props
-}: React.ComponentProps<'main'> & VariantProps<typeof mainWidthVariants>) => (
+}: React.ComponentProps<'main'> & VariantProps<typeof mainWidthVariants> & { overlap?: boolean }) => (
   <main
     className={cn(
-      'mx-auto flex size-full min-h-[calc(100vh-72px)] max-w-420 flex-col px-page pt-4 pb-12 sm:pt-6 sm:pb-16',
+      'relative mx-auto flex size-full max-w-310 flex-col px-page pb-12 sm:pb-16',
+      overlap ? '-mt-16' : 'pt-6',
       className
     )}
+    data-overlap={overlap || undefined}
     data-width={width}
     {...props}
   >

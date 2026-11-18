@@ -49,7 +49,7 @@ export const TabsList = ({
   const composedRef = useComposedRefs(forwardedRef, ref)
   const maskImage = scrollEdgesMask({ end, start })
   const classNames = cn(
-    'inline-flex h-9 w-fit max-w-full scrollbar-none items-center justify-center rounded-lg bg-muted/55 p-0.5',
+    'inline-flex h-9 w-fit max-w-full scrollbar-none items-center justify-center rounded-lg bg-muted p-0.5',
     scrollable && 'justify-start overflow-x-auto',
     className
   )

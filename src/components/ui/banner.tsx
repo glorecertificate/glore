@@ -2,14 +2,14 @@ import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-const bannerVariants = cva('flex items-start gap-3 rounded-lg border p-4 text-sm', {
+const bannerVariants = cva('flex items-start gap-3 rounded-lg border bg-card bg-linear-to-b p-4 text-sm shadow-card', {
   defaultVariants: { variant: 'info' },
   variants: {
     variant: {
-      info: 'border-info-border bg-info-subtle text-foreground',
-      success: 'border-success-border bg-success-subtle text-foreground',
-      warning: 'border-warning-border bg-warning-subtle text-foreground',
-      destructive: 'border-danger-border bg-danger-subtle text-foreground',
+      info: 'border-info-border from-info-subtle to-info-subtle text-foreground',
+      success: 'border-success-border from-success-subtle to-success-subtle text-foreground',
+      warning: 'border-warning-border from-warning-subtle to-warning-subtle text-foreground',
+      destructive: 'border-danger-border from-danger-subtle to-danger-subtle text-foreground',
     },
   },
 })

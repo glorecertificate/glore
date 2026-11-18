@@ -6,12 +6,11 @@ import { hasMonthlyActivity, monthStart, toDuration } from '@/components/feature
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
-import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
-import { PageIntro } from '@/components/ui/page-header'
 import { SkeletonText } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
 import { type AdminOverview as AdminOverviewData } from '@/db/queries/admin-overview'
 import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
+import { cn } from '@/lib/utils'
 import config from '~/config/app.json'
 
 const OVERDUE_DAYS = Math.max(...config.reviewReminderDays)
@@ -38,38 +37,55 @@ export const AdminOverview = ({ loading = false, overview }: { loading?: boolean
     return number(value, { maximumFractionDigits: 1, style: 'unit', unit, unitDisplay: 'long' })
   }
 
+  const peakHours = Math.max(...review.monthly.map(row => row.averageHours ?? 0))
+  const reviewBars = peakHours
+    ? review.monthly.map(row => ({
+        height: Math.max(8, ((row.averageHours ?? 0) / peakHours) * 100),
+        month: row.month,
+        peak: row.averageHours === peakHours,
+      }))
+    : []
+
   const placeholder = (value: React.ReactNode) => (loading ? <SkeletonText>{value}</SkeletonText> : value)
 
   return (
-    <PageIntro aria-busy={loading || undefined} description={t('description')}>
+    <div aria-busy={loading || undefined} className="flex min-w-0 flex-col gap-5">
       {loading && <LoadingFallback className="sr-only" spinner={false} />}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
+          accent="teal"
           description={t('usersBreakdown', { admins: users.admins, banned: users.banned, pending: users.pending })}
+          icon="user-round"
           label={t('statUsers')}
           loading={loading}
           value={users.total}
         />
         <StatCard
+          accent="navy"
           description={t('organizationsBreakdown', {
             active: organizations.active,
             pending: organizations.pending,
             rejected: organizations.rejected,
           })}
+          icon="building-2"
           label={t('statOrganizations')}
           loading={loading}
           value={organizations.total}
         />
         <StatCard
+          accent="green"
           description={t('certificatesBreakdown', { drafts: certificates.drafts })}
+          icon="award"
           label={t('statCertificates')}
           loading={loading}
           value={certificates.total}
         />
         <StatCard
+          accent="amber"
           description={
             review.overdue > 0 ? t('waitingOverdue', { count: review.overdue, days: OVERDUE_DAYS }) : t('waitingOnTime')
           }
+          icon="clock"
           label={t('statWaiting')}
           loading={loading}
           value={review.waiting}
@@ -117,35 +133,42 @@ export const AdminOverview = ({ loading = false, overview }: { loading?: boolean
 
       <div className="grid gap-4 xl:grid-cols-3">
         <AdminOverviewPipeline loading={loading} pipeline={certificates.pipeline} total={certificates.total} />
-        <Card>
+        <Card className="border-transparent bg-highlight text-highlight-foreground shadow-stat">
           <CardHeader>
             <CardTitle>{t('reviewTitle')}</CardTitle>
-            <CardDescription>
+            <CardDescription className="text-highlight-muted">
               {placeholder(review.sample > 0 ? t('reviewSample', { count: review.sample }) : t('reviewNone'))}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {review.averageHours !== null && review.medianHours !== null && (
-              <DescriptionList layout="inline">
-                <DescriptionItem>
-                  <DescriptionTerm>{t('reviewAverage')}</DescriptionTerm>
-                  <DescriptionDetails className="tabular-nums">
-                    {placeholder(duration(review.averageHours))}
-                  </DescriptionDetails>
-                </DescriptionItem>
-                <DescriptionItem>
-                  <DescriptionTerm>{t('reviewMedian')}</DescriptionTerm>
-                  <DescriptionDetails className="tabular-nums">
-                    {placeholder(duration(review.medianHours))}
-                  </DescriptionDetails>
-                </DescriptionItem>
-              </DescriptionList>
+              <dl className="flex gap-8">
+                <div className="flex flex-col gap-1">
+                  <dt className="type-caption text-highlight-muted">{t('reviewAverage')}</dt>
+                  <dd className="type-title tabular-nums">{placeholder(duration(review.averageHours))}</dd>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <dt className="type-caption text-highlight-muted">{t('reviewMedian')}</dt>
+                  <dd className="type-title tabular-nums">{placeholder(duration(review.medianHours))}</dd>
+                </div>
+              </dl>
+            )}
+            {reviewBars.length > 0 && (
+              <div aria-hidden className="mt-6 flex h-14 items-end gap-1.5">
+                {reviewBars.map(({ height, month, peak }) => (
+                  <span
+                    className={cn('flex-1 rounded-sm', peak ? 'bg-band-action' : 'bg-highlight-foreground/30')}
+                    key={month}
+                    style={{ height: `${height}%` }}
+                  />
+                ))}
+              </div>
             )}
           </CardContent>
         </Card>
         <AdminOverviewShortcuts pendingOrganizations={organizations.pending} waitingCertificates={review.waiting} />
       </div>
-    </PageIntro>
+    </div>
   )
 }
 

@@ -39,7 +39,7 @@ export const Badge = ({
 }
 
 const badgeVariants = cva(
-  `inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md whitespace-nowrap transition-[color] select-none focus-visible:focus-ring aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3`,
+  `inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-full whitespace-nowrap transition-[color,background-color] select-none focus-visible:focus-ring aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3`,
   {
     defaultVariants: {
       pill: false,
@@ -47,7 +47,7 @@ const badgeVariants = cva(
       variant: 'primary',
     },
     compoundVariants: [
-      { pill: true, size: 'sm', className: 'h-4 min-w-4 px-1 py-0' },
+      { pill: true, size: 'sm', className: 'h-4 min-w-4 px-1.5 py-0' },
       { pill: true, size: 'default', className: 'h-5 min-w-5 px-1.5 py-0' },
       { pill: true, size: 'lg', className: 'h-6 min-w-6 px-2 py-0' },
     ],
@@ -62,16 +62,16 @@ const badgeVariants = cva(
         lg: 'gap-1.5 px-2.5 py-1 text-sm',
       },
       variant: {
-        primary: 'bg-primary text-primary-foreground shadow-xs',
-        muted: 'bg-muted text-muted-foreground',
+        primary: 'bg-gradient-action text-action-foreground shadow-xs',
+        muted: 'bg-pill-draft text-pill-draft-foreground',
         outline: 'border border-border bg-field',
         ghost: 'bg-transparent text-foreground',
         brand: 'bg-brand text-brand-foreground shadow-xs',
         'brand-soft': 'bg-brand/10 text-brand-text',
-        success: 'bg-success-subtle text-success-text',
+        success: 'bg-pill-approved font-medium text-pill-approved-foreground',
         warning: 'bg-warning-subtle text-warning-text',
         destructive: 'bg-danger-subtle text-danger-text',
-        info: 'bg-info-subtle text-info-text',
+        info: 'bg-pill-review font-medium text-pill-review-foreground',
       },
     },
   }

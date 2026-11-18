@@ -17,7 +17,7 @@ export const DataExport = () => {
 
   const handleExport = async () => {
     setExporting(true)
-    const { data, error } = await exportAccountData()
+    const { data, error } = await exportAccountData().catch(() => ({ data: null, error: { code: 'NETWORK' } }))
     setExporting(false)
     if (error || !data) {
       toast.error(error?.code === 'RATE_LIMITED' ? t('exportLimited') : t('exportError'))

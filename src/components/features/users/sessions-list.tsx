@@ -27,29 +27,26 @@ export const SessionsList = () => {
   const others = sessions.filter(({ current }) => !current)
   const visible = expanded ? sessions : sessions.slice(0, VISIBLE_SESSIONS)
 
-  const handleRevoke = async (id: string) => {
+  const run = async (action: () => Promise<{ error?: unknown }>, success: 'sessionRevoked' | 'sessionsRevoked') => {
     setBusy(true)
-    const { error } = await revokeSession(id)
-    setBusy(false)
-    if (error) {
+    try {
+      const { error } = await action()
+      if (error) {
+        toast.error(t('sessionRevokeError'))
+        return
+      }
+      toast.success(t(success))
+      refresh()
+    } catch {
       toast.error(t('sessionRevokeError'))
-      return
+    } finally {
+      setBusy(false)
     }
-    toast.success(t('sessionRevoked'))
-    refresh()
   }
 
-  const handleRevokeOthers = async () => {
-    setBusy(true)
-    const { error } = await revokeOtherSessions()
-    setBusy(false)
-    if (error) {
-      toast.error(t('sessionRevokeError'))
-      return
-    }
-    toast.success(t('sessionsRevoked'))
-    refresh()
-  }
+  const handleRevoke = (id: string) => run(() => revokeSession(id), 'sessionRevoked')
+
+  const handleRevokeOthers = () => run(revokeOtherSessions, 'sessionsRevoked')
 
   return (
     <SettingsSection description={t('sessionsDescription')} title={t('sessions')}>

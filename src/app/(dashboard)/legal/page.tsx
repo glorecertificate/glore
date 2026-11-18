@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 
 import { getLegalOverview } from '@/actions/legal/manage'
 import { getCurrentUser } from '@/actions/user'
-import { LegalManager } from '@/components/features/legal/legal-manager'
+import { LegalManager, LegalTabs, LegalTabsList } from '@/components/features/legal/legal-manager'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
@@ -22,12 +22,16 @@ const LegalPageContent = async () => {
 }
 
 const LegalPage = () => (
-  <DashboardPage
-    description={<PageTitle namespace="LegalAdmin" name="description" />}
-    title={<PageTitle namespace="LegalAdmin" name="title" />}
-  >
-    <LegalPageContent />
-  </DashboardPage>
+  <LegalTabs>
+    <DashboardPage
+      overlap
+      breadcrumb={<LegalTabsList />}
+      description={<PageTitle namespace="LegalAdmin" name="description" />}
+      title={<PageTitle namespace="LegalAdmin" name="title" />}
+    >
+      <LegalPageContent />
+    </DashboardPage>
+  </LegalTabs>
 )
 
 export default LegalPage

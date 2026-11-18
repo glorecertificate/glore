@@ -65,7 +65,7 @@ export const ImpersonationNotice = ({
   return (
     <section
       aria-label={t('label')}
-      className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-xl border border-warning-accent bg-warning px-4 py-2.5 text-sm text-warning-foreground shadow-lg"
+      className="fixed inset-x-4 top-2 z-50 mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-xl border border-warning-accent bg-warning px-4 py-2.5 text-sm text-warning-foreground shadow-lg sm:top-auto sm:bottom-[max(1rem,env(safe-area-inset-bottom))]"
       data-slot="impersonation-notice"
     >
       <LucideIcon className="size-4 shrink-0" name="eye" />

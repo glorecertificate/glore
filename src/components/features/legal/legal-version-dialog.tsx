@@ -22,7 +22,7 @@ export const LegalVersionDialog = ({
 
   return (
     <Dialog onOpenChange={onOpenChange} open={Boolean(version)}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-3xl">
+      <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{t('viewTitle', { version: version?.version ?? 0 })}</DialogTitle>
           <DialogDescription>{t('viewDescription')}</DialogDescription>

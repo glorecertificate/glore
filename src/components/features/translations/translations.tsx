@@ -10,6 +10,7 @@ import { listMessageOverrides } from '@/actions/translations'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
@@ -78,7 +79,7 @@ export const Translations = ({
   }
 
   return (
-    <div className="flex min-w-0 flex-col gap-4">
+    <Card className="min-w-0 gap-4 p-4">
       <FilterBar active={filtersActive} onClear={handleClear}>
         <SearchInput
           aria-label={t('searchPlaceholder')}
@@ -152,6 +153,6 @@ export const Translations = ({
       {selected && (
         <TranslationEditor onChanged={handleChanged} onClose={() => setParams({ key: null })} row={selected} />
       )}
-    </div>
+    </Card>
   )
 }

@@ -278,8 +278,9 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
 
-  const { open, openMobile, setOpenMobile } = useSidebar()
+  const { isMobile, open, openMobile, setOpenMobile } = useSidebar()
   const { user } = useSession()
+  const collapsed = !open && !isMobile
 
   const [loggingOut, setLoggingOut] = useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
@@ -349,6 +350,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                   />
                 )}
               </div>
+              {collapsed && <span className="sr-only">{user.firstName}</span>}
               <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
                 <span className="flex items-center gap-1 font-semibold">
                   {user.firstName}

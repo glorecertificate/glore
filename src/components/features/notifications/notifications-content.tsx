@@ -55,10 +55,15 @@ export const NotificationsContent = () => {
   const [marking, setMarking] = useState(false)
 
   const read = async () => {
-    const { data, error } = await listNotifications({ category: category ?? undefined, filter, limit })
-    setFailed(Boolean(error))
-    if (error) throw new Error(error.message)
-    return data
+    try {
+      const { data, error } = await listNotifications({ category: category ?? undefined, filter, limit })
+      setFailed(Boolean(error))
+      if (error) throw new Error(error.message)
+      return data
+    } catch (error) {
+      setFailed(true)
+      throw error
+    }
   }
 
   const { data, refresh } = usePoll(read, { interval: 60_000, key: `${filter}:${category}:${limit}` })

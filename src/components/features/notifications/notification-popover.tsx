@@ -25,10 +25,15 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
   const [failed, setFailed] = useState(false)
 
   const readLatest = async () => {
-    const { data: page, error } = await listNotifications({ limit: POPOVER_LIMIT })
-    setFailed(Boolean(error))
-    if (error) throw new Error(error.message)
-    return page
+    try {
+      const { data: page, error } = await listNotifications({ limit: POPOVER_LIMIT })
+      setFailed(Boolean(error))
+      if (error) throw new Error(error.message)
+      return page
+    } catch (error) {
+      setFailed(true)
+      throw error
+    }
   }
 
   const { data, refresh } = usePoll(readLatest, { interval: 30_000 })

@@ -210,14 +210,16 @@ export const OrganizationMembers = ({
           emptyTitle={members.length === 0 ? t('noMembers') : t('noMembersFiltered')}
           filters={
             <FilterBar active={filtersActive} onClear={clearFilters}>
-              <SearchInput
-                aria-label={t('searchMembers')}
-                className="w-full sm:w-64"
-                size="sm"
-                onValueChange={setSearch}
-                placeholder={t('searchMembers')}
-                value={search}
-              />
+              <div className="w-full sm:w-64 [&>div]:w-full">
+                <SearchInput
+                  aria-label={t('searchMembers')}
+                  className="w-full"
+                  size="sm"
+                  onValueChange={setSearch}
+                  placeholder={t('searchMembers')}
+                  value={search}
+                />
+              </div>
               <Select onValueChange={value => setRoleFilter(value as typeof roleFilter)} value={roleFilter}>
                 <SelectTrigger aria-label={t('filterRole')} className="w-auto gap-1.5" size="sm">
                   <SelectValue />

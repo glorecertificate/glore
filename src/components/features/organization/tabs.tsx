@@ -1,6 +1,6 @@
 'use client'
 
-import { startTransition } from 'react'
+import { startTransition, useEffect, useRef } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
@@ -60,9 +60,17 @@ export const OrganizationTabsList = ({
 }) => {
   const t = useTranslations('Organization')
   const tInvitations = useTranslations('Invitations')
+  const { tab } = useOrganizationTab()
+  const listRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    listRef.current
+      ?.querySelector<HTMLElement>('[role="tab"][data-state="active"]')
+      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  }, [tab])
 
   return (
-    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" {...props}>
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" ref={listRef} {...props}>
       <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
       <TabsTrigger value="members">{t('members')}</TabsTrigger>
       <TabsTrigger count={invitationCount} value="invitations">

@@ -1,35 +1,35 @@
 'use client'
 
-import { useId } from 'react'
-
 import { useTranslations } from 'next-intl'
 
+import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
 import { formatActivityPeriod } from '@/components/features/certificates/rules'
-import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
-import { Logo } from '@/components/ui/logo'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { type Certificate } from '@/db/queries/certificate'
-import { fullName } from '@/lib/utils'
+import { cn, fullName } from '@/lib/utils'
 
 interface FeaturedCredentialCardProps {
   certificate: Certificate
 }
+
+const META_TONES = {
+  hours: 'bg-earned-subtle text-earned-text',
+  location: 'bg-action-subtle text-action-text',
+  period: 'bg-action-subtle text-action-text',
+} as const
 
 export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardProps) => {
   const t = useTranslations('CertificateCredential')
   const tDetail = useTranslations('CertificateDetail')
   const tList = useTranslations('CertificateList')
   const { locale, localize } = useI18n()
-  const sealId = useId()
 
   const formatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short' })
   const period = formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values))
 
   const recipientName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
-
-  const sealText = `${t('sealTitle')} · ${t('sealSubtitle')}`
 
   const meta = [
     { key: 'period', icon: 'calendar', label: t('period'), value: period },
@@ -38,81 +38,51 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
   ] as const
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand-tertiary/5 via-card to-brand/5 p-6 sm:p-8">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-20 -right-16 size-56 rounded-full bg-brand/10 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-24 -left-20 size-56 rounded-full bg-brand-tertiary/10 blur-3xl"
-      />
-
-      <div className="relative flex flex-col gap-6">
-        <div className="flex items-start justify-between gap-4">
-          <Logo className="h-6 w-auto" />
+    <div className="grid overflow-hidden rounded-xl bg-card shadow-stat lg:grid-cols-[minmax(0,1fr)_21rem]">
+      <div className="flex flex-col gap-5 p-6 sm:p-8">
+        <div className="flex flex-wrap items-center gap-2">
           <StatusBadge icon="badge-check" tone="success">
             {t('verifiedCredential')}
           </StatusBadge>
+          <span className="type-caption text-muted-foreground">{certificate.code}</span>
         </div>
 
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex-1 space-y-4">
-            <div className="space-y-1.5">
-              <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{tList('title')}</p>
-              <h2 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">{recipientName}</h2>
-              <p className="max-w-prose text-sm text-muted-foreground">
-                {t('credentialStatement', { organization: certificate.organization.name })}
-              </p>
-            </div>
-
-            {certificate.skills.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {certificate.skills.map(s => (
-                  <Badge className="border-brand/20 bg-brand/5 text-brand-text" key={s.id} variant="outline">
-                    {s.course.title ? localize(s.course.title) : s.course.slug}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="relative size-28 shrink-0 self-center sm:size-32">
-            <svg className="size-full text-brand-text" viewBox="0 0 120 120">
-              <defs>
-                <path d="M60,60 m0,-46 a46,46 0 1,1 0,92 a46,46 0 1,1 0,-92" fill="none" id={`${sealId}-path`} />
-              </defs>
-              <circle className="fill-none stroke-brand/15" cx="60" cy="60" r="58" strokeWidth="1" />
-              <circle className="fill-none stroke-brand/15" cx="60" cy="60" r="46" strokeWidth="1" />
-              <text
-                className="fill-current text-[8.5px] font-semibold uppercase"
-                lengthAdjust="spacingAndGlyphs"
-                textLength="289"
-              >
-                <textPath href={`#${sealId}-path`} startOffset="0">
-                  {sealText}
-                </textPath>
-              </text>
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex size-12 items-center justify-center rounded-full bg-brand/10 ring-1 ring-brand/20">
-                <LucideIcon name="award" className="size-6 text-brand-text" />
-              </div>
-            </div>
-          </div>
+        <div className="space-y-2">
+          <p className="type-overline text-muted-foreground">{tList('title')}</p>
+          <h2 className="type-title text-fg-title">{recipientName}</h2>
+          <p className="max-w-prose text-sm text-muted-foreground">
+            {t('credentialStatement', { organization: certificate.organization.name })}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {meta.map(m => (
-            <div className="flex items-center gap-3 bg-card p-4" key={m.key}>
-              <LucideIcon name={m.icon} className="size-4 shrink-0 text-brand-text" />
-              <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">{m.label}</p>
-                <p className="truncate text-sm font-medium">{m.value}</p>
-              </div>
+            <div className={cn('flex flex-col gap-0.5 rounded-lg px-4 py-3', META_TONES[m.key])} key={m.key}>
+              <p className="type-caption">{m.label}</p>
+              <p className="truncate text-sm font-semibold text-fg-1">{m.value}</p>
             </div>
           ))}
         </div>
+
+        {certificate.skills.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {certificate.skills.map(s => (
+              <Badge className="bg-current-fill px-3 py-1 text-fg-on-dark" key={s.id} variant="ghost">
+                {s.course.title ? localize(s.course.title) : s.course.slug}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div
+        aria-hidden
+        className="relative flex min-h-72 items-center justify-center overflow-hidden bg-earned-panel p-8 max-lg:order-first"
+      >
+        <CertificatePreview
+          certificate={certificate}
+          className="w-52 -rotate-2 rounded-md shadow-deep transition-transform duration-200 ease-out group-hover/featured:rotate-0 motion-reduce:transition-none"
+        />
       </div>
     </div>
   )

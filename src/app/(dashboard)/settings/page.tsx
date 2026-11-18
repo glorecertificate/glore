@@ -1,9 +1,8 @@
-import { useTranslations } from 'next-intl'
-
 import { UserSettings } from '@/components/features/users/user-settings'
 import { UserSettingsTabs, UserSettingsTabsList } from '@/components/features/users/user-settings-tabs'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { PageHeader, PageHeaderDescription, PageHeaderHeading, PageHeaderTitle } from '@/components/ui/page-header'
+import { PageTitle } from '@/components/layout/page-title'
+import { Card } from '@/components/ui/card'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -11,25 +10,17 @@ export const generateMetadata = generateIntlMetadata({
   title: 'settings',
 })
 
-const SettingsHeader = () => {
-  const layout = useTranslations('Layout')
-  const users = useTranslations('Users')
-
-  return (
-    <PageHeader className="mb-8">
-      <PageHeaderHeading>
-        <PageHeaderTitle>{layout('settings')}</PageHeaderTitle>
-        <PageHeaderDescription>{users('settingsDescription')}</PageHeaderDescription>
-      </PageHeaderHeading>
-    </PageHeader>
-  )
-}
-
 const SettingsPage = () => (
   <UserSettingsTabs>
-    <DashboardPage breadcrumb={<UserSettingsTabsList />} width="content">
-      <SettingsHeader />
-      <UserSettings />
+    <DashboardPage
+      breadcrumb={<UserSettingsTabsList />}
+      description={<PageTitle name="settingsDescription" namespace="Users" />}
+      title={<PageTitle name="settings" namespace="Layout" />}
+      width="content"
+    >
+      <Card className="p-6 sm:p-8">
+        <UserSettings />
+      </Card>
     </DashboardPage>
   </UserSettingsTabs>
 )

@@ -19,7 +19,6 @@ import { ageTone } from '@/components/features/certificates/rules'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useTutorQueueAge, useTutorQueueStatus, useTutorQueueTab } from '@/components/features/certificates/use-params'
 import { FilterBar } from '@/components/ui/filter-bar'
-import { PageHeaderDescription } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -128,7 +127,6 @@ export const TutorCertificatesContent = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeaderDescription>{t('description')}</PageHeaderDescription>
       <Tabs
         className="gap-4"
         onValueChange={value => {

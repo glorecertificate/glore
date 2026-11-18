@@ -13,6 +13,13 @@ import { Link } from '@/components/ui/link'
 import { type Certificate } from '@/db/queries/certificate'
 import { cn } from '@/lib/utils'
 
+const STRIPS: Record<string, string> = {
+  approved: 'stat-accent-green',
+  changes_requested: 'stat-accent-amber',
+  in_review: 'stat-accent-navy',
+  submitted: 'stat-accent-navy',
+}
+
 export const CertificateCard = ({ certificate }: { certificate: Certificate }) => {
   const t = useTranslations('CertificateDetail')
   const tWizard = useTranslations('CertificateWizard')
@@ -27,11 +34,11 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
   return (
     <Card
       className={cn(
-        'gap-0 overflow-hidden p-0 transition-shadow hover:shadow-sm',
-        certificate.isApproved && 'border-success-border',
-        certificate.isChangesRequested && 'border-warning-border'
+        'relative gap-0 overflow-hidden p-0 transition-shadow duration-150 hover:shadow-stat',
+        STRIPS[certificate.status]
       )}
     >
+      <span aria-hidden className="absolute inset-x-0 top-0 z-1 h-1 bg-stat-strip" />
       <Link className="flex flex-col" href={`/certificates/${certificate.id}`}>
         <div className="bg-surface-sunken px-6 pt-6">
           <CertificatePreview className="mx-auto max-w-44 rounded-b-none border-b-0" certificate={certificate} />

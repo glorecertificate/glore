@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
-import { PageHeaderDescription } from '@/components/ui/page-header'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
 
@@ -52,8 +51,6 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
 
   return (
     <div className="flex flex-col gap-8">
-      <PageHeaderDescription>{t('description')}</PageHeaderDescription>
-
       {eligible && !hasOpenRequest && (
         <Banner className="flex-wrap items-center justify-between" variant="info">
           <div className="space-y-1">
@@ -68,10 +65,13 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
 
       {featured && (
         <section aria-labelledby="featured-certificate" className="flex flex-col gap-3">
-          <h2 className="text-sm font-semibold" id="featured-certificate">
+          <h2 className="type-heading" id="featured-certificate">
             {tDetail('featuredTitle')}
           </h2>
-          <Link href={`/certificates/${featured.id}`}>
+          <Link
+            className="group/featured block rounded-xl focus-visible:focus-ring"
+            href={`/certificates/${featured.id}`}
+          >
             <FeaturedCredentialCard certificate={featured} />
           </Link>
         </section>

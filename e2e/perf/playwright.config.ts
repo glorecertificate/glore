@@ -43,6 +43,7 @@ const perfConfig = defineConfig({
     {
       name: 'perf',
       testMatch: /\.perf\.ts$/u,
+      fullyParallel: true,
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
     },

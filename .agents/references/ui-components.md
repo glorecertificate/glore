@@ -41,7 +41,7 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - `Header` puts its children in an inner container as wide as `Main`, so the sidebar trigger and the content share one edge. Its `className` styles that inner container.
 - `Main` sets the vertical rhythm: content starts 16px below the header (24px from `sm`), and the page ends with 48px (64px from `sm`). A page root sets no outer padding.
 - `width` on `DashboardPage` sets the content column, and a narrower column centers.
-- Use `full` for lists, tables, and dashboards, `content` for details, forms, wizards, and about pages, `prose` for articles, notifications, and course completion, and `wide` for the course player.
+- Use `full` for lists, tables, and dashboards, `content` for details, forms, and wizards, `prose` for notifications and course completion, and `wide` for the course player. About, help, docs articles, and the course overview use `full`.
 - A `Tabs` provider that wraps the shell sets `gap-0`, so the header keeps its gap to the content.
 
 ### Page titles
@@ -127,3 +127,13 @@ After (the first block is a `DataTable` card, so `overlap` is set):
   <AdminUsersContent />
 </DashboardPage>
 ```
+
+## Courses, docs, help, and about on the band
+
+- `/courses`: `CourseListDescription`, `CourseListActions`, and `CourseListTabsList` fill the `description`, `actions`, and `breadcrumb` props. `CourseListTabs` is the `provider`, so the tab list in the band and the tab content share one `Tabs` root. The toolbar holds only the filters.
+- Course overview, completion, and article pages pass `header`: an async component that loads the cached record and renders `DashboardHeader` (`CourseOverviewHeader`, `CourseCompleteHeader`, `ArticleHeader`). The `Suspense` fallback is a bare `DashboardHeader`, so no new loading state appears.
+- Chips inside the band use `bg-band-scrim text-band-foreground`. Never use a `Badge` tone there.
+- Band buttons use `band` (primary) and `band-secondary`. A shared button that sits only in a band takes those variants directly.
+- The course editor passes `header={<CourseHeader />}` and `provider={CourseEditorTabs}`. `CourseHeading` is a render prop that gives the editable title, description, icon, and length counter to `DashboardHeader`, whose `heading` prop replaces the `h1` content while `title` still feeds the breadcrumb.
+- The player, completion, skill framework, docs article, and about pages use `overlap` because their first block is an opaque card. Help, courses, docs, and the overview start after a clean gap.
+- The lesson reader overrides the vendored editor border from outside with a `[&_[data-slate-editor]]` wrapper, never inside `ui/rich-text-editor/`.

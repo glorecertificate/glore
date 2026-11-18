@@ -40,7 +40,7 @@ export const PasswordInput = ({
         {...props}
       />
       <Button
-        className="absolute top-1/2 right-1.5 size-6 -translate-y-1/2 rounded-full p-0 has-[>svg]:px-3"
+        className="touch-hit absolute top-1/2 right-1.5 size-6 -translate-y-1/2 rounded-full p-0 has-[>svg]:px-3"
         disabled={disabled}
         onClick={() => setPasswordVisible(prev => !prev)}
         size="sm"

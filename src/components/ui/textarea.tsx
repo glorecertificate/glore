@@ -27,7 +27,7 @@ export const Textarea = ({ autoFocus, className, ring = true, ...props }: Textar
     <textarea
       autoFocus={autoFocus}
       className={cn(
-        'flex field-sizing-content min-h-16 w-full rounded-md border border-border-strong bg-field px-3 py-2 text-base transition-[color,border-color] outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm',
+        'flex field-sizing-content min-h-16 w-full rounded-md border border-border-strong bg-field px-3 py-2 text-base transition-[color,border-color] outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm pointer-coarse:text-base',
         ring && 'focus-visible:focus-ring-inset',
         className
       )}

@@ -430,7 +430,7 @@ export const SortableItemHandle = (
       {...(isDisabled ? {} : itemContext.attributes)}
       {...(isDisabled ? {} : itemContext.listeners)}
       className={cn(
-        'select-none disabled:cursor-not-allowed',
+        'touch-hit select-none disabled:cursor-not-allowed',
         context.flatCursor ? 'cursor-default' : 'cursor-grab data-dragging:cursor-grabbing',
         className
       )}

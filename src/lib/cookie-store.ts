@@ -1,0 +1,83 @@
+import 'server-only'
+
+import {
+  COOKIE_OPTIONS,
+  COOKIE_PREFIX,
+  type CookieName,
+  type CookieOptions,
+  type CookieValue,
+  prefixCookieName,
+} from '@/lib/cookies'
+import { LOCALES, LOCALE_COOKIE } from '@/lib/i18n'
+
+export const cookies = async () => {
+  const { cookies: nextCookies } = await import('next/headers')
+  const { get, set, delete: deleteCookie } = await nextCookies()
+
+  return {
+    get: <T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) => {
+      const { fallback, prefix = COOKIE_PREFIX } = options ?? {}
+      const value = get(prefixCookieName(name, prefix))?.value
+      try {
+        if (!value) throw Error()
+        return JSON.parse(value) as CookieValue<T>
+      } catch {
+        return (value ?? fallback) as CookieValue<T>
+      }
+    },
+    set: <T extends CookieName>(
+      name: T,
+      value: CookieValue<T>,
+      options?: CookieOptions<Omit<CookieInit, 'name' | 'value'> & { httpOnly?: boolean }>
+    ) => {
+      const { domain, expires, prefix = COOKIE_PREFIX, ...cookieOptions } = options ?? {}
+      const cookieName = prefixCookieName(name, prefix)
+      const cookieValue = typeof value === 'string' ? value : JSON.stringify(value)
+      set(cookieName, cookieValue, {
+        ...COOKIE_OPTIONS,
+        ...cookieOptions,
+        domain: domain ?? undefined,
+        expires: expires ?? undefined,
+      })
+    },
+    delete: (name: CookieName, options?: CookieOptions) => {
+      const { prefix = COOKIE_PREFIX } = options ?? {}
+      deleteCookie(prefixCookieName(name, prefix))
+    },
+  }
+}
+
+export const getCookie = async <T extends CookieName>(
+  name: T,
+  options?: CookieOptions<{
+    fallback?: CookieValue<T>
+  }>
+) => {
+  const { get } = await cookies()
+  return get(name, options)
+}
+
+export const setCookie = async <T extends CookieName>(
+  name: T,
+  value: CookieValue<T>,
+  options?: CookieOptions<Omit<CookieInit, 'name' | 'value'> & { httpOnly?: boolean }>
+) => {
+  const { set } = await cookies()
+  set(name, value, options)
+}
+
+export const deleteCookie = async (name: CookieName, options?: CookieOptions) => {
+  const { delete: remove } = await cookies()
+  remove(name, options)
+}
+
+export const getLocaleCookie = async () => {
+  const value = await getCookie(LOCALE_COOKIE, { prefix: false })
+  if (value && LOCALES.includes(value)) return value
+}
+
+export const applyUserLocale = async (stored: string | null | undefined) => {
+  const locale = LOCALES.find(item => item === stored)
+  if (!locale || locale === (await getLocaleCookie())) return
+  await setCookie(LOCALE_COOKIE, locale, { prefix: false })
+}

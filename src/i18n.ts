@@ -2,7 +2,7 @@ import 'server-only'
 
 import { getRequestConfig } from 'next-intl/server'
 
-import { getLocaleCookie } from '@/actions/cookies'
+import { getLocaleCookie } from '@/lib/cookie-store'
 import { TIME_ZONE } from '@/lib/i18n'
 import { loadMessages, resolveLocale } from '@/lib/messages'
 

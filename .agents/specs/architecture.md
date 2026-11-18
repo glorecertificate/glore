@@ -11,7 +11,7 @@ src/
 │   ├── account/        # delete.ts, export.ts, preferences.ts, sessions.ts ('use server'); deletion.ts (server-only core)
 │   ├── admin/          # audit.ts, certificates.ts, expire.ts, helpers.ts, impersonation.ts, impersonation-state.ts, options.ts, organizations.ts, overview.ts, pending.ts, settings.ts, team.ts, users.ts
 │   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, preview, revoke), public.ts (verification),
-│   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), pdf.ts (server-only), queries.ts
+│   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), holder-levels.ts (server-only: findHolderLevels, holderAssessments), pdf.ts (server-only), queries.ts
 │   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses; fetchCourseSummaries and listSessionCourseSummaries feed `CoursesProvider`), compass.ts, data.ts (server-only: learner reads),
 │   │                   #   learner.ts (server-only: learning context, overview), learning.ts (server-only: grading, finish lesson),
 │   │                   #   level-descriptions.ts (server-only cached read of the level descriptions),
@@ -26,7 +26,8 @@ src/
 │   ├── translations/   # states.ts, ai.ts (translateEntity), coverage.ts, server-only helpers.ts and effects.ts
 │   ├── shell/          # search.ts (palette lookups: certificates, members), scope.ts (pure per-role scopes), invitations.ts (viewer's pending invitations)
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
-│   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
+│   ├── cookies.ts      # 'use server': setLocaleCookie only, validated against LOCALES
+│   ├── user-data.ts    # server-only: findUser, fetchUser, queryUserById (no auth check, so never 'use server')
 │   ├── docs.ts         # Doc category + article CRUD, cached queries
 │   ├── guards.ts       # requireEditor and other action guards
 │   ├── i18n.ts         # getClientMessages: client-safe catalog for a locale switch
@@ -79,6 +80,7 @@ src/
 │   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum, per-record tag helpers
 │   ├── constants.ts    # Route roots, regex validators
+│   ├── cookie-store.ts # Server-only typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
 │   ├── cron.ts         # isAuthorizedCron
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail), TEMPLATES, renderEmail
@@ -158,6 +160,7 @@ src/
 - `getAuthUser()` also passes `disableRefresh`, so a read never rewrites the session cookie. A cookie write in an action makes Next.js re-render the page and drop prefetched routes. The proxy still extends the session on each request.
 - Keep cached render helpers in server-only modules.
 - Every export of a `'use server'` file is a client-callable action, so a cached fetch that takes a `userId` there would serve any user's data.
+- A read that takes an id and checks no caller (`findUser`, `findHolderLevels`) or a raw primitive (cookie get/set/delete) lives in a `server-only` module without `'use server'`. A `Next-Action` POST can call any exported action, so a `'use server'` export must check the caller and validate its arguments.
 - A page that must navigate instantly reads URL state on the client (nuqs) instead of awaiting `searchParams`.
 - The saved course-list filters (`gl_courseListParams`) redirect in `src/proxy.ts` for document requests and through `history.replaceState` in `useCourseListParams` on client navigation.
 - `checkRateLimit`, `getAuthUser()`, and the impersonation state await `connection()` before a clock read, such as the one in `auth.api.getSession`.

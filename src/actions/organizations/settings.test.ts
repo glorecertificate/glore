@@ -14,8 +14,9 @@ const storage = vi.hoisted(() => ({
 
 vi.mock('next/cache', () => ({ revalidateTag: vi.fn(), updateTag: vi.fn() }))
 vi.mock('@/actions/notifications/notify', () => ({ notify: vi.fn() }))
-vi.mock('@/actions/user', () => ({ findUser: vi.fn(), getCurrentUser: vi.fn() }))
-vi.mock('@/actions/cookies', () => ({ deleteCookie: vi.fn(), getCookie: vi.fn(), setCookie: vi.fn() }))
+vi.mock('@/actions/user', () => ({ getCurrentUser: vi.fn() }))
+vi.mock('@/actions/user-data', () => ({ findUser: vi.fn() }))
+vi.mock('@/lib/cookie-store', () => ({ deleteCookie: vi.fn(), getCookie: vi.fn(), setCookie: vi.fn() }))
 vi.mock('@/actions/organizations/helpers', async importOriginal => ({
   ...(await importOriginal<typeof import('@/actions/organizations/helpers')>()),
   getFreshCurrentUser: vi.fn(() => Promise.resolve({ id: 'owner', organizations: [] })),

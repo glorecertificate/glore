@@ -9,7 +9,6 @@ import { z } from 'zod'
 
 import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
 import { deleteOrganizationAsset } from '@/actions/certificates/snapshot-assets'
-import { deleteCookie, setCookie } from '@/actions/cookies'
 import {
   expireUserAccess,
   getFreshCurrentUser,
@@ -23,6 +22,7 @@ import { memberError, updateOrganization as updateOrganizationRecord } from '@/d
 import { certificates, organizationProfiles, organizations } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 import { SIGNATURE_CONTENT_TYPES } from '@/lib/constants'
+import { deleteCookie, setCookie } from '@/lib/cookie-store'
 import { LOCALES } from '@/lib/i18n'
 import { r2PresignAvatar, r2PresignSignature, r2VerifyAvatar } from '@/lib/storage'
 import { optionalHttpUrl } from '@/lib/url'

@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheTag, updateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
@@ -12,41 +12,23 @@ import { z } from 'zod'
 
 import { impersonationLocked } from '@/actions/admin/impersonation-state'
 import { getAuthUser } from '@/actions/auth'
-import { getCookie } from '@/actions/cookies'
+import { USER_NOT_FOUND, fetchUser, queryUserById } from '@/actions/user-data'
 import { db } from '@/db/client'
-import { safeQuery } from '@/db/helpers'
-import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { userTag } from '@/lib/cache'
 import { AUTH_ROOT, SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
+import { getCookie } from '@/lib/cookie-store'
 import { sendMail } from '@/lib/email'
 import { LOCALES } from '@/lib/i18n'
 import { isRateLimited } from '@/lib/rate-limit'
 import { isReservedUsername } from '@/lib/username'
 
-const USER_NOT_FOUND = 'User not found'
 const HOUR = 60 * 60 * 1000
 
 const isUniqueViolation = (error: unknown) =>
   (error instanceof Error && 'code' in error && error.code === '23505') ||
   (error instanceof Error && error.cause instanceof Error && 'code' in error.cause && error.cause.code === '23505')
-
-const queryUserById = async (id: string) => {
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, id),
-    with: userWith,
-  })
-  if (!user) throw new Error(USER_NOT_FOUND)
-  return parseUser(user)
-}
-
-const fetchUser = async (id: string) => {
-  'use cache'
-  cacheTag(userTag(id))
-
-  return await safeQuery(() => queryUserById(id))
-}
 
 export const getCurrentUser = cache(async () => {
   const authUser = await getAuthUser()
@@ -58,15 +40,6 @@ export const getCurrentUser = cache(async () => {
 
   return data
 })
-
-export const findUser = async (id: string, { cache: useCache = true }: { cache?: boolean } = {}) => {
-  if (!useCache) return await queryUserById(id)
-
-  const { data, error } = await fetchUser(id)
-  if (error || !data) throw new Error(error?.message ?? USER_NOT_FOUND)
-
-  return data
-}
 
 const optionalText = (max: number) =>
   z

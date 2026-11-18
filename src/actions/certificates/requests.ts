@@ -18,7 +18,8 @@ import {
   membershipRole,
   requireRateLimitedUser,
 } from '@/actions/certificates/helpers'
-import { findHolderLevels, getCertificateEligibility } from '@/actions/certificates/queries'
+import { findHolderLevels } from '@/actions/certificates/holder-levels'
+import { getCertificateEligibility } from '@/actions/certificates/queries'
 import { getActiveOrgId } from '@/actions/user'
 import {
   generateCertificateCode,

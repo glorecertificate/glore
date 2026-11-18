@@ -8,7 +8,6 @@ import { and, count, desc, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { assertNotImpersonating } from '@/actions/admin/impersonation-state'
-import { deleteCookie, getCookie, setCookie } from '@/actions/cookies'
 import { notify } from '@/actions/notifications/notify'
 import {
   expireUserAccess,
@@ -26,6 +25,7 @@ import { canManageMemberRole } from '@/db/queries/organization'
 import { SKILL_LEVELS, type SkillLevel } from '@/db/queries/skill-level-description'
 import { certificates, courses, memberships, organizations, userAssessments, userCourses } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
+import { deleteCookie, getCookie, setCookie } from '@/lib/cookie-store'
 import { fullName } from '@/lib/utils'
 
 const roleSchema = z.enum(['learner', 'representative', 'tutor', 'volunteer'])

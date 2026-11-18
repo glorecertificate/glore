@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 
 import { count, eq } from 'drizzle-orm'
 import { z } from 'zod'
@@ -150,7 +150,7 @@ export const confirmOrganizationSignature = async (key: string, organizationId?:
       .values({ organizationId: access.organizationId, signatureUrl })
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { signatureUrl } })
     if (current?.signatureUrl) await deleteOrganizationAsset(current.signatureUrl)
-    revalidateTag(CacheTag.Organizations, 'max')
+    updateTag(CacheTag.Organizations)
     return { signatureUrl }
   })
 
@@ -163,7 +163,7 @@ export const removeOrganizationSignature = async (organizationId?: number) =>
       .values({ organizationId: access.organizationId, signatureUrl: null })
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { signatureUrl: null } })
     if (current?.signatureUrl) await deleteOrganizationAsset(current.signatureUrl)
-    revalidateTag(CacheTag.Organizations, 'max')
+    updateTag(CacheTag.Organizations)
     return { signatureUrl: null }
   })
 
@@ -183,7 +183,7 @@ export const deleteOrganization = async (organizationId?: number) =>
     ])
     await db.delete(organizations).where(eq(organizations.id, access.organizationId))
     expireUserAccess(memberIds)
-    revalidateTag(CacheTag.Organizations, 'max')
+    updateTag(CacheTag.Organizations)
     if (profile?.avatarUrl) await deleteOrganizationAsset(profile.avatarUrl)
     if (profile?.signatureUrl) await deleteOrganizationAsset(profile.signatureUrl)
 

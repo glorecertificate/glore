@@ -1,16 +1,16 @@
 import 'server-only'
 
-import { listUnassignedOrgCertificates } from '@/actions/certificates/queries'
+import { loadUnassignedCertificates } from '@/actions/certificates/lists'
 import { type ManagerSummary, summarizeWaiting } from '@/actions/dashboard/core'
-import { getOrganizationPanel } from '@/actions/organizations/queries'
+import { loadOrganizationPanel } from '@/actions/organizations/panel-data'
 
 const ACTIVITY_PREVIEW = 5
 const AVATAR_PREVIEW = 5
 
 export const loadManagerSummary = async (now: number): Promise<ManagerSummary | null> => {
   const [{ data: panel }, { data: unassigned }] = await Promise.all([
-    getOrganizationPanel(),
-    listUnassignedOrgCertificates(),
+    loadOrganizationPanel(),
+    loadUnassignedCertificates(),
   ])
   if (!panel) return null
 

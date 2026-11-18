@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { revalidateTag, updateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 import { cache } from 'react'
 
 import { eq } from 'drizzle-orm'
@@ -50,9 +50,9 @@ export const revalidateOrganizationMembers = async (organizationId: number) => {
     where: eq(memberships.organizationId, organizationId),
   })
 
-  revalidateTag(CacheTag.Organizations, 'max')
+  updateTag(CacheTag.Organizations)
   for (const { userId } of members) {
-    revalidateTag(userTag(userId), 'max')
+    updateTag(userTag(userId))
   }
 }
 

@@ -8,7 +8,7 @@ import {
   loadUnassignedCertificates,
   loadUserCertificates,
 } from '@/actions/certificates/lists'
-import { listOrgTutors } from '@/actions/organizations/queries'
+import { loadOrgTutors } from '@/actions/organizations/panel-data'
 import { getViewerContext } from '@/actions/viewer'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
 import { OrganizationCertificates } from '@/components/features/certificates/organization-certificates'
@@ -24,7 +24,7 @@ const CertificatesPageContent = async () => {
   if (activeOrgId && (role === 'admin' || role === 'representative')) {
     const [{ data: certificates }, { data: tutors }] = await Promise.all([
       loadOrganizationCertificates(activeOrgId),
-      listOrgTutors(activeOrgId),
+      loadOrgTutors(activeOrgId),
     ])
     return <OrganizationCertificates certificates={certificates ?? []} tutors={tutors ?? []} />
   }

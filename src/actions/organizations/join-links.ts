@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
@@ -49,7 +49,7 @@ export const joinOrganizationThroughLink = async (token: string) =>
     if (outcome.kind === 'joined') {
       await notify(outcome.event)
       expireUserAccess([user.id])
-      revalidateTag(CacheTag.Organizations, 'max')
+      updateTag(CacheTag.Organizations)
       await setCookie('org', outcome.organization.id)
       return { kind: 'joined' as const }
     }

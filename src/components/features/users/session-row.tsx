@@ -22,6 +22,8 @@ export const SessionRow = ({
   const format = useFormatter()
   const now = useNow({ updateInterval: 60_000 })
   const { browser, system } = describeUserAgent(session.userAgent)
+  const formattedIp = session.ipAddress ? formatIpAddress(session.ipAddress) : ''
+  const ip = formattedIp.replaceAll(':', '') ? formattedIp : ''
   const mobile = system === 'iOS' || system === 'Android'
   const device =
     browser && system ? t('sessionDevice', { browser, system }) : (browser ?? system ?? t('sessionUnknown'))
@@ -30,13 +32,13 @@ export const SessionRow = ({
     <li className="flex items-center gap-3 py-3" data-testid="session-row">
       <LucideIcon className="size-5 shrink-0 text-muted-foreground" name={mobile ? 'smartphone' : 'monitor'} />
       <div className="min-w-0 flex-1">
-        <p className="flex flex-wrap items-center gap-2 text-sm font-medium">
+        <p className="flex flex-wrap items-center gap-2 type-label">
           <span className="truncate">{device}</span>
           {session.current && <Badge variant="muted">{t('sessionCurrent')}</Badge>}
         </p>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="truncate type-caption text-muted-foreground">
           {t('sessionActive', { time: format.relativeTime(new Date(session.updatedAt), now) })}
-          {session.ipAddress ? ` · ${formatIpAddress(session.ipAddress)}` : ''}
+          {ip ? ` · ${ip}` : ''}
         </p>
       </div>
       {!session.current && (

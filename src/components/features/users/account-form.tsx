@@ -37,7 +37,7 @@ export const AccountForm = () => {
   const actionError = useActionError()
 
   const accountSchema = z.object({
-    email: z.email(),
+    email: z.email({ message: t('emailInvalid') }),
     locale: z.enum(LOCALES).optional().or(z.literal('')),
     username: z
       .string()
@@ -51,6 +51,7 @@ export const AccountForm = () => {
 
   const form = useForm<z.infer<typeof accountSchema>>({
     defaultValues: defaults(user),
+    mode: 'onTouched',
     resolver: zodResolver(accountSchema),
   })
 

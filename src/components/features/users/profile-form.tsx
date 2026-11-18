@@ -24,7 +24,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
 import { PhoneInput } from '@/components/ui/phone-input'
@@ -38,6 +38,7 @@ import { type Any } from '@/lib/types'
 import i18nConfig from '~/config/i18n.json'
 
 const FIELDS = ['firstName', 'lastName', 'bio', 'phone', 'birthday', 'sex', 'pronouns', 'city', 'country'] as const
+const BIO_MAX = 1000
 const PRONOUNS = ['she/her', 'he/him', 'they/them', 'ze/zir', 'other'] as const
 
 export const ProfileForm = () => {
@@ -50,18 +51,35 @@ export const ProfileForm = () => {
   const [removingAvatar, setRemovingAvatar] = useState(false)
 
   const formSchema = z.object({
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    bio: z.string().optional(),
-    phone: z.string().optional(),
+    firstName: z
+      .string()
+      .trim()
+      .min(1, { message: t('firstNameRequired') })
+      .max(100, { message: t('tooLong', { max: 100 }) }),
+    lastName: z
+      .string()
+      .max(100, { message: t('tooLong', { max: 100 }) })
+      .optional(),
+    bio: z
+      .string()
+      .max(BIO_MAX, { message: t('tooLong', { max: BIO_MAX }) })
+      .optional(),
+    phone: z
+      .string()
+      .max(40, { message: t('tooLong', { max: 40 }) })
+      .optional(),
     birthday: z.string().optional(),
     sex: z.enum(['female', 'male', 'non-binary', 'unspecified']).optional().or(z.literal('')),
     pronouns: z.string().optional(),
-    city: z.string().optional(),
+    city: z
+      .string()
+      .max(100, { message: t('tooLong', { max: 100 }) })
+      .optional(),
     country: z.string().optional(),
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
+    mode: 'onTouched',
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: user.firstName ?? '',
@@ -188,6 +206,7 @@ export const ProfileForm = () => {
                     <FormLabel>{t('firstName')}</FormLabel>
                     <FormControl>
                       <Input
+                        autoComplete="given-name"
                         disabled={form.formState.isSubmitting}
                         placeholder={t('firstNamePlaceholder')}
                         {...field}
@@ -204,7 +223,12 @@ export const ProfileForm = () => {
                   <FormItem>
                     <FormLabel>{t('lastName')}</FormLabel>
                     <FormControl>
-                      <Input disabled={form.formState.isSubmitting} placeholder={t('lastNamePlaceholder')} {...field} />
+                      <Input
+                        autoComplete="family-name"
+                        disabled={form.formState.isSubmitting}
+                        placeholder={t('lastNamePlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,6 +249,9 @@ export const ProfileForm = () => {
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription className="text-right tabular-nums">
+                    {t('bioCount', { count: field.value?.length ?? 0, max: BIO_MAX })}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -328,7 +355,12 @@ export const ProfileForm = () => {
                   <FormItem>
                     <FormLabel>{t('city')}</FormLabel>
                     <FormControl>
-                      <Input disabled={form.formState.isSubmitting} placeholder={t('cityPlaceholder')} {...field} />
+                      <Input
+                        autoComplete="address-level2"
+                        disabled={form.formState.isSubmitting}
+                        placeholder={t('cityPlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

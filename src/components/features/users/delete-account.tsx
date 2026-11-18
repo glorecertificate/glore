@@ -57,9 +57,9 @@ export const DeleteAccount = () => {
 
   return (
     <SettingsSection description={t('dangerZoneDescription')} title={t('dangerZone')}>
-      <Card className="border-destructive/20 bg-destructive/5">
+      <Card className="border-danger-border bg-danger-subtle">
         <CardHeader>
-          <CardTitle className="text-base text-destructive-text">{t('deleteAccountTitle')}</CardTitle>
+          <CardTitle className="type-heading text-danger-text">{t('deleteAccountTitle')}</CardTitle>
           <CardDescription>{t('deleteAccountDescription')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

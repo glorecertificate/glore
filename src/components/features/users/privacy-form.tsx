@@ -12,6 +12,7 @@ import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useSession } from '@/components/providers/session'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import { toast } from '@/components/ui/toast'
 import { timestampMillis } from '@/db/queries/organization'
@@ -76,7 +77,7 @@ export const PrivacyForm = () => {
         </div>
       </SettingsSection>
 
-      <div className="my-8 border-t" />
+      <Separator className="my-10" />
 
       <SettingsSection description={t('featuredCertificateDescription')} title={t('featuredCertificate')}>
         {!data && <LoadingFallback className="h-16" />}
@@ -92,14 +93,14 @@ export const PrivacyForm = () => {
           >
             {certificates.map(certificate => (
               <Label
-                className="flex cursor-pointer items-center gap-3 rounded-lg border p-4 font-normal"
+                className="flex cursor-pointer items-center gap-3 rounded-lg border p-4 font-normal transition-colors has-data-[state=checked]:border-action-border has-data-[state=checked]:bg-action-subtle"
                 htmlFor={`certificate-${certificate.id}`}
                 key={certificate.id}
               >
                 <RadioGroupItem id={`certificate-${certificate.id}`} value={String(certificate.id)} />
                 <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-sm font-medium">{certificate.organizationName}</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="truncate type-label">{certificate.organizationName}</span>
+                  <span className="type-caption text-muted-foreground">
                     {certificate.issuedAt
                       ? t('featuredCertificateIssued', {
                           date: format.dateTime(timestampMillis(certificate.issuedAt), { dateStyle: 'long' }),

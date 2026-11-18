@@ -36,6 +36,7 @@ export const PasswordForm = () => {
 
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: { confirmPassword: '', currentPassword: '', newPassword: '' },
+    mode: 'onTouched',
     resolver: zodResolver(schema),
   })
 

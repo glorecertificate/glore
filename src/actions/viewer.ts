@@ -16,7 +16,11 @@ export const getViewer = cache(async () => {
   if (error?.message === USER_NOT_FOUND) redirect(SESSION_ROOT)
   if (error || !data) throw new Error(error?.message ?? USER_NOT_FOUND)
 
-  return data
+  if (session.banned) redirect(SESSION_ROOT)
+
+  const isAdmin = session.role === 'admin'
+  const isEditor = Boolean(session.isEditor)
+  return { ...data, canEdit: isAdmin || isEditor, isAdmin, isEditor, role: session.role ?? data.role }
 })
 
 export const getViewerOrgId = cache(async () => {

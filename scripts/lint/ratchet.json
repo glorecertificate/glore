@@ -1,7 +1,4 @@
 {
-  "src/app": {
-    "no-arbitrary-value": 1
-  },
   "src/app/legal/accept": {
     "no-arbitrary-value": 1
   },

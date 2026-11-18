@@ -15,7 +15,7 @@ const NO_EDGES: ScrollEdges = { end: false, scrollable: false, start: false }
 export const useScrollEdges = <T extends HTMLElement>() => {
   const [edges, setEdges] = useState(NO_EDGES)
 
-  const ref = (node: T | null) => {
+  const [ref] = useState(() => (node: T | null) => {
     if (!node) return
 
     const update = () => {
@@ -37,7 +37,7 @@ export const useScrollEdges = <T extends HTMLElement>() => {
       node.removeEventListener('scroll', update)
       observer.disconnect()
     }
-  }
+  })
 
   return { ...edges, ref }
 }

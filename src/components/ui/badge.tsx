@@ -19,9 +19,7 @@ export const Badge = ({
 }: Omit<React.ComponentProps<'span'>, 'color'> &
   Omit<VariantProps<typeof badgeVariants>, 'pill'> & {
     asChild?: boolean
-    /** Renders the badge as a pill counter, capped at `max`. */
     count?: number
-    /** @default 99 */
     max?: number
   }) => {
   const Component = asChild ? Slot : 'span'
@@ -49,13 +47,13 @@ const badgeVariants = cva(
       variant: 'primary',
     },
     compoundVariants: [
-      { pill: true, size: 'sm', className: 'h-4 min-w-4' },
-      { pill: true, size: 'default', className: 'h-5 min-w-5' },
-      { pill: true, size: 'lg', className: 'h-6 min-w-6' },
+      { pill: true, size: 'sm', className: 'h-4 min-w-4 px-1 py-0' },
+      { pill: true, size: 'default', className: 'h-5 min-w-5 px-1.5 py-0' },
+      { pill: true, size: 'lg', className: 'h-6 min-w-6 px-2 py-0' },
     ],
     variants: {
       pill: {
-        true: 'rounded-full px-1.5 py-0 font-medium tabular-nums',
+        true: 'rounded-full font-medium tabular-nums',
         false: '',
       },
       size: {

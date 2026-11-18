@@ -14,7 +14,7 @@ export interface GlobeColorOptions {
   markerColor?: Rgb | Rgb[]
 }
 
-export interface GlobeOptions
+interface GlobeOptions
   extends
     Omit<
       COBEOptions,

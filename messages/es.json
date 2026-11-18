@@ -2,7 +2,7 @@
   "Metadata": {
     "description": "GloRe es una red abierta de ONG que certifican las habilidades blandas que se adquieren con el voluntariado. Haz los cursos, solicita tu certificado y cualquiera podrá verificarlo en línea.",
     "keywords": "GloRe, voluntariado, red global, ONG, certificado, habilidades blandas, cursos, aprendizaje, comunidad",
-    "pwaDescription": "Instala GloRe en tu dispositivo para acceder a los cursos y gestionar tus certificados sin conexión.",
+    "pwaDescription": "Instala GloRe en tu dispositivo para abrirlo desde la pantalla de inicio. Sin conexión, verás una página que te avisa de que estás sin conexión.",
     "title": "GloRe Certificate"
   },
   "Common": {
@@ -684,6 +684,9 @@
     "Chart": {
       "empty": "Todavía no hay datos",
       "label": "Categoría"
+    },
+    "InfoTip": {
+      "label": "Más información"
     },
     "Dialog": {
       "close": "Cerrar"

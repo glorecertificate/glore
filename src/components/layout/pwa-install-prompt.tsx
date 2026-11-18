@@ -11,6 +11,7 @@ const TOAST_ID = 'pwa-install'
 const STORAGE_KEY = 'pwaInstallDismissedAt'
 const SNOOZE_MS = 14 * 24 * 60 * 60 * 1000
 const DELAY_MS = 4000
+const TOAST_DURATION_MS = 15_000
 
 const isSnoozed = () => {
   try {
@@ -39,8 +40,9 @@ export const PwaInstallPrompt = () => {
       action: canInstall ? { label: t('installButton'), onClick: () => void promptInstall() } : undefined,
       cancel: { label: t('installDismiss'), onClick: snooze },
       description: canInstall ? t('installDescription') : t('installIosHint'),
-      duration: Number.POSITIVE_INFINITY,
+      duration: TOAST_DURATION_MS,
       id: TOAST_ID,
+      onAutoClose: snooze,
       onDismiss: snooze,
     })
   })

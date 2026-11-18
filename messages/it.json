@@ -2,7 +2,7 @@
   "Metadata": {
     "description": "GloRe è una rete aperta di ONG che certificano le soft skill acquisite con il volontariato. Segui i corsi, richiedi il certificato e chiunque potrà verificarlo online.",
     "keywords": "GloRe, volontariato, rete globale, ONG, certificato, soft skill, corsi, apprendimento, comunità",
-    "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi e gestire i tuoi certificati offline.",
+    "pwaDescription": "Installa GloRe sul tuo dispositivo per aprirlo dalla schermata Home. Senza connessione vedrai una pagina che ti avvisa che sei offline.",
     "title": "GloRe Certificate"
   },
   "Common": {
@@ -684,6 +684,9 @@
     "Chart": {
       "empty": "Non ci sono ancora dati",
       "label": "Categoria"
+    },
+    "InfoTip": {
+      "label": "Altre informazioni"
     },
     "Dialog": {
       "close": "Chiudi"

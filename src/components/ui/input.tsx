@@ -41,9 +41,9 @@ export const inputVariants = cva(
         true: 'focus-visible:focus-ring-inset',
       },
       size: {
-        xs: 'h-7 px-2 text-base md:text-xs',
-        sm: 'h-8 px-2.5 text-base md:text-sm',
-        md: 'h-9 px-3 text-base md:text-sm',
+        xs: 'h-7 px-2 text-base md:text-xs pointer-coarse:text-base',
+        sm: 'h-8 px-2.5 text-base md:text-sm pointer-coarse:text-base',
+        md: 'h-9 px-3 text-base md:text-sm pointer-coarse:text-base',
         lg: 'h-11 px-3.5 text-base',
       },
       variant: {

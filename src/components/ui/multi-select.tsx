@@ -149,7 +149,7 @@ export const MultiSelectTrigger = ({
           <PopoverTrigger
             aria-label={label}
             className={cn(
-              'my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:focus-ring-inset disabled:cursor-not-allowed',
+              'touch-hit my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:focus-ring-inset disabled:cursor-not-allowed',
               open && 'cursor-default bg-accent/50'
             )}
             disabled={disabled}
@@ -212,7 +212,7 @@ export const MultiSelectBadge = ({
     <Badge
       asChild
       className={cn(
-        'group/multi-select-badge gap-0.5 px-2',
+        'group/multi-select-badge touch-hit-y gap-0.5 px-2 pointer-coarse:overflow-visible',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         className
       )}

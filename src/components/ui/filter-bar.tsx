@@ -27,7 +27,7 @@ export const FilterBar = ({ active = false, children, className, onClear, ref, .
 
   return (
     <div
-      className={cn('flex min-w-0 flex-1 flex-wrap items-center gap-2', className)}
+      className={cn('flex min-w-0 flex-1 flex-wrap items-center gap-2 pointer-coarse:gap-3', className)}
       data-slot="filter-bar"
       ref={composedRef}
       {...props}

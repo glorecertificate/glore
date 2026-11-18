@@ -23,7 +23,7 @@ export const Switch = ({
   size,
   ...props
 }: React.ComponentProps<typeof SwitchPrimitive.Root> & VariantProps<typeof switchVariants>) => (
-  <SwitchPrimitive.Root className={cn(switchVariants({ size }), className)} data-slot="switch" {...props}>
+  <SwitchPrimitive.Root className={cn(switchVariants({ size }), 'touch-hit', className)} data-slot="switch" {...props}>
     <SwitchPrimitive.Thumb
       className="pointer-events-none block translate-x-0 rounded-full bg-surface-0 shadow-xs transition-transform duration-150 ease-out motion-reduce:transition-none dark:data-[state=unchecked]:bg-foreground"
       data-slot="switch-thumb"

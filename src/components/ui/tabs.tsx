@@ -50,7 +50,8 @@ export const TabsList = ({
   const maskImage = scrollEdgesMask({ end, start })
   const classNames = cn(
     'inline-flex h-9 w-fit max-w-full scrollbar-none items-center justify-center rounded-lg bg-muted p-0.5',
-    scrollable && 'justify-start overflow-x-auto',
+    scrollable &&
+      'justify-start overflow-x-auto tabs-scroll-band pointer-coarse:-my-1 pointer-coarse:h-11 pointer-coarse:rounded-xl pointer-coarse:py-1.5',
     className
   )
   const listStyle = { ...style, maskImage, WebkitMaskImage: maskImage }
@@ -78,7 +79,7 @@ export const TabsContent = ({ className, ...props }: React.ComponentProps<typeof
 
 const tabsTriggerVariants = cva(
   [
-    'group/tabs-trigger inline-flex h-full flex-1 items-center justify-center rounded-md border border-transparent leading-0 whitespace-nowrap text-muted-foreground/90 transition-[color,background-color,box-shadow] duration-150 select-none hover:text-foreground disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-none',
+    'group/tabs-trigger touch-hit-y inline-flex h-full flex-1 items-center justify-center rounded-md border border-transparent leading-0 whitespace-nowrap text-muted-foreground/90 transition-[color,background-color,box-shadow] duration-150 select-none hover:text-foreground disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-none',
     'focus-visible:focus-ring-inset',
     'data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground! data-[state=active]:shadow-sm dark:text-muted-foreground dark:data-[state=active]:border-border dark:data-[state=active]:bg-surface-selected dark:data-[state=active]:text-foreground',
     '[&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',

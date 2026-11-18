@@ -106,7 +106,7 @@ export const ToolbarButton = ({
 }
 
 const toolbarButtonVariants = cva(
-  `inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm text-sm font-medium whitespace-nowrap transition-[color,box-shadow] transition-discrete outline-none hover:bg-muted/50 focus-visible:focus-ring-inset disabled:pointer-events-none disabled:opacity-50 aria-checked:bg-accent aria-checked:text-accent-foreground aria-expanded:cursor-default! aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`,
+  `touch-hit inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm text-sm font-medium whitespace-nowrap transition-[color,box-shadow] transition-discrete outline-none hover:bg-muted/50 focus-visible:focus-ring-inset disabled:pointer-events-none disabled:opacity-50 aria-checked:bg-accent aria-checked:text-accent-foreground aria-expanded:cursor-default! aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`,
   {
     defaultVariants: {
       size: 'default',
@@ -116,8 +116,8 @@ const toolbarButtonVariants = cva(
       size: {
         default: 'h-9 min-w-9 px-2',
         lg: 'h-10 min-w-10 px-2.5',
-        sm: 'h-8 min-w-8 px-1.5',
-        xs: 'h-7 min-w-7 px-1 [&_svg]:size-3.5!',
+        sm: 'h-8 min-w-8 px-1.5 pointer-coarse:mx-0.5',
+        xs: 'h-7 min-w-7 px-1 pointer-coarse:mx-1 [&_svg]:size-3.5!',
       },
       variant: {
         default: 'bg-transparent',
@@ -202,7 +202,7 @@ export const ToolbarSplitButtonSecondary = ({
 )
 
 const dropdownArrowVariants = cva(
-  `inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50`,
+  `touch-hit-y inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50`,
   {
     defaultVariants: {
       size: 'sm',
@@ -240,7 +240,7 @@ export const ToolbarGroup = ({
   separator?: boolean
 }) => (
   <div className={cn('group/toolbar-group relative hidden has-[button]:flex', className)}>
-    <div className="flex items-center gap-1">{children}</div>
+    <div className="flex items-center gap-1 pointer-coarse:gap-2">{children}</div>
 
     {separator && (
       <div className="mx-1.5 py-0.5 group-last/toolbar-group:hidden!">

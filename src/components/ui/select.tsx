@@ -22,7 +22,7 @@ export type SelectTriggerProps = SelectPrimitive.SelectTriggerProps
 
 export const selectTriggerVariants = cva(
   [
-    'flex items-center justify-between gap-1 rounded-md border border-border-strong bg-field text-sm transition-[color,background-color,border-color] outline-none not-disabled:cursor-pointer',
+    'touch-hit flex items-center justify-between gap-1 rounded-md border border-border-strong bg-field text-sm transition-[color,background-color,border-color] outline-none not-disabled:cursor-pointer',
     'hover:not-disabled:bg-accent/50 focus-visible:not-disabled:focus-ring-inset',
     "disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive data-placeholder:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>span]:line-clamp-1",
   ],
@@ -107,7 +107,7 @@ export const SelectItem = ({
 }) => (
   <SelectPrimitive.Item
     className={cn(
-      `relative flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none not-disabled:cursor-pointer focus:bg-accent focus:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2`,
+      `relative flex touch-row w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none not-disabled:cursor-pointer focus:bg-accent focus:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2`,
       indicator ? 'pr-8' : '[&>span]:w-full',
       className
     )}

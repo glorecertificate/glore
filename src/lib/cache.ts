@@ -6,6 +6,7 @@ export enum CacheTag {
   Courses = 'courses',
   DocCategories = 'doc-categories',
   Legal = 'legal',
+  MessageOverrides = 'message-overrides',
   Messages = 'messages',
   Notifications = 'notifications',
   Organizations = 'organizations',

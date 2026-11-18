@@ -7,6 +7,7 @@ import { unstable_rethrow } from 'next/navigation'
 import { and, desc, eq } from 'drizzle-orm'
 
 import { authorizeEditor, authorizeMessage, inspectMessage } from '@/actions/message-helpers'
+import { expireMessageOverrides } from '@/actions/message-overrides-cache'
 import { db, transaction } from '@/db/client'
 import { isMessageError, saveMessageDraft as saveDraft } from '@/db/mutations/message-override'
 import { messageTargetSchema } from '@/db/queries/message-override'
@@ -118,6 +119,7 @@ export const suggestMessage = async (input: { key: string; locale: string }) => 
         value: suggestion.value,
       })
     )
+    expireMessageOverrides()
     return { data: { key, locale, value: suggestion.value } }
   } catch (error) {
     unstable_rethrow(error)

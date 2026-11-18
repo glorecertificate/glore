@@ -8,13 +8,28 @@ export interface ReadingHeading {
 const HEADING = /^ {0,3}(#{1,3})[ \t]+(.+?)(?:[ \t]+#+)?[ \t]*$/u
 const FENCE = /^ {0,3}(`{3,}|~{3,})([^\r\n]*)/u
 
-const plain = (value: string) =>
-  value
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/gu, '$1')
-    .replace(/(\*{1,3}|~~)(?=\S)([^*~]*?\S)\1/gu, '$2')
-    .replace(/(^|\s)(_{1,3})(?=\S)([^_]*?\S)\2(?=\s|$)/gu, '$1$3')
-    .replace(/`([^`]*)`/gu, '$1')
-    .trim()
+const STAR = /(\*{1,3}|~~)(?=\S)([^*~]+?)(?<=\S)\1/gu
+const UNDERSCORE = /(^|[\s\p{P}])(_{1,3})(?=\S)([^_]+?)(?<=\S)\2(?=[\s\p{P}]|$)/gu
+const PLACEHOLDER = /\uE000(\d+)\uE001/gu
+
+const stripEmphasis = (value: string) => {
+  let current = value
+  for (;;) {
+    const next = current.replace(STAR, '$2').replace(UNDERSCORE, '$1$3')
+    if (next === current) return next
+    current = next
+  }
+}
+
+const plain = (value: string) => {
+  const kept: string[] = []
+  const keep = (text: string) => `\uE000${kept.push(text) - 1}\uE001`
+  const withoutLiterals = value
+    .replace(/`+([^`]*?)`+/gu, (_match, code: string) => keep(code))
+    .replace(/\\([!-/:-@[-`{-~])/gu, (_match, char: string) => keep(char))
+  const text = stripEmphasis(withoutLiterals.replace(/!?\[([^\]]*)\]\([^)]*\)/gu, '$1'))
+  return text.replace(PLACEHOLDER, (_match, index: string) => kept[Number(index)] ?? '').trim()
+}
 
 const slugifyHeading = (value: string) =>
   value

@@ -1301,7 +1301,7 @@
   "Docs": {
     "title": "Documentazione",
     "description": "Guide e tutorial per usare GloRe.",
-    "empty": "Non ci sono ancora documenti. Torna più tardi.",
+    "empty": "Non c’è ancora documentazione. Torna più tardi.",
     "draft": "Bozza",
     "lastUpdated": "Ultimo aggiornamento: {date}",
     "editor": {

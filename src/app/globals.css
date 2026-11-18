@@ -160,6 +160,9 @@
   --color-band-text: var(--band-text);
   --color-band-scrim: var(--band-scrim);
   --color-band-border: var(--band-border);
+  --color-action-foreground: var(--action-foreground);
+  --color-nav-foreground: var(--nav-foreground);
+  --color-band-globe: var(--band-globe);
   --color-band-action: var(--band-action);
   --color-band-action-hover: var(--band-action-hover);
   --color-band-action-foreground: var(--band-action-foreground);
@@ -324,6 +327,14 @@
 
 @utility bg-gradient-action {
   background-image: linear-gradient(90deg, var(--action-from), var(--action-to));
+}
+
+@utility opacity-globe {
+  opacity: var(--band-globe-opacity);
+}
+
+@utility bg-gradient-nav {
+  background-image: linear-gradient(90deg, var(--nav-from), var(--nav-to));
 }
 
 @utility bg-highlight {

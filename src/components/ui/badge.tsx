@@ -62,7 +62,7 @@ const badgeVariants = cva(
         lg: 'gap-1.5 px-2.5 py-1 text-sm',
       },
       variant: {
-        primary: 'bg-gradient-action text-fg-on-dark shadow-xs',
+        primary: 'bg-gradient-action text-action-foreground shadow-xs',
         muted: 'bg-pill-draft text-pill-draft-foreground',
         outline: 'border border-border bg-field',
         ghost: 'bg-transparent text-foreground',

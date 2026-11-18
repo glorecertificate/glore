@@ -10,7 +10,7 @@ const SWATCHES = [
   { className: 'bg-card text-card-foreground', label: 'card' },
   { className: 'bg-sidebar text-sidebar-foreground', label: 'sidebar' },
   { className: 'bg-band text-band-foreground', label: 'bg-band' },
-  { className: 'bg-gradient-action text-fg-on-dark', label: 'bg-gradient-action' },
+  { className: 'bg-gradient-action text-action-foreground', label: 'bg-gradient-action' },
   { className: 'bg-highlight text-highlight-foreground', label: 'bg-highlight' },
   { className: 'bg-earned-panel text-fg-on-dark', label: 'bg-earned-panel' },
   { className: 'bg-pill-approved text-pill-approved-foreground', label: 'pill-approved' },

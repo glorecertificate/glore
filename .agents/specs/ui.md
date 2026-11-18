@@ -26,7 +26,7 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 
 ## Direction B: brand-forward
 
-The owner chose this look on 2026-11-18. `DESIGN.md` holds the visual rules. Every value lives in `config/theme.json` (`system.palette`, a light and a dark hex per token), and `pnpm run theme` writes the tokens.
+The owner chose this look on 2026-11-18, with direction E (light blue) for dark mode. Dark differs in tokens only: solid `nav-from` active item, `action-*` light blue with dark `action-foreground` text, a light blue `band-action`, and tinted stat tiles and pills. `DESIGN.md` holds the visual rules. Every value lives in `config/theme.json` (`system.palette`, a light and a dark hex per token), and `pnpm run theme` writes the tokens.
 
 - Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a teal gradient active item (`bg-gradient-action`, `shadow-glow-nav`), a white `logo-chip`, and a green `sidebar-badge` count. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
 - Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1522`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.

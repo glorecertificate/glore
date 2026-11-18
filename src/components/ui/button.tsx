@@ -40,13 +40,13 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-gradient-action text-fg-on-dark shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
+          'bg-gradient-action text-action-foreground shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
         secondary: 'bg-secondary text-secondary-foreground hover:not-disabled:bg-secondary/80',
         destructive: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent',
         warning: 'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent',
         success: 'bg-success text-success-foreground hover:not-disabled:bg-success-accent',
         brand:
-          'bg-gradient-action text-fg-on-dark shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
+          'bg-gradient-action text-action-foreground shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
         'brand-secondary':
           'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent',
         'brand-tertiary':

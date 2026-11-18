@@ -4,7 +4,7 @@ export const PageBandGlobe = ({ className, ...props }: React.ComponentProps<'svg
   <svg
     aria-hidden
     className={cn(
-      'pointer-events-none absolute -top-24 -right-16 size-105 text-band-foreground opacity-20 sm:size-110',
+      'pointer-events-none absolute -top-24 -right-16 size-105 text-band-globe opacity-globe sm:size-110',
       className
     )}
     data-slot="page-band-globe"

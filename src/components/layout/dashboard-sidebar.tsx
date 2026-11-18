@@ -3,7 +3,7 @@
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
 import { redirect, usePathname, useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -108,7 +108,9 @@ const DashboardSidebarItem = ({
   route,
 }: DashboardSidebarItemProps) => {
   const { activePath, setActivePath } = useSidebar()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
+  const pressed = useRef(false)
 
   const isActivePath = route === activePath && searchParams.size === 0
 
@@ -118,7 +120,22 @@ const DashboardSidebarItem = ({
     return activePath.startsWith(route)
   })()
 
+  const isPending = activePath === route && pathname !== route
+
+  const press = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return
+    pressed.current = true
+    setActivePath(route)
+  }
+
+  const cancelPress = () => {
+    if (!pressed.current) return
+    pressed.current = false
+    setActivePath(pathname as Route)
+  }
+
   const setPath = (e: React.MouseEvent<HTMLButtonElement>) => {
+    pressed.current = false
     setActivePath(route)
     onClick?.(e)
   }
@@ -128,8 +145,18 @@ const DashboardSidebarItem = ({
       <SidebarMenuButton
         active={isActive}
         asChild
-        className={cn('select-none', isActivePath && 'pointer-events-none', badge > 0 && 'relative', className)}
+        aria-current={isActivePath && !isPending ? 'page' : undefined}
+        className={cn(
+          'select-none',
+          isActivePath && !isPending && 'pointer-events-none',
+          badge > 0 && 'relative',
+          className
+        )}
+        data-pending={isPending || undefined}
         onClick={setPath}
+        onPointerCancel={cancelPress}
+        onPointerDown={press}
+        onPointerLeave={cancelPress}
         tooltip={label}
       >
         <Link href={route} prefetch>

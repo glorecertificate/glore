@@ -63,7 +63,7 @@ const LABELS: Record<string, string> = {
   lcp: 'LCP ms',
   prefetchKb: 'Prefetch KB',
   scriptKb: 'JS KB',
-  shell: 'Shell ms',
+  shell: 'Shell (active) ms',
   shift: 'Shift',
   tbt: 'TBT ms',
   ttfb: 'TTFB ms',

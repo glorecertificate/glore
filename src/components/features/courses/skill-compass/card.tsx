@@ -59,7 +59,7 @@ export const SkillCompassCard = ({
             <LucideIcon className="size-5" name="compass" />
           </span>
           <div className="flex flex-col">
-            <h2 className="font-semibold" id="skill-compass-title">
+            <h2 className="type-heading" id="skill-compass-title">
               {t('title')}
             </h2>
             <p className="text-sm text-muted-foreground">{hasCompass ? t('hint') : t('setupHint')}</p>
@@ -74,23 +74,23 @@ export const SkillCompassCard = ({
       {hasCompass && (
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <h3 className="text-xs font-medium text-muted-foreground">{t('strengthsTitle')}</h3>
+            <h3 className="type-label text-muted-foreground">{t('strengthsTitle')}</h3>
             <SkillChips ids={strengths} options={options} />
           </div>
           <div className="flex flex-col gap-2">
-            <h3 className="text-xs font-medium text-muted-foreground">{t('goalsTitle')}</h3>
+            <h3 className="type-label text-muted-foreground">{t('goalsTitle')}</h3>
             <SkillChips ids={goals} options={options} />
           </div>
         </div>
       )}
       {recommendations.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-xs font-medium text-muted-foreground">{t('recommendedTitle')}</h3>
+          <h3 className="type-label text-muted-foreground">{t('recommendedTitle')}</h3>
           <ul className="grid gap-2 sm:grid-cols-3">
             {recommendations.map(({ icon, id, slug, title }) => (
               <li key={id}>
                 <Link
-                  className="flex items-center gap-2 rounded-lg border p-3 text-sm font-medium transition-colors hover:bg-muted/50"
+                  className="flex items-center gap-2 rounded-lg border p-3 text-sm font-medium transition-colors hover:bg-surface-hover"
                   href={`/courses/${slug}`}
                 >
                   <LucideIcon className="size-4 shrink-0 text-brand-text" name={(icon ?? 'book-open') as IconName} />

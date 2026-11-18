@@ -10,9 +10,9 @@ export const CourseListFrameworkLink = () => {
   const t = useTranslations('Learning.editor')
 
   return (
-    <Button asChild size="sm" variant="outline">
+    <Button asChild variant="outline">
       <Link href="/courses/skills">
-        <LucideIcon className="size-4" name="layers" />
+        <LucideIcon name="layers" />
         {t('frameworkLink')}
       </Link>
     </Button>

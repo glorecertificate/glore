@@ -34,7 +34,7 @@ export const LessonSelfAssessment = ({
       {evaluations.length > 0 && (
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-semibold">{t('evaluationsTitle')}</h2>
+            <h2 className="type-heading">{t('evaluationsTitle')}</h2>
             <p className="text-sm text-muted-foreground">{t('evaluationsHint')}</p>
           </div>
           {evaluations.map(evaluation => (
@@ -54,7 +54,7 @@ export const LessonSelfAssessment = ({
       {assessment && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-semibold">{t('assessmentTitle')}</h2>
+            <h2 className="type-heading">{t('assessmentTitle')}</h2>
             <p className="text-sm text-muted-foreground">{t('assessmentHint')}</p>
           </div>
           {assessment.choices ? (

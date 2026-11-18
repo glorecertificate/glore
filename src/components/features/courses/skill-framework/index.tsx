@@ -5,7 +5,6 @@ import { SkillGroupControls } from '@/components/features/courses/skill-framewor
 import { SkillGroupDialog } from '@/components/features/courses/skill-framework/group-dialog'
 import { skillGroupTone, skillGroupToneVariants } from '@/components/features/courses/skill-group'
 import { LucideIcon } from '@/components/icons/lucide'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import {
@@ -15,6 +14,7 @@ import {
   PageHeaderHeading,
   PageHeaderTitle,
 } from '@/components/ui/page-header'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { pickCourseTitle, pickLocale } from '@/db/queries/learning'
 import { type IntlRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
@@ -61,7 +61,7 @@ const CourseRow = ({
       >
         {title}
       </Link>
-      <Badge variant={status === 'published' ? 'success' : 'muted'}>{t(status)}</Badge>
+      <StatusBadge tone={status === 'published' ? 'success' : 'neutral'}>{t(status)}</StatusBadge>
       <span className="text-xs text-muted-foreground uppercase">{languages.join(' ')}</span>
       <AssignSkillGroup courseId={course.id} courseTitle={title} groupId={groupId} groups={groups} />
       <span className="sr-only">{tFramework('openCourse')}</span>
@@ -111,7 +111,7 @@ export const SkillFramework = ({
                   <LucideIcon className="size-5" name={(group.icon ?? 'layers') as IconName} />
                 </span>
                 <div className="flex min-w-0 flex-col">
-                  <h2 className="truncate text-lg font-semibold">{name}</h2>
+                  <h2 className="truncate type-heading">{name}</h2>
                   <p className="text-sm text-muted-foreground">
                     {t('skillCount', { count: group.courses.length })}
                     {description ? ` · ${description}` : ''}
@@ -145,7 +145,7 @@ export const SkillFramework = ({
       {ungrouped.length > 0 && (
         <section className="flex flex-col gap-3 rounded-2xl border border-dashed p-5">
           <header className="flex flex-col gap-1">
-            <h2 className="text-lg font-semibold">{t('ungroupedTitle')}</h2>
+            <h2 className="type-heading">{t('ungroupedTitle')}</h2>
             <p className="text-sm text-muted-foreground">{t('ungroupedHint')}</p>
           </header>
           <ul className="divide-y">

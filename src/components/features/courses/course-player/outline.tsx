@@ -27,7 +27,7 @@ export const PlayerOutline = ({
               aria-hidden
               className={cn(
                 'flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium',
-                lesson.status === 'completed' && 'bg-success/10 text-success-text',
+                lesson.status === 'completed' && 'bg-success-subtle text-success-text',
                 lesson.status !== 'completed' && current && 'bg-primary text-primary-foreground',
                 lesson.status !== 'completed' && !current && 'bg-muted text-muted-foreground'
               )}
@@ -44,8 +44,8 @@ export const PlayerOutline = ({
               <Link
                 aria-current={current ? 'step' : undefined}
                 className={cn(
-                  'flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-accent/60',
-                  current && 'bg-accent font-medium'
+                  'flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-surface-hover',
+                  current && 'bg-surface-selected font-medium'
                 )}
                 href={`/courses/${slug}/learn?lang=${language}&lesson=${lesson.id}`}
               >

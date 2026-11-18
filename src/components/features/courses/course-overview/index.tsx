@@ -8,7 +8,13 @@ import { skillGroupTone, skillGroupToneVariants } from '@/components/features/co
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
-import { PageHeaderDescription, PageHeaderTitle } from '@/components/ui/page-header'
+import {
+  PageHeader,
+  PageHeaderActions,
+  PageHeaderDescription,
+  PageHeaderHeading,
+  PageHeaderTitle,
+} from '@/components/ui/page-header'
 import { Progress } from '@/components/ui/progress'
 import { type CourseAccess, type CourseOverview } from '@/db/queries/learning'
 import { type IconName } from '@/lib/types'
@@ -62,61 +68,73 @@ export const CourseOverviewView = ({
 
   return (
     <div className={cn('flex flex-col gap-8', className)} {...props}>
-      <section className="flex flex-col gap-5 rounded-2xl border bg-card p-6 shadow-2xs sm:p-8">
-        <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={cn(
-              'flex size-12 items-center justify-center rounded-full',
-              skillGroupToneVariants({ surface: 'soft', tone })
-            )}
-          >
-            <LucideIcon className="size-6" name={(icon ?? 'book-open') as IconName} />
-          </span>
-          <Badge variant="muted">{t(`type.${overview.type}`)}</Badge>
-          {overview.skillGroup && (
-            <Badge className={skillGroupToneVariants({ surface: 'soft', tone })}>{overview.skillGroup.name}</Badge>
-          )}
-        </div>
-        <div className="flex flex-col gap-2">
-          <PageHeaderTitle>{overview.title}</PageHeaderTitle>
-          {description && <PageHeaderDescription>{description}</PageHeaderDescription>}
-        </div>
-        <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-          {durationMinutes ? (
-            <li className="flex items-center gap-1.5">
-              <LucideIcon className="size-4" name="clock" />
-              <CourseDuration minutes={durationMinutes} />
-            </li>
-          ) : null}
-          <li className="flex items-center gap-1.5">
-            <LucideIcon className="size-4" name="book-open" />
-            {t('lessonsCount', { count: lessons.length })}
-          </li>
-          {rating.average !== null && (
-            <li className="flex items-center gap-1.5">
-              <LucideIcon className="size-4" name="star" />
-              {t('rating', { count: rating.count, rating: rating.average })}
-            </li>
-          )}
-        </ul>
-        {enrollment && progress.total > 0 && (
-          <div className="flex max-w-md flex-col gap-1.5">
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{t('progressValue', { completed: progress.completed, total: progress.total })}</span>
-              <span>{`${progress.percent}%`}</span>
+      <PageHeader>
+        <PageHeaderHeading className="gap-3">
+          <div className="flex items-start gap-4">
+            <span
+              className={cn(
+                'flex size-12 shrink-0 items-center justify-center rounded-full',
+                skillGroupToneVariants({ surface: 'soft', tone })
+              )}
+            >
+              <LucideIcon className="size-6" name={(icon ?? 'book-open') as IconName} />
+            </span>
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <PageHeaderTitle>{overview.title}</PageHeaderTitle>
+              {description && <PageHeaderDescription>{description}</PageHeaderDescription>}
             </div>
-            <Progress color={progress.percent === 100 ? 'success' : 'brand'} value={progress.percent} />
           </div>
-        )}
-        <CourseOverviewActions access={access} overview={overview} />
-        <CourseLanguageSwitch
-          courseId={overview.id}
-          language={language}
-          languages={languages}
-          persist={access === 'learner' && !!enrollment}
-          slug={overview.slug}
-        />
-      </section>
+          <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <li>
+              <Badge variant="muted">{t(`type.${overview.type}`)}</Badge>
+            </li>
+            {overview.skillGroup && (
+              <li>
+                <Badge className={skillGroupToneVariants({ surface: 'soft', tone })}>{overview.skillGroup.name}</Badge>
+              </li>
+            )}
+            {durationMinutes ? (
+              <li className="flex items-center gap-1.5">
+                <LucideIcon aria-hidden className="size-4" name="clock" />
+                <CourseDuration minutes={durationMinutes} />
+              </li>
+            ) : null}
+            <li className="flex items-center gap-1.5">
+              <LucideIcon aria-hidden className="size-4" name="book-open" />
+              {t('lessonsCount', { count: lessons.length })}
+            </li>
+            {rating.average !== null && (
+              <li className="flex items-center gap-1.5">
+                <LucideIcon aria-hidden className="size-4" name="star" />
+                {t('rating', { count: rating.count, rating: rating.average })}
+              </li>
+            )}
+          </ul>
+        </PageHeaderHeading>
+        <PageHeaderActions>
+          <CourseOverviewActions access={access} overview={overview} />
+        </PageHeaderActions>
+      </PageHeader>
+      {enrollment && progress.total > 0 && (
+        <div className="flex max-w-md flex-col gap-1.5">
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <span>{t('progressValue', { completed: progress.completed, total: progress.total })}</span>
+            <span className="tabular-nums">{`${progress.percent}%`}</span>
+          </div>
+          <Progress
+            aria-label={t('progressValue', { completed: progress.completed, total: progress.total })}
+            color={progress.percent === 100 ? 'success' : 'brand'}
+            value={progress.percent}
+          />
+        </div>
+      )}
+      <CourseLanguageSwitch
+        courseId={overview.id}
+        language={language}
+        languages={languages}
+        persist={access === 'learner' && !!enrollment}
+        slug={overview.slug}
+      />
       {access === 'viewer' && (
         <Banner variant="warning">
           <LucideIcon className="mt-0.5 size-4 shrink-0" name="eye" />
@@ -126,7 +144,7 @@ export const CourseOverviewView = ({
       <CourseCertificateNote completedSkills={access === 'learner' ? completedSkills : null} overview={overview} />
       {outcomes.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold">{t('outcomesTitle')}</h2>
+          <h2 className="type-heading">{t('outcomesTitle')}</h2>
           <ul className="grid gap-2 sm:grid-cols-2">
             {outcomes.map(outcome => (
               <li className="flex items-start gap-2 text-sm" key={outcome}>

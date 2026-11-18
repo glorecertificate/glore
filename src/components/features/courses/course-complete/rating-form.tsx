@@ -47,7 +47,7 @@ export const CourseRatingForm = ({
   return (
     <form className={cn('flex flex-col gap-5', className)} onSubmit={onSubmit} {...props}>
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-semibold">{t('rateTitle')}</h2>
+        <h2 className="type-heading">{t('rateTitle')}</h2>
         <p className="text-sm text-muted-foreground">{t('rateHint')}</p>
       </div>
       <RatingGroup

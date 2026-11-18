@@ -69,7 +69,7 @@ export const CourseListSort = () => {
   return (
     <DropdownMenu onOpenChange={setOpen} open={open}>
       <DropdownMenuTrigger asChild>
-        <Button className="group h-9 gap-0 text-[13.5px] has-[>svg]:px-3" size="sm" variant="outline">
+        <Button className="group" size="sm" variant="outline">
           <span className="mr-1.5">{t('sortBy')}</span>
           {sort && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{options[sort]}</span>}
           {icon}

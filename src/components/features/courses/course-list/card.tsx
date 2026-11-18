@@ -24,6 +24,7 @@ import { IconPicker } from '@/components/ui/icon-picker'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { SearchHighlight } from '@/components/ui/search'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type CourseSummary } from '@/db/queries/course'
@@ -100,7 +101,7 @@ export const CourseListCard = ({
       <>
         <SearchHighlight query={search} value={courseDescription} />
         <Tooltip>
-          <TooltipTrigger className="ml-1 inline-block cursor-help text-[10px] text-muted-foreground/80">
+          <TooltipTrigger className="ml-1 inline-block cursor-help type-caption text-muted-foreground">
             {t('cardDescriptionMore')}
           </TooltipTrigger>
           <TooltipContent className="max-w-75 text-sm" side="bottom" sideOffset={4}>
@@ -151,7 +152,7 @@ export const CourseListCard = ({
                   </span>
                 </Tooltip>
                 <Link
-                  className={cn('leading-[normal] font-medium transition-none')}
+                  className="type-heading transition-none"
                   href={coursePath}
                   title={t('viewCourse')}
                   suppressHydrationWarning
@@ -161,7 +162,7 @@ export const CourseListCard = ({
               </div>
               <div className="flex items-center gap-1.5">
                 <LucideIcon name="link" className="size-2.5" />
-                <Link className="font-mono text-[11px] text-muted-foreground" href={coursePath} title={t('followLink')}>
+                <Link className="font-mono text-xs text-muted-foreground" href={coursePath} title={t('followLink')}>
                   {'/'}
                   <SearchHighlight query={search} value={course.slug} />
                 </Link>
@@ -188,25 +189,31 @@ export const CourseListCard = ({
                 />
               )}
               <Link
-                className={cn('leading-[normal] font-medium transition-none')}
+                className="type-heading transition-none"
                 href={coursePath}
                 title={t('viewCourse')}
                 suppressHydrationWarning
               >
                 <SearchHighlight query={search} value={title} />
               </Link>
-              {course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
             </div>
-            {course.skillGroup && (
-              <div className="flex items-center gap-1">
-                <Badge
-                  className={skillGroupToneVariants({
-                    surface: 'soft',
-                    tone: skillGroupTone(course.skillGroup.slug),
-                  })}
-                >
-                  {localizeRecord(course.skillGroup.name, language)}
-                </Badge>
+            {(course.skillGroup || course.completed) && (
+              <div className="flex flex-wrap items-center gap-1">
+                {course.skillGroup && (
+                  <Badge
+                    className={skillGroupToneVariants({
+                      surface: 'soft',
+                      tone: skillGroupTone(course.skillGroup.slug),
+                    })}
+                  >
+                    {localizeRecord(course.skillGroup.name, language)}
+                  </Badge>
+                )}
+                {course.completed && (
+                  <StatusBadge icon="circle-check" tone="success">
+                    {t('completed')}
+                  </StatusBadge>
+                )}
               </div>
             )}
           </div>
@@ -240,7 +247,7 @@ export const CourseListCard = ({
                         >
                           <span className={cn('flex h-3 items-center', !active && 'opacity-50')}>{icon}</span>
                           {published && tab !== 'archived' && (
-                            <div className="absolute -bottom-1.25 size-1 animate-pulse rounded-full bg-success" />
+                            <div className="absolute -bottom-1.25 size-1 rounded-full bg-success" />
                           )}
                         </Button>
                       </TooltipTrigger>
@@ -278,9 +285,7 @@ export const CourseListCard = ({
           <div
             className={cn(
               'flex items-center gap-2.5 text-xs font-normal',
-              course.lessonCount > 0
-                ? 'text-muted-foreground'
-                : 'pointer-events-none text-muted-foreground/50 select-none'
+              course.lessonCount > 0 ? 'text-muted-foreground' : 'pointer-events-none text-fg-disabled select-none'
             )}
           >
             <LucideIcon name="book-open" className="size-3.5 text-muted-foreground" />
@@ -303,7 +308,7 @@ export const CourseListCard = ({
                           {course.creator.avatarUrl && (
                             <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
                           )}
-                          <AvatarFallback className="text-[8.5px]">{course.creator.initials}</AvatarFallback>
+                          <AvatarFallback className="type-caption">{course.creator.initials}</AvatarFallback>
                         </Avatar>
                         {course.creator.shortName}
                       </Button>
@@ -335,7 +340,7 @@ export const CourseListCard = ({
                           {contributor.avatarUrl && (
                             <AvatarImage className="rounded-full" src={contributor.avatarUrl} />
                           )}
-                          <AvatarFallback className="text-[8.5px]">{contributor.initials}</AvatarFallback>
+                          <AvatarFallback className="type-caption">{contributor.initials}</AvatarFallback>
                         </Avatar>
                       </HoverCardTrigger>
                       <HoverCardContent className="bg-popover" side="top">
@@ -365,7 +370,7 @@ export const CourseListCard = ({
                         {course.archivedBy.avatarUrl && (
                           <AvatarImage className="rounded-full" src={course.archivedBy.avatarUrl} />
                         )}
-                        <AvatarFallback className="text-[8.5px]">{course.archivedBy.initials}</AvatarFallback>
+                        <AvatarFallback className="type-caption">{course.archivedBy.initials}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </HoverCardTrigger>

@@ -33,7 +33,7 @@ export const DescriptionChoice = ({
   >
     {options.map(option => (
       <Label
-        className="flex cursor-pointer items-start gap-3 rounded-lg border bg-card p-4 leading-relaxed font-normal transition-colors has-disabled:cursor-default has-data-[state=checked]:border-primary/50 has-data-[state=checked]:bg-primary/5 has-[:focus-visible]:focus-ring"
+        className="flex cursor-pointer items-start gap-3 rounded-lg border bg-card p-4 leading-relaxed font-normal transition-colors has-disabled:cursor-default has-data-[state=checked]:border-primary/50 has-data-[state=checked]:bg-surface-selected has-[:focus-visible]:focus-ring"
         htmlFor={`${id}-${option.id}`}
         key={option.id}
       >

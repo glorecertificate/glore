@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useRef, useState } from 'react'
+import { createContext, use, useEffect, useRef, useState } from 'react'
 
 import { type Locale } from 'next-intl'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
@@ -188,7 +188,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     parseAsStringEnum(LOCALES).withOptions(paramOptions).withDefault(options.language)
   )
 
-  const [step, setStep] = useQueryState(
+  const [rawStep, setStep] = useQueryState(
     COURSE_PARAMS.STEP,
     parseAsInteger.withOptions(paramOptions).withDefault(options.step)
   )
@@ -202,6 +202,13 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   courseSnapshotRef.current = course
   const contentFlushRef = useRef<(() => unknown) | null>(null)
   const [lessonKeys, setLessonKeys] = useState<Record<number, number>>({})
+
+  const step = Math.min(Math.max(rawStep, 1), course.lessons.length)
+
+  useEffect(() => {
+    if (step === rawStep) return
+    setStep(step, { history: 'replace' })
+  }, [rawStep, setStep, step])
 
   const currentLesson = {
     ...(course.lessons[step - 1] ?? course.lessons[0]),

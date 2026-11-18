@@ -58,10 +58,16 @@ export const MemberDashboard = ({
       />
 
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatLink href="/courses" label={t('stats.enrolled')} value={courses.enrolled} />
-        <StatLink href="/courses" label={t('stats.inProgress')} value={courses.inProgress} />
-        <StatLink href="/courses" label={t('stats.completed')} value={courses.completed} />
-        <StatLink href="/courses" label={t('stats.available')} value={courses.available} />
+        <StatLink accent="teal" href="/courses" icon="book-open" label={t('stats.enrolled')} value={courses.enrolled} />
+        <StatLink accent="amber" href="/courses" icon="play" label={t('stats.inProgress')} value={courses.inProgress} />
+        <StatLink
+          accent="green"
+          href="/courses"
+          icon="circle-check"
+          label={t('stats.completed')}
+          value={courses.completed}
+        />
+        <StatLink accent="navy" href="/courses" icon="library" label={t('stats.available')} value={courses.available} />
       </section>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">

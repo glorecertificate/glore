@@ -10,6 +10,7 @@ import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
 import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { NotificationList } from '@/components/features/notifications/notification-list'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
@@ -89,29 +90,46 @@ export const TutorDashboard = ({
 
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatLink
+          accent="teal"
           description={t('tutor.assignedDescription')}
           href="/certificates?tab=assigned"
+          icon="clipboard-check"
           label={t('tutor.assigned')}
           value={assigned.count}
         />
         <StatLink
+          accent="navy"
           description={t('tutor.poolDescription')}
           href="/certificates?tab=pool"
+          icon="inbox"
           label={t('tutor.pool')}
           value={pool.count}
         />
         <StatLink
+          accent="amber"
           description={t('tutor.waitingVolunteerDescription')}
           href="/certificates?tab=assigned"
+          icon="hourglass"
           label={t('tutor.waitingVolunteer')}
           value={waitingVolunteer}
         />
-        <Card className="justify-between gap-4 p-5" data-slot="stat-card">
-          <CardHeader>
-            <CardDescription>{t('tutor.reviewTime')}</CardDescription>
-            <CardTitle className="text-3xl">{reviewValue}</CardTitle>
+        <Card
+          className="justify-between gap-4 border-transparent bg-highlight p-5 pt-6 text-highlight-foreground shadow-stat"
+          data-slot="stat-card"
+        >
+          <CardHeader className="gap-2">
+            <div className="flex items-center gap-2.5">
+              <span
+                aria-hidden
+                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-highlight-foreground/15"
+              >
+                <LucideIcon className="size-4" name="timer" />
+              </span>
+              <CardDescription className="text-highlight-muted">{t('tutor.reviewTime')}</CardDescription>
+            </div>
+            <CardTitle className="type-stat">{reviewValue}</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
+          <CardContent className="text-sm text-highlight-muted">
             {reviewTime.sample > 0 ? t('tutor.reviewSample', { count: reviewTime.sample }) : t('tutor.reviewTimeEmpty')}
           </CardContent>
         </Card>

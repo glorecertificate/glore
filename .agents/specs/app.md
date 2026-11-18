@@ -158,6 +158,8 @@ Three domain facts shape recurring decisions:
 - Representative and owner: waiting-for-tutor banner, setup checklist, members, invitations, requests, pipeline, activity.
 - Editor and platform admin: content health, translation gaps, enrollment charts. Admins also see pending applications.
 - Users without an organization see an empty state.
+- Each view owns the page `h1` and the header bar shows no title: a `PageHeader` with the greeting, subtitle, organization, and one action, or the volunteer stage title.
+- Empty cards use `DashboardEmpty` (icon and title), and the globe hero is gone.
 
 ### Documentation
 

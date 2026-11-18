@@ -3,8 +3,6 @@
 import { Badge } from '@/components/ui/badge'
 import { useSidebar } from '@/components/ui/sidebar'
 
-const MAX_COUNT = 99
-
 export const SidebarCount = ({ count, label }: { count: number; label: string }) => {
   const { isMobile, open } = useSidebar()
 
@@ -17,8 +15,7 @@ export const SidebarCount = ({ count, label }: { count: number; label: string })
   }
 
   return (
-    <Badge className="ml-auto h-4.5 min-w-4.5 rounded-full px-1 tabular-nums" size="sm" variant="brand">
-      <span aria-hidden>{count > MAX_COUNT ? `${MAX_COUNT}+` : count}</span>
+    <Badge className="ml-auto" count={count} size="sm" variant="brand">
       <span className="sr-only">{label}</span>
     </Badge>
   )

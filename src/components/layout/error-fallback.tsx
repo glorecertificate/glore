@@ -68,9 +68,9 @@ export const ErrorFallback = ({
       <div className="relative flex w-full grow flex-col items-center justify-center gap-6">
         {type === 'not-found' ? <NotFoundIcon className="mb-8 w-80 sm:w-90" /> : <ErrorIcon className="w-40 sm:w-45" />}
         <div className="text-center">
-          <h2 className="mb-4 text-3xl font-semibold tracking-tight text-foreground">{errorTitle}</h2>
-          <p className="mb-8 text-base text-foreground/75">{errorMessage}</p>
-          <div className="flex justify-center gap-4">{children}</div>
+          <h1 className="mb-3 type-title text-balance text-foreground">{errorTitle}</h1>
+          <p className="mx-auto mb-8 max-w-prose text-base text-pretty text-muted-foreground">{errorMessage}</p>
+          <div className="flex flex-wrap justify-center gap-3">{children}</div>
         </div>
       </div>
     </div>

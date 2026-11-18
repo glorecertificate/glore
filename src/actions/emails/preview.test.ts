@@ -2,6 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const state = vi.hoisted(() => ({ user: { canEdit: false, id: 'u1', isAdmin: false } }))
 
+vi.mock('next/server', async importOriginal => ({
+  ...(await importOriginal<typeof import('next/server')>()),
+  connection: () => Promise.resolve(),
+}))
 vi.mock('nodemailer', () => ({ createTransport: () => ({ sendMail: vi.fn() }) }))
 vi.mock('next/cache', () => ({ cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() }))
 vi.mock('@/lib/auth', () => ({

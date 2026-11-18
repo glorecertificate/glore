@@ -3,6 +3,7 @@ import 'server-only'
 import { revalidateTag, updateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { unstable_rethrow } from 'next/navigation'
+import { connection } from 'next/server'
 
 import { APIError } from 'better-auth/api'
 
@@ -22,6 +23,7 @@ export const revalidateUserAccess = (userId: string) => {
 }
 
 export const requireAdmin = async () => {
+  await connection()
   const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } })
   const user = session?.user
   if (!user) throw adminError('UNAUTHORIZED')

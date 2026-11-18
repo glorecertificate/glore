@@ -163,7 +163,7 @@ src/
 - A read that takes an id and checks no caller (`findUser`, `findHolderLevels`) or a raw primitive (cookie get/set/delete) lives in a `server-only` module without `'use server'`. A `Next-Action` POST can call any exported action, so a `'use server'` export must check the caller and validate its arguments.
 - A page that must navigate instantly reads URL state on the client (nuqs) instead of awaiting `searchParams`.
 - The saved course-list filters (`gl_courseListParams`) redirect in `src/proxy.ts` for document requests and through `history.replaceState` in `useCourseListParams` on client navigation.
-- `checkRateLimit`, `getAuthUser()`, and the impersonation state await `connection()` before a clock read, such as the one in `auth.api.getSession`.
+- `checkRateLimit`, `getAuthUser()`, `requireAdmin`, `requireEditor`, and the impersonation state await `connection()` before any fresh `auth.api.getSession`. On Neon over HTTP, a database read in a prerender rejects with `HANGING_PROMISE_REJECTION`, which Better Auth logs as `INTERNAL_SERVER_ERROR`.
 - Without it, a clock read after `headers()` logs "unstable value `Date.now()` while prerendering" under partial prefetching.
 
 ## Events, notifications, and email

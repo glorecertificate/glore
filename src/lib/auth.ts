@@ -19,6 +19,7 @@ import { sessions } from '@/db/schema/sessions'
 import { teamInvitations } from '@/db/schema/teams'
 import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
+import { describeAuthError } from '@/lib/auth-log'
 import { CacheTag, userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
@@ -207,7 +208,9 @@ export const auth = betterAuth({
       const isAbortError =
         error?.cause?.sourceError?.name === 'AbortError' || error?.cause?.message?.includes?.('AbortError')
       if (level === 'error' && isAbortError) return
-      console[level](`${new Date().toISOString()} ${level.toUpperCase()} [Better Auth]: ${message}`, ...args)
+      const detail = describeAuthError(error)
+      const line = `${new Date().toISOString()} ${level.toUpperCase()} [Better Auth]: ${message}`
+      console[level](detail ? `${line} (${detail})` : line, ...args)
     },
   },
   advanced: {

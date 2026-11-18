@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { headers } from 'next/headers'
+import { connection } from 'next/server'
 
 import { auth } from '@/lib/auth'
 
@@ -14,6 +15,7 @@ export const isEditorUser = (user: RoleFields | null | undefined) =>
   !!user && !user.banned && (user.role === 'admin' || !!user.isEditor)
 
 const getFreshSessionUser = async () => {
+  await connection()
   const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } })
   return session?.user ?? null
 }

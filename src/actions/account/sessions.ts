@@ -3,6 +3,7 @@
 import 'server-only'
 
 import { headers } from 'next/headers'
+import { connection } from 'next/server'
 
 import { and, desc, eq, gt, ne, sql } from 'drizzle-orm'
 
@@ -33,6 +34,7 @@ const unauthenticated = () => ({ code: 'UNAUTHORIZED', message: 'Not authenticat
 const impersonated = () => ({ code: 'NOT_ALLOWED_WHILE_IMPERSONATING', message: 'Not allowed while impersonating' })
 
 const currentSessionId = async () => {
+  await connection()
   const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } })
   return session?.session.id ?? null
 }

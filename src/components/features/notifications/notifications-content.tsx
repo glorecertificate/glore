@@ -5,7 +5,7 @@ import { startTransition, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useQueryState } from 'nuqs'
 
-import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
+import { countUnreadNotifications, listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
 import { announceNotificationsChanged } from '@/components/features/notifications/events'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import {
@@ -40,9 +40,14 @@ const ALL_CATEGORIES = 'all'
 
 const CATEGORY_OPTIONS = [ALL_CATEGORIES, ...NOTIFICATION_CATEGORIES] as const
 
+const readUnread = async () => {
+  const { data, error } = await countUnreadNotifications()
+  if (error) throw new Error(error.message)
+  return data
+}
+
 export const NotificationsContent = () => {
   const t = useTranslations('Notifications')
-  const tCommon = useTranslations('Common')
   const [filter, setFilter] = useQueryState('filter', { ...notificationFilterParser, startTransition })
   const [category, setCategory] = useQueryState('category', { ...notificationCategoryParser, startTransition })
   const [limit, setLimit] = useQueryState('limit', { ...notificationLimitParser, startTransition })
@@ -58,16 +63,20 @@ export const NotificationsContent = () => {
 
   const { data, refresh } = usePoll(read, { interval: 60_000, key: `${filter}:${category}:${limit}` })
   const filtering = filter !== 'all' || category !== null
-  const hasUnread = data?.items.some(({ read: isRead }) => !isRead) ?? false
+  const { data: unread, refresh: refreshUnread } = usePoll(readUnread, { interval: 60_000 })
+  const hasUnread = (unread ?? 0) > 0
 
   const markAll = async () => {
     setMarking(true)
     try {
-      await markAllNotificationsRead()
+      const { error } = await markAllNotificationsRead()
+      if (error) {
+        toast.error(t('markAllFailed'))
+        return
+      }
       announceNotificationsChanged()
       refresh()
-    } catch {
-      toast.error(t('markAllFailed'))
+      refreshUnread()
     } finally {
       setMarking(false)
     }
@@ -147,7 +156,7 @@ export const NotificationsContent = () => {
 
       {data === null && !failed && <LoadingFallback className="py-16" />}
 
-      {data === null && failed && (
+      {failed && (
         <Empty className="border">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -164,7 +173,7 @@ export const NotificationsContent = () => {
         </Empty>
       )}
 
-      {data && data.items.length === 0 && (
+      {data && !failed && data.items.length === 0 && (
         <Empty className="border">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -173,19 +182,19 @@ export const NotificationsContent = () => {
             <EmptyTitle>{emptyTitle}</EmptyTitle>
             <EmptyDescription>{emptyDescription}</EmptyDescription>
           </EmptyHeader>
-          {filtering && (
-            <EmptyContent>
-              <Button onClick={clearFilters} variant="outline">
-                {tCommon('clearFilters')}
-              </Button>
-            </EmptyContent>
-          )}
         </Empty>
       )}
 
-      {data && data.items.length > 0 && (
+      {data && !failed && data.items.length > 0 && (
         <>
-          <NotificationList className="animate-reveal" notifications={data.items} onRead={refresh} />
+          <NotificationList
+            className="animate-reveal"
+            notifications={data.items}
+            onRead={() => {
+              refresh()
+              refreshUnread()
+            }}
+          />
           {data.hasMore && limit < MAX_LIMIT && (
             <div className="flex justify-center">
               <Button onClick={() => setLimit(limit + PAGE_SIZE)} variant="outline">

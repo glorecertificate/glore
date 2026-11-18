@@ -50,11 +50,11 @@ src/
 │   └── verify/         # Public certificate verification (page, [code])
 ├── components/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,
-│   │                   #   dashboard, dev (UI catalog), docs, help, legal, notifications, onboarding, organization, translations, users
+│   │                   #   dashboard (`DashboardHeading`, `DashboardEmpty`, `CourseRow` and one view per role), dev (UI catalog), docs, help, legal, notifications, onboarding, organization, translations, users
 │   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-header, dashboard-loading, dashboard-sidebar, dynamic-marker,
 │   │                   #   error-actions, error-fallback, instant-reveal, loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,
-│   │                   #   search-command (palette), navigation (pure per-role entries), use-navigation-labels
+│   │                   #   search-command (palette), sidebar-count (`SidebarCount`: pill count, dot when collapsed), navigation (pure per-role entries), use-navigation-labels
 │   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, settings, theme
 │   └── ui/             # shadcn/ui + release kit (ui.md); vendored rich-text-editor/
 ├── db/

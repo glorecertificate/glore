@@ -714,6 +714,7 @@
     "notifications": "Notificaciones",
     "registerOrganization": "Registrar una organización",
     "leaveOrganizationItem": "Salir de {name}",
+    "currentOrganization": "Organización actual",
     "toggleSection": "Mostrar u ocultar el menú {name}",
     "pendingInvitations": "Invitaciones pendientes",
     "pendingInvitationsCount": "{count, plural, =1 {# invitación pendiente} other {# invitaciones pendientes}}",

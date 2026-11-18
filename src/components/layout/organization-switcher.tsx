@@ -134,12 +134,7 @@ export const OrganizationSwitcher = () => {
               <DropdownMenuGroup>
                 <DropdownMenuLabel className="type-caption text-fg-2">{t('organizations')}</DropdownMenuLabel>
                 {user.memberships.map(({ organization: { id, name, profile }, role }) => (
-                  <DropdownMenuItem
-                    aria-current={id === organization?.id ? true : undefined}
-                    className="gap-2 p-2"
-                    key={id}
-                    onClick={() => selectOrganization(id)}
-                  >
+                  <DropdownMenuItem className="gap-2 p-2" key={id} onClick={() => selectOrganization(id)}>
                     <Avatar className="aspect-square size-8 rounded-lg border">
                       {profile?.avatarUrl && <AvatarImage alt={name} src={profile.avatarUrl} />}
                       <AvatarFallback className="text-muted-foreground">
@@ -153,7 +148,10 @@ export const OrganizationSwitcher = () => {
                       </span>
                     </div>
                     {id === organization?.id && (
-                      <LucideIcon className="ml-auto size-4 shrink-0 text-brand-text" name="check" />
+                      <>
+                        <LucideIcon className="ml-auto size-4 shrink-0 text-brand-text" name="check" />
+                        <span className="sr-only">{t('currentOrganization')}</span>
+                      </>
                     )}
                   </DropdownMenuItem>
                 ))}

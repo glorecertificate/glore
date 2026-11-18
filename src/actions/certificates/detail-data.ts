@@ -49,7 +49,8 @@ const canView = (user: Viewer, cert: Access) => {
   if (cert.status === 'draft') return isOwner
   const isManager = role === 'admin' || role === 'representative'
   const isPoolTutor = role === 'tutor' && cert.reviewerId === null && cert.status === 'submitted'
-  return isOwner || isManager || cert.reviewerId === user.id || isPoolTutor || user.isAdmin
+  const isReviewer = role === 'tutor' && cert.reviewerId === user.id
+  return isOwner || isManager || isReviewer || isPoolTutor || user.isAdmin
 }
 
 const tagCertificate = (cert: Access) => {
@@ -88,7 +89,7 @@ const fetchCertificateRecord = async (id: number) => {
   }
 }
 
-const fetchCertificateActivity = async (id: number) => {
+export const fetchCertificateActivity = async (id: number) => {
   'use cache'
   cacheLife(DETAIL_LIFE)
   cacheTag(CacheTag.Certificates)
@@ -233,6 +234,9 @@ export const loadCertificateActivity = async (id: number) => {
 
 export const loadReviewContext = async (id: number) => {
   const [{ user }, record] = await Promise.all([getViewerContext(), fetchReviewContext(id)])
-  if (!record || record.access.reviewerId !== user.id) return null
+  const isTutor = user.organizations.some(
+    ({ id: orgId, role }) => orgId === record?.access.organizationId && role === 'tutor'
+  )
+  if (!record || !isTutor || record.access.reviewerId !== user.id) return null
   return { holder: record.holder, results: record.results }
 }

@@ -47,7 +47,13 @@ export const loadDashboard = async (): Promise<DashboardData> => {
 
   if (view === 'volunteer') {
     const volunteer = await loadVolunteerSummary({
-      holder: user,
+      holder: {
+        birthPlace: user.birthPlace,
+        birthday: user.birthday,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        nationality: user.nationality,
+      },
       language: locale as Locale,
       organizationId,
       userId: user.id,

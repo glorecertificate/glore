@@ -56,7 +56,7 @@ export const submitFromLastStep = async (page: Page, label = 'Submit request') =
     await page.getByRole('button', { name: label }).click()
     await expect(page).toHaveURL(/\/certificates\/\d+$/u)
   }
-  await expect(page.getByText('Waiting for a reviewer to start.')).toBeVisible()
+  await expect(page.getByText('Waiting for a tutor to start.')).toBeVisible()
 }
 
 export const completeWizard = async (page: Page) => {

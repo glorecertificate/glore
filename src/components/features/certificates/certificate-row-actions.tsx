@@ -61,10 +61,10 @@ export const CertificateRowActions = ({
     })
 
   return (
-    <div className="flex items-center justify-end gap-2">
+    <div className="flex flex-wrap items-center justify-end gap-2">
       {certificate.isOpen && (
         <Select disabled={pending} onValueChange={reassign} value={certificate.reviewerId ?? UNASSIGNED}>
-          <SelectTrigger aria-label={t('reassign')} className="w-36" size="sm">
+          <SelectTrigger aria-label={t('reassign')} className="w-full min-w-36 sm:w-36" size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -83,11 +83,13 @@ export const CertificateRowActions = ({
           icon="shield-off"
           onClick={() => setRevoking(true)}
           size="sm"
-          title={impersonating ? tCommon('impersonationLocked') : undefined}
           variant="ghost"
         >
           {tDetail('revoke')}
         </Button>
+      )}
+      {certificate.isApproved && impersonating && (
+        <p className="basis-full text-right text-xs text-muted-foreground">{tCommon('impersonationLocked')}</p>
       )}
       <Button asChild icon="eye" size="sm" variant="outline">
         <Link href={`/certificates/${certificate.id}`}>{t('view')}</Link>

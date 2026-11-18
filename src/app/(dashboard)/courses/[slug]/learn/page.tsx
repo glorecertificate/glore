@@ -40,7 +40,7 @@ const LearnTitle = async (props: PageProps<'/courses/[slug]/learn'>) => {
 }
 
 const LearnPage = (props: PageProps<'/courses/[slug]/learn'>) => (
-  <DashboardPage parent="courses" title={<LearnTitle {...props} />} width="wide">
+  <DashboardPage overlap parent="courses" title={<LearnTitle {...props} />} width="wide">
     <LearnPageContent {...props} />
   </DashboardPage>
 )

@@ -13,6 +13,7 @@ export const PlayerOutline = ({
   ...props
 }: React.ComponentProps<'ol'> & { access: CourseAccess; currentId: number; overview: CourseOverview }) => {
   const t = useTranslations('Learning.overview')
+  const tPlayer = useTranslations('Learning.player')
   const { language, lessons, slug } = overview
   const frontier = lessons.findIndex(lesson => lesson.status !== 'completed')
 
@@ -52,8 +53,9 @@ export const PlayerOutline = ({
                 {body}
               </Link>
             ) : (
-              <span className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground opacity-60">
-                {body}
+              <span className="flex flex-col gap-0.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground">
+                <span className="flex items-center gap-2.5 opacity-60">{body}</span>
+                <span className="pl-8.5 text-xs">{tPlayer('locked')}</span>
               </span>
             )}
           </li>

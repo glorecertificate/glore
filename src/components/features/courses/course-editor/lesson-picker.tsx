@@ -11,8 +11,6 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
 
-const BODY_STYLE = { paddingBottom: 'env(safe-area-inset-bottom)' }
-
 export const CourseLessonPicker = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const t = useTranslations('CourseEditor')
   const tCommon = useTranslations('Components.Dialog')
@@ -49,7 +47,7 @@ export const CourseLessonPicker = ({ className, ...props }: React.ComponentProps
             </SheetTitle>
             <SheetDescription className="sr-only">{t('lessonsSheetDescription')}</SheetDescription>
           </SheetHeader>
-          <div style={BODY_STYLE} className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-3 pr-2 pl-9">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-3 pr-2 pb-safe pl-9">
             <CourseSidebar onChoose={() => setOpen(false)} variant="sheet" />
           </div>
         </SheetContent>

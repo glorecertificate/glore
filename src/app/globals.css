@@ -614,6 +614,10 @@
   padding-bottom: max(--spacing(6), env(safe-area-inset-bottom));
 }
 
+@utility pb-bar-safe {
+  padding-bottom: max(--spacing(2), env(safe-area-inset-bottom));
+}
+
 @utility sheet-fit {
   width: min(100%, calc((100dvh - 11rem) * 595 / 842));
 }

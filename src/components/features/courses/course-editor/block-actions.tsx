@@ -98,7 +98,6 @@ export const BlockActions = ({ className, ...props }: React.ComponentProps<'div'
         <DropdownMenuTrigger asChild>
           <Button
             aria-label={t('blockMenuLabel')}
-            className="relative before:absolute before:inset-x-0 before:-inset-y-1 before:content-['']"
             icon="blocks"
             onMouseDown={event => event.preventDefault()}
             size="sm"

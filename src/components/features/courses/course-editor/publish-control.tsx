@@ -6,7 +6,7 @@ import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
 import { cn } from '@/lib/utils'
 
-const TOUCH_HIT = "relative before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-['']"
+const TOUCH_HIT = 'touch-hit-y'
 
 export const PublishControl = ({
   disabled,

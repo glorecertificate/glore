@@ -5,12 +5,12 @@ import { cache } from 'react'
 
 import { getSessionUser } from '@/actions/session'
 import { USER_NOT_FOUND, fetchUser } from '@/actions/user-data'
-import { AUTH_ROOT, SESSION_ROOT } from '@/lib/constants'
+import { SESSION_ROOT } from '@/lib/constants'
 import { getCookie } from '@/lib/cookie-store'
 
 export const getViewer = cache(async () => {
   const session = await getSessionUser()
-  if (!session) redirect(AUTH_ROOT)
+  if (!session) redirect(SESSION_ROOT)
 
   const { data, error } = await fetchUser(session.id)
   if (error?.message === USER_NOT_FOUND) redirect(SESSION_ROOT)

@@ -2497,7 +2497,13 @@
     "insightsRatingValue": "{value} / 5",
     "insightsRatingRecommend": "Te recomendarían",
     "insightsRatingCount": "Basado en {count, plural, one {# valoración} other {# valoraciones}}",
-    "metricLevelCount": "Elecciones: {level}"
+    "metricLevelCount": "Elecciones: {level}",
+    "insightsDescription": "Consulta cómo van el aprendizaje, las revisiones y las opiniones en tu organización.",
+    "insightsMonthlyEmpty": "Aún no hay actividad de certificados",
+    "insightsMonthlyEmptyDescription": "Los certificados enviados y aprobados aparecerán aquí mes a mes.",
+    "certificatesDescription": "Sigue cada solicitud de certificado, asigna revisores y revoca certificados aprobados.",
+    "settingsPageDescription": "Actualiza el perfil, el firmante y los datos de contacto de tu organización.",
+    "discardChanges": "Descartar cambios"
   },
   "Users": {
     "admin": "Usuario admin",

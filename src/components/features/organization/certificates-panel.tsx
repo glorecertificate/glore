@@ -12,6 +12,8 @@ import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { type Certificate } from '@/db/queries/certificate'
 
+import { TabHeader } from './tab-header'
+
 interface LoadedCertificates {
   certificates: Certificate[]
   tutors: OrgTutor[]
@@ -42,6 +44,7 @@ const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void;
   const t = useTranslations('Organization')
   const [loaded, setLoaded] = useState<LoadedCertificates | null>(null)
   const [failed, setFailed] = useState(false)
+  const header = <TabHeader description={t('certificatesDescription')} title={t('certificates')} />
 
   useEffect(() => {
     let active = true
@@ -64,22 +67,30 @@ const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void;
 
   if (failed) {
     return (
-      <Banner className="items-center justify-between" role="alert" variant="destructive">
-        {t('certificatesError')}
-        <Button onClick={onRetry} size="sm" type="button" variant="outline">
-          {t('retry')}
-        </Button>
-      </Banner>
+      <div className="flex flex-col gap-6">
+        {header}
+        <Banner className="items-center justify-between" role="alert" variant="destructive">
+          {t('certificatesError')}
+          <Button onClick={onRetry} size="sm" type="button" variant="outline">
+            {t('retry')}
+          </Button>
+        </Banner>
+      </div>
     )
   }
 
-  if (!loaded) return <OrganizationCertificates certificates={[]} loading tutors={[]} />
-
   return (
-    <OrganizationCertificates
-      certificates={loaded.certificates}
-      onChanged={() => void reload()}
-      tutors={loaded.tutors}
-    />
+    <div className="flex flex-col gap-6">
+      {header}
+      {loaded ? (
+        <OrganizationCertificates
+          certificates={loaded.certificates}
+          onChanged={() => void reload()}
+          tutors={loaded.tutors}
+        />
+      ) : (
+        <OrganizationCertificates certificates={[]} loading tutors={[]} />
+      )}
+    </div>
   )
 }

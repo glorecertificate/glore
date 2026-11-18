@@ -10,9 +10,9 @@ import { useInvitationError } from '@/components/features/organization/use-invit
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 
+import { TabHeader } from './tab-header'
 import { formatRoleLabel } from './utils'
 
 const RejectRequestDialog = ({
@@ -144,69 +145,74 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
 
   return (
     <>
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-lg font-semibold">{t('joinRequestsTitle')}</h2>
-          <p className="text-sm text-muted-foreground">{t('joinRequestsDescription')}</p>
-        </div>
+      <div className="flex flex-col gap-6">
+        <TabHeader description={t('joinRequestsDescription')} title={t('joinRequestsTitle')} />
 
-        {joinRequests.length === 0 ? (
+        {joinRequests.length === 0 && (
           <Empty className="border">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <LucideIcon name="mail" />
+                <LucideIcon name="inbox" />
               </EmptyMedia>
               <EmptyTitle>{t('noJoinRequests')}</EmptyTitle>
               <EmptyDescription>{t('noJoinRequestsDescription')}</EmptyDescription>
             </EmptyHeader>
           </Empty>
-        ) : (
-          <div className="space-y-3">
+        )}
+        {joinRequests.length > 0 && (
+          <ul aria-label={t('joinRequestsTitle')} className="divide-y overflow-hidden rounded-xl border bg-card">
             <AnimatedList>
               {joinRequests.map(request => (
-                <AnimatedListItem key={request.id} variant="row">
-                  <Card>
-                    <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-medium">{request.fullName}</p>
+                <AnimatedListItem asChild key={request.id} variant="row">
+                  <li className="flex flex-col gap-4 p-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex min-w-0 gap-3">
+                      <Avatar className="size-8 rounded-full">
+                        <AvatarFallback className="rounded-full">
+                          {(request.fullName || request.email).slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex min-w-0 flex-col gap-1">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <span className="font-medium wrap-anywhere">{request.fullName}</span>
                           <Badge variant="outline">{formatRoleLabel(request.role, t)}</Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground">{request.email}</p>
-                        {request.message && <p className="text-sm whitespace-pre-wrap">{request.message}</p>}
-                        {!request.userId && (
-                          <p className="text-xs text-muted-foreground">{tInvitations('requestInviteHint')}</p>
+                        <span className="text-sm wrap-anywhere text-muted-foreground">{request.email}</span>
+                        {request.message && (
+                          <p className="mt-1 text-sm wrap-anywhere whitespace-pre-wrap">{request.message}</p>
                         )}
-                        <p className="text-xs text-muted-foreground">
+                        {!request.userId && (
+                          <p className="type-caption text-muted-foreground">{tInvitations('requestInviteHint')}</p>
+                        )}
+                        <p className="type-caption text-muted-foreground">
                           {t('requestedOn', { date: dateFormatter.format(new Date(request.createdAt)) })}
                         </p>
                       </div>
+                    </div>
 
-                      <div className="flex gap-2">
-                        <Button
-                          disabled={activeRequestId === request.id}
-                          loading={activeRequestId === request.id}
-                          onClick={() => handleApproveRequest(request.id)}
-                          size="sm"
-                          variant="success"
-                        >
-                          {t('approve')}
-                        </Button>
-                        <Button
-                          disabled={activeRequestId === request.id}
-                          onClick={() => setRejectRequestId(request.id)}
-                          size="sm"
-                          variant="outline"
-                        >
-                          {t('reject')}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <div className="flex shrink-0 gap-2">
+                      <Button
+                        disabled={activeRequestId === request.id}
+                        loading={activeRequestId === request.id}
+                        onClick={() => handleApproveRequest(request.id)}
+                        size="sm"
+                        variant="success"
+                      >
+                        {t('approve')}
+                      </Button>
+                      <Button
+                        disabled={activeRequestId === request.id}
+                        onClick={() => setRejectRequestId(request.id)}
+                        size="sm"
+                        variant="outline"
+                      >
+                        {t('reject')}
+                      </Button>
+                    </div>
+                  </li>
                 </AnimatedListItem>
               ))}
             </AnimatedList>
-          </div>
+          </ul>
         )}
       </div>
 

@@ -8,6 +8,7 @@ import { useI18n } from '@/components/providers/i18n'
 import { AvatarStack } from '@/components/ui/avatar-stack'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { StatCard } from '@/components/ui/stat-card'
 import { useCountryName } from '@/hooks/use-country-name'
 import { isHttpUrl } from '@/lib/url'
@@ -15,6 +16,7 @@ import { isHttpUrl } from '@/lib/url'
 import { ActivityList } from './activity-list'
 import { OrganizationChecklist } from './checklist'
 import { OrganizationPipeline } from './pipeline'
+import { TabHeader } from './tab-header'
 import { type OrganizationTab } from './tabs'
 
 const PREVIEW_ACTIVITY_COUNT = 5
@@ -29,20 +31,54 @@ export const OrganizationOverview = ({
   const { localize } = useI18n()
   const t = useTranslations('Organization')
   const translateCountry = useCountryName()
+  const { organization } = data
+  const location = [
+    organization.address,
+    [organization.postcode, organization.city].filter(Boolean).join(' '),
+    organization.region,
+    organization.country && translateCountry(organization.country),
+  ]
+    .filter(Boolean)
+    .join(', ')
+
+  const team = [
+    { count: data.stats.adminCount, icon: 'shield-user', label: t('admins') },
+    { count: data.stats.representativeCount, icon: 'users', label: t('representatives') },
+    { count: data.stats.tutorCount, icon: 'user-check', label: t('tutors') },
+    { count: data.stats.volunteerCount, icon: 'hand-heart', label: t('volunteers') },
+    { count: data.stats.learnerCount, icon: 'graduation-cap', label: t('learners') },
+    { count: data.stats.pendingMemberCount, icon: 'mail', label: t('pendingAccounts') },
+  ] as const
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
+      <TabHeader
+        actions={
+          data.isOrgAdmin && (
+            <Button onClick={() => onNavigate('settings')} size="sm" type="button" variant="outline">
+              <LucideIcon name="settings-2" />
+              {t('settings')}
+            </Button>
+          )
+        }
+        description={organization.description ? localize(organization.description) : undefined}
+        title={organization.name}
+      />
+
       <OrganizationChecklist canEditSettings={data.isOrgAdmin} checklist={data.checklist} onNavigate={onNavigate} />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard label={t('memberCount')} value={data.stats.memberCount}>
-          {t('memberBreakdown', {
+        <StatCard
+          description={t('memberBreakdown', {
             admins: data.stats.adminCount,
             learners: data.stats.learnerCount,
             representatives: data.stats.representativeCount,
             tutors: data.stats.tutorCount,
             volunteers: data.stats.volunteerCount,
           })}
+          label={t('memberCount')}
+          value={data.stats.memberCount}
+        >
           <AvatarStack
             avatars={data.members.slice(0, 5).map(member => ({
               id: member.user.id,
@@ -51,128 +87,93 @@ export const OrganizationOverview = ({
             }))}
           />
         </StatCard>
-        <StatCard label={t('pendingJoinRequests')} value={data.pendingJoinRequestsCount}>
-          <span className="flex items-center gap-2">
-            <LucideIcon name="mail" className="size-4" />
-            {t('pendingJoinRequestsDescription')}
-          </span>
-        </StatCard>
-        <StatCard label={t('pendingCertificates')} value={data.pendingCertificatesCount}>
-          <span className="flex items-center gap-2">
-            <LucideIcon name="file-clock" className="size-4" />
-            {t('pendingCertificatesDescription')}
-          </span>
-        </StatCard>
-        <StatCard label={t('approvedCertificates')} value={data.approvedCertificatesCount}>
-          <span className="flex items-center gap-2">
-            <LucideIcon name="badge-check" className="size-4" />
-            {t('approvedCertificatesDescription')}
-          </span>
-        </StatCard>
+        <StatCard
+          description={t('pendingJoinRequestsDescription')}
+          label={t('pendingJoinRequests')}
+          value={data.pendingJoinRequestsCount}
+        />
+        <StatCard
+          description={t('pendingCertificatesDescription')}
+          label={t('pendingCertificates')}
+          value={data.pendingCertificatesCount}
+        />
+        <StatCard
+          description={t('approvedCertificatesDescription')}
+          label={t('approvedCertificates')}
+          value={data.approvedCertificatesCount}
+        />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.35fr_0.95fr]">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <LucideIcon name="building-2" className="size-5" />
-              {data.organization.name}
-            </CardTitle>
+            <CardTitle className="type-heading">{t('contactDetails')}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {data.organization.description && (
-              <p className="text-sm leading-6">{localize(data.organization.description)}</p>
-            )}
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-lg border bg-muted/25 p-4">
-                <p className="mb-1 text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">
-                  {t('contactDetails')}
-                </p>
-                <div className="space-y-1 text-sm">
-                  <p>{data.organization.email}</p>
-                  {data.organization.phone && <p>{data.organization.phone}</p>}
-                  {data.organization.url && isHttpUrl(data.organization.url) && (
+          <CardContent>
+            <DescriptionList layout="rows">
+              <DescriptionItem>
+                <DescriptionTerm>{t('email')}</DescriptionTerm>
+                <DescriptionDetails>{organization.email}</DescriptionDetails>
+              </DescriptionItem>
+              {organization.phone && (
+                <DescriptionItem>
+                  <DescriptionTerm>{t('phone')}</DescriptionTerm>
+                  <DescriptionDetails>{organization.phone}</DescriptionDetails>
+                </DescriptionItem>
+              )}
+              {organization.url && isHttpUrl(organization.url) && (
+                <DescriptionItem>
+                  <DescriptionTerm>{t('website')}</DescriptionTerm>
+                  <DescriptionDetails>
                     <a
                       className="text-link hover:underline"
-                      href={data.organization.url}
+                      href={organization.url}
                       rel="noopener noreferrer"
                       target="_blank"
                     >
-                      {data.organization.url}
+                      {organization.url}
                     </a>
-                  )}
-                </div>
-              </div>
-
-              <div className="rounded-lg border bg-muted/25 p-4">
-                <p className="mb-1 text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">
-                  {t('location')}
-                </p>
-                <div className="space-y-1 text-sm">
-                  <p>{[data.organization.address, data.organization.city].filter(Boolean).join(', ')}</p>
-                  <p>
-                    {[
-                      data.organization.region,
-                      data.organization.country && translateCountry(data.organization.country),
-                    ]
-                      .filter(Boolean)
-                      .join(', ')}
-                  </p>
-                  {data.organization.postcode && <p>{data.organization.postcode}</p>}
-                </div>
-              </div>
-            </div>
+                  </DescriptionDetails>
+                </DescriptionItem>
+              )}
+              {location && (
+                <DescriptionItem>
+                  <DescriptionTerm>{t('location')}</DescriptionTerm>
+                  <DescriptionDetails>{location}</DescriptionDetails>
+                </DescriptionItem>
+              )}
+              {organization.legalName && (
+                <DescriptionItem>
+                  <DescriptionTerm>{t('legalName')}</DescriptionTerm>
+                  <DescriptionDetails>{organization.legalName}</DescriptionDetails>
+                </DescriptionItem>
+              )}
+              {organization.registryId && (
+                <DescriptionItem>
+                  <DescriptionTerm>{t('registryId')}</DescriptionTerm>
+                  <DescriptionDetails>{organization.registryId}</DescriptionDetails>
+                </DescriptionItem>
+              )}
+            </DescriptionList>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>{t('teamSnapshot')}</CardTitle>
+            <CardTitle className="type-heading">{t('teamSnapshot')}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <LucideIcon name="shield-user" className="size-4 text-muted-foreground" />
-                {t('admins')}
-              </div>
-              <span className="font-medium">{data.stats.adminCount}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <LucideIcon name="users" className="size-4 text-muted-foreground" />
-                {t('representatives')}
-              </div>
-              <span className="font-medium">{data.stats.representativeCount}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <LucideIcon name="user-check" className="size-4 text-muted-foreground" />
-                {t('tutors')}
-              </div>
-              <span className="font-medium">{data.stats.tutorCount}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <LucideIcon name="hand-heart" className="size-4 text-muted-foreground" />
-                {t('volunteers')}
-              </div>
-              <span className="font-medium">{data.stats.volunteerCount}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <LucideIcon name="graduation-cap" className="size-4 text-muted-foreground" />
-                {t('learners')}
-              </div>
-              <span className="font-medium">{data.stats.learnerCount}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <LucideIcon name="mail" className="size-4 text-muted-foreground" />
-                {t('pendingAccounts')}
-              </div>
-              <span className="font-medium">{data.stats.pendingMemberCount}</span>
-            </div>
+          <CardContent>
+            <ul className="divide-y divide-border-subtle text-sm">
+              {team.map(({ count, icon, label }) => (
+                <li className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0" key={icon}>
+                  <span className="flex items-center gap-2 text-muted-foreground">
+                    <LucideIcon className="size-4" name={icon} />
+                    {label}
+                  </span>
+                  <span className="font-medium tabular-nums">{count}</span>
+                </li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
       </div>
@@ -182,15 +183,21 @@ export const OrganizationOverview = ({
 
         <Card>
           <CardHeader>
-            <CardTitle>{t('activityTitle')}</CardTitle>
+            <CardTitle className="type-heading">{t('activityTitle')}</CardTitle>
             <CardDescription>{t('activityRecent')}</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="flex flex-col gap-4">
             {data.activity.items.length === 0 && <p className="text-sm text-muted-foreground">{t('activityEmpty')}</p>}
             {data.activity.items.length > 0 && (
               <ActivityList items={data.activity.items.slice(0, PREVIEW_ACTIVITY_COUNT)} label={t('activityTitle')} />
             )}
-            <Button onClick={() => onNavigate('activity')} size="sm" type="button" variant="outline">
+            <Button
+              className="self-start"
+              onClick={() => onNavigate('activity')}
+              size="sm"
+              type="button"
+              variant="outline"
+            >
               {t('activityViewAll')}
             </Button>
           </CardContent>

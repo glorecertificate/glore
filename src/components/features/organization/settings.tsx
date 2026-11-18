@@ -38,6 +38,7 @@ import { DeleteOrganizationDialog } from './delete-organization-dialog'
 import { organizationSettingsSchema } from './schemas'
 import { SettingsSection } from './settings-section'
 import { SignatureUpload } from './signature-upload'
+import { TabHeader } from './tab-header'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
 
@@ -170,9 +171,10 @@ export const OrganizationSettings = ({
   const disabled = useFormDisabled(form.control)
 
   return (
-    <>
+    <div className="flex flex-col gap-8">
+      {!platform && <TabHeader description={t('settingsPageDescription')} title={t('settings')} />}
       <Form {...form}>
-        <form className="space-y-0" onSubmit={form.handleSubmit(handleSubmit)}>
+        <form className="flex flex-col gap-8" onSubmit={form.handleSubmit(handleSubmit)}>
           <SettingsSection description={t('brandingDescription')} title={t('branding')}>
             <OrganizationAvatarMenu
               fallback={sessionOrg?.name?.slice(0, 2).toUpperCase() ?? organization.name.slice(0, 2).toUpperCase()}
@@ -183,7 +185,7 @@ export const OrganizationSettings = ({
             />
           </SettingsSection>
 
-          <Separator className="my-8" />
+          <Separator />
 
           <SettingsSection description={t('settingsDescription')} title={t('settingsTitle')}>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -242,7 +244,7 @@ export const OrganizationSettings = ({
             </div>
           </SettingsSection>
 
-          <Separator className="my-8" />
+          <Separator />
 
           <SettingsSection description={t('descriptionLocaleHelp')} title={t('description')}>
             <SegmentedControl
@@ -274,7 +276,7 @@ export const OrganizationSettings = ({
             />
           </SettingsSection>
 
-          <Separator className="my-8" />
+          <Separator />
 
           <SettingsSection description={t('legalDescription')} title={t('legalTitle')}>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -307,7 +309,7 @@ export const OrganizationSettings = ({
             </div>
           </SettingsSection>
 
-          <Separator className="my-8" />
+          <Separator />
 
           <SettingsSection description={t('signatoryDescription')} title={t('signatoryTitle')}>
             <FormField
@@ -331,7 +333,7 @@ export const OrganizationSettings = ({
             />
           </SettingsSection>
 
-          <Separator className="my-8" />
+          <Separator />
 
           <SettingsSection description={t('contactDescription')} title={t('contactDetails')}>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -403,11 +405,23 @@ export const OrganizationSettings = ({
             </div>
           </SettingsSection>
 
-          <div className="mt-8 flex justify-end">
+          <div className="sticky bottom-0 z-10 -mx-page flex items-center justify-end gap-2 border-t bg-background/90 px-page py-3 backdrop-blur-sm">
+            {form.formState.isDirty && (
+              <Button
+                disabled={form.formState.isSubmitting}
+                onClick={() => form.reset()}
+                size="sm"
+                type="button"
+                variant="ghost"
+              >
+                {t('discardChanges')}
+              </Button>
+            )}
             <Button
-              disabled={disabled || form.formState.isSubmitting}
+              disabled={disabled || !form.formState.isDirty || form.formState.isSubmitting}
               loading={form.formState.isSubmitting}
               loadingText={t('saving')}
+              size="sm"
               type="submit"
             >
               {t('saveChanges')}
@@ -416,20 +430,21 @@ export const OrganizationSettings = ({
         </form>
       </Form>
 
-      <Separator className="my-8" />
+      <Separator />
 
       <SettingsSection description={t('dangerDescription')} title={t('dangerZone')}>
         <ImpersonationLockNote />
         {!platform && (
-          <Card className="border-destructive/20 bg-destructive/5">
+          <Card className="border-danger-border bg-danger-subtle">
             <CardHeader>
-              <CardTitle className="text-base text-destructive-text">{t('transferTitle')}</CardTitle>
+              <CardTitle className="type-heading text-danger-text">{t('transferTitle')}</CardTitle>
               <CardDescription>{t('transferHelp')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Button
                 disabled={impersonating}
                 onClick={() => setTransferOpen(true)}
+                size="sm"
                 type="button"
                 variant="destructive"
               >
@@ -438,13 +453,19 @@ export const OrganizationSettings = ({
             </CardContent>
           </Card>
         )}
-        <Card className="border-destructive/20 bg-destructive/5">
+        <Card className="border-danger-border bg-danger-subtle">
           <CardHeader>
-            <CardTitle className="text-base text-destructive-text">{t('deleteOrganizationTitle')}</CardTitle>
+            <CardTitle className="type-heading text-danger-text">{t('deleteOrganizationTitle')}</CardTitle>
             <CardDescription>{t('deleteOrganizationHelp')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button disabled={impersonating} onClick={() => setDeleteOpen(true)} type="button" variant="destructive">
+            <Button
+              disabled={impersonating}
+              onClick={() => setDeleteOpen(true)}
+              size="sm"
+              type="button"
+              variant="destructive"
+            >
               {t('deleteOrganization')}
             </Button>
           </CardContent>
@@ -466,6 +487,6 @@ export const OrganizationSettings = ({
           organizationName={organization.name}
         />
       )}
-    </>
+    </div>
   )
 }

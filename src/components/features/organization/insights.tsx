@@ -5,16 +5,20 @@ import { useEffect, useState } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type OrganizationInsights, getOrganizationInsights } from '@/actions/organizations/insights'
+import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Progress } from '@/components/ui/progress'
 import { StatCard } from '@/components/ui/stat-card'
 import { RATING_MIN_COUNT } from '@/db/queries/organization-insights'
 import { useReveal } from '@/hooks/use-reveal'
 import { cn } from '@/lib/utils'
+
+import { TabHeader } from './tab-header'
 
 const HOURS_PER_DAY = 24
 
@@ -47,12 +51,15 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
 
   if (failed) {
     return (
-      <Banner className="items-center justify-between" role="alert" variant="destructive">
-        {t('insightsError')}
-        <Button onClick={onRetry} size="sm" type="button" variant="outline">
-          {t('retry')}
-        </Button>
-      </Banner>
+      <div className="flex flex-col gap-6">
+        <TabHeader description={t('insightsDescription')} title={t('insights')} />
+        <Banner className="items-center justify-between" role="alert" variant="destructive">
+          {t('insightsError')}
+          <Button onClick={onRetry} size="sm" type="button" variant="outline">
+            {t('retry')}
+          </Button>
+        </Banner>
+      </div>
     )
   }
 
@@ -75,6 +82,7 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
   const reveal = useReveal(loading)
   const { learning, monthly, rating, review, tutors } = insights
   const approvedTotal = monthly.reduce((sum, row) => sum + row.approved, 0)
+  const hasMonthlyData = monthly.some(row => row.approved > 0 || row.submitted > 0)
   const chartData = monthly.map(row => {
     const [year = 0, month = 1] = row.month.split('-').map(Number)
     return {
@@ -86,8 +94,9 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
   })
 
   return (
-    <div aria-busy={loading || undefined} className={cn('space-y-6', reveal && 'animate-reveal')}>
+    <div aria-busy={loading || undefined} className={cn('flex flex-col gap-6', reveal && 'animate-reveal')}>
       {loading && <LoadingFallback className="sr-only" spinner={false} />}
+      <TabHeader description={t('insightsDescription')} title={t('insights')} />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           description={t('insightsLearningOf', { people: learning.people })}
@@ -124,16 +133,29 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
           <CardDescription>{t('insightsMonthlyDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Chart
-            data={chartData}
-            label={t('insightsMonthlyTitle')}
-            loading={loading}
-            series={[
-              { key: 'submitted', label: t('insightsSubmitted') },
-              { color: 'var(--chart-2)', key: 'approved', label: t('insightsApprovedSeries') },
-            ]}
-            variant="bar"
-          />
+          {!(loading || hasMonthlyData) && (
+            <Empty className="border">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <LucideIcon name="chart-no-axes-column" />
+                </EmptyMedia>
+                <EmptyTitle>{t('insightsMonthlyEmpty')}</EmptyTitle>
+                <EmptyDescription>{t('insightsMonthlyEmptyDescription')}</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          )}
+          {(loading || hasMonthlyData) && (
+            <Chart
+              data={chartData}
+              label={t('insightsMonthlyTitle')}
+              loading={loading}
+              series={[
+                { key: 'submitted', label: t('insightsSubmitted') },
+                { color: 'var(--chart-2)', key: 'approved', label: t('insightsApprovedSeries') },
+              ]}
+              variant="bar"
+            />
+          )}
         </CardContent>
       </Card>
 
@@ -148,9 +170,12 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
             {!loading && tutors.length === 0 && (
               <p className="text-sm text-muted-foreground">{t('insightsTutorsEmpty')}</p>
             )}
-            <ul className="space-y-3">
+            <ul className="divide-y">
               {tutors.map(tutor => (
-                <li className="flex items-center justify-between gap-3 text-sm" key={tutor.tutorId}>
+                <li
+                  className="flex items-center justify-between gap-3 py-2.5 text-sm first:pt-0 last:pb-0"
+                  key={tutor.tutorId}
+                >
                   <span className="min-w-0 truncate font-medium">{tutor.name}</span>
                   <span className="shrink-0 text-muted-foreground tabular-nums">
                     {t('insightsTutorLoad', { open: tutor.open, reviewed: tutor.reviewed })}
@@ -204,7 +229,9 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
                     </span>
                   </li>
                 </ul>
-                <p className="text-xs text-muted-foreground">{t('insightsRatingCount', { count: rating.count })}</p>
+                <p className="type-caption text-muted-foreground">
+                  {t('insightsRatingCount', { count: rating.count })}
+                </p>
               </div>
             )}
           </CardContent>

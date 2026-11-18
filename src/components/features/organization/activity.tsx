@@ -6,11 +6,14 @@ import { useTranslations } from 'next-intl'
 
 import { getOrganizationActivity } from '@/actions/organizations/activity'
 import { type ActivityPage } from '@/actions/organizations/activity-core'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 
 import { ActivityList } from './activity-list'
+import { TabHeader } from './tab-header'
 
 export const OrganizationActivity = ({
   initial,
@@ -38,21 +41,47 @@ export const OrganizationActivity = ({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t('activityTitle')}</CardTitle>
-        <CardDescription>{t('activityDescription')}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {page.items.length === 0 && <p className="text-sm text-muted-foreground">{t('activityEmpty')}</p>}
-        {page.items.length > 0 && <ActivityList items={page.items} label={t('activityTitle')} />}
-        {failed && <Banner variant="destructive">{t('activityError')}</Banner>}
-        {page.nextCursor && (
-          <Button disabled={loading} onClick={loadMore} size="sm" type="button" variant="outline">
-            {loading ? t('activityLoading') : t('activityLoadMore')}
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-6">
+      <TabHeader description={t('activityDescription')} title={t('activityTitle')} />
+      {page.items.length === 0 && (
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <LucideIcon name="history" />
+            </EmptyMedia>
+            <EmptyTitle>{t('activityTitle')}</EmptyTitle>
+            <EmptyDescription>{t('activityEmpty')}</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      )}
+      {page.items.length > 0 && (
+        <Card>
+          <CardContent className="flex flex-col gap-4">
+            <ActivityList items={page.items} label={t('activityTitle')} />
+            {failed && (
+              <Banner className="items-center justify-between" role="alert" variant="destructive">
+                {t('activityError')}
+                <Button onClick={loadMore} size="sm" type="button" variant="outline">
+                  {t('retry')}
+                </Button>
+              </Banner>
+            )}
+            {page.nextCursor && !failed && (
+              <Button
+                className="self-start"
+                loading={loading}
+                loadingText={t('activityLoading')}
+                onClick={loadMore}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                {t('activityLoadMore')}
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </div>
   )
 }

@@ -2497,7 +2497,13 @@
     "insightsRatingValue": "{value} / 5",
     "insightsRatingRecommend": "Would recommend you",
     "insightsRatingCount": "Based on {count, plural, one {# rating} other {# ratings}}",
-    "metricLevelCount": "{level} choices"
+    "metricLevelCount": "{level} choices",
+    "insightsDescription": "See how learning, reviews, and feedback are going in your organization.",
+    "insightsMonthlyEmpty": "No certificate activity yet",
+    "insightsMonthlyEmptyDescription": "Submitted and approved certificates appear here month by month.",
+    "certificatesDescription": "Follow every certificate request, assign reviewers, and revoke approved certificates.",
+    "settingsPageDescription": "Update your organization profile, signatory, and contact details.",
+    "discardChanges": "Discard changes"
   },
   "Users": {
     "admin": "Admin user",

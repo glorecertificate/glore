@@ -2497,7 +2497,13 @@
     "insightsRatingValue": "{value} / 5",
     "insightsRatingRecommend": "Ti consiglierebbero",
     "insightsRatingCount": "Basato su {count, plural, one {# valutazione} other {# valutazioni}}",
-    "metricLevelCount": "Scelte: {level}"
+    "metricLevelCount": "Scelte: {level}",
+    "insightsDescription": "Scopri come vanno apprendimento, revisioni e feedback nella tua organizzazione.",
+    "insightsMonthlyEmpty": "Ancora nessuna attività sui certificati",
+    "insightsMonthlyEmptyDescription": "I certificati inviati e approvati compaiono qui mese per mese.",
+    "certificatesDescription": "Segui ogni richiesta di certificato, assegna i revisori e revoca i certificati approvati.",
+    "settingsPageDescription": "Aggiorna il profilo, il firmatario e i contatti della tua organizzazione.",
+    "discardChanges": "Annulla modifiche"
   },
   "Users": {
     "admin": "Utente admin",

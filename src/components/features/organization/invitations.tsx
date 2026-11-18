@@ -24,30 +24,25 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
-import { type InvitationState, canManageInvitation, timestampMillis } from '@/db/queries/organization'
+import { canManageInvitation, timestampMillis } from '@/db/queries/organization'
 
 import { CopyLinkButton } from './copy-link-button'
 import { InviteMemberDialog } from './invite-dialog'
 import { InviteLinks } from './invite-links'
+import { INVITATION_STATUS } from './status'
+import { TabHeader } from './tab-header'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES, formatRoleLabel } from './utils'
 
 type Invitation = OrganizationPanelData['invitations'][number]
 
 const isOpen = ({ state }: Invitation) => state === 'pending' || state === 'expired'
-
-const STATE_BADGES = {
-  accepted: 'success',
-  declined: 'muted',
-  expired: 'warning',
-  pending: 'info',
-  revoked: 'destructive',
-} satisfies Record<InvitationState, React.ComponentProps<typeof Badge>['variant']>
 
 interface OrganizationInvitationsProps {
   currentUserId: string
@@ -132,27 +127,27 @@ export const OrganizationInvitations = ({
 
   return (
     <>
-      <div className="space-y-10">
-        <div className="space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold">{t('title')}</h2>
-              <p className="text-sm text-muted-foreground">{t('description')}</p>
-            </div>
-            <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
-              <LucideIcon name="user-plus" className="size-3.5" />
-              {t('invitePeople')}
-            </Button>
-          </div>
+      <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-6">
+          <TabHeader
+            actions={
+              <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
+                <LucideIcon name="user-plus" />
+                {t('invitePeople')}
+              </Button>
+            }
+            description={t('description')}
+            title={t('title')}
+          />
 
           <DataTable
             columns={[
               {
                 cell: invitation => (
                   <div className="flex min-w-0 flex-col gap-0.5">
-                    <span className="truncate font-medium">{invitation.email}</span>
+                    <span className="font-medium wrap-anywhere">{invitation.email}</span>
                     {invitation.inviterName && (
-                      <span className="text-xs text-muted-foreground">
+                      <span className="type-caption text-muted-foreground">
                         {t('invitedBy', { name: invitation.inviterName })}
                       </span>
                     )}
@@ -163,7 +158,7 @@ export const OrganizationInvitations = ({
                 sortValue: invitation => invitation.email,
               },
               {
-                cell: invitation => <Badge variant="ghost">{formatRoleLabel(invitation.role, tOrganization)}</Badge>,
+                cell: invitation => formatRoleLabel(invitation.role, tOrganization),
                 header: t('colRole'),
                 id: 'role',
                 sortValue: invitation => formatRoleLabel(invitation.role, tOrganization),
@@ -171,8 +166,13 @@ export const OrganizationInvitations = ({
               {
                 cell: invitation => (
                   <div className="flex flex-col gap-1">
-                    <Badge variant={STATE_BADGES[invitation.state]}>{t(`state_${invitation.state}`)}</Badge>
-                    <span className="text-xs text-muted-foreground">{expiryText(invitation)}</span>
+                    <StatusBadge
+                      icon={INVITATION_STATUS[invitation.state].icon}
+                      tone={INVITATION_STATUS[invitation.state].tone}
+                    >
+                      {t(INVITATION_STATUS[invitation.state].labelKey)}
+                    </StatusBadge>
+                    <span className="type-caption text-muted-foreground">{expiryText(invitation)}</span>
                   </div>
                 ),
                 header: t('colStatus'),
@@ -183,14 +183,16 @@ export const OrganizationInvitations = ({
             emptyDescription={t('emptyDescription')}
             emptyTitle={t('empty')}
             filters={
-              <SegmentedControl
-                aria-label={t('filterLabel')}
-                onValueChange={value => setFilter(value as 'all' | 'open')}
-                value={filter}
-              >
-                <SegmentedControlItem value="open">{t('filterOpen')}</SegmentedControlItem>
-                <SegmentedControlItem value="all">{t('filterAll')}</SegmentedControlItem>
-              </SegmentedControl>
+              <FilterBar>
+                <SegmentedControl
+                  aria-label={t('filterLabel')}
+                  onValueChange={value => setFilter(value as 'all' | 'open')}
+                  value={filter}
+                >
+                  <SegmentedControlItem value="open">{t('filterOpen')}</SegmentedControlItem>
+                  <SegmentedControlItem value="all">{t('filterAll')}</SegmentedControlItem>
+                </SegmentedControl>
+              </FilterBar>
             }
             getRowId={invitation => invitation.id}
             label={t('title')}
@@ -205,6 +207,7 @@ export const OrganizationInvitations = ({
                   )}
                   <Button
                     disabled={activeId === invitation.id}
+                    loading={activeId === invitation.id}
                     onClick={() => handleResend(invitation)}
                     size="sm"
                     variant="outline"

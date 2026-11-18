@@ -21,8 +21,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { type OrganizationMembershipRole, canManageMemberRole, timestampMillis } from '@/db/queries/organization'
 import { type User } from '@/db/queries/user'
 
@@ -31,6 +33,7 @@ import { InviteMemberDialog } from './invite-dialog'
 import { LeaveOrganizationDialog } from './leave-organization-dialog'
 import { MemberDrawer } from './member-drawer'
 import { RemoveMemberDialog } from './remove-member-dialog'
+import { TabHeader } from './tab-header'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES, formatRoleLabel, getDisplayName } from './utils'
@@ -95,6 +98,14 @@ export const OrganizationMembers = ({
     )
   })
 
+  const filtersActive = roleFilter !== 'all' || statusFilter !== 'all' || search.length > 0
+
+  const clearFilters = () => {
+    setSearch('')
+    setRoleFilter('all')
+    setStatusFilter('all')
+  }
+
   const openDetail = async (member: Member) => {
     const request = ++drawerRequest.current
     setDrawer({ data: null, error: null, loading: true, open: true })
@@ -126,36 +137,32 @@ export const OrganizationMembers = ({
 
   return (
     <>
-      <div className="space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold">{t('membersTitle')}</h2>
-            <p className="text-sm text-muted-foreground">{t('membersDescription')}</p>
-          </div>
-          <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
-            <LucideIcon name="user-plus" />
-            {t('inviteMember')}
-          </Button>
-        </div>
+      <div className="flex flex-col gap-6">
+        <TabHeader
+          actions={
+            <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
+              <LucideIcon name="user-plus" />
+              {t('inviteMember')}
+            </Button>
+          }
+          description={t('membersDescription')}
+          title={t('membersTitle')}
+        />
 
         <DataTable
           columns={[
             {
               cell: member => (
-                <div className="flex items-center gap-3">
-                  <Avatar className="size-9 rounded-full">
+                <div className="flex min-w-0 items-center gap-3">
+                  <Avatar className="size-8 rounded-full">
                     {member.user.avatarUrl && <AvatarImage alt="" src={member.user.avatarUrl} />}
                     <AvatarFallback className="rounded-full">
                       {(member.fullName || member.user.email).slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium">{getDisplayName(member.user)}</span>
-                    {member.user.id === currentUserId && (
-                      <Badge className="w-fit" size="sm" variant="outline">
-                        {t('you')}
-                      </Badge>
-                    )}
+                  <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
+                    <span className="font-medium wrap-anywhere">{getDisplayName(member.user)}</span>
+                    {member.user.id === currentUserId && <Badge variant="muted">{t('you')}</Badge>}
                   </div>
                 </div>
               ),
@@ -164,29 +171,36 @@ export const OrganizationMembers = ({
               sortValue: member => getDisplayName(member.user),
             },
             {
-              cell: member => member.user.email,
+              cell: member => <span className="wrap-anywhere text-muted-foreground">{member.user.email}</span>,
               header: t('email'),
               id: 'email',
               sortValue: member => member.user.email,
             },
             {
-              cell: member => <Badge variant="ghost">{formatRoleLabel(member.role, t)}</Badge>,
+              cell: member => formatRoleLabel(member.role, t),
               header: t('role'),
               id: 'role',
               sortValue: member => formatRoleLabel(member.role, t),
             },
             {
               cell: member => (
-                <Badge variant={member.isPending ? 'warning' : 'success'}>
+                <StatusBadge
+                  icon={member.isPending ? 'clock' : 'circle-check'}
+                  tone={member.isPending ? 'warning' : 'success'}
+                >
                   {member.isPending ? t('statusPending') : t('statusJoined')}
-                </Badge>
+                </StatusBadge>
               ),
               header: t('status'),
               id: 'status',
               sortValue: member => (member.isPending ? 1 : 0),
             },
             {
-              cell: member => dateTime(new Date(timestampMillis(member.createdAt)), { dateStyle: 'medium' }),
+              cell: member => (
+                <span className="text-muted-foreground">
+                  {dateTime(new Date(timestampMillis(member.createdAt)), { dateStyle: 'medium' })}
+                </span>
+              ),
               header: t('joined'),
               id: 'joined',
               sortValue: member => new Date(timestampMillis(member.createdAt)),
@@ -195,7 +209,7 @@ export const OrganizationMembers = ({
           emptyDescription={members.length === 0 ? t('noMembersDescription') : t('noMembersFilteredDescription')}
           emptyTitle={members.length === 0 ? t('noMembers') : t('noMembersFiltered')}
           filters={
-            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+            <FilterBar active={filtersActive} onClear={clearFilters}>
               <SearchInput
                 aria-label={t('searchMembers')}
                 className="w-full sm:w-64"
@@ -227,7 +241,7 @@ export const OrganizationMembers = ({
                   <SelectItem value="pending">{t('statusPending')}</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </FilterBar>
           }
           getRowId={member => member.id}
           label={t('membersTitle')}
@@ -242,12 +256,13 @@ export const OrganizationMembers = ({
                 <Button onClick={() => openDetail(member)} size="sm" variant="ghost">
                   {t('viewDetails')}
                 </Button>
+                {!(canRemove || canChangeRole || canLeave) && <span aria-hidden className="size-8" />}
                 {(canRemove || canChangeRole || canLeave) && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         aria-label={t('memberActions', { name: getDisplayName(member.user) })}
-                        size="icon"
+                        size="icon-sm"
                         variant="ghost"
                       >
                         <LucideIcon name="ellipsis" />
@@ -288,12 +303,12 @@ export const OrganizationMembers = ({
         />
 
         {isOrgAdmin && !platform && self && (
-          <div className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-medium">{t('transferTitle')}</p>
+          <div className="flex flex-col gap-3 rounded-lg border bg-surface-1 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="type-label">{t('transferTitle')}</p>
               <p className="text-sm text-muted-foreground">{t('transferHelp')}</p>
             </div>
-            <Button onClick={() => setDialog({ kind: 'transfer' })} size="sm" variant="outline">
+            <Button className="shrink-0" onClick={() => setDialog({ kind: 'transfer' })} size="sm" variant="outline">
               {t('transferOwnership')}
             </Button>
           </div>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { startTransition } from 'react'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useSession } from '@/components/providers/session'
 import { type User } from '@/db/queries/user'
 
@@ -12,13 +13,27 @@ import { OrganizationCertificatesPanel } from './certificates-panel'
 import { OrganizationOverview } from './overview'
 import { useOrganizationTab } from './tabs'
 
-const OrganizationActivity = dynamic(async () => (await import('./activity')).OrganizationActivity)
-const OrganizationInsightsPanel = dynamic(async () => (await import('./insights')).OrganizationInsightsPanel)
+const TabLoading = () => <LoadingFallback className="min-h-64" />
 
-const OrganizationInvitations = dynamic(async () => (await import('./invitations')).OrganizationInvitations)
-const OrganizationJoinRequests = dynamic(async () => (await import('./join-requests')).OrganizationJoinRequests)
-const OrganizationMembers = dynamic(async () => (await import('./members')).OrganizationMembers)
-const OrganizationSettings = dynamic(async () => (await import('./settings')).OrganizationSettings)
+const OrganizationActivity = dynamic(async () => (await import('./activity')).OrganizationActivity, {
+  loading: TabLoading,
+})
+const OrganizationInsightsPanel = dynamic(async () => (await import('./insights')).OrganizationInsightsPanel, {
+  loading: TabLoading,
+})
+
+const OrganizationInvitations = dynamic(async () => (await import('./invitations')).OrganizationInvitations, {
+  loading: TabLoading,
+})
+const OrganizationJoinRequests = dynamic(async () => (await import('./join-requests')).OrganizationJoinRequests, {
+  loading: TabLoading,
+})
+const OrganizationMembers = dynamic(async () => (await import('./members')).OrganizationMembers, {
+  loading: TabLoading,
+})
+const OrganizationSettings = dynamic(async () => (await import('./settings')).OrganizationSettings, {
+  loading: TabLoading,
+})
 
 export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPanelData }) => {
   const { refresh: routerRefresh } = useRouter()

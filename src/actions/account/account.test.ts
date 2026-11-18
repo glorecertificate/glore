@@ -5,7 +5,7 @@ import { revalidateTag, updateTag } from 'next/cache'
 import { and, eq, inArray, like } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { userTag } from '@/lib/cache'
+import { certificatesUserTag, userTag } from '@/lib/cache'
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE } from '~/scripts/seed-data'
 
 const authUser = vi.hoisted(() => ({ current: null as { id: string } | null }))
@@ -194,6 +194,7 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
       [userTag(ids.subject)],
       [userTag(ids.subject)],
       [userTag(ids.subject)],
+      [certificatesUserTag(ids.subject)],
     ])
     expect(revalidateTag).not.toHaveBeenCalled()
   })

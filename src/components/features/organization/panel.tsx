@@ -17,6 +17,7 @@ import {
   membersTab,
   preloadOrganizationTab,
   settingsTab,
+  warmOrganizationData,
 } from './lazy-tabs'
 import { OrganizationOverview } from './overview'
 import { TabBoundary } from './tab-boundary'
@@ -48,7 +49,7 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   useEffect(() => {
     const scope = { organizationId: data.organization.id, userId: data.currentUserId }
     void preloadOrganizationTab(tab, scope)
-    for (const name of ['certificates', 'insights']) void preloadOrganizationTab(name, scope)
+    void warmOrganizationData(scope)
   }, [data.currentUserId, data.organization.id, tab])
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab

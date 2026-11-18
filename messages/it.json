@@ -1879,7 +1879,8 @@
     "revokeConfirm": "Revoca il certificato",
     "revoking": "Revoca in corso…",
     "revoked": "Certificato revocato.",
-    "revokeError": "Impossibile revocare il certificato. Riprova."
+    "revokeError": "Impossibile revocare il certificato. Riprova.",
+    "viewFull": "Vedi il certificato completo"
   },
   "CertificateEligibility": {
     "title": "Non puoi ancora richiedere un certificato",
@@ -2081,7 +2082,12 @@
     "errorRateLimited": "Troppi tentativi. Attendi un momento e riprova.",
     "errorGeneric": "Non è stato possibile completare l'azione. Riprova.",
     "descriptionsMissing": "Questo corso sulle competenze non ha ancora tutte le descrizioni dei livelli. Chiedi a un editor di aggiungerle.",
-    "volunteerChoice": "Scelta dal volontario"
+    "volunteerChoice": "Scelta dal volontario",
+    "viewLabel": "Sezione",
+    "viewRequest": "Richiesta",
+    "viewReview": "Revisione",
+    "previewLabel": "Anteprima del certificato di {organization}",
+    "openPdf": "Apri PDF"
   },
   "CertificateShare": {
     "title": "Condividi il tuo certificato",

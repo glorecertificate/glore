@@ -83,30 +83,44 @@ export const ManagerDashboard = ({
       />
 
       <section className="grid grid-cols-2 gap-4 xl:grid-cols-5">
-        <StatLink href="/organization?tab=members" label={t('manager.members')} value={stats.members}>
+        <StatLink
+          accent="teal"
+          href="/organization?tab=members"
+          icon="users"
+          label={t('manager.members')}
+          value={stats.members}
+        >
           <AvatarStack avatars={members} />
         </StatLink>
         <StatLink
+          accent="navy"
           description={t('manager.invitationsDescription', { links: activeLinks })}
           href="/organization?tab=invitations"
+          icon="mail"
           label={t('manager.invitations')}
           value={manager.pendingInvitations}
         />
         <StatLink
+          accent="amber"
           description={t('manager.requestsDescription')}
           href="/organization?tab=requests"
+          icon="user-plus"
           label={t('manager.requests')}
           value={manager.pendingJoinRequests}
         />
         <StatLink
+          accent="teal"
           description={t('manager.inReviewDescription')}
           href="/organization?tab=certificates"
+          icon="clipboard-list"
           label={t('manager.inReview')}
           value={inReview}
         />
         <StatLink
+          accent="green"
           description={t('manager.issuedDescription')}
           href="/organization?tab=certificates"
+          icon="award"
           label={t('manager.issued')}
           value={pipeline.approved}
         />

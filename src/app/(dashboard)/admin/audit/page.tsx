@@ -3,10 +3,10 @@ import { Suspense } from 'react'
 import { createSearchParamsCache } from 'nuqs/server'
 
 import { listAdminAudit } from '@/actions/admin/audit'
-import { AdminTableSkeleton } from '@/components/features/admin/admin-table-skeleton'
 import { AdminAudit } from '@/components/features/admin/audit'
 import { adminAuditParsers } from '@/components/features/admin/audit-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
 import { PageIntro } from '@/components/ui/page-header'
 import { generateIntlMetadata } from '@/lib/metadata'
@@ -28,7 +28,7 @@ const AdminAuditContent = async ({ searchParams }: { searchParams: PageProps<'/a
 const AdminAuditPage = ({ searchParams }: PageProps<'/admin/audit'>) => (
   <DashboardPage title={<PageTitle namespace="Admin.audit" name="title" />}>
     <PageIntro description={<PageTitle namespace="Admin.audit" name="description" />}>
-      <Suspense fallback={<AdminTableSkeleton kind="audit" />}>
+      <Suspense fallback={<LoadingFallback />}>
         <AdminAuditContent searchParams={searchParams} />
       </Suspense>
     </PageIntro>

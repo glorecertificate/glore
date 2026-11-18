@@ -8,7 +8,7 @@
 
 ## Screen anatomy
 
-- Every admin, translations, and emails page renders `PageIntro` (`ui/page-header.tsx`): a visible description and optional actions, then the content. The title stays in the header bar. The server-paged lists (users, certificates, audit) use `AdminTableSkeleton` as the `Suspense` fallback, which renders the `DataTable` `skeleton`.
+- Every admin, translations, and emails page renders `PageIntro` (`ui/page-header.tsx`): a visible description and optional actions, then the content. The title stays in the header bar. The server-paged lists (users, certificates, audit) use `LoadingFallback` as the `Suspense` fallback, because the full table skeleton adds about 40 ms to the first paint on a slow phone.
 - Primary actions sit in the page header (`Create organization`, `Invite organization`, `Invite member`), never inside a table card.
 - Lists use `DataTable` with a `FilterBar`. `/admin/organizations` and `/admin/team` sort and filter locally with a header sort, and the server-paged lists (users, certificates, audit) sort by recency only.
 - States are `StatusBadge` tones: pending `warning`, active or joined `success`, rejected or banned `danger`. Roles and audit categories stay `Badge`.

@@ -4191,6 +4191,9 @@
     "category_reminders": "Reminders",
     "subject": "Subject: {subject}",
     "frameTitle": "Preview of {template}",
+    "device": "Preview size",
+    "devicePhone": "Phone",
+    "deviceDesktop": "Desktop",
     "renderError": "This template could not be rendered. Check the server logs for details."
   },
   "Translations": {

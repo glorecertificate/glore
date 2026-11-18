@@ -1,41 +1,60 @@
 'use client'
 
+import { useRef, useState } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
+import { announceNotificationsChanged } from '@/components/features/notifications/events'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { toast } from '@/components/ui/toast'
 import { usePoll } from '@/hooks/use-poll'
 
 const POPOVER_LIMIT = 10
 
-const readLatest = async () => {
-  const { data, error } = await listNotifications({ limit: POPOVER_LIMIT })
-  if (error) throw new Error(error.message)
-  return data
-}
-
 interface NotificationPopoverProps {
-  onChange: () => void
   onNavigate: () => void
   unread: number
 }
 
-export const NotificationPopover = ({ onChange, onNavigate, unread }: NotificationPopoverProps) => {
+export const NotificationPopover = ({ onNavigate, unread }: NotificationPopoverProps) => {
   const t = useTranslations('Notifications')
-  const { data, refresh } = usePoll(readLatest, { interval: 30_000 })
+  const [failed, setFailed] = useState(false)
 
-  const reload = () => {
-    refresh()
-    onChange()
+  const latest = useRef(0)
+
+  const readLatest = async () => {
+    latest.current += 1
+    const request = latest.current
+    try {
+      const { data: page, error } = await listNotifications({ limit: POPOVER_LIMIT })
+      if (error) throw new Error(error.message)
+      if (request === latest.current) setFailed(false)
+      return page
+    } catch (error) {
+      if (request === latest.current) setFailed(true)
+      throw error
+    }
   }
 
+  const { data, refresh } = usePoll(readLatest, { interval: 30_000 })
+
   const markAll = async () => {
-    await markAllNotificationsRead()
-    reload()
+    try {
+      const { error } = await markAllNotificationsRead()
+      if (error) {
+        toast.error(t('markAllFailed'))
+        return
+      }
+      announceNotificationsChanged()
+      refresh()
+    } catch {
+      toast.error(t('markAllFailed'))
+    }
   }
 
   return (
@@ -47,20 +66,29 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
-        {data === null && <LoadingFallback className="py-10" />}
-        {data && data.items.length === 0 && (
+        {data === null && !failed && <LoadingFallback className="py-10" />}
+        {failed && (
+          <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
+            <LucideIcon className="size-6 text-muted-foreground" name="triangle-alert" />
+            <p className="type-label">{t('errorTitle')}</p>
+            <Button onClick={refresh} size="sm" variant="outline">
+              {t('retry')}
+            </Button>
+          </div>
+        )}
+        {data && !failed && data.items.length === 0 && (
           <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
             <LucideIcon className="size-6 text-muted-foreground" name="bell-off" />
-            <p className="text-sm font-medium">{t('emptyTitle')}</p>
+            <p className="type-label">{t('emptyTitle')}</p>
             <p className="text-[13px] text-muted-foreground">{t('emptyDescription')}</p>
           </div>
         )}
-        {data && data.items.length > 0 && (
+        {data && !failed && data.items.length > 0 && (
           <NotificationList
             className="animate-reveal"
             notifications={data.items}
             onNavigate={onNavigate}
-            onRead={reload}
+            onRead={refresh}
           />
         )}
       </div>

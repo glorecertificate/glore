@@ -19,6 +19,7 @@ import {
   sidebarEntriesFor,
 } from '@/components/layout/navigation'
 import { OrganizationSwitcher } from '@/components/layout/organization-switcher'
+import { SidebarCount } from '@/components/layout/sidebar-count'
 import { useNavigationLabels } from '@/components/layout/use-navigation-labels'
 import { useSession } from '@/components/providers/session'
 import {
@@ -32,7 +33,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
@@ -94,23 +94,9 @@ interface DashboardSidebarItemProps extends React.ComponentProps<typeof SidebarM
 }
 
 const DashboardSidebarBadge = ({ count }: { count: number }) => {
-  const { isMobile, open } = useSidebar()
   const t = useTranslations('Layout')
 
-  if (!open && !isMobile) {
-    return (
-      <span className="absolute top-1 right-1 size-2 rounded-full bg-brand">
-        <span className="sr-only">{t('pendingRequests', { count })}</span>
-      </span>
-    )
-  }
-
-  return (
-    <Badge className="size-3.5 p-0" size="sm" variant="brand">
-      <span aria-hidden>{count}</span>
-      <span className="sr-only">{t('pendingRequests', { count })}</span>
-    </Badge>
-  )
+  return <SidebarCount count={count} label={t('pendingRequests', { count })} />
 }
 
 const DashboardSidebarItem = ({
@@ -294,6 +280,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 
   const { open, openMobile, setOpenMobile } = useSidebar()
   const { user } = useSession()
+  const collapsed = !open
 
   const [loggingOut, setLoggingOut] = useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
@@ -363,6 +350,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                   />
                 )}
               </div>
+              {collapsed && <span className="sr-only">{user.firstName}</span>}
               <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
                 <span className="flex items-center gap-1 font-semibold">
                   {user.firstName}

@@ -102,6 +102,7 @@ export const OrganizationSwitcher = () => {
                   </span>
                 )}
               </div>
+              {!open && <span className="sr-only">{organization?.name ?? t('noOrganization')}</span>}
               <div className={cn('grid flex-1 text-left leading-tight', !open && 'hidden')}>
                 <span className="truncate font-semibold">{organization?.name ?? t('noOrganization')}</span>
                 {organization && (
@@ -132,26 +133,27 @@ export const OrganizationSwitcher = () => {
           >
             {user.memberships.length > 0 && (
               <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
+                <DropdownMenuLabel className="type-caption text-fg-2">{t('organizations')}</DropdownMenuLabel>
                 {user.memberships.map(({ organization: { id, name, profile }, role }) => (
                   <DropdownMenuItem className="gap-2 p-2" key={id} onClick={() => selectOrganization(id)}>
-                    <Avatar className="aspect-square size-10 rounded-lg border">
+                    <Avatar className="aspect-square size-8 rounded-lg border">
                       {profile?.avatarUrl && <AvatarImage alt={name} src={profile.avatarUrl} />}
                       <AvatarFallback className="text-muted-foreground">
                         {name.slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="flex items-center truncate font-semibold">
-                        {name}
-                        {id === organization?.id && (
-                          <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-success" />
-                        )}
-                      </span>
+                      <span className="truncate font-semibold">{name}</span>
                       <span className="truncate text-xs font-normal text-muted-foreground">
                         {formatRoleLabel(role, tOrganization)}
                       </span>
                     </div>
+                    {id === organization?.id && (
+                      <>
+                        <LucideIcon className="ml-auto size-4 shrink-0 text-brand-text" name="check" />
+                        <span className="sr-only">{t('currentOrganization')}</span>
+                      </>
+                    )}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuGroup>
@@ -160,9 +162,7 @@ export const OrganizationSwitcher = () => {
               <>
                 {user.memberships.length > 0 && <DropdownMenuSeparator />}
                 <DropdownMenuGroup>
-                  <DropdownMenuLabel className="text-xs text-muted-foreground">
-                    {t('pendingInvitations')}
-                  </DropdownMenuLabel>
+                  <DropdownMenuLabel className="type-caption text-fg-2">{t('pendingInvitations')}</DropdownMenuLabel>
                   {pending.map(({ id, organizationName, role }) => (
                     <DropdownMenuItem asChild className="gap-2 p-2" key={id}>
                       <a href={`${OPEN_INVITATION_ROOT}/${id}`} onClick={closeMobile}>

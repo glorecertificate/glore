@@ -40,10 +40,6 @@
   "src/components/features/courses/skill-framework": {
     "no-arbitrary-value": 1
   },
-  "src/components/features/dashboard": {
-    "no-arbitrary-value": 1,
-    "no-restricted-classes": 1
-  },
   "src/components/features/docs": {
     "no-arbitrary-value": 2,
     "no-restricted-classes": 1
@@ -57,8 +53,8 @@
     "no-restricted-classes": 1
   },
   "src/components/features/notifications": {
-    "no-arbitrary-value": 5,
-    "no-restricted-classes": 3
+    "no-arbitrary-value": 4,
+    "no-restricted-classes": 2
   },
   "src/components/features/organization": {
     "no-arbitrary-value": 4,
@@ -75,7 +71,7 @@
     "no-default-palette": 23
   },
   "src/components/layout": {
-    "no-arbitrary-value": 6,
+    "no-arbitrary-value": 5,
     "no-restricted-classes": 1
   },
   "src/components/ui": {

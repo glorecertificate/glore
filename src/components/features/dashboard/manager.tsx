@@ -7,7 +7,8 @@ import { useTranslations } from 'next-intl'
 import { type ManagerSummary } from '@/actions/dashboard/core'
 import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { DashboardChecklist } from '@/components/features/dashboard/checklist'
-import { DashboardHero } from '@/components/features/dashboard/hero'
+import { DashboardEmpty } from '@/components/features/dashboard/empty'
+import { DashboardHeading } from '@/components/features/dashboard/heading'
 import { StatLink } from '@/components/features/dashboard/section'
 import { ActivityList } from '@/components/features/organization/activity-list'
 import { OrganizationPipeline } from '@/components/features/organization/pipeline'
@@ -50,11 +51,11 @@ export const ManagerDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHero
+      <DashboardHeading
         action={{ href: '/organization', label: t('manager.openOrganization') }}
-        name={firstName}
         organization={organization}
         subtitle={t('subtitle.manager')}
+        title={t('greeting', { name: firstName })}
       />
 
       {waiting.count > 0 && waiting.oldest && (
@@ -125,7 +126,7 @@ export const ManagerDashboard = ({
           </CardHeader>
           <CardContent>
             {activity.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{tOrganization('activityEmpty')}</p>
+              <DashboardEmpty icon="activity" title={tOrganization('activityEmpty')} />
             ) : (
               <ActivityList items={activity} label={t('manager.activity')} />
             )}

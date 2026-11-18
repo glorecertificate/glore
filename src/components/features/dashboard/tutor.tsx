@@ -6,13 +6,14 @@ import { useFormatter, useTranslations } from 'next-intl'
 
 import { type TutorQueueItem, type TutorSummary } from '@/actions/dashboard/core'
 import { AgeBadge } from '@/components/features/certificates/age-badge'
-import { DashboardHero } from '@/components/features/dashboard/hero'
+import { DashboardEmpty } from '@/components/features/dashboard/empty'
+import { DashboardHeading } from '@/components/features/dashboard/heading'
 import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DataTable } from '@/components/ui/data-table'
 import { Link } from '@/components/ui/link'
 import { type Notification } from '@/db/queries/notification'
@@ -49,7 +50,12 @@ export const TutorDashboard = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <DashboardHero action={heroAction} name={firstName} organization={organization} subtitle={t('subtitle.tutor')} />
+      <DashboardHeading
+        action={heroAction}
+        organization={organization}
+        subtitle={t('subtitle.tutor')}
+        title={t('greeting', { name: firstName })}
+      />
 
       {oldest && (
         <Banner
@@ -100,15 +106,13 @@ export const TutorDashboard = ({
           label={t('tutor.waitingVolunteer')}
           value={waitingVolunteer}
         />
-        <Card data-slot="stat-card">
-          <CardContent className="flex flex-col gap-1.5">
-            <p className="text-sm text-muted-foreground">{t('tutor.reviewTime')}</p>
-            <p className="font-display text-3xl font-semibold">{reviewValue}</p>
-            <p className="text-sm text-muted-foreground">
-              {reviewTime.sample > 0
-                ? t('tutor.reviewSample', { count: reviewTime.sample })
-                : t('tutor.reviewTimeEmpty')}
-            </p>
+        <Card className="justify-between gap-4 p-5" data-slot="stat-card">
+          <CardHeader>
+            <CardDescription>{t('tutor.reviewTime')}</CardDescription>
+            <CardTitle className="text-3xl">{reviewValue}</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            {reviewTime.sample > 0 ? t('tutor.reviewSample', { count: reviewTime.sample }) : t('tutor.reviewTimeEmpty')}
           </CardContent>
         </Card>
       </section>
@@ -165,7 +169,7 @@ export const TutorDashboard = ({
         <Card>
           <CardContent>
             {notifications.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t('updates.empty')}</p>
+              <DashboardEmpty icon="bell-off" title={t('updates.empty')} />
             ) : (
               <NotificationList notifications={notifications} />
             )}

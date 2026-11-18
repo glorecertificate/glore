@@ -85,7 +85,7 @@ const canViewCertificate = (
   const isOwner = cert.userId === user.id
   if (cert.status === 'draft') return isOwner
   const isManager = role === 'admin' || role === 'representative'
-  const isReviewer = cert.reviewerId === user.id
+  const isReviewer = role === 'tutor' && cert.reviewerId === user.id
   const isPoolTutor = role === 'tutor' && cert.reviewerId === null && cert.status === 'submitted'
   return isOwner || isManager || isReviewer || isPoolTutor || user.isAdmin
 }

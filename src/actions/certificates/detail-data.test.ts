@@ -61,4 +61,16 @@ describe.skipIf(!isLocalDatabase)('certificate detail loaders', () => {
       expect(await loaders.loadReviewContext(cert.id)).toBeNull()
     }
   })
+
+  it('stops a reviewer who is no longer a tutor of the organization from reading a closed certificate', async () => {
+    const cert = await fixture.insertCertificate({ reviewer: 'learner', status: 'approved' })
+
+    fixture.as('learner')
+    expect(await loaders.loadCertificate(cert.id)).toBeNull()
+    expect(await loaders.loadCertificateActivity(cert.id)).toBeNull()
+
+    fixture.as('tutorA')
+    const own = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'approved' })
+    expect(await loaders.loadCertificate(own.id)).not.toBeNull()
+  })
 })

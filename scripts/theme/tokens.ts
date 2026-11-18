@@ -10,6 +10,7 @@ export interface SystemConfig {
   contrast: { coloredText: number; margin: number; nonText: number; secondaryText: number; text: number }
   earned: string
   navy: string
+  palette: Record<string, [string, string]>
   status: Record<StatusName, number>
 }
 
@@ -60,6 +61,10 @@ const fromHex = (hex: string) => {
 }
 
 const fixed = (l: number, c: number, h: number): Spec => ({ c, h, kind: 'fixed', l })
+const hex = (value: string): Spec => {
+  const { c, h, l } = fromHex(value)
+  return fixed(l, c, h ?? 0)
+}
 const alias = (ref: string): Spec => ({ kind: 'alias', ref })
 const shift = (from: string, dl: number): Spec => ({ dl, from, kind: 'shift' })
 const raw = (value: string): Spec => ({ kind: 'raw', value })
@@ -100,15 +105,15 @@ const neutralSpecs = (config: SystemConfig, mode: Mode): [string, Spec][] => {
       ['surface-1', alias('surface-0')],
       ['surface-2', alias('surface-0')],
       ['surface-3', alias('surface-0')],
-      ['surface-sunken', fixed(0.982, chroma * 0.3, hue)],
-      ['surface-muted', fixed(0.962, chroma * 0.45, hue)],
-      ['surface-selected', fixed(0.942, chroma * 0.65, hue)],
+      ['surface-sunken', hex('#e9f1f6')],
+      ['surface-muted', hex('#eef3f7')],
+      ['surface-selected', hex('#e1ebf2')],
       ['surface-hover', alias('surface-muted')],
       ['field', alias('surface-0')],
-      ['border-subtle', fixed(0.935, chroma * 0.5, hue)],
-      ['border', fixed(0.91, chroma * 0.6, hue)],
+      ['border-subtle', hex('#e6edf3')],
+      ['border', hex('#d9e3ec')],
       ['border-strong', solve(chroma * 1.3, hue, ['surface-0', 'surface-sunken'], nonText)],
-      ['fg-1', fixed(0.21, chroma * 1.6, hue)],
+      ['fg-1', hex('#0f1d2e')],
       ['fg-2', solve(chroma * 1.4, hue, textBackgrounds, secondaryText)],
       ['fg-3', solve(chroma * 1.2, hue, textBackgrounds, text)],
       ['fg-disabled', fixed(0.72, chroma * 0.8, hue)],
@@ -122,14 +127,14 @@ const neutralSpecs = (config: SystemConfig, mode: Mode): [string, Spec][] => {
   }
   const textBackgrounds = ['surface-0', 'surface-1', 'surface-2', 'surface-3', 'surface-muted']
   return [
-    ['surface-0', fixed(0.165, chroma * 0.85, hue)],
-    ['surface-1', fixed(0.195, chroma, hue)],
-    ['surface-2', fixed(0.222, chroma * 1.07, hue)],
-    ['surface-3', fixed(0.248, chroma * 1.14, hue)],
-    ['surface-sunken', fixed(0.142, chroma * 0.7, hue)],
-    ['surface-muted', fixed(0.24, chroma * 1.1, hue)],
-    ['surface-selected', fixed(0.27, chroma * 1.2, hue)],
-    ['surface-hover', fixed(0.29, chroma * 1.2, hue)],
+    ['surface-0', hex('#0f1c2e')],
+    ['surface-1', hex('#12233a')],
+    ['surface-2', hex('#172b47')],
+    ['surface-3', hex('#1b3151')],
+    ['surface-sunken', hex('#0b1522')],
+    ['surface-muted', hex('#1a2d48')],
+    ['surface-selected', hex('#213a5c')],
+    ['surface-hover', hex('#27426a')],
     ['field', alias('surface-1')],
     ['border-subtle', raw('oklch(1 0 0 / 6%)')],
     ['border', raw('oklch(1 0 0 / 9%)')],
@@ -211,7 +216,7 @@ const DARK_FILLS: Record<Exclude<StatusName, 'danger'>, [number, number]> = {
 }
 
 const DARK_TEXT: Record<StatusName, [number, number]> = {
-  danger: [0.72, 0.17],
+  danger: [0.75, 0.17],
   info: [0.75, 0.12],
   success: [0.74, 0.14],
   warning: [0.82, 0.14],
@@ -259,7 +264,7 @@ const legacyFixedSpecs = (mode: Mode): [string, Spec][] => {
       ['brand-quaternary-foreground', fixed(1, 0, 195)],
       ['brand-quaternary-text', fixed(0.5, 0.085, 195)],
       ['editor-highlight', fixed(0.88, 0.14, 95)],
-      ['shadow-ink', fixed(0.25, 0.04, 256)],
+      ['shadow-ink', hex('#16304f')],
       ['shadow-a1', raw('4%')],
       ['shadow-a2', raw('6%')],
       ['shadow-a3', raw('9%')],
@@ -286,6 +291,12 @@ const legacyFixedSpecs = (mode: Mode): [string, Spec][] => {
     ['shadow-a4', raw('55%')],
   ]
 }
+
+const paletteSpecs = (config: SystemConfig, mode: Mode): [string, Spec][] =>
+  Object.entries(config.palette).map(([name, [light, dark]]) => {
+    const value = mode === 'light' ? light : dark
+    return [name, value.startsWith('#') ? hex(value) : raw(value)]
+  })
 
 const ALIASES: [string, string][] = [
   ['background', 'surface-0'],
@@ -322,14 +333,6 @@ const ALIASES: [string, string][] = [
   ['destructive-accent', 'danger-fill-hover'],
   ['destructive-foreground', 'fg-on-danger'],
   ['destructive-text', 'danger-text'],
-  ['sidebar', 'surface-sunken'],
-  ['sidebar-foreground', 'fg-1'],
-  ['sidebar-primary', 'action'],
-  ['sidebar-primary-foreground', 'fg-on-fill'],
-  ['sidebar-accent', 'surface-selected'],
-  ['sidebar-accent-foreground', 'fg-1'],
-  ['sidebar-border', 'border-subtle'],
-  ['sidebar-ring', 'ring'],
   ['header', 'surface-0'],
   ['header-foreground', 'fg-1'],
   ['header-primary', 'action'],
@@ -338,11 +341,51 @@ const ALIASES: [string, string][] = [
   ['header-accent-foreground', 'fg-1'],
   ['header-border', 'border-subtle'],
   ['header-ring', 'ring'],
-  ['chart-1', 'action-text'],
-  ['chart-2', 'earned-text'],
+  ['chart-1', 'chart-teal'],
+  ['chart-2', 'chart-green'],
   ['chart-3', 'brand-tertiary-text'],
   ['chart-4', 'brand-quaternary'],
   ['chart-5', 'warning-text'],
+]
+
+const PALETTE_PAIRS: [string, string, 'nonText' | 'text'][] = [
+  ['sidebar-foreground', 'sidebar', 'text'],
+  ['sidebar-muted', 'sidebar', 'text'],
+  ['sidebar-accent-foreground', 'sidebar', 'text'],
+  ['fg-on-dark', 'action-from', 'text'],
+  ['fg-on-dark', 'action-to', 'text'],
+  ['sidebar-badge-foreground', 'sidebar-badge', 'text'],
+  ['fg-on-dark', 'sidebar-primary', 'text'],
+  ['fg-on-dark', 'band-from', 'text'],
+  ['fg-on-dark', 'band-via', 'text'],
+  ['fg-on-dark', 'band-to', 'nonText'],
+  ['band-muted', 'band-from', 'text'],
+  ['band-muted', 'band-via', 'text'],
+  ['band-text', 'band-from', 'text'],
+  ['band-text', 'band-via', 'text'],
+  ['band-action-foreground', 'band-action', 'text'],
+  ['band-action-foreground', 'band-action-hover', 'text'],
+  ['highlight-foreground', 'highlight-from', 'text'],
+  ['highlight-foreground', 'highlight-to', 'text'],
+  ['highlight-muted', 'highlight-from', 'text'],
+  ['highlight-muted', 'highlight-to', 'text'],
+  ['stat-teal-foreground', 'stat-teal-from', 'nonText'],
+  ['stat-teal-foreground', 'stat-teal-to', 'nonText'],
+  ['stat-navy-foreground', 'stat-navy-from', 'nonText'],
+  ['stat-navy-foreground', 'stat-navy-to', 'nonText'],
+  ['stat-green-foreground', 'stat-green-from', 'nonText'],
+  ['stat-green-foreground', 'stat-green-to', 'nonText'],
+  ['stat-amber-foreground', 'stat-amber-from', 'nonText'],
+  ['stat-amber-foreground', 'stat-amber-to', 'nonText'],
+  ['stat-teal-text', 'surface-1', 'text'],
+  ['stat-navy-text', 'surface-1', 'text'],
+  ['stat-green-text', 'surface-1', 'text'],
+  ['stat-amber-text', 'surface-1', 'text'],
+  ['pill-approved-foreground', 'pill-approved', 'text'],
+  ['pill-review-foreground', 'pill-review', 'text'],
+  ['pill-draft-foreground', 'pill-draft', 'text'],
+  ['chart-teal', 'surface-1', 'nonText'],
+  ['chart-green', 'surface-1', 'nonText'],
 ]
 
 const COLORED_TEXT: [string, string][] = [
@@ -365,8 +408,12 @@ const declaredPairs = (config: SystemConfig, mode: Mode): [string, string, numbe
             surface => [token, surface, coloredText] as [string, string, number]
           )
         )
+  const palettePairs = PALETTE_PAIRS.map(
+    ([a, b, kind]) => [a, b, kind === 'text' ? text : nonText] as [string, string, number]
+  )
   return [
     ...coloredPairs,
+    ...palettePairs,
     ...surfaces.map(surface => ['fg-1', surface, text] as [string, string, number]),
     ...['surface-0', 'surface-sunken', 'surface-muted', 'current-subtle'].map(
       surface => ['fg-title', surface, text] as [string, string, number]
@@ -400,6 +447,7 @@ const resolveMode = (config: SystemConfig, mode: Mode) => {
     ...credentialSpecs(config, mode),
     ...statusSpecs(config, mode),
     ...legacyFixedSpecs(mode),
+    ...paletteSpecs(config, mode),
     ...ALIASES.map(([name, ref]) => [name, alias(ref)] as [string, Spec]),
   ]
   const resolved = new Map<string, Resolved>()
@@ -487,8 +535,22 @@ export const failingPairs = (theme: Theme) =>
 const block = (selector: string, entries: [string, string][]) =>
   [`  ${selector} {`, ...entries.map(([name, value]) => `    --${name}: ${value};`), '  }'].join('\n')
 
+const SCOPED = ['sidebar']
+
 export const renderCss = (theme: Theme) =>
-  ['@layer base {', block(':root', theme.css.light), '', block('.dark', theme.css.dark), '}', ''].join('\n')
+  [
+    '@layer base {',
+    block(':root', theme.css.light),
+    '',
+    block('.dark', theme.css.dark),
+    '',
+    block(
+      ':root:not(.dark) .sidebar-scope',
+      theme.css.light.filter(([name]) => SCOPED.includes(name))
+    ),
+    '}',
+    '',
+  ].join('\n')
 
 const emailBlock = (name: string, entries: Record<string, string>) => [
   `export const ${name} = {`,

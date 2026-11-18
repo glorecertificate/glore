@@ -16,7 +16,7 @@
   --font-mono:
     var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
     monospace;
-  --radius: 0.6rem;
+  --radius: 0.625rem;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -142,6 +142,77 @@
   --color-info-fill-hover: var(--info-fill-hover);
   --color-info-subtle: var(--info-subtle);
   --color-info-border: var(--info-border);
+  --color-canvas: var(--canvas);
+  --color-logo-chip: var(--logo-chip);
+  --color-logo-ink: var(--logo-ink);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-field: var(--sidebar-field);
+  --color-action-from: var(--action-from);
+  --color-action-to: var(--action-to);
+  --color-sidebar-badge: var(--sidebar-badge);
+  --color-sidebar-badge-foreground: var(--sidebar-badge-foreground);
+  --color-fg-on-dark: var(--fg-on-dark);
+  --color-band-from: var(--band-from);
+  --color-band-via: var(--band-via);
+  --color-band-to: var(--band-to);
+  --color-band-foreground: var(--band-foreground);
+  --color-band-muted: var(--band-muted);
+  --color-band-text: var(--band-text);
+  --color-band-scrim: var(--band-scrim);
+  --color-band-border: var(--band-border);
+  --color-band-action: var(--band-action);
+  --color-band-action-hover: var(--band-action-hover);
+  --color-band-action-foreground: var(--band-action-foreground);
+  --color-highlight-from: var(--highlight-from);
+  --color-highlight-to: var(--highlight-to);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-highlight-muted: var(--highlight-muted);
+  --color-earned-from: var(--earned-from);
+  --color-earned-via: var(--earned-via);
+  --color-earned-to: var(--earned-to);
+  --color-earned-title-from: var(--earned-title-from);
+  --color-earned-title-to: var(--earned-title-to);
+  --color-stat-teal-from: var(--stat-teal-from);
+  --color-stat-teal-to: var(--stat-teal-to);
+  --color-stat-teal-strip: var(--stat-teal-strip);
+  --color-stat-teal-strip-to: var(--stat-teal-strip-to);
+  --color-stat-teal-foreground: var(--stat-teal-foreground);
+  --color-stat-teal-text: var(--stat-teal-text);
+  --color-stat-navy-from: var(--stat-navy-from);
+  --color-stat-navy-to: var(--stat-navy-to);
+  --color-stat-navy-strip: var(--stat-navy-strip);
+  --color-stat-navy-strip-to: var(--stat-navy-strip-to);
+  --color-stat-navy-foreground: var(--stat-navy-foreground);
+  --color-stat-navy-text: var(--stat-navy-text);
+  --color-stat-green-from: var(--stat-green-from);
+  --color-stat-green-to: var(--stat-green-to);
+  --color-stat-green-strip: var(--stat-green-strip);
+  --color-stat-green-strip-to: var(--stat-green-strip-to);
+  --color-stat-green-foreground: var(--stat-green-foreground);
+  --color-stat-green-text: var(--stat-green-text);
+  --color-stat-amber-from: var(--stat-amber-from);
+  --color-stat-amber-to: var(--stat-amber-to);
+  --color-stat-amber-strip: var(--stat-amber-strip);
+  --color-stat-amber-strip-to: var(--stat-amber-strip-to);
+  --color-stat-amber-foreground: var(--stat-amber-foreground);
+  --color-stat-amber-text: var(--stat-amber-text);
+  --color-pill-approved: var(--pill-approved);
+  --color-pill-approved-foreground: var(--pill-approved-foreground);
+  --color-pill-review: var(--pill-review);
+  --color-pill-review-foreground: var(--pill-review-foreground);
+  --color-pill-draft: var(--pill-draft);
+  --color-pill-draft-foreground: var(--pill-draft-foreground);
+  --color-chart-teal: var(--chart-teal);
+  --color-chart-teal-deep: var(--chart-teal-deep);
+  --color-chart-green: var(--chart-green);
+  --color-chart-green-light: var(--chart-green-light);
+  --color-chart-grid: var(--chart-grid);
+  --shadow-card: var(--elevation-card);
+  --shadow-stat: var(--elevation-stat);
+  --shadow-glow: var(--elevation-glow);
+  --shadow-glow-nav: var(--elevation-glow-nav);
+  --shadow-glow-green: var(--elevation-glow-green);
+  --shadow-deep: var(--elevation-deep);
   --shadow-2xs: 0 1px 1px color-mix(in oklab, var(--shadow-ink) var(--shadow-a1), transparent);
   --shadow-xs:
     0 1px 2px -1px color-mix(in oklab, var(--shadow-ink) var(--shadow-a2), transparent),
@@ -196,10 +267,32 @@
 
 @utility type-heading {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 600;
   line-height: 1.5rem;
   letter-spacing: -0.01em;
+}
+
+@utility type-stat {
+  font-family: var(--font-display);
+  font-size: 2.125rem;
+  font-weight: 700;
+  line-height: 2.375rem;
+  letter-spacing: -0.02em;
+}
+
+@utility type-band {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 2.125rem;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+
+  @media (width >= 40rem) {
+    font-size: 2.125rem;
+    line-height: 2.5rem;
+  }
 }
 
 @utility type-label {
@@ -209,11 +302,133 @@
   line-height: 1.25rem;
 }
 
+@utility type-overline {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 @utility type-caption {
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 400;
   line-height: 1rem;
+}
+
+@utility bg-band {
+  background-image: linear-gradient(120deg, var(--band-from) 0%, var(--band-via) 55%, var(--band-to) 100%);
+}
+
+@utility bg-gradient-action {
+  background-image: linear-gradient(90deg, var(--action-from), var(--action-to));
+}
+
+@utility bg-highlight {
+  background-image: linear-gradient(150deg, var(--highlight-from), var(--highlight-to));
+}
+
+@utility bg-earned-panel {
+  background-image: linear-gradient(160deg, var(--earned-from), var(--earned-via) 55%, var(--earned-to));
+}
+
+@utility bg-avatar {
+  background-image: linear-gradient(135deg, var(--band-action), var(--earned-via));
+}
+
+@utility bg-stat-tile {
+  background-image: linear-gradient(135deg, var(--stat-from), var(--stat-to));
+}
+
+@utility bg-stat-strip {
+  background-image: linear-gradient(90deg, var(--stat-strip), var(--stat-strip-to));
+}
+
+@utility text-stat {
+  color: var(--stat-text);
+}
+
+@utility text-stat-foreground {
+  color: var(--stat-foreground);
+}
+
+@utility text-earned-title {
+  background-image: linear-gradient(100deg, var(--earned-title-from), var(--earned-title-to));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility press {
+  transition-property: transform, background-color, border-color, color, box-shadow, filter, opacity;
+  transition-duration: 80ms;
+  transition-timing-function: var(--ease-out);
+
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    transform: scale(0.98);
+  }
+}
+
+@utility stat-accent-teal {
+  --stat-from: var(--stat-teal-from);
+  --stat-to: var(--stat-teal-to);
+  --stat-strip: var(--stat-teal-strip);
+  --stat-strip-to: var(--stat-teal-strip-to);
+  --stat-foreground: var(--stat-teal-foreground);
+  --stat-text: var(--stat-teal-text);
+}
+
+@utility stat-accent-navy {
+  --stat-from: var(--stat-navy-from);
+  --stat-to: var(--stat-navy-to);
+  --stat-strip: var(--stat-navy-strip);
+  --stat-strip-to: var(--stat-navy-strip-to);
+  --stat-foreground: var(--stat-navy-foreground);
+  --stat-text: var(--stat-navy-text);
+}
+
+@utility stat-accent-green {
+  --stat-from: var(--stat-green-from);
+  --stat-to: var(--stat-green-to);
+  --stat-strip: var(--stat-green-strip);
+  --stat-strip-to: var(--stat-green-strip-to);
+  --stat-foreground: var(--stat-green-foreground);
+  --stat-text: var(--stat-green-text);
+}
+
+@utility stat-accent-amber {
+  --stat-from: var(--stat-amber-from);
+  --stat-to: var(--stat-amber-to);
+  --stat-strip: var(--stat-amber-strip);
+  --stat-strip-to: var(--stat-amber-strip-to);
+  --stat-foreground: var(--stat-amber-foreground);
+  --stat-text: var(--stat-amber-text);
+}
+
+@utility logo-chip {
+  background-color: var(--logo-chip);
+  --foreground: var(--logo-ink);
+}
+
+@utility band-tabs {
+  [data-slot="tabs-list"] {
+    background-color: var(--band-scrim);
+  }
+
+  [data-slot="tabs-trigger"] {
+    color: var(--band-text) !important;
+
+    &:hover {
+      color: var(--band-foreground) !important;
+    }
+
+    &[data-state="active"] {
+      background-color: var(--surface-0) !important;
+      color: var(--fg-1) !important;
+    }
+  }
 }
 
 @utility focus-ring {
@@ -246,7 +461,7 @@
     @apply border-border outline-ring;
   }
   body {
-    @apply overflow-x-hidden bg-background text-sm text-foreground;
+    @apply overflow-x-hidden bg-canvas text-sm text-foreground;
   }
   :where(h1, h2, h3, [data-slot$="-title"]) {
     @apply font-display tracking-tight;

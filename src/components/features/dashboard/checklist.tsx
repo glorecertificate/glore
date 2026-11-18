@@ -49,7 +49,9 @@ export const DashboardChecklist = ({
               </div>
               {!done && href && (
                 <Button asChild className="max-sm:ml-8" size="sm" variant="outline">
-                  <Link href={href}>{action}</Link>
+                  <Link prefetch href={href}>
+                    {action}
+                  </Link>
                 </Button>
               )}
             </li>

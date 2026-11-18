@@ -51,7 +51,7 @@ export const EditorDashboard = ({
             </p>
           </div>
           <Button asChild size="sm" variant="brand">
-            <Link href={(pending.organizations > 0 ? '/admin/organizations' : '/admin/team') as Route}>
+            <Link prefetch href={(pending.organizations > 0 ? '/admin/organizations' : '/admin/team') as Route}>
               {t('editor.reviewPending')}
             </Link>
           </Button>
@@ -197,6 +197,7 @@ export const EditorDashboard = ({
                 {health.attention.map(course => (
                   <li className="flex flex-wrap items-center gap-2 py-3 first:pt-0 last:pb-0" key={course.slug}>
                     <Link
+                      prefetch
                       className="min-w-0 flex-1 truncate text-sm font-medium hover:underline"
                       href={`/courses/${course.slug}`}
                     >

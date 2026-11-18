@@ -12,6 +12,7 @@ import { ageTone, daysBetween } from '@/components/features/certificates/rules'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useI18n } from '@/components/providers/i18n'
 import { DataTable } from '@/components/ui/data-table'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/ui/stat-card'
@@ -55,6 +56,12 @@ export const OrganizationCertificates = ({
   const [status, setStatus] = useState(ALL)
   const [reviewer, setReviewer] = useState(ALL)
   const reveal = useReveal(loading)
+  const filtered = Boolean(query.trim()) || status !== ALL || reviewer !== ALL
+  const clear = () => {
+    setQuery('')
+    setStatus(ALL)
+    setReviewer(ALL)
+  }
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
   const counts = Object.fromEntries(
@@ -139,14 +146,14 @@ export const OrganizationCertificates = ({
             sortValue: certificate => new Date(certificate.submittedAt ?? certificate.createdAt),
           },
         ]}
-        emptyDescription={t('emptyDescription')}
-        emptyTitle={t('emptyTitle')}
+        emptyDescription={filtered ? t('emptyFilteredDescription') : t('emptyDescription')}
+        emptyTitle={filtered ? t('emptyFilteredTitle') : t('emptyTitle')}
         loading={loading}
         filters={
-          <div className="flex flex-wrap items-center gap-2">
+          <FilterBar active={filtered} onClear={clear}>
             <Input
               aria-label={t('search')}
-              className="w-56"
+              className="w-64"
               onChange={event => setQuery(event.target.value)}
               placeholder={t('search')}
               type="search"
@@ -179,7 +186,7 @@ export const OrganizationCertificates = ({
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </FilterBar>
         }
         getRowId={certificate => certificate.id}
         label={t('title')}

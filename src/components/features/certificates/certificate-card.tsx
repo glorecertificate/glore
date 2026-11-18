@@ -28,12 +28,12 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
     <Card
       className={cn(
         'gap-0 overflow-hidden p-0 transition-shadow hover:shadow-sm',
-        certificate.isApproved && 'border-success/30',
-        certificate.isChangesRequested && 'border-warning/40'
+        certificate.isApproved && 'border-success-border',
+        certificate.isChangesRequested && 'border-warning-border'
       )}
     >
       <Link className="flex flex-col" href={`/certificates/${certificate.id}`}>
-        <div className="bg-muted/40 px-6 pt-6">
+        <div className="bg-surface-sunken px-6 pt-6">
           <CertificatePreview className="mx-auto max-w-44 rounded-b-none border-b-0" certificate={certificate} />
         </div>
         <div className="flex flex-col gap-3 p-4">
@@ -61,15 +61,15 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
             )}
           </div>
           {note && (
-            <div className="flex gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3">
-              <LucideIcon name="triangle-alert" className="mt-0.5 size-4 shrink-0 text-warning" />
+            <div className="flex gap-2 rounded-lg border border-warning-border bg-warning-subtle p-3">
+              <LucideIcon name="triangle-alert" className="mt-0.5 size-4 shrink-0 text-warning-text" />
               <p className="line-clamp-2 text-sm text-muted-foreground">{note}</p>
             </div>
           )}
         </div>
       </Link>
 
-      {(canEdit || certificate.isApproved) && (
+      {(canEdit || (certificate.isApproved && certificate.documentUrl)) && (
         <CardFooter className="flex flex-wrap items-center gap-2 border-t p-4">
           {canEdit && (
             <Button asChild icon="pencil" size="sm" variant={certificate.isDraft ? 'outline' : 'warning'}>

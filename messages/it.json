@@ -1889,7 +1889,7 @@
   },
   "CertificateList": {
     "backTo": "Torna a tutti i certificati",
-    "description": "I certificati GloRe sono un riconoscimento ufficiale della tua esperienza di volontariato e delle soft skill acquisite. Li rilascia GloRe e puoi condividerli sui tuoi profili social o aggiungerli al CV. Puoi richiedere il certificato dopo aver completato almeno 3 corsi sulle competenze.",
+    "description": "Le tue richieste di certificato e le credenziali emesse.",
     "detailTitle": "Certificato",
     "notFound": "Certificato non trovato",
     "notFoundMessage": "Il certificato che stai cercando non esiste o è stato spostato",
@@ -1929,7 +1929,9 @@
     "reassignError": "Impossibile cambiare il revisore. Riprova.",
     "view": "Visualizza",
     "emptyTitle": "Nessun certificato",
-    "emptyDescription": "Nessun certificato corrisponde a questi filtri."
+    "emptyDescription": "Nessun certificato corrisponde a questi filtri.",
+    "emptyFilteredTitle": "Nessun risultato",
+    "emptyFilteredDescription": "Nessun certificato corrisponde ai filtri. Rimuovili per vedere tutto l'elenco."
   },
   "CertificatePublic": {
     "publicNotFound": "Profilo non trovato",
@@ -2203,7 +2205,8 @@
     "submitErrorsGeneric": "Impossibile inviare la richiesta. Riprova.",
     "submitErrorsSaveFailed": "Impossibile salvare la richiesta. Riprova.",
     "chosenDescription": "La tua scelta",
-    "chosenDescriptionHint": "Hai fatto questa scelta alla fine del corso. È definitiva e il tutor la verifica."
+    "chosenDescriptionHint": "Hai fatto questa scelta alla fine del corso. È definitiva e il tutor la verifica.",
+    "draftLimit": "Hai troppe bozze. Continua o elimina una bozza dai tuoi certificati per salvare questa."
   },
   "CertificatePdf": {
     "title": "Certificato di soft skill",

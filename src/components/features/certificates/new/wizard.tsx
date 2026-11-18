@@ -52,7 +52,7 @@ import { type Certificate } from '@/db/queries/certificate'
 import { useDebounce } from '@/hooks/use-debounce'
 import appConfig from '~/config/app.json'
 
-type SaveState = 'error' | 'idle' | 'saved' | 'saving'
+type SaveState = 'error' | 'idle' | 'limit' | 'saved' | 'saving'
 
 const Autosave = ({
   control,
@@ -119,7 +119,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     setSaveState('saving')
     const { data, error } = await saveCertificateDraft({ id: draftId.current, values: toEditValues(values) })
     if (error || !data) {
-      setSaveState('error')
+      setSaveState(error?.code === 'CONFLICT' && !draftId.current ? 'limit' : 'error')
       return
     }
     if (draftId.current !== data.id) {
@@ -146,8 +146,10 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     return loop.current
   }
 
+  const { isDirty } = form.formState
+
   const autosave = (values: WizardDraft) => {
-    if (resubmit) return
+    if (resubmit || !isDirty) return
     latest.current = values
     void flush()
   }
@@ -293,6 +295,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                   {saveState === 'saving' && t('saving')}
                   {saveState === 'saved' && t('saved')}
                   {saveState === 'error' && t('saveError')}
+                  {saveState === 'limit' && t('draftLimit')}
                 </output>
               )}
             </div>

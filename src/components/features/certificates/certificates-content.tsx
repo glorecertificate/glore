@@ -13,9 +13,9 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
-import { SegmentedControl } from '@/components/ui/segmented-control'
-import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
+import { PageHeaderDescription } from '@/components/ui/page-header'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
 
@@ -46,11 +46,14 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
 
   if (!eligible && !hasCertificates) return <EligibilityPanel eligibility={eligibility} />
 
+  const presentStatuses = CERT_LIST_STATUS_VALUES.filter(value => certificates.some(c => c.status === value))
   const featured = certificates.find(({ isApproved, isDefault }) => isApproved && isDefault)
   const hasOpenRequest = certificates.some(({ isOpen }) => isOpen)
 
   return (
     <div className="flex flex-col gap-8">
+      <PageHeaderDescription>{t('description')}</PageHeaderDescription>
+
       {eligible && !hasOpenRequest && (
         <Banner className="flex-wrap items-center justify-between" variant="info">
           <div className="space-y-1">
@@ -75,29 +78,33 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
       )}
 
       {hasCertificates && (
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <SegmentedControl
-            aria-label={t('filterStatus')}
+        <FilterBar active={Boolean(status)} onClear={() => setStatus(null)}>
+          <Select
             onValueChange={value => setStatus(value === 'all' ? null : (value as CertListStatus))}
             value={status ?? 'all'}
           >
-            <SegmentedControlItem value="all">{t('filterAll')}</SegmentedControlItem>
-            {CERT_LIST_STATUS_VALUES.map(s => (
-              <SegmentedControlItem key={s} value={s}>
-                {tStatus(CERTIFICATE_STATUS[s].labelKey)}
-              </SegmentedControlItem>
-            ))}
-          </SegmentedControl>
-          <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
-            <SelectTrigger aria-label={tCommon('sortBy')} className="w-auto gap-1.5 px-3 text-xs" size="sm">
+            <SelectTrigger aria-label={t('filterStatus')} className="w-48">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent align="end">
+            <SelectContent>
+              <SelectItem value="all">{t('filterAll')}</SelectItem>
+              {presentStatuses.map(s => (
+                <SelectItem key={s} value={s}>
+                  {tStatus(CERTIFICATE_STATUS[s].labelKey)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
+            <SelectTrigger aria-label={tCommon('sortBy')} className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
               <SelectItem value="newest">{t('sortNewest')}</SelectItem>
               <SelectItem value="oldest">{t('sortOldest')}</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </FilterBar>
       )}
 
       {displayCertificates.length > 0 ? (
@@ -120,7 +127,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
           {status && (
             <EmptyContent>
               <Button onClick={() => setStatus(null)} size="sm" variant="outline">
-                {t('filterAll')}
+                {tCommon('clearFilters')}
               </Button>
             </EmptyContent>
           )}

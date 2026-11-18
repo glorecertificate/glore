@@ -1889,7 +1889,7 @@
   },
   "CertificateList": {
     "backTo": "Volver a todos los certificados",
-    "description": "Los certificados de GloRe son un reconocimiento oficial de tu experiencia de voluntariado y de las habilidades blandas adquiridas. Los emite GloRe y puedes compartirlos en tus redes sociales o añadirlos a tu CV. Puedes solicitar tu certificado tras completar al menos 3 cursos de habilidades.",
+    "description": "Tus solicitudes de certificado y tus credenciales emitidas.",
     "detailTitle": "Certificado",
     "notFound": "Certificado no encontrado",
     "notFoundMessage": "El certificado que buscas no existe o se ha movido",
@@ -1929,7 +1929,9 @@
     "reassignError": "No se pudo cambiar el revisor. Inténtalo de nuevo.",
     "view": "Ver",
     "emptyTitle": "No hay certificados",
-    "emptyDescription": "Ningún certificado coincide con estos filtros."
+    "emptyDescription": "Ningún certificado coincide con estos filtros.",
+    "emptyFilteredTitle": "Sin resultados",
+    "emptyFilteredDescription": "Ningún certificado coincide con los filtros. Quítalos para ver toda la lista."
   },
   "CertificatePublic": {
     "publicNotFound": "Perfil no encontrado",
@@ -2203,7 +2205,8 @@
     "submitErrorsGeneric": "No se pudo enviar la solicitud. Inténtalo de nuevo.",
     "submitErrorsSaveFailed": "No se pudo guardar tu solicitud. Inténtalo de nuevo.",
     "chosenDescription": "Tu elección",
-    "chosenDescriptionHint": "Hiciste esta elección al final del curso. Es definitiva y tu tutor la revisa."
+    "chosenDescriptionHint": "Hiciste esta elección al final del curso. Es definitiva y tu tutor la revisa.",
+    "draftLimit": "Tienes demasiados borradores. Continúa o descarta uno desde tus certificados para guardar este."
   },
   "CertificatePdf": {
     "title": "Certificado de habilidades blandas",

@@ -1,13 +1,13 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-
+import { resolvedDynamic } from '@/components/features/courses/course-editor/resolved-dynamic'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 
-export const CourseEditor = dynamic(
+const courseEditor = resolvedDynamic(
   async () => (await import('@/components/features/courses/course-editor')).CourseEditor,
-  {
-    loading: () => <LoadingFallback size="full" />,
-    ssr: false,
-  }
+  () => <LoadingFallback size="full" />
 )
+
+export const CourseEditor = courseEditor.Component
+
+export const preloadCourseEditor = courseEditor.preload

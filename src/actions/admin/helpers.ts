@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { revalidateTag, updateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { unstable_rethrow } from 'next/navigation'
 import { connection } from 'next/server'
@@ -18,7 +18,7 @@ const HOUR = 60 * 60 * 1000
 
 export const revalidateUserAccess = (userId: string) => {
   updateTag(userTag(userId))
-  revalidateTag(CacheTag.AdminUsers, 'max')
+  updateTag(CacheTag.AdminUsers)
   expireTeam()
 }
 

@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 
 import { createSearchParamsCache } from 'nuqs/server'
 
-import { listAdminAudit } from '@/actions/admin/audit'
+import { loadAdminAudit } from '@/actions/admin/views'
 import { AdminAudit } from '@/components/features/admin/audit'
 import { adminAuditParsers } from '@/components/features/admin/audit-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -19,7 +19,7 @@ export const generateMetadata = generateIntlMetadata({
 
 const AdminAuditContent = async ({ searchParams }: { searchParams: PageProps<'/admin/audit'>['searchParams'] }) => {
   const params = await parse(searchParams)
-  const { data, error } = await listAdminAudit(params)
+  const { data, error } = await loadAdminAudit(params)
   if (error || !data) throw new Error(error?.message ?? 'Audit log unavailable')
   return <AdminAudit page={data} />
 }

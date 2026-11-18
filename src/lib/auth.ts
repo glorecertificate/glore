@@ -50,6 +50,7 @@ const expireUserCache = (user: unknown) => {
   if (typeof id !== 'string') return
   try {
     revalidateTag(userTag(id), { expire: 0 })
+    revalidateTag(CacheTag.AdminUsers, { expire: 0 })
   } catch (e) {
     console.warn('[auth] could not expire the cached user', e instanceof Error ? e.message : e)
   }

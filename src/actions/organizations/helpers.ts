@@ -33,6 +33,7 @@ export const PENDING_CERTIFICATE_STATUSES = ['changes_requested', 'in_review', '
 export const expireUserAccess = (userIds: string[]) => {
   for (const userId of new Set(userIds)) {
     updateTag(userTag(userId))
+    updateTag(CacheTag.AdminUsers)
   }
 }
 
@@ -53,6 +54,7 @@ export const revalidateOrganizationMembers = async (organizationId: number) => {
   updateTag(CacheTag.Organizations)
   for (const { userId } of members) {
     updateTag(userTag(userId))
+    updateTag(CacheTag.AdminUsers)
   }
 }
 

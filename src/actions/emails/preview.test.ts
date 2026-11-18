@@ -7,13 +7,14 @@ vi.mock('next/server', async importOriginal => ({
   connection: () => Promise.resolve(),
 }))
 vi.mock('nodemailer', () => ({ createTransport: () => ({ sendMail: vi.fn() }) }))
-vi.mock('next/cache', () => ({ cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() }))
+vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() }))
 vi.mock('@/lib/auth', () => ({
   auth: { api: { getSession: () => Promise.resolve({ user: { banned: false, id: 'u1', role: 'user' } }) } },
 }))
 vi.mock('next/headers', () => ({ headers: () => Promise.resolve(new Headers()) }))
 vi.mock('@/db/client', () => ({ db: { query: {} }, transaction: vi.fn() }))
 vi.mock('@/actions/user', () => ({ getCurrentUser: vi.fn(() => Promise.resolve(state.user)) }))
+vi.mock('@/actions/viewer', () => ({ getViewer: vi.fn(() => Promise.resolve(state.user)) }))
 
 const asViewer = (viewer: Partial<typeof state.user>) => {
   state.user = { canEdit: false, id: 'u1', isAdmin: false, ...viewer }

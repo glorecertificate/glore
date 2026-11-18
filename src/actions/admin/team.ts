@@ -6,12 +6,13 @@ import { randomBytes } from 'node:crypto'
 
 import { cacheTag } from 'next/cache'
 
-import { and, eq, inArray, isNull, or } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { eraseAccount } from '@/actions/account/deletion'
 import { expireTeam } from '@/actions/admin/expire'
 import { adminAction, requireAdminWithLimit, revalidateUserAccess } from '@/actions/admin/helpers'
+import { queryTeamMembers } from '@/actions/admin/team-core'
 import { notify } from '@/actions/notifications/notify'
 import { getCurrentUser } from '@/actions/user'
 import { db, transaction } from '@/db/client'
@@ -19,8 +20,7 @@ import { safeQuery } from '@/db/helpers'
 import { adminError, setPlatformRole } from '@/db/mutations/moderation'
 import { createTeamInvitation, refreshTeamInvitation } from '@/db/mutations/team-invitation'
 import { platformRoleOf } from '@/db/queries/admin-user'
-import { parseUser, userWith } from '@/db/queries/user'
-import { teamInvitations, users } from '@/db/schema'
+import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { LOCALES } from '@/lib/i18n'
@@ -49,28 +49,6 @@ const inviteSchema = z.object({
 })
 
 const teamRoleSchema = z.object({ role: z.enum(TEAM_ROLES), userId: z.string().min(1).max(200) })
-
-const queryTeamMembers = async () => {
-  const result = await db.query.users.findMany({
-    where: or(eq(users.role, 'admin'), eq(users.isEditor, true)),
-    with: userWith,
-    limit: 500,
-  })
-  const open = await db
-    .select({ userId: teamInvitations.userId })
-    .from(teamInvitations)
-    .where(
-      and(
-        isNull(teamInvitations.acceptedAt),
-        inArray(
-          teamInvitations.userId,
-          result.map(({ id }) => id)
-        )
-      )
-    )
-  const openIds = new Set(open.map(({ userId }) => userId))
-  return result.map(user => ({ ...parseUser(user), invitationOpen: openIds.has(user.id) }))
-}
 
 const fetchTeamMembers = async () => {
   'use cache'

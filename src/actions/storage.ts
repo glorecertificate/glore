@@ -10,7 +10,7 @@ import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
 import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
-import { userTag } from '@/lib/cache'
+import { CacheTag, userTag } from '@/lib/cache'
 import { r2DeleteQuietly, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
 export const createAvatarUploadUrl = async (contentType: string, size: number) => {
@@ -33,6 +33,7 @@ export const confirmAvatar = async (key: string) => {
   await db.update(users).set({ avatarUrl }).where(eq(users.id, user.id))
   if (current?.avatarUrl && current.avatarUrl !== avatarUrl) await r2DeleteQuietly(current.avatarUrl)
   revalidateTag(userTag(user.id), 'max')
+  revalidateTag(CacheTag.AdminUsers, 'max')
 
   const updated = await db.query.users.findFirst({
     where: eq(users.id, user.id),
@@ -54,6 +55,7 @@ export const removeAvatar = async () => {
   await db.update(users).set({ avatarUrl: null }).where(eq(users.id, user.id))
   if (current?.avatarUrl) await r2DeleteQuietly(current.avatarUrl)
   revalidateTag(userTag(user.id), 'max')
+  revalidateTag(CacheTag.AdminUsers, 'max')
 
   const updated = await db.query.users.findFirst({
     where: eq(users.id, user.id),

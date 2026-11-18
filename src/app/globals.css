@@ -443,6 +443,7 @@
 
 @utility band-tabs {
   [data-slot="tabs-list"] {
+    --tabs-list-bg: var(--band-scrim);
     background-color: var(--band-scrim);
   }
 
@@ -575,7 +576,7 @@
 @utility tabs-scroll-band {
   @media (pointer: coarse) {
     background-color: transparent !important;
-    background-image: linear-gradient(var(--color-muted), var(--color-muted));
+    background-image: linear-gradient(var(--tabs-list-bg, var(--color-muted)), var(--tabs-list-bg, var(--color-muted)));
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% --spacing(9);

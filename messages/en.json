@@ -1965,7 +1965,7 @@
     "waitingVolunteer": "Waiting for volunteer",
     "notApplicable": "Closed",
     "claim": "Claim review",
-    "claimSuccess": "Certificate claimed. It is now in your assigned list.",
+    "claimSuccess": "{count, plural, one {Certificate claimed. It is now in your assigned list.} other {# certificates claimed. They are now in your assigned list.}}",
     "claimError": "Could not claim this certificate. Try again.",
     "review": "Review",
     "view": "View",
@@ -1982,6 +1982,12 @@
         "title": "No completed reviews",
         "description": "Approved, rejected, and revoked certificates appear here."
       }
+    },
+    "description": "Review certificate requests from the volunteers of your organization.",
+    "claimAll": "{count, plural, one {Claim # review} other {Claim all # reviews}}",
+    "emptyFiltered": {
+      "title": "No matches",
+      "description": "No certificate matches your filters. Clear them to see the whole list."
     }
   },
   "CertificateReview": {

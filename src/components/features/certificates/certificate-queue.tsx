@@ -1,11 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
-
 import { useTranslations } from 'next-intl'
 
-import { selfAssignCertificate } from '@/actions/certificates/assignment'
 import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { type TutorQueueTab } from '@/components/features/certificates/params'
@@ -14,7 +10,6 @@ import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 import { Link } from '@/components/ui/link'
-import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 
@@ -22,27 +17,21 @@ export const certificateAge = (certificate: Certificate) =>
   daysBetween(certificate.submittedAt ?? certificate.createdAt)
 
 export const CertificateQueue = ({
+  filtered,
   filters,
+  onClaim,
   rows,
   tab,
 }: {
+  filtered: boolean
   filters: React.ReactNode
+  onClaim: (id: number) => void
   rows: Certificate[]
   tab: TutorQueueTab
 }) => {
   const t = useTranslations('CertificateQueue')
-  const { refresh } = useRouter()
   const { locale } = useI18n()
-  const [pending, startTransition] = useTransition()
   const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
-
-  const claim = (id: number) =>
-    startTransition(async () => {
-      const { error } = await selfAssignCertificate(id)
-      if (error) return void toast.error(t('claimError'))
-      toast.success(t('claimSuccess'))
-      return refresh()
-    })
 
   return (
     <DataTable
@@ -50,7 +39,7 @@ export const CertificateQueue = ({
         {
           cell: certificate => (
             <div className="flex flex-col gap-0.5">
-              <span className="font-medium">
+              <span className="font-medium text-foreground">
                 {certificate.user ? fullName(certificate.user) : t('unknownVolunteer')}
               </span>
               <span className="text-xs text-muted-foreground">{certificate.organization.name}</span>
@@ -93,21 +82,15 @@ export const CertificateQueue = ({
           sortValue: certificate => new Date(certificate.submittedAt ?? certificate.createdAt),
         },
       ]}
-      emptyDescription={t(`empty.${tab}.description`)}
-      emptyTitle={t(`empty.${tab}.title`)}
+      emptyDescription={filtered ? t('emptyFiltered.description') : t(`empty.${tab}.description`)}
+      emptyTitle={filtered ? t('emptyFiltered.title') : t(`empty.${tab}.title`)}
       filters={filters}
       getRowId={certificate => certificate.id}
       label={t(`tabs.${tab}`)}
       rowActions={certificate => {
         if (tab === 'pool') {
           return (
-            <Button
-              disabled={pending}
-              icon="user-plus"
-              onClick={() => claim(certificate.id)}
-              size="sm"
-              variant="outline"
-            >
+            <Button icon="user-plus" onClick={() => onClaim(certificate.id)} size="sm" variant="outline">
               {t('claim')}
             </Button>
           )

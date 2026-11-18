@@ -1965,7 +1965,7 @@
     "waitingVolunteer": "Esperando a la persona voluntaria",
     "notApplicable": "Cerrado",
     "claim": "Reclamar revisión",
-    "claimSuccess": "Certificado reclamado. Ahora está en tu lista de asignados.",
+    "claimSuccess": "{count, plural, one {Certificado reclamado. Ya está en tu lista asignada.} other {# certificados reclamados. Ya están en tu lista asignada.}}",
     "claimError": "No se pudo reclamar este certificado. Inténtalo de nuevo.",
     "review": "Revisar",
     "view": "Ver",
@@ -1982,6 +1982,12 @@
         "title": "No hay revisiones completadas",
         "description": "Los certificados aprobados, rechazados y revocados aparecen aquí."
       }
+    },
+    "description": "Revisa las solicitudes de certificado de las personas voluntarias de tu organización.",
+    "claimAll": "{count, plural, one {Reclamar # revisión} other {Reclamar las # revisiones}}",
+    "emptyFiltered": {
+      "title": "Sin resultados",
+      "description": "Ningún certificado coincide con los filtros. Quítalos para ver toda la lista."
     }
   },
   "CertificateReview": {

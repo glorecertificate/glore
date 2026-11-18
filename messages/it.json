@@ -1965,7 +1965,7 @@
     "waitingVolunteer": "In attesa del volontario",
     "notApplicable": "Chiuso",
     "claim": "Prendi in carico",
-    "claimSuccess": "Certificato preso in carico. Ora è nella tua lista di assegnati.",
+    "claimSuccess": "{count, plural, one {Certificato preso in carico. Ora è nella tua lista.} other {# certificati presi in carico. Ora sono nella tua lista.}}",
     "claimError": "Impossibile prendere in carico questo certificato. Riprova.",
     "review": "Esamina",
     "view": "Visualizza",
@@ -1982,6 +1982,12 @@
         "title": "Nessuna revisione completata",
         "description": "I certificati approvati, rifiutati e revocati compaiono qui."
       }
+    },
+    "description": "Esamina le richieste di certificato dei volontari della tua organizzazione.",
+    "claimAll": "{count, plural, one {Prendi in carico # revisione} other {Prendi in carico # revisioni}}",
+    "emptyFiltered": {
+      "title": "Nessun risultato",
+      "description": "Nessun certificato corrisponde ai filtri. Rimuovili per vedere tutto l'elenco."
     }
   },
   "CertificateReview": {

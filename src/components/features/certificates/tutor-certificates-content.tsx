@@ -1,7 +1,11 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+
 import { useTranslations } from 'next-intl'
 
+import { selfAssignCertificate } from '@/actions/certificates/assignment'
 import { CertificateQueue, certificateAge } from '@/components/features/certificates/certificate-queue'
 import {
   TUTOR_QUEUE_AGES,
@@ -13,11 +17,16 @@ import {
 import { ageTone } from '@/components/features/certificates/rules'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useTutorQueueAge, useTutorQueueStatus, useTutorQueueTab } from '@/components/features/certificates/use-params'
+import { Button } from '@/components/ui/button'
+import { FilterBar } from '@/components/ui/filter-bar'
+import { PageHeaderDescription } from '@/components/ui/page-header'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useSearch } from '@/hooks/use-search'
+import { SHORTCUTS } from '@/lib/shortcuts'
 import { fullName } from '@/lib/utils'
 
 const ALL = 'all'
@@ -34,15 +43,34 @@ export const TutorCertificatesContent = ({
   const { setTab, tab } = useTutorQueueTab()
   const { setStatus, status } = useTutorQueueStatus()
   const { age, setAge } = useTutorQueueAge()
-  const { matchSearch } = useSearch()
+  const { matchSearch, searchValue, setSearch } = useSearch()
+  const { refresh } = useRouter()
+  const [claimed, setClaimed] = useState<number[]>([])
+  const [claiming, startClaim] = useTransition()
+
+  const release = (ids: number[]) => setClaimed(current => current.filter(id => !ids.includes(id)))
+
+  const claim = (ids: number[]) =>
+    startClaim(async () => {
+      setClaimed(current => [...current, ...ids])
+      const results = await Promise.all(ids.map(id => selfAssignCertificate(id)))
+      const failed = ids.filter((_, index) => results[index]?.error)
+      if (failed.length > 0) {
+        release(failed)
+        toast.error(t('claimError'))
+      }
+      if (failed.length < ids.length) toast.success(t('claimSuccess', { count: ids.length - failed.length }))
+      refresh()
+    })
 
   const open = assigned.filter(({ isOpen }) => isOpen)
   const completed = assigned.filter(({ isOpen }) => !isOpen)
-  const sources = { assigned: open, completed, pool: unassigned } satisfies Record<TutorQueueTab, Certificate[]>
+  const pool = unassigned.filter(({ id }) => !claimed.includes(id))
+  const sources = { assigned: open, completed, pool } satisfies Record<TutorQueueTab, Certificate[]>
   const counts = {
     assigned: open.length,
     completed: completed.length,
-    pool: unassigned.length,
+    pool: pool.length,
   } satisfies Record<TutorQueueTab, number>
 
   const filter = (tabKey: TutorQueueTab) =>
@@ -56,9 +84,17 @@ export const TutorCertificatesContent = ({
 
   const statusOptions: readonly string[] = TUTOR_QUEUE_STATUSES[tab]
 
+  const clearFilters = () => {
+    setSearch('')
+    setStatus(null)
+    setAge(null)
+  }
+
+  const isFiltered = Boolean(searchValue.trim() || status || age)
+
   const filters = (
-    <div className="flex flex-wrap items-center gap-2">
-      <SearchInput aria-label={t('search')} placeholder={t('search')} />
+    <FilterBar active={isFiltered} onClear={clearFilters}>
+      <SearchInput aria-label={t('search')} hotkey={SHORTCUTS.filter.key} placeholder={t('search')} />
       {statusOptions.length > 0 && (
         <Select onValueChange={value => setStatus(value === ALL ? null : value)} value={status ?? ALL}>
           <SelectTrigger aria-label={t('status')} className="w-44">
@@ -89,32 +125,58 @@ export const TutorCertificatesContent = ({
           </SelectContent>
         </Select>
       )}
-    </div>
+    </FilterBar>
   )
 
   return (
-    <Tabs
-      className="gap-4"
-      onValueChange={value => {
-        setTab(value as TutorQueueTab)
-        setStatus(null)
-        setAge(null)
-      }}
-      value={tab}
-    >
-      <TabsList>
-        {TUTOR_QUEUE_TABS.map(key => (
-          <TabsTrigger key={key} value={key}>
-            {t(`tabs.${key}`)}
-            <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">{counts[key]}</span>
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {TUTOR_QUEUE_TABS.map(key => (
-        <TabsContent key={key} value={key}>
-          <CertificateQueue filters={filters} rows={filter(key)} tab={key} />
-        </TabsContent>
-      ))}
-    </Tabs>
+    <div className="flex flex-col gap-6">
+      <PageHeaderDescription>{t('description')}</PageHeaderDescription>
+      <Tabs
+        className="gap-4"
+        onValueChange={value => {
+          setTab(value as TutorQueueTab)
+          setStatus(null)
+          setAge(null)
+        }}
+        value={tab}
+      >
+        <TabsList>
+          {TUTOR_QUEUE_TABS.map(key => (
+            <TabsTrigger key={key} value={key}>
+              {t(`tabs.${key}`)}
+              <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">{counts[key]}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {TUTOR_QUEUE_TABS.map(key => {
+          const rows = filter(key)
+          return (
+            <TabsContent className="flex flex-col gap-3" key={key} value={key}>
+              <CertificateQueue
+                filtered={isFiltered}
+                filters={filters}
+                onClaim={id => claim([id])}
+                rows={rows}
+                tab={key}
+              />
+              {key === 'pool' && rows.length > 1 && (
+                <div className="flex justify-end">
+                  <Button
+                    disabled={claiming}
+                    icon="user-plus"
+                    loading={claiming}
+                    onClick={() => claim(rows.map(({ id }) => id))}
+                    size="sm"
+                    variant="outline"
+                  >
+                    {t('claimAll', { count: rows.length })}
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
+          )
+        })}
+      </Tabs>
+    </div>
   )
 }

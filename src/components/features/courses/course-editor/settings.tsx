@@ -190,7 +190,7 @@ export const CourseSettings = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <IconPicker value={field.value as IconName} onValueChange={icon => field.onChange(icon)}>
-                    <Button className="w-fit animate-none font-normal" type="button" variant="outline">
+                    <Button className="w-fit font-normal" type="button" variant="outline">
                       {field.value && (
                         <div>
                           <LucideIcon
@@ -239,7 +239,7 @@ export const CourseSettings = ({
                   >
                     <TabsList className="grid min-w-1/3 grid-cols-3">
                       {COURSE_TYPES.map(type => (
-                        <TabsTrigger className="h-8 py-0" key={type} size="sm" value={type}>
+                        <TabsTrigger key={type} size="sm" value={type}>
                           {tCommon(`courseType-${type}`)}
                         </TabsTrigger>
                       ))}

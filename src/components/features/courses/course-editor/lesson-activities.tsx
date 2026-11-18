@@ -81,15 +81,12 @@ const LevelsItem = ({
   return (
     <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
       <div className="flex-1 space-y-3">
-        <div className="space-y-1">
-          <p className="type-label text-foreground">{t('activityAssessment')}</p>
-          <p className="text-xs text-muted-foreground">{t('levelDescriptionsHint')}</p>
-        </div>
+        <p className="text-sm text-muted-foreground">{t('levelDescriptionsHint')}</p>
         {SKILL_LEVELS.map(level => {
           const value = descriptions[level] ?? ''
           return (
             <div className="space-y-1" key={level}>
-              <Label className="text-xs text-muted-foreground" htmlFor={`${idPrefix}-${level}`}>
+              <Label className="type-label" htmlFor={`${idPrefix}-${level}`}>
                 {tLevels(level)}
               </Label>
               <Textarea
@@ -103,7 +100,7 @@ const LevelsItem = ({
               />
               <p
                 className={cn(
-                  'text-right text-xs text-muted-foreground tabular-nums',
+                  'text-right type-caption text-muted-foreground tabular-nums',
                   value.length >= SKILL_LEVEL_DESCRIPTION_MAX_LENGTH && 'text-warning-text'
                 )}
                 id={`${idPrefix}-${level}-count`}

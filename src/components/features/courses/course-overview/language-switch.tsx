@@ -40,8 +40,9 @@ export const CourseLanguageSwitch = ({
         aria-current={value === language ? 'true' : undefined}
         asChild
         key={value}
+        className={cn(value === language && 'border-border-strong bg-surface-selected')}
         size="sm"
-        variant={value === language ? 'secondary' : 'outline'}
+        variant="outline"
       >
         <Link
           href={lessonId ? `/courses/${slug}/learn?lang=${value}&lesson=${lessonId}` : `/courses/${slug}?lang=${value}`}

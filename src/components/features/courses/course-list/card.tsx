@@ -285,7 +285,9 @@ export const CourseListCard = ({
           <div
             className={cn(
               'flex items-center gap-2.5 text-xs font-normal',
-              course.lessonCount > 0 ? 'text-muted-foreground' : 'pointer-events-none text-fg-disabled select-none'
+              course.lessonCount > 0
+                ? 'text-muted-foreground'
+                : 'pointer-events-none text-muted-foreground italic select-none'
             )}
           >
             <LucideIcon name="book-open" className="size-3.5 text-muted-foreground" />

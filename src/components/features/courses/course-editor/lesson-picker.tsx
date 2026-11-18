@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { localizeRecord } from '@/lib/i18n'
+import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 export const CourseLessonPicker = ({ className, ...props }: React.ComponentProps<'div'>) => {
@@ -20,7 +20,8 @@ export const CourseLessonPicker = ({ className, ...props }: React.ComponentProps
   const { addLesson, course, currentLesson, language, setStep, step } = useCourse()
 
   const title = (lessonTitle: Parameters<typeof localizeRecord>[0] | null | undefined) =>
-    (lessonTitle && localizeRecord(lessonTitle, language)) || t('untitledLesson')
+    (lessonTitle && (localizeRecord(lessonTitle, language) || localizeRecord(lessonTitle, DEFAULT_LOCALE))) ||
+    t('untitledLesson')
 
   return (
     <div className={className} {...props}>

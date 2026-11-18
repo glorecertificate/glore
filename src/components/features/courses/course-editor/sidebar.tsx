@@ -35,13 +35,14 @@ import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
 import { type Lesson } from '@/db/queries/lesson'
-import { type IntlRecord, localizeRecord } from '@/lib/i18n'
+import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
 const MAX_LESSON_TITLE_LENGTH = 120
 
 const CourseSidebarItem = ({
   initialCourse,
+  isLast,
   isSingleLesson,
   language,
   lesson,
@@ -53,6 +54,7 @@ const CourseSidebarItem = ({
   ...props
 }: Omit<React.ComponentProps<typeof StepperItem>, 'onSelect'> & {
   initialCourse: Course
+  isLast: boolean
   isSingleLesson: boolean
   language: Locale
   lesson: Lesson
@@ -67,6 +69,7 @@ const CourseSidebarItem = ({
   const { isCompleted, isCurrent, isReachable } = lessonStatus
 
   const title = lesson.title ? localizeRecord(lesson.title, language) : t('untitledLesson')
+  const fallbackTitle = lesson.title ? localizeRecord(lesson.title, DEFAULT_LOCALE) : t('untitledLesson')
   const [draftTitle, setDraftTitle] = useState(title)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const lessonRef = useRef(lesson)
@@ -162,6 +165,7 @@ const CourseSidebarItem = ({
                       maxLength={MAX_LESSON_TITLE_LENGTH}
                       onChange={onTitleChange}
                       onClick={e => e.stopPropagation()}
+                      placeholder={fallbackTitle}
                       ref={inputRef}
                       value={draftTitle}
                     />
@@ -206,6 +210,7 @@ const CourseSidebarItem = ({
 
       <StepperSeparator
         className={cn(
+          isLast && 'hidden',
           'absolute inset-y-0 top-10 left-6 -order-1 m-0 h-[calc(100%-0.5rem)]! -translate-x-1/2',
           user.isLearner && 'group-data-[state=completed]/step:bg-success'
         )}
@@ -310,6 +315,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                           )}
                           <CourseSidebarItem
                             initialCourse={courseRef.current}
+                            isLast={index === course.lessons.length - 1}
                             isSingleLesson={course.lessons.length === 1}
                             language={language}
                             lesson={lesson}
@@ -344,6 +350,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                   <div className="group/sortable relative w-full">
                     <CourseSidebarItem
                       initialCourse={courseRef.current}
+                      isLast={index === course.lessons.length - 1}
                       isSingleLesson={course.lessons.length === 1}
                       language={language}
                       lesson={lesson}

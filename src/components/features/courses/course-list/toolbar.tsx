@@ -36,20 +36,21 @@ export const CourseListToolbar = () => {
         )}
       </PageHeader>
       <CourseListTabsList />
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <FilterBar active={hasFilters} onClear={resetFilters}>
           <SearchInput
             className="w-full sm:w-72"
             hotkey={SHORTCUTS.filter.key}
             placeholder={t('searchPlaceholder')}
-            size="sm"
             urlKey="q"
           />
           <CourseListLanguageSelect />
           <CourseListTypeSelect />
           <CourseListGroupSelect />
         </FilterBar>
-        <CourseListSort />
+        <div className="flex shrink-0">
+          <CourseListSort />
+        </div>
       </div>
     </div>
   )

@@ -15,7 +15,7 @@ import { PageHeaderDescription, PageHeaderHeading, PageHeaderTitle } from '@/com
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type IntlRecord, localizeRecord } from '@/lib/i18n'
+import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn, debounce } from '@/lib/utils'
 
@@ -33,6 +33,7 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
   const languageLabel = localeItems.find(item => item.value === language)?.displayLabel ?? language
 
   const title = localizeRecord(course.title, language)
+  const fallbackTitle = localizeRecord(course.title, DEFAULT_LOCALE)
   const description = course.description ? localizeRecord(course.description, language) : ''
   const [editingTitle, setEditingTitle] = useState<string | null>(null)
   const [draftDescription, setDraftDescription] = useState(description)
@@ -139,9 +140,10 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
           {canEdit ? (
             <InlineInput
               aria-label={t('renameCourse')}
-              className="-my-0.5 px-1.5 py-0.5 type-title"
+              className="-my-0.5 px-1.5 py-0.5 type-title!"
               maxLength={MAX_TITLE_LENGTH}
               onBlur={onTitleBlur}
+              placeholder={fallbackTitle}
               onChange={onTitleChange}
               onFocus={onTitleFocus}
               value={draftTitle}

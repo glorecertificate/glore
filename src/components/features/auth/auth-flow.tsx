@@ -210,7 +210,9 @@ const AuthMessage = ({
     <div className="text-pretty text-muted-foreground">
       {t.rich('emailSentMessage', {
         email: () => (
-          <span className={cn('font-medium break-all text-foreground', className)} {...props}>{` ${username} `}</span>
+          <span className={cn('font-medium break-all text-foreground', className)} {...props}>
+            {username}
+          </span>
         ),
       })}
     </div>

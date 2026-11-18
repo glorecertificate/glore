@@ -136,6 +136,10 @@ export const ProfileForm = () => {
       setAvatarPreview(null)
       if (data) setUser(data)
       toast.success(t('profileUpdated'))
+      requestAnimationFrame(() => {
+        if (document.activeElement && document.activeElement !== document.body) return
+        avatarRef.current?.querySelector('button')?.focus()
+      })
     } catch {
       toast.error(t('profileUpdateError'))
     } finally {

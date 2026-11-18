@@ -8,9 +8,9 @@ Read "Domain context" in `.agents/specs/app.md` before product work.
 
 Stack: Next.js 16 (App Router, RSC, Cached Components), React 19, Neon Postgres, Drizzle ORM, Tailwind CSS 4.
 
-Libraries to use, not guess: Better Auth, Cloudflare R2, Plate.js, next-intl, react-hook-form + zod, nuqs, React Email + Nodemailer, AI SDK with Gemini, motion, @dnd-kit, shadcn/ui (new-york).
+Libraries to use, not guess: `patterns.md`, "Libraries".
 
-This file governs agents here, and Claude Code loads it natively. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
+Machine-wide user rules outrank this file, and an explicit user instruction outranks both.
 
 Budget: this file stays under 2,000 estimated tokens and each spec under 4,500. Over budget means moving detail into a spec, never dropping a fact.
 
@@ -18,30 +18,30 @@ Budget: this file stays under 2,000 estimated tokens and each spec under 4,500. 
 
 Read only the specs whose rows apply (`.agents/specs/`).
 
-| Work                                                                              | Spec               |
-| --------------------------------------------------------------------------------- | ------------------ |
-| Product, roles, features, domain rules                                            | `app.md`           |
-| Certificate lifecycle, screens, PDF, verification                                 | `certificates.md`  |
-| Invitations, members, ownership, settings, applications                           | `organizations.md` |
-| Admin area, moderation, impersonation                                             | `admin.md`         |
-| Routes, gates, API routes, proxy                                                  | `routes.md`        |
-| Auth, queries, transactions, cache, env vars, storage, cron                       | `reference.md`     |
-| `src/` tree, naming, layers, server vs client, events and email                   | `architecture.md`  |
-| Components, types, hooks, utils, i18n, forms                                      | `patterns.md`      |
-| Release UI kit, shell, theming, motion                                            | `ui.md`            |
-| Formatter, imports, lint rules, git hooks, release age                            | `code.md`          |
-| Issues, PRs, labels, Claude workflows, CI, deploys                                | `github.md`        |
-| Commands, seeds, translations, commits, skills, MCP, worktrees, tests, browser QA | `workflow.md`      |
-| Performance targets, measurement, perf CI                                         | `performance.md`   |
+| Work                                                        | Spec               |
+| ----------------------------------------------------------- | ------------------ |
+| Product, roles, features, domain rules                      | `app.md`           |
+| Certificate lifecycle, screens, PDF, verification           | `certificates.md`  |
+| Invitations, members, ownership, settings, applications     | `organizations.md` |
+| Admin area, moderation, impersonation                       | `admin.md`         |
+| Routes, gates, API routes, proxy                            | `routes.md`        |
+| Auth, queries, transactions, cache, env vars, storage, cron | `reference.md`     |
+| `src/` tree, naming, layers, server/client, events, email   | `architecture.md`  |
+| Components, types, hooks, utils, i18n, forms                | `patterns.md`      |
+| Release UI kit, shell, theming, motion                      | `ui.md`            |
+| Formatter, imports, lint rules, git hooks, release age      | `code.md`          |
+| Issues, PRs, labels, Claude workflows, CI, deploys          | `github.md`        |
+| Commands, seeds, i18n, git, skills, MCP, lanes, tests, QA   | `workflow.md`      |
+| Performance targets, measurement, perf CI                   | `performance.md`   |
 
-Work lives in GitHub issues (`github.md`). A one-PR plan lives in its draft PR and a multi-PR plan in its parent issue, so no plan stays on `main`.
+Work lives in GitHub issues. No plan stays on `main`: a draft PR or a parent issue holds it (`github.md`).
 
-References live in `.agents/references/`: product decisions, the certificate PDF, translations, manual test flows, and the release runbook.
+References in `.agents/references/`: product decisions, certificate PDF, translations, manual test flows, release runbook.
 
 ## Commands and commits
 
-- Always run `pnpm run <script>`, never bare `pnpm <script>`, except `pnpm install`. Full table: `workflow.md`.
-- Tests: `pnpm run test` (Vitest), and `pnpm run test:e2e` (Playwright) for auth, routing, and role flows.
+- Always run `pnpm run <script>`, never bare `pnpm <script>`, except `pnpm install`. Table: `workflow.md`.
+- Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright) for auth, routing, and role flows.
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first.
 - Commit headers are Conventional Commits with a lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 - One PR is one logical task. It merges by squash, with its title as the commit header. Never create a merge commit (`workflow.md`, "Git history").
@@ -50,15 +50,14 @@ References live in `.agents/references/`: product decisions, the certificate PDF
 
 ## Skills
 
-- Before starting, read and apply the matching skill from the routing table in `workflow.md`. Any React or Next.js code needs `vercel-react-best-practices`.
-- Vendored skills in `.agents/skills/` are tracked. Never hand-edit them.
-- After `pnpm run skills`, review its diff and `git restore` unintended updates (`workflow.md`).
+- Before starting, apply the matching skill from the `workflow.md` routing table. Any React or Next.js code needs `vercel-react-best-practices`.
+- Vendored skills in `.agents/skills/` are tracked. Never hand-edit them. After `pnpm run skills`, `git restore` unintended updates (`workflow.md`).
 
 ## Architecture
 
-- Dependencies flow shared > features > app. `ui/`, `icons/`, `hooks/`, `lib/` are domain-free and lint-blocked from `@/components/features/**`, `@/app/**`, `@/actions/**`.
-- `ui/rich-text-editor/` is a vendored Plate.js block. Never refactor its internals, since a registry re-pull overwrites them.
-- Reuse the release UI kit in `ui/` before adding primitives (`ui.md`).
+- Dependencies flow shared > features > app. `ui/`, `icons/`, `hooks/`, `lib/` stay domain-free (`architecture.md`).
+- Never refactor the internals of `ui/rich-text-editor/`, a vendored Plate.js block (`architecture.md`).
+- Reuse the `ui/` release kit before adding primitives (`ui.md`).
 - Locales are `en` (default), `es`, `it`. Add or remove a key in all three `messages/{locale}.json` catalogs in the same change.
 
 ## UI quality bar
@@ -73,9 +72,8 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 - Guard clauses only: `if/else`, `else if`, and `else` are forbidden.
 - No comments in new code, except a `{/* Section */}` divider in long JSX. Never touch existing comments.
 - No JSX string literals: user-facing text goes through `useTranslations()` or `getTranslations()`.
-- Use `const` arrow functions with inline named exports. A default export is a named `const` first, then `export default Name`, because inline forms break HMR.
-- Use `interface` over `type`, inline type imports, and `string[]` over `Array<string>`. Omit return types and inferrable annotations unless narrowing needs them.
-- Use `any` only in `src/lib/types.ts`.
+- Use `const` arrow functions with inline named exports. A default export is a named `const` first, then `export default Name`.
+- Use `interface` over `type`, inline type imports, and `string[]` over `Array<string>`. Use `any` only in `src/lib/types.ts`. Omit return types and inferrable annotations.
 - Use `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. Use `await`, never `.then()` chains, and `Promise.all()` for independent work.
 - One component per file, `@/` and `~/` aliases, `cva` variants, `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components.
 - Order hook dependency arrays alphabetically.
@@ -83,11 +81,11 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 
 ## Gotchas: data and imports
 
-1. Never import `cookies` from `next/headers` (use `@/lib/cookie-store`), `cnfast` (use `@/lib/utils`), or `../**`.
+1. Never import `cookies` from `next/headers`, `cnfast`, or `../**` (`code.md`, "Restricted imports").
 2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel (`reference.md`, "Authentication").
 3. `db/queries/<table>.ts` parsers MUST stay pure and never import `@/db/client` (`architecture.md`).
-4. A cached query wraps the DB call in an inner `'use cache'` + `cacheTag` function, and the outer takes `{ cache: boolean }`.
-5. Multi-statement writes use `transaction(fn)` from `@/db/client` with `(tx, ...args)` units in `src/db/mutations/`, and statements inside run sequentially.
+4. A cached query is an inner `'use cache'` + `cacheTag` function under an outer `{ cache: boolean }` one (`reference.md`).
+5. Multi-statement writes use `transaction(fn)` units in `src/db/mutations/`, run sequentially (`reference.md`).
 6. Client-created course-tree records use negative `tempId()` ids that never reach the DB (`patterns.md`).
 7. Read `IntlRecord` fields with `localize(record)` from `useI18n()`.
 
@@ -95,11 +93,11 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 
 8. The app uses `NextProxy` (`src/proxy.ts`), not `middleware.ts`.
 9. `emailAndPassword.autoSignIn` MUST stay `false` (`reference.md`, "Sign-up guard").
-10. Every env var MUST be in the Zod schema in `next.config.ts`, which MUST never import from `src/` (that restarts dev on every edit).
-11. Never edit `types/*.generated.d.ts` or `drizzle/`. Regenerate with `pnpm run typegen`, `pnpm run db generate`, `pnpm run db migrate`.
+10. Every env var MUST be in the Zod schema in `next.config.ts`, which MUST never import from `src/` (`code.md`, "Config traps").
+11. Never edit `types/*.generated.d.ts` or `drizzle/`. Regenerate with `pnpm run typegen` or `pnpm run db` (`workflow.md`).
 12. Never add manual `useMemo` or `useCallback`: the React Compiler runs in builds.
 13. Never revert the dev-performance flags in `workflow.md`, "Dev environment and performance".
-14. Certificate state changes go through `certificateAction` and `commitTransition` in `@/actions/certificates/helpers` (`certificates.md`).
+14. Certificate state changes go through `certificateAction` and `commitTransition` (`certificates.md`).
 15. Invitations never create memberships. Accepting one does (`organizations.md`, "Invitation rules").
 16. Membership changes live in `db/mutations/organization.ts` (`organizations.md`).
 17. Call admin `auth.api.*` only from `actions/admin/*` after `requireAdmin` (`admin.md`).
@@ -113,4 +111,4 @@ Run the rungs in order and report which ones ran:
 3. Test email flows yourself with Mailpit, never handing them to the user (`workflow.md`).
 4. Verify UI, layout, or animation in a real browser with `agent-browser` at `https://glore.localhost` as a seeded user. A typecheck is not visual verification.
 
-When routes, actions, hooks, utils, env vars, components, providers, skills, commands, or structure change, update `AGENTS.md`, `README.md`, and specs in the same change.
+Update `AGENTS.md`, `README.md`, and specs in the same change as any structural change (triggers: `workflow.md`, "Docs sync").

@@ -2,6 +2,10 @@
 
 Authoring conventions: components, types, utilities, hooks, i18n, forms, emails. Theming and the release UI kit: `ui.md`. Routing: `routes.md`. Auth, data fetching, cache, env vars: `reference.md`.
 
+## Libraries
+
+- Use these libraries and read their docs, never guess: Better Auth, Cloudflare R2, Plate.js, next-intl, react-hook-form + zod, nuqs, React Email + Nodemailer, AI SDK with Gemini, motion, @dnd-kit, shadcn/ui (new-york).
+
 ## Component patterns
 
 ### CVA variants

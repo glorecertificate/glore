@@ -61,6 +61,8 @@ const deliver = async <K extends EventType>(event: AppEvent<K>) => {
           .returning({ id: notifications.id, userId: notifications.userId })
       : []
 
+  for (const userId of plan.inAppIds) revalidateTag(notificationsUserTag(userId), { expire: 0 })
+
   const template = definition.email?.template
   const category = definition.email?.category ?? null
   const link = url ? `${process.env.APP_URL}${url}` : null
@@ -94,8 +96,6 @@ const deliver = async <K extends EventType>(event: AppEvent<K>) => {
       .set({ emailedAt: new Date().toISOString() })
       .where(inArray(notifications.id, emailedIds))
   }
-
-  for (const userId of plan.inAppIds) revalidateTag(notificationsUserTag(userId), { expire: 0 })
 
   return { emailed: sent.length, inApp: rows.length }
 }

@@ -24,7 +24,7 @@ interface Result {
 }
 
 interface PerfConfig {
-  budgets: { scriptKb: { app: number; public: number } }
+  budgets: { prefetchKb: { app: number; public: number }; scriptKb: { app: number; public: number } }
   publicPaths: string[]
   regression: { floor: { cls: number; kb: number; ms: number }; ratio: number }
   targets: Record<Kind, Record<Profile, Record<string, number>>>
@@ -49,7 +49,7 @@ const TITLES: Record<Kind, string> = {
 
 const COLUMNS: Record<Kind, string[]> = {
   interaction: ['latency', 'blocking'],
-  load: ['ttfb', 'fcp', 'lcp', 'cls', 'tbt', 'hydration', 'scriptKb'],
+  load: ['ttfb', 'fcp', 'lcp', 'cls', 'tbt', 'hydration', 'scriptKb', 'prefetchKb'],
   navigation: ['shell', 'complete', 'shift'],
 }
 
@@ -61,6 +61,7 @@ const LABELS: Record<string, string> = {
   hydration: 'Hydration ms',
   latency: 'Latency ms',
   lcp: 'LCP ms',
+  prefetchKb: 'Prefetch KB',
   scriptKb: 'JS KB',
   shell: 'Shell ms',
   shift: 'Shift',
@@ -102,14 +103,15 @@ const devMode = [...current.values(), ...baseline.values()].some(result => resul
 
 const floorFor = (metric: string) => {
   if (metric === 'cls' || metric === 'shift') return config.regression.floor.cls
-  if (metric === 'scriptKb') return config.regression.floor.kb
+  if (metric === 'scriptKb' || metric === 'prefetchKb') return config.regression.floor.kb
   return config.regression.floor.ms
 }
 
 const targetFor = (result: Result, metric: string) => {
-  if (metric !== 'scriptKb') return config.targets[result.kind][result.profile][metric]
-  if (config.publicPaths.includes(result.path ?? '')) return config.budgets.scriptKb.public
-  return config.budgets.scriptKb.app
+  if (metric !== 'scriptKb' && metric !== 'prefetchKb') return config.targets[result.kind][result.profile][metric]
+  const budget = config.budgets[metric]
+  if (config.publicPaths.includes(result.path ?? '')) return budget.public
+  return budget.app
 }
 
 const isNumber = (value: number | undefined): value is number => value !== undefined && Number.isFinite(value)
@@ -152,7 +154,9 @@ const caseLabel = (result: Result) => {
 }
 
 const targetCell = (kind: Kind, profile: Profile, metric: string) => {
-  if (metric === 'scriptKb') return `${config.budgets.scriptKb.public} / ${config.budgets.scriptKb.app}`
+  if (metric === 'scriptKb' || metric === 'prefetchKb') {
+    return `${config.budgets[metric].public} / ${config.budgets[metric].app}`
+  }
   return format(metric, config.targets[kind][profile][metric])
 }
 

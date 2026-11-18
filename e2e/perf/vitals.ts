@@ -235,13 +235,21 @@ export const readLoad = async (page: Page) =>
     const scripts = (performance.getEntriesByType('resource') as PerformanceResourceTiming[]).filter(
       entry => entry.initiatorType === 'script' || /\.m?js(\?|$)/u.test(entry.name)
     )
+    const entries = performance.getEntriesByType('resource') as PerformanceResourceTiming[]
+    const prefetches = entries.filter(entry => entry.initiatorType === 'fetch' && /[?&]_rsc=/u.test(entry.name))
+    const firstPrefetch = Math.min(...prefetches.map(entry => entry.startTime), Infinity)
+    const pageScripts = scripts.filter(entry => entry.startTime < firstPrefetch)
+    const prefetchScripts = scripts.filter(entry => entry.startTime >= firstPrefetch)
+    const kb = (list: PerformanceResourceTiming[]) =>
+      list.reduce((total, entry) => total + entry.transferSize, 0) / 1024
     return {
       cls: store.cls,
       devMode: store.devMode,
       fcp,
       hydration: store.hydrated,
       lcp: store.lcp,
-      scriptKb: scripts.reduce((total, entry) => total + entry.transferSize, 0) / 1024,
+      prefetchKb: kb(prefetches) + kb(prefetchScripts),
+      scriptKb: kb(pageScripts),
       tbt: store.frames.filter(frame => frame.start >= fcp).reduce((total, frame) => total + frame.blocking, 0),
       ttfb: navigation?.responseStart ?? 0,
     }

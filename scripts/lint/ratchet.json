@@ -64,8 +64,8 @@
     "no-arbitrary-value": 1
   },
   "src/components/features/users": {
-    "no-arbitrary-value": 2,
-    "no-restricted-classes": 2
+    "no-arbitrary-value": 1,
+    "no-restricted-classes": 1
   },
   "src/components/icons": {
     "no-default-palette": 23

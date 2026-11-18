@@ -17,20 +17,25 @@ export const DataExport = () => {
 
   const handleExport = async () => {
     setExporting(true)
-    const { data, error } = await exportAccountData()
-    setExporting(false)
-    if (error || !data) {
-      toast.error(error?.code === 'RATE_LIMITED' ? t('exportLimited') : t('exportError'))
-      return
-    }
+    try {
+      const { data, error } = await exportAccountData()
+      if (error || !data) {
+        toast.error(error?.code === 'RATE_LIMITED' ? t('exportLimited') : t('exportError'))
+        return
+      }
 
-    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `glore-data-${user.username ?? user.id}-${data.generatedAt.slice(0, 10)}.json`
-    link.click()
-    URL.revokeObjectURL(url)
-    toast.success(t('exportReady'))
+      const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `glore-data-${user.username ?? user.id}-${data.generatedAt.slice(0, 10)}.json`
+      link.click()
+      URL.revokeObjectURL(url)
+      toast.success(t('exportReady'))
+    } catch {
+      toast.error(t('exportError'))
+    } finally {
+      setExporting(false)
+    }
   }
 
   return (

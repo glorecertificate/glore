@@ -193,6 +193,29 @@ export const parseOrganizationInvitation = (
   state: invitationState(invitation, now),
 })
 
+export const parseInviteLinkPreview = (
+  link: Pick<InviteLinkRow, 'expiresAt' | 'maxUses' | 'requiresApproval' | 'revokedAt' | 'role' | 'uses'> & {
+    organization: Pick<OrganizationRow, 'approvedAt' | 'id' | 'name'> & {
+      profile: Pick<OrganizationProfileRow, 'avatarUrl'> | null
+    }
+  },
+  isMember: boolean,
+  now = Date.now()
+) => {
+  if (!link.organization.approvedAt) return null
+  return {
+    isMember,
+    organization: {
+      avatarUrl: link.organization.profile?.avatarUrl ?? null,
+      id: link.organization.id,
+      name: link.organization.name,
+    },
+    requiresApproval: link.requiresApproval,
+    role: link.role,
+    state: inviteLinkState(link, now),
+  }
+}
+
 export const parseOrganizationInviteLink = (
   {
     createdBy,

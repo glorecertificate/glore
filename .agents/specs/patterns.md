@@ -118,7 +118,7 @@ const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'>
 | `~/scripts/*`  | `./scripts/*`  |
 
 - `src/lib/types.ts` holds `Any`, `AnyRecord`, and `AnyFunction` (the only sanctioned `any` site).
-- It also holds `AuthView`, `CamelCase<S>`, `Icon<T>` and `IconProps<T>`, `IconName` (re-export), `Rgb`, `Enum<T>`, `HttpUrl`, and `Theme` and `ResolvedTheme`.
+- It also holds `AuthView`, `CamelCase<S>`, `Icon<T>` and `IconProps<T>`, `IconName` (re-export), `Enum<T>`, `HttpUrl`, and `Theme` and `ResolvedTheme`.
 - It also holds a `usePathname` override that returns `Route`.
 - `src/db/types.ts` holds `TableMap` (snake_case table name to Drizzle table), `TableName`, `TableInsert<T>`, and `TableUpdate<T>` (a `Partial<Insert>`).
 - `Enums` derives from each `pgEnum`'s `enumValues` instead of a hand-maintained list. Read one member with `EnumType<T>`.
@@ -148,7 +148,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 ### Utilities
 
 - Check these before writing a new helper.
-- `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `publicFile`, `serializeJsonLd`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce`, `throttle`, and `sleep`.
+- `src/lib/utils.ts` exports `cn`, `isValidUsername`, `publicFile`, `serializeJsonLd`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce`, `throttle`, and `sleep`.
 - `debounce` defaults to 500ms and has `.cancel()` and `.flush()`.
 - `tempId()` and `isTempId()` serve client-created records.
 - Course-tree primary keys are `integer` identity columns, so `tempId()` returns a negative placeholder. Never use `Date.now()`, which overflows `int4`.

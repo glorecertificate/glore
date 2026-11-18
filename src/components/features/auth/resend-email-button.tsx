@@ -38,6 +38,7 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
         return
       }
       setTimeLeft(30)
+      toast.success(t('emailResent'))
     } catch {
       toast.error(t('networkError'))
     } finally {

@@ -26,6 +26,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
@@ -84,75 +85,105 @@ export const InvitationCard = ({
 
   const handleAccept = async () => {
     setPending('accept')
-    const { error } = await acceptOrganizationInvitation(token)
-    if (error) {
+    try {
+      const { error } = await acceptOrganizationInvitation(token)
+      if (error) {
+        toast.error(errorMessage(error.code))
+        setPending(null)
+        return
+      }
+      toast.success(t('accepted', { organization: organization.name }))
+      router.push(APP_ROOT)
+    } catch {
+      toast.error(errorMessage())
       setPending(null)
-      toast.error(errorMessage(error.code))
-      return
     }
-    toast.success(t('accepted', { organization: organization.name }))
-    router.push(APP_ROOT)
   }
 
   const handleCreate = async () => {
     setPending('create')
-    const result = await acceptOrganizationInvitationAsNewAccount({ proof, token })
-    setPending(null)
-    if (result?.error) toast.error(errorMessage(result.error.code))
+    try {
+      const result = await acceptOrganizationInvitationAsNewAccount({ proof, token })
+      if (result?.error) toast.error(errorMessage(result.error.code))
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
+    }
   }
 
   const handleSendProof = async () => {
     setPending('proof')
-    const { error } = await requestInvitationProof(token)
-    setPending(null)
-    if (error) {
-      toast.error(errorMessage(error.code))
-      return
+    try {
+      const { error } = await requestInvitationProof(token)
+      if (error) {
+        toast.error(errorMessage(error.code))
+        return
+      }
+      setProofSent(true)
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
     }
-    setProofSent(true)
   }
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault()
     setPending('sign_in')
-    const { error } = await signInToAcceptInvitation({ password, token })
-    setPending(null)
-    if (error) {
-      toast.error(errorMessage(error.code))
-      return
+    try {
+      const { error } = await signInToAcceptInvitation({ password, token })
+      if (error) {
+        toast.error(errorMessage(error.code))
+        return
+      }
+      setPassword('')
+      refresh()
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
     }
-    setPassword('')
-    refresh()
   }
 
   const handleDecline = async () => {
     setPending('decline')
-    const { error } = await declineOrganizationInvitation(token)
-    setPending(null)
-    if (error) {
-      toast.error(errorMessage(error.code))
-      return
+    try {
+      const { error } = await declineOrganizationInvitation(token)
+      if (error) {
+        toast.error(errorMessage(error.code))
+        return
+      }
+      setDeclineOpen(false)
+      toast.success(t('declined'))
+      refresh()
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
     }
-    setDeclineOpen(false)
-    toast.success(t('declined'))
-    refresh()
   }
 
   const handleSignOut = async () => {
     setPending('sign_out')
-    await logout()
-    setPending(null)
-    refresh()
+    try {
+      await logout()
+      refresh()
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
+    }
   }
 
   return (
-    <>
+    <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col items-center gap-4 text-center">
           <OrganizationBadge avatarUrl={organization.avatarUrl} name={organization.name} />
           <div className="space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight">{t('title', { organization: organization.name })}</h1>
-            <p className="text-muted-foreground">
+            <h1 className="type-title text-balance">{t('title', { organization: organization.name })}</h1>
+            <p className="text-pretty text-muted-foreground">
               {inviterName
                 ? t('invitedBy', { inviter: inviterName, role: roleLabel })
                 : t('invitedAnonymous', { role: roleLabel })}
@@ -161,7 +192,9 @@ export const InvitationCard = ({
         </div>
 
         {message && (
-          <blockquote className="rounded-lg border bg-muted/40 p-4 text-sm whitespace-pre-wrap">{message}</blockquote>
+          <blockquote className="rounded-lg border bg-surface-muted p-4 text-sm wrap-break-word whitespace-pre-wrap">
+            {message}
+          </blockquote>
         )}
 
         {view === 'mismatch' && (
@@ -184,9 +217,11 @@ export const InvitationCard = ({
             <Button disabled={busy} loading={pending === 'accept'} onClick={handleAccept} size="lg" variant="brand">
               {t('accept')}
             </Button>
-            <Button disabled={busy} onClick={() => setDeclineOpen(true)} variant="ghost">
-              {t('decline')}
-            </Button>
+            <AlertDialogTrigger asChild>
+              <Button disabled={busy} type="button" variant="ghost">
+                {t('decline')}
+              </Button>
+            </AlertDialogTrigger>
           </div>
         )}
 
@@ -214,12 +249,14 @@ export const InvitationCard = ({
               {t('signIn')}
             </Button>
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-              <Link className="text-brand-text hover:underline" href={AUTH_ROOT}>
+              <Link className="text-action-text underline-offset-4 hover:underline" href={AUTH_ROOT}>
                 {t('forgotPassword')}
               </Link>
-              <Button disabled={busy} onClick={() => setDeclineOpen(true)} size="sm" type="button" variant="ghost">
-                {t('decline')}
-              </Button>
+              <AlertDialogTrigger asChild>
+                <Button disabled={busy} size="sm" type="button" variant="ghost">
+                  {t('decline')}
+                </Button>
+              </AlertDialogTrigger>
             </div>
           </form>
         )}
@@ -253,36 +290,36 @@ export const InvitationCard = ({
                 </Button>
               </>
             )}
-            <Button disabled={busy} onClick={() => setDeclineOpen(true)} variant="ghost">
-              {t('decline')}
-            </Button>
+            <AlertDialogTrigger asChild>
+              <Button disabled={busy} type="button" variant="ghost">
+                {t('decline')}
+              </Button>
+            </AlertDialogTrigger>
           </div>
         )}
 
-        <p className="text-center text-xs text-muted-foreground">{t('expires', { date: expires })}</p>
+        <p className="text-center type-caption text-muted-foreground">{t('expires', { date: expires })}</p>
       </div>
 
-      <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('declineTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('declineDescription', { organization: organization.name })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={pending === 'decline'}>{t('cancel')}</AlertDialogCancel>
-            <AlertDialogAction
-              loading={pending === 'decline'}
-              loadingText={t('declining')}
-              onClick={handleDecline}
-              variant="destructive"
-            >
-              {t('decline')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t('declineTitle')}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t('declineDescription', { organization: organization.name })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={pending === 'decline'}>{t('cancel')}</AlertDialogCancel>
+          <AlertDialogAction
+            loading={pending === 'decline'}
+            loadingText={t('declining')}
+            onClick={handleDecline}
+            variant="destructive"
+          >
+            {t('decline')}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

@@ -17,14 +17,16 @@ export const generateMetadata = () =>
   })
 
 const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['params'] }) => {
-  const { token } = await params
-  const [user, link] = await Promise.all([getAuthUser(), getInviteLinkPreview(token)])
+  const [{ token }, user] = await Promise.all([params, getAuthUser()])
+  const link = await getInviteLinkPreview(token, user?.id)
   const signedIn = Boolean(user)
 
   if (!link) return <InvitationStatus signedIn={signedIn} status="invalid" />
   if (link.state !== 'active') {
     return <InvitationStatus organization={link.organization.name} signedIn={signedIn} status={link.state} />
   }
+
+  if (link.isMember) return <InvitationStatus organization={link.organization.name} signedIn status="member" />
 
   return (
     <JoinLinkCard

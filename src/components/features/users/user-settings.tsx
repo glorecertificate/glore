@@ -1,21 +1,16 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-
 import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
+import { AccountForm } from '@/components/features/users/account-form'
+import { DataExport } from '@/components/features/users/data-export'
+import { DeleteAccount } from '@/components/features/users/delete-account'
+import { NotificationsForm } from '@/components/features/users/notifications-form'
+import { PasswordForm } from '@/components/features/users/password-form'
+import { PrivacyForm } from '@/components/features/users/privacy-form'
 import { ProfileForm } from '@/components/features/users/profile-form'
+import { SessionsList } from '@/components/features/users/sessions-list'
 import { useUserSettingsTab } from '@/components/features/users/user-settings-tabs'
 import { Separator } from '@/components/ui/separator'
-
-const AccountForm = dynamic(async () => (await import('@/components/features/users/account-form')).AccountForm)
-const PrivacyForm = dynamic(async () => (await import('@/components/features/users/privacy-form')).PrivacyForm)
-const NotificationsForm = dynamic(
-  async () => (await import('@/components/features/users/notifications-form')).NotificationsForm
-)
-const PasswordForm = dynamic(async () => (await import('@/components/features/users/password-form')).PasswordForm)
-const SessionsList = dynamic(async () => (await import('@/components/features/users/sessions-list')).SessionsList)
-const DataExport = dynamic(async () => (await import('@/components/features/users/data-export')).DataExport)
-const DeleteAccount = dynamic(async () => (await import('@/components/features/users/delete-account')).DeleteAccount)
 
 export const UserSettings = () => {
   const { tab } = useUserSettingsTab()

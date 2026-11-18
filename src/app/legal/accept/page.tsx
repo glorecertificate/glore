@@ -10,6 +10,7 @@ import { LegalMarkdown } from '@/components/features/legal/legal-markdown'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Banner } from '@/components/ui/banner'
 import { Logo } from '@/components/ui/logo'
+import { PageHeader, PageHeaderDescription, PageHeaderHeading, PageHeaderTitle } from '@/components/ui/page-header'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { getPendingLegal, loadLegalDocument } from '@/lib/legal'
 import { generateIntlMetadata } from '@/lib/metadata'
@@ -32,31 +33,36 @@ const LegalAcceptContent = async () => {
   return (
     <main className="mx-auto w-full max-w-3xl space-y-6 px-6 pt-8 md:space-y-8 md:py-16">
       <Logo className="w-28" />
-      <header className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight" data-testid="legal-accept-title">
-          {t('title')}
-        </h1>
-        <p className="text-muted-foreground">{t('description')}</p>
-        {content.effectiveAt && (
-          <p className="text-sm text-muted-foreground">
-            {t('effective', {
-              date: format.dateTime(new Date(content.effectiveAt), { dateStyle: 'long', timeZone: 'UTC' }),
-            })}
-          </p>
-        )}
-      </header>
+      <PageHeader>
+        <PageHeaderHeading>
+          <PageHeaderTitle data-testid="legal-accept-title">{t('title')}</PageHeaderTitle>
+          <PageHeaderDescription>{t('description')}</PageHeaderDescription>
+          {content.effectiveAt && (
+            <p className="type-caption text-muted-foreground">
+              {t('effective', {
+                date: format.dateTime(new Date(content.effectiveAt), { dateStyle: 'long', timeZone: 'UTC' }),
+              })}
+            </p>
+          )}
+        </PageHeaderHeading>
+      </PageHeader>
       {content.locale !== locale && <Banner variant="info">{t('fallbackNotice')}</Banner>}
       <section
         aria-label={content.title}
-        className="rounded-lg border p-6 md:max-h-[50vh] md:overflow-y-auto"
+        className="rounded-lg border bg-surface-0 p-6 outline-none focus-visible:focus-ring-inset md:max-h-[50vh] md:overflow-y-auto"
         data-testid="legal-accept-body"
         tabIndex={0}
       >
-        <h2 className="text-xl font-semibold">{content.title}</h2>
+        <h2 className="type-heading">{content.title}</h2>
         <LegalMarkdown>{content.body}</LegalMarkdown>
       </section>
       <p className="text-sm">
-        <Link className="underline underline-offset-4" href="/terms" rel="noopener noreferrer" target="_blank">
+        <Link
+          className="text-action-text underline underline-offset-4"
+          href="/terms"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           {t('openFull')}
         </Link>
       </p>

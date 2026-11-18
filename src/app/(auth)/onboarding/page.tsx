@@ -35,7 +35,7 @@ const OnboardingContent = async () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="mx-auto w-full max-w-2xl space-y-8">
+      <div className="mx-auto w-full max-w-lg space-y-8">
         <I18nProvider locale={locale} messages={clientMessages(messages)}>
           <OnboardingForm
             email={user.email}

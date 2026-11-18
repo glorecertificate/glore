@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -24,7 +24,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
 import { PhoneInput } from '@/components/ui/phone-input'
@@ -38,6 +38,7 @@ import { type Any } from '@/lib/types'
 import i18nConfig from '~/config/i18n.json'
 
 const FIELDS = ['firstName', 'lastName', 'bio', 'phone', 'birthday', 'sex', 'pronouns', 'city', 'country'] as const
+const BIO_MAX = 1000
 const PRONOUNS = ['she/her', 'he/him', 'they/them', 'ze/zir', 'other'] as const
 
 export const ProfileForm = () => {
@@ -47,21 +48,43 @@ export const ProfileForm = () => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl)
   const [languages, setLanguages] = useState<string[]>(user.languages ?? [])
   const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
+  const returnFocus = useRef<HTMLElement | null>(null)
+  const avatarRef = useRef<HTMLDivElement>(null)
   const [removingAvatar, setRemovingAvatar] = useState(false)
+  const focusFrame = useRef(0)
+
+  useEffect(() => () => cancelAnimationFrame(focusFrame.current), [])
 
   const formSchema = z.object({
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    bio: z.string().optional(),
-    phone: z.string().optional(),
+    firstName: z
+      .string()
+      .trim()
+      .min(1, { message: t('firstNameRequired') })
+      .max(100, { message: t('tooLong', { max: 100 }) }),
+    lastName: z
+      .string()
+      .max(100, { message: t('tooLong', { max: 100 }) })
+      .optional(),
+    bio: z
+      .string()
+      .max(BIO_MAX, { message: t('tooLong', { max: BIO_MAX }) })
+      .optional(),
+    phone: z
+      .string()
+      .max(40, { message: t('tooLong', { max: 40 }) })
+      .optional(),
     birthday: z.string().optional(),
     sex: z.enum(['female', 'male', 'non-binary', 'unspecified']).optional().or(z.literal('')),
     pronouns: z.string().optional(),
-    city: z.string().optional(),
+    city: z
+      .string()
+      .max(100, { message: t('tooLong', { max: 100 }) })
+      .optional(),
     country: z.string().optional(),
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
+    mode: 'onTouched',
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: user.firstName ?? '',
@@ -116,6 +139,11 @@ export const ProfileForm = () => {
       setAvatarPreview(null)
       if (data) setUser(data)
       toast.success(t('profileUpdated'))
+      cancelAnimationFrame(focusFrame.current)
+      focusFrame.current = requestAnimationFrame(() => {
+        if (document.activeElement && document.activeElement !== document.body) return
+        avatarRef.current?.querySelector('button')?.focus()
+      })
     } catch {
       toast.error(t('profileUpdateError'))
     } finally {
@@ -165,13 +193,18 @@ export const ProfileForm = () => {
     <Form {...form}>
       <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
         <SettingsSection description={t('profilePictureDescription')} title={t('profilePicture')}>
-          <ImageCropper
-            disabled={form.formState.isSubmitting}
-            fallback={user.initials}
-            onChange={handleAvatarUpload}
-            onRemove={() => setRemoveAvatarOpen(true)}
-            value={avatarPreview}
-          />
+          <div ref={avatarRef}>
+            <ImageCropper
+              disabled={form.formState.isSubmitting}
+              fallback={user.initials}
+              onChange={handleAvatarUpload}
+              onRemove={(event?: React.MouseEvent<HTMLElement>) => {
+                returnFocus.current = event?.currentTarget ?? null
+                setRemoveAvatarOpen(true)
+              }}
+              value={avatarPreview}
+            />
+          </div>
         </SettingsSection>
 
         <Separator className="mt-4 mb-8" />
@@ -188,6 +221,7 @@ export const ProfileForm = () => {
                     <FormLabel>{t('firstName')}</FormLabel>
                     <FormControl>
                       <Input
+                        autoComplete="given-name"
                         disabled={form.formState.isSubmitting}
                         placeholder={t('firstNamePlaceholder')}
                         {...field}
@@ -204,7 +238,12 @@ export const ProfileForm = () => {
                   <FormItem>
                     <FormLabel>{t('lastName')}</FormLabel>
                     <FormControl>
-                      <Input disabled={form.formState.isSubmitting} placeholder={t('lastNamePlaceholder')} {...field} />
+                      <Input
+                        autoComplete="family-name"
+                        disabled={form.formState.isSubmitting}
+                        placeholder={t('lastNamePlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,6 +264,9 @@ export const ProfileForm = () => {
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription className="text-right tabular-nums">
+                    {t('bioCount', { count: field.value?.length ?? 0, max: BIO_MAX })}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -328,7 +370,12 @@ export const ProfileForm = () => {
                   <FormItem>
                     <FormLabel>{t('city')}</FormLabel>
                     <FormControl>
-                      <Input disabled={form.formState.isSubmitting} placeholder={t('cityPlaceholder')} {...field} />
+                      <Input
+                        autoComplete="address-level2"
+                        disabled={form.formState.isSubmitting}
+                        placeholder={t('cityPlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -382,7 +429,15 @@ export const ProfileForm = () => {
         </div>
 
         <AlertDialog onOpenChange={setRemoveAvatarOpen} open={removeAvatarOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent
+            onCloseAutoFocus={event => {
+              event.preventDefault()
+              const target = returnFocus.current?.isConnected
+                ? returnFocus.current
+                : avatarRef.current?.querySelector('button')
+              target?.focus()
+            }}
+          >
             <AlertDialogHeader>
               <AlertDialogTitle>{t('removeAvatarTitle')}</AlertDialogTitle>
               <AlertDialogDescription>{t('removeAvatarDescription')}</AlertDialogDescription>

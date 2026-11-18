@@ -1,11 +1,11 @@
 import 'server-only'
 
-import { and, eq, gt } from 'drizzle-orm'
+import { and, eq, gt, sql } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { hashProof, normalizeEmail, proofIdentifier } from '@/db/mutations/invitation'
-import { invitationState, inviteLinkState } from '@/db/queries/organization'
-import { organizationInvitations, organizationInviteLinks, users, verifications } from '@/db/schema'
+import { invitationState, parseInviteLinkPreview } from '@/db/queries/organization'
+import { memberships, organizationInvitations, organizationInviteLinks, users, verifications } from '@/db/schema'
 import { hashToken } from '@/lib/secret-token'
 import { fullName } from '@/lib/utils'
 
@@ -59,26 +59,20 @@ export const getInvitationPreview = async (token: string, proof?: string) => {
   }
 }
 
-export const getInviteLinkPreview = async (token: string) => {
+export const getInviteLinkPreview = async (token: string, userId?: string) => {
   const link = await db.query.organizationInviteLinks.findFirst({
     where: eq(organizationInviteLinks.tokenHash, hashToken(token)),
     with: {
       organization: {
         columns: { approvedAt: true, id: true, name: true },
-        with: { profile: { columns: { avatarUrl: true } } },
+        with: {
+          memberships: { columns: { id: true }, where: userId ? eq(memberships.userId, userId) : sql`false` },
+          profile: { columns: { avatarUrl: true } },
+        },
       },
     },
   })
-  if (!link?.organization.approvedAt) return null
+  if (!link) return null
 
-  return {
-    organization: {
-      avatarUrl: link.organization.profile?.avatarUrl ?? null,
-      id: link.organization.id,
-      name: link.organization.name,
-    },
-    requiresApproval: link.requiresApproval,
-    role: link.role,
-    state: inviteLinkState(link),
-  }
+  return parseInviteLinkPreview(link, link.organization.memberships.length > 0)
 }

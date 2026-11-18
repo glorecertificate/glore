@@ -6,19 +6,24 @@ const bannerVariants = cva('flex items-start gap-3 rounded-lg border p-4 text-sm
   defaultVariants: { variant: 'info' },
   variants: {
     variant: {
-      info: 'border-border bg-muted/40 text-foreground',
-      success: 'border-success/30 bg-success/10 text-foreground',
-      warning: 'border-warning/30 bg-warning/10 text-foreground',
-      destructive: 'border-destructive/30 bg-destructive/10 text-foreground',
+      info: 'border-info-border bg-info-subtle text-foreground',
+      success: 'border-success-border bg-success-subtle text-foreground',
+      warning: 'border-warning-border bg-warning-subtle text-foreground',
+      destructive: 'border-danger-border bg-danger-subtle text-foreground',
     },
   },
 })
 
 export const Banner = ({
   className,
-  role = 'status',
+  role,
   variant,
   ...props
 }: React.ComponentProps<'div'> & VariantProps<typeof bannerVariants>) => (
-  <div className={cn(bannerVariants({ variant }), className)} data-slot="banner" role={role} {...props} />
+  <div
+    className={cn(bannerVariants({ variant }), className)}
+    data-slot="banner"
+    role={role ?? (variant === 'destructive' ? 'alert' : 'status')}
+    {...props}
+  />
 )

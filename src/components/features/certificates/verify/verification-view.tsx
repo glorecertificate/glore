@@ -5,13 +5,12 @@ import { getLocale, getTranslations } from 'next-intl/server'
 
 import { type ActiveVerification } from '@/actions/certificates/public'
 import { SkillLevel } from '@/components/features/certificates/skill-level'
-import { LucideIcon } from '@/components/icons/lucide'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CopyButton } from '@/components/ui/copy-button'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { Image } from '@/components/ui/image'
 import { QrCode } from '@/components/ui/qr-code'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { VERIFY_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
 import { fullName, serializeJsonLd } from '@/lib/utils'
@@ -45,148 +44,117 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
         {serializeJsonLd(structuredData(verification, url, t('credentialName', { name: holderName })))}
       </Script>
 
-      <div className="space-y-4 text-center">
-        {revoked ? (
-          <Badge className="gap-1.5 border-destructive/30 bg-destructive/5 text-destructive-text" variant="outline">
-            <LucideIcon name="shield-alert" className="size-3.5" />
-            {t('revoked')}
-          </Badge>
-        ) : (
-          <Badge className="gap-1.5 border-success/30 bg-success/5 text-success-text" variant="outline">
-            <LucideIcon name="circle-check" className="size-3.5" />
-            {t('valid')}
-          </Badge>
-        )}
-        <div className="space-y-1.5">
-          <h1 className="text-3xl font-semibold tracking-tight">{holderName}</h1>
-          <p className="flex items-center justify-center gap-2 text-lg text-muted-foreground">
-            {organization.logoUrl && (
-              <Image
-                alt=""
-                className="size-6 rounded object-contain"
-                height={24}
-                src={organization.logoUrl}
-                unoptimized
-                width={24}
-              />
-            )}
-            {organization.name}
-          </p>
-        </div>
-        {revoked ? (
-          <p className="mx-auto max-w-prose text-sm text-destructive-text">
-            {verification.revokedAt
-              ? t('revokedOn', { date: dateFormatter.format(new Date(verification.revokedAt)) })
-              : t('revokedMessage')}
-          </p>
-        ) : (
-          <p className="mx-auto max-w-prose text-sm text-muted-foreground">
-            {t('validMessage', { date: dateFormatter.format(new Date(verification.issuedAt)) })}
-          </p>
-        )}
-        {verification.holderDeleted && (
-          <p className="mx-auto max-w-prose text-xs text-muted-foreground">{t('holderLeft')}</p>
-        )}
-        {verification.documentUrl && (
-          <Button asChild size="sm" variant="brand">
-            <a download href={verification.documentUrl} rel="noopener noreferrer" target="_blank">
-              {t('downloadPdf')}
-            </a>
-          </Button>
-        )}
-      </div>
-
-      {!revoked && (
-        <>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <LucideIcon name="calendar" className="size-4 shrink-0" />
-                  {t('period')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">
-                  {t('periodValue', {
-                    end: dateFormatter.format(new Date(activity.endDate)),
-                    start: dateFormatter.format(new Date(activity.startDate)),
-                  })}
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <LucideIcon name="timer" className="size-4 shrink-0" />
-                  {t('hours')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">{t('hoursValue', { hours: activity.duration })}</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <LucideIcon name="map-pin" className="size-4 shrink-0" />
-                  {t('location')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">{activity.location}</p>
-              </CardContent>
-            </Card>
+      <article className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
+        <header className="flex flex-col items-center gap-4 border-b bg-surface-sunken px-6 py-10 text-center">
+          <StatusBadge icon={revoked ? 'ban' : 'circle-check'} tone={revoked ? 'danger' : 'success'}>
+            {revoked ? t('revoked') : t('valid')}
+          </StatusBadge>
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="type-display text-balance text-fg-title">{holderName}</h1>
+            <p className="flex items-center justify-center gap-2 text-base text-muted-foreground">
+              {organization.logoUrl && (
+                <Image
+                  alt=""
+                  className="size-6 rounded object-contain"
+                  height={24}
+                  src={organization.logoUrl}
+                  unoptimized
+                  width={24}
+                />
+              )}
+              {organization.name}
+            </p>
           </div>
+          <p className={revoked ? 'max-w-prose text-sm text-danger-text' : 'max-w-prose text-sm text-muted-foreground'}>
+            {revoked
+              ? verification.revokedAt
+                ? t('revokedOn', { date: dateFormatter.format(new Date(verification.revokedAt)) })
+                : t('revokedMessage')
+              : t('validMessage', { date: dateFormatter.format(new Date(verification.issuedAt)) })}
+          </p>
+          {verification.holderDeleted && <p className="max-w-prose text-xs text-muted-foreground">{t('holderLeft')}</p>}
+          {verification.documentUrl && (
+            <Button asChild icon="download" size="sm" variant="brand">
+              <a download href={verification.documentUrl} rel="noopener noreferrer" target="_blank">
+                {t('downloadPdf')}
+              </a>
+            </Button>
+          )}
+        </header>
 
-          {activity.tasks.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm text-muted-foreground">{t('tasks')}</CardTitle>
-              </CardHeader>
-              <CardContent>
+        {!revoked && (
+          <>
+            <section aria-labelledby="verify-facts" className="border-b px-6 py-4">
+              <h2 className="sr-only" id="verify-facts">
+                {t('period')}
+              </h2>
+              <DescriptionList layout="rows">
+                <DescriptionItem>
+                  <DescriptionTerm>{t('period')}</DescriptionTerm>
+                  <DescriptionDetails>
+                    {t('periodValue', {
+                      end: dateFormatter.format(new Date(activity.endDate)),
+                      start: dateFormatter.format(new Date(activity.startDate)),
+                    })}
+                  </DescriptionDetails>
+                </DescriptionItem>
+                <DescriptionItem>
+                  <DescriptionTerm>{t('hours')}</DescriptionTerm>
+                  <DescriptionDetails>{t('hoursValue', { hours: activity.duration })}</DescriptionDetails>
+                </DescriptionItem>
+                <DescriptionItem>
+                  <DescriptionTerm>{t('location')}</DescriptionTerm>
+                  <DescriptionDetails>{activity.location}</DescriptionDetails>
+                </DescriptionItem>
+              </DescriptionList>
+            </section>
+
+            {activity.tasks.length > 0 && (
+              <section aria-labelledby="verify-tasks" className="flex flex-col gap-3 border-b p-6">
+                <h2 className="type-label text-muted-foreground" id="verify-tasks">
+                  {t('tasks')}
+                </h2>
                 <ul className="list-disc space-y-1 pl-5 text-sm">
                   {activity.tasks.map(task => (
                     <li key={task}>{task}</li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
-          )}
+              </section>
+            )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
-            </CardHeader>
-            <CardContent>
+            <section aria-labelledby="verify-skills" className="flex flex-col gap-4 border-b p-6">
+              <h2 className="type-label text-muted-foreground" id="verify-skills">
+                {t('skills')}
+              </h2>
               <ul className="flex flex-col gap-5">
                 {skills.map(skill => {
                   const name = localizeRecord(skill.name, certificateLocale, DEFAULT_LOCALE)
                   return (
                     <li className="flex flex-col gap-1.5" key={name}>
-                      <p className="text-sm font-medium">{name}</p>
+                      <p className="type-heading">{name}</p>
                       <SkillLevel locale={certificateLocale} rendering={skill} />
                     </li>
                   )
                 })}
               </ul>
-            </CardContent>
-          </Card>
-        </>
-      )}
+            </section>
+          </>
+        )}
 
-      <Card>
-        <CardContent className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
+        <footer className="flex flex-col items-start gap-6 p-6 sm:flex-row sm:items-center sm:justify-between">
           <DescriptionList>
             <DescriptionItem>
               <DescriptionTerm>{t('code')}</DescriptionTerm>
-              <DescriptionDetails className="font-mono font-medium">{verification.code}</DescriptionDetails>
+              <DescriptionDetails className="flex flex-wrap items-center gap-2 font-mono font-medium">
+                {verification.code}
+                <CopyButton size="2xs" value={verification.code} variant="ghost" />
+              </DescriptionDetails>
             </DescriptionItem>
             <DescriptionItem>
               <DescriptionTerm>{t('issued')}</DescriptionTerm>
               <DescriptionDetails>{dateFormatter.format(new Date(verification.issuedAt))}</DescriptionDetails>
             </DescriptionItem>
-            {organization.legalRepresentative && (
+            {!revoked && organization.legalRepresentative && (
               <DescriptionItem>
                 <DescriptionTerm>{t('signatory')}</DescriptionTerm>
                 <DescriptionDetails className="flex flex-col gap-1">
@@ -206,8 +174,8 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
             )}
           </DescriptionList>
           {!revoked && <QrCode label={t('qrLabel')} size={112} value={url} />}
-        </CardContent>
-      </Card>
+        </footer>
+      </article>
     </>
   )
 }

@@ -2,7 +2,7 @@
   "Metadata": {
     "description": "GloRe è una rete aperta che mira ad ampliare il proprio pubblico, sia di volontari sia di ONG, in tutto il mondo per rendere i certificati accessibili a tutti.",
     "keywords": "GloRe, volontariato, rete globale, ONG, certificato, soft skill, corsi, apprendimento, comunità",
-    "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi e gestire i tuoi certificati offline.",
+    "pwaDescription": "Installa GloRe sul tuo dispositivo per aprirlo dalla schermata Home. Senza connessione vedrai una pagina che ti avvisa che sei offline.",
     "title": "GloRe - Rete globale di volontariato"
   },
   "Common": {
@@ -684,6 +684,9 @@
     "Chart": {
       "empty": "Non ci sono ancora dati",
       "label": "Categoria"
+    },
+    "InfoTip": {
+      "label": "Altre informazioni"
     },
     "Dialog": {
       "close": "Chiudi"

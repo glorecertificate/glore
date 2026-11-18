@@ -22,7 +22,8 @@
     "country": "it"
   },
   "category": "E-Learning",
-  "themeColor": "#fefefe",
+  "themeColor": "#efefef",
+  "themeColorDark": "#141414",
   "authors": [
     {
       "name": "Gabriele Canepa",

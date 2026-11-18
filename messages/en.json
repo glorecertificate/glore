@@ -2,7 +2,7 @@
   "Metadata": {
     "description": "GloRe is an open network that aims to grow its audience of volunteers and NGOs worldwide and make certificates available to everyone.",
     "keywords": "glore, volunteering, global network, NGO, certificate, soft skills, courses, learning, community",
-    "pwaDescription": "Install GloRe on your device to access courses and manage your certificates offline.",
+    "pwaDescription": "Install GloRe on your device to open it from your home screen. Without a connection, you see a page that says you are offline.",
     "title": "GloRe - Global Volunteering Network"
   },
   "Common": {
@@ -684,6 +684,9 @@
     "Chart": {
       "empty": "No data yet",
       "label": "Category"
+    },
+    "InfoTip": {
+      "label": "More information"
     },
     "Dialog": {
       "close": "Close"

@@ -4,7 +4,7 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -48,7 +48,7 @@ const settleMembership = async ({
 }) => {
   await notify(event)
   expireUserAccess([userId])
-  revalidateTag(CacheTag.Organizations, 'max')
+  updateTag(CacheTag.Organizations)
   await setCookie('org', organizationId)
 }
 

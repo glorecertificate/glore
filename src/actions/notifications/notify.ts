@@ -9,7 +9,7 @@ import { type Recipient, planNotifications } from '@/actions/notifications/plan'
 import { db } from '@/db/client'
 import { type AppEvent, type EventType, eventMetadata } from '@/db/queries/activity-event'
 import { notifications, users } from '@/db/schema'
-import { notificationsUserTag } from '@/lib/cache'
+import { CacheTag, notificationsUserTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { unsubscribeUrl } from '@/lib/unsubscribe'
 
@@ -102,6 +102,7 @@ const deliver = async <K extends EventType>(event: AppEvent<K>) => {
 
 export const notify = async <K extends EventType>(event: AppEvent<K>) => {
   try {
+    if (event.organizationId) revalidateTag(CacheTag.Organizations, { expire: 0 })
     return await deliver(event)
   } catch (error) {
     console.error(`[notify] ${event.type} failed`, error)

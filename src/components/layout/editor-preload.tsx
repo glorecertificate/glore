@@ -2,13 +2,15 @@
 
 import { useEffect } from 'react'
 
+import { preloadLessonEditor } from '@/components/features/courses/course-editor/content'
+import { preloadCourseEditor } from '@/components/features/courses/course-editor/lazy'
+
 export const EditorPreload = () => {
   useEffect(() => {
     const load = () => {
       void import('@/components/ui/chart-renderer')
-      void import('@/components/features/courses/course-editor')
-      void import('@/components/features/courses/course-editor/lesson-editor')
-      void import('@/components/ui/rich-text-editor/provider')
+      void preloadCourseEditor()
+      void preloadLessonEditor()
     }
     const handle = window.setTimeout(load, 1500)
     return () => window.clearTimeout(handle)

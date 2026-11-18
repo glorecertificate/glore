@@ -124,7 +124,10 @@ export const CertificateQueue = ({
             size="sm"
             variant={reviewable ? 'brand' : 'outline'}
           >
-            <Link href={reviewable ? `/certificates/${certificate.id}/review` : `/certificates/${certificate.id}`}>
+            <Link
+              href={reviewable ? `/certificates/${certificate.id}/review` : `/certificates/${certificate.id}`}
+              prefetch
+            >
               {reviewable ? t('review') : t('view')}
             </Link>
           </Button>

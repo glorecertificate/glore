@@ -5,7 +5,9 @@ import { getImpersonation } from '@/actions/admin/impersonation-state'
 import { getPendingCounts } from '@/actions/admin/pending'
 import { getCurrentUser } from '@/actions/user'
 import { ImpersonationBanner } from '@/components/features/admin/impersonation-banner'
+import { ChartPreload } from '@/components/layout/chart-preload'
 import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
+import { LiveRefresh } from '@/components/layout/live-refresh'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -33,6 +35,8 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
       <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
         <DashboardSidebar pending={pending} />
         <SidebarInset className={cn(impersonation && 'pb-32 sm:pb-24')}>{children}</SidebarInset>
+        <LiveRefresh />
+        {user.canEdit && <ChartPreload />}
         <ImpersonationBanner />
       </SessionProvider>
     </SidebarProvider>

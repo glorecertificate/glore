@@ -154,6 +154,7 @@ export const CourseListCard = ({
                 <Link
                   className="type-heading transition-none"
                   href={coursePath}
+                  prefetch
                   title={t('viewCourse')}
                   suppressHydrationWarning
                 >
@@ -191,6 +192,7 @@ export const CourseListCard = ({
               <Link
                 className="type-heading transition-none"
                 href={coursePath}
+                prefetch
                 title={t('viewCourse')}
                 suppressHydrationWarning
               >
@@ -405,7 +407,9 @@ export const CourseListCard = ({
           <CourseCardActions actionLabel={actionLabel} course={course} coursePath={coursePath} />
         ) : (
           <Button asChild className="w-full" variant="outline">
-            <Link href={coursePath}>{actionLabel}</Link>
+            <Link href={coursePath} prefetch>
+              {actionLabel}
+            </Link>
           </Button>
         )}
       </CardFooter>

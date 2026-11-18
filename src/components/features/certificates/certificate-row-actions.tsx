@@ -90,7 +90,9 @@ export const CertificateRowActions = ({
         </Button>
       )}
       <Button asChild icon="eye" size="sm" variant="outline">
-        <Link href={`/certificates/${certificate.id}`}>{t('view')}</Link>
+        <Link href={`/certificates/${certificate.id}`} prefetch>
+          {t('view')}
+        </Link>
       </Button>
 
       <ReasonDialog

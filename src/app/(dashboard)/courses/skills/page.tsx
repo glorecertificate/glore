@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { findSkillFramework } from '@/actions/courses/data'
 import { getViewerContext } from '@/actions/viewer'
 import { SkillFramework } from '@/components/features/courses/skill-framework'
+import { SkillFrameworkActions } from '@/components/features/courses/skill-framework/actions'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 
@@ -23,7 +24,13 @@ const SkillsPageContent = async () => {
 }
 
 const SkillsPage = () => (
-  <DashboardPage parent="courses" title={<PageTitle namespace="Learning.framework" name="title" />} width="content">
+  <DashboardPage
+    overlap
+    actions={<SkillFrameworkActions />}
+    description={<PageTitle namespace="Learning.framework" name="description" />}
+    parent="courses"
+    title={<PageTitle namespace="Learning.framework" name="title" />}
+  >
     <SkillsPageContent />
   </DashboardPage>
 )

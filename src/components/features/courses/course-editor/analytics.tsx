@@ -197,7 +197,7 @@ export const CourseAnalyticsSheet = () => {
     <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="icon" variant="outline">
+          <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="icon" variant="band-secondary">
             <LucideIcon name="chart-no-axes-column" />
           </Button>
         </TooltipTrigger>

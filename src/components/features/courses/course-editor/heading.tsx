@@ -5,26 +5,31 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
-import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
 import { IconPicker } from '@/components/ui/icon-picker'
 import { InlineInput } from '@/components/ui/inline-input'
-import { PageHeaderDescription, PageHeaderHeading, PageHeaderTitle } from '@/components/ui/page-header'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { COURSE_TITLE_MAX_LENGTH } from '@/lib/constants'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
-import { cn, debounce } from '@/lib/utils'
+import { debounce } from '@/lib/utils'
 
 const MAX_TITLE_LENGTH = COURSE_TITLE_MAX_LENGTH
 const TITLE_COUNTER_FROM = 80
 const DEBOUNCE_DELAY = 400
 
-export const CourseHeading = ({ children }: React.PropsWithChildren) => {
+interface CourseHeadingParts {
+  counter: React.ReactNode
+  description: React.ReactNode
+  icon: React.ReactNode
+  title: React.ReactNode
+}
+
+export const CourseHeading = ({ children }: { children: (parts: CourseHeadingParts) => React.ReactNode }) => {
   const t = useTranslations('CourseEditor')
   const tCommon = useTranslations('CourseCommon')
   const tList = useTranslations('CourseList')
@@ -112,73 +117,74 @@ export const CourseHeading = ({ children }: React.PropsWithChildren) => {
     }))
   }
 
-  const iconClassName = courseIconVariants({ type: course.type })
+  const icon =
+    course.icon &&
+    (canEdit ? (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <IconPicker
+            aria-label={tCommon('updateIcon')}
+            className="size-8 shrink-0 rounded-full bg-band-scrim text-band-foreground [&>svg]:size-4!"
+            defaultValue={(course.icon ?? undefined) as IconName | undefined}
+            onValueChange={async name => {
+              const result = await editCourse({ icon: name })
+              if ('error' in result) return
+              toast.success(tCommon('iconUpdateSuccess'))
+            }}
+            size="text"
+            variant="transparent"
+          />
+        </TooltipTrigger>
+        <TooltipContent side="bottom" sideOffset={10} size="sm">
+          {tCommon('updateIcon')}
+        </TooltipContent>
+      </Tooltip>
+    ) : (
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-band-scrim text-band-foreground">
+        <LucideIcon className="size-4" name={course.icon as IconName} />
+      </span>
+    ))
 
-  return (
-    <PageHeaderHeading className="min-w-0 flex-1 gap-2">
-      <div className="flex min-w-0 items-start gap-3">
-        {course.icon &&
-          (canEdit ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <IconPicker
-                  aria-label={tCommon('updateIcon')}
-                  className={cn('mt-1 size-6 shrink-0 [&>svg]:size-6!', iconClassName)}
-                  defaultValue={(course.icon ?? undefined) as IconName | undefined}
-                  onValueChange={async icon => {
-                    const result = await editCourse({ icon })
-                    if ('error' in result) return
-                    toast.success(tCommon('iconUpdateSuccess'))
-                  }}
-                  size="text"
-                  variant="transparent"
-                />
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={10} size="sm">
-                {tCommon('updateIcon')}
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <LucideIcon className={cn('mt-1 size-6 shrink-0', iconClassName)} name={course.icon as IconName} />
-          ))}
-        <PageHeaderTitle className="min-w-0 flex-1">
-          {canEdit ? (
-            <InlineInput
-              aria-label={t('renameCourse')}
-              className="-my-0.5 px-1.5 py-0.5 type-title!"
-              maxLength={MAX_TITLE_LENGTH}
-              onBlur={onTitleBlur}
-              placeholder={fallbackTitle}
-              onChange={onTitleChange}
-              onFocus={onTitleFocus}
-              value={draftTitle}
-            />
-          ) : (
-            title
-          )}
-        </PageHeaderTitle>
-        {course.archivedAt && <StatusBadge tone="neutral">{tList('archived')}</StatusBadge>}
-      </div>
-      {canEdit && draftTitle.length >= TITLE_COUNTER_FROM && (
-        <output aria-live="polite" className="type-caption text-muted-foreground">
-          {t('titleLength', { count: draftTitle.length, max: MAX_TITLE_LENGTH })}
-        </output>
-      )}
+  const titleNode = (
+    <span className="flex min-w-0 items-start gap-3">
       {canEdit ? (
         <InlineInput
-          aria-label={t('updateDescription')}
-          className="-my-0.5 max-w-prose px-1.5 py-0.5 text-base text-muted-foreground"
-          keepFilled={false}
-          onBlur={onDescriptionBlur}
-          onChange={onDescriptionChange}
-          placeholder={t('courseDescriptionPlaceholder', { lang: languageLabel })}
-          ref={descriptionRef}
-          value={draftDescription}
+          aria-label={t('renameCourse')}
+          className="-mx-1.5 -my-0.5 px-1.5 py-0.5 type-band! hover:bg-band-scrim focus-visible:bg-band-scrim"
+          maxLength={MAX_TITLE_LENGTH}
+          onBlur={onTitleBlur}
+          placeholder={fallbackTitle}
+          onChange={onTitleChange}
+          onFocus={onTitleFocus}
+          value={draftTitle}
         />
       ) : (
-        <PageHeaderDescription>{description || t('noDescriptionAvailable')}</PageHeaderDescription>
+        title
       )}
-      {children}
-    </PageHeaderHeading>
+      {course.archivedAt && <StatusBadge tone="neutral">{tList('archived')}</StatusBadge>}
+    </span>
   )
+
+  const counter = canEdit && draftTitle.length >= TITLE_COUNTER_FROM && (
+    <output aria-live="polite" className="type-caption text-band-muted">
+      {t('titleLength', { count: draftTitle.length, max: MAX_TITLE_LENGTH })}
+    </output>
+  )
+
+  const descriptionNode = canEdit ? (
+    <InlineInput
+      aria-label={t('updateDescription')}
+      className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
+      keepFilled={false}
+      onBlur={onDescriptionBlur}
+      onChange={onDescriptionChange}
+      placeholder={t('courseDescriptionPlaceholder', { lang: languageLabel })}
+      ref={descriptionRef}
+      value={draftDescription}
+    />
+  ) : (
+    description || t('noDescriptionAvailable')
+  )
+
+  return children({ counter, description: descriptionNode, icon, title: titleNode })
 }

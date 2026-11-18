@@ -79,7 +79,7 @@ export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListS
                   <CourseListCard activeLanguages={activeLanguages} className="h-full" course={course} />
                   {courses.length > 1 && (
                     <SortableItemHandle
-                      className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-100"
+                      className="absolute top-6 right-6 touch-none opacity-0 transition-opacity group-hover/sortable-item:opacity-100 pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:-inset-3 pointer-coarse:before:content-['']"
                       title={t('reorderCourse')}
                     >
                       <LucideIcon name="grip-vertical" className="size-4 text-muted-foreground" />

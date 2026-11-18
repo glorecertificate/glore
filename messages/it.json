@@ -942,7 +942,6 @@
     "lessons": "{count, plural, =1 {lezione} other {lezioni}}",
     "loading": "Caricamento…",
     "sortBy-name": "Nome",
-    "noDescription": "Nessuna descrizione disponibile.",
     "noLessonsCreated": "Nessuna lezione disponibile",
     "enrolledStudents": "{count, plural, one {# persona iscritta} other {# persone iscritte}}",
     "notFound": "Corso non trovato",

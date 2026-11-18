@@ -52,7 +52,10 @@ export const SkillCompassCard = ({
   const hasCompass = goals.length + strengths.length > 0
 
   return (
-    <section aria-labelledby="skill-compass-title" className="mb-6 flex flex-col gap-4 rounded-2xl border bg-card p-5">
+    <section
+      aria-labelledby="skill-compass-title"
+      className="mb-6 flex flex-col gap-4 rounded-xl border border-border-subtle bg-card p-5 text-card-foreground shadow-card"
+    >
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex size-10 items-center justify-center rounded-full bg-brand/15 text-brand-text">

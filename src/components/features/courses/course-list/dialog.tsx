@@ -15,7 +15,7 @@ export const CourseListDialog = (props: React.ComponentProps<typeof CourseDialog
   return (
     <CourseDialog {...props} onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
-        <Button icon="plus" variant="brand">
+        <Button icon="plus" variant="band">
           {t('createCourse')}
         </Button>
       </DialogTrigger>

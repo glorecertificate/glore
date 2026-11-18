@@ -31,8 +31,9 @@ const CourseListTabsTrigger = ({
       <TabsTrigger aria-label={t(value)} className={cn('p-0', className)} value={value} {...props}>
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
-            <span className="inline-block px-3.5">
+            <span className="inline-flex items-center px-3.5">
               <LucideIcon name="archive" aria-hidden />
+              <span className="hidden pl-1.5 pointer-coarse:inline">{t('archive')}</span>
             </span>
           </TooltipTrigger>
           <TooltipContent className="flex items-center gap-1 leading-[normal]" sideOffset={16}>

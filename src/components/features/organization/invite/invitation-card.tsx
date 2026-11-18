@@ -85,70 +85,100 @@ export const InvitationCard = ({
 
   const handleAccept = async () => {
     setPending('accept')
-    const { error } = await acceptOrganizationInvitation(token)
-    if (error) {
+    try {
+      const { error } = await acceptOrganizationInvitation(token)
+      if (error) {
+        toast.error(errorMessage(error.code))
+        setPending(null)
+        return
+      }
+      toast.success(t('accepted', { organization: organization.name }))
+      router.push(APP_ROOT)
+    } catch {
+      toast.error(errorMessage())
       setPending(null)
-      toast.error(errorMessage(error.code))
-      return
     }
-    toast.success(t('accepted', { organization: organization.name }))
-    router.push(APP_ROOT)
   }
 
   const handleCreate = async () => {
     setPending('create')
-    const result = await acceptOrganizationInvitationAsNewAccount({ proof, token })
-    setPending(null)
-    if (result?.error) toast.error(errorMessage(result.error.code))
+    try {
+      const result = await acceptOrganizationInvitationAsNewAccount({ proof, token })
+      if (result?.error) toast.error(errorMessage(result.error.code))
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
+    }
   }
 
   const handleSendProof = async () => {
     setPending('proof')
-    const { error } = await requestInvitationProof(token)
-    setPending(null)
-    if (error) {
-      toast.error(errorMessage(error.code))
-      return
+    try {
+      const { error } = await requestInvitationProof(token)
+      if (error) {
+        toast.error(errorMessage(error.code))
+        return
+      }
+      setProofSent(true)
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
     }
-    setProofSent(true)
   }
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault()
     setPending('sign_in')
-    const { error } = await signInToAcceptInvitation({ password, token })
-    setPending(null)
-    if (error) {
-      toast.error(errorMessage(error.code))
-      return
+    try {
+      const { error } = await signInToAcceptInvitation({ password, token })
+      if (error) {
+        toast.error(errorMessage(error.code))
+        return
+      }
+      setPassword('')
+      refresh()
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
     }
-    setPassword('')
-    refresh()
   }
 
   const handleDecline = async () => {
     setPending('decline')
-    const { error } = await declineOrganizationInvitation(token)
-    setPending(null)
-    if (error) {
-      toast.error(errorMessage(error.code))
-      return
+    try {
+      const { error } = await declineOrganizationInvitation(token)
+      if (error) {
+        toast.error(errorMessage(error.code))
+        return
+      }
+      setDeclineOpen(false)
+      toast.success(t('declined'))
+      refresh()
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
     }
-    setDeclineOpen(false)
-    toast.success(t('declined'))
-    refresh()
   }
 
-  const openDecline = () => {
-    if (document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement
+  const openDecline = (event: React.MouseEvent<HTMLElement>) => {
+    returnFocus.current = event.currentTarget
     setDeclineOpen(true)
   }
 
   const handleSignOut = async () => {
     setPending('sign_out')
-    await logout()
-    setPending(null)
-    refresh()
+    try {
+      await logout()
+      refresh()
+    } catch {
+      toast.error(errorMessage())
+    } finally {
+      setPending(null)
+    }
   }
 
   return (
@@ -273,8 +303,9 @@ export const InvitationCard = ({
       <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>
         <AlertDialogContent
           onCloseAutoFocus={event => {
+            if (!returnFocus.current?.isConnected) return
             event.preventDefault()
-            returnFocus.current?.focus()
+            returnFocus.current.focus()
           }}
         >
           <AlertDialogHeader>

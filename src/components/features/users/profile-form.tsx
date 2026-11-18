@@ -49,6 +49,7 @@ export const ProfileForm = () => {
   const [languages, setLanguages] = useState<string[]>(user.languages ?? [])
   const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
   const returnFocus = useRef<HTMLElement | null>(null)
+  const avatarRef = useRef<HTMLDivElement>(null)
   const [removingAvatar, setRemovingAvatar] = useState(false)
 
   const formSchema = z.object({
@@ -184,16 +185,18 @@ export const ProfileForm = () => {
     <Form {...form}>
       <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
         <SettingsSection description={t('profilePictureDescription')} title={t('profilePicture')}>
-          <ImageCropper
-            disabled={form.formState.isSubmitting}
-            fallback={user.initials}
-            onChange={handleAvatarUpload}
-            onRemove={() => {
-              if (document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement
-              setRemoveAvatarOpen(true)
-            }}
-            value={avatarPreview}
-          />
+          <div ref={avatarRef}>
+            <ImageCropper
+              disabled={form.formState.isSubmitting}
+              fallback={user.initials}
+              onChange={handleAvatarUpload}
+              onRemove={(event?: React.MouseEvent<HTMLElement>) => {
+                returnFocus.current = event?.currentTarget ?? null
+                setRemoveAvatarOpen(true)
+              }}
+              value={avatarPreview}
+            />
+          </div>
         </SettingsSection>
 
         <Separator className="mt-4 mb-8" />
@@ -421,7 +424,10 @@ export const ProfileForm = () => {
           <AlertDialogContent
             onCloseAutoFocus={event => {
               event.preventDefault()
-              returnFocus.current?.focus()
+              const target = returnFocus.current?.isConnected
+                ? returnFocus.current
+                : avatarRef.current?.querySelector('button')
+              target?.focus()
             }}
           >
             <AlertDialogHeader>

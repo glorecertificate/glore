@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -18,6 +18,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
@@ -33,7 +34,6 @@ export const DeleteAccount = () => {
   const { impersonating, user } = useSession()
   const t = useTranslations('Users')
   const [open, setOpen] = useState(false)
-  const returnFocus = useRef<HTMLElement | null>(null)
   const [confirmation, setConfirmation] = useState('')
   const [deleting, setDeleting] = useState(false)
   const { data } = usePoll(getDeletionBlockers, { interval: REFRESH_INTERVAL })
@@ -42,7 +42,6 @@ export const DeleteAccount = () => {
   const matches = confirmation.trim().toLowerCase() === user.email.toLowerCase()
 
   const handleOpenChange = (next: boolean) => {
-    if (next && document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement
     setOpen(next)
     setConfirmation('')
   }
@@ -59,46 +58,38 @@ export const DeleteAccount = () => {
 
   return (
     <SettingsSection description={t('dangerZoneDescription')} title={t('dangerZone')}>
-      <Card className="border-danger-border bg-danger-subtle">
-        <CardHeader>
-          <CardTitle className="type-heading text-danger-text">{t('deleteAccountTitle')}</CardTitle>
-          <CardDescription>{t('deleteAccountDescription')}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <ImpersonationLockNote />
-          {blockers.length > 0 && (
-            <Banner data-testid="delete-blocked" role="alert" variant="warning">
-              <div className="space-y-1">
-                <p className="font-medium">{t('deleteAccountTransferTitle')}</p>
-                <p>
-                  {t('deleteAccountTransferDescription', {
-                    organizations: blockers.map(({ name }) => name).join(', '),
-                  })}
-                </p>
-                <Link className="underline underline-offset-4" href="/organization?tab=settings">
-                  {t('deleteAccountTransferLink')}
-                </Link>
-              </div>
-            </Banner>
-          )}
-          <Button
-            disabled={blockers.length > 0 || impersonating}
-            onClick={() => handleOpenChange(true)}
-            type="button"
-            variant="destructive"
-          >
-            {t('deleteAccount')}
-          </Button>
-        </CardContent>
-      </Card>
-
       <AlertDialog onOpenChange={handleOpenChange} open={open}>
-        <AlertDialogContent
-          onCloseAutoFocus={event => {
-            event.preventDefault()
-            returnFocus.current?.focus()
-          }}
-        >
+        <Card className="border-danger-border bg-danger-subtle">
+          <CardHeader>
+            <CardTitle className="type-heading text-danger-text">{t('deleteAccountTitle')}</CardTitle>
+            <CardDescription>{t('deleteAccountDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <ImpersonationLockNote />
+            {blockers.length > 0 && (
+              <Banner data-testid="delete-blocked" role="alert" variant="warning">
+                <div className="space-y-1">
+                  <p className="font-medium">{t('deleteAccountTransferTitle')}</p>
+                  <p>
+                    {t('deleteAccountTransferDescription', {
+                      organizations: blockers.map(({ name }) => name).join(', '),
+                    })}
+                  </p>
+                  <Link className="underline underline-offset-4" href="/organization?tab=settings">
+                    {t('deleteAccountTransferLink')}
+                  </Link>
+                </div>
+              </Banner>
+            )}
+            <AlertDialogTrigger asChild>
+              <Button disabled={blockers.length > 0 || impersonating} type="button" variant="destructive">
+                {t('deleteAccount')}
+              </Button>
+            </AlertDialogTrigger>
+          </CardContent>
+        </Card>
+
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('deleteAccountConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>{t('deleteAccountConfirmDescription')}</AlertDialogDescription>

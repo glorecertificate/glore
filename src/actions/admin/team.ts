@@ -10,6 +10,7 @@ import { and, eq, inArray, isNull, or } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { eraseAccount } from '@/actions/account/deletion'
+import { expireTeam } from '@/actions/admin/expire'
 import { adminAction, requireAdminWithLimit, revalidateUserAccess } from '@/actions/admin/helpers'
 import { notify } from '@/actions/notifications/notify'
 import { getCurrentUser } from '@/actions/user'
@@ -138,6 +139,7 @@ export const resendInvitation = async (userId: string) =>
 
     const delivery = await notify(event)
     if (delivery.emailed === 0) throw adminError('SEND_FAILED')
+    expireTeam()
     return { email: invitation.email, expiresAt: invitation.expiresAt }
   })
 

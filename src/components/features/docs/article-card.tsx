@@ -28,7 +28,6 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
     <Link
       className={cn('block w-full rounded-xl text-left focus-visible:focus-ring', className)}
       href={`/docs/articles/${article.slug}`}
-      prefetch
     >
       <Card className="h-full transition-colors hover:bg-surface-hover">
         <CardHeader>

@@ -32,7 +32,7 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
         certificate.isChangesRequested && 'border-warning-border'
       )}
     >
-      <Link className="flex flex-col" href={`/certificates/${certificate.id}`} prefetch>
+      <Link className="flex flex-col" href={`/certificates/${certificate.id}`}>
         <div className="bg-surface-sunken px-6 pt-6">
           <CertificatePreview className="mx-auto max-w-44 rounded-b-none border-b-0" certificate={certificate} />
         </div>

@@ -26,3 +26,5 @@ export const certificatesOrgTag = (orgId: number) => `${CacheTag.Certificates}-o
 export const progressUserTag = (userId: string) => `${CacheTag.Progress}-user-${userId}` as const
 export const notificationsUserTag = (userId: string) => `${CacheTag.Notifications}-user-${userId}` as const
 export const messagesTag = (locale: string) => `${CacheTag.Messages}-${locale}` as const
+
+export const LIVE_LIFE = { stale: 60, revalidate: 900, expire: 31_536_000 } as const

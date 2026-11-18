@@ -143,7 +143,7 @@ const DashboardSidebarItem = ({
         onClick={setPath}
         tooltip={label}
       >
-        <Link href={route}>
+        <Link href={route} prefetch>
           {route === APP_ROOT ? (
             <DashboardIcon className="size-4" colored />
           ) : icon ? (

@@ -244,7 +244,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
     setLoggingOut(true)
 
     try {
-      await logout()
+      await logout({ loggedOut: true })
     } catch {
       toast.error(t('logoutFailed'))
       setLoggingOut(false)

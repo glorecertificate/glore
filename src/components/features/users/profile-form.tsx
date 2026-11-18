@@ -50,10 +50,10 @@ export const ProfileForm = () => {
   const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
   const returnFocus = useRef<HTMLElement | null>(null)
   const avatarRef = useRef<HTMLDivElement>(null)
+  const [removingAvatar, setRemovingAvatar] = useState(false)
   const focusFrame = useRef(0)
 
   useEffect(() => () => cancelAnimationFrame(focusFrame.current), [])
-  const [removingAvatar, setRemovingAvatar] = useState(false)
 
   const formSchema = z.object({
     firstName: z

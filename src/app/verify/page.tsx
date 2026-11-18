@@ -10,6 +10,7 @@ import { VerifyShell } from '@/components/features/certificates/verify/verify-sh
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Banner } from '@/components/ui/banner'
+import { Card } from '@/components/ui/card'
 import { VERIFY_ROOT } from '@/lib/constants'
 
 export const generateMetadata = async () => {
@@ -28,15 +29,19 @@ const VerifyContent = async ({ searchParams }: Pick<PageProps<'/verify'>, 'searc
 
   return (
     <VerifyShell>
-      <div className="space-y-4 text-center">
-        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-action-subtle text-action-text">
-          <LucideIcon name="shield-check" className="size-6" />
+      <Card className="gap-6 p-6 sm:p-8">
+        <div className="space-y-4 text-center">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-gradient-action text-action-foreground shadow-card">
+            <LucideIcon name="shield-check" className="size-6" />
+          </div>
+          <h1 className="type-title text-balance text-fg-title">{t('title')}</h1>
+          <p className="mx-auto max-w-prose text-muted-foreground">{t('description')}</p>
         </div>
-        <h1 className="type-title text-balance text-fg-title">{t('title')}</h1>
-        <p className="mx-auto max-w-prose text-muted-foreground">{t('description')}</p>
-      </div>
-      <LookupForm defaultValue={input} />
-      {problem && <Banner variant="warning">{problem === 'invalid' ? t('invalidCode') : t('tooManyRequests')}</Banner>}
+        <LookupForm defaultValue={input} />
+        {problem && (
+          <Banner variant="warning">{problem === 'invalid' ? t('invalidCode') : t('tooManyRequests')}</Banner>
+        )}
+      </Card>
     </VerifyShell>
   )
 }

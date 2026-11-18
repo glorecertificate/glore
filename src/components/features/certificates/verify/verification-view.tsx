@@ -9,11 +9,12 @@ import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/ui/copy-button'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { Image } from '@/components/ui/image'
+import { PageBandGlobe } from '@/components/ui/page-band'
 import { QrCode } from '@/components/ui/qr-code'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { VERIFY_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
-import { fullName, serializeJsonLd } from '@/lib/utils'
+import { cn, fullName, serializeJsonLd } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
 const structuredData = (verification: ActiveVerification, url: string, name: string) => ({
@@ -44,13 +45,21 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
         {serializeJsonLd(structuredData(verification, url, t('credentialName', { name: holderName })))}
       </Script>
 
-      <article className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs">
-        <header className="flex flex-col items-center gap-4 border-b bg-surface-sunken px-6 py-10 text-center">
+      <article className="overflow-hidden rounded-xl border border-border-subtle bg-card text-card-foreground shadow-card">
+        <header
+          className={cn(
+            'relative isolate flex flex-col items-center gap-4 overflow-hidden border-b px-6 py-10 text-center',
+            revoked ? 'bg-surface-sunken' : 'bg-band text-band-foreground band-scope'
+          )}
+        >
+          {!revoked && <PageBandGlobe className="-top-32 -right-24" />}
           <StatusBadge icon={revoked ? 'ban' : 'circle-check'} tone={revoked ? 'danger' : 'success'}>
             {revoked ? t('revoked') : t('valid')}
           </StatusBadge>
           <div className="flex flex-col items-center gap-2">
-            <h1 className="type-display text-balance text-fg-title">{holderName}</h1>
+            <h1 className={cn('type-display text-balance', revoked ? 'text-fg-title' : 'text-band-foreground')}>
+              {holderName}
+            </h1>
             <p className="flex items-center justify-center gap-2 text-base text-muted-foreground">
               {organization.logoUrl && (
                 <Image
@@ -74,7 +83,13 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
           </p>
           {verification.holderDeleted && <p className="max-w-prose text-xs text-muted-foreground">{t('holderLeft')}</p>}
           {verification.documentUrl && (
-            <Button asChild icon="download" size="sm" variant="brand">
+            <Button
+              asChild
+              className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+              icon="download"
+              size="sm"
+              variant="band"
+            >
               <a download href={verification.documentUrl} rel="noopener noreferrer" target="_blank">
                 {t('downloadPdf')}
               </a>

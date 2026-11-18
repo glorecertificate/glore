@@ -176,7 +176,8 @@ export const openContext = async (browser: Browser, baseURL: string, profile: Pr
     ignoreHTTPSErrors: true,
     isMobile,
     reducedMotion: 'no-preference',
-    storageState: role === 'guest' ? undefined : authFile(role),
+    storageState:
+      role === 'guest' ? undefined : authFile(role, baseURL === process.env.PERF_BASE_URL ? 'base' : 'head'),
     viewport,
   }
   const context = await browser.newContext(options)

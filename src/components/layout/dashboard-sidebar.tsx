@@ -132,7 +132,7 @@ const DashboardSidebarItem = ({
         onClick={setPath}
         tooltip={label}
       >
-        <Link href={route}>
+        <Link href={route} prefetch>
           {icon && <LucideIcon name={icon} />}
           {label}
           {badge > 0 && <DashboardSidebarBadge count={badge} />}

@@ -16,18 +16,16 @@ import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 import { FilterBar } from '@/components/ui/filter-bar'
-import { PageIntro } from '@/components/ui/page-header'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatCard } from '@/components/ui/stat-card'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { type TeamMember } from '@/db/queries/admin-user'
 import { type User } from '@/db/queries/user'
-import { useReturnFocus } from '@/hooks/use-return-focus'
 
+import { useAdminDialog } from './dialog-provider'
 import {
   DeleteDialog,
   ROLE_ICONS,
@@ -54,9 +52,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   const [busyId, setBusyId] = useState<string | null>(null)
   const [filterRole, setFilterRole] = useState<TeamRole | 'all'>('all')
   const [filterStatus, setFilterStatus] = useState<TeamStatus | 'all'>('all')
-  const [inviteOpen, setInviteOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
-  const { remember, restore } = useReturnFocus()
+  const { close, current, remember, restore } = useAdminDialog()
   const returnFocus = (event: Event) => restore(event, listFocusTarget)
 
   const activeUsers = users.filter(u => !deletedIds.has(u.id))
@@ -162,26 +159,12 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
   }
 
   return (
-    <PageIntro
-      actions={
-        <Button
-          onClick={() => {
-            remember()
-            setInviteOpen(true)
-          }}
-          variant="brand"
-        >
-          <LucideIcon name="user-plus" />
-          {t('inviteMember')}
-        </Button>
-      }
-      description={t('description')}
-    >
+    <div className="flex min-w-0 flex-col gap-6">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label={t('statMembers')} value={stats.total} />
-        <StatCard label={t('statAdmins')} value={stats.admins} />
-        <StatCard label={t('statEditors')} value={stats.editors} />
-        <StatCard label={t('statPending')} value={stats.pending} />
+        <StatCard accent="teal" icon="users" label={t('statMembers')} value={stats.total} />
+        <StatCard accent="navy" icon="shield-check" label={t('statAdmins')} value={stats.admins} />
+        <StatCard accent="green" icon="pencil" label={t('statEditors')} value={stats.editors} />
+        <StatCard accent="amber" icon="clock" label={t('statPending')} value={stats.pending} />
       </div>
 
       <DataTable
@@ -300,8 +283,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
         onCloseAutoFocus={returnFocus}
         defaultLocale={locale}
         onInvite={handleInvite}
-        onOpenChange={setInviteOpen}
-        open={inviteOpen}
+        onOpenChange={value => !value && close()}
+        open={current === 'invite'}
       />
 
       <DeleteDialog
@@ -311,6 +294,6 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
         open={!!deleteTarget}
         user={deleteTarget}
       />
-    </PageIntro>
+    </div>
   )
 }

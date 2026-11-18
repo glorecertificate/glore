@@ -11,3 +11,28 @@ export const userInitials = (user: Pick<AdminUserRow, 'firstName' | 'lastName'>)
     .join('')
 
 export const listFocusTarget = () => document.querySelector<HTMLElement>('[data-slot="data-table"]')
+
+interface OrganizationStateInput {
+  approvedAt: string | Date | null
+  joinRequests: { isRejected: boolean; role: string }[]
+  invitations: { state: string }[]
+  memberships: unknown[]
+  motivation: string | null
+  charterAcceptedAt: unknown
+}
+
+export const organizationState = (organization: OrganizationStateInput) => {
+  const request = organization.joinRequests.find(item => item.role === 'admin')
+  const hasApplication = Boolean(request || organization.motivation || organization.charterAcceptedAt)
+  const isApproved = Boolean(organization.approvedAt)
+  const isRejected = !isApproved && organization.joinRequests.some(item => item.role === 'admin' && item.isRejected)
+
+  return {
+    hasApplication,
+    isApproved,
+    isPending: !(isApproved || isRejected),
+    isRejected,
+    members: organization.memberships.length,
+    pendingInvitations: organization.invitations.filter(({ state }) => state === 'pending').length,
+  }
+}

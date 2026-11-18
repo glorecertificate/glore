@@ -1,76 +1,27 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { type ComponentType, startTransition, useEffect, useState } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useSession } from '@/components/providers/session'
 import { type User } from '@/db/queries/user'
 
 import { OrganizationCertificatesPanel } from './certificates-panel'
+import {
+  type LazyTab,
+  activityTab,
+  insightsTab,
+  invitationsTab,
+  joinRequestsTab,
+  membersTab,
+  preloadOrganizationTab,
+  settingsTab,
+} from './lazy-tabs'
 import { OrganizationOverview } from './overview'
 import { TabBoundary } from './tab-boundary'
-import { useOrganizationTab } from './tabs'
-
-const TabLoading = () => <LoadingFallback className="min-h-64" />
-
-interface LazyTab<P extends object> {
-  Dynamic: ComponentType<P>
-  load: () => Promise<ComponentType<P>>
-  preload: () => Promise<void>
-  reset: () => void
-  resolved: ComponentType<P> | null
-}
-
-const createLazyTab = <P extends object>(load: () => Promise<ComponentType<P>>, initial: ComponentType<P>) => {
-  const tab: LazyTab<P> = {
-    Dynamic: initial,
-    load,
-    async preload() {
-      if (tab.resolved) return
-      try {
-        tab.resolved = await load()
-      } catch {
-        tab.resolved = null
-      }
-    },
-    reset() {
-      tab.resolved = null
-      tab.Dynamic = dynamic(load, { loading: TabLoading })
-    },
-    resolved: null,
-  }
-  return tab
-}
-
-const activityTab = createLazyTab(
-  async () => (await import('./activity')).OrganizationActivity,
-  dynamic(async () => (await import('./activity')).OrganizationActivity, { loading: TabLoading })
-)
-const insightsTab = createLazyTab(
-  async () => (await import('./insights')).OrganizationInsightsPanel,
-  dynamic(async () => (await import('./insights')).OrganizationInsightsPanel, { loading: TabLoading })
-)
-const invitationsTab = createLazyTab(
-  async () => (await import('./invitations')).OrganizationInvitations,
-  dynamic(async () => (await import('./invitations')).OrganizationInvitations, { loading: TabLoading })
-)
-const joinRequestsTab = createLazyTab(
-  async () => (await import('./join-requests')).OrganizationJoinRequests,
-  dynamic(async () => (await import('./join-requests')).OrganizationJoinRequests, { loading: TabLoading })
-)
-const membersTab = createLazyTab(
-  async () => (await import('./members')).OrganizationMembers,
-  dynamic(async () => (await import('./members')).OrganizationMembers, { loading: TabLoading })
-)
-const settingsTab = createLazyTab(
-  async () => (await import('./settings')).OrganizationSettings,
-  dynamic(async () => (await import('./settings')).OrganizationSettings, { loading: TabLoading })
-)
-
-const LAZY_TABS = [activityTab, insightsTab, invitationsTab, joinRequestsTab, membersTab, settingsTab]
+import { useOrganizationTab } from './tab-context'
+import { TabSlot } from './tab-slot'
 
 const LazyTabHost = <P extends object>({ lazy, ...props }: P & { lazy: LazyTab<P> }) => {
   const [attempt, setAttempt] = useState(0)
@@ -80,11 +31,9 @@ const LazyTabHost = <P extends object>({ lazy, ...props }: P & { lazy: LazyTab<P
     setAttempt(current => current + 1)
   }
 
-  const Component = lazy.resolved ?? lazy.Dynamic
-
   return (
     <TabBoundary key={attempt} onRetry={retry}>
-      <Component {...(props as unknown as P)} />
+      <TabSlot lazy={lazy} {...(props as unknown as P)} />
     </TabBoundary>
   )
 }
@@ -97,8 +46,8 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   const data = initialData
 
   useEffect(() => {
-    for (const lazy of LAZY_TABS) void lazy.preload()
-  }, [])
+    void preloadOrganizationTab(tab, { organizationId: data.organization.id, userId: data.currentUserId })
+  }, [data.currentUserId, data.organization.id, tab])
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab
 
@@ -154,7 +103,14 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   }
 
   if (currentTab === 'insights') {
-    return <LazyTabHost key="insights" lazy={insightsTab} />
+    return (
+      <LazyTabHost
+        key={`insights-${data.organization.id}`}
+        lazy={insightsTab}
+        organizationId={data.organization.id}
+        viewerId={data.currentUserId}
+      />
+    )
   }
 
   if (currentTab === 'activity') {

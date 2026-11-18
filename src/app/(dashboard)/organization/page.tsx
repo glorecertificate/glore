@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import { getOrganizationPanel } from '@/actions/organizations/queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { OrganizationPanel } from '@/components/features/organization/panel'
+import { OrganizationPanelRegion } from '@/components/features/organization/panel-region'
 import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
 import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -30,7 +31,7 @@ const OrganizationContent = async () => {
   if (error || !data) notFound()
 
   return (
-    <OrganizationTabs>
+    <OrganizationTabs organizationId={data.organization.id} userId={data.currentUserId}>
       <DashboardPage
         title={<PageTitle namespace="Organization" name="title" />}
         breadcrumb={
@@ -41,7 +42,9 @@ const OrganizationContent = async () => {
           />
         }
       >
-        <OrganizationPanel initialData={data} />
+        <OrganizationPanelRegion>
+          <OrganizationPanel initialData={data} />
+        </OrganizationPanelRegion>
       </DashboardPage>
     </OrganizationTabs>
   )

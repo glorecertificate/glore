@@ -18,27 +18,70 @@ import { RATING_MIN_COUNT } from '@/db/queries/organization-insights'
 import { useReveal } from '@/hooks/use-reveal'
 import { cn } from '@/lib/utils'
 
+import { type InsightsScope, createInsightsCache } from './insights-cache'
 import { TabHeader } from './tab-header'
 
 const HOURS_PER_DAY = 24
 
-export const OrganizationInsightsPanel = ({ organizationId }: { organizationId?: number }) => {
+const insightsCache = createInsightsCache<OrganizationInsights>(async organizationId => {
+  const { data } = await getOrganizationInsights(organizationId)
+  return data
+})
+
+const readPrefetched = (organizationId?: number, viewerId?: string) =>
+  organizationId === undefined || viewerId === undefined
+    ? null
+    : insightsCache.read({ organizationId, userId: viewerId })
+
+const loadInsights = async (organizationId?: number, viewerId?: string) => {
+  if (organizationId === undefined || viewerId === undefined) {
+    const { data } = await getOrganizationInsights(organizationId)
+    return data
+  }
+  const scope = { organizationId, userId: viewerId }
+  await insightsCache.prefetch(scope)
+  return insightsCache.read(scope)
+}
+
+export const prefetchInsights = (scope: InsightsScope) => insightsCache.prefetch(scope)
+
+export const OrganizationInsightsPanel = ({
+  organizationId,
+  viewerId,
+}: {
+  organizationId?: number
+  viewerId?: string
+}) => {
   const [attempt, setAttempt] = useState(0)
 
   return (
-    <InsightsContent key={attempt} onRetry={() => setAttempt(current => current + 1)} organizationId={organizationId} />
+    <InsightsContent
+      key={attempt}
+      onRetry={() => setAttempt(current => current + 1)}
+      organizationId={organizationId}
+      viewerId={viewerId}
+    />
   )
 }
 
-const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; organizationId?: number }) => {
+const InsightsContent = ({
+  onRetry,
+  organizationId,
+  viewerId,
+}: {
+  onRetry: () => void
+  organizationId?: number
+  viewerId?: string
+}) => {
   const t = useTranslations('Organization')
-  const [insights, setInsights] = useState<OrganizationInsights | null>(null)
+  const [insights, setInsights] = useState<OrganizationInsights | null>(() => readPrefetched(organizationId))
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
+    if (insights) return
     let active = true
     const load = async () => {
-      const { data } = await getOrganizationInsights(organizationId)
+      const data = await loadInsights(organizationId, viewerId)
       if (!active) return
       setFailed(!data)
       setInsights(data)
@@ -47,7 +90,7 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
     return () => {
       active = false
     }
-  }, [organizationId])
+  }, [insights, organizationId, viewerId])
 
   if (failed) {
     return (

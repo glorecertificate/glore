@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import { selfAssignCertificate } from '@/actions/certificates/assignment'
 import { CertificateQueue, certificateAge } from '@/components/features/certificates/certificate-queue'
+import { failedClaims } from '@/components/features/certificates/claim'
 import {
   TUTOR_QUEUE_AGES,
   TUTOR_QUEUE_STATUSES,
@@ -45,19 +46,21 @@ export const TutorCertificatesContent = ({
   const { age, setAge } = useTutorQueueAge()
   const { matchSearch, searchValue, setSearch } = useSearch()
   const { refresh } = useRouter()
-  const [claimed, setClaimed] = useState<number[]>([])
+  const [claimState, setClaim] = useState<{ ids: number[]; source: Certificate[] }>({ ids: [], source: unassigned })
   const [claiming, startClaim] = useTransition()
+  if (claimState.source !== unassigned) setClaim({ ids: [], source: unassigned })
+  const claimed = claimState.ids
 
-  const release = (ids: number[]) => setClaimed(current => current.filter(id => !ids.includes(id)))
+  const release = (ids: number[]) =>
+    setClaim(current => ({ ...current, ids: current.ids.filter(id => !ids.includes(id)) }))
 
   const claim = (ids: number[]) =>
     startClaim(async () => {
-      setClaimed(current => [...current, ...ids])
-      const results = await Promise.all(ids.map(id => selfAssignCertificate(id)))
-      const failed = ids.filter((_, index) => results[index]?.error)
+      setClaim(current => ({ ...current, ids: [...current.ids, ...ids] }))
+      const failed = await failedClaims(ids, selfAssignCertificate)
       if (failed.length > 0) {
         release(failed)
-        toast.error(t('claimError'))
+        toast.error(t('claimError', { count: failed.length }))
       }
       if (failed.length < ids.length) toast.success(t('claimSuccess', { count: ids.length - failed.length }))
       refresh()

@@ -5,6 +5,7 @@ import { formatActivityDate } from '@/components/features/certificates/rules'
 import { SkillLevel } from '@/components/features/certificates/skill-level'
 import { issuedSkillRendering } from '@/components/features/certificates/snapshot'
 import { Button } from '@/components/ui/button'
+import { CopyButton } from '@/components/ui/copy-button'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { Logo } from '@/components/ui/logo'
 import { QrCode } from '@/components/ui/qr-code'
@@ -102,12 +103,16 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             </DescriptionList>
           </section>
 
-          {certificate.activityDescription && (
-            <section aria-labelledby="profile-description" className="flex flex-col gap-3 border-b p-6">
-              <h2 className="type-label text-muted-foreground" id="profile-description">
-                {tCredential('activityDescription')}
+          {certificate.tasks.length > 0 && (
+            <section aria-labelledby="profile-tasks" className="flex flex-col gap-3 border-b p-6">
+              <h2 className="type-label text-muted-foreground" id="profile-tasks">
+                {tVerify('tasks')}
               </h2>
-              <p className="text-sm whitespace-pre-wrap">{certificate.activityDescription}</p>
+              <ul className="list-disc space-y-1 pl-5 text-sm">
+                {certificate.tasks.map(task => (
+                  <li key={task}>{task}</li>
+                ))}
+              </ul>
             </section>
           )}
 
@@ -132,9 +137,22 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             </ul>
           </section>
 
-          <footer className="flex flex-col items-center gap-2 p-6">
-            <QrCode label={t('publicScanToVerify')} size={112} value={verificationUrl} />
-            <p className="text-xs text-muted-foreground">{t('publicScanToVerify')}</p>
+          <footer className="flex flex-col items-center gap-6 p-6 sm:flex-row sm:justify-between">
+            <DescriptionList>
+              {certificate.code && (
+                <DescriptionItem>
+                  <DescriptionTerm>{tVerify('code')}</DescriptionTerm>
+                  <DescriptionDetails className="flex flex-wrap items-center gap-2 font-mono font-medium">
+                    {certificate.code}
+                    <CopyButton size="2xs" value={certificate.code} variant="ghost" />
+                  </DescriptionDetails>
+                </DescriptionItem>
+              )}
+            </DescriptionList>
+            <div className="flex flex-col items-center gap-2">
+              <QrCode label={t('publicScanToVerify')} size={112} value={verificationUrl} />
+              <p className="text-xs text-muted-foreground">{t('publicScanToVerify')}</p>
+            </div>
           </footer>
         </article>
 

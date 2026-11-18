@@ -97,7 +97,7 @@ export const CertificateDetail = ({
 
       <CertificateFeedback certificate={certificate} notes={notes} />
 
-      {!certificate.isDraft && (certificate.reviewerId || certificate.isOpen) && (
+      {!certificate.isDraft && (certificate.reviewerId || (certificate.isOpen && canManage)) && (
         <CertificateReviewer certificate={certificate} tutors={tutors} />
       )}
 

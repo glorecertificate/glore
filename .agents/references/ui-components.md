@@ -130,3 +130,10 @@ After (the first block is a `DataTable` card, so `overlap` is set):
 - The course editor passes `header={<CourseHeader />}` and `provider={CourseEditorTabs}`. `CourseHeading` is a render prop that gives the editable title, description, icon, and length counter to `DashboardHeader`, whose `heading` prop replaces the `h1` content while `title` still feeds the breadcrumb.
 - The player, completion, skill framework, docs article, and about pages use `overlap` because their first block is an opaque card. Help, courses, docs, and the overview start after a clean gap.
 - The lesson reader overrides the vendored editor border from outside with a `[&_[data-slate-editor]]` wrapper, never inside `ui/rich-text-editor/`.
+
+## Course editor on phones and tablets
+
+- Below `lg` the lesson picker opens a bottom `Sheet` with `CourseSidebar variant="sheet"`. The same component serves the inline sidebar from `lg`. On coarse pointers each row adds Move up, Move down, and Delete, next to the drag handle. Choosing a lesson closes the sheet.
+- Below `md` the band shows the title, the status chips, and the language tabs. Settings, analytics, and preview sit in a More menu. Save and the Draft or Published switch sit in a bottom bar portalled to `body` with the safe-area inset. The description shows 2 lines and expands on tap.
+- `course-editor/block-actions.tsx` is a touch-only Block menu (Move up, Move down, Duplicate, Turn into, Ask AI, Delete). It acts on the top-level block at the caret through the Plate editor API and replaces the context menu that `block-context-menu.tsx` turns off on touch.
+- `lesson-editor.tsx` wraps the vendored editor. Below `lg` the fixed toolbar is one row that scrolls sideways and sticks to the viewport. On coarse pointers the floating selection toolbar is hidden.

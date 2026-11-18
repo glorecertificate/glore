@@ -1,9 +1,10 @@
 import { Suspense } from 'react'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { DashboardMenuButton } from '@/components/layout/dashboard-menu-button'
 import { type NavigationId, navigationHref } from '@/components/layout/navigation'
 import { NavigationLabel } from '@/components/layout/navigation-label'
-import { HeaderLogo, HeaderTrigger } from '@/components/ui/header'
+import { HeaderLogo } from '@/components/ui/header'
 import { Link } from '@/components/ui/link'
 import { Logo } from '@/components/ui/logo'
 import { PageBand } from '@/components/ui/page-band'
@@ -24,7 +25,7 @@ export const DashboardHeader = ({
 }) => (
   <PageBand>
     <div className="flex min-h-8 min-w-0 items-center gap-2 text-[13px] text-band-muted">
-      <HeaderTrigger className="text-band-muted hover:bg-band-scrim hover:text-band-foreground" />
+      <DashboardMenuButton className="text-band-muted hover:bg-band-scrim hover:text-band-foreground" />
       {parent && (
         <>
           <Link className="hover:text-band-foreground" href={navigationHref(parent)}>

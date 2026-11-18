@@ -7,6 +7,7 @@ import { getCurrentUser } from '@/actions/user'
 import { ImpersonationBanner } from '@/components/features/admin/impersonation-banner'
 import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { PhoneAppBar } from '@/components/layout/phone-app-bar'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { LEGAL_ACCEPT_ROOT } from '@/lib/constants'
@@ -33,6 +34,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
       <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
         <DashboardSidebar pending={pending} />
         <SidebarInset className={cn(impersonation && 'pb-32 sm:pb-24')}>{children}</SidebarInset>
+        <PhoneAppBar />
         <ImpersonationBanner />
       </SessionProvider>
     </SidebarProvider>

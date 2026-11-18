@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
+import { announceNotificationsChanged } from '@/components/features/notifications/events'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -16,12 +17,11 @@ import { usePoll } from '@/hooks/use-poll'
 const POPOVER_LIMIT = 10
 
 interface NotificationPopoverProps {
-  onChange: () => void
   onNavigate: () => void
   unread: number
 }
 
-export const NotificationPopover = ({ onChange, onNavigate, unread }: NotificationPopoverProps) => {
+export const NotificationPopover = ({ onNavigate, unread }: NotificationPopoverProps) => {
   const t = useTranslations('Notifications')
   const [failed, setFailed] = useState(false)
 
@@ -43,11 +43,6 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
 
   const { data, refresh } = usePoll(readLatest, { interval: 30_000 })
 
-  const reload = () => {
-    refresh()
-    onChange()
-  }
-
   const markAll = async () => {
     try {
       const { error } = await markAllNotificationsRead()
@@ -55,7 +50,8 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
         toast.error(t('markAllFailed'))
         return
       }
-      reload()
+      announceNotificationsChanged()
+      refresh()
     } catch {
       toast.error(t('markAllFailed'))
     }
@@ -92,7 +88,7 @@ export const NotificationPopover = ({ onChange, onNavigate, unread }: Notificati
             className="animate-reveal"
             notifications={data.items}
             onNavigate={onNavigate}
-            onRead={reload}
+            onRead={refresh}
           />
         )}
       </div>

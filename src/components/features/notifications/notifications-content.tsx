@@ -1,13 +1,12 @@
 'use client'
 
-import { startTransition, useEffect, useEffectEvent, useRef, useState } from 'react'
+import { startTransition, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { useQueryState } from 'nuqs'
 
 import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
-import { NOTIFICATIONS_CHANGED, announceNotificationsChanged } from '@/components/features/notifications/events'
-import { readUnread } from '@/components/features/notifications/notification-bell'
+import { announceNotificationsChanged } from '@/components/features/notifications/events'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import {
   NOTIFICATION_FILTERS,
@@ -16,6 +15,7 @@ import {
   notificationFilterParser,
   notificationLimitParser,
 } from '@/components/features/notifications/params'
+import { useUnreadCount } from '@/components/features/notifications/use-unread-count'
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
@@ -48,17 +48,10 @@ export const NotificationsContent = () => {
   const [limit, setLimit] = useQueryState('limit', { ...notificationLimitParser, startTransition })
   const [failed, setFailed] = useState(false)
   const [marking, setMarking] = useState(false)
+  const [retrying, setRetrying] = useState(false)
 
   const latest = useRef(0)
-  const [unread, setUnread] = useState(0)
-
-  const loadUnread = async () => {
-    try {
-      setUnread((await readUnread()) ?? 0)
-    } catch {
-      setUnread(0)
-    }
-  }
+  const unread = useUnreadCount()
 
   const read = async () => {
     latest.current += 1
@@ -66,11 +59,15 @@ export const NotificationsContent = () => {
     try {
       const { data, error } = await listNotifications({ category: category ?? undefined, filter, limit })
       if (error) throw new Error(error.message)
-      if (request === latest.current) setFailed(false)
-      void loadUnread()
+      if (request !== latest.current) return await new Promise<never>(() => {})
+      setFailed(false)
+      setRetrying(false)
       return data
     } catch (error) {
-      if (request === latest.current) setFailed(true)
+      if (request === latest.current) {
+        setFailed(true)
+        setRetrying(false)
+      }
       throw error
     }
   }
@@ -78,15 +75,6 @@ export const NotificationsContent = () => {
   const { data, refresh } = usePoll(read, { interval: 60_000, key: `${filter}:${category}:${limit}` })
   const filtering = filter !== 'all' || category !== null
   const hasUnread = unread > 0
-
-  const onChanged = useEffectEvent(() => {
-    void loadUnread()
-  })
-
-  useEffect(() => {
-    window.addEventListener(NOTIFICATIONS_CHANGED, onChanged)
-    return () => window.removeEventListener(NOTIFICATIONS_CHANGED, onChanged)
-  }, [])
 
   const markAll = async () => {
     setMarking(true)
@@ -124,7 +112,7 @@ export const NotificationsContent = () => {
   }
 
   const retry = () => {
-    setFailed(false)
+    setRetrying(true)
     refresh()
   }
 
@@ -189,7 +177,7 @@ export const NotificationsContent = () => {
             <EmptyDescription>{t('errorDescription')}</EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button onClick={retry} variant="outline">
+            <Button loading={retrying} onClick={retry} variant="outline">
               {t('retry')}
             </Button>
           </EmptyContent>

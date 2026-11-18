@@ -1,12 +1,10 @@
 import { notFound, redirect } from 'next/navigation'
-import { Suspense } from 'react'
 
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
 import { loadPlayer } from '@/actions/courses/learner'
 import { CoursePlayer } from '@/components/features/courses/course-player'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { LOCALES } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({
@@ -33,17 +31,18 @@ const LearnPageContent = async (props: PageProps<'/courses/[slug]/learn'>) => {
     return redirect(`/courses/${slug}/learn?lang=${result.language}&lesson=${result.lessonId}`)
   }
 
-  return (
-    <DashboardPage parent="courses" title={result.overview.title} width="wide">
-      <CoursePlayer access={result.access} lesson={result.lesson} overview={result.overview} />
-    </DashboardPage>
-  )
+  return <CoursePlayer access={result.access} lesson={result.lesson} overview={result.overview} />
+}
+
+const LearnTitle = async (props: PageProps<'/courses/[slug]/learn'>) => {
+  const { result } = await resolvePlayer(props)
+  return result.status === 'ok' ? result.overview.title : null
 }
 
 const LearnPage = (props: PageProps<'/courses/[slug]/learn'>) => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
+  <DashboardPage parent="courses" title={<LearnTitle {...props} />} width="wide">
     <LearnPageContent {...props} />
-  </Suspense>
+  </DashboardPage>
 )
 
 export default LearnPage

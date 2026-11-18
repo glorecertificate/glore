@@ -1,10 +1,8 @@
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
 
 import { getAdminOrganization, getAdminOrganizationName } from '@/actions/admin/organizations'
 import { AdminOrganizationDetail } from '@/components/features/admin/organization-detail'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 
 export const generateMetadata = async ({ params }: PageProps<'/admin/organizations/[id]'>) => {
   const organizationId = Number((await params).id)
@@ -22,17 +20,16 @@ const AdminOrganizationContent = async ({ params }: { params: PageProps<'/admin/
   const { data } = await getAdminOrganization(organizationId)
   if (!data) notFound()
 
-  return (
-    <DashboardPage parent="admin-organizations" title={data.name}>
-      <AdminOrganizationDetail initialData={data} />
-    </DashboardPage>
-  )
+  return <AdminOrganizationDetail initialData={data} />
 }
 
+const AdminOrganizationName = async ({ params }: { params: PageProps<'/admin/organizations/[id]'>['params'] }) =>
+  getAdminOrganizationName(Number((await params).id))
+
 const AdminOrganizationPage = (props: PageProps<'/admin/organizations/[id]'>) => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
+  <DashboardPage parent="admin-organizations" title={<AdminOrganizationName params={props.params} />}>
     <AdminOrganizationContent {...props} />
-  </Suspense>
+  </DashboardPage>
 )
 
 export default AdminOrganizationPage

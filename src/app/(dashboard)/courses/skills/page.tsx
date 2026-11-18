@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
 
 import { getTranslations } from 'next-intl/server'
 
@@ -7,7 +6,7 @@ import { findSkillFramework } from '@/actions/courses/data'
 import { getLearningContext } from '@/actions/courses/learner'
 import { SkillFramework } from '@/components/features/courses/skill-framework'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { PageTitle } from '@/components/layout/page-title'
 
 export const generateMetadata = async () => {
   const t = await getTranslations('Learning.framework')
@@ -20,17 +19,13 @@ const SkillsPageContent = async () => {
 
   const { groups, ungrouped } = await findSkillFramework()
 
-  return (
-    <DashboardPage parent="courses" title={(await getTranslations('Learning.framework'))('title')} width="content">
-      <SkillFramework groups={groups} ungrouped={ungrouped} />
-    </DashboardPage>
-  )
+  return <SkillFramework groups={groups} ungrouped={ungrouped} />
 }
 
 const SkillsPage = () => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
+  <DashboardPage parent="courses" title={<PageTitle namespace="Learning.framework" name="title" />} width="content">
     <SkillsPageContent />
-  </Suspense>
+  </DashboardPage>
 )
 
 export default SkillsPage

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -20,7 +20,7 @@ const CertificatesLayoutContent = async ({ children }: React.PropsWithChildren) 
 }
 
 const CertificatesLayout = ({ children }: LayoutProps<'/certificates'>) => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
+  <Suspense fallback={<DashboardLoading />}>
     <CertificatesLayoutContent>{children}</CertificatesLayoutContent>
   </Suspense>
 )

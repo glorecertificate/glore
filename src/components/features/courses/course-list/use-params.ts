@@ -110,6 +110,12 @@ export const useCourseListFilters = () => {
     sort !== null ||
     searchValue.length > 0
 
+  const filterCount =
+    Number(COURSE_TYPES.some(t => !activeTypes.includes(t))) +
+    Number(activeLanguages.length < LOCALES.length) +
+    Number(activeSkillGroups.length < skillGroups.length) +
+    Number(sort !== null)
+
   const resetFilters = () => {
     setActiveTypes(null)
     setActiveLanguages(null)
@@ -118,7 +124,7 @@ export const useCourseListFilters = () => {
     setSearch(null)
   }
 
-  return { hasFilters, resetFilters }
+  return { filterCount, hasFilters, resetFilters }
 }
 
 export const useCourseListTabs = () => {

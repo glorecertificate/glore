@@ -66,6 +66,7 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - A `DescriptionItem` holds only its term and details. Put an action such as `CopyButton` inside `DescriptionDetails`.
 - `EmptyDescription` renders a `p`, so pass phrasing content only.
 - `FilterBar` holds the controls of a filter row. Pass `active` and `onClear` to show "Clear filters" (`Common.clearFilters`).
+- Pass `count` (active filters, search excluded) and `search` (the inline search field) to collapse the bar below `sm`: the search stays inline, and a Filters button shows the count and opens a bottom `Sheet` with the other controls. The sheet applies changes live and has Reset and Done. From `sm` the bar is unchanged. `size` matches the button to the controls (`md` or `sm`). Bars without `count` never collapse.
 - After a clear, `FilterBar` moves focus to its first control, so focus never drops to the page.
 - Import `toast` from `@/components/ui/toast`. Errors stay 8s, warnings 6s, info 4s, and success 2.5s. A caller can still set `duration`.
 - `ShareButton` opens the native share sheet. Without one, it copies the URL and shows a toast. Use `CopyButton` when the action only copies.

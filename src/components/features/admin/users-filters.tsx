@@ -43,15 +43,22 @@ export const UsersFilters = ({
   const t = useTranslations('Admin.users')
 
   return (
-    <FilterBar active={active} onClear={onClear}>
-      <SearchInput
-        aria-label={t('searchPlaceholder')}
-        className="w-full sm:w-72"
-        size="sm"
-        onValueChange={onSearch}
-        placeholder={t('searchPlaceholder')}
-        value={search}
-      />
+    <FilterBar
+      active={active}
+      onClear={onClear}
+      count={Object.values(values).filter(value => value !== null).length}
+      size="sm"
+      search={
+        <SearchInput
+          aria-label={t('searchPlaceholder')}
+          className="w-full sm:w-72"
+          size="sm"
+          onValueChange={onSearch}
+          placeholder={t('searchPlaceholder')}
+          value={search}
+        />
+      }
+    >
       <Select
         onValueChange={value => onFilter({ role: value === ALL ? null : (value as PlatformRole) })}
         value={values.role ?? ALL}

@@ -117,15 +117,15 @@ export const OnboardingForm = ({
       <div className="flex flex-col items-center gap-6">
         <Logo className="w-44" />
         <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">{t(`step_${stepName}_title`)}</h1>
-          <p className="text-muted-foreground">{t(`step_${stepName}_description`)}</p>
+          <h1 className="type-title text-balance">{t(`step_${stepName}_title`)}</h1>
+          <p className="text-pretty text-muted-foreground">{t(`step_${stepName}_description`)}</p>
         </div>
-        <div className="w-full max-w-xs space-y-2">
+        <div className="w-full space-y-2">
           <Progress
             aria-label={t('progress', { current: step + 1, total: STEP_NAMES.length })}
             value={((step + 1) / STEP_NAMES.length) * 100}
           />
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center type-caption text-muted-foreground">
             {t('progress', { current: step + 1, total: STEP_NAMES.length })}
           </p>
         </div>
@@ -136,8 +136,8 @@ export const OnboardingForm = ({
           {step === 0 && (
             <>
               <div className="space-y-2">
-                <Label>{t('emailLabel')}</Label>
-                <Input className="bg-muted/50" disabled value={email} />
+                <Label htmlFor="onboarding-email">{t('emailLabel')}</Label>
+                <Input autoComplete="email" disabled id="onboarding-email" readOnly value={email} />
               </div>
               <NameStep disabled={submitting} />
             </>

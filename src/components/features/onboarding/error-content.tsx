@@ -14,10 +14,10 @@ export const OnboardingErrorContent = () => {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
-        <div className="mb-6 flex size-16 items-center justify-center rounded-full bg-destructive/10">
+        <div className="mb-6 flex size-16 items-center justify-center rounded-full bg-danger-subtle">
           <LucideIcon name="circle-alert" className="size-8 text-destructive-text" />
         </div>
-        <h1 className="mb-2 text-2xl font-semibold">{t('errorTitle')}</h1>
+        <h1 className="mb-2 type-title text-balance">{t('errorTitle')}</h1>
         <p className="mb-8 text-muted-foreground">{t('errorDescription', { email })}</p>
         <Button asChild variant="outline">
           <a href={AUTH_ROOT}>{t('backToLogin')}</a>

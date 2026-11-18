@@ -23,13 +23,13 @@ export const WelcomeStep = ({
   return (
     <div className="flex flex-col gap-6" data-testid="onboarding-welcome">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-semibold tracking-tight">{t('welcomeTitle', { name: firstName })}</h1>
+        <h1 className="type-title text-balance">{t('welcomeTitle', { name: firstName })}</h1>
         <p className="text-muted-foreground">{t('welcomeDescription')}</p>
       </div>
 
-      <div className="space-y-2 rounded-lg border bg-muted/40 p-4 text-center">
+      <div className="space-y-2 rounded-lg border bg-surface-muted p-4 text-center">
         <p className="text-sm text-muted-foreground">{t('usernameLabel')}</p>
-        <p className="font-mono text-xl font-semibold" data-testid="onboarding-username">
+        <p className="font-mono text-xl font-semibold break-all" data-testid="onboarding-username">
           {username}
         </p>
         <p className="text-sm text-muted-foreground">{t('usernameDescription')}</p>

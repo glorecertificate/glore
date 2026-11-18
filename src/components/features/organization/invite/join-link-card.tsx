@@ -176,7 +176,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {t('haveAccount')}{' '}
-              <Link className="text-action-text underline-offset-4 hover:underline" href={AUTH_ROOT}>
+              <Link className="text-action-text underline underline-offset-4" href={AUTH_ROOT}>
                 {t('signIn')}
               </Link>
             </p>

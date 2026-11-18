@@ -62,7 +62,6 @@ export const LoginForm = ({
       username: username ?? '',
       password: '',
     },
-    mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
   const formDisabled = errored || loading

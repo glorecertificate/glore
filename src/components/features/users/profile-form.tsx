@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -48,6 +48,7 @@ export const ProfileForm = () => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl)
   const [languages, setLanguages] = useState<string[]>(user.languages ?? [])
   const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
+  const returnFocus = useRef<HTMLElement | null>(null)
   const [removingAvatar, setRemovingAvatar] = useState(false)
 
   const formSchema = z.object({
@@ -187,7 +188,10 @@ export const ProfileForm = () => {
             disabled={form.formState.isSubmitting}
             fallback={user.initials}
             onChange={handleAvatarUpload}
-            onRemove={() => setRemoveAvatarOpen(true)}
+            onRemove={() => {
+              if (document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement
+              setRemoveAvatarOpen(true)
+            }}
             value={avatarPreview}
           />
         </SettingsSection>
@@ -414,7 +418,12 @@ export const ProfileForm = () => {
         </div>
 
         <AlertDialog onOpenChange={setRemoveAvatarOpen} open={removeAvatarOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent
+            onCloseAutoFocus={event => {
+              event.preventDefault()
+              returnFocus.current?.focus()
+            }}
+          >
             <AlertDialogHeader>
               <AlertDialogTitle>{t('removeAvatarTitle')}</AlertDialogTitle>
               <AlertDialogDescription>{t('removeAvatarDescription')}</AlertDialogDescription>

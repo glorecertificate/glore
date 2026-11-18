@@ -47,7 +47,6 @@ export const PasswordRequestForm = ({
     defaultValues: {
       username: username ?? '',
     },
-    mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
   form.watch('username')

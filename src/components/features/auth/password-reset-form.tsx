@@ -44,7 +44,6 @@ export const PasswordResetForm = ({
     defaultValues: {
       password: '',
     },
-    mode: 'onTouched',
     resolver: zodResolver(formSchema),
   })
 

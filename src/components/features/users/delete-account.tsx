@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -33,6 +33,7 @@ export const DeleteAccount = () => {
   const { impersonating, user } = useSession()
   const t = useTranslations('Users')
   const [open, setOpen] = useState(false)
+  const returnFocus = useRef<HTMLElement | null>(null)
   const [confirmation, setConfirmation] = useState('')
   const [deleting, setDeleting] = useState(false)
   const { data } = usePoll(getDeletionBlockers, { interval: REFRESH_INTERVAL })
@@ -41,6 +42,7 @@ export const DeleteAccount = () => {
   const matches = confirmation.trim().toLowerCase() === user.email.toLowerCase()
 
   const handleOpenChange = (next: boolean) => {
+    if (next && document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement
     setOpen(next)
     setConfirmation('')
   }
@@ -91,7 +93,12 @@ export const DeleteAccount = () => {
       </Card>
 
       <AlertDialog onOpenChange={handleOpenChange} open={open}>
-        <AlertDialogContent>
+        <AlertDialogContent
+          onCloseAutoFocus={event => {
+            event.preventDefault()
+            returnFocus.current?.focus()
+          }}
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>{t('deleteAccountConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>{t('deleteAccountConfirmDescription')}</AlertDialogDescription>

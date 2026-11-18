@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { startTransition, useState } from 'react'
+import { startTransition, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -74,6 +74,7 @@ export const InvitationCard = ({
   const [pending, setPending] = useState<Pending | null>(null)
   const [password, setPassword] = useState('')
   const [declineOpen, setDeclineOpen] = useState(false)
+  const returnFocus = useRef<HTMLElement | null>(null)
   const [proofSent, setProofSent] = useState(false)
 
   const roleLabel = tRoles(`role_${role}`)
@@ -138,6 +139,11 @@ export const InvitationCard = ({
     refresh()
   }
 
+  const openDecline = () => {
+    if (document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement
+    setDeclineOpen(true)
+  }
+
   const handleSignOut = async () => {
     setPending('sign_out')
     await logout()
@@ -186,7 +192,7 @@ export const InvitationCard = ({
             <Button disabled={busy} loading={pending === 'accept'} onClick={handleAccept} size="lg" variant="brand">
               {t('accept')}
             </Button>
-            <Button disabled={busy} onClick={() => setDeclineOpen(true)} variant="ghost">
+            <Button disabled={busy} onClick={openDecline} variant="ghost">
               {t('decline')}
             </Button>
           </div>
@@ -219,7 +225,7 @@ export const InvitationCard = ({
               <Link className="text-action-text underline-offset-4 hover:underline" href={AUTH_ROOT}>
                 {t('forgotPassword')}
               </Link>
-              <Button disabled={busy} onClick={() => setDeclineOpen(true)} size="sm" type="button" variant="ghost">
+              <Button disabled={busy} onClick={openDecline} size="sm" type="button" variant="ghost">
                 {t('decline')}
               </Button>
             </div>
@@ -255,7 +261,7 @@ export const InvitationCard = ({
                 </Button>
               </>
             )}
-            <Button disabled={busy} onClick={() => setDeclineOpen(true)} variant="ghost">
+            <Button disabled={busy} onClick={openDecline} variant="ghost">
               {t('decline')}
             </Button>
           </div>
@@ -265,7 +271,12 @@ export const InvitationCard = ({
       </div>
 
       <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent
+          onCloseAutoFocus={event => {
+            event.preventDefault()
+            returnFocus.current?.focus()
+          }}
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>{t('declineTitle')}</AlertDialogTitle>
             <AlertDialogDescription>

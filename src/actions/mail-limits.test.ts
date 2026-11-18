@@ -23,7 +23,7 @@ vi.mock('next/cache', async importOriginal => ({
   revalidateTag: vi.fn(),
   updateTag: vi.fn(),
 }))
-vi.mock('@/actions/cookies', () => ({
+vi.mock('@/lib/cookie-store', () => ({
   deleteCookie: vi.fn(),
   getCookie: () => Promise.resolve(undefined),
   setCookie: vi.fn(),

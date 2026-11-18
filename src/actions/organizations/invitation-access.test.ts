@@ -18,8 +18,9 @@ vi.mock('@/actions/organizations/helpers', async importOriginal => ({
     })
   ),
 }))
-vi.mock('@/actions/user', () => ({ getCurrentUser: vi.fn(), findUser: vi.fn() }))
-vi.mock('@/actions/cookies', () => ({ getCookie: vi.fn() }))
+vi.mock('@/actions/user', () => ({ getCurrentUser: vi.fn() }))
+vi.mock('@/actions/user-data', () => ({ findUser: vi.fn() }))
+vi.mock('@/lib/cookie-store', () => ({ getCookie: vi.fn() }))
 
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')
 

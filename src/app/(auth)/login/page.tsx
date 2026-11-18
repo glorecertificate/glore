@@ -3,13 +3,13 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { createSearchParamsCache } from 'nuqs/server'
 
-import { cookies } from '@/actions/cookies'
 import { AuthFlow } from '@/components/features/auth/auth-flow'
 import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
 import { authParsers } from '@/components/features/auth/params'
 import { LegalLinks } from '@/components/features/legal/legal-links'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { cookies } from '@/lib/cookie-store'
 import { appTitle } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(authParsers)

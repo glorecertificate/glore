@@ -61,7 +61,7 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 
 ## Restricted imports
 
-- `eslint/no-restricted-imports` blocks everywhere: `cookies` from `next/headers` (use `@/actions/cookies`).
+- `eslint/no-restricted-imports` blocks everywhere: `cookies` from `next/headers` (use `@/lib/cookie-store`).
 - It also blocks `cnfast` (use `@/lib/utils`, which re-exports `cn`) and parent imports `../**` (use `@/` or `~/`).
 - Node-run scripts import dependency-free `src/lib` files through the `#lib/*` subpath import in `package.json`.
 - It blocks `lucide-react` outside `src/components/icons/**` and the vendored `src/components/ui/rich-text-editor/**`, which a later override exempts (render through `LucideIcon`).

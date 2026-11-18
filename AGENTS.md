@@ -78,7 +78,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 
 ## Gotchas: data and imports
 
-1. Never import `cookies` from `next/headers` (use `@/actions/cookies`), `cnfast` (use `@/lib/utils`), or `../**`.
+1. Never import `cookies` from `next/headers` (use `@/lib/cookie-store`), `cnfast` (use `@/lib/utils`), or `../**`.
 2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel (`reference.md`, "Authentication").
 3. `db/queries/<table>.ts` parsers MUST stay pure and never import `@/db/client` (`architecture.md`).
 4. A cached query wraps the DB call in an inner `'use cache'` + `cacheTag` function, and the outer takes `{ cache: boolean }`.

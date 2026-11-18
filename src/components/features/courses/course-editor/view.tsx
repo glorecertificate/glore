@@ -4,7 +4,6 @@ import { ViewTransition } from 'react'
 import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
-import { getCookie } from '@/actions/cookies'
 import { getCourse } from '@/actions/courses/queries'
 import { getCurrentUser } from '@/actions/user'
 import { CourseBreadcrumb } from '@/components/features/courses/course-editor/breadcrumb'
@@ -12,6 +11,7 @@ import { CourseProvider } from '@/components/features/courses/course-editor/cont
 import { CourseEditor } from '@/components/features/courses/course-editor/lazy'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { getCookie } from '@/lib/cookie-store'
 import { LOCALES } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({

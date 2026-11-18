@@ -74,6 +74,8 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - The row type is `ReturnType<typeof parse<Table>>`.
 - Parsers MUST NOT import `@/db/client`.
 - Factor the real `db.query` into one private executor and reuse it from the cached branch and the `{ cache: false }` branch, never copy the query body.
+- `findUser`, `fetchUser`, and `queryUserById` live in `actions/user-data.ts`. That module is `server-only` and never carries `'use server'`, because they check no caller.
+- `src/actions/server-action-surface.test.ts` enforces the rule: every export of a `'use server'` module (single or double quotes) is a function declared in that file, with no re-export, `export *`, alias, `let`, or default alias. Each one calls a guard or sits on the named public allowlist in the test, with a reason.
 
 ```typescript
 const queryUserById = async (id: string) => {

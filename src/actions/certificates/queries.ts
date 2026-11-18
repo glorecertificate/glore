@@ -9,6 +9,7 @@ import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { certificateOwnerWith, certificatePublicWith, certificateWithUsers } from '@/actions/certificates/helpers'
+import { holderAssessments } from '@/actions/certificates/holder-levels'
 import { findLegacyCertificateCode, isLookupLimited } from '@/actions/certificates/public'
 import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { listCourses } from '@/actions/courses/queries'
@@ -17,16 +18,7 @@ import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
 import { type SkillLevel, plainDescription, plainDescriptions } from '@/db/queries/skill-level-description'
-import {
-  activityEvents,
-  assessments,
-  certificateReviews,
-  certificates,
-  lessons,
-  userAssessments,
-  userCourses,
-  users,
-} from '@/db/schema'
+import { activityEvents, certificateReviews, certificates, userCourses, users } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import { type IntlRecord } from '@/lib/i18n'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
@@ -355,20 +347,6 @@ export const listOrganizationCertificates = async (
 
   if (!useCache) return { data: await queryOrganizationCertificates(organizationId), error: null }
   return await fetchOrganizationCertificates(organizationId)
-}
-
-const holderAssessments = async (userId: string) =>
-  await db
-    .select({ courseId: lessons.courseId, reflection: userAssessments.reflection, value: userAssessments.value })
-    .from(userAssessments)
-    .innerJoin(assessments, eq(assessments.id, userAssessments.assessmentId))
-    .innerJoin(lessons, eq(lessons.id, assessments.lessonId))
-    .where(eq(userAssessments.userId, userId))
-    .orderBy(asc(userAssessments.updatedAt))
-
-export const findHolderLevels = async (userId: string) => {
-  const rows = await holderAssessments(userId)
-  return Object.fromEntries(rows.map(({ courseId, value }) => [courseId, value])) as Record<number, SkillLevel>
 }
 
 export interface SkillSelection {

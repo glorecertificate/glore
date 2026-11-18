@@ -175,7 +175,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 ## Internationalization
 
 - Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix.
-- `login` and `signInToAcceptInvitation` call `applyUserLocale` (`actions/cookies.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
+- `login` and `signInToAcceptInvitation` call `applyUserLocale` (`lib/cookie-store.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
 - Pass messages to `I18nProvider` through `clientMessages()`, which drops the namespaces listed in `serverNamespaces` (`config/i18n.json`).
 - `loadMessages` layers `en` under the locale, then applies published `message_overrides` rows.
 - An override must pass three checks: the key exists in `en`, its `messageSignature` matches `en`, and `icu-minify/compile` works in builds.

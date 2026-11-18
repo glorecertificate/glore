@@ -6,10 +6,10 @@ import { cache } from 'react'
 import { eq } from 'drizzle-orm'
 
 import { expireCertificateCaches } from '@/actions/certificates/helpers'
-import { getCookie } from '@/actions/cookies'
 import { notify } from '@/actions/notifications/notify'
 import { type ActivityPage } from '@/actions/organizations/activity-core'
-import { findUser, getCurrentUser } from '@/actions/user'
+import { getCurrentUser } from '@/actions/user'
+import { findUser } from '@/actions/user-data'
 import { db } from '@/db/client'
 import { memberError } from '@/db/mutations/organization'
 import { type AppEvent } from '@/db/queries/activity-event'
@@ -24,6 +24,7 @@ import {
 import { type OrganizationChecklist, type Pipeline } from '@/db/queries/organization-insights'
 import { memberships } from '@/db/schema'
 import { CacheTag, userTag } from '@/lib/cache'
+import { getCookie } from '@/lib/cookie-store'
 
 const MANAGER_ROLES: OrganizationMembershipRole[] = ['admin', 'representative']
 const REQUESTABLE_ROLES: OrganizationMembershipRole[] = ['learner', 'volunteer']

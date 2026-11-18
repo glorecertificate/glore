@@ -42,8 +42,8 @@ export const CourseOverviewActions = ({
 
   if (access === 'viewer') {
     return (
-      <div className={cn('flex flex-wrap gap-2', className)} {...props}>
-        <Button asChild size="lg">
+      <div className={cn('contents', className)} {...props}>
+        <Button asChild>
           <Link href={learnHref(lessons[0]?.id ?? null)}>{t('preview')}</Link>
         </Button>
       </div>
@@ -52,8 +52,8 @@ export const CourseOverviewActions = ({
 
   if (!enrollment) {
     return (
-      <div className={cn('flex flex-wrap gap-2', className)} {...props}>
-        <Button loading={starting} onClick={onStart} size="lg">
+      <div className={cn('contents', className)} {...props}>
+        <Button loading={starting} onClick={onStart}>
           {t('start')}
         </Button>
       </div>
@@ -61,14 +61,14 @@ export const CourseOverviewActions = ({
   }
 
   return (
-    <div className={cn('flex flex-wrap gap-2', className)} {...props}>
-      <Button asChild size="lg">
+    <div className={cn('contents', className)} {...props}>
+      <Button asChild>
         <Link href={learnHref(completed ? (lessons[0]?.id ?? null) : resumeLessonId)}>
           {completed ? t('review') : t('resume')}
         </Link>
       </Button>
       {completed && (
-        <Button asChild size="lg" variant="outline">
+        <Button asChild variant="outline">
           <Link href={`/courses/${slug}/complete?lang=${language}`}>{t('viewCompletion')}</Link>
         </Button>
       )}

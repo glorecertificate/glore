@@ -73,15 +73,17 @@ export const normalizeContent = (content: unknown): unknown => {
   return content
 }
 
+const stripNodeId = (key: string, value: unknown) => (key === 'id' && typeof value === 'string' ? undefined : value)
+
 const contentStringCache = new WeakMap<object, string>()
 
 const stringifyContent = (content: unknown): string => {
   const normalized = normalizeContent(content)
   if (!normalized) return ''
-  if (!Array.isArray(normalized)) return JSON.stringify(normalized)
+  if (!Array.isArray(normalized)) return JSON.stringify(normalized, stripNodeId)
   const cached = contentStringCache.get(normalized)
   if (cached !== undefined) return cached
-  const result = JSON.stringify(normalized)
+  const result = JSON.stringify(normalized, stripNodeId)
   contentStringCache.set(normalized, result)
   return result
 }
@@ -199,6 +201,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
   const contentFlushRef = useRef<(() => unknown) | null>(null)
+  const [lessonKeys, setLessonKeys] = useState<Record<number, number>>({})
 
   const currentLesson = {
     ...(course.lessons[step - 1] ?? course.lessons[0]),
@@ -328,9 +331,9 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         lessonUpdates.title = mergeLocale(lesson.title, initialLesson?.title, locale)
       }
 
-      const initialContent = normalizeContent((initialLesson?.content as IntlRecord | undefined)?.[locale])
-      const currentContent = normalizeContent((lesson.content as IntlRecord | undefined)?.[locale])
-      const contentDiffers = isNew || JSON.stringify(initialContent) !== JSON.stringify(currentContent)
+      const initialContent = (initialLesson?.content as IntlRecord | undefined)?.[locale]
+      const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
+      const contentDiffers = isNew || stringifyContent(initialContent) !== stringifyContent(currentContent)
       if (contentDiffers) {
         lessonUpdates.content = mergeLocale(
           lesson.content as IntlRecord | null | undefined,
@@ -360,11 +363,16 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     if (lessonsPayload.length > 0) {
       const result = await upsertLessons(lessonsPayload.map(({ value }) => value))
       if (result && 'error' in result) throw result.error
+      const collectedKeys: Record<number, number> = {}
       for (const [i, { tempKey }] of lessonsPayload.entries()) {
         const realId = result.data[i]?.id
-        if (tempKey !== undefined && realId !== undefined && tempKey !== realId) idMap.set(tempKey, realId)
+        if (tempKey !== undefined && realId !== undefined && tempKey !== realId) {
+          idMap.set(tempKey, realId)
+          collectedKeys[realId] = lessonKeys[tempKey] ?? tempKey
+        }
       }
       if (idMap.size > 0) {
+        setLessonKeys(previous => ({ ...previous, ...collectedKeys }))
         setCourse(prev => ({
           ...prev,
           lessons: prev.lessons.map(l => {
@@ -815,6 +823,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     contentFlushRef,
     course,
     courseRef,
+    lessonKeys,
     currentLesson,
     editCourse,
     hasAnyUpdates,

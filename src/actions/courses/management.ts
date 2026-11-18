@@ -23,7 +23,7 @@ import {
 } from '@/db/mutations/course'
 import { languageChanges } from '@/db/queries/content-translation'
 import { type Course, parseCourse } from '@/db/queries/course'
-import { isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
+import { isCourseTitleValid, isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
 import { hasEveryLevelDescription } from '@/db/queries/skill-choice'
 import { SKILL_LEVELS, SKILL_LEVEL_DESCRIPTION_MAX_LENGTH } from '@/db/queries/skill-level-description'
@@ -153,6 +153,9 @@ export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
   if (isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
   const [authUser, sortOrder] = await Promise.all([requireEditor(), nextActiveSortOrder()])
+  if (!isCourseTitleValid(course.title)) {
+    return { error: { code: 'TITLE_TOO_LONG', message: 'Course title is too long' } }
+  }
 
   const values = sanitizeDetails(
     omit(course as TableInsert<'courses'> & { id?: number }, ['archivedAt', 'archivedById', 'creatorId', 'id'])
@@ -200,6 +203,12 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
   if (course.slug && isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
   const authUser = await requireEditor()
+  if (course.title !== undefined) {
+    const stored = await db.query.courses.findFirst({ columns: { title: true }, where: eq(courses.id, id) })
+    if (!isCourseTitleValid(course.title, stored?.title as Record<string, string> | null | undefined)) {
+      return { error: { code: 'TITLE_TOO_LONG', message: 'Course title is too long' } }
+    }
+  }
 
   const values = await resolveCourseUpdate(
     authUser.id,

@@ -29,7 +29,7 @@ const NextSteps = ({ completion, overview }: { completion: CourseCompletionData;
 
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold">{t('nextTitle')}</h2>
+      <h2 className="type-heading">{t('nextTitle')}</h2>
       {eligibility?.eligible && (
         <Banner variant="success">
           <LucideIcon className="mt-0.5 size-4 shrink-0" name="award" />
@@ -52,7 +52,7 @@ const NextSteps = ({ completion, overview }: { completion: CourseCompletionData;
       )}
       {recommendation && (
         <Link
-          className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-muted/50"
+          className="flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-surface-hover"
           href={`/courses/${recommendation.slug}`}
         >
           <span
@@ -103,7 +103,7 @@ export const CourseCompleteView = ({
         </div>
       </section>
       <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold">{t('summaryTitle')}</h2>
+        <h2 className="type-heading">{t('summaryTitle')}</h2>
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <LucideIcon className="size-4 text-success-text" name="circle-check" />
           {t('lessonsDone', { count: overview.progress.completed })}

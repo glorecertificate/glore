@@ -14,7 +14,7 @@ export const CourseOutline = ({
 
   return (
     <section className={cn('flex flex-col gap-3', className)} {...props}>
-      <h2 className="text-lg font-semibold">{t('outlineTitle')}</h2>
+      <h2 className="type-heading">{t('outlineTitle')}</h2>
       {lessons.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t('noLessons')}</p>
       ) : (
@@ -25,7 +25,7 @@ export const CourseOutline = ({
                 aria-hidden
                 className={cn(
                   'flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium',
-                  lesson.status === 'completed' && 'bg-success/10 text-success-text',
+                  lesson.status === 'completed' && 'bg-success-subtle text-success-text',
                   lesson.status === 'current' && 'bg-primary text-primary-foreground',
                   lesson.status === 'upcoming' && 'bg-muted text-muted-foreground'
                 )}

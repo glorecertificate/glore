@@ -30,7 +30,7 @@ export const LessonQuiz = ({
   return (
     <section className={cn('flex flex-col gap-6 border-t pt-6', className)} {...props}>
       <div className="flex flex-col gap-1">
-        <h2 className="text-xl font-semibold">{t('quizTitle')}</h2>
+        <h2 className="type-heading">{t('quizTitle')}</h2>
         <p className="text-sm text-muted-foreground">
           {t(gated ? 'quizHint' : 'quizHintOpen', { count: lesson.questions.length })}
         </p>
@@ -57,8 +57,8 @@ export const LessonQuiz = ({
                 return (
                   <Label
                     className={cn(
-                      'flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm leading-snug font-normal transition-colors has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5',
-                      right && 'border-success bg-success/10',
+                      'flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm leading-snug font-normal transition-colors has-data-[state=checked]:border-primary has-data-[state=checked]:bg-surface-selected',
+                      right && 'border-success bg-success-subtle',
                       tried && 'cursor-not-allowed text-muted-foreground line-through opacity-70',
                       state.solved && !right && 'cursor-default opacity-70'
                     )}

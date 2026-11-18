@@ -24,12 +24,12 @@ export const CourseTranslation = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button aria-label={t('title')} className="gap-1.5" size="xs" variant="outline">
-          <LucideIcon className="size-4" name="languages" />
+        <Button aria-label={t('title')} className="gap-1.5" variant="outline">
+          <LucideIcon name="languages" />
           {summary && <TranslationBadge state={summary.state} />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-80">
+      <PopoverContent align="end" className="w-80">
         <TranslationPanel
           disabled={hasAnyUpdates}
           entityId={course.id}

@@ -53,7 +53,7 @@ export const findCourseOverview = async (slug: string, userId: string) => {
     with: {
       lessons: {
         columns: { id: true, sortOrder: true, title: true },
-        orderBy: asc(lessons.sortOrder),
+        orderBy: [asc(lessons.sortOrder), asc(lessons.id)],
         with: {
           assessments: { columns: { id: true } },
           evaluations: { columns: { id: true } },

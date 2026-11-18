@@ -1,8 +1,9 @@
 import { CourseList } from '@/components/features/courses/course-list'
-import { CourseListHeader } from '@/components/features/courses/course-list/header'
 import { CourseListTabs } from '@/components/features/courses/course-list/tabs'
+import { CourseListToolbar } from '@/components/features/courses/course-list/toolbar'
 import { SkillCompassSection } from '@/components/features/courses/skill-compass/section'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { NavigationLabel } from '@/components/layout/navigation-label'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -11,7 +12,8 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const CoursesPage = () => (
-  <DashboardPage className="min-h-[calc(100vh-160px)]" header={<CourseListHeader />} provider={CourseListTabs}>
+  <DashboardPage provider={CourseListTabs} title={<NavigationLabel id="courses" />}>
+    <CourseListToolbar />
     <SkillCompassSection />
     <CourseList />
   </DashboardPage>

@@ -2,9 +2,6 @@
   "src/app": {
     "no-arbitrary-value": 1
   },
-  "src/app/(dashboard)/courses": {
-    "no-arbitrary-value": 1
-  },
   "src/app/legal/accept": {
     "no-arbitrary-value": 1
   },
@@ -23,12 +20,10 @@
     "no-arbitrary-value": 1
   },
   "src/components/features/courses/course-editor": {
-    "no-arbitrary-value": 18,
-    "no-restricted-classes": 15
+    "no-arbitrary-value": 2
   },
   "src/components/features/courses/course-list": {
-    "no-arbitrary-value": 13,
-    "no-restricted-classes": 7
+    "no-arbitrary-value": 4
   },
   "src/components/features/courses/skill-compass": {
     "no-arbitrary-value": 1

@@ -3,21 +3,32 @@ import 'server-only'
 import { cacheTag } from 'next/cache'
 import { cache } from 'react'
 
-import { avg, count, eq } from 'drizzle-orm'
+import { asc, avg, count, eq } from 'drizzle-orm'
 
 import { getSessionUser } from '@/actions/session'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseCourse, summarizeCourse } from '@/db/queries/course'
 import { publicUserColumns, userWith } from '@/db/queries/user'
-import { courseRatings, userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from '@/db/schema'
+import {
+  courseRatings,
+  lessons as lessonsTable,
+  userAnswers,
+  userAssessments,
+  userCourses,
+  userEvaluations,
+  userLessons,
+} from '@/db/schema'
 import { CacheTag, progressUserTag } from '@/lib/cache'
+
+const lessonOrder = [asc(lessonsTable.sortOrder), asc(lessonsTable.id)]
 
 const courseWith = {
   skillGroup: { columns: { id: true, name: true, slug: true } },
   creator: { columns: publicUserColumns, with: userWith },
   archivedBy: { columns: publicUserColumns, with: userWith },
   lessons: {
+    orderBy: lessonOrder,
     with: {
       contributions: {
         with: {
@@ -55,6 +66,7 @@ export const buildCourseWith = (userId?: string, { catalog = false }: { catalog?
       ...courseWith,
       lessons: {
         ...lessonColumns,
+        orderBy: lessonOrder,
         with: {
           ...courseWith.lessons.with,
           questions: { with: { options: { ...optionColumns, with: { userAnswers: { columns: { id: true } } } } } },
@@ -67,6 +79,7 @@ export const buildCourseWith = (userId?: string, { catalog = false }: { catalog?
     ...courseWith,
     lessons: {
       ...lessonColumns,
+      orderBy: lessonOrder,
       with: {
         ...courseWith.lessons.with,
         questions: {

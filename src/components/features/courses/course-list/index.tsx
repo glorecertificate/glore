@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import { CourseListCard } from '@/components/features/courses/course-list/card'
 import {
+  useCourseListFilters,
   useCourseListLanguages,
   useCourseListTab,
   useDisplayCourses,
@@ -14,7 +15,8 @@ import {
 import { EmptyListIcon } from '@/components/icons/empty-list'
 import { useSession } from '@/components/providers/session'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { TabsContent } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 
@@ -24,6 +26,8 @@ const CourseListSortableGrid = dynamic(
 
 export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<typeof TabsContent>, 'value'>) => {
   const t = useTranslations('CourseList')
+  const tCommon = useTranslations('Common')
+  const { resetFilters } = useCourseListFilters()
   const { user } = useSession()
   const { tab } = useCourseListTab()
   const { activeLanguages } = useCourseListLanguages()
@@ -65,7 +69,7 @@ export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<ty
             <EmptyMedia>
               <EmptyListIcon className="w-68" />
             </EmptyMedia>
-            <EmptyTitle className="text-xl">{emptyTitle}</EmptyTitle>
+            <EmptyTitle>{emptyTitle}</EmptyTitle>
             <EmptyDescription>
               {emptyMessage}
               {hasFilters && (
@@ -76,6 +80,13 @@ export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<ty
               )}
             </EmptyDescription>
           </EmptyHeader>
+          {hasFilters && (
+            <EmptyContent>
+              <Button onClick={resetFilters} variant="outline">
+                {tCommon('clearFilters')}
+              </Button>
+            </EmptyContent>
+          )}
         </Empty>
       </TabsContent>
     )

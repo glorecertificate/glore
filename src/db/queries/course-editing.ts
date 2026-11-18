@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 import { type Course } from '@/db/queries/course'
 import { SKILL_LEVELS, type SkillLevel } from '@/db/queries/skill-level-description'
+import { COURSE_TITLE_MAX_LENGTH } from '@/lib/constants'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
 
 export const COURSE_DURATION_MAX = 6000
@@ -9,6 +10,17 @@ export const OUTCOMES_MAX = 8
 const OUTCOME_MAX_LENGTH = 160
 
 const RESERVED_COURSE_SLUGS = new Set(['skills'])
+
+const courseTitleSchema = z.record(z.string(), z.string())
+
+export const isCourseTitleValid = (title: unknown, previous?: Record<string, string> | null) => {
+  if (title === undefined) return true
+  const parsed = courseTitleSchema.safeParse(title)
+  if (!parsed.success) return false
+  return Object.entries(parsed.data).every(
+    ([locale, value]) => value.length <= COURSE_TITLE_MAX_LENGTH || value === previous?.[locale]
+  )
+}
 
 export const isReservedSlug = (slug: string) => RESERVED_COURSE_SLUGS.has(slug)
 

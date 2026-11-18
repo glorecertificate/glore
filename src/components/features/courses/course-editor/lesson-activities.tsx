@@ -37,9 +37,9 @@ const ActivityItem = ({
   const tCommon = useTranslations('CourseCommon')
 
   return (
-    <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
+    <div className="flex items-start gap-2 rounded-xl border bg-card p-4">
       <div className="flex-1 space-y-1.5">
-        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
+        <p className="type-label text-foreground">{label}</p>
         <Textarea
           className="min-h-10 resize-none rounded-lg text-sm"
           onChange={e => onDescriptionChange(e.target.value)}
@@ -49,13 +49,13 @@ const ActivityItem = ({
       </div>
       <Button
         aria-label={tCommon('delete')}
-        className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+        className="shrink-0 text-muted-foreground hover:text-destructive-text"
         onClick={onRemove}
         size="icon"
         type="button"
         variant="ghost"
       >
-        <LucideIcon name="trash" className="size-4 text-destructive-text" />
+        <LucideIcon name="trash" />
       </Button>
     </div>
   )
@@ -79,17 +79,14 @@ const LevelsItem = ({
   const idPrefix = useId()
 
   return (
-    <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
+    <div className="flex items-start gap-2 rounded-xl border bg-card p-4">
       <div className="flex-1 space-y-3">
-        <div className="space-y-1">
-          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityAssessment')}</p>
-          <p className="text-xs text-muted-foreground">{t('levelDescriptionsHint')}</p>
-        </div>
+        <p className="text-sm text-muted-foreground">{t('levelDescriptionsHint')}</p>
         {SKILL_LEVELS.map(level => {
           const value = descriptions[level] ?? ''
           return (
             <div className="space-y-1" key={level}>
-              <Label className="text-xs text-muted-foreground" htmlFor={`${idPrefix}-${level}`}>
+              <Label className="type-label" htmlFor={`${idPrefix}-${level}`}>
                 {tLevels(level)}
               </Label>
               <Textarea
@@ -103,7 +100,7 @@ const LevelsItem = ({
               />
               <p
                 className={cn(
-                  'text-right text-xs text-muted-foreground tabular-nums',
+                  'text-right type-caption text-muted-foreground tabular-nums',
                   value.length >= SKILL_LEVEL_DESCRIPTION_MAX_LENGTH && 'text-warning-text'
                 )}
                 id={`${idPrefix}-${level}-count`}
@@ -116,13 +113,13 @@ const LevelsItem = ({
       </div>
       <Button
         aria-label={tCommon('delete')}
-        className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+        className="shrink-0 text-muted-foreground hover:text-destructive-text"
         onClick={onRemove}
         size="icon"
         type="button"
         variant="ghost"
       >
-        <LucideIcon name="trash" className="size-4 text-destructive-text" />
+        <LucideIcon name="trash" />
       </Button>
     </div>
   )
@@ -160,10 +157,10 @@ const QuestionItem = ({
   const tCommon = useTranslations('CourseCommon')
 
   return (
-    <div className="group/question space-y-4 rounded-xl border bg-card p-4">
+    <div className="space-y-4 rounded-xl border bg-card p-4">
       <div className="flex items-start gap-2">
         <div className="flex-1 space-y-1.5">
-          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
+          <p className="type-label text-foreground">{label}</p>
           <div className="pl-7">
             <Textarea
               className="min-h-10 resize-none rounded-lg text-sm"
@@ -175,21 +172,21 @@ const QuestionItem = ({
         </div>
         <Button
           aria-label={tCommon('delete')}
-          className="opacity-0 transition-opacity group-hover/question:opacity-100 focus-visible:opacity-100"
+          className="shrink-0 text-muted-foreground hover:text-destructive-text"
           onClick={onRemove}
           size="icon"
           type="button"
           variant="ghost"
         >
-          <LucideIcon name="trash" className="size-4 text-destructive-text" />
+          <LucideIcon name="trash" />
         </Button>
       </div>
 
       <div className="space-y-2">
-        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityOptions')}</p>
+        <p className="type-label text-foreground">{t('activityOptions')}</p>
         <AnimatedList>
           {options.map(option => (
-            <AnimatedListItem className="group/option flex items-center gap-2" key={option.id} variant="row">
+            <AnimatedListItem className="flex items-center gap-2" key={option.id} variant="row">
               <button
                 aria-label={t('activityOptionCorrect')}
                 aria-pressed={option.isCorrect}
@@ -197,7 +194,7 @@ const QuestionItem = ({
                   'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                   option.isCorrect
                     ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-border hover:border-primary/60'
+                    : 'border-border-strong hover:border-primary'
                 )}
                 onClick={() => onOptionCorrectToggle(option.id)}
                 type="button"
@@ -211,25 +208,25 @@ const QuestionItem = ({
                 value={option.content[language] ?? ''}
               />
               <Button
-                className="opacity-0 transition-opacity group-hover/option:opacity-100"
+                aria-label={tCommon('delete')}
+                className="shrink-0 text-muted-foreground hover:text-destructive-text"
                 onClick={() => onRemoveOption(option.id)}
                 size="icon"
                 type="button"
                 variant="ghost"
               >
-                <LucideIcon name="trash" className="size-3.5 text-destructive-text" />
+                <LucideIcon name="trash" />
               </Button>
             </AnimatedListItem>
           ))}
         </AnimatedList>
-        <Button className="ml-7 text-muted-foreground" onClick={onAddOption} size="xs" type="button" variant="ghost">
-          <LucideIcon name="plus" className="size-3" />
+        <Button className="ml-7" icon="plus" onClick={onAddOption} size="sm" type="button" variant="ghost">
           {t('addActivityOption')}
         </Button>
       </div>
 
       <div className="space-y-1.5">
-        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityExplanation')}</p>
+        <p className="type-label text-foreground">{t('activityExplanation')}</p>
         <div className="pl-7">
           <Textarea
             className="min-h-10 resize-none rounded-lg text-sm"
@@ -540,10 +537,10 @@ export const LessonActivities = ({ className }: { className?: string }) => {
     <div className={cn('space-y-6', className)}>
       {currentLesson.questions.length > 0 && (
         <div className="space-y-3">
-          <h4 className="flex items-center gap-1.5 text-sm font-semibold">
+          <h2 className="flex items-center gap-1.5 type-label">
             <LucideIcon name="message-circle-question-mark" className="size-4" />
             {t('questionsTitle')}
-          </h4>
+          </h2>
           <div className="space-y-4">
             <AnimatedList>
               {currentLesson.questions.map((question, index) => (
@@ -566,8 +563,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
               ))}
             </AnimatedList>
           </div>
-          <Button onClick={addQuestion} size="xs" type="button" variant="outline">
-            <LucideIcon name="plus" className="size-3" />
+          <Button icon="plus" onClick={addQuestion} size="sm" type="button" variant="outline">
             {t('addActivityQuestion')}
           </Button>
         </div>
@@ -575,10 +571,10 @@ export const LessonActivities = ({ className }: { className?: string }) => {
 
       {currentLesson.evaluations.length > 0 && (
         <div className="space-y-3">
-          <h4 className="flex items-center gap-1.5 text-sm font-semibold">
+          <h2 className="flex items-center gap-1.5 type-label">
             <LucideIcon name="clipboard-list" className="size-4" />
             {t('subskillEvaluationsTitle')}
-          </h4>
+          </h2>
           <div className="space-y-4">
             <AnimatedList>
               {currentLesson.evaluations.map((evaluation, index) => (
@@ -600,8 +596,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
               ))}
             </AnimatedList>
           </div>
-          <Button onClick={addEvaluation} size="xs" type="button" variant="outline">
-            <LucideIcon name="plus" className="size-3" />
+          <Button icon="plus" onClick={addEvaluation} size="sm" type="button" variant="outline">
             {t('addActivityEvaluation')}
           </Button>
         </div>
@@ -609,10 +604,10 @@ export const LessonActivities = ({ className }: { className?: string }) => {
 
       {currentLesson.assessment && (
         <div className="space-y-3">
-          <h4 className="flex items-center gap-1.5 text-sm font-semibold">
+          <h2 className="flex items-center gap-1.5 type-label">
             <LucideIcon name="star" className="size-4" />
             {t('skillEvaluationTitle')}
-          </h4>
+          </h2>
           {isSkill ? (
             <LevelsItem
               descriptions={Object.fromEntries(
@@ -643,11 +638,11 @@ export const LessonActivities = ({ className }: { className?: string }) => {
         </div>
       )}
 
-      <div className="flex w-full items-center justify-center gap-4">
+      <div className="flex w-full items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button aria-label={t('addActivity')} className="rounded-full" size="icon" type="button" variant="brand">
-              <LucideIcon name="plus" className="size-4" />
+            <Button icon="plus" type="button" variant="outline">
+              {t('addActivity')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">

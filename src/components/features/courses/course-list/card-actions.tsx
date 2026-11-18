@@ -214,15 +214,9 @@ export const CourseCardActions = ({
                               </span>
                               <span
                                 aria-hidden
-                                className={cn(
-                                  'relative inline-block size-1.5 rounded-full',
-                                  isPublished ? 'bg-success' : 'bg-muted-foreground/40'
-                                )}
-                              >
-                                {isPublished && (
-                                  <span className="absolute inset-0 animate-ping rounded-full bg-success opacity-60" />
-                                )}
-                              </span>
+                                className={cn('size-1.5 rounded-full', isPublished ? 'bg-success' : 'bg-border-strong')}
+                              />
+                              <span className="sr-only">{isPublished ? t('published') : t('draft')}</span>
                             </span>
                           </DropdownMenuItem>
                         )

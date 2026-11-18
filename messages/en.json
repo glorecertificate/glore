@@ -296,6 +296,10 @@
     }
   },
   "Components": {
+    "Breadcrumb": {
+      "label": "Breadcrumb",
+      "more": "More"
+    },
     "CountrySelect": {
       "noCountryFound": "No country found",
       "searchCountry": "Search country…",

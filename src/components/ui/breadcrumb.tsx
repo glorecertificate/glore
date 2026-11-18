@@ -1,18 +1,23 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { Link, type LinkProps } from '@/components/ui/link'
 import { cn } from '@/lib/utils'
 
-export const Breadcrumb = ({ className, ...props }: React.ComponentProps<'nav'>) => (
-  <nav
-    aria-label="breadcrumb"
-    className={cn('flex h-full min-w-0 grow items-center', className)}
-    data-slot="breadcrumb"
-    {...props}
-  />
-)
+export const Breadcrumb = ({ className, ...props }: React.ComponentProps<'nav'>) => {
+  const t = useTranslations('Components.Breadcrumb')
+  return (
+    <nav
+      aria-label={t('label')}
+      className={cn('flex h-full min-w-0 grow items-center', className)}
+      data-slot="breadcrumb"
+      {...props}
+    />
+  )
+}
 
 export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
   <ol
@@ -63,15 +68,18 @@ export const BreadcrumbSeparator = ({ children, className, ...props }: React.Com
   </li>
 )
 
-export const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
-  <span
-    aria-hidden="true"
-    className={cn('flex size-9 items-center justify-center', className)}
-    data-slot="breadcrumb-ellipsis"
-    role="presentation"
-    {...props}
-  >
-    <LucideIcon name="ellipsis" className="size-4" />
-    <span className="sr-only">{'More'}</span>
-  </span>
-)
+export const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => {
+  const t = useTranslations('Components.Breadcrumb')
+  return (
+    <span
+      aria-hidden="true"
+      className={cn('flex size-9 items-center justify-center', className)}
+      data-slot="breadcrumb-ellipsis"
+      role="presentation"
+      {...props}
+    >
+      <LucideIcon name="ellipsis" className="size-4" />
+      <span className="sr-only">{t('more')}</span>
+    </span>
+  )
+}

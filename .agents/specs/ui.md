@@ -158,6 +158,11 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - A composite field such as `InputGroup` draws the ring on the group and passes `ring={false}` to its control.
 - Inputs, textareas, selects, checkboxes, and radios use `border-border-strong` on `bg-field`. Outline buttons, badges, and toolbars use `border-border`.
 - A checkbox is a rounded square (`rounded-sm`) and a radio is a circle. `checked="indeterminate"` shows a minus.
+- `Switch` is a 36x20 track (`size="sm"`: 28x16) with a 2px inset, a thumb of track height minus 4px, and `action` when on. Both states move over 150ms with `--ease-out`.
+- `Badge` takes `count` (and `max`, default 99) for a counter: a pill with `tabular-nums` and a `min-w` equal to its height, capped as `99+`. Pass `count`, never `size-*` or `p-0`. Children render after the number, for a screen-reader label.
+- `Progress` clamps its value to 0..100, animates the fill with a transform, and takes `color` `action`, `brand`, `brand-secondary`, `brand-tertiary`, `success`, `warning`, or `default`.
+- A radio dot and its checked border use `action`. Tabs and segmented items darken their text on hover.
+- Floating surfaces (dropdown, context menu, select, popover, hover card) share `shadow-md`. Dialog and alert dialog are `rounded-xl`, scroll within `100dvh - 2rem`, and close with a 32px icon button. Tooltips wait 200ms.
 - An SVG gradient or pattern takes its id from `useId()`, so two copies on one page keep their fills.
 
 ## Elevation and motion

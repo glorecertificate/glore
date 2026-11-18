@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { cache } from 'react'
+
 import { type Locale } from 'next-intl'
 import { getLocale } from 'next-intl/server'
 
@@ -12,7 +14,7 @@ import { loadTutorSummary } from '@/actions/dashboard/tutor'
 import { listNotifications } from '@/actions/notifications/inbox'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 
-export const loadDashboard = async (): Promise<DashboardData> => {
+export const loadDashboard = cache(async (): Promise<DashboardData> => {
   const [user, organizationId, locale] = await Promise.all([getCurrentUser(), getActiveOrgId(), getLocale()])
   const organization = user.organizations.find(({ id }) => id === organizationId) ?? null
   const view = resolveView({ canEdit: user.canEdit, role: organization?.role ?? null })
@@ -53,4 +55,4 @@ export const loadDashboard = async (): Promise<DashboardData> => {
   }
 
   return { ...base, view: 'none' }
-}
+})

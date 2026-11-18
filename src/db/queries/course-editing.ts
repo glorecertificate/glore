@@ -12,9 +12,16 @@ const RESERVED_COURSE_SLUGS = new Set(['skills'])
 
 export const COURSE_TITLE_MAX_LENGTH = 100
 
-const courseTitleSchema = z.record(z.string(), z.string().max(COURSE_TITLE_MAX_LENGTH))
+const courseTitleSchema = z.record(z.string(), z.string())
 
-export const isCourseTitleValid = (title: unknown) => title === undefined || courseTitleSchema.safeParse(title).success
+export const isCourseTitleValid = (title: unknown, previous?: Record<string, string> | null) => {
+  if (title === undefined) return true
+  const parsed = courseTitleSchema.safeParse(title)
+  if (!parsed.success) return false
+  return Object.entries(parsed.data).every(
+    ([locale, value]) => value.length <= COURSE_TITLE_MAX_LENGTH || value === previous?.[locale]
+  )
+}
 
 export const isReservedSlug = (slug: string) => RESERVED_COURSE_SLUGS.has(slug)
 

@@ -808,7 +808,7 @@
     "courseSlug": "URL",
     "courseSlugDescription": "L'indirizzo web del corso. Deve essere univoco e descrittivo.",
     "courseSlugTaken": "Un altro corso usa già questo indirizzo. Scegline uno diverso.",
-    "courseSlugTooShort": "Lo slug deve essere lungo almeno {min} caratteri",
+    "courseSlugTooShort": "L'indirizzo deve essere lungo almeno {min} caratteri",
     "analyticsAvgRating": "Valutazione media",
     "analyticsCompletionRate": "Tasso di completamento",
     "analyticsCompletions": "Completamenti",
@@ -979,7 +979,8 @@
     "selectAllGroups": "Seleziona tutti",
     "emptyMessage-published": "Non ci sono corsi pubblicati",
     "archiveAction": "Archivia",
-    "moreActions": "Altre azioni"
+    "moreActions": "Altre azioni",
+    "descriptionLearner": "Corsi brevi su come funziona GloRe e su argomenti pratici. I corsi sulle competenze e i certificati sono per i volontari."
   },
   "ContentTranslation": {
     "title": "Traduzione",

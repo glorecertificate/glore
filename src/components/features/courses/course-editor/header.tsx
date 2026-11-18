@@ -31,6 +31,7 @@ import { PageHeader, PageHeaderActions } from '@/components/ui/page-header'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { COURSE_TITLE_MAX_LENGTH } from '@/db/queries/course-editing'
 import { type IntlRecord } from '@/lib/i18n'
 import { isTempId } from '@/lib/utils'
 
@@ -115,14 +116,12 @@ export const CourseHeader = () => {
       await saveCourse({ locale: language, publish })
       toast.success(t('saveSuccess'))
     } catch (error) {
-      const code = (error as { code?: string } | null)?.code
-      toast.error(
-        code === 'DESCRIPTIONS_MISSING'
-          ? tEditor('publishDescriptionsMissing')
-          : code === 'TITLE_TOO_LONG'
-            ? t('titleTooLong', { max: 100 })
-            : t('saveError')
-      )
+      const code = (error as { code?: string } | null)?.code ?? ''
+      const messages: Record<string, string> = {
+        DESCRIPTIONS_MISSING: tEditor('publishDescriptionsMissing'),
+        TITLE_TOO_LONG: t('titleTooLong', { max: COURSE_TITLE_MAX_LENGTH }),
+      }
+      toast.error(messages[code] ?? t('saveError'))
     } finally {
       setSaving(false)
     }

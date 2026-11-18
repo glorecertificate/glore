@@ -201,6 +201,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
   const contentFlushRef = useRef<(() => unknown) | null>(null)
+  const lessonKeysRef = useRef(new Map<number, number>())
 
   const currentLesson = {
     ...(course.lessons[step - 1] ?? course.lessons[0]),
@@ -330,9 +331,9 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         lessonUpdates.title = mergeLocale(lesson.title, initialLesson?.title, locale)
       }
 
-      const initialContent = normalizeContent((initialLesson?.content as IntlRecord | undefined)?.[locale])
-      const currentContent = normalizeContent((lesson.content as IntlRecord | undefined)?.[locale])
-      const contentDiffers = isNew || JSON.stringify(initialContent) !== JSON.stringify(currentContent)
+      const initialContent = (initialLesson?.content as IntlRecord | undefined)?.[locale]
+      const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
+      const contentDiffers = isNew || stringifyContent(initialContent) !== stringifyContent(currentContent)
       if (contentDiffers) {
         lessonUpdates.content = mergeLocale(
           lesson.content as IntlRecord | null | undefined,
@@ -364,7 +365,10 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       if (result && 'error' in result) throw result.error
       for (const [i, { tempKey }] of lessonsPayload.entries()) {
         const realId = result.data[i]?.id
-        if (tempKey !== undefined && realId !== undefined && tempKey !== realId) idMap.set(tempKey, realId)
+        if (tempKey !== undefined && realId !== undefined && tempKey !== realId) {
+          idMap.set(tempKey, realId)
+          lessonKeysRef.current.set(realId, lessonKeysRef.current.get(tempKey) ?? tempKey)
+        }
       }
       if (idMap.size > 0) {
         setCourse(prev => ({
@@ -817,6 +821,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     contentFlushRef,
     course,
     courseRef,
+    lessonKeysRef,
     currentLesson,
     editCourse,
     hasAnyUpdates,

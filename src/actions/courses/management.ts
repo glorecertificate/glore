@@ -152,10 +152,10 @@ export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
 
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
   if (isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
+  const [authUser, sortOrder] = await Promise.all([requireEditor(), nextActiveSortOrder()])
   if (!isCourseTitleValid(course.title)) {
     return { error: { code: 'TITLE_TOO_LONG', message: 'Course title is too long' } }
   }
-  const [authUser, sortOrder] = await Promise.all([requireEditor(), nextActiveSortOrder()])
 
   const values = sanitizeDetails(
     omit(course as TableInsert<'courses'> & { id?: number }, ['archivedAt', 'archivedById', 'creatorId', 'id'])
@@ -202,10 +202,13 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
 
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
   if (course.slug && isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
-  if (!isCourseTitleValid(course.title)) {
-    return { error: { code: 'TITLE_TOO_LONG', message: 'Course title is too long' } }
-  }
   const authUser = await requireEditor()
+  if (course.title !== undefined) {
+    const stored = await db.query.courses.findFirst({ columns: { title: true }, where: eq(courses.id, id) })
+    if (!isCourseTitleValid(course.title, stored?.title as Record<string, string> | null | undefined)) {
+      return { error: { code: 'TITLE_TOO_LONG', message: 'Course title is too long' } }
+    }
+  }
 
   const values = await resolveCourseUpdate(
     authUser.id,

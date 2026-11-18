@@ -21,9 +21,14 @@ export const CourseListToolbar = () => {
   const { user } = useSession()
   const t = useTranslations('CourseList')
   const { hasFilters, resetFilters } = useCourseListFilters()
-  const description = t(user.isAdmin ? 'descriptionAdmin' : user.isEditor ? 'descriptionEditor' : 'description', {
-    minSkills: settings.minSkills,
-  })
+  const descriptionKey = user.isAdmin
+    ? 'descriptionAdmin'
+    : user.isEditor
+      ? 'descriptionEditor'
+      : user.isLearner
+        ? 'descriptionLearner'
+        : 'description'
+  const description = t(descriptionKey, { minSkills: settings.minSkills })
 
   return (
     <div className="mb-6 flex flex-col gap-4">

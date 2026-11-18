@@ -47,6 +47,11 @@ export const BadgeCatalog = () => (
           </Badge>
         ))}
       </CatalogRow>
+      <CatalogRow label="count">
+        {SIZES.map(size =>
+          [3, 53, 120].map(count => <Badge count={count} key={`${size}-${count}`} size={size} variant="brand" />)
+        )}
+      </CatalogRow>
     </CatalogSection>
     <CatalogSection id="status-badge" name="StatusBadge">
       <CatalogRow label="tone">

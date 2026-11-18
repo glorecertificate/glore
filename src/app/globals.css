@@ -288,6 +288,10 @@
   }
 }
 
+@utility max-h-dialog {
+  max-height: calc(100dvh - 2rem);
+}
+
 @utility sheet-fit {
   width: min(100%, calc((100dvh - 11rem) * 595 / 842));
 }

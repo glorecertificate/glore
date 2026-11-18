@@ -40,12 +40,12 @@ export const Toaster = ({
       toastOptions={{
         ...toastOptions,
         classNames: {
-          actionButton: 'bg-brand-secondary text-brand-secondary-foreground',
+          actionButton: 'bg-primary! text-primary-foreground!',
           cancelButton: 'bg-muted text-muted-foreground',
           closeButton: 'group-data-[type=info]/toast:border-info/20! group-data-[type=info]/toast:hover:bg-info/10!',
-          description: 'text-muted-foreground text-base',
+          description: 'text-sm text-muted-foreground',
           icon: 'group-data-[type=info]/toast:text-info-text! mt-0.5 group-data-[type=success]/toast:text-success-text! group-data-[type=error]/toast:text-destructive-text!',
-          title: 'font-normal!',
+          title: 'text-sm font-medium!',
           toast: cn('group/toast w-max! items-start! bg-background text-foreground shadow-md!', className),
           ...toastOptions?.classNames,
         },

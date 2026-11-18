@@ -12,17 +12,16 @@ export const Textarea = ({ autoFocus, className, ring = true, ...props }: Textar
   const ref = useRef<HTMLTextAreaElement>(null)
 
   const focusTextarea = useEffectEvent(() => {
-    setTimeout(() => {
-      if (autoFocus && ref.current) {
-        const { length } = ref.current.value
-        ref.current?.setSelectionRange(length, length)
-      }
-    }, 100)
+    if (!ref.current) return
+    const { length } = ref.current.value
+    ref.current.setSelectionRange(length, length)
   })
 
   useEffect(() => {
-    focusTextarea()
-  })
+    if (!autoFocus) return
+    const timeout = setTimeout(focusTextarea, 100)
+    return () => clearTimeout(timeout)
+  }, [autoFocus])
 
   return (
     <textarea

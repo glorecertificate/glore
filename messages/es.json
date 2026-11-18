@@ -636,6 +636,10 @@
       "saveAvatar": "Guardar avatar",
       "uploadAvatar": "Subir avatar"
     },
+    "Breadcrumb": {
+      "label": "Ruta de navegación",
+      "more": "Más"
+    },
     "CountrySelect": {
       "noCountryFound": "No se encontró ningún país",
       "searchCountry": "Buscar país…",

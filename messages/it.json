@@ -636,6 +636,10 @@
       "system": "Sistema",
       "systemTitle": "Passa al tema di sistema"
     },
+    "Breadcrumb": {
+      "label": "Briciole di pane",
+      "more": "Altro"
+    },
     "CountrySelect": {
       "noCountryFound": "Nessun paese trovato",
       "searchCountry": "Cerca paese…",

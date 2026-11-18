@@ -68,7 +68,7 @@ export const DialogContent = ({
       >
         {children}
         {showClose && (
-          <DialogClose className="absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 transition-opacity hover:opacity-100 focus-visible:focus-ring disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+          <DialogClose className="absolute top-3 right-3 flex size-8 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
             <LucideIcon name="x" />
             <span className="sr-only">{t('close')}</span>
           </DialogClose>
@@ -85,7 +85,7 @@ export const DialogContent = ({
 }
 
 const dialogContentVariants = cva(
-  'fixed top-[50%] left-[50%] z-51 grid w-full max-w-[calc(100%-2rem)] translate-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
+  'fixed top-[50%] left-[50%] z-51 grid max-h-dialog w-full max-w-[calc(100%-2rem)] translate-[-50%] gap-4 overflow-y-auto rounded-xl border bg-background p-6 shadow-lg duration-200 ease-out data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
   {
     defaultVariants: {
       size: 'default',
@@ -113,7 +113,7 @@ export const DialogFooter = ({ className, ...props }: React.ComponentProps<'div'
 
 export const DialogTitle = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) => (
   <DialogPrimitive.Title
-    className={cn('text-lg leading-none font-semibold', className)}
+    className={cn('text-lg leading-snug font-semibold', className)}
     data-slot="dialog-title"
     {...props}
   />

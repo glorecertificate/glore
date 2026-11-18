@@ -69,7 +69,7 @@ describe('message helpers', () => {
   it('names the admin role per audience in every locale', () => {
     const admin = (messages: typeof en) => [messages.Notifications.roles.admin, messages.Notifications.teamRoles.admin]
     expect(admin(en)).toEqual(['Owner', 'Admin'])
-    expect(admin(es)).toEqual(['Administrador/a', 'Admin'])
+    expect(admin(es)).toEqual(['Persona administradora', 'Admin'])
     expect(admin(it_)).toEqual(['Amministratore', 'Admin'])
   })
 

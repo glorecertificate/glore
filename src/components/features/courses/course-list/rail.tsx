@@ -16,7 +16,9 @@ import {
   useCourseListTabs,
   useCourseListTypes,
 } from '@/components/features/courses/course-list/use-params'
+import { listedCourseTypes } from '@/components/features/courses/visibility'
 import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { type FilterRailProps } from '@/components/ui/filter-rail'
 import { SearchInput } from '@/components/ui/search'
 import { type StatusBadge } from '@/components/ui/status-badge'
@@ -42,6 +44,7 @@ export const useCourseListRail = (): FilterRailProps => {
   const t = useTranslations('CourseList')
   const tCommon = useTranslations('CourseCommon')
   const { localeItems, localize } = useI18n()
+  const { user } = useSession()
   const { skillGroups } = useCourses()
   const { tab, setTab } = useCourseListTab()
   const { tabs } = useCourseListTabs()
@@ -57,6 +60,7 @@ export const useCourseListRail = (): FilterRailProps => {
   const countWith = (patch: Partial<typeof facets>) =>
     current.filter(course => matchesFacets(course, { ...facets, ...patch })).length
 
+  const listedTypes = listedCourseTypes(user)
   const statusTabs = tabs.filter(item => item !== 'all')
 
   const groups: FilterRailProps['groups'] = []
@@ -80,15 +84,15 @@ export const useCourseListRail = (): FilterRailProps => {
     id: 'type',
     label: tCommon('courseType'),
     onChange: value => setActiveTypes(value ? [value as (typeof COURSE_TYPES)[number]] : null),
-    options: COURSE_TYPES.map(type => ({
+    options: listedTypes.map(type => ({
       count: countWith({ types: [type] }),
       label: tCommon(`courseType-${type}`),
       value: type,
     })),
-    value: single(activeTypes, COURSE_TYPES.length),
+    value: single(activeTypes, listedTypes.length),
   })
 
-  if (skillGroups.length > 0) {
+  if (skillGroups.length > 0 && listedTypes.includes('skill')) {
     groups.push({
       id: 'group',
       label: tCommon('skillGroup'),

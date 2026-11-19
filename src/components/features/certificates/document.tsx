@@ -165,6 +165,32 @@ const fitsPitch = (tasks: string[], bottom: number) =>
       taskHeight(task, 10) <= TASK_PITCH - TASK_GAP && TASK_TOP + index * TASK_PITCH + taskHeight(task, 10) <= bottom
   )
 
+const PARTNER_TOP = 417.2
+const PARTNER_BOTTOM = 472.9
+const PARTNER_WIDTH = 68
+const PARTNER_LINE_HEIGHT = 1.21
+const PARTNER_CHAR_WIDTH = 0.62
+const PARTNER_FONT_SIZES = [10, 9, 8, 7, 6.5] as const
+
+const partnerLines = (name: string, fontSize: number) => {
+  const perLine = Math.max(1, Math.floor(PARTNER_WIDTH / (PARTNER_CHAR_WIDTH * fontSize)))
+  return name.split(/\s+/u).reduce(
+    (state, word) => {
+      const chunks = Math.max(1, Math.ceil(word.length / perLine))
+      if (state.used > 0 && state.used + 1 + word.length <= perLine) {
+        return { lines: state.lines, used: state.used + 1 + word.length }
+      }
+      return { lines: state.lines + chunks, used: word.length - (chunks - 1) * perLine }
+    },
+    { lines: 0, used: 0 }
+  ).lines
+}
+
+export const partnerFontSize = (name: string) =>
+  PARTNER_FONT_SIZES.find(
+    size => partnerLines(name, size) * size * PARTNER_LINE_HEIGHT <= PARTNER_BOTTOM - PARTNER_TOP
+  ) ?? PARTNER_FONT_SIZES.at(-1)!
+
 const flowFontSize = (tasks: string[], bottom: number) =>
   TASK_FONT_SIZES.find(size => flowHeight(tasks, size) <= bottom - TASK_TOP) ?? 7
 
@@ -202,7 +228,15 @@ const styles = StyleSheet.create({
     minHeight: 10,
     paddingLeft: 3,
   },
-  rowValue: { fontSize: 10, fontWeight: 700, lineHeight: 1, maxLines: 1, textOverflow: 'ellipsis' },
+  rowValue: {
+    fontSize: 10,
+    fontWeight: 700,
+    lineHeight: 1,
+    maxLines: 1,
+    position: 'relative',
+    textOverflow: 'ellipsis',
+    top: 0.6,
+  },
   partnerName: { fontWeight: 900, lineHeight: 1.21, left: 46.1, position: 'absolute', width: 68 },
   partnerLogo: { height: 54.6, left: 119.2, objectFit: 'contain', position: 'absolute', top: 418, width: 90.7 },
   partnerPlaceholder: { backgroundColor: GRAY, height: 54.6, left: 119.2, position: 'absolute', top: 418, width: 90.7 },
@@ -372,7 +406,9 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
           <RowLine flex={1} value={activity.location ?? ''} />
         </View>
         <Text style={[styles.absolute, { left: 46.1 }, placed(385.1, 10)]}>{labels.partnership}</Text>
-        <Text style={[styles.partnerName, placed(417.2, 10)]}>{organization.name}</Text>
+        <Text style={[styles.partnerName, placed(PARTNER_TOP, partnerFontSize(organization.name))]}>
+          {organization.name}
+        </Text>
         {organization.logoUrl ? (
           <Image src={organization.logoUrl} style={styles.partnerLogo} />
         ) : (

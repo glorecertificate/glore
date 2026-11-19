@@ -34,6 +34,7 @@ export const findCertificatePreview = async (id: number) =>
       fetchLevelDescriptions(courseIds),
     ])
     const profile = cert.organization.profile
+    const personal = visible.userId === authUser.id || visible.reviewerId === authUser.id
 
     return {
       activity: {
@@ -45,11 +46,11 @@ export const findCertificatePreview = async (id: number) =>
       },
       code: cert.code,
       holder: {
-        birthPlace: cert.user.birthPlace,
-        birthday: cert.user.birthday,
+        birthPlace: personal ? cert.user.birthPlace : null,
+        birthday: personal ? cert.user.birthday : null,
         firstName: cert.user.firstName ?? '',
         lastName: cert.user.lastName,
-        nationality: regionName(cert.user.nationality, locale),
+        nationality: personal ? regionName(cert.user.nationality, locale) : null,
       },
       issuedAt: null,
       organization: {

@@ -254,6 +254,21 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
       expect((await search({ role: 'user', status: 'pending' })).data?.total).toBe(BULK + 1)
     })
 
+    it('counts facets without the facet own filter', async () => {
+      as('admin')
+      const all = (await search({})).data?.facets
+      expect(all?.banned).toEqual({ no: KEYS.length + BULK - 1, yes: 1 })
+      expect(all?.status).toEqual({ active: KEYS.length - 1, pending: BULK + 1 })
+      const roles = Object.values(all?.role ?? {}).reduce((sum, value) => sum + value, 0)
+      expect(roles).toBe(KEYS.length + BULK)
+      expect(all?.role?.admin).toBe(2)
+      expect(all?.role?.editor).toBe(1)
+
+      const pending = (await search({ status: 'pending' })).data?.facets
+      expect(pending?.status).toEqual(all?.status)
+      expect(pending?.banned).not.toEqual(all?.banned)
+    })
+
     it('rejects malformed queries', async () => {
       as('admin')
       const result = await context.actions.listAdminUsers({ page: 0, role: 'owner' as never })

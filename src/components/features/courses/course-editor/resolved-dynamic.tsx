@@ -12,7 +12,7 @@ export const resolvedDynamic = <P extends object>(load: () => Promise<ComponentT
   }
 
   const Component = (props: P) => {
-    const [Current] = useState(() => resolved ?? Dynamic)
+    const [{ Current }] = useState({ Current: resolved ?? Dynamic })
     return <Current {...props} />
   }
 

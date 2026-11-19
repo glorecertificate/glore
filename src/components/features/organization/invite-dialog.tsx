@@ -2,7 +2,10 @@
 
 import { useState } from 'react'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { type Locale, useTranslations } from 'next-intl'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 import { type InvitationRowResult, type InviteInput } from '@/actions/organizations/invite-core'
 import { useInvitationError } from '@/components/features/organization/use-invitation-error'
@@ -15,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -24,7 +28,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
-import { cn } from '@/lib/utils'
 import config from '~/config/app.json'
 
 import { InviteResults } from './invite-results'
@@ -58,21 +61,36 @@ export const InviteMemberDialog = ({
   const errorMessage = useInvitationError()
 
   const [mode, setMode] = useState<InviteMode>('single')
-  const [text, setText] = useState('')
   const [role, setRole] = useState<OrganizationMembershipRole>(allowedRoles[0] ?? 'learner')
   const [locale, setLocale] = useState<Locale>(defaultLocale)
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [results, setResults] = useState<InvitationRowResult[] | null>(null)
 
-  const emails = parseEmails(text)
   const max = config.maxBulkInvites
-  const tooMany = emails.length > max
+
+  const schema = z.object({
+    text: z.string().superRefine((value, ctx) => {
+      const list = parseEmails(value)
+      const invalid = list.find(email => !z.email().safeParse(email).success)
+      if (list.length === 0) return ctx.addIssue({ code: 'custom', message: t('emailRequired') })
+      if (list.length > max) return ctx.addIssue({ code: 'custom', message: t('bulkTooMany', { max }) })
+      if (!invalid) return
+      ctx.addIssue({
+        code: 'custom',
+        message: mode === 'single' ? t('emailInvalid') : t('bulkInvalid', { email: invalid }),
+      })
+    }),
+  })
+
+  const form = useForm<z.infer<typeof schema>>({ defaultValues: { text: '' }, resolver: zodResolver(schema) })
+  const text = form.watch('text')
+  const emails = parseEmails(text)
   const roleValue = allowedRoles.includes(role) ? role : (allowedRoles[0] ?? 'learner')
 
   const reset = () => {
     setMode('single')
-    setText('')
+    form.reset({ text: '' })
     setMessage('')
     setResults(null)
     setSubmitting(false)
@@ -84,9 +102,8 @@ export const InviteMemberDialog = ({
     onOpenChange(next)
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    if (submitting || emails.length === 0 || tooMany) return
+  const handleSubmit = async () => {
+    if (submitting) return
 
     setSubmitting(true)
     try {
@@ -133,102 +150,105 @@ export const InviteMemberDialog = ({
             </DialogFooter>
           </>
         ) : (
-          <form className="grid gap-4" onSubmit={handleSubmit}>
-            <SegmentedControl
-              aria-label={t('modeLabel')}
-              disabled={submitting}
-              onValueChange={value => setMode(value as InviteMode)}
-              value={mode}
-            >
-              <SegmentedControlItem value="single">{t('modeSingle')}</SegmentedControlItem>
-              <SegmentedControlItem value="bulk">{t('modeBulk')}</SegmentedControlItem>
-            </SegmentedControl>
-
-            {mode === 'single' ? (
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="organization-invite-email">{t('emailLabel')}</Label>
-                <Input
-                  autoComplete="off"
-                  autoFocus
-                  disabled={submitting}
-                  id="organization-invite-email"
-                  onChange={event => setText(event.target.value)}
-                  placeholder={tOrganization('emailPlaceholder')}
-                  type="email"
-                  value={text}
-                />
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="organization-invite-emails">{t('bulkLabel')}</Label>
-                <Textarea
-                  aria-describedby="organization-invite-emails-hint"
-                  autoFocus
-                  className="min-h-32 font-mono text-sm"
-                  disabled={submitting}
-                  id="organization-invite-emails"
-                  onChange={event => setText(event.target.value)}
-                  placeholder={t('bulkPlaceholder')}
-                  value={text}
-                />
-                <p
-                  className={cn('text-xs text-muted-foreground', tooMany && 'text-destructive-text')}
-                  id="organization-invite-emails-hint"
-                >
-                  {tooMany ? t('bulkTooMany', { max }) : t('bulkHint', { count: emails.length, max })}
-                </p>
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="organization-invite-role">{t('roleLabel')}</Label>
-                <Select
-                  disabled={submitting}
-                  onValueChange={value => setRole(value as OrganizationMembershipRole)}
-                  value={roleValue}
-                >
-                  <SelectTrigger id="organization-invite-role">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {allowedRoles.map(item => (
-                      <SelectItem key={item} value={item}>
-                        {tOrganization(`role_${item}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label>{t('languageLabel')}</Label>
-                <LanguageSelect controlled disabled={submitting} onChange={setLocale} value={locale} />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="organization-invite-message">
-                {t('messageLabel')} <span className="text-muted-foreground">{t('optional')}</span>
-              </Label>
-              <Textarea
+          <Form {...form}>
+            <form className="grid gap-4" noValidate onSubmit={form.handleSubmit(handleSubmit)}>
+              <SegmentedControl
+                aria-label={t('modeLabel')}
                 disabled={submitting}
-                id="organization-invite-message"
-                maxLength={500}
-                onChange={event => setMessage(event.target.value)}
-                placeholder={t('messagePlaceholder')}
-                value={message}
-              />
-            </div>
+                onValueChange={value => {
+                  setMode(value as InviteMode)
+                  form.clearErrors()
+                }}
+                value={mode}
+              >
+                <SegmentedControlItem value="single">{t('modeSingle')}</SegmentedControlItem>
+                <SegmentedControlItem value="bulk">{t('modeBulk')}</SegmentedControlItem>
+              </SegmentedControl>
 
-            <DialogFooter>
-              <Button disabled={submitting} onClick={() => handleOpenChange(false)} type="button" variant="outline">
-                {t('cancel')}
-              </Button>
-              <Button disabled={emails.length === 0 || tooMany} loading={submitting} type="submit" variant="brand">
-                {t('send', { count: emails.length })}
-              </Button>
-            </DialogFooter>
-          </form>
+              <FormField
+                control={form.control}
+                name="text"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-2">
+                    <FormLabel>{mode === 'single' ? t('emailLabel') : t('bulkLabel')}</FormLabel>
+                    <FormControl>
+                      {mode === 'single' ? (
+                        <Input
+                          {...field}
+                          autoComplete="off"
+                          autoFocus
+                          disabled={submitting}
+                          placeholder={tOrganization('emailPlaceholder')}
+                          type="email"
+                        />
+                      ) : (
+                        <Textarea
+                          {...field}
+                          autoFocus
+                          className="min-h-32 font-mono text-sm"
+                          disabled={submitting}
+                          placeholder={t('bulkPlaceholder')}
+                        />
+                      )}
+                    </FormControl>
+                    {mode === 'bulk' && !form.formState.errors.text && (
+                      <p className="text-xs text-muted-foreground">{t('bulkHint', { count: emails.length, max })}</p>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="organization-invite-role">{t('roleLabel')}</Label>
+                  <Select
+                    disabled={submitting}
+                    onValueChange={value => setRole(value as OrganizationMembershipRole)}
+                    value={roleValue}
+                  >
+                    <SelectTrigger id="organization-invite-role">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {allowedRoles.map(item => (
+                        <SelectItem key={item} value={item}>
+                          {tOrganization(`role_${item}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>{t('languageLabel')}</Label>
+                  <LanguageSelect controlled disabled={submitting} onChange={setLocale} value={locale} />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="organization-invite-message">
+                  {t('messageLabel')} <span className="text-muted-foreground">{t('optional')}</span>
+                </Label>
+                <Textarea
+                  disabled={submitting}
+                  id="organization-invite-message"
+                  maxLength={500}
+                  onChange={event => setMessage(event.target.value)}
+                  placeholder={t('messagePlaceholder')}
+                  value={message}
+                />
+              </div>
+
+              <DialogFooter>
+                <Button disabled={submitting} onClick={() => handleOpenChange(false)} type="button" variant="outline">
+                  {t('cancel')}
+                </Button>
+                <Button loading={submitting} type="submit" variant="brand">
+                  {t('send', { count: emails.length })}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         )}
       </DialogContent>
     </Dialog>

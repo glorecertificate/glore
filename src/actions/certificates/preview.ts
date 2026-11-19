@@ -75,4 +75,8 @@ export const findCertificatePreview = async (id: number) =>
     }
   })
 
-export const fetchCertificateLabels = async (language: string) => await certificatePdfLabels(String(language))
+export const fetchCertificateLabels = async (language: string) => {
+  const authUser = await getAuthUser()
+  if (!authUser) throw new CertificateError('UNAUTHORIZED', 'Not authenticated')
+  return await certificatePdfLabels(String(language))
+}

@@ -103,7 +103,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Main column: `CertificateJourney` with the date of each reached stage (`journeyDates`), `CertificateFeedback` (revocation reasons use a neutral card), the preview (none when revoked), skills, tasks, and the timeline from `findCertificateActivity`.
 - A 320 px right rail holds Details, `CertificateShare` (owner and approved only), and the reviewer row. On phones the rail stacks after the preview.
 - `CertificateShare`: verify link with one Copy button, QR, LinkedIn "Add to profile" link, LinkedIn and Facebook share, and native share.
-- The owner also gets a one-time confetti per certificate (`localStorage` flag).
+- The certificate page shows no confetti or other celebration effect.
 
 ### Tutor queue
 

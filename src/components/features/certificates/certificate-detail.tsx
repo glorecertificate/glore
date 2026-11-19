@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl'
 
 import { type CertificateActivityEvent, type CertificateReviewNotes } from '@/actions/certificates/queries'
-import { CertificateCelebration } from '@/components/features/certificates/certificate-celebration'
 import { CertificateFeedback } from '@/components/features/certificates/certificate-feedback'
 import { CertificateJourney } from '@/components/features/certificates/certificate-journey'
 import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
@@ -42,8 +41,6 @@ export const CertificateDetail = ({
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-      {isOwner && certificate.isApproved && <CertificateCelebration id={certificate.id} />}
-
       <div className="flex min-w-0 flex-col gap-6 lg:col-start-1 lg:row-start-1">
         <Card>
           <CardContent className="py-6">

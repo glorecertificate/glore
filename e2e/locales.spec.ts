@@ -62,7 +62,7 @@ const ROLE_PAGES = {
     { partial: true, path: '/certificates', text: m => m.CertificateQueue.tabs.assigned },
   ],
   volunteer: [
-    { path: '/dashboard', text: m => m.Dashboard.volunteer.requestTitle },
+    { path: '/dashboard', text: m => m.Dashboard.journey.title },
     { path: '/courses', text: m => m.CourseCommon.courses },
     { path: '/certificates', text: m => m.Layout.certificates },
     { path: '/notifications', text: m => m.Notifications.title },

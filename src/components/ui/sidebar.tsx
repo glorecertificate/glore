@@ -287,7 +287,7 @@ export const Sidebar = ({
       {isTablet && open && (
         <div
           aria-hidden
-          className="fixed inset-0 z-9 bg-black/40 motion-safe:animate-in motion-safe:duration-200 motion-safe:fade-in-0"
+          className="fixed inset-0 z-30 bg-black/40 motion-safe:animate-in motion-safe:duration-200 motion-safe:fade-in-0"
           data-slot="sidebar-backdrop"
           onClick={() => setOpen(false)}
         />
@@ -306,7 +306,7 @@ export const Sidebar = ({
       />
       <div
         className={cn(
-          'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none md:flex',
+          'fixed inset-y-0 z-40 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none md:flex',
           'group-data-[tablet=true]:group-data-[state=expanded]:shadow-2xl',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:-left-(--sidebar-width)'

@@ -338,9 +338,8 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
       setLoggingOut(false)
       setLogoutDialogOpen(false)
       setMenuOpen(false)
-      setOpenMobile(false)
     },
-    [setOpenMobile]
+    []
   )
 
   return (

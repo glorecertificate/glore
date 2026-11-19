@@ -52,7 +52,7 @@ export const CountrySelect = ({
           className={cn('w-full justify-between text-base font-normal md:text-sm', !value && 'text-muted-foreground')}
           role="combobox"
           aria-expanded={open}
-          variant="outline"
+          variant="field"
         >
           {value ? (
             <span>

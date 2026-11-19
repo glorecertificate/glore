@@ -1,13 +1,11 @@
 import { notFound, redirect } from 'next/navigation'
-import { connection } from 'next/server'
 import { Suspense } from 'react'
-
-import { getFormatter, getTranslations } from 'next-intl/server'
 
 import { loadCertificate, loadCertificateActivity, loadReviewContext } from '@/actions/certificates/detail-data'
 import { getViewer } from '@/actions/viewer'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { StartReviewButton } from '@/components/features/certificates/review/start-review'
+import { SubmittedAgo } from '@/components/features/certificates/review/submitted-ago'
 import { ReviewWorkspace } from '@/components/features/certificates/review/workspace'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -48,8 +46,6 @@ const ReviewBand = async ({ params }: { params: PageProps<'/certificates/[id]/re
   if (!certificateId || Number.isNaN(certificateId)) notFound()
   const certificate = await loadCertificate(certificateId)
   if (!certificate) notFound()
-  await connection()
-  const [format, t] = await Promise.all([getFormatter(), getTranslations('CertificateReview')])
   const submittedAt = certificate.submittedAt ?? certificate.createdAt
 
   return (
@@ -60,7 +56,7 @@ const ReviewBand = async ({ params }: { params: PageProps<'/certificates/[id]/re
           <span>{certificate.organization.name}</span>
           <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
             {!certificate.isSubmitted && <CertificateStatusBadge status={certificate.status} />}
-            <span className="text-sm">{t('submittedAgo', { when: format.relativeTime(new Date(submittedAt)) })}</span>
+            <SubmittedAgo submittedAt={submittedAt} />
           </span>
         </span>
       }

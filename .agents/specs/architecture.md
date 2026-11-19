@@ -187,7 +187,7 @@ src/
 
 - `sendMail` (`src/lib/email.ts`) takes `template`, `category`, and `unsubscribeUrl`.
 - Every template forwards the `category` and `settings` base props (`EmailBaseProps`) to `EmailLayout`, which prints the reason and the preference link.
-- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the logo and motif header.
+- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the header with the centered logo.
 - Mail renders in the RSC layer, which has no `createContext`, so templates never use React context.
 - Optional mail carries `List-Unsubscribe` headers. The POST at `/api/v1/mail-preferences` turns that category off for the user named in a signed token (`src/lib/unsubscribe.ts`).
 - A GET on that route opens `/settings?tab=notifications`.
@@ -205,4 +205,4 @@ src/
 - `organization/{application-decision,invitation (invite and reminder),join-request,join-request-received,membership,registration-request}`.
 - `team/{invite,role-changed}`.
 - Each has `PreviewProps` for `pnpm run email` and `Email.<name>` copy in all catalogs.
-- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the logo and motif header.
+- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the header with the centered logo.

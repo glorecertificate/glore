@@ -165,7 +165,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - Every environment variable the Next.js app uses MUST be declared in the Zod schema in `next.config.ts`.
 - `GITHUB_TOKEN` and `VERCEL_TOKEN` are the only exclusions, since external CLI tools read them and the app never does.
 - Read `envSchema` in `next.config.ts` for the current set and validators.
-- `MAIL_TRANSPORT` (ignored in production) replaces SMTP in dev: `mailpit` delivers to the `pnpm run mail:up` inbox (`localhost:1025`), `log` only logs `[mail] <template> to <recipient>`.
+- `MAIL_TRANSPORT` replaces SMTP in dev. In production only `mailpit` counts, and only when `APP_URL` is `localhost`, `127.0.0.1`, or `*.localhost`, so the mail specs run against a local `next start`. Values: `mailpit` delivers to the `pnpm run mail:up` inbox (`localhost:1025`), `log` only logs `[mail] <template> to <recipient>`.
 - `VERCEL_ENV` is set by Vercel. `next.config.ts` builds `/dev/ui` only when it is `preview` (and on the dev server), so production and CI builds exclude the route and its chunks.
 - `TEST_EMAIL` is read only by scripts (`db:seed:demo`), so it stays out of the schema.
 

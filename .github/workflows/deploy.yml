@@ -7,6 +7,10 @@ on:
         description: Environment to deploy to, can be preview or production.
         default: preview
         type: string
+      migrate:
+        description: Run the Drizzle migrations against the target database before the build.
+        default: false
+        type: boolean
     secrets:
       VERCEL_TOKEN:
         required: true
@@ -52,6 +56,11 @@ jobs:
           TARGET: ${{ inputs.environment }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: pnpm exec vercel pull --yes --environment="$TARGET" --token="$VERCEL_TOKEN"
+      - name: Migrate database
+        if: inputs.migrate
+        env:
+          TARGET: ${{ inputs.environment }}
+        run: pnpm exec dotenv -e ".vercel/.env.$TARGET.local" -- pnpm exec drizzle-kit migrate
       - name: Build project artifacts
         env:
           TARGET: ${{ inputs.environment }}

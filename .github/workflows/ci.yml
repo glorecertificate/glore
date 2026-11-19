@@ -11,7 +11,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'push' }}
 
 jobs:
   check:
@@ -39,3 +39,17 @@ jobs:
       deployments: write
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
+    with:
+      migrate: ${{ github.event_name == 'push' }}
+  production:
+    name: Production
+    needs: deploy
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      deployments: write
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      environment: production
+      migrate: true

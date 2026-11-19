@@ -1093,7 +1093,6 @@
     "journey": {
       "title": "Tu certificado",
       "position": "Paso {current} de {total}",
-      "stepLabel": "{index}. {name}",
       "stages": {
         "learn": "Aprende",
         "request": "Solicita",
@@ -1116,7 +1115,6 @@
         "revoked": "Revocado"
       },
       "stepsLabel": "Pasos de la solicitud",
-      "stepsToggle": "Pasos de la solicitud",
       "stepState": {
         "done": "Hecho",
         "flagged": "Necesita cambios"
@@ -1205,27 +1203,6 @@
       },
       "reason": {
         "label": "Motivo"
-      }
-    },
-    "volunteer": {
-      "eyebrow": "Tu certificado · paso {current} de {total}",
-      "coursesTitle": "Cursos de habilidades",
-      "coursesProgress": "{count} de {min} obligatorios completados",
-      "completed": "Completado",
-      "notStarted": "Sin empezar",
-      "viewCourses": "Ver todos los cursos",
-      "requestTitle": "Solicitud de certificado",
-      "organization": "Organización",
-      "skills": "Habilidades",
-      "noSkills": "Ninguna todavía",
-      "experience": "Experiencia",
-      "hours": "{hours, plural, one {# hora} other {# horas}}",
-      "notEntered": "Aún sin indicar",
-      "lastSaved": "Último guardado",
-      "upcoming": {
-        "request": "Tras {min} cursos de habilidades",
-        "review": "Cuando la envíes",
-        "certificate": "Se emite tras la aprobación"
       }
     },
     "stats": {

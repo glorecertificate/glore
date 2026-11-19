@@ -1093,7 +1093,6 @@
     "journey": {
       "title": "Your certificate",
       "position": "Step {current} of {total}",
-      "stepLabel": "{index}. {name}",
       "stages": {
         "learn": "Learn",
         "request": "Request",
@@ -1116,7 +1115,6 @@
         "revoked": "Revoked"
       },
       "stepsLabel": "Request steps",
-      "stepsToggle": "Request steps",
       "stepState": {
         "done": "Done",
         "flagged": "Needs changes"
@@ -1205,27 +1203,6 @@
       },
       "reason": {
         "label": "Reason"
-      }
-    },
-    "volunteer": {
-      "eyebrow": "Your certificate · step {current} of {total}",
-      "coursesTitle": "Skill courses",
-      "coursesProgress": "{count} of {min} required completed",
-      "completed": "Completed",
-      "notStarted": "Not started",
-      "viewCourses": "View all courses",
-      "requestTitle": "Certificate request",
-      "organization": "Organization",
-      "skills": "Skills",
-      "noSkills": "None yet",
-      "experience": "Experience",
-      "hours": "{hours, plural, one {# hour} other {# hours}}",
-      "notEntered": "Not entered yet",
-      "lastSaved": "Last saved",
-      "upcoming": {
-        "request": "After {min} skill courses",
-        "review": "After you send it",
-        "certificate": "Issued after approval"
       }
     },
     "stats": {

@@ -151,14 +151,14 @@ Three domain facts shape recurring decisions:
 ### Dashboard
 
 - `/dashboard` renders one server-loaded view per role (`loadDashboard` in `actions/dashboard/`, reusing the certificate, course, organization, and notification reads).
-- Volunteer: the welcome card carries the stage eyebrow, greeting, status sentence, one primary action (and preview, download or share by phase), and a four-segment step bar (learn, request, review, certificate). Below it, equal-height cards list the skill courses and the certificate request (organization, skills, hours, last saved, code, reason). The tutor note and flagged steps show in the welcome card.
+- Volunteer: the band greets the volunteer. Below it, the journey rail card (learn, request, review, certificate, with the wizard steps of an open request and the other courses on the path) sits beside one stage card with the phase title, status badge, status sentence, skill seals, and the actions by phase (primary, preview, download or share). The tutor note and flagged steps show in the stage card. Below `lg`, the stage card comes first and the rail stacks under it.
 - Learner: checklist, continue, recommendations.
 - Tutor: the welcome card shows the workload and a Start next review action (average review time only from five reviews). "Needs your review" lists the five oldest requests with a row button and one queue link, then the latest updates.
 - Representative and owner: the band holds Invite members. The main column has the setup checklist, the shared `AttentionList` (join requests, changes requested, expired invitations with Resend, built by `buildAttention` in `db/queries/organization-attention.ts` and carried by the organization panel data), and recent activity. The rail shows non-zero certificate statuses and member roles (`features/organization/overview-rail.tsx`). The organization overview tab reuses the same list and rail.
 - Editor: content health, translation gaps, then enrollment charts. The admin overview owns the pending decisions.
 - Users without an organization see an empty state.
 - Each view owns the page `h1` and the header bar shows no title, on purpose (#151): two `h1` elements would repeat the page name.
-- The learner, tutor, representative and owner, and editor views open with `DashboardHero`, the welcome card (decisions.md, U22): a gradient card with the greeting as `h1`, the subtitle, the organization, one action, and the animated globe at 25 to 30% opacity in the top-right corner. The volunteer hero adds the stage eyebrow and the step bar. `DashboardHero` places its actions under the text.
+- The learner, tutor, representative and owner, and editor views open with `DashboardHero`, the welcome card (decisions.md, U22): a gradient card with the greeting as `h1`, the subtitle, the organization, one action, and the animated globe at 25 to 30% opacity in the top-right corner. `DashboardHero` places its actions under the text.
 - `DashboardHero` is a client island. `Globe` renders its canvas in the server HTML and loads `cobe` after hydration at pixel ratio 0.5 (1.5 at most on phones), because a `next/dynamic` mount added about 100 ms to the dashboard client navigation and the full ratio starved the main thread in software WebGL. The card renders without the globe when WebGL is off.
 - Empty cards use `DashboardEmpty` (icon and title).
 

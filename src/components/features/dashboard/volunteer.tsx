@@ -1,33 +1,21 @@
 import { type VolunteerSummary, nextSkillCourse } from '@/actions/dashboard/core'
-import { VolunteerCourses } from '@/components/features/dashboard/volunteer-courses'
-import { VolunteerHero } from '@/components/features/dashboard/volunteer-hero'
-import { VolunteerRequest } from '@/components/features/dashboard/volunteer-request'
+import { JourneyPath } from '@/components/features/dashboard/journey-path'
+import { JourneyRail } from '@/components/features/dashboard/journey-rail'
+import { JourneyStage } from '@/components/features/dashboard/journey-stage'
 
-export const VolunteerDashboard = ({
-  firstName,
-  organization,
-  volunteer,
-}: {
-  firstName: string
-  organization: string | null
-  volunteer: VolunteerSummary
-}) => {
+export const VolunteerDashboard = ({ volunteer }: { volunteer: VolunteerSummary }) => {
   const learning = volunteer.journey.phase === 'learn'
   const next = learning ? nextSkillCourse(volunteer.courses) : null
   const compass = learning && !volunteer.compassSet
 
   return (
-    <div className="flex flex-col gap-6" data-slot="volunteer-dashboard">
-      <VolunteerHero firstName={firstName} next={next} volunteer={volunteer} />
-      <div className="grid items-stretch gap-6 lg:grid-cols-2">
-        <VolunteerCourses
-          compass={compass}
-          completed={volunteer.eligibility.completedSkillCount}
-          courses={volunteer.skillCourses}
-          min={volunteer.eligibility.minSkills}
-        />
-        <VolunteerRequest organization={organization} volunteer={volunteer} />
-      </div>
+    <div className="grid items-start gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]" data-slot="volunteer-dashboard">
+      <JourneyRail
+        className="order-2 lg:order-1"
+        path={<JourneyPath compass={compass} courses={volunteer.courses.continuing} exclude={next?.slug} />}
+        volunteer={volunteer}
+      />
+      <JourneyStage className="order-1 lg:order-2" next={next} volunteer={volunteer} />
     </div>
   )
 }

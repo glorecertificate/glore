@@ -17,7 +17,7 @@ export const DashboardContent = ({ data }: { data: DashboardData }) => {
     return <TutorDashboard firstName={data.firstName} notifications={data.notifications} tutor={data.tutor} />
   }
   if (data.view === 'volunteer') {
-    return <VolunteerDashboard firstName={data.firstName} organization={data.organization} volunteer={data.volunteer} />
+    return <VolunteerDashboard volunteer={data.volunteer} />
   }
   if (data.view === 'learner') {
     return <MemberDashboard firstName={data.firstName} member={data.member} organization={data.organization} />

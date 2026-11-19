@@ -28,6 +28,7 @@ const DashboardBandContent = async () => {
       />
     )
   }
+  if (data.view === 'volunteer') return <DashboardHeader title={t('greeting', { name: data.firstName })} />
   return <DashboardHeader title={<PageTitle name="dashboard" namespace="Layout" />} />
 }
 

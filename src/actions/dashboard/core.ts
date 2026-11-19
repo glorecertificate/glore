@@ -167,9 +167,9 @@ type JourneyPhase = 'changes' | 'draft' | 'issued' | 'learn' | 'ready' | 'reject
 
 type JourneyStageKey = 'certificate' | 'learn' | 'request' | 'review'
 
-type JourneyStageState = 'current' | 'done' | 'ended' | 'upcoming'
+export type JourneyStageState = 'current' | 'done' | 'ended' | 'upcoming'
 
-type JourneyStepState = 'current' | 'done' | 'flagged' | 'upcoming'
+export type JourneyStepState = 'current' | 'done' | 'flagged' | 'upcoming'
 
 export type ReviewSection = 'experience' | 'personal' | 'skills' | 'tasks'
 
@@ -178,7 +178,7 @@ export interface JourneyStage {
   state: JourneyStageState
 }
 
-interface JourneyWizardStep {
+export interface JourneyWizardStep {
   key: WizardStep
   state: JourneyStepState
 }
@@ -559,7 +559,7 @@ export interface MemberSummary {
   notifications: Notification[]
 }
 
-interface EarnedSkill {
+export interface EarnedSkill {
   icon: string | null
   id: number
   slug: string
@@ -571,19 +571,10 @@ interface JourneyReview {
   tutor: string | null
 }
 
-export interface SkillCourseRow {
-  completed: boolean
-  icon: string | null
-  percent: number
-  slug: string
-  title: string
-}
-
 export interface VolunteerSummary {
   certificate: Certificate | null
   compassSet: boolean
   courses: MemberCourseSummary
-  skillCourses: SkillCourseRow[]
   eligibility: EligibilityView
   journey: VolunteerJourney
   review: JourneyReview | null

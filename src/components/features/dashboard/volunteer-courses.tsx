@@ -37,8 +37,8 @@ export const VolunteerCourses = ({
             >
               <CourseIcon className="size-8" icon={course.icon} type="skill" />
               <span className="min-w-0 flex-1 text-sm font-medium text-pretty">{course.title}</span>
-              {course.completed && <StatusBadge tone="success">{t('completed')}</StatusBadge>}
-              {!course.completed && course.percent === 0 && <StatusBadge tone="neutral">{t('notStarted')}</StatusBadge>}
+              {course.completed && <StatusBadge tone="approved">{t('completed')}</StatusBadge>}
+              {!course.completed && course.percent === 0 && <StatusBadge tone="draft">{t('notStarted')}</StatusBadge>}
               {!course.completed && course.percent > 0 && (
                 <span className="flex w-24 shrink-0 items-center gap-2">
                   <Progress aria-label={course.title} className="h-1.5" color="brand" value={course.percent} />

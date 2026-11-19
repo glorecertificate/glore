@@ -33,7 +33,7 @@ export const VolunteerRequest = ({
           {certificate ? (
             <CertificateStatusBadge status={certificate.status} />
           ) : (
-            <StatusBadge tone="neutral">{tJourney('status.ready')}</StatusBadge>
+            <StatusBadge tone="draft">{tJourney('status.ready')}</StatusBadge>
           )}
         </CardAction>
       </CardHeader>

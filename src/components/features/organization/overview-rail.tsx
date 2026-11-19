@@ -10,11 +10,14 @@ import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insi
 import { cn } from '@/lib/utils'
 
 const FILLS = {
-  danger: 'bg-destructive',
-  info: 'bg-info',
-  neutral: 'bg-muted-foreground',
-  success: 'bg-success',
-  warning: 'bg-warning',
+  approved: 'bg-status-approved',
+  changes: 'bg-status-changes',
+  draft: 'bg-status-draft',
+  rejected: 'bg-status-rejected',
+  review: 'bg-status-review',
+  revoked: 'bg-status-revoked',
+  submitted: 'bg-status-submitted',
+  withdrawn: 'bg-status-withdrawn',
 } as const
 
 export const OrganizationCertificatesCard = ({ className, pipeline }: { className?: string; pipeline: Pipeline }) => {
@@ -38,7 +41,7 @@ export const OrganizationCertificatesCard = ({ className, pipeline }: { classNam
                 <CertificateStatusBadge status={status} />
                 <span className="font-medium tabular-nums">{pipeline[status]}</span>
               </div>
-              <span aria-hidden className="block h-1.5 overflow-hidden rounded-full bg-muted">
+              <span aria-hidden className="block h-1.5 overflow-hidden rounded-full bg-status-track">
                 <span
                   className={cn('block h-full rounded-full', FILLS[CERTIFICATE_STATUS[status].tone])}
                   style={{ width: `${(pipeline[status] / peak) * 100}%` }}

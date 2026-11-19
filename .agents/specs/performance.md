@@ -106,3 +106,15 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - Never add `InstantReveal` to `AppLayoutFallback`. The client renders that fallback during navigations, and React warns about a script that the client renders. The copy in `AppLayoutContent` runs before each reveal, so the fallback does not need one.
 - When a React update fails `instant-reveal.test.ts`, read the new reveal runtime in `react-dom-server` and update the script or remove it.
 - A loading state follows "Loading states" in `ui.md`. Its navigation cases keep `Shift` at 0.
+
+## Navigation freshness
+
+- A prefetched route goes stale 30 s after its fetch (`staleTimes.dynamic` and the 30 s `stale` of `getSessionUser`). `Link` never refetches on a timer, so a click after 30 s on a page fetched the route dynamically behind the route fallback.
+- `PrefetchKeeper` (`components/layout/prefetch-keeper.tsx`, mounted in the dashboard layout) calls `router.prefetch(href, { kind: 'full' })` for the registered links every 2 s. Fresh entries cost no request, so a route refetches within 2 s after it goes stale.
+- It pauses while the tab is hidden, for 4 s after a press on a link (the navigation holds the network), and after 5 minutes without input. The first input after that refreshes at once.
+- `keepFresh` on the kit `Link` registers a href. A sidebar link registers as `nav`. `keepFresh="list"` registers a list or detail link, and only the 6 on screen nearest the top refresh.
+- The kit `Link` also upgrades to a full prefetch on hover (60 ms), focus, and touch start.
+- Cost: each registered link refetches once per 30 s while the user is active, about 13 requests per 30 s for an admin. Keep the registered set small.
+- A detail page whose `generateMetadata` reads the request (`connection()`, cookies, uncached session) cannot prefetch its head. Read `getSessionUser()` there, as `getAdminOrganizationName` does.
+- A `dynamic()` tab chunk loads on first visit and shows a fallback. Preload it from the list (`preloadAdminOrganizationDetail`).
+- `LoadingFallback` takes `delay={false}` for route fallbacks, so the spinner shows in the first frame instead of after 300 ms.

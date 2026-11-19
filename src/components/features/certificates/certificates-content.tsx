@@ -71,6 +71,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
           <Link
             className="group/featured block rounded-xl focus-visible:focus-ring"
             href={`/certificates/${featured.id}`}
+            keepFresh="list"
           >
             <FeaturedCredentialCard certificate={featured} />
           </Link>

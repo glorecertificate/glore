@@ -4,7 +4,7 @@ import { NavigationLabel } from '@/components/layout/navigation-label'
 
 const CoursesLoadingPage = () => (
   <DashboardPage fallback={null} title={<NavigationLabel id="courses" />}>
-    <LoadingFallback />
+    <LoadingFallback delay={false} />
   </DashboardPage>
 )
 

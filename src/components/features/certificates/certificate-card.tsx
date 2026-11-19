@@ -39,7 +39,7 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
       )}
     >
       <span aria-hidden className="absolute inset-x-0 top-0 z-1 h-1 bg-stat-strip" />
-      <Link className="flex flex-col" href={`/certificates/${certificate.id}`}>
+      <Link className="flex flex-col" href={`/certificates/${certificate.id}`} keepFresh="list">
         <div className="bg-surface-sunken px-6 pt-6">
           <CertificatePreview className="mx-auto max-w-44 rounded-b-none border-b-0" certificate={certificate} />
         </div>

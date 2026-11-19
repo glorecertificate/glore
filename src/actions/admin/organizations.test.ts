@@ -11,6 +11,9 @@ const updateTag = vi.hoisted(() => vi.fn())
 const viewer = vi.hoisted(() => ({ id: '' }))
 
 vi.mock('@/actions/notifications/notify', () => ({ notify: vi.fn() }))
+vi.mock('@/actions/session', () => ({
+  getSessionUser: () => Promise.resolve({ banned: false, id: viewer.id, role: 'admin' }),
+}))
 vi.mock('@/actions/admin/helpers', async importOriginal => ({
   ...(await importOriginal<typeof import('@/actions/admin/helpers')>()),
   requireAdmin: () => Promise.resolve({ id: viewer.id, locale: 'en' }),

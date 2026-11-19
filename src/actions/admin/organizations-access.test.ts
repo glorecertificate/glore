@@ -21,6 +21,16 @@ vi.mock('next/cache', async importOriginal => ({
   revalidateTag: vi.fn(),
   updateTag: vi.fn(),
 }))
+vi.mock('@/actions/session', () => ({
+  getSessionUser: async () => {
+    const { auth } = await import('@/lib/auth')
+    const session = await auth.api.getSession({
+      headers: current.jar?.headers() ?? new Headers(),
+      query: { disableCookieCache: true },
+    })
+    return session?.user ?? null
+  },
+}))
 vi.mock('@/actions/notifications/notify', () => ({ notify: vi.fn(() => Promise.resolve()) }))
 vi.mock('@/lib/rate-limit', () => ({
   checkRateLimit: () => Promise.resolve({ limited: current.limited, remaining: 1 }),

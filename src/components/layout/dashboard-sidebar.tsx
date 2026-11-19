@@ -191,7 +191,7 @@ const DashboardSidebarItem = ({
         onPointerLeave={cancelPress}
         tooltip={label}
       >
-        <Link href={route} prefetch={quiet || undefined}>
+        <Link href={route} keepFresh prefetch={quiet || undefined}>
           {icon && <LucideIcon name={icon} />}
           {label}
           {badge > 0 && <DashboardSidebarBadge count={badge} />}

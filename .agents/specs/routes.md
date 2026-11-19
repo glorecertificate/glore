@@ -60,7 +60,6 @@ Dashboard layout with an extra gate:
 | ------------------------------- | -------- | ---------------------------------------------------------- |
 | `/api/auth/[...all]`            | GET/POST | Better Auth catch-all; `/api/auth/admin/*` answers 404     |
 | `/api/v1/ai/command`            | POST     | AI command (editors, rate limited)                         |
-| `/api/v1/ai/copilot`            | POST     | AI copilot (editors, rate limited)                         |
 | `/api/v1/join`                  | GET      | Team invitation join endpoint                              |
 | `/api/v1/invitations/[id]`      | GET      | Recipient opens a pending invitation (redirects to token)  |
 | `/api/v1/manifest`              | GET      | Dynamic PWA manifest (locale-aware, cached 1h)             |

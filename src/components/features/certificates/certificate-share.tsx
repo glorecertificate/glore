@@ -5,16 +5,17 @@ import { useTranslations } from 'next-intl'
 import { linkedInProfileUrl } from '@/components/features/certificates/rules'
 import { FacebookIcon } from '@/components/icons/facebook'
 import { LinkedinIcon } from '@/components/icons/linkedin'
-import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CopyButton } from '@/components/ui/copy-button'
-import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { QrCode } from '@/components/ui/qr-code'
 import { ShareButton } from '@/components/ui/share-button'
 import { type Certificate } from '@/db/queries/certificate'
 import { cn } from '@/lib/utils'
 import config from '~/config/metadata.json'
+
+const TOUCH =
+  'relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5'
 
 export const CertificateShare = ({
   certificate,
@@ -26,146 +27,78 @@ export const CertificateShare = ({
   url: string
 }) => {
   const t = useTranslations('CertificateShare')
-  const { locale } = useI18n()
 
   if (!(certificate.code && certificate.isApproved)) return null
 
   const issuedAt = certificate.issuedAt ?? certificate.reviewedAt ?? certificate.updatedAt
-  const credentialName = t('credentialName')
-  const issued = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(issuedAt))
-  const pdfHref = certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf?download=1`
-
-  const fields = [
-    { copy: t('copyName'), key: 'name', label: t('fieldName'), value: credentialName },
-    { copy: t('copyOrganization'), key: 'organization', label: t('fieldOrganization'), value: config.name },
-    { copy: t('copyIssued'), key: 'issued', label: t('fieldIssued'), value: issued },
-    { copy: t('copyUrl'), key: 'url', label: t('fieldUrl'), value: url },
-    { copy: t('copyId'), key: 'id', label: t('fieldId'), value: certificate.code },
-  ]
 
   return (
     <Card className={cn(className)}>
       <CardHeader>
-        <CardTitle>{t('title')}</CardTitle>
-        <p className="text-sm text-muted-foreground">{t('description')}</p>
+        <CardTitle className="type-label text-muted-foreground">{t('title')}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-6">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-          <QrCode className="shrink-0" label={t('qrLabel')} size={128} value={url} />
-          <div className="flex min-w-0 flex-1 flex-col gap-3">
-            <div className="flex items-center gap-2 rounded-md border bg-surface-muted px-3 py-2">
-              <span className="min-w-0 flex-1 truncate font-mono text-xs">{url}</span>
-              <CopyButton
-                className="relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1.5"
-                copiedLabel={t('linkCopied')}
-                iconOnly
-                label={t('copyLink')}
-                value={url}
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <ShareButton
-                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-                copiedLabel={t('linkCopied')}
-                failedLabel={t('shareFailed')}
-                icon="share-2"
-                size="sm"
-                title={t('title')}
-                url={url}
-                variant="outline"
-              >
-                {t('share')}
-              </ShareButton>
-              <Button
-                asChild
-                icon="download"
-                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-                size="sm"
-                variant="outline"
-              >
-                <a download href={pdfHref}>
-                  {t('downloadPdf')}
-                </a>
-              </Button>
-              <Button
-                asChild
-                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-                size="sm"
-                variant="outline"
-              >
-                <a
-                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <LinkedinIcon className="size-3.5" />
-                  {t('shareLinkedin')}
-                </a>
-              </Button>
-              <Button
-                asChild
-                className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-                size="sm"
-                variant="outline"
-              >
-                <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <FacebookIcon className="size-3.5" />
-                  {t('shareFacebook')}
-                </a>
-              </Button>
-            </div>
-          </div>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex items-center gap-2 rounded-md border bg-surface-muted px-3 py-2">
+          <span className="min-w-0 flex-1 truncate font-mono text-xs">{url}</span>
+          <CopyButton
+            className="relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1.5"
+            copiedLabel={t('linkCopied')}
+            iconOnly
+            label={t('copyLink')}
+            value={url}
+          />
         </div>
-
-        <div className="flex flex-col gap-3 rounded-lg border p-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="space-y-0.5">
-              <p className="text-sm font-medium">{t('linkedinTitle')}</p>
-              <p className="text-xs text-muted-foreground">{t('linkedinHint')}</p>
-            </div>
-            <Button
-              asChild
-              icon="external-link"
-              className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-              size="sm"
-              variant="brand"
+        <QrCode className="self-center" label={t('qrLabel')} size={144} value={url} />
+        <div className="flex flex-col gap-2">
+          <Button asChild className={TOUCH} icon="external-link" size="sm" variant="outline">
+            <a
+              href={linkedInProfileUrl({
+                code: certificate.code,
+                issuedAt,
+                name: t('credentialName'),
+                organizationName: config.name,
+                url,
+              })}
+              rel="noopener noreferrer"
+              target="_blank"
             >
+              {t('linkedinTitle')}
+            </a>
+          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button asChild className={TOUCH} size="sm" variant="outline">
               <a
-                href={linkedInProfileUrl({
-                  code: certificate.code,
-                  issuedAt,
-                  name: credentialName,
-                  organizationName: config.name,
-                  url,
-                })}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                {t('linkedinAdd')}
+                <LinkedinIcon className="size-3.5" />
+                {t('shareLinkedinShort')}
+              </a>
+            </Button>
+            <Button asChild className={TOUCH} size="sm" variant="outline">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <FacebookIcon className="size-3.5" />
+                {t('shareFacebookShort')}
               </a>
             </Button>
           </div>
-          <DescriptionList className="gap-2" columns={2}>
-            {fields.map(field => (
-              <DescriptionItem className="relative rounded-md bg-surface-muted py-1.5 pr-12 pl-3" key={field.key}>
-                <DescriptionTerm>{field.label}</DescriptionTerm>
-                <DescriptionDetails className="wrap-anywhere">
-                  {field.value}
-                  <CopyButton
-                    className="absolute top-1/2 right-1.5 -translate-y-1/2 pointer-coarse:before:absolute pointer-coarse:before:-inset-1.5"
-                    copiedLabel={t('linkCopied')}
-                    iconOnly
-                    label={field.copy}
-                    value={field.value}
-                  />
-                </DescriptionDetails>
-              </DescriptionItem>
-            ))}
-          </DescriptionList>
+          <ShareButton
+            className={TOUCH}
+            copiedLabel={t('linkCopied')}
+            failedLabel={t('shareFailed')}
+            icon="share-2"
+            size="sm"
+            title={t('title')}
+            url={url}
+            variant="outline"
+          >
+            {t('share')}
+          </ShareButton>
         </div>
       </CardContent>
     </Card>

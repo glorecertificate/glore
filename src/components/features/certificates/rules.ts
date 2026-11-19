@@ -205,6 +205,34 @@ export const journeySteps = (status: CertificateStatus): JourneyStep[] => {
   }))
 }
 
+interface JourneyDated {
+  createdAt: string
+  issuedAt: string | null
+  reviewedAt: string | null
+  revokedAt: string | null
+  status: CertificateStatus
+  submittedAt: string | null
+  withdrawnAt: string | null
+}
+
+export const journeyDates = (certificate: JourneyDated): Record<JourneyStage, string | null> => {
+  const { status } = certificate
+  const decided = status === 'approved' || status === 'changes_requested' || status === 'rejected'
+  return {
+    draft: certificate.createdAt,
+    issued:
+      status === 'approved'
+        ? (certificate.issuedAt ?? certificate.reviewedAt)
+        : status === 'revoked'
+          ? certificate.revokedAt
+          : status === 'rejected'
+            ? certificate.reviewedAt
+            : null,
+    review: status === 'withdrawn' ? certificate.withdrawnAt : decided ? certificate.reviewedAt : null,
+    submitted: certificate.submittedAt,
+  }
+}
+
 export const linkedInProfileUrl = ({
   code,
   issuedAt,

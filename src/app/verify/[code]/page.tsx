@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { verifyCertificate } from '@/actions/certificates/public'
 import { normalizeCertificateCode } from '@/components/features/certificates/rules'
+import { LookupForm } from '@/components/features/certificates/verify/lookup-form'
 import { VerificationView } from '@/components/features/certificates/verify/verification-view'
 import { VerifyShell } from '@/components/features/certificates/verify/verify-shell'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -53,7 +54,10 @@ const VerifyCodeContent = async ({ params }: Pick<PageProps<'/verify/[code]'>, '
           {t('tooManyRequests')}
         </Banner>
       ) : (
-        <VerificationView verification={result} />
+        <>
+          <LookupForm label={t('lookupAgain')} />
+          <VerificationView verification={result} />
+        </>
       )}
     </VerifyShell>
   )

@@ -1,15 +1,20 @@
 'use client'
 
+import { useState } from 'react'
+
 import { useTranslations } from 'next-intl'
+import { useFormContext, useWatch } from 'react-hook-form'
 
 import { type CertificateReviewNotes, type HolderCourseResult, type ReviewHolder } from '@/actions/certificates/queries'
+import { ExperienceFields, TaskFields } from '@/components/features/certificates/experience-fields'
 import { formatActivityPeriod, meetsActivityRule } from '@/components/features/certificates/rules'
+import { type ReviewFormValues } from '@/components/features/certificates/schemas'
 import { useI18n } from '@/components/providers/i18n'
-import { Badge } from '@/components/ui/badge'
-import { Banner } from '@/components/ui/banner'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { LevelDots } from '@/components/ui/level-dots'
+import { StatusBadge } from '@/components/ui/status-badge'
 import { type Certificate } from '@/db/queries/certificate'
 import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { fullName } from '@/lib/utils'
@@ -46,7 +51,16 @@ export const RequestPanel = ({
       ? tCountries(nationalityKey as never)
       : nationalityKey.toUpperCase()
     : '-'
-  const rule = meetsActivityRule(certificate)
+  const { control } = useFormContext<ReviewFormValues>()
+  const values = useWatch({ control })
+  const [editing, setEditing] = useState(false)
+  const period = {
+    activityDuration: Number(values.activityDuration) || 0,
+    activityEndDate: values.activityEndDate ?? '',
+    activityStartDate: values.activityStartDate ?? '',
+  }
+  const rule = meetsActivityRule(period)
+  const tasks = (values.tasks ?? []).flatMap(task => (task?.text?.trim() ? [task.text.trim()] : []))
   const sectionLabels = {
     experience: t('sectionExperience'),
     personal: t('sectionPersonal'),
@@ -57,9 +71,11 @@ export const RequestPanel = ({
   return (
     <div className="flex flex-col gap-4">
       {previous && (
-        <Banner variant="warning">
-          <div className="min-w-0 space-y-1">
-            <p className="font-medium">{t('previousFeedback')}</p>
+        <Card className="bg-surface-muted">
+          <CardHeader>
+            <CardTitle className="type-label">{t('previousFeedback')}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-1 text-sm">
             {previous.comment && <p className="whitespace-pre-wrap text-muted-foreground">{previous.comment}</p>}
             {Object.entries(previous.sectionComments).map(([section, text]) =>
               text ? (
@@ -72,8 +88,8 @@ export const RequestPanel = ({
                 </p>
               ) : null
             )}
-          </div>
-        </Banner>
+          </CardContent>
+        </Card>
       )}
 
       <Card>
@@ -93,31 +109,47 @@ export const RequestPanel = ({
 
       <Card>
         <CardHeader>
-          <CardTitle className="type-label">{t('experience')}</CardTitle>
+          <CardTitle className="type-label">{t('experienceTitle')}</CardTitle>
+          <CardAction>
+            <Button
+              aria-expanded={editing}
+              className="text-action-text"
+              onClick={() => setEditing(current => !current)}
+              size="sm"
+              type="button"
+              variant="ghost"
+            >
+              {editing ? t('doneEditing') : t('edit')}
+            </Button>
+          </CardAction>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <DescriptionList layout="inline">
-            <Row
-              label={t('period')}
-              value={formatActivityPeriod(certificate, date, values => tDetail('periodValue', values))}
-            />
-            <Row label={t('hours')} value={certificate.activityDuration} />
-            <Row label={t('location')} value={certificate.activityLocation} />
-          </DescriptionList>
-          <Badge variant={rule ? 'success' : 'destructive'}>{rule ? t('ruleMet') : t('ruleUnmet')}</Badge>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="type-label">{t('tasks')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="list-disc space-y-1 pl-5 text-sm">
-            {certificate.tasks.map(task => (
-              <li key={task}>{task}</li>
-            ))}
-          </ul>
+        <CardContent className="flex flex-col gap-4">
+          {editing ? (
+            <>
+              <ExperienceFields />
+              <TaskFields />
+            </>
+          ) : (
+            <>
+              <DescriptionList layout="inline">
+                <Row
+                  label={t('period')}
+                  value={formatActivityPeriod(period, date, range => tDetail('periodValue', range))}
+                />
+                <Row label={t('hours')} value={period.activityDuration} />
+                <Row label={t('location')} value={values.activityLocation || '-'} />
+              </DescriptionList>
+              <StatusBadge tone={rule ? 'success' : 'danger'}>{rule ? t('ruleMet') : t('ruleUnmet')}</StatusBadge>
+              <div className="flex flex-col gap-1.5">
+                <p className="type-label text-muted-foreground">{t('tasks')}</p>
+                <ul className="list-disc space-y-1 pl-5 text-sm">
+                  {tasks.map(task => (
+                    <li key={task}>{task}</li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 

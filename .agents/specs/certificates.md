@@ -79,6 +79,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Your organization: anonymous rating, shown to the org only as an aggregate of 3 or more.
   - Fields: `experience`, `support`, `certificationSupport` (1 to 5), `wouldRecommend`, and a `comment` of up to 400 characters.
 - Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
+- One column in a centered card. A toolbar above it holds the stepper (phones: "Step N of 4" and a progress bar), the save status, Save and exit, and an overflow menu with Discard draft. Review is a check-your-answers list with a Change button per row, then the live thumbnail, language, and missing personal data. The footer hides Back on step 1, and sticks to the bottom on phones.
 - Drafts autosave through `saveCertificateDraft` only after the volunteer edits a field, so opening the wizard never creates a draft. Hitting the 5 draft cap shows a dedicated message. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
 - A `changes_requested` id opens the same wizard in resubmit mode with the tutor's comments.
 - `EligibilityPanel` replaces the wizard when eligibility fails or a request is already open.
@@ -86,8 +87,9 @@ draft -> submitted -> in_review -> approved -> revoked
 ### Wallet
 
 - Route: `/certificates`, for volunteers.
-- `CertificateCard` shows a `CertificatePreview` miniature with status, period, and hours.
-- The featured (`isDefault`) approved certificate leads as a `FeaturedCredentialCard`.
+- A `DataTable` with the `FilterRail` (status and organization facets with counts, search by organization or code). Columns: certificate (second line: draft step, period and hours, or revoked date), organization, status, code, one action (Continue for drafts, Open otherwise).
+- Rows sort as drafts, open requests, the featured certificate, other issued, revoked. The featured (`isDefault`) approved certificate is a star marker in its row, not a card.
+- The band holds the Request certificate button, hidden when an open request exists or the volunteer is not eligible.
 - `EligibilityPanel` replaces the page when nothing exists and the volunteer is not eligible.
 - `featureCertificate` moves the flag between approved certificates.
 - The list filters by status (only statuses that exist) and sort in a `FilterBar`.
@@ -95,17 +97,16 @@ draft -> submitted -> in_review -> approved -> revoked
 ### Detail
 
 - Route: `/certificates/[id]`.
-- It shows a status header with a one-line message and `CertificateJourney` (draft, submitted, review, issued). The stage where a request ended shows its outcome.
-- On phones the owner of a shareable certificate sees the preview above the share card, with View full certificate (opens the PDF inline).
-- It shows reviewer feedback (`CertificateFeedback`: general and per-section notes, rejection and revocation reasons), the reviewer row, the PDF miniature with the summary, and a timeline from `findCertificateActivity`.
-- Actions follow status and role: continue or resubmit through the wizard, withdraw (open), download and make featured (approved), revoke (managers), open review (assigned tutor).
-- The owner of an approved certificate also gets `CertificateShare`: verify link, QR, PDF, LinkedIn "Add to profile" link with `organizationName` and copy fields, and LinkedIn and Facebook share.
+- The band shows the status dot, the organization, and one primary action by status and role. Withdraw, make featured, and revoke sit in a More actions menu. A revoked, rejected, or withdrawn request offers Request a new certificate.
+- Main column: `CertificateJourney` with the date of each reached stage (`journeyDates`), `CertificateFeedback` (revocation reasons use a neutral card), the preview (none when revoked), skills, tasks, and the timeline from `findCertificateActivity`.
+- A 320 px right rail holds Details, `CertificateShare` (owner and approved only), and the reviewer row. On phones the rail stacks after the preview.
+- `CertificateShare`: verify link with one Copy button, QR, LinkedIn "Add to profile" link, LinkedIn and Facebook share, and native share.
 - The owner also gets a one-time confetti per certificate (`localStorage` flag).
 
 ### Tutor queue
 
 - Route: `/certificates`, for tutors.
-- Tabs: assigned to me (open), unassigned (org pool, self-claim), and completed, in a `DataTable`.
+- One `DataTable` with the `FilterRail`. The Queue facet (with counts) selects assigned to me (open), unassigned (org pool, self-claim), or completed. The band holds Start next review, which opens the oldest assigned request.
 - Search and the status and waiting-time filters are nuqs params (`tab`, `q`, `status`, `age`) in a `FilterBar` with Clear filters. `/` focuses the search.
 - A filtered empty table shows its own "No matches" state.
 - Claim is optimistic: the row leaves the unassigned tab at once and returns with an error toast if the claim fails. The unassigned tab uses `DataTable` row selection: selected rows show a count and a "Claim N reviews" bulk action, and the table announces the count. The organization table shows a skeleton while it loads.
@@ -115,13 +116,13 @@ draft -> submitted -> in_review -> approved -> revoked
 ### Review workspace
 
 - Route: `/certificates/[id]/review`, for the assigned tutor only.
-- Left side: the volunteer, experience, tasks, and skills with the chosen description, evidence, and the reflection (`findReviewContext`, reviewer only), plus the previous feedback.
-- The header shows the status and the waiting time.
-- Right side (3 of 5 columns), the form: editable experience and tasks, per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a note per section, and a general comment.
+- Left side: the previous feedback (neutral card), the volunteer, experience and tasks (read-only, with an Edit button that opens the fields in place), and skills with the chosen description, evidence, and the reflection (`findReviewContext`, reviewer only).
+- The band shows the status and "Submitted N days ago" as text, and Start review for a `submitted` request.
+- Right side, a sticky 400 px "Your review" panel (wider than the 320 px rail because it holds inputs): per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a general comment, collapsible notes per section, then Approve, Request changes, and Reject. A `changes_requested` request replaces the panel with a waiting note.
 - Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`. On coarse pointers the dialog shows the HTML `CertificateThumbnail` built from the form values, plus an Open PDF link to the blob, because iOS Safari renders `<object>` PDFs poorly (`useCoarsePointer`). Desktop keeps the `<object>` embed.
-- Below `lg`, a segmented switch selects Request or Review (opens on Review). The hidden side stays mounted, so form state survives, and the sticky decision bar stays in both views.
+- Below `lg`, the panel follows the evidence, and a fixed bottom bar holds Approve.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
-- `Start review` claims a `submitted` request.
+- `Start review` (`StartReviewButton` in the band) claims a `submitted` request.
 
 ### Organization pipeline
 
@@ -151,7 +152,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ## Public verification
 
 - `/verify` takes a code (any case, dashes optional, normalized by `normalizeCertificateCode`) and redirects to `/verify/<code>`.
-- `/verify/<code>` and the public profile render one credential card (status, `type-display` name, facts, tasks, skills, code with an icon-only copy button, QR).
+- `/verify/<code>` renders one credential card led by the verdict row (valid or revoked with its date, Download PDF as a secondary button), then the holder, facts, tasks and skills in two columns, and a footer with code, issue date, signatory, and QR. A "Check another code" field sits above the card. A revoked card keeps only holder, organization, code, and issue date. The public profile keeps the band card.
 - `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with their level and description, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.

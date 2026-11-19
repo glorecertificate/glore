@@ -32,6 +32,7 @@ import {
 import { WIZARD_STEPS, missingPersonalData } from '@/components/features/certificates/rules'
 import { type PersonalDataValues, type WizardValues, wizardSchema } from '@/components/features/certificates/schemas'
 import { type StepItem, StepList } from '@/components/features/certificates/step-list'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
@@ -42,12 +43,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Form } from '@/components/ui/form'
+import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useDebounce } from '@/hooks/use-debounce'
@@ -95,8 +97,9 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const missing = missingPersonalData(holder)
   const [submitting, setSubmitting] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [discarding, setDiscarding] = useState(false)
+  const [exiting, setExiting] = useState(false)
   const [advancing, setAdvancing] = useState(false)
-  const [invalid, setInvalid] = useState(false)
   const [attempts, setAttempts] = useState(0)
   const [saveState, setSaveState] = useState<SaveState>('idle')
   const draftId = useRef(certificate?.isDraft ? certificate.id : undefined)
@@ -171,7 +174,6 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
 
   const goTo = (next: number) => {
     moved.current = true
-    setInvalid(false)
     setStep(next)
   }
 
@@ -179,7 +181,6 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     setAdvancing(true)
     const valid = await form.trigger([...WIZARD_STEP_FIELDS[step]!], { shouldFocus: true })
     setAdvancing(false)
-    setInvalid(!valid)
     if (!valid) {
       setAttempts(count => count + 1)
       return
@@ -230,6 +231,13 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
     }
   }
 
+  const saveAndExit = async () => {
+    setExiting(true)
+    await flush()
+    setExiting(false)
+    push('/certificates')
+  }
+
   const discard = async () => {
     if (!draftId.current) return push('/certificates')
     setDeleting(true)
@@ -266,88 +274,110 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const last = step === WIZARD_STEPS.length - 1
   const comments = notes?.sectionComments ?? {}
 
+  const saveLabel = {
+    error: t('saveError'),
+    idle: '',
+    limit: t('draftLimit'),
+    saved: t('saved'),
+    saving: t('saving'),
+  }[saveState]
+
   return (
-    <Card className="gap-6 p-4 sm:p-6">
-      <StepList aria-label={t('stepsLabel')} items={items} />
-
-      {resubmit && notes && (
-        <Banner variant="warning">
-          <div className="min-w-0 space-y-1">
-            <p className="font-medium">{t('changesRequested')}</p>
-            {notes.comment && <p className="whitespace-pre-wrap text-muted-foreground">{notes.comment}</p>}
+    <div className="flex flex-col gap-4 max-sm:pb-24">
+      <div className="flex flex-col gap-3">
+        {!resubmit && (
+          <div className="flex items-center justify-end gap-2">
+            <output aria-live="polite" className="mr-auto text-xs text-muted-foreground">
+              {saveLabel}
+            </output>
+            <Button
+              disabled={submitting || deleting}
+              loading={exiting}
+              onClick={() => void saveAndExit()}
+              size="sm"
+              type="button"
+              variant="outline"
+            >
+              {t('saveAndExit')}
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  aria-label={t('moreActions')}
+                  disabled={submitting || deleting}
+                  size="icon-sm"
+                  type="button"
+                  variant="ghost"
+                >
+                  <LucideIcon name="ellipsis" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => setDiscarding(true)} variant="destructive">
+                  <LucideIcon name="trash-2" />
+                  {t('discard')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        </Banner>
-      )}
+        )}
+      </div>
 
-      <Form {...form}>
-        {!resubmit && <Autosave control={form.control} onChange={autosave} />}
-        <form className="flex flex-col gap-6" noValidate onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-1">
-            <h2 className="type-heading outline-none" ref={heading} tabIndex={-1}>
-              {stepTitles[WIZARD_STEPS[step]!]}
-            </h2>
-            <p className="text-sm text-muted-foreground">{stepDescriptions[WIZARD_STEPS[step]!]}</p>
-          </div>
-
-          {invalid && Object.keys(form.formState.errors).length > 0 && (
-            <Banner role="alert" variant="destructive">
-              {t('stepInvalid')}
-            </Banner>
-          )}
-
-          {step === 0 && <ExperienceStep comments={comments} />}
-          {step === 1 && <SkillsStep comment={comments.skills} options={skills} />}
-          {step === 2 && <OrganizationStep organization={organization.name} />}
-          {step === 3 && (
-            <ReviewStep
-              comment={comments.personal}
-              firstName={holder.firstName}
-              lastName={holder.lastName}
-              missing={missing}
-              options={skills}
-              organization={organization}
-            />
-          )}
-
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-            <div className="flex items-center gap-3">
-              <Button
-                disabled={step === 0 || submitting}
-                icon="arrow-left"
-                onClick={() => goTo(step - 1)}
-                type="button"
-                variant="outline"
-              >
-                {t('back')}
-              </Button>
-              {!resubmit && (
-                <output aria-live="polite" className="text-xs text-muted-foreground">
-                  {saveState === 'saving' && t('saving')}
-                  {saveState === 'saved' && t('saved')}
-                  {saveState === 'error' && t('saveError')}
-                  {saveState === 'limit' && t('draftLimit')}
-                </output>
-              )}
+      <Card className="gap-6 p-4 sm:p-6">
+        <div className="hidden sm:block">
+          <StepList aria-label={t('stepsLabel')} items={items} />
+        </div>
+        <div className="flex flex-col gap-2 sm:hidden">
+          <p className="text-sm font-medium">{t('stepOf', { current: step + 1, total: WIZARD_STEPS.length })}</p>
+          <Progress aria-label={t('stepsLabel')} value={((step + 1) / WIZARD_STEPS.length) * 100} />
+        </div>
+        {resubmit && notes && (
+          <Banner variant="warning">
+            <div className="min-w-0 space-y-1">
+              <p className="font-medium">{t('changesRequested')}</p>
+              {notes.comment && <p className="whitespace-pre-wrap text-muted-foreground">{notes.comment}</p>}
             </div>
-            <div className="flex items-center gap-2">
-              {!resubmit && (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button disabled={submitting || deleting} icon="trash-2" type="button" variant="ghost">
-                      {t('discard')}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>{t('discardTitle')}</AlertDialogTitle>
-                      <AlertDialogDescription>{t('discardDescription')}</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => void discard()}>{t('discard')}</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+          </Banner>
+        )}
+
+        <Form {...form}>
+          {!resubmit && <Autosave control={form.control} onChange={autosave} />}
+          <form className="flex flex-col gap-6" noValidate onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-1">
+              <h2 className="type-heading outline-none" ref={heading} tabIndex={-1}>
+                {stepTitles[WIZARD_STEPS[step]!]}
+              </h2>
+              <p className="text-sm text-muted-foreground">{stepDescriptions[WIZARD_STEPS[step]!]}</p>
+            </div>
+
+            {step === 0 && <ExperienceStep comments={comments} />}
+            {step === 1 && <SkillsStep comment={comments.skills} options={skills} />}
+            {step === 2 && <OrganizationStep organization={organization.name} />}
+            {step === 3 && (
+              <ReviewStep
+                comment={comments.personal}
+                firstName={holder.firstName}
+                lastName={holder.lastName}
+                missing={missing}
+                onChange={goTo}
+                options={skills}
+                organization={organization}
+              />
+            )}
+
+            <div className="flex items-center justify-between gap-3 border-t pt-4 max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-20 max-sm:border-t max-sm:bg-background max-sm:px-4 max-sm:pt-3 max-sm:pb-bar-safe max-sm:*:min-h-11">
+              {step > 0 ? (
+                <Button
+                  disabled={submitting}
+                  icon="arrow-left"
+                  onClick={() => goTo(step - 1)}
+                  type="button"
+                  variant="outline"
+                >
+                  {t('back')}
+                </Button>
+              ) : (
+                <span />
               )}
               {last ? (
                 <Button
@@ -356,7 +386,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                   loading={submitting}
                   loadingText={t('submitting')}
                   type="submit"
-                  variant="brand"
+                  variant="primary"
                 >
                   {resubmit ? t('resubmit') : t('submit')}
                 </Button>
@@ -368,16 +398,29 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                   loading={advancing}
                   onClick={() => void advance()}
                   type="button"
-                  variant="brand"
+                  variant="primary"
                 >
                   {t('next')}
                 </Button>
               )}
             </div>
-          </div>
-        </form>
-      </Form>
-    </Card>
+          </form>
+        </Form>
+      </Card>
+
+      <AlertDialog onOpenChange={setDiscarding} open={discarding}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('discardTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('discardDescription')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => void discard()}>{t('discard')}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   )
 }
 

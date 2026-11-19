@@ -88,6 +88,7 @@ import {
   dateTop,
   footerShift,
   formatDate,
+  hasPersonalData,
   hyphenate,
   nameSize,
   partnerFontSize,
@@ -343,19 +344,23 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         <Text style={[styles.name, { fontWeight: 700 }, placed(NAME_BOX.lastTop, nameSize(lastName))]}>{lastName}</Text>
 
         {/* Personal */}
-        <View style={[styles.bar, { backgroundColor: GREEN, height: PERSONAL.barHeight, top: PERSONAL.barTop }]} />
-        <Text style={[styles.personalLine, placed(PERSONAL.tops[0]!, PERSONAL.size)]}>
-          {`${labels.nationality} `}
-          <Text style={styles.strong}>{holder.nationality ?? ''}</Text>
-        </Text>
-        <Text style={[styles.personalLine, placed(PERSONAL.tops[1]!, PERSONAL.size)]}>
-          {`${labels.dateOfBirth} `}
-          <Text style={styles.strong}>{formatDate(holder.birthday)}</Text>
-        </Text>
-        <Text style={[styles.personalLine, placed(PERSONAL.tops[2]!, PERSONAL.size)]}>
-          {`${labels.placeOfBirth} `}
-          <Text style={styles.strong}>{holder.birthPlace ?? ''}</Text>
-        </Text>
+        {hasPersonalData(holder) ? (
+          <>
+            <View style={[styles.bar, { backgroundColor: GREEN, height: PERSONAL.barHeight, top: PERSONAL.barTop }]} />
+            <Text style={[styles.personalLine, placed(PERSONAL.tops[0]!, PERSONAL.size)]}>
+              {`${labels.nationality} `}
+              <Text style={styles.strong}>{holder.nationality ?? ''}</Text>
+            </Text>
+            <Text style={[styles.personalLine, placed(PERSONAL.tops[1]!, PERSONAL.size)]}>
+              {`${labels.dateOfBirth} `}
+              <Text style={styles.strong}>{formatDate(holder.birthday)}</Text>
+            </Text>
+            <Text style={[styles.personalLine, placed(PERSONAL.tops[2]!, PERSONAL.size)]}>
+              {`${labels.placeOfBirth} `}
+              <Text style={styles.strong}>{holder.birthPlace ?? ''}</Text>
+            </Text>
+          </>
+        ) : null}
 
         {/* Volunteering */}
         <View style={[styles.bar, { height: VOLUNTEERING.barHeight, top: VOLUNTEERING.barTop }]} />

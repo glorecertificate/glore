@@ -81,6 +81,7 @@ export const CertificatePreview = ({ certificate, className }: { certificate: Ce
       label={t('previewLabel', { organization: certificate.organization.name })}
       labels={snapshot?.labels}
       language={snapshot?.language ?? certificate.language}
+      showPersonal={snapshot || current ? undefined : true}
     />
   )
 }

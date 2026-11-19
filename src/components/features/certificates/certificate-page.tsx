@@ -75,6 +75,7 @@ import {
   baselineTop,
   dateTop,
   formatDate,
+  hasPersonalData,
   nameSize,
   partnerFontSize,
   partnerWidth,
@@ -221,12 +222,14 @@ export const CertificatePage = ({
   label,
   labels: frozenLabels,
   language,
+  showPersonal,
   ...props
 }: Omit<React.ComponentProps<'figure'>, 'children'> & {
   input: CertificateInput
   label: string
   labels?: CertificatePdfLabels
   language?: string
+  showPersonal?: boolean
 }) => {
   const t = useTranslations('CertificatePdf')
   const common = useTranslations('Common')
@@ -344,17 +347,24 @@ export const CertificatePage = ({
           {lastName}
         </p>
 
-        <Bar color={GREEN} height={PERSONAL.barHeight} top={PERSONAL.barTop} />
-        {[
-          [labels.nationality, holder.nationality ?? ''],
-          [labels.dateOfBirth, formatDate(holder.birthday)],
-          [labels.placeOfBirth, holder.birthPlace ?? ''],
-        ].map(([name, value], index) => (
-          <p key={name} style={textAt(PERSONAL.left, PERSONAL.tops[index]!, PERSONAL.size, 1, { whiteSpace: 'pre' })}>
-            {`${name} `}
-            <span style={{ fontWeight: 900, textTransform: 'uppercase' }}>{value}</span>
-          </p>
-        ))}
+        {(showPersonal ?? hasPersonalData(holder)) ? (
+          <>
+            <Bar color={GREEN} height={PERSONAL.barHeight} top={PERSONAL.barTop} />
+            {[
+              [labels.nationality, holder.nationality ?? ''],
+              [labels.dateOfBirth, formatDate(holder.birthday)],
+              [labels.placeOfBirth, holder.birthPlace ?? ''],
+            ].map(([name, value], index) => (
+              <p
+                key={name}
+                style={textAt(PERSONAL.left, PERSONAL.tops[index]!, PERSONAL.size, 1, { whiteSpace: 'pre' })}
+              >
+                {`${name} `}
+                <span style={{ fontWeight: 900, textTransform: 'uppercase' }}>{value}</span>
+              </p>
+            ))}
+          </>
+        ) : null}
 
         <Bar height={VOLUNTEERING.barHeight} top={VOLUNTEERING.barTop} />
         <p

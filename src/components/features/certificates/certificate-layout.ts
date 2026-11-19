@@ -122,6 +122,8 @@ export const baselineTop = (top: number, fontSize: number, lineHeight: number) =
 
 export const NAME_BOX = { firstTop: 137, left: 23.6, lastTop: 173, width: 230 }
 export const PERSONAL = { barTop: 230.3, barHeight: 38.7, left: 45.3, size: 9, tops: [227, 243, 259] }
+export const hasPersonalData = (holder: CertificateInput['holder']) =>
+  Boolean(holder.nationality || holder.birthday || holder.birthPlace)
 export const SECTION_BAR = { left: 26.9, width: 2.8 }
 export const VOLUNTEERING = { barHeight: 173.9, barTop: 299, headingTop: 296.1 }
 export const TASKS_SECTION = { barHeight: 184.4, barTop: 503.3, headingTop: 499, introTop: 521.6 }

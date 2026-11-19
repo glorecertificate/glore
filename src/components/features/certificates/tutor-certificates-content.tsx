@@ -18,9 +18,8 @@ import {
 import { ageTone } from '@/components/features/certificates/rules'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useTutorQueueAge, useTutorQueueStatus, useTutorQueueTab } from '@/components/features/certificates/use-params'
-import { FilterBar } from '@/components/ui/filter-bar'
+import { type FilterRailProps } from '@/components/ui/filter-rail'
 import { SearchInput } from '@/components/ui/search'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
@@ -28,7 +27,11 @@ import { useSearch } from '@/hooks/use-search'
 import { SHORTCUTS } from '@/lib/shortcuts'
 import { fullName } from '@/lib/utils'
 
-const ALL = 'all'
+const ageMatches = (certificate: Certificate, option: TutorQueueAge) => {
+  if (!certificate.isPending) return false
+  const tone = ageTone(certificateAge(certificate))
+  return option === 'overdue' ? tone === 'overdue' : tone !== 'fresh'
+}
 
 export const TutorCertificatesContent = ({
   assigned,
@@ -70,14 +73,20 @@ export const TutorCertificatesContent = ({
     pool: pool.length,
   } satisfies Record<TutorQueueTab, number>
 
-  const filter = (tabKey: TutorQueueTab) =>
-    sources[tabKey].filter(certificate => {
-      if (!matchSearch([certificate.user ? fullName(certificate.user) : null, certificate.user?.email])) return false
-      if (tabKey !== 'pool' && status && certificate.status !== status) return false
-      if (!age || !certificate.isPending) return !age
-      const tone = ageTone(certificateAge(certificate))
-      return age === 'overdue' ? tone === 'overdue' : tone !== 'fresh'
-    })
+  const matches = (
+    certificate: Certificate,
+    tabKey: TutorQueueTab,
+    { ignoreAge = false, ignoreStatus = false }: { ignoreAge?: boolean; ignoreStatus?: boolean } = {}
+  ) => {
+    if (!matchSearch([certificate.user ? fullName(certificate.user) : null, certificate.user?.email])) return false
+    if (!ignoreStatus && tabKey !== 'pool' && status && certificate.status !== status) return false
+    if (ignoreAge || !age) return true
+    if (!certificate.isPending) return false
+    const tone = ageTone(certificateAge(certificate))
+    return age === 'overdue' ? tone === 'overdue' : tone !== 'fresh'
+  }
+
+  const filter = (tabKey: TutorQueueTab) => sources[tabKey].filter(certificate => matches(certificate, tabKey))
 
   const statusOptions: readonly string[] = TUTOR_QUEUE_STATUSES[tab]
 
@@ -89,48 +98,59 @@ export const TutorCertificatesContent = ({
 
   const isFiltered = Boolean(searchValue.trim() || status || age)
 
-  const filters = (
-    <FilterBar
-      active={isFiltered}
-      onClear={clearFilters}
-      count={Number(Boolean(status)) + Number(Boolean(age))}
-      size="sm"
-      search={
-        <SearchInput aria-label={t('search')} hotkey={SHORTCUTS.filter.key} placeholder={t('search')} size="sm" />
-      }
-    >
-      {statusOptions.length > 0 && (
-        <Select onValueChange={value => setStatus(value === ALL ? null : value)} value={status ?? ALL}>
-          <SelectTrigger aria-label={t('status')} className="w-44" size="sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>{t('allStatuses')}</SelectItem>
-            {statusOptions.map(option => (
-              <SelectItem key={option} value={option}>
-                {tStatus(CERTIFICATE_STATUS[option as keyof typeof CERTIFICATE_STATUS].labelKey)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-      {tab !== 'completed' && (
-        <Select onValueChange={value => setAge(value === ALL ? null : (value as TutorQueueAge))} value={age ?? ALL}>
-          <SelectTrigger aria-label={t('age')} className="w-44" size="sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>{t('allAges')}</SelectItem>
-            {TUTOR_QUEUE_AGES.map(option => (
-              <SelectItem key={option} value={option}>
-                {t(`age_${option}`)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-    </FilterBar>
-  )
+  const railFor = (tabKey: TutorQueueTab): FilterRailProps => ({
+    groups: [
+      ...(statusOptions.length > 0
+        ? [
+            {
+              id: 'status',
+              label: t('status'),
+              onChange: (value: string | null) => setStatus(value),
+              options: statusOptions.map(option => {
+                const meta = CERTIFICATE_STATUS[option as keyof typeof CERTIFICATE_STATUS]
+                return {
+                  count: sources[tabKey].filter(
+                    certificate => certificate.status === option && matches(certificate, tabKey, { ignoreStatus: true })
+                  ).length,
+                  label: tStatus(meta.labelKey),
+                  tone: meta.tone,
+                  value: option,
+                }
+              }),
+              value: status,
+            },
+          ]
+        : []),
+      ...(tabKey === 'completed'
+        ? []
+        : [
+            {
+              id: 'age',
+              label: t('age'),
+              onChange: (value: string | null) => setAge(value as TutorQueueAge | null),
+              options: TUTOR_QUEUE_AGES.map(option => ({
+                count: sources[tabKey].filter(
+                  certificate => ageMatches(certificate, option) && matches(certificate, tabKey, { ignoreAge: true })
+                ).length,
+                label: t(`age_${option}`),
+                value: option,
+              })),
+              value: age,
+            },
+          ]),
+    ],
+    onReset: clearFilters,
+    search: placement => (
+      <SearchInput
+        aria-label={t('search')}
+        className="w-full"
+        hotkey={placement === 'panel' ? SHORTCUTS.filter.key : undefined}
+        placeholder={t('search')}
+        size="sm"
+      />
+    ),
+    searchActive: Boolean(searchValue.trim()),
+  })
 
   return (
     <div className="flex flex-col gap-6">
@@ -159,9 +179,9 @@ export const TutorCertificatesContent = ({
               <CertificateQueue
                 claiming={claiming}
                 filtered={isFiltered}
-                filters={filters}
                 onClaim={claim}
                 onSelectionChange={setSelected}
+                rail={railFor(key)}
                 rows={rows}
                 selectedIds={selected}
                 tab={key}

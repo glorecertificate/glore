@@ -13,7 +13,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { FilterBar } from '@/components/ui/filter-bar'
+import { FilterRailChips, FilterRailPanel, type FilterRailProps, FilterRailToolbar } from '@/components/ui/filter-rail'
 import { Link } from '@/components/ui/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
@@ -49,6 +49,38 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
   const featured = certificates.find(({ isApproved, isDefault }) => isApproved && isDefault)
   const hasOpenRequest = certificates.some(({ isOpen }) => isOpen)
 
+  const rail: FilterRailProps = {
+    extra: (
+      <div className="flex min-w-0 flex-col gap-2">
+        <span className="type-label text-fg-title">{tCommon('sortBy')}</span>
+        <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
+          <SelectTrigger aria-label={tCommon('sortBy')} className="w-full" size="sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">{t('sortNewest')}</SelectItem>
+            <SelectItem value="oldest">{t('sortOldest')}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    ),
+    groups: [
+      {
+        id: 'status',
+        label: t('filterStatus'),
+        onChange: value => setStatus(value as CertListStatus | null),
+        options: presentStatuses.map(value => ({
+          count: certificates.filter(c => c.status === value).length,
+          label: tStatus(CERTIFICATE_STATUS[value].labelKey),
+          tone: CERTIFICATE_STATUS[value].tone,
+          value,
+        })),
+        value: status,
+      },
+    ],
+    onReset: () => setStatus(null),
+  }
+
   return (
     <div className="flex flex-col gap-8">
       {eligible && !hasOpenRequest && (
@@ -78,61 +110,43 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
       )}
 
       {hasCertificates && (
-        <FilterBar active={Boolean(status)} onClear={() => setStatus(null)} count={Number(Boolean(status))}>
-          <Select
-            onValueChange={value => setStatus(value === 'all' ? null : (value as CertListStatus))}
-            value={status ?? 'all'}
-          >
-            <SelectTrigger aria-label={t('filterStatus')} className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('filterAll')}</SelectItem>
-              {presentStatuses.map(s => (
-                <SelectItem key={s} value={s}>
-                  {tStatus(CERTIFICATE_STATUS[s].labelKey)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
-            <SelectTrigger aria-label={tCommon('sortBy')} className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">{t('sortNewest')}</SelectItem>
-              <SelectItem value="oldest">{t('sortOldest')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </FilterBar>
+        <div className="flex min-w-0 flex-col gap-4 lg:hidden">
+          <FilterRailToolbar {...rail} />
+        </div>
       )}
 
-      {displayCertificates.length > 0 ? (
-        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {displayCertificates.map(cert => (
-            <CertificateCard certificate={cert} key={cert.id} />
-          ))}
-        </div>
-      ) : (
-        <Empty className="border">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              {status ? <LucideIcon name="search-x" /> : <LucideIcon name="award" />}
-            </EmptyMedia>
-            <EmptyTitle>{status ? t('noFilteredCertificates') : t('noCertificates')}</EmptyTitle>
-            <EmptyDescription>
-              {status ? t('noFilteredCertificatesMessage') : t('noCertificatesMessage')}
-            </EmptyDescription>
-          </EmptyHeader>
-          {status && (
-            <EmptyContent>
-              <Button onClick={() => setStatus(null)} size="sm" variant="outline">
-                {tCommon('clearFilters')}
-              </Button>
-            </EmptyContent>
+      <div className={hasCertificates ? 'flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start' : undefined}>
+        {hasCertificates && <FilterRailPanel {...rail} className="max-lg:hidden lg:rounded-xl lg:border" />}
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
+          {hasCertificates && <FilterRailChips groups={rail.groups} />}
+          {displayCertificates.length > 0 ? (
+            <div className="grid items-start gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {displayCertificates.map(cert => (
+                <CertificateCard certificate={cert} key={cert.id} />
+              ))}
+            </div>
+          ) : (
+            <Empty className="border">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  {status ? <LucideIcon name="search-x" /> : <LucideIcon name="award" />}
+                </EmptyMedia>
+                <EmptyTitle>{status ? t('noFilteredCertificates') : t('noCertificates')}</EmptyTitle>
+                <EmptyDescription>
+                  {status ? t('noFilteredCertificatesMessage') : t('noCertificatesMessage')}
+                </EmptyDescription>
+              </EmptyHeader>
+              {status && (
+                <EmptyContent>
+                  <Button onClick={() => setStatus(null)} size="sm" variant="outline">
+                    {tCommon('clearFilters')}
+                  </Button>
+                </EmptyContent>
+              )}
+            </Empty>
           )}
-        </Empty>
-      )}
+        </div>
+      </div>
     </div>
   )
 }

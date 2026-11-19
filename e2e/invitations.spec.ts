@@ -91,7 +91,10 @@ test('owner resends and revokes an invitation, and the revoked link stops workin
   await openDialog(page.getByRole('menuitem', { name: 'Revoke' }), revokeDialog)
   await revokeDialog.getByRole('button', { name: 'Revoke' }).click()
   await expect(page.getByText(`Invitation to ${thirdInvitee} revoked`)).toBeVisible()
-  await expect(page.getByRole('row').filter({ hasText: thirdInvitee })).toHaveCount(0)
+  await expect(
+    page.getByRole('row').filter({ hasText: thirdInvitee }).getByText('Revoked', { exact: true })
+  ).toBeVisible()
+  await expect(row.getByRole('button', { name: `Actions for ${thirdInvitee}` })).toHaveCount(0)
   expect((await invitationRow(tenant, thirdInvitee))?.revoked_at).not.toBeNull()
 
   const guest = await browser.newContext({ ignoreHTTPSErrors: true, storageState: { cookies: [], origins: [] } })

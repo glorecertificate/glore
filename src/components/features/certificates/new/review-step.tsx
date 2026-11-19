@@ -69,7 +69,15 @@ const Thumbnail = ({
 
 const RATINGS = ['experience', 'support', 'certificationSupport'] as const
 
-const Answers = ({ onChange, options }: { onChange: (step: number) => void; options: SkillOption[] }) => {
+const Answers = ({
+  onChange,
+  options,
+  organization,
+}: {
+  onChange: (step: number) => void
+  options: SkillOption[]
+  organization: string
+}) => {
   const t = useTranslations('CertificateWizard')
   const tDetail = useTranslations('CertificateDetail')
   const { locale } = useI18n()
@@ -86,11 +94,14 @@ const Answers = ({ onChange, options }: { onChange: (step: number) => void; opti
   const tasks = (values.tasks ?? []).flatMap(task => (task?.text?.trim() ? [task.text.trim()] : []))
   const skills = (values.skills ?? []).flatMap(skill => (skill?.courseId ? [titles.get(skill.courseId) ?? ''] : []))
   const rating = values.rating
+  const ratingLabels = {
+    certificationSupport: t('ratingCertificationSupport'),
+    experience: t('ratingExperience', { organization }),
+    support: t('ratingSupport'),
+  }
   const ratings = RATINGS.flatMap(key => {
     const score = rating?.[key]
-    return typeof score === 'number'
-      ? [`${t(`rating${key[0]!.toUpperCase()}${key.slice(1)}` as 'ratingExperience')}: ${score}/5`]
-      : []
+    return typeof score === 'number' ? [`${ratingLabels[key]} ${score}/5`] : []
   })
 
   const rows = [
@@ -158,7 +169,7 @@ export const ReviewStep = ({ comment, missing, onChange, ...thumbnail }: ReviewS
   return (
     <div className="flex flex-col gap-6">
       <SectionNote comment={comment} />
-      <Answers onChange={onChange} options={thumbnail.options} />
+      <Answers onChange={onChange} options={thumbnail.options} organization={thumbnail.organization.name} />
       <div className="flex flex-col gap-2">
         <p className="text-sm font-medium text-muted-foreground">{t('thumbnailTitle')}</p>
         <div className="max-w-md">

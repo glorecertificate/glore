@@ -79,7 +79,6 @@ import {
   TASKS_SECTION,
   TASK_LEFT,
   TASK_LINE_HEIGHT,
-  TASK_PITCH,
   TASK_TOP,
   TASK_WIDTH,
   VERIFY_BOX,
@@ -179,7 +178,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: TASKS_INTRO_WIDTH,
   },
-  task: { left: TASK_LEFT, lineHeight: TASK_LINE_HEIGHT, position: 'absolute', width: TASK_WIDTH },
   taskFlow: { left: TASK_LEFT, position: 'absolute', width: TASK_WIDTH },
   taskFlowItem: { lineHeight: TASK_LINE_HEIGHT },
   bullet: { color: GREEN, fontWeight: 900 },
@@ -394,23 +392,14 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         <View style={[styles.bar, { height: TASKS_SECTION.barHeight, top: TASKS_SECTION.barTop }]} />
         <Text style={[styles.heading, placed(TASKS_SECTION.headingTop, HEADING_SIZE)]}>{labels.mainTasks}</Text>
         <Text style={[styles.tasksIntro, placed(TASKS_SECTION.introTop, 10)]}>{labels.tasksIntro}</Text>
-        {plan.flow ? (
-          <View style={[styles.taskFlow, { rowGap: plan.gap, top: placed(TASK_TOP, plan.size).top }]}>
-            {plan.tasks.map(task => (
-              <Text key={task} style={[styles.taskFlowItem, { fontSize: plan.size }]}>
-                <Text style={styles.bullet}>{'• '}</Text>
-                {task}
-              </Text>
-            ))}
-          </View>
-        ) : (
-          plan.tasks.map((task, index) => (
-            <Text key={task} style={[styles.task, placed(TASK_TOP + index * TASK_PITCH, 10)]}>
+        <View style={[styles.taskFlow, { rowGap: plan.gap, top: placed(TASK_TOP, plan.size).top }]}>
+          {plan.tasks.map(task => (
+            <Text key={task} style={[styles.taskFlowItem, { fontSize: plan.size }]}>
               <Text style={styles.bullet}>{'• '}</Text>
               {task}
             </Text>
-          ))
-        )}
+          ))}
+        </View>
         <View
           style={[
             styles.row,

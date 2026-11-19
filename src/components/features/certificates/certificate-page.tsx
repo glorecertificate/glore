@@ -67,7 +67,6 @@ import {
   TASKS_SECTION,
   TASK_LEFT,
   TASK_LINE_HEIGHT,
-  TASK_PITCH,
   TASK_TOP,
   TASK_WIDTH,
   VOLUNTEERING,
@@ -423,36 +422,21 @@ export const CertificatePage = ({
         >
           {labels.tasksIntro}
         </p>
-        {plan.flow ? (
-          <div
-            style={textAt(TASK_LEFT, TASK_TOP, plan.size, TASK_LINE_HEIGHT, {
-              display: 'flex',
-              flexDirection: 'column',
-              rowGap: unit(plan.gap),
-              width: unit(TASK_WIDTH),
-            })}
-          >
-            {plan.tasks.map(task => (
-              <p key={task} style={{ margin: 0, overflowWrap: 'anywhere' }}>
-                <span style={{ color: GREEN, fontWeight: 900 }}>{'• '}</span>
-                {softHyphenate(task)}
-              </p>
-            ))}
-          </div>
-        ) : (
-          plan.tasks.map((task, index) => (
-            <p
-              key={task}
-              style={textAt(TASK_LEFT, TASK_TOP + index * TASK_PITCH, 10, TASK_LINE_HEIGHT, {
-                overflowWrap: 'anywhere',
-                width: unit(TASK_WIDTH),
-              })}
-            >
+        <div
+          style={textAt(TASK_LEFT, TASK_TOP, plan.size, TASK_LINE_HEIGHT, {
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: unit(plan.gap),
+            width: unit(TASK_WIDTH),
+          })}
+        >
+          {plan.tasks.map(task => (
+            <p key={task} style={{ margin: 0, overflowWrap: 'anywhere' }}>
               <span style={{ color: GREEN, fontWeight: 900 }}>{'• '}</span>
               {softHyphenate(task)}
             </p>
-          ))
-        )}
+          ))}
+        </div>
         <Row top={representedTop(Boolean(organization.signatureUrl))} width={REPRESENTED_ROW.width}>
           <RowLabel>{labels.representedBy}</RowLabel>
           <RowLine spec={REPRESENTED_ROW} value={organization.legalRepresentative ?? ''} />

@@ -175,8 +175,8 @@ export const partnerFontSize = (name: string, width = PARTNER_WIDTH) =>
 
 export const TASK_LEFT = 46.3
 export const TASK_TOP = 550.6
-export const TASK_PITCH = 40
-export const TASK_GAP = 3
+const TASK_GAP = 4
+const TASK_SHRUNK_GAP = 0.3
 export const TASK_WIDTH = 158.7
 export const TASK_LINE_HEIGHT = 1.2
 export const TASKS_INTRO_WIDTH = 172
@@ -185,7 +185,6 @@ const MAX_TASKS = 4
 
 const TASK_BOTTOM = 672
 const TASK_SIGNED_BOTTOM = 658
-const TASK_SIGNED_GAP = 2
 const TASK_CHAR_WIDTH = 0.45
 const TASK_BREAK_LOSS = 10
 const TASK_FONT_SIZES = [10, 9.5, 9, 8.5, 8, 7.5, 7]
@@ -209,29 +208,24 @@ const taskHeight = (task: string, fontSize: number) => taskLines(task, fontSize)
 const flowHeight = (tasks: string[], fontSize: number, gap: number) =>
   tasks.reduce((height, task) => height + taskHeight(task, fontSize), gap * Math.max(0, tasks.length - 1))
 
-const fitsPitch = (tasks: string[], bottom: number) =>
-  tasks.every(
-    (task, index) =>
-      taskHeight(task, 10) <= TASK_PITCH - TASK_GAP && TASK_TOP + index * TASK_PITCH + taskHeight(task, 10) <= bottom
-  )
+const taskGap = (fontSize: number) => (fontSize === 10 ? TASK_GAP : fontSize * TASK_SHRUNK_GAP)
 
 export const taskPlan = (allTasks: string[], signed: boolean) => {
   const tasks = allTasks.filter(Boolean).slice(0, MAX_TASKS)
   const bottom = signed ? TASK_SIGNED_BOTTOM : TASK_BOTTOM
-  if (fitsPitch(tasks, bottom)) return { flow: false as const, size: 10, tasks }
-  const gap = signed ? TASK_SIGNED_GAP : TASK_GAP
-  const size = TASK_FONT_SIZES.find(candidate => flowHeight(tasks, candidate, gap) <= bottom - TASK_TOP) ?? 7
-  return { flow: true as const, gap, size, tasks }
+  const size =
+    TASK_FONT_SIZES.find(candidate => flowHeight(tasks, candidate, taskGap(candidate)) <= bottom - TASK_TOP) ?? 7
+  return { gap: taskGap(size), size, tasks }
 }
 
-export const SIGNED_SHIFT = 8.8
+const SIGNED_SHIFT = 8.8
 export const SIGNATURE_BOX = { height: 26, left: 109.5, top: 684.5, width: 128 }
 export const representedTop = (signed: boolean) => REPRESENTED_ROW.top - (signed ? SIGNED_SHIFT : 0)
-export const DATE_TOP = 708.3
-export const DATE_SIGNED_TOP = 720.5
+const DATE_TOP = 708.3
+const DATE_SIGNED_TOP = 720.5
 export const dateTop = (signed: boolean) => (signed ? DATE_SIGNED_TOP : DATE_TOP)
 export const DATE_SIZE = 10.0464
-export const SIGNED_FOOTER_SHIFT = 6
+const SIGNED_FOOTER_SHIFT = 6
 export const footerShift = (signed: boolean) => (signed ? SIGNED_FOOTER_SHIFT : 0)
 export const QR_BOX = { left: 46.1, size: 52, top: 735 }
 export const VERIFY_BOX = { left: 106, top: 742, width: 280 }

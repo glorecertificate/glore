@@ -21,9 +21,11 @@ const STATUS_TONES = { completed: 'success', inProgress: 'info', notStarted: 'ne
 export const LearnerCourseCard = ({
   activeLanguages,
   course,
+  prefetch = false,
 }: {
   activeLanguages: Locale[]
   course: CourseSummary
+  prefetch?: boolean
 }) => {
   const t = useTranslations('CourseList')
   const { user } = useSession()
@@ -61,7 +63,7 @@ export const LearnerCourseCard = ({
           <Link
             className="after:absolute after:inset-0 after:content-['']"
             href={href}
-            prefetch
+            prefetch={prefetch ? true : undefined}
             suppressHydrationWarning
           >
             <SearchHighlight query={search} value={title} />

@@ -21,6 +21,8 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { TabsContent } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 
+const PREFETCHED_CARDS = 2
+
 const CourseListSortableGrid = dynamic(
   async () => (await import('@/components/features/courses/course-list/sortable-grid')).CourseListSortableGrid
 )
@@ -100,12 +102,16 @@ export const CourseList = ({
   const grid = (
     <div className="grid gap-4 md:grid-cols-2">
       <AnimatedList>
-        {displayCourses.slice(0, user.canEdit ? undefined : limit).map(course => (
+        {displayCourses.slice(0, user.canEdit ? undefined : limit).map((course, index) => (
           <AnimatedListItem className="group/sortable-item relative h-full" key={course.slug}>
             {user.canEdit ? (
               <CourseListCard activeLanguages={activeLanguages} className="h-full" course={course} />
             ) : (
-              <LearnerCourseCard activeLanguages={activeLanguages} course={course} />
+              <LearnerCourseCard
+                activeLanguages={activeLanguages}
+                course={course}
+                prefetch={index < PREFETCHED_CARDS}
+              />
             )}
           </AnimatedListItem>
         ))}

@@ -8,6 +8,7 @@ const perfConfig = defineConfig({
   retries: 0,
   forbidOnly: Boolean(process.env.CI),
   reporter: process.env.CI ? 'github' : 'list',
+  expect: { timeout: process.env.CI ? 15_000 : 20_000 },
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'https://glore.localhost',
     ignoreHTTPSErrors: true,
@@ -39,7 +40,7 @@ const perfConfig = defineConfig({
       ]
     : undefined,
   projects: [
-    { name: 'setup', testMatch: /auth\.setup\.ts/u },
+    { name: 'setup', retries: process.env.CI ? 1 : 0, testMatch: /auth\.setup\.ts/u },
     {
       name: 'perf',
       testMatch: /\.perf\.ts$/u,

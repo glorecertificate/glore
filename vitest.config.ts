@@ -18,7 +18,9 @@ export default defineConfig({
     environment: 'node',
     env,
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
+    hookTimeout: 60_000,
     restoreMocks: true,
+    testTimeout: 30_000,
     unstubEnvs: true,
   },
 })

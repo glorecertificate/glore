@@ -99,7 +99,8 @@ export const RichTextEditorProvider = ({
         placeholders: {
           [KEYS.p]: t('block'),
         },
-        query: ({ path }: { path: number[] }) => path.length === 1,
+        query: ({ editor, path }: { editor: PlateEditor; path: number[] }) =>
+          path.length === 1 && !(editor.children.length === 1 && editor.api.isEmpty(editor.children[0])),
       },
     }),
   ].flat() as AnyPluginConfig[]

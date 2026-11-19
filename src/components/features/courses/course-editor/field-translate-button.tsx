@@ -13,12 +13,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { LOCALES } from '@/lib/i18n'
+import { cn } from '@/lib/utils'
 
 interface FieldTranslateButtonProps extends Omit<React.ComponentProps<typeof Button>, 'onClick'> {
   fieldKey: string
 }
 
-export const FieldTranslateButton = ({ fieldKey, ...props }: FieldTranslateButtonProps) => {
+export const FieldTranslateButton = ({ className, fieldKey, ...props }: FieldTranslateButtonProps) => {
   const t = useTranslations('CourseTranslate')
   const { localeItems } = useI18n()
   const { applyTranslated, course, language } = useCourse()
@@ -40,31 +41,35 @@ export const FieldTranslateButton = ({ fieldKey, ...props }: FieldTranslateButto
   }
 
   return (
-    <DropdownMenu>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
-            <Button
-              aria-label={props.children ? undefined : t('field.trigger')}
-              disabled={running}
-              icon="languages"
-              loading={running}
-              size="icon-sm"
-              type="button"
-              variant="transparent"
-              {...props}
-            />
-          </DropdownMenuTrigger>
-        </TooltipTrigger>
-        <TooltipContent size="sm">{t('field.trigger')}</TooltipContent>
-      </Tooltip>
-      <DropdownMenuContent align="end">
-        {sources.map(locale => (
-          <DropdownMenuItem key={locale} onSelect={() => run(locale as Locale)}>
-            {t('field.from', { language: nameOf(locale) })}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <span className="-my-1 inline-flex shrink-0 self-center opacity-0 transition-opacity group-focus-within/field:opacity-100 focus-within:opacity-100 has-[:disabled]:opacity-100 has-[[data-state=open]]:opacity-100">
+      <DropdownMenu>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label={t('field.trigger')}
+                className={cn('disabled:pointer-events-none disabled:opacity-100', className)}
+                disabled={running}
+                icon="languages"
+                loading={running}
+                size="icon-sm"
+                stable
+                type="button"
+                variant="transparent"
+                {...props}
+              />
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent size="sm">{t('field.trigger')}</TooltipContent>
+        </Tooltip>
+        <DropdownMenuContent align="end">
+          {sources.map(locale => (
+            <DropdownMenuItem key={locale} onSelect={() => run(locale as Locale)}>
+              {t('field.from', { language: nameOf(locale) })}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </span>
   )
 }

@@ -137,7 +137,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
     ))
 
   const titleNode = (
-    <span className="inline-flex max-w-full min-w-0 items-start gap-3">
+    <span className="group/field inline-flex max-w-full min-w-0 items-start gap-3">
       {canEdit ? (
         <TitleField
           aria-label={t('renameCourse')}
@@ -153,7 +153,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
       )}
       {canEdit && (
         <FieldTranslateButton
-          className="shrink-0 text-band-foreground hover:bg-band-scrim"
+          className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim"
           fieldKey={`courses:${course.id}:title`}
         />
       )}
@@ -190,7 +190,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
           'block',
           !descriptionExpanded && 'max-md:max-h-13 max-md:overflow-hidden',
           !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2',
-          canEdit && 'flex items-start gap-1'
+          canEdit && 'group/field flex items-center gap-3'
         )}
         onFocusCapture={() => setDescriptionExpanded(true)}
         ref={descriptionWrapperRef}
@@ -198,7 +198,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
         {descriptionField}
         {canEdit && (
           <FieldTranslateButton
-            className="shrink-0 text-band-foreground hover:bg-band-scrim"
+            className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim"
             fieldKey={`courses:${course.id}:description`}
           />
         )}

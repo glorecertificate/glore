@@ -4494,7 +4494,6 @@
     "field": {
       "done": "Tradotto. Controlla il testo, poi salva la bozza.",
       "failed": "Impossibile tradurre questo campo. Riprova.",
-      "lessonContent": "Traduci contenuto",
       "trigger": "Traduci con l'IA",
       "from": "Traduci da {language}"
     },
@@ -4504,6 +4503,14 @@
     "modeFill": "Compila solo i campi vuoti",
     "modeReplace": "Sostituisci il testo esistente",
     "replaceWarning": "Il testo esistente nelle lingue scelte verrà sostituito dalla traduzione.",
-    "cancelled": "Annullato. {count, plural, one {È stato tradotto # campo} other {Sono stati tradotti # campi}}."
+    "cancelled": "Annullato. {count, plural, one {È stato tradotto # campo} other {Sono stati tradotti # campi}}.",
+    "lessonTitle": "Traduci lezione",
+    "what": "Cosa tradurre",
+    "whatTitle": "Titolo",
+    "whatContent": "Contenuto e attività",
+    "menu": {
+      "lesson": "Questa lezione",
+      "course": "Intero corso"
+    }
   }
 }

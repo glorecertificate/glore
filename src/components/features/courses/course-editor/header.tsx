@@ -238,6 +238,7 @@ export const CourseHeader = () => {
                       <Button
                         disabled={draftDisabled || saving !== null}
                         loading={saving === 'draft'}
+                        stable
                         onClick={onSaveDraft}
                         variant="band-secondary"
                       >
@@ -259,6 +260,7 @@ export const CourseHeader = () => {
                       <Button
                         disabled={saving !== null}
                         loading={saving === 'publish'}
+                        stable
                         onClick={onPrimary}
                         variant="band"
                       >
@@ -333,6 +335,7 @@ export const CourseHeader = () => {
                   <Button
                     disabled={draftDisabled || saving !== null}
                     loading={saving === 'draft'}
+                    stable
                     onClick={onSaveDraft}
                     variant="outline"
                   >
@@ -342,6 +345,7 @@ export const CourseHeader = () => {
                 <Button
                   disabled={primaryDisabled || saving !== null}
                   loading={saving === 'publish'}
+                  stable
                   onClick={onPrimary}
                   variant="brand"
                 >

@@ -4494,7 +4494,6 @@
     "field": {
       "done": "Translated. Review the text, then save the draft.",
       "failed": "Could not translate this field. Try again.",
-      "lessonContent": "Translate content",
       "trigger": "Translate with AI",
       "from": "Translate from {language}"
     },
@@ -4504,6 +4503,14 @@
     "modeFill": "Fill only empty fields",
     "modeReplace": "Replace existing text",
     "replaceWarning": "Existing text in the selected languages will be replaced by the translation.",
-    "cancelled": "Cancelled. {count, plural, one {# field was} other {# fields were}} translated."
+    "cancelled": "Cancelled. {count, plural, one {# field was} other {# fields were}} translated.",
+    "lessonTitle": "Translate lesson",
+    "what": "What to translate",
+    "whatTitle": "Title",
+    "whatContent": "Content and activities",
+    "menu": {
+      "lesson": "This lesson",
+      "course": "Whole course"
+    }
   }
 }

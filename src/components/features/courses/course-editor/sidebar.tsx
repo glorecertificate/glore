@@ -6,7 +6,6 @@ import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
-import { FieldTranslateButton } from '@/components/features/courses/course-editor/field-translate-button'
 import { useDraft } from '@/components/features/courses/course-editor/use-draft'
 import { useLanguageName } from '@/components/features/courses/course-editor/use-language-name'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -196,18 +195,6 @@ const CourseSidebarItem = ({
                     {isMissing ? t('lessonTitleMissing', { language: languageName }) : t('renameLesson')}
                   </TooltipContent>
                 </Tooltip>
-                {!isTempId(lesson.id) && (
-                  <span
-                    className="absolute -top-2 right-5 opacity-0 transition-opacity group-hover:opacity-100 peer-focus:opacity-0 focus-within:opacity-100 has-[[data-state=open]]:opacity-100 pointer-coarse:opacity-100"
-                    onClick={event => event.stopPropagation()}
-                  >
-                    <FieldTranslateButton
-                      className="touch-hit rounded-full p-px"
-                      fieldKey={`lessons:${lesson.id}:title`}
-                      size="text"
-                    />
-                  </span>
-                )}
                 {!isSingleLesson && (
                   <Tooltip>
                     <TooltipTrigger asChild>

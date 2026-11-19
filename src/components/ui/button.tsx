@@ -22,6 +22,7 @@ export interface ButtonProps
   loadingText?: string
   loadingTitle?: string
   spinner?: string
+  stable?: boolean
 }
 
 export const buttonVariants = cva(
@@ -103,6 +104,7 @@ export const Button = ({
   loadingTitle,
   size,
   spinner,
+  stable = false,
   title,
   type,
   variant,
@@ -112,6 +114,31 @@ export const Button = ({
   const label = loading ? loadingTitle : disabled ? disabledTitle : title
   const IconComponent = typeof icon === 'function' ? icon : null
   const iconNode = typeof icon === 'string' ? <LucideIcon name={icon} /> : IconComponent && <IconComponent />
+
+  if (stable && !asChild) {
+    return (
+      <button
+        className={cn(
+          buttonVariants({ effect, size, variant }),
+          loading && 'cursor-wait disabled:cursor-wait',
+          className
+        )}
+        disabled={disabled || loading}
+        title={label}
+        type={type}
+        {...props}
+      >
+        <span className="grid items-center justify-items-center gap-2">
+          <span className={cn('col-start-1 row-start-1 inline-flex items-center gap-2', loading && 'invisible')}>
+            {iconPlacement === 'left' && iconNode}
+            {children}
+            {iconPlacement === 'right' && iconNode}
+          </span>
+          {loading && <Spinner className={cn('col-start-1 row-start-1', spinner)} />}
+        </span>
+      </button>
+    )
+  }
 
   return (
     <Component

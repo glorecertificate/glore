@@ -41,12 +41,15 @@ const ERROR_KEYS = {
 interface TranslateDialogProps {
   onOpenChange: (open: boolean) => void
   open: boolean
+  scope: 'course' | 'lesson'
 }
 
-export const TranslateDialog = ({ onOpenChange, open }: TranslateDialogProps) => {
+export const TranslateDialog = ({ onOpenChange, open, scope }: TranslateDialogProps) => {
   const t = useTranslations('CourseTranslate')
   const { localeItems } = useI18n()
-  const { applyTranslated, course, language } = useCourse()
+  const { applyTranslated, course, currentLesson, language } = useCourse()
+  const [includeTitle, setIncludeTitle] = useState(true)
+  const [includeContent, setIncludeContent] = useState(true)
   const [source, setSource] = useState<Locale | null>(null)
   const [picked, setPicked] = useState<Locale[] | null>(null)
   const [mode, setMode] = useState<'fill' | 'replace'>('fill')
@@ -54,7 +57,7 @@ export const TranslateDialog = ({ onOpenChange, open }: TranslateDialogProps) =>
   const [runTotals, setRunTotals] = useState<Record<string, number>>({})
   const seen = useRef<ReadonlyMap<string, unknown>>(new Map())
   const applied = useRef(new Set<string>())
-  const lastRun = useRef<{ replace: boolean; source: Locale; targets: Locale[] } | null>(null)
+  const lastRun = useRef<{ fieldKeys?: string[]; replace: boolean; source: Locale; targets: Locale[] } | null>(null)
   const translate = useTranslate({
     onField: field => {
       applyTranslated(field, seen.current)
@@ -68,19 +71,31 @@ export const TranslateDialog = ({ onOpenChange, open }: TranslateDialogProps) =>
   const started = translate.status !== 'idle'
   const appliedCount = Object.values(completed).reduce((sum, count) => sum + count, 0)
   const replace = mode === 'replace'
-  const fields = open ? listEditorFields(course) : []
+  const lessonId = currentLesson?.id
+  const allFields = open ? listEditorFields(course) : []
+  const titleKey = `lessons:${lessonId}:title`
+  const inLesson = (key: string, lesson: number | null) => {
+    if (lesson !== lessonId) return false
+    return key === titleKey ? includeTitle : includeContent
+  }
+  const fieldKeys =
+    scope === 'lesson'
+      ? allFields.flatMap(field => (inLesson(field.key, field.lessonId) ? [field.key] : []))
+      : undefined
+  const fields = fieldKeys ? allFields.filter(field => fieldKeys.includes(field.key)) : allFields
   const filled = LOCALES.filter(locale => fields.some(field => hasText(readLocale(field, course, locale))))
   const preferred = filled.includes(language) ? language : DEFAULT_LOCALE
   const activeSource = source && filled.includes(source) ? source : filled.includes(preferred) ? preferred : filled[0]
   const others = LOCALES.filter(locale => locale !== activeSource)
   const chosen = (picked ?? others).filter(locale => locale !== activeSource)
-  const plan = open && activeSource ? planTranslation({ course, replace, source: activeSource, targets: chosen }) : null
+  const plan =
+    open && activeSource ? planTranslation({ course, fieldKeys, replace, source: activeSource, targets: chosen }) : null
   const writes = (locale: string) => {
     const counts = plan?.summary[locale]
     return counts ? counts.fill + counts.replace : 0
   }
   const total = chosen.reduce((sum, locale) => sum + writes(locale), 0)
-  const canRun = !!activeSource && !running && total > 0
+  const canRun = !!activeSource && !running && total > 0 && (scope === 'course' || includeTitle || includeContent)
   const canRetry = !running && (translate.failures.length > 0 || translate.status === 'error')
   const errorKey = translate.error ? (ERROR_KEYS[translate.error as keyof typeof ERROR_KEYS] ?? 'generic') : null
 
@@ -101,7 +116,7 @@ export const TranslateDialog = ({ onOpenChange, open }: TranslateDialogProps) =>
     if (!plan || !activeSource) return
     seen.current = plan.seen
     applied.current = new Set()
-    lastRun.current = { replace, source: activeSource, targets: chosen }
+    lastRun.current = { fieldKeys, replace, source: activeSource, targets: chosen }
     setCompleted({})
     setRunTotals(Object.fromEntries(chosen.map(locale => [locale, writes(locale)])))
     await translate.run({ fields: plan.fields, replace, source: activeSource, targets: chosen })
@@ -112,6 +127,7 @@ export const TranslateDialog = ({ onOpenChange, open }: TranslateDialogProps) =>
     if (!previous) return
     const next = planTranslation({
       course,
+      fieldKeys: previous.fieldKeys,
       replace: previous.replace,
       source: previous.source,
       targets: previous.targets,
@@ -139,7 +155,7 @@ export const TranslateDialog = ({ onOpenChange, open }: TranslateDialogProps) =>
     <Dialog onOpenChange={handleOpenChange} open={open}>
       <DialogContent size="lg">
         <DialogHeader>
-          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogTitle>{scope === 'lesson' ? t('lessonTitle') : t('title')}</DialogTitle>
           <DialogDescription>{t('description')}</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-5">
@@ -189,6 +205,19 @@ export const TranslateDialog = ({ onOpenChange, open }: TranslateDialogProps) =>
               </div>
             ))}
           </fieldset>
+          {scope === 'lesson' && (
+            <fieldset className="flex flex-col gap-2" disabled={running}>
+              <legend className="mb-1 text-sm font-medium">{t('what')}</legend>
+              <label className="flex items-center gap-2 text-sm">
+                <Checkbox checked={includeTitle} onCheckedChange={checked => setIncludeTitle(checked === true)} />
+                {t('whatTitle')}
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <Checkbox checked={includeContent} onCheckedChange={checked => setIncludeContent(checked === true)} />
+                {t('whatContent')}
+              </label>
+            </fieldset>
+          )}
           <fieldset className="flex flex-col gap-2" disabled={running}>
             <legend className="mb-1 text-sm font-medium">{t('mode')}</legend>
             <RadioGroup onValueChange={value => setMode(value as 'fill' | 'replace')} value={mode}>

@@ -13,6 +13,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 
 - Better Auth keeps session tokens in signed HTTP-only cookies, cached for 5 minutes to cut API calls.
 - All app cookies use the `gl` prefix, and Better Auth uses it through `advanced.cookiePrefix`.
+- `logout` deletes each cookie in `USER_COOKIES` (`src/lib/cookies.ts`): the course list filters, the course languages, and the selected organization. The next account starts from defaults.
 
 ### Sign-up guard
 

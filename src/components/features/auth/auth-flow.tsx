@@ -43,32 +43,18 @@ const AuthStep = (props: React.ComponentProps<typeof m.div>) => {
   return <m.div inert={!isPresent} {...props} />
 }
 
-const AuthLogo = ({ onLogoClick, view }: { onLogoClick: () => void; view: Enum<AuthView> }) => {
-  const t = useTranslations('Auth')
-
-  return (
-    <div title={view === 'login' ? undefined : t('goToLogin')}>
-      <Logo
-        className={cn(
-          'h-8 w-auto rounded-md outline-none focus-visible:focus-ring',
-          view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
-        )}
-        onClick={onLogoClick}
-        tabIndex={view === 'login' ? -1 : 0}
-      />
-    </div>
-  )
-}
-
-const AuthLanguage = ({
+const AuthHeader = ({
   className,
   contentRef,
+  onLogoClick,
   view,
-}: {
-  className?: string
+  ...props
+}: React.ComponentProps<'div'> & {
   contentRef: React.RefObject<HTMLDivElement | null>
+  onLogoClick: () => void
   view: Enum<AuthView>
 }) => {
+  const t = useTranslations('Auth')
   const languageChanged = useRef(false)
 
   const onCloseAutoFocus = (event: Event) => {
@@ -87,13 +73,27 @@ const AuthLanguage = ({
   }
 
   return (
-    <LanguageSelect
-      className={cn('min-w-28', className)}
-      contentProps={{ className: 'data-[state=open]:transition-none', onCloseAutoFocus }}
-      onChange={() => {
-        languageChanged.current = true
-      }}
-    />
+    <div className={cn('flex justify-between gap-2', className)} {...props}>
+      <div title={view === 'login' ? undefined : t('goToLogin')}>
+        <Logo
+          className={cn(
+            'w-24 rounded-md px-2 outline-none focus-visible:focus-ring',
+            view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
+          )}
+          onClick={onLogoClick}
+          tabIndex={view === 'login' ? -1 : 0}
+        />
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <LanguageSelect
+          className="min-w-28 border"
+          contentProps={{ className: 'data-[state=open]:transition-none', onCloseAutoFocus }}
+          onChange={() => {
+            languageChanged.current = true
+          }}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -222,10 +222,8 @@ const AuthMessage = ({
 
 const useGlobeOptions = ({ errored, view }: { errored: boolean; view: Enum<AuthView> }) => {
   const { resolvedTheme } = useTheme()
-  const mode = resolvedTheme ?? 'light'
-  const colors = hexToRgb(theme.colors[mode])
-  const glowColor = hexToRgb({ glow: theme.system.palette['band-from'][mode === 'dark' ? 1 : 0] }).glow
-  const options: GlobeColorOptions = { glowColor }
+  const colors = hexToRgb(theme.colors[resolvedTheme ?? 'light'])
+  const options: GlobeColorOptions = { glowColor: colors.background }
 
   if (errored || view === 'invalid_token' || view === 'invalid_password_reset') {
     return { ...options, baseColor: colors.destructive }
@@ -246,11 +244,9 @@ const useGlobeOptions = ({ errored, view }: { errored: boolean; view: Enum<AuthV
 }
 
 export const AuthFlow = ({
-  footer,
   params,
   username: defaultUsername,
 }: {
-  footer?: React.ReactNode
   params: Values<typeof authParsers>
   username?: string
 }) => {
@@ -298,74 +294,49 @@ export const AuthFlow = ({
 
   return (
     <MotionFeatures>
-      <div className="flex min-h-svh flex-col bg-canvas lg:grid lg:grid-cols-2">
-        <aside className="relative isolate flex flex-col items-center gap-4 overflow-hidden bg-band-from px-page pt-5 pb-6 text-band-foreground band-scope lg:min-h-svh lg:justify-between lg:px-12 lg:py-10">
-          <div className="flex w-full items-center justify-between gap-4">
-            <AuthLogo onLogoClick={() => setView('login')} view={view} />
-            <AuthLanguage
-              className="border-band-border bg-band-scrim text-band-foreground lg:hidden"
-              contentRef={ref}
-              view={view}
-            />
-          </div>
-          <Globe
-            className="mx-auto size-30 shrink-0 lg:size-96 xl:size-112"
-            transitionDuration={600}
-            {...globeOptions}
-          />
-          <div className="hidden max-w-sm flex-col gap-3 text-center lg:flex">
-            <p className="type-title text-balance text-band-foreground">{t('panelTitle')}</p>
-            <p className="text-pretty text-band-text">{t('panelMessage')}</p>
-          </div>
-        </aside>
-        <div className="flex flex-1 flex-col px-page">
-          <div className="hidden justify-end pt-6 lg:flex">
-            <AuthLanguage contentRef={ref} view={view} />
-          </div>
-          <main className="flex flex-1 items-center justify-center py-8">
-            <div className="w-full max-w-sm">
-              <m.div
-                animate={{ height: height ?? 'auto' }}
-                className="-mx-2 overflow-hidden"
-                initial={false}
-                transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
-              >
-                <div className="flex flex-col gap-6 p-2" ref={ref}>
-                  <AnimatePresence initial={false} mode="wait">
-                    <AuthStep
-                      animate="visible"
-                      className="flex flex-col gap-8"
-                      exit="exit"
-                      initial="hidden"
-                      key={view}
-                      variants={STEP_VARIANTS}
-                    >
-                      <m.div className="flex flex-col gap-3 text-center lg:text-left" variants={STEP_ITEM_VARIANTS}>
-                        {title && <h1 className="type-title text-balance">{title}</h1>}
-                        <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
-                      </m.div>
-                      <m.div className="flex w-full flex-col gap-0" variants={STEP_ITEM_VARIANTS}>
-                        <AuthContent
-                          errored={errored}
-                          loggedOut={params.loggedOut}
-                          next={params.next}
-                          resetToken={params.token}
-                          setErrored={setErrored}
-                          setUsername={setUsername}
-                          setView={setView}
-                          username={username}
-                          view={view}
-                        />
-                      </m.div>
-                    </AuthStep>
-                  </AnimatePresence>
-                </div>
-              </m.div>
+      <AuthHeader contentRef={ref} onLogoClick={() => setView('login')} view={view} />
+      <main className="relative flex flex-1 items-center justify-center overflow-hidden">
+        <div className="w-full max-w-md">
+          <m.div
+            animate={{ height: height ?? 'auto' }}
+            className="overflow-hidden"
+            initial={false}
+            transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
+          >
+            <div className="flex min-h-164 flex-col gap-8" ref={ref}>
+              <Globe className="mx-auto size-48 sm:size-80" transitionDuration={600} {...globeOptions} />
+              <AnimatePresence initial={false} mode="wait">
+                <AuthStep
+                  animate="visible"
+                  className="flex flex-col gap-8"
+                  exit="exit"
+                  initial="hidden"
+                  key={view}
+                  variants={STEP_VARIANTS}
+                >
+                  <m.div className="flex flex-col gap-2 text-center" variants={STEP_ITEM_VARIANTS}>
+                    {title && <h1 className="text-3xl font-semibold">{title}</h1>}
+                    <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
+                  </m.div>
+                  <m.div className="mx-auto flex w-full max-w-88 flex-col gap-0" variants={STEP_ITEM_VARIANTS}>
+                    <AuthContent
+                      errored={errored}
+                      loggedOut={params.loggedOut}
+                      next={params.next}
+                      resetToken={params.token}
+                      setErrored={setErrored}
+                      setUsername={setUsername}
+                      setView={setView}
+                      username={username}
+                      view={view}
+                    />
+                  </m.div>
+                </AuthStep>
+              </AnimatePresence>
             </div>
-          </main>
-          {footer}
+          </m.div>
         </div>
-      </div>
+      </main>
     </MotionFeatures>
   )
 }

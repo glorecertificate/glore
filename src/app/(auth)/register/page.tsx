@@ -1,4 +1,4 @@
-import { AuthSplit } from '@/components/features/auth/auth-split'
+import { AuthFrame } from '@/components/features/auth/auth-frame'
 import { ApplicationForm } from '@/components/features/organization/application/application-form'
 import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
@@ -9,16 +9,12 @@ export const generateMetadata = generateIntlMetadata({
 })
 
 const RegisterPage = () => (
-  <AuthSplit
-    message={<PageTitle namespace="Register" name="panelMessage" />}
-    size="lg"
-    title={<PageTitle namespace="Register" name="panelTitle" />}
-  >
+  <AuthFrame size="md">
     <h1 className="sr-only">
       <PageTitle namespace="Register" name="metaTitle" />
     </h1>
     <ApplicationForm />
-  </AuthSplit>
+  </AuthFrame>
 )
 
 export default RegisterPage

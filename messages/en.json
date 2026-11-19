@@ -795,9 +795,7 @@
     "sendLink": "Send link",
     "sendingLink": "Sending…",
     "savePassword": "Save password",
-    "savingPassword": "Saving…",
-    "panelTitle": "Join the GloRe Network",
-    "panelMessage": "Give value to your volunteering experiences."
+    "savingPassword": "Saving…"
   },
   "CourseCommon": {
     "courseCreationFailed": "Could not create the course. Try again.",
@@ -2870,9 +2868,7 @@
     "error_number": "Enter a whole number greater than zero.",
     "error_charter": "You need to accept the Quality Charter to apply.",
     "termsAccept": "I accept the <terms>Terms of use</terms> on behalf of the organization.",
-    "error_terms": "You need to accept the terms of use to apply.",
-    "panelTitle": "Register your organization",
-    "panelMessage": "Tell us about your organization. We review each request before we open an account."
+    "error_terms": "You need to accept the terms of use to apply."
   },
   "Admin": {
     "team": {
@@ -3406,9 +3402,7 @@
     "next_organization": "Set up your organization",
     "goToDashboard": "Go to the dashboard",
     "termsAccept": "I accept the <terms>Terms of use</terms> and have read the <privacy>Privacy policy</privacy>.",
-    "termsRequired": "You need to accept the terms of use to continue.",
-    "panelTitle": "Welcome to GloRe",
-    "panelMessage": "Confirm a few details to finish setting up your account."
+    "termsRequired": "You need to accept the terms of use to continue."
   },
   "Email": {
     "auth/invite": {
@@ -3727,9 +3721,7 @@
     "sendProofAgain": "Send the link again",
     "proofSent": "We sent a confirmation link to {email}. Open it from your inbox to continue.",
     "status_member_title": "You are already a member",
-    "status_member_description": "You already belong to {organization}. Open your dashboard to continue.",
-    "panelTitle": "You were invited",
-    "panelMessage": "Join your organization on GloRe and start collecting certificates."
+    "status_member_description": "You already belong to {organization}. Open your dashboard to continue."
   },
   "JoinLink": {
     "metaTitle": "Join an organization",
@@ -3757,9 +3749,7 @@
     "requestedTitle": "Request sent",
     "requestedDescription": "The team at {organization} will review it. We will email you their decision.",
     "goToDashboard": "Go to dashboard",
-    "goToLogin": "Go to login",
-    "panelTitle": "You were invited",
-    "panelMessage": "Join your organization on GloRe and start collecting certificates."
+    "goToLogin": "Go to login"
   },
   "Invitations": {
     "tab": "Invitations",

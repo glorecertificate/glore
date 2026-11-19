@@ -2,12 +2,11 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInvitationPreview } from '@/actions/organizations/previews'
-import { AuthSplit } from '@/components/features/auth/auth-split'
+import { AuthFrame } from '@/components/features/auth/auth-frame'
 import { InvitationCard } from '@/components/features/organization/invite/invitation-card'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { maskEmail } from '@/components/features/organization/utils'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageTitle } from '@/components/layout/page-title'
 import { normalizeEmail } from '@/db/mutations/invitation'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -67,14 +66,11 @@ const InviteContent = async ({
 }
 
 const InvitePage = ({ params, searchParams }: PageProps<'/invite/[token]'>) => (
-  <AuthSplit
-    message={<PageTitle namespace="Invite" name="panelMessage" />}
-    title={<PageTitle namespace="Invite" name="panelTitle" />}
-  >
+  <AuthFrame language>
     <Suspense fallback={<LoadingFallback />}>
       <InviteContent params={params} searchParams={searchParams} />
     </Suspense>
-  </AuthSplit>
+  </AuthFrame>
 )
 
 export default InvitePage

@@ -59,10 +59,10 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 
 ## Members and ownership
 
-- `/organization?tab=members` is a `DataTable` named "Members" with search, role and status filters, sorting, and pagination.
+- `/organization?tab=members` is a `DataTable` named "Members" with search, multi-select role and status filters (URL params `role` and `status`), sorting, and pagination.
 - The invite dialog lives in `OrganizationInviteHost` (`invite-host.tsx`), which wraps the band and the tabs. The one `OrganizationInviteButton` sits in the band, and tab bodies have no heading or invite button of their own.
 - The member name opens the details drawer, and the row menu holds View details, Change role, and Remove. The owner's own row has no menu. The Status column shows on `/organization` only.
-- The Invitations filter groups are Open (pending), Expired, and Accepted, with counts. Resend and Revoke sit in the row menu.
+- The Invitations filter is one multi-select group (URL param `state`): Open (pending), Expired, and Accepted, with counts. Resend and Revoke sit in the row menu.
 - The details drawer with the profile, learning progress, and the member's non-draft certificates in this org (`getOrganizationMemberDetail`, managers only).
 - Role changes, removals, leaving, and ownership transfers live in `db/mutations/organization.ts` and return `memberError` codes.
 - Only the owner changes roles, and never to or from `admin`. The owner role moves through an ownership transfer.

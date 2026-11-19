@@ -14,6 +14,7 @@ export const ArticleBody = () => {
     <RichContentEditor
       flushRef={contentFlushRef}
       initialValue={initialValue}
+      markdownSafe
       onChange={value => setContent(language, articleValueToMarkdown(value))}
       readOnly={false}
       version={`${language}-${bodyVersion}`}

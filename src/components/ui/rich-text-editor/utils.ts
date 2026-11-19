@@ -5,6 +5,28 @@ import { TablePlugin } from '@platejs/table/react'
 import { KEYS, type NodeEntry, type Path, PathApi, type TElement, isHotkey as isPlateHotkey } from 'platejs'
 import { type HotkeysOptions, type PlateEditor } from 'platejs/react'
 
+export const MARKDOWN_SAFE_KEY = 'markdown-safe'
+
+export const hasPlugin = (editor: PlateEditor, key: string) => key in editor.plugins
+
+export const isMarkdownSafe = (editor: PlateEditor) => hasPlugin(editor, MARKDOWN_SAFE_KEY)
+
+const PLUGIN_BLOCKS: string[] = [
+  KEYS.audio,
+  KEYS.callout,
+  KEYS.file,
+  KEYS.img,
+  KEYS.mediaEmbed,
+  KEYS.toggle,
+  KEYS.video,
+]
+
+export const isBlockAvailable = (editor: PlateEditor, type: string) => {
+  if (type === KEYS.listTodo) return !isMarkdownSafe(editor)
+  if (PLUGIN_BLOCKS.includes(type)) return hasPlugin(editor, type)
+  return true
+}
+
 const insertList = (editor: PlateEditor, type: string) => {
   editor.tf.insertNodes(
     editor.api.create.block({

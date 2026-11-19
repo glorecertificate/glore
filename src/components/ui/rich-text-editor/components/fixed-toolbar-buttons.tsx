@@ -3,7 +3,7 @@
 import { BoldIcon, ItalicIcon, UnderlineIcon, WandSparklesIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { KEYS } from 'platejs'
-import { usePlateState } from 'platejs/react'
+import { useEditorRef, usePlateState } from 'platejs/react'
 
 import { AIToolbarButton } from '@/components/ui/rich-text-editor/components/ai-toolbar-button'
 import { AlignToolbarButton } from '@/components/ui/rich-text-editor/components/align-toolbar-button'
@@ -24,10 +24,12 @@ import { MediaToolbarButton } from '@/components/ui/rich-text-editor/components/
 import { TableToolbarButton } from '@/components/ui/rich-text-editor/components/table-toolbar-button'
 import { ToggleToolbarButton } from '@/components/ui/rich-text-editor/components/toggle-toolbar-button'
 import { TurnIntoToolbarButton } from '@/components/ui/rich-text-editor/components/turn-into-toolbar-button'
+import { hasPlugin, isBlockAvailable } from '@/components/ui/rich-text-editor/utils'
 import { ToolbarGroup } from '@/components/ui/toolbar'
 
 export const FixedToolbarButtons = () => {
   const t = useTranslations('Components.RichTextEditor.blocks')
+  const editor = useEditorRef()
   const [readOnly] = usePlateState('readOnly')
 
   return (
@@ -56,28 +58,30 @@ export const FixedToolbarButtons = () => {
               <ItalicIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton nodeType={KEYS.underline} tooltip={`${t('underline')} (⌘+U)`}>
-              <UnderlineIcon />
-            </MarkToolbarButton>
+            {hasPlugin(editor, KEYS.underline) && (
+              <MarkToolbarButton nodeType={KEYS.underline} tooltip={`${t('underline')} (⌘+U)`}>
+                <UnderlineIcon />
+              </MarkToolbarButton>
+            )}
 
             <LinkToolbarButton tooltip={t('link')} />
 
-            <FontColorToolbarButton nodeType={KEYS.color} tooltip={t('textColor')} />
+            {hasPlugin(editor, KEYS.color) && <FontColorToolbarButton nodeType={KEYS.color} tooltip={t('textColor')} />}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <AlignToolbarButton />
+            {hasPlugin(editor, KEYS.textAlign) && <AlignToolbarButton />}
             <NumberedListToolbarButton tooltip={t('numberedList')} />
             <BulletedListToolbarButton tooltip={t('bulletList')} />
-            <TodoListToolbarButton />
-            <ToggleToolbarButton />
+            {isBlockAvailable(editor, KEYS.listTodo) && <TodoListToolbarButton />}
+            {isBlockAvailable(editor, KEYS.toggle) && <ToggleToolbarButton />}
           </ToolbarGroup>
 
           <ToolbarGroup separator={false}>
             <TableToolbarButton />
-            <MediaToolbarButton nodeType={KEYS.img} tooltip={t('image')} />
-            <MediaToolbarButton nodeType={KEYS.video} tooltip={t('video')} />
-            <MediaToolbarButton nodeType={KEYS.file} tooltip={t('file')} />
+            {isBlockAvailable(editor, KEYS.img) && <MediaToolbarButton nodeType={KEYS.img} tooltip={t('image')} />}
+            {isBlockAvailable(editor, KEYS.video) && <MediaToolbarButton nodeType={KEYS.video} tooltip={t('video')} />}
+            {isBlockAvailable(editor, KEYS.file) && <MediaToolbarButton nodeType={KEYS.file} tooltip={t('file')} />}
           </ToolbarGroup>
         </>
       )}

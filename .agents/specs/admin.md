@@ -67,6 +67,10 @@
 ## Legal documents
 
 - `/legal` (`canEdit`, outside the admin layout) manages `privacy` and `terms` through `actions/legal/manage.ts`: one draft per document, per-locale edits, history.
+- The draft editor stores Markdown (`legal_translations.body`) in `RichContentEditor` `markdownSafe` (`architecture.md`).
+- The title has a translate menu, and the Translate button beside the language tabs lists the locales with text.
+- A pick flushes the pending body edit, then translates the title and body into the open tab as unsaved changes.
+- It calls `POST /api/v1/ai/translate` (`features/translations/`) with no review step.
 - Editors draft and edit. Only platform admins publish, with an effective date, a change note, and a material flag that counts for `terms` only.
 - Publish needs all three locales with matching headings (`INCOMPLETE`, `HEADINGS_DIFFER`). A published version never changes.
 - Mutations live in `db/mutations/legal.ts`, and they expire the `legalTag(slug)` cache and record the audit events.

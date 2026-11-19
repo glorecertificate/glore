@@ -18,6 +18,8 @@ import {
   createTextSubstitutionInputRule,
 } from 'platejs'
 
+import { hasPlugin, isMarkdownSafe } from '@/components/ui/rich-text-editor/utils'
+
 const TYPOGRAPHY_PATTERNS: TextSubstitutionPattern[] = [
   { format: ['“', '”'], match: '"' },
   { format: ['‘', '’'], match: "'" },
@@ -43,6 +45,20 @@ const TYPOGRAPHY_PATTERNS: TextSubstitutionPattern[] = [
 const notInCodeBlock = ({ editor }: SelectionInputRuleContext) =>
   !editor.api.some({ match: { type: editor.getType(KEYS.codeBlock) } })
 
+const underlineAllowed = ({ editor }: SelectionInputRuleContext) => hasPlugin(editor, KEYS.underline)
+
+const todoAllowed = ({ editor }: SelectionInputRuleContext) => !isMarkdownSafe(editor)
+
+type Enabled = (context: SelectionInputRuleContext) => boolean
+
+const gate = (inputRule: AnyInputRule<unknown>, allowed: Enabled): AnyInputRule<unknown> => {
+  const { enabled } = inputRule as { enabled?: Enabled }
+  return {
+    ...inputRule,
+    enabled: (context: SelectionInputRuleContext) => allowed(context) && (enabled?.(context) ?? true),
+  } as AnyInputRule<unknown>
+}
+
 const rule = (factory: (options: { enabled: typeof notInCodeBlock }) => AnyInputRule<unknown>) =>
   factory({ enabled: notInCodeBlock })
 
@@ -53,18 +69,18 @@ export const AutoformatKit = [
       rule(HeadingRules.markdown),
       rule(BlockquoteRules.markdown),
       rule(HorizontalRuleRules.markdown),
-      MarkComboRules.markdown({ enabled: notInCodeBlock, variant: 'boldItalicUnderline' }),
+      gate(MarkComboRules.markdown({ enabled: notInCodeBlock, variant: 'boldItalicUnderline' }), underlineAllowed),
       MarkComboRules.markdown({ enabled: notInCodeBlock, variant: 'boldItalic' }),
-      MarkComboRules.markdown({ enabled: notInCodeBlock, variant: 'boldUnderline' }),
-      MarkComboRules.markdown({ enabled: notInCodeBlock, variant: 'italicUnderline' }),
+      gate(MarkComboRules.markdown({ enabled: notInCodeBlock, variant: 'boldUnderline' }), underlineAllowed),
+      gate(MarkComboRules.markdown({ enabled: notInCodeBlock, variant: 'italicUnderline' }), underlineAllowed),
       rule(BoldRules.markdown),
       rule(ItalicRules.markdown),
-      rule(UnderlineRules.markdown),
+      gate(rule(UnderlineRules.markdown), underlineAllowed),
       rule(StrikethroughRules.markdown),
       rule(BulletedListRules.markdown),
       rule(OrderedListRules.markdown),
-      rule(TaskListRules.markdown),
-      TaskListRules.markdown({ checked: true, enabled: notInCodeBlock }),
+      gate(rule(TaskListRules.markdown), todoAllowed),
+      gate(TaskListRules.markdown({ checked: true, enabled: notInCodeBlock }), todoAllowed),
       createTextSubstitutionInputRule({ enabled: notInCodeBlock, patterns: TYPOGRAPHY_PATTERNS }),
     ],
   }),

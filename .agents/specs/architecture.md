@@ -138,6 +138,7 @@ src/
 - Its `ai-chat-editor.tsx` passes the value of `useAIChatEditor` to `StaticEditor`, or the React Compiler freezes the AI preview on its first word. Keep it after a re-pull (`course-editor.spec.ts`).
 - It stays in `ui/` so a CLI re-pull keeps working. Treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them.
 - The app touches it only through the `index.tsx` barrel and `provider.tsx`.
+- `markdownSafe` on the provider serves Markdown editors (`/legal`, docs): no align, callout, font, media, toggle, underline, todo.
 - The AI wiring lives in `use-chat.ts` (`DefaultChatTransport` to `/api/v1/ai/command`, chat registered on `AIChatPlugin` from `plugins/ai.tsx` `useHooks`). Keep it when re-pulling.
 - Learner lessons never load the vendored `provider.tsx`, which keeps the AI SDK out of learner chunks.
 - Instead, `features/courses/course-player/reader-provider.tsx` builds a read-only Plate editor from `reader-plugins.ts`, without the AI, copilot, toolbar, dnd, slash, emoji, or autoformat kits.

@@ -4293,7 +4293,7 @@
     "status_published": "Pubblicata",
     "status_superseded": "Sostituita",
     "titleLabel": "Titolo",
-    "bodyLabel": "Testo (Markdown)",
+    "bodyLabel": "Testo",
     "outdated": "Il testo inglese è cambiato dopo il salvataggio di questa traduzione. Verifica che corrisponda ancora.",
     "save": "Salva {language}",
     "saved": "Salvato",
@@ -4344,7 +4344,8 @@
     "columnChanged": "Modifica",
     "columnActions": "Azioni",
     "editDraft": "Modifica la bozza",
-    "notSet": "Non impostata"
+    "notSet": "Non impostata",
+    "translateEmpty": "Nessun'altra lingua ha una traduzione per questo documento"
   },
   "LegalAccept": {
     "title": "Abbiamo aggiornato i termini d'uso",

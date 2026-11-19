@@ -114,6 +114,7 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
   const applyTranslated = (event: TranslatedField, seen: ReadonlyMap<string, string>) => {
     const field = parseArticleFieldKey(event.key)
     if (!field) return
+    if (field === 'content') contentFlushRef.current?.()
     const current = readArticleField(draftRef.current, field, event.locale)
     if (hasText(current) && current !== seen.get(event.key)) return
     setField(articleSlot(field), event.locale as Locale, articleValueOf(field, event.value))
@@ -151,6 +152,10 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
     draft.audiences.join() !== saved.audiences.join()
   const hasAnyUpdates = settingsChanged || LOCALES.some(locale => status[locale].hasUpdates)
 
+  const flushContent = () => contentFlushRef.current?.()
+
+  const getDraft = () => draftRef.current
+
   const saveArticle = async ({ locale, publish }: ArticleSaveOptions) => {
     await contentFlushRef.current?.()
     const current = draftRef.current
@@ -177,7 +182,9 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
     categories: options.categories,
     contentFlushRef,
     draft,
+    flushContent,
     generateSlug,
+    getDraft,
     hasAnyUpdates,
     language,
     languageStatus: status[language],

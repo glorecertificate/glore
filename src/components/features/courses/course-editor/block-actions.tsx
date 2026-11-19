@@ -19,7 +19,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { setBlockType } from '@/components/ui/rich-text-editor/utils'
+import { isBlockAvailable, setBlockType } from '@/components/ui/rich-text-editor/utils'
 import { cn } from '@/lib/utils'
 
 const TURN_INTO = [
@@ -138,7 +138,7 @@ export const BlockActions = ({ className, ...props }: React.ComponentProps<'div'
               {tEditor('actions.turnInto')}
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {TURN_INTO.map(({ key, type }) => (
+              {TURN_INTO.filter(({ type }) => isBlockAvailable(editor, type)).map(({ key, type }) => (
                 <DropdownMenuItem key={type} onClick={() => turnInto(type)}>
                   {tEditor(`blocks.${key}`)}
                 </DropdownMenuItem>

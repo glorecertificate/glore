@@ -4293,7 +4293,7 @@
     "status_published": "Published",
     "status_superseded": "Replaced",
     "titleLabel": "Title",
-    "bodyLabel": "Text (Markdown)",
+    "bodyLabel": "Text",
     "outdated": "The English text changed after this translation was saved. Check that it still matches.",
     "save": "Save {language}",
     "saved": "Saved",
@@ -4344,7 +4344,8 @@
     "columnChanged": "Changed",
     "columnActions": "Actions",
     "editDraft": "Edit draft",
-    "notSet": "Not set"
+    "notSet": "Not set",
+    "translateEmpty": "No other language has content for this document"
   },
   "LegalAccept": {
     "title": "We updated our terms of use",

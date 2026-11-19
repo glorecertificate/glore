@@ -30,7 +30,7 @@ import {
   type DropdownMenuProps,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { insertBlock, insertInlineElement } from '@/components/ui/rich-text-editor/utils'
+import { insertBlock, insertInlineElement, isBlockAvailable } from '@/components/ui/rich-text-editor/utils'
 import { ToolbarButton, ToolbarMenuGroup } from '@/components/ui/toolbar'
 
 interface Group {
@@ -165,6 +165,10 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
     },
   ]
 
+  const available = groups
+    .map(({ group, items }) => ({ group, items: items.filter(item => isBlockAvailable(editor, item.value)) }))
+    .filter(({ items }) => items.length > 0)
+
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
@@ -174,7 +178,7 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="start" className="flex max-h-125 min-w-0 flex-col overflow-y-auto">
-        {groups.map(({ group, items: nestedItems }) => (
+        {available.map(({ group, items: nestedItems }) => (
           <ToolbarMenuGroup key={group} label={group}>
             {nestedItems.map(({ icon, label, onSelect, value }) => (
               <DropdownMenuItem

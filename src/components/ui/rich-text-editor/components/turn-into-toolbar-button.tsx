@@ -30,7 +30,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getBlockType, setBlockType } from '@/components/ui/rich-text-editor/utils'
+import { getBlockType, isBlockAvailable, setBlockType } from '@/components/ui/rich-text-editor/utils'
 import { ToolbarButton, ToolbarMenuGroup } from '@/components/ui/toolbar'
 import { cn } from '@/lib/utils'
 
@@ -40,7 +40,7 @@ export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
 
   const [open, setOpen] = useState(false)
 
-  const turnIntoItems = [
+  const allItems = [
     {
       icon: <PilcrowIcon />,
       keywords: ['paragraph'],
@@ -120,6 +120,8 @@ export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
       value: KEYS.blockquote,
     },
   ]
+
+  const turnIntoItems = allItems.filter(item => isBlockAvailable(editor, item.value))
 
   const value = useSelectionFragmentProp({
     defaultValue: KEYS.p,

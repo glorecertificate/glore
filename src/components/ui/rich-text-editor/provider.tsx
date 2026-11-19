@@ -30,6 +30,7 @@ import { FontKit } from '@/components/ui/rich-text-editor/plugins/font'
 import { LinkKit } from '@/components/ui/rich-text-editor/plugins/link'
 import { ListKit } from '@/components/ui/rich-text-editor/plugins/list'
 import { MarkdownKit } from '@/components/ui/rich-text-editor/plugins/markdown'
+import { MarkdownSafeKit } from '@/components/ui/rich-text-editor/plugins/markdown-safe'
 import { MediaKit } from '@/components/ui/rich-text-editor/plugins/media'
 import { SlashKit } from '@/components/ui/rich-text-editor/plugins/slash'
 import { TableKit } from '@/components/ui/rich-text-editor/plugins/table'
@@ -66,11 +67,14 @@ type RichTextEditorPlugin = keyof typeof PLUGINS
 
 interface RichTextEditorProviderProps extends React.PropsWithChildren<Omit<CreatePlateEditorOptions, 'plugins'>> {
   exclude?: RichTextEditorPlugin | RichTextEditorPlugin[]
+  markdownSafe?: boolean
   onChange?: PlateProps['onChange']
   version?: string
 }
 
 const EMPTY_EXCLUDE: RichTextEditorPlugin[] = []
+const MARKDOWN_SAFE_EXCLUDE: RichTextEditorPlugin[] = ['align', 'callout', 'font', 'media', 'toggle']
+const MARKDOWN_SAFE_KEYS: string[] = [KEYS.underline]
 
 const healPendingAi = (editor: PlateEditor) => {
   editor.tf.withoutSaving(() => {
@@ -83,6 +87,7 @@ export const RichTextEditorProvider = ({
   children,
   exclude = EMPTY_EXCLUDE,
   id,
+  markdownSafe,
   onChange,
   version,
   ...props
@@ -90,8 +95,13 @@ export const RichTextEditorProvider = ({
   const randomId = useId()
   const t = useTranslations('Components.RichTextEditor.placeholders')
 
+  const excluded = markdownSafe ? [exclude, MARKDOWN_SAFE_EXCLUDE].flat() : exclude
+
   const plugins = [
-    ...Object.values(omit(PLUGINS, exclude)),
+    ...Object.values(omit(PLUGINS, excluded))
+      .flat()
+      .filter(plugin => !markdownSafe || !MARKDOWN_SAFE_KEYS.includes((plugin as { key: string }).key)),
+    ...(markdownSafe ? MarkdownSafeKit : []),
     BlockPlaceholderPlugin.configure({
       options: {
         className:
@@ -105,7 +115,7 @@ export const RichTextEditorProvider = ({
     }),
   ].flat() as AnyPluginConfig[]
 
-  const excludeKey = Array.isArray(exclude) ? exclude.join(',') : exclude
+  const excludeKey = `${Array.isArray(exclude) ? exclude.join(',') : exclude}:${markdownSafe}`
 
   const editor = usePlateEditor(
     {

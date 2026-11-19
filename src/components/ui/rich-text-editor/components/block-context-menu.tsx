@@ -18,6 +18,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu'
+import { isMarkdownSafe } from '@/components/ui/rich-text-editor/utils'
 import { useDevice } from '@/hooks/use-device'
 
 export const BlockContextMenu = ({ children }: { children: React.ReactNode }) => {
@@ -119,22 +120,24 @@ export const BlockContextMenu = ({ children }: { children: React.ReactNode }) =>
           </ContextMenuSub>
         </ContextMenuGroup>
 
-        <ContextMenuGroup>
-          <ContextMenuItem onClick={() => editor.getTransforms(BlockSelectionPlugin).blockSelection.setIndent(1)}>
-            {t('actions.indent')}
-          </ContextMenuItem>
-          <ContextMenuItem onClick={() => editor.getTransforms(BlockSelectionPlugin).blockSelection.setIndent(-1)}>
-            {t('actions.outdent')}
-          </ContextMenuItem>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>{t('actions.align')}</ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-48">
-              <ContextMenuItem onClick={() => handleAlign('left')}>{t('blocks.alignLeft')}</ContextMenuItem>
-              <ContextMenuItem onClick={() => handleAlign('center')}>{t('blocks.alignCenter')}</ContextMenuItem>
-              <ContextMenuItem onClick={() => handleAlign('right')}>{t('blocks.alignRight')}</ContextMenuItem>
-            </ContextMenuSubContent>
-          </ContextMenuSub>
-        </ContextMenuGroup>
+        {!isMarkdownSafe(editor) && (
+          <ContextMenuGroup>
+            <ContextMenuItem onClick={() => editor.getTransforms(BlockSelectionPlugin).blockSelection.setIndent(1)}>
+              {t('actions.indent')}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => editor.getTransforms(BlockSelectionPlugin).blockSelection.setIndent(-1)}>
+              {t('actions.outdent')}
+            </ContextMenuItem>
+            <ContextMenuSub>
+              <ContextMenuSubTrigger>{t('actions.align')}</ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-48">
+                <ContextMenuItem onClick={() => handleAlign('left')}>{t('blocks.alignLeft')}</ContextMenuItem>
+                <ContextMenuItem onClick={() => handleAlign('center')}>{t('blocks.alignCenter')}</ContextMenuItem>
+                <ContextMenuItem onClick={() => handleAlign('right')}>{t('blocks.alignRight')}</ContextMenuItem>
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          </ContextMenuGroup>
+        )}
       </ContextMenuContent>
     </ContextMenu>
   )

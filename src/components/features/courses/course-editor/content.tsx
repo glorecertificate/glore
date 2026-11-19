@@ -32,12 +32,16 @@ const RichTextEditorProvider = richTextEditorProvider.Component
 
 export const RichContentEditor = ({
   initialValue,
+  labelledBy,
+  markdownSafe,
   onChange,
   readOnly,
   version,
   flushRef,
 }: {
   initialValue: Value
+  labelledBy?: string
+  markdownSafe?: boolean
   onChange: (value: Value) => void
   readOnly: boolean
   version: string
@@ -75,8 +79,14 @@ export const RichContentEditor = ({
   }
 
   return (
-    <RichTextEditorProvider onChange={setValue} readOnly={readOnly} value={initialValue} version={version}>
-      <LessonEditor variant="fullWidth" />
+    <RichTextEditorProvider
+      markdownSafe={markdownSafe}
+      onChange={setValue}
+      readOnly={readOnly}
+      value={initialValue}
+      version={version}
+    >
+      <LessonEditor aria-labelledby={labelledBy} variant="fullWidth" />
     </RichTextEditorProvider>
   )
 }

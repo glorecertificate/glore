@@ -3170,7 +3170,11 @@
       "noResultsDescription": "Try a different search or clear the filters.",
       "noEvents": "No events yet",
       "noEventsDescription": "Suspensions, role changes, impersonation, revoked certificates, and application decisions will appear here.",
-      "description": "Every moderation, access, content, and settings decision, newest first."
+      "description": "Every moderation, access, content, and settings decision, newest first.",
+      "export": "Export CSV",
+      "exportError": "Could not export the audit log. Try again.",
+      "exportSuccess": "{count, plural, one {# event exported} other {# events exported}}",
+      "exportTruncated": "The export holds the latest {count} events. Narrow the filters to export the rest."
     },
     "settings": {
       "title": "Settings",

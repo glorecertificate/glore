@@ -21,6 +21,7 @@ import {
 } from '@/db/queries/admin-audit'
 import { likePattern, searchTokens, toPage } from '@/db/queries/admin-user'
 import { activityEvents, certificates, organizations, users } from '@/db/schema'
+import { toCsv } from '@/lib/csv'
 import { fullName } from '@/lib/utils'
 
 type ParsedQuery = ReturnType<typeof adminAuditQuerySchema.parse>
@@ -150,4 +151,51 @@ export const queryAdminAudit = async (input: AdminAuditQuery) => {
     ...toPage(rows, { page, pageSize: ADMIN_AUDIT_PAGE_SIZE, total }),
     facets: { category: await countCategories(parsed.data) },
   }
+}
+
+const AUDIT_EXPORT_LIMIT = 10_000
+
+export const exportAdminAuditCsv = async (input: AdminAuditQuery) => {
+  const parsed = adminAuditQuerySchema.safeParse({ ...input, page: null })
+  if (!parsed.success) throw adminError('INVALID_INPUT')
+
+  const records = await db
+    .select({
+      action: activityEvents.action,
+      actorId: activityEvents.actorId,
+      createdAt: activityEvents.createdAt,
+      id: activityEvents.id,
+      metadata: activityEvents.metadata,
+      organizationId: activityEvents.organizationId,
+      subjectId: activityEvents.subjectId,
+    })
+    .from(activityEvents)
+    .leftJoin(actor, eq(actor.id, activityEvents.actorId))
+    .leftJoin(target, eq(target.id, targetUserId))
+    .where(buildFilters(parsed.data))
+    .orderBy(desc(activityEvents.createdAt), desc(activityEvents.id))
+    .limit(AUDIT_EXPORT_LIMIT + 1)
+
+  const truncated = records.length > AUDIT_EXPORT_LIMIT
+  const rows = await resolveRows(
+    records
+      .slice(0, AUDIT_EXPORT_LIMIT)
+      .map(record => ({ ...record, metadata: record.metadata as Record<string, unknown> }))
+  )
+
+  const csv = toCsv([
+    ['date', 'category', 'action', 'actor', 'actor_email', 'target', 'organization', 'reason'],
+    ...rows.map(row => [
+      new Date(row.createdAt).toISOString(),
+      row.category,
+      row.action,
+      row.actor?.name ?? '',
+      row.actor?.email ?? '',
+      row.target?.label ?? '',
+      row.organization?.name ?? '',
+      row.detail.reason ?? row.detail.comment ?? '',
+    ]),
+  ])
+
+  return { count: rows.length, csv, truncated }
 }

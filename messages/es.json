@@ -3170,7 +3170,11 @@
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",
       "noEvents": "Todavía no hay eventos",
       "noEventsDescription": "Aquí aparecerán las suspensiones, los cambios de rol, las sesiones de visualización, los certificados revocados y las decisiones sobre solicitudes.",
-      "description": "Cada decisión de moderación, acceso, contenido y ajustes, de la más reciente a la más antigua."
+      "description": "Cada decisión de moderación, acceso, contenido y ajustes, de la más reciente a la más antigua.",
+      "export": "Exportar CSV",
+      "exportError": "No se pudo exportar el registro de auditoría. Inténtalo de nuevo.",
+      "exportSuccess": "{count, plural, one {# evento exportado} other {# eventos exportados}}",
+      "exportTruncated": "La exportación incluye los últimos {count} eventos. Acota los filtros para exportar el resto."
     },
     "settings": {
       "title": "Ajustes",

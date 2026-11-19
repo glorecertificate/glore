@@ -92,6 +92,7 @@
 
 ### Search and rows
 
+- `exportAdminAudit` (`actions/admin/audit.ts`) returns the CSV of every event that matches the current filters, newest first, capped at 10,000 events (`AUDIT_EXPORT_LIMIT`, with a `truncated` flag). `AdminAuditExport` in the band downloads it. `lib/csv.ts` quotes cells and neutralizes formula starts.
 - `listAdminAudit` validates `adminAuditQuerySchema`: `category`, `from` and `to` (`YYYY-MM-DD`, whole UTC days), `q`, and `page`.
 - Each search token must match the actor or the affected person (name or email, joined through `metadata.userId` or `holderId`), the organization name, or the applicant name.
 - URL params (`audit-params.ts`): `q`, `category`, `from`, `to`, `page`.

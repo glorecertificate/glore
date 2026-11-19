@@ -4,6 +4,7 @@ import { createSearchParamsCache } from 'nuqs/server'
 
 import { loadAdminAudit } from '@/actions/admin/views'
 import { AdminAudit } from '@/components/features/admin/audit'
+import { AdminAuditExport } from '@/components/features/admin/audit-export'
 import { adminAuditParsers } from '@/components/features/admin/audit-params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -27,6 +28,7 @@ const AdminAuditContent = async ({ searchParams }: { searchParams: PageProps<'/a
 const AdminAuditPage = ({ searchParams }: PageProps<'/admin/audit'>) => (
   <DashboardPage
     overlap
+    actions={<AdminAuditExport />}
     description={<PageTitle namespace="Admin.audit" name="description" />}
     title={<PageTitle namespace="Admin.audit" name="title" />}
   >

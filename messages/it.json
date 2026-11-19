@@ -3170,7 +3170,11 @@
       "noResultsDescription": "Prova con un'altra ricerca o rimuovi i filtri.",
       "noEvents": "Ancora nessun evento",
       "noEventsDescription": "Qui compariranno sospensioni, cambi di ruolo, visualizzazioni come utente, certificati revocati e decisioni sulle candidature.",
-      "description": "Ogni decisione di moderazione, accesso, contenuti e impostazioni, dalla più recente."
+      "description": "Ogni decisione di moderazione, accesso, contenuti e impostazioni, dalla più recente.",
+      "export": "Esporta CSV",
+      "exportError": "Impossibile esportare il registro di audit. Riprova.",
+      "exportSuccess": "{count, plural, one {# evento esportato} other {# eventi esportati}}",
+      "exportTruncated": "L'esportazione contiene gli ultimi {count} eventi. Restringi i filtri per esportare il resto."
     },
     "settings": {
       "title": "Impostazioni",

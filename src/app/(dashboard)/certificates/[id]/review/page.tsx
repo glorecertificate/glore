@@ -1,4 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
+import { connection } from 'next/server'
 import { Suspense } from 'react'
 
 import { getFormatter, getTranslations } from 'next-intl/server'
@@ -47,6 +48,7 @@ const ReviewBand = async ({ params }: { params: PageProps<'/certificates/[id]/re
   if (!certificateId || Number.isNaN(certificateId)) notFound()
   const certificate = await loadCertificate(certificateId)
   if (!certificate) notFound()
+  await connection()
   const [format, t] = await Promise.all([getFormatter(), getTranslations('CertificateReview')])
   const submittedAt = certificate.submittedAt ?? certificate.createdAt
 

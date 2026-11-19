@@ -179,7 +179,7 @@ export const ReviewWorkspace = ({
   }
 
   const decisions = (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 bg-card lg:sticky lg:bottom-0 lg:-mx-6 lg:-mb-6 lg:border-t lg:px-6 lg:py-4">
       <Button
         disabled={busy !== null || !canApprove}
         icon="check"

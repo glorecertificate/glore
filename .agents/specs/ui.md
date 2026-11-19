@@ -101,7 +101,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 - `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current-fill` (navy) marks the current stage, with `current-subtle`. Tailwind reserves `current` for `currentColor`.
 - `success`, `warning`, `danger`, and `info` each have `-fill`, `-fill-hover`, `-subtle`, `-border`, and `-text`.
 - The shadcn names (`background`, `primary`, `muted-foreground`, `destructive`, and the rest) alias these roles. New code uses the roles.
-- Fields sit on `field` (`surface-0` in light, `surface-1` in dark) with a `border-strong` border. `input` stays only for the vendored editor.
+- Fields sit on `field` (`surface-0` in light, `surface-1` in dark) with a `border` border. Checkboxes and radios keep `border-strong`, because a light edge disappears at 16 px. `input` stays only for the vendored editor.
 - Light surfaces are white on a gray `surface-sunken`. Dark surfaces step up in lightness, and dark borders are white at 6% and 9% alpha.
 - `--brand` is the logo light-blue fill with ink text. `--primary` aliases `action`: a deeper blue with white text in light, and `brand` in dark.
 - `danger-fill` keeps white text in both themes. The other dark fills carry ink text.

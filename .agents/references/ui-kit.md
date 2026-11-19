@@ -12,7 +12,7 @@ Moved from `.agents/specs/ui.md`. The rules there still apply.
 - Every focus indicator is `focus-visible:focus-ring`, a 2px `--ring` outline 2px outside the control.
 - Fields and items in a clipped container use `focus-ring-inset`. Never build a focus indicator from `ring-*` or `border-ring`.
 - A composite field such as `InputGroup` draws the ring on the group and passes `ring={false}` to its control.
-- Inputs, textareas, selects, checkboxes, and radios use `border-border-strong` on `bg-field`. Outline buttons, badges, and toolbars use `border-border`.
+- Inputs, textareas, selects, and outline, secondary and field buttons use `border-border` on `bg-field`. Checkboxes and radios use `border-border-strong`. Badges and toolbars use `border-border`.
 - A checkbox is a rounded square (`rounded-sm`) and a radio is a circle. `checked="indeterminate"` shows a minus.
 - `Switch` is a 36x20 track (`size="sm"`: 28x16) with a 2px inset, a thumb of track height minus 4px, and `action` when on. Both states move over 150ms with `--ease-out`.
 - `PageIntro` takes `description`, `actions`, and children: a description row with an actions slot, then the page content, in one `gap-6` column.

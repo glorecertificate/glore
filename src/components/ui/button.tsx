@@ -41,7 +41,7 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'bg-gradient-action text-action-foreground shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
-        secondary: 'border border-border-strong bg-field text-foreground hover:not-disabled:bg-accent/60',
+        secondary: 'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60',
         destructive: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent',
         warning: 'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent',
         success: 'bg-success text-success-foreground hover:not-disabled:bg-success-accent',
@@ -55,7 +55,7 @@ export const buttonVariants = cva(
         'band-secondary':
           'border border-band-border bg-band-scrim text-band-foreground hover:not-disabled:bg-band-scrim/60',
         field:
-          'rounded-md border border-border-strong bg-field text-foreground hover:not-disabled:bg-accent/60 focus-visible:focus-ring-inset',
+          'rounded-md border border-border bg-field text-foreground hover:not-disabled:bg-accent/60 focus-visible:focus-ring-inset',
         outline: 'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60',
         ghost: 'text-foreground hover:not-disabled:bg-accent/80 dark:hover:not-disabled:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',

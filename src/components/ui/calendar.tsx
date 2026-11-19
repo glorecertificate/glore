@@ -75,7 +75,7 @@ const Calendar = ({
     disabled: cn('text-muted-foreground opacity-50', defaultClassNames.disabled),
     dropdown: cn('absolute inset-0 bg-popover opacity-0', defaultClassNames.dropdown),
     dropdown_root: cn(
-      'relative rounded-md border border-border-strong bg-field has-focus-visible:focus-ring-inset',
+      'relative rounded-md border border-border bg-field has-focus-visible:focus-ring-inset',
       defaultClassNames.dropdown_root
     ),
     dropdowns: cn(

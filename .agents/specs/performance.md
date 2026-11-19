@@ -99,7 +99,7 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - A warm sidebar click must commit no fallback. Measure with a production build: `LoadingFallback` appears only after 300 ms, so a fallback in the DOM is a data wait to fix, not a style choice.
 
 - A provider above the shell never sets state after mount, from an effect, `requestAnimationFrame`, or a timer. Each `useSidebar` consumer re-renders on the change, and on the mobile profile that was one 150 ms task right after hydration (TBT 4x on `/courses`). Flip a DOM attribute from a callback ref instead (`settle` in `ui/sidebar.tsx`).
-- A sidebar link press closes the phone drawer one frame after the press, with no exit animation, so the drawer is gone before the route commits. A close on commit adds the exit animation and the unmount to Complete.
+- A sidebar link press keeps the phone drawer open, as on `main`. A close on navigation adds a render and the Sheet unmount around the route commit. That costs about 100 ms at 4x CPU, and the mobile navigation cases flag it. Issue #207 tracks a close with no cost.
 - The invitation poll of the menu indicator starts on mount. A deferred start lands a state change inside a later navigation and the router queues the click behind the server action.
 - `settle` in `e2e/perf/vitals.ts` also waits for requests still in flight. A resource entry exists only after the download ends, so a streaming prefetch looked quiet and the click raced it.
 

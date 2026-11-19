@@ -112,7 +112,9 @@ for (const role of AUTH_ROLES) {
     test('opens every settings tab', async ({ page }) => {
       for (const { label, value } of SETTINGS_TABS) {
         await page.goto(`/settings?tab=${value}`)
-        await expect(page.getByRole('tab', { name: label, exact: true })).toHaveAttribute('aria-selected', 'true')
+        await expect(
+          page.getByRole('navigation', { name: 'Settings sections' }).getByRole('button', { name: label, exact: true })
+        ).toHaveAttribute('aria-current', 'true')
         await expect(page.getByText('Something went wrong')).toBeHidden()
       }
     })

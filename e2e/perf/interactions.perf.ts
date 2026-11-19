@@ -64,11 +64,9 @@ const INTERACTIONS: Interaction[] = [
   },
   {
     act: async (page, run) =>
-      await page.getByRole('tab', { exact: true, name: SETTINGS_TABS[run % 2] ?? 'Account' }).click(),
+      await page.getByRole('button', { exact: true, name: SETTINGS_TABS[run % 2] ?? 'Account' }).click(),
     done: async (page, run) =>
-      await page
-        .locator(`[role="tab"][aria-selected="true"]`, { hasText: SETTINGS_TABS[run % 2] ?? 'Account' })
-        .waitFor(),
+      await page.locator(`button[aria-current="true"]`, { hasText: SETTINGS_TABS[run % 2] ?? 'Account' }).waitFor(),
     name: 'switch a settings tab',
     path: '/settings',
     profiles: ['desktop', 'mobile'],

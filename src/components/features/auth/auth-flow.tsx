@@ -298,7 +298,7 @@ export const AuthFlow = ({
 
   return (
     <MotionFeatures>
-      <div className="grid min-h-svh bg-canvas lg:grid-cols-2">
+      <div className="flex min-h-svh flex-col bg-canvas lg:grid lg:grid-cols-2">
         <aside className="relative isolate flex flex-col items-center gap-4 overflow-hidden bg-band-from px-page pt-5 pb-6 text-band-foreground band-scope lg:min-h-svh lg:justify-between lg:px-12 lg:py-10">
           <div className="flex w-full items-center justify-between gap-4">
             <AuthLogo onLogoClick={() => setView('login')} view={view} />
@@ -308,13 +308,17 @@ export const AuthFlow = ({
               view={view}
             />
           </div>
-          <Globe className="size-30 shrink-0 lg:size-96 xl:size-112" transitionDuration={600} {...globeOptions} />
+          <Globe
+            className="mx-auto size-30 shrink-0 lg:size-96 xl:size-112"
+            transitionDuration={600}
+            {...globeOptions}
+          />
           <div className="hidden max-w-sm flex-col gap-3 text-center lg:flex">
             <p className="type-title text-balance text-band-foreground">{t('panelTitle')}</p>
             <p className="text-pretty text-band-text">{t('panelMessage')}</p>
           </div>
         </aside>
-        <div className="flex flex-col px-page">
+        <div className="flex flex-1 flex-col px-page">
           <div className="hidden justify-end pt-6 lg:flex">
             <AuthLanguage contentRef={ref} view={view} />
           </div>

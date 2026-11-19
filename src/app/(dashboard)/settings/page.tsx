@@ -13,7 +13,6 @@ const SettingsPage = () => (
   <DashboardPage
     description={<PageTitle name="settingsDescription" namespace="Users" />}
     title={<PageTitle name="settings" namespace="Layout" />}
-    overlap
     width="full"
   >
     <div className="grid gap-4 lg:grid-cols-[13rem_minmax(0,42.5rem)] lg:gap-12">

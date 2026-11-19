@@ -537,6 +537,43 @@
   ::view-transition-new(.grid-enter) {
     animation: grid-enter 280ms cubic-bezier(0.23, 1, 0.32, 1) both;
   }
+  ::view-transition-group(.auth-surface),
+  ::view-transition-image-pair(.auth-surface),
+  ::view-transition-group(.auth-fixed),
+  ::view-transition-old(.auth-fixed),
+  ::view-transition-new(.auth-fixed) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  ::view-transition-group(.auth-surface) {
+    overflow: clip;
+  }
+  ::view-transition-group(auth-panel) {
+    background-color: var(--color-sidebar);
+  }
+  ::view-transition-group(auth-pane) {
+    background-color: var(--color-background);
+  }
+  .dark::view-transition-group(auth-pane) {
+    background-color: var(--color-canvas);
+  }
+  ::view-transition-old(.auth-surface),
+  ::view-transition-new(.auth-surface),
+  ::view-transition-old(.auth-fixed),
+  ::view-transition-new(.auth-fixed) {
+    block-size: 100%;
+    object-fit: none;
+  }
+  ::view-transition-old(.auth-surface),
+  ::view-transition-new(.auth-surface) {
+    object-position: top;
+  }
+  ::view-transition-old(.auth-surface) {
+    animation: auth-fade-out 120ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+  ::view-transition-new(.auth-surface) {
+    animation: auth-fade-in 220ms cubic-bezier(0.23, 1, 0.32, 1) 80ms both;
+  }
   ::selection {
     @apply bg-brand/20;
   }
@@ -651,6 +688,18 @@
   }
 }
 
+@keyframes auth-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes auth-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes grid-enter {
   from {
     opacity: 0;
@@ -664,6 +713,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(.grid-enter) {
+    animation: none;
+  }
+  ::view-transition-group(.auth-surface),
+  ::view-transition-old(.auth-surface),
+  ::view-transition-new(.auth-surface),
+  ::view-transition-group(.auth-fixed),
+  ::view-transition-old(.auth-fixed),
+  ::view-transition-new(.auth-fixed) {
     animation: none;
   }
 

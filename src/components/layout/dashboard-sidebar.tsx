@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
-import { redirect, unstable_rethrow, usePathname, useSearchParams } from 'next/navigation'
+import { unstable_rethrow, usePathname, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { useTranslations } from 'next-intl'
@@ -67,10 +67,10 @@ import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { toast } from '@/components/ui/toast'
 import { type UserOrganization } from '@/db/queries/user'
 import { useShortcut } from '@/hooks/use-shortcut'
-import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { APP_ROOT } from '@/lib/constants'
 import { SHORTCUTS } from '@/lib/shortcuts'
 import { type IconName } from '@/lib/types'
-import { cn, sleep } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 const loadSearchCommand = async () => (await import('@/components/layout/search-command')).SearchCommand
 
@@ -330,20 +330,17 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
       if (isNavigationError(error)) return
       toast.error(t('logoutFailed'))
       setLoggingOut(false)
-      return
     }
-
-    await sleep(500)
-    setTimeout(() => setMenuOpen(false), 1000)
-    redirect(`${AUTH_ROOT}?loggedOut=true`)
   }
 
   useEffect(
     () => () => {
       setLoggingOut(false)
       setLogoutDialogOpen(false)
+      setMenuOpen(false)
+      setOpenMobile(false)
     },
-    []
+    [setOpenMobile]
   )
 
   return (

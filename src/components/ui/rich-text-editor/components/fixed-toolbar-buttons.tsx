@@ -7,7 +7,6 @@ import { usePlateState } from 'platejs/react'
 
 import { AIToolbarButton } from '@/components/ui/rich-text-editor/components/ai-toolbar-button'
 import { AlignToolbarButton } from '@/components/ui/rich-text-editor/components/align-toolbar-button'
-import { EmojiToolbarButton } from '@/components/ui/rich-text-editor/components/emoji-toolbar-button'
 import { FontColorToolbarButton } from '@/components/ui/rich-text-editor/components/font-color-toolbar-button'
 import {
   RedoToolbarButton,
@@ -76,7 +75,6 @@ export const FixedToolbarButtons = () => {
 
           <ToolbarGroup separator={false}>
             <TableToolbarButton />
-            <EmojiToolbarButton />
             <MediaToolbarButton nodeType={KEYS.img} tooltip={t('image')} />
             <MediaToolbarButton nodeType={KEYS.video} tooltip={t('video')} />
             <MediaToolbarButton nodeType={KEYS.file} tooltip={t('file')} />

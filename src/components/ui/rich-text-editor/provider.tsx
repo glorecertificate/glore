@@ -23,7 +23,6 @@ import { BlockMenuKit } from '@/components/ui/rich-text-editor/plugins/block-men
 import { CalloutKit } from '@/components/ui/rich-text-editor/plugins/callout'
 import { CursorOverlayKit } from '@/components/ui/rich-text-editor/plugins/cursor-overlay'
 import { DndKit } from '@/components/ui/rich-text-editor/plugins/dnd'
-import { EmojiKit } from '@/components/ui/rich-text-editor/plugins/emoji'
 import { ExitBreakKit } from '@/components/ui/rich-text-editor/plugins/exit-break'
 import { FixedToolbarKit } from '@/components/ui/rich-text-editor/plugins/fixed-toolbar'
 import { FloatingToolbarKit } from '@/components/ui/rich-text-editor/plugins/floating-toolbar'
@@ -49,7 +48,6 @@ const PLUGINS = {
   callout: CalloutKit,
   cursorOverlay: CursorOverlayKit,
   dnd: DndKit,
-  emoji: EmojiKit,
   exitBreak: ExitBreakKit,
   fixedToolbar: FixedToolbarKit,
   floatingToolbar: FloatingToolbarKit,

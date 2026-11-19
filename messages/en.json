@@ -461,7 +461,6 @@
         "codeBlock": "Code block",
         "column": "Column",
         "comment": "Comment",
-        "emoji": "Emoji",
         "file": "File",
         "heading1": "Heading 1",
         "heading2": "Heading 2",
@@ -598,12 +597,6 @@
       },
       "common": {
         "url": "URL"
-      },
-      "emoji": {
-        "clear": "Clear",
-        "searchNoResultsSubtitle": "Try searching for a different emoji",
-        "searchNoResultsTitle": "No results found",
-        "searchResult": "Search results"
       },
       "media": {
         "actionCancel": "Cancel",

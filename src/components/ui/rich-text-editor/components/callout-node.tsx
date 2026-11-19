@@ -1,11 +1,7 @@
 'use client'
 
-import { useCalloutEmojiPicker } from '@platejs/callout/react'
-import { useEmojiDropdownMenuState } from '@platejs/emoji/react'
 import { PlateElement } from 'platejs/react'
 
-import { Button } from '@/components/ui/button'
-import { EmojiPicker, EmojiPopover } from '@/components/ui/rich-text-editor/components/emoji-toolbar-button'
 import { cn } from '@/lib/utils'
 
 const emojiFontFamilyStyle: React.CSSProperties = {
@@ -19,15 +15,6 @@ export const CalloutElement = ({
   className,
   ...props
 }: React.ComponentProps<typeof PlateElement>) => {
-  const { emojiPickerState, isOpen, setIsOpen } = useEmojiDropdownMenuState({
-    closeOnSelect: true,
-  })
-
-  const { emojiToolbarDropdownProps, props: calloutProps } = useCalloutEmojiPicker({
-    isOpen,
-    setIsOpen,
-  })
-
   const calloutAttributes = { ...attributes, 'data-plate-open-context-menu': true }
   const bgStyle = { backgroundColor: props.element.backgroundColor as string }
 
@@ -39,21 +26,13 @@ export const CalloutElement = ({
       {...props}
     >
       <div className="flex w-full gap-2 rounded-md">
-        <EmojiPopover
-          {...emojiToolbarDropdownProps}
-          control={
-            <Button
-              className="size-6 p-1 text-[18px] select-none hover:bg-muted-foreground/15"
-              contentEditable={false}
-              style={emojiFontFamilyStyle}
-              variant="ghost"
-            >
-              {(props.element.icon as string) || '💡'}
-            </Button>
-          }
+        <div
+          className="flex size-6 shrink-0 items-center justify-center text-[18px] select-none"
+          contentEditable={false}
+          style={emojiFontFamilyStyle}
         >
-          <EmojiPicker {...emojiPickerState} {...calloutProps} />
-        </EmojiPopover>
+          {(props.element.icon as string) || '💡'}
+        </div>
         <div className="w-full">{children}</div>
       </div>
     </PlateElement>

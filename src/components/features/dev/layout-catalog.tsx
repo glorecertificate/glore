@@ -19,8 +19,9 @@ const SECTIONS = [
 export const LayoutCatalog = () => {
   const [section, setSection] = useState<string>('profile')
   const [dirty, setDirty] = useState(2)
-  const [status, setStatus] = useState<string | null>('approved')
+  const [status, setStatus] = useState<string[]>(['approved', 'submitted'])
   const [search, setSearch] = useState('')
+  const [age, setAge] = useState<string[]>([])
 
   const groups: FilterRailGroup[] = [
     {
@@ -32,7 +33,18 @@ export const LayoutCatalog = () => {
         { count: 7, label: 'Approved', tone: 'approved', value: 'approved' },
         { count: 1, label: 'Rejected', tone: 'rejected', value: 'rejected' },
       ],
-      value: status,
+      values: status,
+    },
+    {
+      id: 'age',
+      label: 'Age',
+      onChange: setAge,
+      options: [
+        { count: 5, label: 'Due', value: 'due' },
+        { count: 2, label: 'Overdue', value: 'overdue' },
+      ],
+      selection: 'single',
+      values: age,
     },
   ]
 
@@ -57,7 +69,8 @@ export const LayoutCatalog = () => {
               className="w-full max-w-xs border"
               groups={groups}
               onReset={() => {
-                setStatus(null)
+                setStatus([])
+                setAge([])
                 setSearch('')
               }}
               search={() => <SearchInput onValueChange={setSearch} placeholder="Search" size="sm" value={search} />}

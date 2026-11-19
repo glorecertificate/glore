@@ -1,11 +1,14 @@
 'use client'
 
+import { useId } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Sheet,
   SheetClose,
@@ -29,9 +32,10 @@ interface FilterRailOption {
 export interface FilterRailGroup {
   id: string
   label: string
-  onChange: (value: string | null) => void
+  onChange: (values: string[]) => void
   options: FilterRailOption[]
-  value: string | null
+  selection?: 'multiple' | 'required' | 'single'
+  values: string[]
 }
 
 export interface FilterRailProps {
@@ -42,35 +46,91 @@ export interface FilterRailProps {
   searchActive?: boolean
 }
 
-const activeCount = (groups: FilterRailGroup[]) => groups.filter(group => group.value !== null).length
+const activeCount = (groups: FilterRailGroup[]) =>
+  groups.filter(group => group.selection !== 'required' && group.values.length > 0).length
+
+const toggle = (values: string[], value: string, checked: boolean) =>
+  checked ? [...values, value] : values.filter(item => item !== value)
+
+const OptionContent = ({ option }: { option: FilterRailOption }) => (
+  <>
+    <span className="min-w-0 flex-1 truncate">
+      {option.tone ? <StatusBadge tone={option.tone}>{option.label}</StatusBadge> : option.label}
+    </span>
+    {option.count !== undefined && <span className="text-xs text-muted-foreground tabular-nums">{option.count}</span>}
+  </>
+)
+
+const OPTION_CLASS = 'flex min-h-8 cursor-pointer items-center gap-2.5 text-sm text-foreground'
+
+const SingleGroup = ({ group }: { group: FilterRailGroup }) => {
+  const t = useTranslations('Common')
+  const prefix = useId()
+  const clearable = group.selection === 'single' && group.values.length > 0
+
+  return (
+    <fieldset className="flex min-w-0 flex-col gap-1" data-slot="filter-rail-group">
+      <legend className="mb-1 flex min-h-6 w-full items-center justify-between gap-2 type-label text-fg-title">
+        {group.label}
+        {clearable && (
+          <Button
+            aria-label={t('removeFilter', { name: group.label })}
+            className="-mr-2 text-action-text"
+            onClick={() => group.onChange([])}
+            size="xs"
+            type="button"
+            variant="ghost"
+          >
+            {t('clear')}
+          </Button>
+        )}
+      </legend>
+      <RadioGroup
+        aria-label={group.label}
+        className="gap-1"
+        onValueChange={value => group.onChange([value])}
+        value={group.values[0] ?? ''}
+      >
+        {group.options.map(option => (
+          <label className={OPTION_CLASS} htmlFor={`${prefix}${option.value}`} key={option.value}>
+            <RadioGroupItem id={`${prefix}${option.value}`} value={option.value} />
+            <OptionContent option={option} />
+          </label>
+        ))}
+      </RadioGroup>
+    </fieldset>
+  )
+}
+
+const MultipleGroup = ({ group }: { group: FilterRailGroup }) => {
+  const prefix = useId()
+
+  return (
+    <fieldset className="flex min-w-0 flex-col gap-1" data-slot="filter-rail-group">
+      <legend className="mb-1 type-label text-fg-title">{group.label}</legend>
+      {group.options.map(option => (
+        <label className={OPTION_CLASS} htmlFor={`${prefix}${option.value}`} key={option.value}>
+          <Checkbox
+            id={`${prefix}${option.value}`}
+            checked={group.values.includes(option.value)}
+            onCheckedChange={next => group.onChange(toggle(group.values, option.value, next === true))}
+          />
+          <OptionContent option={option} />
+        </label>
+      ))}
+    </fieldset>
+  )
+}
 
 const FilterRailGroups = ({ extra, groups }: Pick<FilterRailProps, 'extra' | 'groups'>) => (
   <>
-    {groups.map(group => (
-      <fieldset className="flex min-w-0 flex-col gap-1" data-slot="filter-rail-group" key={group.id}>
-        <legend className="mb-1 type-label text-fg-title">{group.label}</legend>
-        {group.options.map(option => {
-          const checked = group.value === option.value
-          return (
-            <label
-              className="flex min-h-8 cursor-pointer items-center gap-2.5 text-sm text-foreground"
-              key={option.value}
-            >
-              <Checkbox
-                checked={checked}
-                onCheckedChange={next => group.onChange(next === true ? option.value : null)}
-              />
-              <span className="min-w-0 flex-1 truncate">
-                {option.tone ? <StatusBadge tone={option.tone}>{option.label}</StatusBadge> : option.label}
-              </span>
-              {option.count !== undefined && (
-                <span className="text-xs text-muted-foreground tabular-nums">{option.count}</span>
-              )}
-            </label>
-          )
-        })}
-      </fieldset>
-    ))}
+    {groups.map(group =>
+      group.selection === undefined || group.selection === 'multiple' ? (
+        <MultipleGroup group={group} key={group.id} />
+      ) : (
+        <SingleGroup group={group} key={group.id} />
+      )
+    )}
     {extra}
   </>
 )
@@ -161,20 +221,23 @@ export const FilterRailToolbar = ({ extra, groups, onReset, search, searchActive
 export const FilterRailChips = ({ groups }: Pick<FilterRailProps, 'groups'>) => {
   const t = useTranslations('Common')
   const chips = groups.flatMap(group => {
-    const option = group.options.find(item => item.value === group.value)
-    return option ? [{ group, label: option.label }] : []
+    if (group.selection === 'required') return []
+    return group.options.reduce<{ group: FilterRailGroup; label: string; value: string }[]>((list, option) => {
+      if (group.values.includes(option.value)) list.push({ group, label: option.label, value: option.value })
+      return list
+    }, [])
   })
 
   if (chips.length === 0) return null
 
   return (
     <ul className="flex flex-wrap gap-2" data-slot="filter-chips">
-      {chips.map(({ group, label }) => (
-        <li key={group.id}>
+      {chips.map(({ group, label, value }) => (
+        <li key={`${group.id}:${value}`}>
           <button
             aria-label={t('removeFilter', { name: `${group.label}: ${label}` })}
             className="inline-flex h-8 cursor-pointer items-center gap-2 rounded-lg border border-action-border bg-action-subtle px-3 text-sm font-medium text-action-text transition-colors duration-100 outline-none hover:bg-action-subtle/70 focus-visible:focus-ring"
-            onClick={() => group.onChange(null)}
+            onClick={() => group.onChange(group.values.filter(item => item !== value))}
             type="button"
           >
             {`${group.label}: ${label}`}

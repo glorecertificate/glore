@@ -165,14 +165,16 @@ export const AdminCertificates = ({
           {
             id: 'status',
             label: t('filters.status'),
-            onChange: value => setParams({ page: 1, status: value as AdminCertificateStatus | null }),
+            onChange: ([value]) =>
+              setParams({ page: 1, status: (value as AdminCertificateStatus | undefined) ?? null }),
             options: ADMIN_CERTIFICATE_STATUSES.map(status => ({
               count: page?.facets.status?.[status] ?? 0,
               label: tCertificates(CERTIFICATE_STATUS[status].labelKey),
               tone: CERTIFICATE_STATUS[status].tone,
               value: status,
             })),
-            value: params.status,
+            selection: 'single',
+            values: params.status ? [params.status] : [],
           },
         ],
         onReset: handleClear,

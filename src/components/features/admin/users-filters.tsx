@@ -18,10 +18,10 @@ import {
 const ALL = 'all'
 
 export interface UsersFilterValues {
-  banned: BanFilter | null
+  banned: BanFilter[]
   org: number | null
-  role: PlatformRole | null
-  status: UserStatus | null
+  role: PlatformRole[]
+  status: UserStatus[]
 }
 
 export const useUsersRail = ({
@@ -69,36 +69,36 @@ export const useUsersRail = ({
       {
         id: 'role',
         label: t('filters.role'),
-        onChange: value => onFilter({ role: value as PlatformRole | null }),
+        onChange: next => onFilter({ role: next as PlatformRole[] }),
         options: PLATFORM_ROLES.map(role => ({
           count: facets.role?.[role] ?? 0,
           label: t(`role_${role}`),
           value: role,
         })),
-        value: values.role,
+        values: values.role,
       },
       {
         id: 'status',
         label: t('filters.status'),
-        onChange: value => onFilter({ status: value as UserStatus | null }),
+        onChange: next => onFilter({ status: next as UserStatus[] }),
         options: USER_STATUSES.map(status => ({
           count: facets.status?.[status] ?? 0,
           label: t(`status_${status}`),
           tone: status === 'active' ? 'success' : 'warning',
           value: status,
         })),
-        value: values.status,
+        values: values.status,
       },
       {
         id: 'banned',
         label: t('filters.banned'),
-        onChange: value => onFilter({ banned: value as BanFilter | null }),
+        onChange: next => onFilter({ banned: next as BanFilter[] }),
         options: BAN_FILTERS.map(filter => ({
           count: facets.banned?.[filter] ?? 0,
           label: filter === 'yes' ? t('filters.bannedYes') : t('filters.bannedNo'),
           value: filter,
         })),
-        value: values.banned,
+        values: values.banned,
       },
     ],
     onReset: onClear,

@@ -1,6 +1,21 @@
 import 'server-only'
 
-import { type SQL, and, asc, count, desc, eq, exists, gt, ilike, inArray, isNull, or, sql } from 'drizzle-orm'
+import {
+  type SQL,
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  exists,
+  gt,
+  ilike,
+  inArray,
+  isNotNull,
+  isNull,
+  or,
+  sql,
+} from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { adminError } from '@/db/mutations/moderation'
@@ -23,6 +38,11 @@ const NOW_UTC = sql`(now() at time zone 'utc')`
 
 const activeBan = and(eq(users.banned, true), or(isNull(users.banExpires), gt(users.banExpires, NOW_UTC)))
 
+const roleCondition = (role: ParsedQuery['role'][number]) => {
+  if (role === 'admin') return eq(users.role, 'admin')
+  return and(sql`coalesce(${users.role}, 'user') <> 'admin'`, eq(users.isEditor, role === 'editor'))
+}
+
 const buildFilters = (query: ParsedQuery) => {
   const conditions: (SQL | undefined)[] = searchTokens(query.q).map(token => {
     const pattern = likePattern(token)
@@ -34,14 +54,13 @@ const buildFilters = (query: ParsedQuery) => {
     )
   })
 
-  if (query.role === 'admin') conditions.push(eq(users.role, 'admin'))
-  if (query.role === 'editor' || query.role === 'user') {
-    conditions.push(and(sql`coalesce(${users.role}, 'user') <> 'admin'`, eq(users.isEditor, query.role === 'editor')))
+  if (query.role.length > 0) conditions.push(or(...query.role.map(roleCondition)))
+  if (query.status.length === 1) {
+    conditions.push(query.status[0] === 'active' ? isNotNull(users.onboardedAt) : isNull(users.onboardedAt))
   }
-  if (query.status === 'active') conditions.push(sql`${users.onboardedAt} is not null`)
-  if (query.status === 'pending') conditions.push(isNull(users.onboardedAt))
-  if (query.banned === 'yes') conditions.push(activeBan)
-  if (query.banned === 'no') conditions.push(sql`not coalesce(${activeBan}, false)`)
+  if (query.banned.length === 1) {
+    conditions.push(query.banned[0] === 'yes' ? activeBan : sql`not coalesce(${activeBan}, false)`)
+  }
   if (query.organizationId) {
     conditions.push(
       exists(
@@ -84,7 +103,7 @@ const countFacets = async (query: ParsedQuery): Promise<FacetCounts> => {
       const rows = await db
         .select({ key: expression, total: count() })
         .from(users)
-        .where(buildFilters({ ...query, [key]: null }))
+        .where(buildFilters({ ...query, [key]: [] }))
         .groupBy(sql`1`)
       return [key, Object.fromEntries(rows.map(row => [row.key, row.total]))] as const
     })

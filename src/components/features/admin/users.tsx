@@ -62,7 +62,9 @@ export const AdminUsers = ({
   const { remember, restore } = useReturnFocus()
   const [busyId, setBusyId] = useState<string | null>(null)
 
-  const filtersActive = Boolean(params.banned || params.org || params.q || params.role || params.status)
+  const filtersActive = Boolean(
+    params.banned.length > 0 || params.org || params.q || params.role.length > 0 || params.status.length > 0
+  )
 
   const handleSearch = (value: string) => {
     setSearch(value)

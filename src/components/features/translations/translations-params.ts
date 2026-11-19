@@ -1,10 +1,10 @@
-import { parseAsString, parseAsStringEnum } from 'nuqs/server'
+import { parseAsArrayOf, parseAsString, parseAsStringEnum } from 'nuqs/server'
 
 import { TRANSLATION_STATES } from '@/lib/translation-table'
 
 export const translationsParsers = {
-  filter: parseAsStringEnum([...TRANSLATION_STATES]),
+  filter: parseAsArrayOf(parseAsStringEnum([...TRANSLATION_STATES])).withDefault([]),
   key: parseAsString,
-  namespace: parseAsString,
+  namespace: parseAsArrayOf(parseAsString).withDefault([]),
   q: parseAsString.withDefault(''),
 }

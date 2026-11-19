@@ -208,14 +208,15 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
           {
             id: 'category',
             label: t('filters.category'),
-            onChange: value => setParams({ category: value as AuditCategory | null, page: 1 }),
+            onChange: ([value]) => setParams({ category: (value as AuditCategory | undefined) ?? null, page: 1 }),
             options: AUDIT_CATEGORIES.map(category => ({
               count: page.facets.category?.[category] ?? 0,
               label: t(`categories.${category}`),
               tone: CATEGORY_META[category].tone,
               value: category,
             })),
-            value: params.category,
+            selection: 'single',
+            values: params.category ? [params.category] : [],
           },
         ],
         onReset: handleClear,

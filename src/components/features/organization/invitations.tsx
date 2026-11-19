@@ -242,13 +242,14 @@ export const OrganizationInvitations = ({
                       {
                         id: 'status',
                         label: t('filterLabel'),
-                        onChange: value => setFilter((value as InvitationFilter | null) ?? 'all'),
+                        onChange: ([value]) => setFilter((value as InvitationFilter | undefined) ?? 'all'),
                         options: (['open', 'expired', 'accepted'] as const).map(key => ({
                           count: searched.filter(FILTERS[key]).length,
                           label: t(FILTER_LABELS[key]),
                           value: key,
                         })),
-                        value: filter === 'all' ? null : filter,
+                        selection: 'single',
+                        values: filter === 'all' ? [] : [filter],
                       },
                     ],
                     onReset: () => {

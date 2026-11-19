@@ -144,27 +144,29 @@ export const CertificatesContent = ({ certificates, draftSteps, eligibility }: C
           {
             id: 'status',
             label: t('columnStatus'),
-            onChange: value => setStatus(value as CertListStatus | null),
+            onChange: ([value]) => setStatus((value as CertListStatus | undefined) ?? null),
             options: presentStatuses.map(value => ({
               count: certificates.filter(c => c.status === value).length,
               label: tStatus(CERTIFICATE_STATUS[value].labelKey),
               tone: CERTIFICATE_STATUS[value].tone,
               value,
             })),
-            value: status,
+            selection: 'single',
+            values: status ? [status] : [],
           },
           ...(organizations.length > 1
             ? [
                 {
                   id: 'organization',
                   label: t('organization'),
-                  onChange: (value: string | null) => setOrg(value === null ? null : Number(value)),
+                  onChange: ([value]: string[]) => setOrg(value === undefined ? null : Number(value)),
                   options: organizations.map(([id, name]) => ({
                     count: certificates.filter(c => c.organization.id === id).length,
                     label: name,
                     value: String(id),
                   })),
-                  value: org === null ? null : String(org),
+                  selection: 'single' as const,
+                  values: org === null ? [] : [String(org)],
                 },
               ]
             : []),

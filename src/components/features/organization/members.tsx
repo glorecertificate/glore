@@ -247,18 +247,19 @@ export const OrganizationMembers = ({
                     {
                       id: 'role',
                       label: t('filterRole'),
-                      onChange: value => setRoleFilter((value as OrganizationMembershipRole | null) ?? 'all'),
+                      onChange: ([value]) => setRoleFilter((value as OrganizationMembershipRole | undefined) ?? 'all'),
                       options: ROLE_FILTERS.map(role => ({
                         count: members.filter(m => m.role === role && memberMatches(m, { role: false })).length,
                         label: formatRoleLabel(role, t),
                         value: role,
                       })),
-                      value: roleFilter === 'all' ? null : roleFilter,
+                      selection: 'single',
+                      values: roleFilter === 'all' ? [] : [roleFilter],
                     },
                     {
                       id: 'status',
                       label: t('filterStatus'),
-                      onChange: value => setStatusFilter((value as 'active' | 'pending' | null) ?? 'all'),
+                      onChange: ([value]) => setStatusFilter((value as 'active' | 'pending' | undefined) ?? 'all'),
                       options: [
                         {
                           count: members.filter(m => !m.isPending && memberMatches(m, { status: false })).length,
@@ -273,7 +274,8 @@ export const OrganizationMembers = ({
                           value: 'pending',
                         },
                       ],
-                      value: statusFilter === 'all' ? null : statusFilter,
+                      selection: 'single',
+                      values: statusFilter === 'all' ? [] : [statusFilter],
                     },
                   ],
                   onReset: clearFilters,

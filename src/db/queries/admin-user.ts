@@ -97,13 +97,22 @@ export const impersonationInputSchema = z.object({
 
 export type ImpersonationInput = z.input<typeof impersonationInputSchema>
 
+const facetValues = <T extends readonly [string, ...string[]]>(values: T) =>
+  z
+    .union([z.enum(values), z.array(z.enum(values))])
+    .nullish()
+    .transform(value => {
+      if (!value) return []
+      return Array.isArray(value) ? value : [value]
+    })
+
 export const adminUsersQuerySchema = z.object({
-  banned: z.enum(BAN_FILTERS).nullish(),
+  banned: facetValues(BAN_FILTERS),
   organizationId: z.number().int().positive().nullish(),
   page: z.number().int().min(1).max(10_000).nullish(),
   q: z.string().max(200).nullish(),
-  role: z.enum(PLATFORM_ROLES).nullish(),
-  status: z.enum(USER_STATUSES).nullish(),
+  role: facetValues(PLATFORM_ROLES),
+  status: facetValues(USER_STATUSES),
 })
 
 export type AdminUsersQuery = z.input<typeof adminUsersQuerySchema>

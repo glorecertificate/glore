@@ -11,8 +11,6 @@ export const TRANSLATION_STATES = [
 
 export type TranslationState = (typeof TRANSLATION_STATES)[number]
 
-export type TranslationFilter = TranslationState | 'all'
-
 type MessageOrigin = 'human' | 'import' | 'machine' | 'tms'
 
 export interface OverrideEntry {
@@ -51,9 +49,9 @@ interface BuildOptions {
 }
 
 interface RowFilters {
-  filter: TranslationFilter
-  namespace: string | null
+  namespaces: string[]
   query: string
+  states: TranslationState[]
 }
 
 const cellOf = (bundled: string | undefined, entry: OverrideEntry | undefined): TranslationCell => ({
@@ -106,11 +104,11 @@ export const buildRows = (options: BuildOptions): TranslationRow[] => {
 
 const SEARCH_SPLIT = /\s+/u
 
-export const filterRows = (rows: TranslationRow[], { filter, namespace, query }: RowFilters) => {
+export const filterRows = (rows: TranslationRow[], { namespaces, query, states }: RowFilters) => {
   const tokens = query.toLowerCase().split(SEARCH_SPLIT).filter(Boolean)
   return rows.filter(row => {
-    if (namespace && row.namespace !== namespace) return false
-    if (filter !== 'all' && !row.states.includes(filter)) return false
+    if (namespaces.length > 0 && !namespaces.includes(row.namespace)) return false
+    if (states.length > 0 && !row.states.some(state => states.includes(state))) return false
     return tokens.every(token => row.haystack.includes(token))
   })
 }

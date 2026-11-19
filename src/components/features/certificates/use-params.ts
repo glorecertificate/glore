@@ -2,7 +2,7 @@
 
 import { startTransition } from 'react'
 
-import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryState } from 'nuqs'
+import { parseAsArrayOf, parseAsInteger, parseAsString, parseAsStringEnum, useQueryState } from 'nuqs'
 
 import {
   CERT_LIST_PARAMS,
@@ -48,7 +48,10 @@ export const useTutorQueueAge = () => {
 }
 
 export const useTutorQueueStatus = () => {
-  const [status, setStatusRaw] = useQueryState(TUTOR_QUEUE_PARAMS.STATUS, parseAsString.withOptions(paramsOptions))
-  const setStatus = (value: string | null) => setStatusRaw(value)
-  return { setStatus, status }
+  const [rawStatus, setStatusRaw] = useQueryState(
+    TUTOR_QUEUE_PARAMS.STATUS,
+    parseAsArrayOf(parseAsString).withOptions(paramsOptions)
+  )
+  const setStatus = (values: string[] | null) => setStatusRaw(values && values.length > 0 ? values : null)
+  return { setStatus, status: rawStatus ?? [] }
 }

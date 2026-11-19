@@ -158,6 +158,7 @@ export const SidebarProvider = ({
 
   useEffect(() => {
     setActivePath(pathname)
+    setOpenMobile(false)
     setOverlayOpen(false)
     window.scrollTo(0, 0)
   }, [pathname])

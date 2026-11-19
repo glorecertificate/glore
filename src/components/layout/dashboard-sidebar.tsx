@@ -138,7 +138,7 @@ const DashboardSidebarItem = ({
   onClick,
   route,
 }: DashboardSidebarItemProps) => {
-  const { activePath, setActivePath } = useSidebar()
+  const { activePath, setActivePath, setOpenMobile } = useSidebar()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const pressed = useRef(false)
@@ -167,9 +167,14 @@ const DashboardSidebarItem = ({
     setActivePath(pathname as Route)
   }
 
+  const release = () => {
+    pressed.current = false
+  }
+
   const setPath = (e: React.MouseEvent<HTMLButtonElement>) => {
     pressed.current = false
     setActivePath(route)
+    setOpenMobile(false)
     onClick?.(e)
   }
 
@@ -190,6 +195,7 @@ const DashboardSidebarItem = ({
         onPointerCancel={cancelPress}
         onPointerDown={press}
         onPointerLeave={cancelPress}
+        onPointerUp={release}
         tooltip={label}
       >
         <Link href={route} keepFresh prefetch={quiet || undefined}>

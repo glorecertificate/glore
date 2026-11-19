@@ -207,6 +207,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 - Disable the submit button with `useFormDisabled(form.control)`, and read the error state with `useFormErrored(form.control)`. Both opt out of the compiler with `'use no memo'`, because RHF mutates `errors` in place.
 - Never pass `form` to a helper that reads its state in render: the build-only React Compiler memoizes the call and freezes the value.
 - Call the server action from `onSubmit` and surface the result with sonner (`toast.success`, `toast.error`).
+- Give every `<form>` `method="post"`, except a search form that must put its query in the URL. Before hydration the browser sends a form natively, and a GET puts every named field, passwords included, in the URL and the history.
 
 ## Email templates and notifications
 

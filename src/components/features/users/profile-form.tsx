@@ -189,7 +189,7 @@ export const ProfileForm = () => {
 
   return (
     <Form {...form}>
-      <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="mx-auto w-full space-y-0" method="post" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="pb-8" ref={avatarRef}>
           <ImageCropper
             disabled={form.formState.isSubmitting}

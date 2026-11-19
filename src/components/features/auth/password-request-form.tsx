@@ -81,7 +81,7 @@ export const PasswordRequestForm = ({
 
   return (
     <Form {...form}>
-      <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit, () => setErrored(true))}>
+      <form className="grid gap-6" method="post" onSubmit={form.handleSubmit(onSubmit, () => setErrored(true))}>
         <FormField
           control={form.control}
           name="username"

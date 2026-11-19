@@ -209,7 +209,7 @@ export const OrganizationSettings = ({
         />
         <div className="flex min-w-0 flex-1 flex-col gap-8">
           <Form {...form}>
-            <form className="flex flex-col gap-8" onSubmit={form.handleSubmit(handleSubmit)}>
+            <form className="flex flex-col gap-8" method="post" onSubmit={form.handleSubmit(handleSubmit)}>
               <SettingsSection description={t('brandingDescription')} id="branding" title={t('branding')}>
                 <OrganizationAvatarMenu
                   fallback={sessionOrg?.name?.slice(0, 2).toUpperCase() ?? organization.name.slice(0, 2).toUpperCase()}

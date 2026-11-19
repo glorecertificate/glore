@@ -139,7 +139,7 @@ export const LoginForm = ({
 
   return (
     <Form {...form}>
-      <form className="grid gap-5" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="grid gap-5" method="post" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="username"

@@ -105,7 +105,7 @@ export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ 
     <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-h-[90svh] overflow-y-auto" size="lg">
-        <form className="flex flex-col gap-6" onSubmit={onSubmit}>
+        <form className="flex flex-col gap-6" method="post" onSubmit={onSubmit}>
           <DialogHeader>
             <DialogTitle>{group ? t('editGroup') : t('addGroup')}</DialogTitle>
             <DialogDescription>{group ? `${t('slugLabel')}: ${group.slug}` : t('description')}</DialogDescription>

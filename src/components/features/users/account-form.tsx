@@ -92,7 +92,7 @@ export const AccountForm = () => {
 
   return (
     <Form {...form}>
-      <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="mx-auto w-full space-y-0" method="post" onSubmit={form.handleSubmit(onSubmit)}>
         <SettingsSection title={t('preferences')}>
           <FormField
             control={form.control}

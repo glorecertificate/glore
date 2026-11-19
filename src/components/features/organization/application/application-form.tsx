@@ -141,7 +141,12 @@ export const ApplicationForm = () => {
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-8" noValidate onSubmit={form.handleSubmit(handleSubmit, handleInvalid)}>
+      <form
+        className="flex flex-col gap-8"
+        method="post"
+        noValidate
+        onSubmit={form.handleSubmit(handleSubmit, handleInvalid)}
+      >
         <div className="outline-none" ref={headingRef} tabIndex={-1}>
           <TabHeader description={t(`description_${step}`)} title={t(`title_${step}`)} />
         </div>

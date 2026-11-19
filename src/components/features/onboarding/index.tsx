@@ -130,7 +130,7 @@ export const OnboardingForm = ({
       </div>
 
       <Form {...form}>
-        <form className="space-y-6" noValidate onSubmit={handleSubmit}>
+        <form className="space-y-6" method="post" noValidate onSubmit={handleSubmit}>
           {step === 0 && (
             <>
               <div className="space-y-2">

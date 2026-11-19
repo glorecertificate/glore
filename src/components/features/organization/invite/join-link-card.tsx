@@ -124,7 +124,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
 
       {!signedIn && (
         <Form {...form}>
-          <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(handleSubmit)}>
+          <form className="flex flex-col gap-4" method="post" onSubmit={form.handleSubmit(handleSubmit)}>
             <p className="text-sm text-muted-foreground">{t('guestDescription')}</p>
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField

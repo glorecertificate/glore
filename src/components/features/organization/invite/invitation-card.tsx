@@ -232,7 +232,7 @@ export const InvitationCard = ({
         )}
 
         {view === 'sign_in' && (
-          <form className="flex flex-col gap-4" onSubmit={handleSignIn}>
+          <form className="flex flex-col gap-4" method="post" onSubmit={handleSignIn}>
             <p className="text-sm text-muted-foreground">{t('signInDescription', { email })}</p>
             <div className="flex flex-col gap-2">
               <Label htmlFor="invitation-password">{t('password')}</Label>

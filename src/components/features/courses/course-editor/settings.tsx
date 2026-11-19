@@ -174,7 +174,7 @@ export const CourseSettings = ({
 
   return (
     <Form {...form}>
-      <form className={cn('grid gap-10', className)} onSubmit={form.handleSubmit(onSubmit)} {...props}>
+      <form className={cn('grid gap-10', className)} method="post" onSubmit={form.handleSubmit(onSubmit)} {...props}>
         <div className="space-y-6">
           <FormField
             control={form.control}

@@ -259,8 +259,8 @@ const CourseSidebarItem = ({
       <StepperSeparator
         className={cn(
           isLast && 'hidden',
-          'absolute inset-y-0 top-10 left-6 -order-1 m-0 h-[calc(100%-0.5rem)]! -translate-x-1/2',
-          user.isLearner && 'group-data-[state=completed]/step:bg-success'
+          'absolute inset-y-0 top-10 left-6 z-1 -order-1 m-0 h-[calc(100%-1rem)]! -translate-x-1/2',
+          user.isLearner && 'data-[state=completed]:bg-success'
         )}
       />
     </StepperItem>

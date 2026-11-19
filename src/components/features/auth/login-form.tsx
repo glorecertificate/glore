@@ -147,14 +147,7 @@ export const LoginForm = ({
             <FormItem>
               <FormLabel>{t('userLabel')}</FormLabel>
               <FormControl>
-                <Input
-                  autoCapitalize="none"
-                  autoComplete="username"
-                  autoCorrect="off"
-                  disabled={loading}
-                  size="lg"
-                  {...field}
-                />
+                <Input autoCapitalize="none" autoComplete="username" autoCorrect="off" disabled={loading} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -168,7 +161,7 @@ export const LoginForm = ({
               <div className="flex items-center justify-between gap-2">
                 <FormLabel>{t('passwordLabel')}</FormLabel>
                 <Button
-                  className={cn('text-link', loading && 'pointer-events-none')}
+                  className={cn('font-medium text-link', loading && 'pointer-events-none')}
                   disabled={loading}
                   onClick={setPasswordReset}
                   size="text"
@@ -183,7 +176,6 @@ export const LoginForm = ({
                   autoComplete="current-password"
                   disabled={loading}
                   readOnly={passwordReadOnly}
-                  size="lg"
                   {...field}
                 />
               </FormControl>
@@ -195,7 +187,6 @@ export const LoginForm = ({
           className="w-full [&_svg]:size-4"
           disabled={formDisabled}
           loading={loading}
-          size="lg"
           type="submit"
           variant="brand"
         >

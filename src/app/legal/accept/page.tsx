@@ -5,7 +5,8 @@ import { Suspense } from 'react'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
-import { BrandShell } from '@/components/features/auth/brand-shell'
+import { AuthCaption } from '@/components/features/auth/auth-caption'
+import { AuthFrame } from '@/components/features/auth/auth-frame'
 import { LegalAcceptForm } from '@/components/features/legal/legal-accept-form'
 import { LegalMarkdown } from '@/components/features/legal/legal-markdown'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -30,25 +31,23 @@ const LegalAcceptContent = async () => {
   if (!content) redirect(APP_ROOT)
 
   return (
-    <BrandShell
-      description={
-        <>
-          {t('description')}
-          {content.effectiveAt && (
-            <span className="mt-1 block type-caption text-band-muted">
-              {t('effective', {
-                date: format.dateTime(new Date(content.effectiveAt), { dateStyle: 'long', timeZone: 'UTC' }),
-              })}
-            </span>
-          )}
-        </>
-      }
-      size="md"
-      title={<span data-testid="legal-accept-title">{t('title')}</span>}
-    >
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="type-title text-balance" data-testid="legal-accept-title">
+          {t('title')}
+        </h1>
+        <p className="text-pretty text-muted-foreground">{t('description')}</p>
+        {content.effectiveAt && (
+          <p className="type-caption text-muted-foreground">
+            {t('effective', {
+              date: format.dateTime(new Date(content.effectiveAt), { dateStyle: 'long', timeZone: 'UTC' }),
+            })}
+          </p>
+        )}
+      </div>
       <section
         aria-label={content.title}
-        className="rounded-xl border border-border-subtle bg-card p-6 shadow-card outline-none focus-visible:focus-ring-inset md:max-h-[50vh] md:overflow-y-auto"
+        className="max-h-[50svh] overflow-y-auto rounded-lg border border-border-subtle bg-card p-4 outline-none focus-visible:focus-ring-inset"
         data-testid="legal-accept-body"
         tabIndex={0}
       >
@@ -58,7 +57,7 @@ const LegalAcceptContent = async () => {
       {content.locale !== locale && <Banner variant="info">{t('fallbackNotice')}</Banner>}
       <p className="text-sm">
         <Link
-          className="text-action-text underline underline-offset-4"
+          className="rounded-sm text-action-text underline-offset-4 transition-colors outline-none hover:text-link hover:underline focus-visible:focus-ring motion-reduce:transition-none"
           href="/terms"
           rel="noopener noreferrer"
           target="_blank"
@@ -66,17 +65,17 @@ const LegalAcceptContent = async () => {
           {t('openFull')}
         </Link>
       </p>
-      <div className="sticky bottom-0 -mx-4 border-t bg-canvas p-4 sm:-mx-6 sm:px-6 md:static md:mx-0 md:border-0 md:bg-transparent md:p-0">
-        <LegalAcceptForm />
-      </div>
-    </BrandShell>
+      <LegalAcceptForm />
+    </div>
   )
 }
 
 const LegalAcceptPage = () => (
-  <Suspense fallback={<LoadingFallback size="full" />}>
-    <LegalAcceptContent />
-  </Suspense>
+  <AuthFrame language={false} panel={<AuthCaption messageKey="panelLegal" />} size="lg">
+    <Suspense fallback={<LoadingFallback />}>
+      <LegalAcceptContent />
+    </Suspense>
+  </AuthFrame>
 )
 
 export default LegalAcceptPage

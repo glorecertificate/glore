@@ -801,7 +801,10 @@
     "otherWays": "Altri modi per entrare",
     "passwordLabel": "Password",
     "verifyMessage": "Controlla il codice stampato su un certificato.",
-    "verifyTitle": "Verifica un certificato"
+    "verifyTitle": "Verifica un certificato",
+    "panelInvite": "Hai ricevuto un invito",
+    "panelLegal": "Aggiornamento dei termini",
+    "panelOnboarding": "Configura il tuo profilo"
   },
   "CourseCommon": {
     "courseCreationFailed": "Impossibile creare il corso. Riprova.",

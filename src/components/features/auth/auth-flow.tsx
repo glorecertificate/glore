@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { AnimatePresence, type Variants, m, useIsPresent } from 'motion/react'
 import { useTranslations } from 'next-intl'
@@ -8,6 +8,7 @@ import { Values, useQueryStates } from 'nuqs'
 
 import { AuthAlternatives } from '@/components/features/auth/auth-alternatives'
 import { AuthBackLink } from '@/components/features/auth/auth-back-link'
+import { useSetAuthGlobe } from '@/components/features/auth/auth-globe'
 import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
@@ -16,17 +17,13 @@ import { PasswordRequestForm } from '@/components/features/auth/password-request
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
 import { ResendEmailButton } from '@/components/features/auth/resend-email-button'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { MotionFeatures } from '@/components/ui/motion-features'
 import { toast } from '@/components/ui/toast'
 import { useMetadata } from '@/hooks/use-metadata'
-import { useTheme } from '@/hooks/use-theme'
 import { MessageKey } from '@/lib/i18n'
 import { EASE_IN_OUT, EASE_OUT } from '@/lib/motion'
 import { AuthView, type Enum } from '@/lib/types'
-import { camelize, cn, hexToRgb } from '@/lib/utils'
-import theme from '~/config/theme.json'
+import { camelize, cn } from '@/lib/utils'
 
 const STEP_VARIANTS = {
   exit: { filter: 'blur(2px)', opacity: 0, transition: { duration: 0.15, ease: EASE_OUT }, y: -4 },
@@ -101,7 +98,6 @@ const AuthContent = ({
           icon="arrow-right"
           iconPlacement="right"
           onClick={() => setView('login')}
-          size="lg"
           variant="outline"
         >
           {t('passwordUpdatedAction')}
@@ -115,7 +111,6 @@ const AuthContent = ({
           icon="arrow-right"
           iconPlacement="right"
           onClick={() => setView('password_request')}
-          size="lg"
           variant="outline"
         >
           {t('invalidTokenAction')}
@@ -129,7 +124,6 @@ const AuthContent = ({
           icon="arrow-right"
           iconPlacement="right"
           onClick={() => setView('password_request')}
-          size="lg"
           variant="outline"
         >
           {t('invalidPasswordResetAction')}
@@ -167,30 +161,6 @@ const AuthMessage = ({
   )
 }
 
-const useGlobeOptions = ({ errored, view }: { errored: boolean; view: Enum<AuthView> }) => {
-  const { resolvedTheme } = useTheme()
-  const mode = resolvedTheme ?? 'light'
-  const colors = hexToRgb({ ...theme.colors[mode], canvas: theme.system.palette.canvas[mode === 'dark' ? 1 : 0] })
-  const options: GlobeColorOptions = { glowColor: colors.canvas }
-
-  if (errored || view === 'invalid_token' || view === 'invalid_password_reset') {
-    return { ...options, baseColor: colors.destructive }
-  }
-
-  switch (view) {
-    case 'login':
-      return { ...options, baseColor: [colors.brand, colors.brandSecondary, colors.brandTertiary] }
-    case 'password_request':
-    case 'password_reset':
-      return { ...options, baseColor: colors.warning }
-    case 'password_updated':
-    case 'email_sent':
-      return { ...options, baseColor: colors.success }
-    default:
-      return options
-  }
-}
-
 export const AuthFlow = ({
   params,
   username: defaultUsername,
@@ -207,7 +177,7 @@ export const AuthFlow = ({
   const [height, setHeight] = useState<number>()
   const [animate, setAnimate] = useState(false)
   const [errored, setErrored] = useState(false)
-  const globeOptions = useGlobeOptions({ errored, view })
+  const setGlobe = useSetAuthGlobe()
 
   const ref = useRef<HTMLDivElement>(null)
   const key = camelize(view)
@@ -236,6 +206,10 @@ export const AuthFlow = ({
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    setGlobe({ errored, view })
+  }, [errored, setGlobe, view])
+
   if (height !== undefined && !animate) {
     setAnimate(true)
   }
@@ -247,68 +221,53 @@ export const AuthFlow = ({
 
   return (
     <MotionFeatures>
-      <main className="flex flex-1 justify-center px-page py-8 sm:py-10 lg:py-14" data-slot="auth-main">
-        <div className="grid w-full max-w-5xl content-start items-start gap-8 lg:grid-cols-2 lg:gap-16">
-          <div className="flex flex-col items-center gap-6 text-center">
-            <Globe className="mx-auto size-64 lg:-mb-6 lg:size-120" transitionDuration={600} {...globeOptions} />
-            <div className="flex flex-col gap-2">
-              <h2 className="text-3xl font-semibold text-balance text-fg-title lg:text-4xl">{t('heroTitle')}</h2>
-              <p className="mx-auto max-w-sm text-pretty text-muted-foreground">{t('heroMessage')}</p>
-            </div>
-          </div>
-          <div className="mx-auto w-full max-w-md lg:mx-0">
-            <m.div
-              animate={{ height: height ?? 'auto' }}
-              className="-m-3 overflow-hidden"
-              initial={false}
-              transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
+      <m.div
+        animate={{ height: height ?? 'auto' }}
+        className="-m-3 overflow-hidden"
+        initial={false}
+        transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
+      >
+        <div className="flex flex-col p-3" ref={ref}>
+          <AnimatePresence initial={false} mode="wait">
+            <AuthStep
+              animate="visible"
+              className="flex flex-col gap-6"
+              exit="exit"
+              initial="hidden"
+              key={view}
+              variants={STEP_VARIANTS}
             >
-              <div className="flex flex-col p-3" ref={ref}>
-                <AnimatePresence initial={false} mode="wait">
-                  <AuthStep
-                    animate="visible"
-                    className="flex flex-col gap-6"
-                    exit="exit"
-                    initial="hidden"
-                    key={view}
-                    variants={STEP_VARIANTS}
-                  >
-                    {view !== 'login' && view !== 'password_updated' && (
-                      <m.div variants={STEP_ITEM_VARIANTS}>
-                        <AuthBackLink onClick={goToLogin} />
-                      </m.div>
-                    )}
-                    <Card className="gap-6 p-6 sm:p-8">
-                      <m.div className="flex flex-col gap-2 text-center" variants={STEP_ITEM_VARIANTS}>
-                        {title && <h1 className="text-2xl font-semibold text-fg-title">{title}</h1>}
-                        <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
-                      </m.div>
-                      <m.div className="flex w-full flex-col gap-0" variants={STEP_ITEM_VARIANTS}>
-                        <AuthContent
-                          errored={errored}
-                          loggedOut={params.loggedOut}
-                          next={params.next}
-                          resetToken={params.token}
-                          setErrored={setErrored}
-                          setUsername={setUsername}
-                          setView={setView}
-                          username={username}
-                          view={view}
-                        />
-                      </m.div>
-                    </Card>
-                    {view === 'login' && (
-                      <m.div variants={STEP_ITEM_VARIANTS}>
-                        <AuthAlternatives />
-                      </m.div>
-                    )}
-                  </AuthStep>
-                </AnimatePresence>
-              </div>
-            </m.div>
-          </div>
+              <m.div className="flex flex-col gap-2 text-center" variants={STEP_ITEM_VARIANTS}>
+                {title && <h1 className="type-title text-balance text-fg-title">{title}</h1>}
+                <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
+              </m.div>
+              <m.div className="flex w-full flex-col gap-0" variants={STEP_ITEM_VARIANTS}>
+                <AuthContent
+                  errored={errored}
+                  loggedOut={params.loggedOut}
+                  next={params.next}
+                  resetToken={params.token}
+                  setErrored={setErrored}
+                  setUsername={setUsername}
+                  setView={setView}
+                  username={username}
+                  view={view}
+                />
+              </m.div>
+              {view !== 'login' && view !== 'password_updated' && (
+                <m.div className="flex justify-center" variants={STEP_ITEM_VARIANTS}>
+                  <AuthBackLink onClick={goToLogin} />
+                </m.div>
+              )}
+              {view === 'login' && (
+                <m.div variants={STEP_ITEM_VARIANTS}>
+                  <AuthAlternatives />
+                </m.div>
+              )}
+            </AuthStep>
+          </AnimatePresence>
         </div>
-      </main>
+      </m.div>
     </MotionFeatures>
   )
 }

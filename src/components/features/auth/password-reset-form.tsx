@@ -88,7 +88,7 @@ export const PasswordResetForm = ({
             <FormItem>
               <FormLabel>{t('newPasswordLabel')}</FormLabel>
               <FormControl>
-                <PasswordInput autoComplete="new-password" autoFocus size="lg" {...field} />
+                <PasswordInput autoComplete="new-password" autoFocus {...field} />
               </FormControl>
               {form.formState.errors.password?.message !== t('passwordRequirements') && (
                 <FormDescription>{t('passwordRequirements')}</FormDescription>
@@ -101,7 +101,6 @@ export const PasswordResetForm = ({
           className="w-full [&_svg]:size-4"
           disabled={errored}
           loading={form.formState.isSubmitting}
-          size="lg"
           type="submit"
           variant="brand"
         >

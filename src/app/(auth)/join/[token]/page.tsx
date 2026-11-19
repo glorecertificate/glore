@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInviteLinkPreview } from '@/actions/organizations/previews'
+import { AuthCaption } from '@/components/features/auth/auth-caption'
 import { AuthFrame } from '@/components/features/auth/auth-frame'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { JoinLinkCard } from '@/components/features/organization/invite/join-link-card'
@@ -41,7 +42,7 @@ const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['par
 }
 
 const JoinPage = ({ params }: PageProps<'/join/[token]'>) => (
-  <AuthFrame language>
+  <AuthFrame panel={<AuthCaption messageKey="panelInvite" />} size="md">
     <Suspense fallback={<LoadingFallback />}>
       <JoinContent params={params} />
     </Suspense>

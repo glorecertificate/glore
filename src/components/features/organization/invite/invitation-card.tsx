@@ -179,7 +179,7 @@ export const InvitationCard = ({
   return (
     <AlertDialog onOpenChange={setDeclineOpen} open={declineOpen}>
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col items-center gap-4 text-center">
+        <div className="flex flex-col gap-4">
           <OrganizationBadge avatarUrl={organization.avatarUrl} name={organization.name} />
           <div className="space-y-2">
             <h1 className="type-title text-balance">{t('title', { organization: organization.name })}</h1>
@@ -214,7 +214,7 @@ export const InvitationCard = ({
 
         {view === 'accept' && (
           <div className="flex flex-col gap-2">
-            <Button disabled={busy} loading={pending === 'accept'} onClick={handleAccept} size="lg" variant="brand">
+            <Button disabled={busy} loading={pending === 'accept'} onClick={handleAccept} variant="brand">
               {t('accept')}
             </Button>
             <AlertDialogTrigger asChild>
@@ -239,13 +239,7 @@ export const InvitationCard = ({
                 value={password}
               />
             </div>
-            <Button
-              disabled={busy || !password}
-              loading={pending === 'sign_in'}
-              size="lg"
-              type="submit"
-              variant="brand"
-            >
+            <Button disabled={busy || !password} loading={pending === 'sign_in'} type="submit" variant="brand">
               {t('signIn')}
             </Button>
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
@@ -266,7 +260,7 @@ export const InvitationCard = ({
             {proof ? (
               <>
                 <p className="text-sm text-muted-foreground">{t('createDescription', { email })}</p>
-                <Button disabled={busy} loading={pending === 'create'} onClick={handleCreate} size="lg" variant="brand">
+                <Button disabled={busy} loading={pending === 'create'} onClick={handleCreate} variant="brand">
                   {t('createAccount')}
                 </Button>
               </>
@@ -279,13 +273,7 @@ export const InvitationCard = ({
                     <p>{t('proofSent', { email })}</p>
                   </Banner>
                 )}
-                <Button
-                  disabled={busy}
-                  loading={pending === 'proof'}
-                  onClick={handleSendProof}
-                  size="lg"
-                  variant="brand"
-                >
+                <Button disabled={busy} loading={pending === 'proof'} onClick={handleSendProof} variant="brand">
                   {proofSent ? t('sendProofAgain') : t('sendProof')}
                 </Button>
               </>

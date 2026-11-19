@@ -103,7 +103,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-4 text-center">
+      <div className="flex flex-col gap-4">
         <OrganizationBadge avatarUrl={organization.avatarUrl} name={organization.name} />
         <div className="space-y-2">
           <h1 className="type-title text-balance">{t('title', { organization: organization.name })}</h1>
@@ -115,8 +115,8 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
 
       {signedIn && (
         <div className="flex flex-col gap-3">
-          {email && <p className="text-center text-sm text-muted-foreground">{t('signedInAs', { email })}</p>}
-          <Button loading={pending} onClick={handleJoin} size="lg" variant="brand">
+          {email && <p className="text-sm text-muted-foreground">{t('signedInAs', { email })}</p>}
+          <Button loading={pending} onClick={handleJoin} variant="brand">
             {requiresApproval ? t('requestAccess') : t('join')}
           </Button>
         </div>
@@ -171,7 +171,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
               <LucideIcon className="mt-0.5 size-4 shrink-0" name="info" />
               <p>{requiresApproval ? t('guestNoteApproval') : t('guestNote')}</p>
             </Banner>
-            <Button loading={pending} size="lg" type="submit" variant="brand">
+            <Button loading={pending} type="submit" variant="brand">
               {requiresApproval ? t('requestAccess') : t('continue')}
             </Button>
             <p className="text-center text-sm text-muted-foreground">

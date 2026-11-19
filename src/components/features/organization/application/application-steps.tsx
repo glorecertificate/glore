@@ -2,57 +2,48 @@
 
 import { useTranslations } from 'next-intl'
 
+import { useApplicationStep } from '@/components/features/organization/application/application-context'
 import { LucideIcon } from '@/components/icons/lucide'
 import { APPLICATION_STEPS } from '@/db/queries/organization-application'
 import { cn } from '@/lib/utils'
 
-export const ApplicationSteps = ({ current }: { current: number }) => {
+export const ApplicationSteps = () => {
   const t = useTranslations('Register')
+  const { stepIndex: current } = useApplicationStep()
 
   return (
-    <div className="flex flex-col gap-3">
-      <p aria-hidden className="flex flex-wrap gap-x-2 type-caption text-muted-foreground sm:hidden">
+    <>
+      <p className="flex flex-wrap gap-x-2 self-start pb-1 text-sm text-sidebar-muted lg:hidden">
         <span>{t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}</span>
-        <span className="font-medium text-foreground">
+        <span className="font-medium text-band-foreground">
           {t(`step_${APPLICATION_STEPS[current] ?? APPLICATION_STEPS[0]}`)}
         </span>
       </p>
-      <p className="type-caption text-muted-foreground max-sm:sr-only">
-        {t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}
-      </p>
-      <ol className="flex items-start gap-2">
+      <ol
+        aria-label={t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}
+        className="hidden flex-col gap-5 lg:flex"
+      >
         {APPLICATION_STEPS.map((step, index) => {
           const done = index < current
           const active = index === current
           return (
-            <li aria-current={active ? 'step' : undefined} className="flex min-w-0 flex-1 flex-col gap-2" key={step}>
-              <div className="flex items-center gap-2">
-                <span
-                  className={cn(
-                    'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium',
-                    done && 'border-primary bg-primary text-primary-foreground',
-                    active && 'border-primary text-foreground',
-                    !(done || active) && 'text-muted-foreground'
-                  )}
-                >
-                  {done ? <LucideIcon className="size-3.5" name="check" /> : index + 1}
-                </span>
-                {index < APPLICATION_STEPS.length - 1 && (
-                  <span aria-hidden className={cn('h-px flex-1 bg-border', done && 'bg-primary')} />
-                )}
-              </div>
-              <p
+            <li aria-current={active ? 'step' : undefined} className="flex items-center gap-3" key={step}>
+              <span
                 className={cn(
-                  'pr-2 text-xs leading-tight wrap-break-word max-sm:sr-only sm:text-sm',
-                  active ? 'font-medium' : 'text-muted-foreground'
+                  'flex size-7 shrink-0 items-center justify-center rounded-full border border-band-border text-xs font-medium text-sidebar-muted',
+                  done && 'border-sidebar-primary bg-sidebar-primary text-sidebar-primary-foreground',
+                  active && 'border-sidebar-primary bg-sidebar-primary text-sidebar-primary-foreground'
                 )}
               >
+                {done ? <LucideIcon className="size-3.5" name="check" /> : index + 1}
+              </span>
+              <span className={cn('text-sm', active ? 'font-semibold text-band-foreground' : 'text-sidebar-muted')}>
                 {t(`step_${step}`)}
-              </p>
+              </span>
             </li>
           )
         })}
       </ol>
-    </div>
+    </>
   )
 }

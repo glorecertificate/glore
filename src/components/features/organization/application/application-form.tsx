@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { type FieldErrors, type Resolver, useForm } from 'react-hook-form'
 
 import { requestOrganizationRegistration } from '@/actions/organizations/requests'
+import { useApplicationStep } from '@/components/features/organization/application/application-context'
 import { TabHeader } from '@/components/features/organization/tab-header'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
@@ -24,7 +25,6 @@ import {
 } from '@/db/queries/organization-application'
 import { AUTH_ROOT } from '@/lib/constants'
 
-import { ApplicationSteps } from './application-steps'
 import { MotivationStep } from './motivation-step'
 import { OrganizationStep } from './organization-step'
 import { RepresentativeStep } from './representative-step'
@@ -54,7 +54,7 @@ const isErrorCode = (value: unknown): value is ApplicationErrorCode =>
 export const ApplicationForm = () => {
   const locale = useLocale()
   const t = useTranslations('Register')
-  const [stepIndex, setStepIndex] = useState(0)
+  const { setStepIndex, stepIndex } = useApplicationStep()
   const [loading, setLoading] = useState(false)
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
   const headingRef = useRef<HTMLDivElement>(null)
@@ -142,8 +142,6 @@ export const ApplicationForm = () => {
   return (
     <Form {...form}>
       <form className="flex flex-col gap-8" noValidate onSubmit={form.handleSubmit(handleSubmit, handleInvalid)}>
-        <ApplicationSteps current={stepIndex} />
-
         <div className="outline-none" ref={headingRef} tabIndex={-1}>
           <TabHeader description={t(`description_${step}`)} title={t(`title_${step}`)} />
         </div>
@@ -177,7 +175,10 @@ export const ApplicationForm = () => {
 
         <p className="text-center text-sm text-muted-foreground">
           {t('alreadyHaveAccount')}{' '}
-          <Link className="underline underline-offset-4 hover:text-foreground" href={AUTH_ROOT}>
+          <Link
+            className="rounded-sm underline-offset-4 transition-colors outline-none hover:text-link hover:underline focus-visible:focus-ring motion-reduce:transition-none"
+            href={AUTH_ROOT}
+          >
             {t('login')}
           </Link>
         </p>

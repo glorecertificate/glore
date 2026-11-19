@@ -14,7 +14,7 @@ export const LegalLinks = async ({ className }: { className?: string }) => {
     <nav aria-label={t('navigation')} className={cn('flex flex-wrap gap-x-4 gap-y-1 text-sm text-fg-2', className)}>
       {LEGAL_ROOTS.map(href => (
         <Link
-          className="underline-offset-4 hover:text-fg-1 hover:underline focus-visible:text-fg-1"
+          className="touch-hit underline-offset-4 hover:text-fg-1 hover:underline focus-visible:text-fg-1"
           href={href}
           key={href}
         >

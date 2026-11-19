@@ -801,7 +801,10 @@
     "otherWays": "Other ways in",
     "passwordLabel": "Password",
     "verifyMessage": "Check a code printed on a certificate.",
-    "verifyTitle": "Verify a certificate"
+    "verifyTitle": "Verify a certificate",
+    "panelInvite": "You were invited",
+    "panelLegal": "Terms update",
+    "panelOnboarding": "Set up your profile"
   },
   "CourseCommon": {
     "courseCreationFailed": "Could not create the course. Try again.",

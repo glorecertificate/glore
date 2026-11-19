@@ -95,7 +95,6 @@ export const PasswordRequestForm = ({
                   autoComplete="username"
                   autoFocus
                   disabled={form.formState.isSubmitting}
-                  size="lg"
                   ref={inputRef}
                 />
               </FormControl>
@@ -103,13 +102,7 @@ export const PasswordRequestForm = ({
             </FormItem>
           )}
         />
-        <Button
-          className="w-full [&_svg]:size-4"
-          loading={form.formState.isSubmitting}
-          size="lg"
-          type="submit"
-          variant="brand"
-        >
+        <Button className="w-full [&_svg]:size-4" loading={form.formState.isSubmitting} type="submit" variant="brand">
           {form.formState.isSubmitting ? t('sendingLink') : t('sendLink')}
         </Button>
       </form>

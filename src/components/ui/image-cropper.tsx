@@ -29,6 +29,7 @@ export interface ImageCropperHandle {
 export const ImageCropper = ({
   disabled,
   fallback,
+  heading,
   onChange,
   onRemove,
   pickerRef,
@@ -37,6 +38,7 @@ export const ImageCropper = ({
 }: {
   disabled?: boolean
   fallback?: React.ReactNode
+  heading?: React.ReactNode
   onChange?: (file: File) => Promise<void> | void
   onRemove?: (event: React.MouseEvent<HTMLElement>) => void
   pickerRef?: React.Ref<ImageCropperHandle>
@@ -140,7 +142,8 @@ export const ImageCropper = ({
           <input {...getInputProps({ 'aria-label': t('uploadAvatar') })} />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex min-w-0 flex-col gap-2">
+          {heading}
           <Button size="sm" type="button" variant="outline" {...buttonProps} className="w-fit" disabled={disabled}>
             <LucideIcon name="cloud-upload" className="mr-2 size-4" />
             {value ? t('changeAvatar') : t('uploadAvatar')}

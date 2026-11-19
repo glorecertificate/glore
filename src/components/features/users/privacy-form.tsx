@@ -55,7 +55,7 @@ export const PrivacyForm = () => {
   return (
     <div className="space-y-0">
       <ImpersonationLockNote className="mb-6" />
-      <SettingsSection description={t('publicProfileDescription')} title={t('publicProfile')}>
+      <SettingsSection title={t('publicProfile')}>
         <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
           <div className="space-y-1">
             <Label htmlFor="public-profile">{t('publicProfileLabel')}</Label>
@@ -79,7 +79,7 @@ export const PrivacyForm = () => {
 
       <Separator className="my-10" />
 
-      <SettingsSection description={t('featuredCertificateDescription')} title={t('featuredCertificate')}>
+      <SettingsSection title={t('featuredCertificate')}>
         {!data && <LoadingFallback className="h-16" />}
         {data && certificates.length === 0 && (
           <p className="text-sm text-muted-foreground">{t('featuredCertificateEmpty')}</p>

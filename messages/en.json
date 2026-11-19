@@ -80,7 +80,8 @@
     "keyDown": "Down arrow",
     "requestCertificate": "Request a certificate",
     "inviteMembers": "Invite members",
-    "skillsFramework": "Skills framework"
+    "skillsFramework": "Skills framework",
+    "content": "Content"
   },
   "Intl": {
     "Countries": {
@@ -737,7 +738,8 @@
     "pendingInvitations": "Pending invitations",
     "pendingInvitationsCount": "{count, plural, =1 {# pending invitation} other {# pending invitations}}",
     "invitedAs": "Invited as {role}",
-    "noOrganization": "No organization yet"
+    "noOrganization": "No organization yet",
+    "content": "Content"
   },
   "Auth": {
     "backToLogin": "Go to login",
@@ -793,7 +795,9 @@
     "sendLink": "Send link",
     "sendingLink": "Sending…",
     "savePassword": "Save password",
-    "savingPassword": "Saving…"
+    "savingPassword": "Saving…",
+    "panelTitle": "Join the GloRe Network",
+    "panelMessage": "Give value to your volunteering experiences."
   },
   "CourseCommon": {
     "courseCreationFailed": "Could not create the course. Try again.",
@@ -1425,7 +1429,19 @@
       "navigation": "More in this category",
       "previous": "Previous",
       "next": "Next",
-      "onThisPage": "On this page"
+      "onThisPage": "On this page",
+      "helpful": "Was this helpful?",
+      "yes": "Yes",
+      "no": "No",
+      "thanks": "Thanks for your answer.",
+      "tellUs": "Tell us what is missing",
+      "related": "Related questions"
+    },
+    "hub": {
+      "searchPlaceholder": "Search the documentation",
+      "startHere": "Start here",
+      "forYourRole": "For your role",
+      "seeAll": "See all {count}"
     }
   },
   "About": {
@@ -2678,18 +2694,11 @@
     "usernamePlaceholder": "Choose a username",
     "email": "Email",
     "profilePicture": "Profile picture",
-    "profilePictureDescription": "Upload a photo to personalize your profile.",
     "removeAvatar": "Remove",
-    "personalInfoDescription": "Your name, bio, and other personal details.",
     "personalDetails": "Personal details",
-    "personalDetailsDescription": "Date of birth, sex, pronouns, and contact information.",
-    "locationDescription": "Your city and country of residence.",
     "spokenLanguages": "Spoken languages",
-    "spokenLanguagesDescription": "Select the languages you speak.",
     "selectLanguages": "Select languages",
-    "preferencesDescription": "Choose the language you use in GloRe.",
     "account": "Account",
-    "accountDescription": "Your account email address and username.",
     "accountUpdated": "Account updated",
     "accountUpdateError": "Could not update your account. Try again.",
     "emailChangeRequested": "Check {email} and open the link to confirm your new address.",
@@ -2733,18 +2742,15 @@
     "sessionRevokeError": "Could not log out the session. Try again.",
     "sessionsRevokeOthers": "Log out of all other devices",
     "publicProfile": "Public profile",
-    "publicProfileDescription": "Decide whether people can find your certificates through your profile address.",
     "publicProfileLabel": "Make my profile public",
     "publicProfileOn": "Anyone with your profile link can see your featured certificate.",
     "publicProfileOff": "Your profile is private. Certificates stay verifiable through their own code and link.",
     "privacyError": "Could not save your privacy settings. Try again.",
     "privacySaved": "Privacy settings saved",
     "featuredCertificate": "Featured certificate",
-    "featuredCertificateDescription": "The certificate shown first on your public profile.",
     "featuredCertificateEmpty": "You do not have an approved certificate yet.",
     "featuredCertificateIssued": "Issued on {date}",
     "notificationsEmail": "Email notifications",
-    "notificationsDescription": "Choose which optional emails you receive. In-app notifications always stay on.",
     "notificationsCategory_learning": "Learning progress",
     "notificationsCategory_learning_description": "A note when you can request your certificate.",
     "notificationsCategory_organization": "Organization updates",
@@ -2764,13 +2770,14 @@
     "deleteAccountTransferTitle": "Transfer ownership first",
     "deleteAccountTransferDescription": "You are the only owner of {organizations}. Transfer the ownership to a representative in the organization settings, under Danger zone, before you delete your account.",
     "deleteAccountTransferLink": "Open the organization settings",
-    "settingsDescription": "Manage your profile, account, privacy, and data.",
+    "settingsDescription": "Your profile, account, privacy and data.",
     "firstNameRequired": "Enter your first name",
     "tooLong": "Use at most {max} characters",
     "emailInvalid": "Enter a valid email address",
     "sessionsShowAll": "Show all {count} sessions",
     "sessionsShowLess": "Show fewer sessions",
-    "bioCount": "{count} of {max}"
+    "bioCount": "{count} of {max}",
+    "settingsSections": "Settings sections"
   },
   "Register": {
     "metaTitle": "Apply to join GloRe",
@@ -2846,7 +2853,9 @@
     "error_number": "Enter a whole number greater than zero.",
     "error_charter": "You need to accept the Quality Charter to apply.",
     "termsAccept": "I accept the <terms>Terms of use</terms> on behalf of the organization.",
-    "error_terms": "You need to accept the terms of use to apply."
+    "error_terms": "You need to accept the terms of use to apply.",
+    "panelTitle": "Register your organization",
+    "panelMessage": "Tell us about your organization. We review each request before we open an account."
   },
   "Admin": {
     "team": {
@@ -3380,7 +3389,9 @@
     "next_organization": "Set up your organization",
     "goToDashboard": "Go to the dashboard",
     "termsAccept": "I accept the <terms>Terms of use</terms> and have read the <privacy>Privacy policy</privacy>.",
-    "termsRequired": "You need to accept the terms of use to continue."
+    "termsRequired": "You need to accept the terms of use to continue.",
+    "panelTitle": "Welcome to GloRe",
+    "panelMessage": "Confirm a few details to finish setting up your account."
   },
   "Email": {
     "auth/invite": {
@@ -3699,7 +3710,9 @@
     "sendProofAgain": "Send the link again",
     "proofSent": "We sent a confirmation link to {email}. Open it from your inbox to continue.",
     "status_member_title": "You are already a member",
-    "status_member_description": "You already belong to {organization}. Open your dashboard to continue."
+    "status_member_description": "You already belong to {organization}. Open your dashboard to continue.",
+    "panelTitle": "You were invited",
+    "panelMessage": "Join your organization on GloRe and start collecting certificates."
   },
   "JoinLink": {
     "metaTitle": "Join an organization",
@@ -3727,7 +3740,9 @@
     "requestedTitle": "Request sent",
     "requestedDescription": "The team at {organization} will review it. We will email you their decision.",
     "goToDashboard": "Go to dashboard",
-    "goToLogin": "Go to login"
+    "goToLogin": "Go to login",
+    "panelTitle": "You were invited",
+    "panelMessage": "Join your organization on GloRe and start collecting certificates."
   },
   "Invitations": {
     "tab": "Invitations",
@@ -4221,9 +4236,6 @@
       "terms": "Terms of use",
       "qualityCharter": "Quality Charter"
     },
-    "current": "Current version",
-    "currentDescription": "The version that visitors read on the public page.",
-    "noVersion": "No version is published yet.",
     "version": "Version {version}",
     "versionStatus": "Version {version}, {status}",
     "effective": "Effective {date}",
@@ -4259,8 +4271,6 @@
     "publishConfirm": "Publish",
     "publishing": "Publishing…",
     "published": "Version {version} published",
-    "history": "History",
-    "historyDescription": "Every published version stays available and cannot be edited.",
     "historyEmpty": "No version has been published yet.",
     "publishedBy": "Published by {name}",
     "view": "View",
@@ -4278,7 +4288,18 @@
       "RATE_LIMITED": "Too many attempts. Try again in a while.",
       "UNAUTHORIZED": "Your session ended. Log in again.",
       "UNKNOWN": "Something went wrong. Try again."
-    }
+    },
+    "versions": "Versions",
+    "versionsDescription": "Every published version stays available and cannot be edited.",
+    "viewPublic": "View public page",
+    "columnVersion": "Version",
+    "columnStatus": "Status",
+    "columnEffective": "Effective",
+    "columnLanguages": "Languages",
+    "columnChanged": "Changed",
+    "columnActions": "Actions",
+    "editDraft": "Edit draft",
+    "notSet": "Not set"
   },
   "LegalAccept": {
     "title": "We updated our terms of use",

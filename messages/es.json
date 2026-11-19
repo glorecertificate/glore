@@ -80,7 +80,8 @@
     "keyDown": "Flecha abajo",
     "requestCertificate": "Solicitar un certificado",
     "inviteMembers": "Invitar miembros",
-    "skillsFramework": "Marco de habilidades"
+    "skillsFramework": "Marco de habilidades",
+    "content": "Contenido"
   },
   "Intl": {
     "Countries": {
@@ -737,7 +738,8 @@
     "pendingInvitations": "Invitaciones pendientes",
     "pendingInvitationsCount": "{count, plural, =1 {# invitación pendiente} other {# invitaciones pendientes}}",
     "invitedAs": "Invitación como {role}",
-    "noOrganization": "Todavía no tienes organización"
+    "noOrganization": "Todavía no tienes organización",
+    "content": "Contenido"
   },
   "Auth": {
     "backToLogin": "Volver al inicio de sesión",
@@ -793,7 +795,9 @@
     "sendLink": "Enviar enlace",
     "sendingLink": "Enviando…",
     "savePassword": "Guardar contraseña",
-    "savingPassword": "Guardando…"
+    "savingPassword": "Guardando…",
+    "panelTitle": "Únete a la red GloRe",
+    "panelMessage": "Da valor a tus experiencias de voluntariado."
   },
   "CourseCommon": {
     "courseCreationFailed": "No se pudo crear el curso. Inténtalo de nuevo.",
@@ -1425,7 +1429,19 @@
       "navigation": "Más en esta categoría",
       "previous": "Anterior",
       "next": "Siguiente",
-      "onThisPage": "En esta página"
+      "onThisPage": "En esta página",
+      "helpful": "¿Te ha servido?",
+      "yes": "Sí",
+      "no": "No",
+      "thanks": "Gracias por tu respuesta.",
+      "tellUs": "Cuéntanos qué falta",
+      "related": "Preguntas relacionadas"
+    },
+    "hub": {
+      "searchPlaceholder": "Buscar en la documentación",
+      "startHere": "Empieza aquí",
+      "forYourRole": "Para tu rol",
+      "seeAll": "Ver los {count}"
     }
   },
   "About": {
@@ -2678,18 +2694,11 @@
     "usernamePlaceholder": "Elige un nombre de usuario",
     "email": "Correo electrónico",
     "profilePicture": "Foto de perfil",
-    "profilePictureDescription": "Sube una foto para personalizar tu perfil.",
     "removeAvatar": "Quitar",
-    "personalInfoDescription": "Tu nombre, biografía y otros datos personales.",
     "personalDetails": "Datos personales",
-    "personalDetailsDescription": "Fecha de nacimiento, sexo, pronombres e información de contacto.",
-    "locationDescription": "Tu ciudad y país de residencia.",
     "spokenLanguages": "Idiomas hablados",
-    "spokenLanguagesDescription": "Selecciona los idiomas que hablas.",
     "selectLanguages": "Seleccionar idiomas",
-    "preferencesDescription": "Elige el idioma que usas en GloRe.",
     "account": "Cuenta",
-    "accountDescription": "Tu dirección de correo electrónico y nombre de usuario.",
     "accountUpdated": "Cuenta actualizada",
     "accountUpdateError": "No se pudo actualizar la cuenta. Inténtalo de nuevo.",
     "emailChangeRequested": "Revisa {email} y abre el enlace para confirmar tu nueva dirección.",
@@ -2733,18 +2742,15 @@
     "sessionRevokeError": "No se pudo cerrar la sesión. Inténtalo de nuevo.",
     "sessionsRevokeOthers": "Cerrar sesión en todos los demás dispositivos",
     "publicProfile": "Perfil público",
-    "publicProfileDescription": "Decide si otras personas pueden encontrar tus certificados a través de la dirección de tu perfil.",
     "publicProfileLabel": "Hacer público mi perfil",
     "publicProfileOn": "Cualquiera con el enlace de tu perfil puede ver tu certificado destacado.",
     "publicProfileOff": "Tu perfil es privado. Los certificados siguen siendo verificables con su propio código y enlace.",
     "privacyError": "No se pudieron guardar tus ajustes de privacidad. Inténtalo de nuevo.",
     "privacySaved": "Ajustes de privacidad guardados",
     "featuredCertificate": "Certificado destacado",
-    "featuredCertificateDescription": "El certificado que se muestra primero en tu perfil público.",
     "featuredCertificateEmpty": "Todavía no tienes ningún certificado aprobado.",
     "featuredCertificateIssued": "Emitido el {date}",
     "notificationsEmail": "Notificaciones por correo",
-    "notificationsDescription": "Elige qué correos opcionales recibes. Las notificaciones dentro de la app siempre están activas.",
     "notificationsCategory_learning": "Progreso de aprendizaje",
     "notificationsCategory_learning_description": "Un aviso cuando puedas solicitar tu certificado.",
     "notificationsCategory_organization": "Novedades de la organización",
@@ -2764,13 +2770,14 @@
     "deleteAccountTransferTitle": "Transfiere primero la propiedad",
     "deleteAccountTransferDescription": "Eres la única persona administradora de {organizations}. Transfiere la propiedad a una persona representante desde los ajustes de la organización, en Zona de peligro, antes de eliminar tu cuenta.",
     "deleteAccountTransferLink": "Abrir los ajustes de la organización",
-    "settingsDescription": "Gestiona tu perfil, tu cuenta, tu privacidad y tus datos.",
+    "settingsDescription": "Tu perfil, cuenta, privacidad y datos.",
     "firstNameRequired": "Introduce tu nombre",
     "tooLong": "Usa como máximo {max} caracteres",
     "emailInvalid": "Introduce un correo electrónico válido",
     "sessionsShowAll": "Mostrar las {count} sesiones",
     "sessionsShowLess": "Mostrar menos sesiones",
-    "bioCount": "{count} de {max}"
+    "bioCount": "{count} de {max}",
+    "settingsSections": "Secciones de ajustes"
   },
   "Register": {
     "metaTitle": "Solicita unirte a GloRe",
@@ -2846,7 +2853,9 @@
     "error_number": "Introduce un número entero mayor que cero.",
     "error_charter": "Debes aceptar la Carta de Calidad para enviar la solicitud.",
     "termsAccept": "Acepto las <terms>Condiciones de uso</terms> en nombre de la organización.",
-    "error_terms": "Debes aceptar las condiciones de uso para enviar la solicitud."
+    "error_terms": "Debes aceptar las condiciones de uso para enviar la solicitud.",
+    "panelTitle": "Registra tu organización",
+    "panelMessage": "Cuéntanos sobre tu organización. Revisamos cada solicitud antes de abrir una cuenta."
   },
   "Admin": {
     "team": {
@@ -3380,7 +3389,9 @@
     "next_organization": "Configura tu organización",
     "goToDashboard": "Ir al panel",
     "termsAccept": "Acepto las <terms>Condiciones de uso</terms> y he leído la <privacy>Política de privacidad</privacy>.",
-    "termsRequired": "Debes aceptar las condiciones de uso para continuar."
+    "termsRequired": "Debes aceptar las condiciones de uso para continuar.",
+    "panelTitle": "Te damos la bienvenida a GloRe",
+    "panelMessage": "Confirma algunos datos para terminar de configurar tu cuenta."
   },
   "Email": {
     "auth/invite": {
@@ -3699,7 +3710,9 @@
     "sendProofAgain": "Enviar el enlace de nuevo",
     "proofSent": "Hemos enviado un enlace de confirmación a {email}. Ábrelo desde tu bandeja de entrada para continuar.",
     "status_member_title": "Ya eres miembro",
-    "status_member_description": "Ya perteneces a {organization}. Abre tu panel para continuar."
+    "status_member_description": "Ya perteneces a {organization}. Abre tu panel para continuar.",
+    "panelTitle": "Te han invitado",
+    "panelMessage": "Únete a tu organización en GloRe y empieza a reunir certificados."
   },
   "JoinLink": {
     "metaTitle": "Unirse a una organización",
@@ -3727,7 +3740,9 @@
     "requestedTitle": "Solicitud enviada",
     "requestedDescription": "El equipo de {organization} la revisará. Te avisaremos por correo de su decisión.",
     "goToDashboard": "Ir al panel",
-    "goToLogin": "Ir al inicio de sesión"
+    "goToLogin": "Ir al inicio de sesión",
+    "panelTitle": "Te han invitado",
+    "panelMessage": "Únete a tu organización en GloRe y empieza a reunir certificados."
   },
   "Invitations": {
     "tab": "Invitaciones",
@@ -4221,9 +4236,6 @@
       "terms": "Condiciones de uso",
       "qualityCharter": "Carta de Calidad"
     },
-    "current": "Versión actual",
-    "currentDescription": "La versión que leen los visitantes en la página pública.",
-    "noVersion": "Todavía no hay ninguna versión publicada.",
     "version": "Versión {version}",
     "versionStatus": "Versión {version}, {status}",
     "effective": "En vigor desde {date}",
@@ -4259,8 +4271,6 @@
     "publishConfirm": "Publicar",
     "publishing": "Publicando…",
     "published": "Versión {version} publicada",
-    "history": "Historial",
-    "historyDescription": "Todas las versiones publicadas siguen disponibles y no se pueden editar.",
     "historyEmpty": "Todavía no se ha publicado ninguna versión.",
     "publishedBy": "Publicada por {name}",
     "view": "Ver",
@@ -4278,7 +4288,18 @@
       "RATE_LIMITED": "Demasiados intentos. Inténtalo de nuevo más tarde.",
       "UNAUTHORIZED": "Tu sesión ha terminado. Inicia sesión de nuevo.",
       "UNKNOWN": "Algo ha salido mal. Inténtalo de nuevo."
-    }
+    },
+    "versions": "Versiones",
+    "versionsDescription": "Cada versión publicada sigue disponible y no se puede editar.",
+    "viewPublic": "Ver la página pública",
+    "columnVersion": "Versión",
+    "columnStatus": "Estado",
+    "columnEffective": "Vigencia",
+    "columnLanguages": "Idiomas",
+    "columnChanged": "Cambio",
+    "columnActions": "Acciones",
+    "editDraft": "Editar el borrador",
+    "notSet": "Sin fecha"
   },
   "LegalAccept": {
     "title": "Hemos actualizado nuestras condiciones de uso",

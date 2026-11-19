@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl'
 
-import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -22,7 +21,6 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
 
   const title = pickLocale(article.title, locale) ?? article.slug
   const excerpt = pickLocale(article.excerpt, locale)
-  const updatedAt = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(article.updatedAt))
 
   return (
     <Link
@@ -40,13 +38,9 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
             )}
           </div>
         </CardHeader>
-        {(excerpt || updatedAt) && (
-          <CardContent className="flex flex-col gap-2">
-            {excerpt && <p className="line-clamp-2 text-sm text-fg-2">{excerpt}</p>}
-            <div className="flex items-center gap-1.5 type-caption text-fg-2">
-              <LucideIcon name="calendar" className="size-3 shrink-0" />
-              <span>{t('lastUpdated', { date: updatedAt })}</span>
-            </div>
+        {excerpt && (
+          <CardContent>
+            <p className="line-clamp-2 text-sm text-fg-2">{excerpt}</p>
           </CardContent>
         )}
       </Card>

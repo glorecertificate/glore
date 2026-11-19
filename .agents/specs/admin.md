@@ -183,7 +183,7 @@
 ## Translations
 
 - `/translations` (`app/(dashboard)/translations/page.tsx`) edits interface text. It sits outside the admin layout because editors reach it, as `/emails` does.
-- `/admin/translations` redirects to it (`next.config.ts`). The nav entry `admin-translations` (group `admin`, `visible: isTeam`) sits before `admin-emails`.
+- `/admin/translations` redirects to it (`next.config.ts`). The nav entry `admin-translations` (group `content`, `visible: isTeam`) sits before `admin-emails`. The sidebar shows the `content` group (translations, email previews, legal documents) under its own Content label, apart from the Admin group.
 - `loadTranslations` (`actions/translations.ts`) calls `authorizeEditor`, then returns the three bundled catalogs and every override. `maxDuration` is 60.
 - The table (`features/translations/`) is a real `<table>` virtualized with `@tanstack/react-virtual`: one row per `en` key, a cell per locale, and state badges.
 - Below `md` the list scrolls with the page through `useWindowVirtualizer` (`translation-list.tsx`, `'use no memo'` because the React Compiler would cache the visible rows). From `md` it keeps the fixed-height inner scroller with a sticky header. The choice follows `matchMedia`, and the editor sheet is the same on both.

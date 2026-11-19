@@ -17,7 +17,7 @@ test('takes an application from the register form to onboarding', async ({ brows
   await page.getByLabel('Organization name', { exact: true }).fill(organizationName)
   await page.getByLabel('Legal name', { exact: true }).fill(`${organizationName} APS`)
   await page.getByLabel('Registry ID', { exact: true }).fill(`IT-${stamp}`)
-  await page.getByRole('combobox').click()
+  await page.locator('[data-slot="form-control"][role="combobox"]').click()
   await page.getByRole('option', { name: /Italy/u }).click()
   await page.getByLabel('City', { exact: true }).fill('Milan')
   await page.getByLabel('Organization email', { exact: true }).fill(`info-${stamp}@applicants.glore.test`)

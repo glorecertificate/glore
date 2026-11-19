@@ -64,10 +64,14 @@ const INTERACTIONS: Interaction[] = [
   },
   {
     act: async (page, run) =>
-      await page.getByRole('tab', { exact: true, name: SETTINGS_TABS[run % 2] ?? 'Account' }).click(),
+      await page
+        .locator('[role="tablist"] [role="tab"], nav[aria-label="Settings sections"] button')
+        .filter({ hasText: new RegExp(`^${SETTINGS_TABS[run % 2] ?? 'Account'}$`, 'u') })
+        .click(),
     done: async (page, run) =>
       await page
-        .locator(`[role="tab"][aria-selected="true"]`, { hasText: SETTINGS_TABS[run % 2] ?? 'Account' })
+        .locator('[role="tab"][aria-selected="true"], nav[aria-label="Settings sections"] button[aria-current="true"]')
+        .filter({ hasText: SETTINGS_TABS[run % 2] ?? 'Account' })
         .waitFor(),
     name: 'switch a settings tab',
     path: '/settings',

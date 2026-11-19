@@ -5,7 +5,8 @@ import { startTransition } from 'react'
 import { useTranslations } from 'next-intl'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SectionNav } from '@/components/ui/section-nav'
+import { cn } from '@/lib/utils'
 
 const SETTINGS_TAB_PARAM = 'tab'
 const SETTINGS_TABS = ['profile', 'account', 'privacy', 'notifications', 'security', 'data'] as const
@@ -22,30 +23,21 @@ export const useUserSettingsTab = () => {
   return { setTab, tab }
 }
 
-export const UserSettingsTabs = (props: React.ComponentProps<typeof Tabs>) => {
-  const { tab, setTab } = useUserSettingsTab()
+export const UserSettingsNav = ({
+  className,
+  ...props
+}: Omit<React.ComponentProps<typeof SectionNav>, 'items' | 'value'>) => {
+  const t = useTranslations('Users')
+  const { setTab, tab } = useUserSettingsTab()
 
   return (
-    <Tabs
-      className="gap-0"
-      defaultValue={DEFAULT_SETTINGS_TAB}
-      onValueChange={setTab as (tab: string) => void}
+    <SectionNav
+      aria-label={t('settingsSections')}
+      className={cn('lg:sticky lg:top-6 lg:self-start', className)}
+      items={SETTINGS_TABS.map(id => ({ id, label: t(id) }))}
+      onValueChange={id => setTab(id as (typeof SETTINGS_TABS)[number])}
       value={tab}
       {...props}
     />
-  )
-}
-
-export const UserSettingsTabsList = ({ children, ...props }: React.ComponentProps<typeof TabsList>) => {
-  const t = useTranslations('Users')
-
-  return (
-    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" {...props}>
-      {SETTINGS_TABS.map(tab => (
-        <TabsTrigger key={tab} value={tab}>
-          {t(tab)}
-        </TabsTrigger>
-      ))}
-    </TabsList>
   )
 }

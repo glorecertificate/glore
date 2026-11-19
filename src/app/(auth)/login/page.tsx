@@ -24,18 +24,21 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
   const [username, theme, params] = await Promise.all([get('loginUser'), get('theme'), parse(searchParams)])
 
   return (
-    <>
-      <AuthFlow params={params} username={username} />
-      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-4 px-4 pb-6">
-        <LegalLinks />
-        <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
-      </div>
-    </>
+    <AuthFlow
+      footer={
+        <div className="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-6">
+          <LegalLinks />
+          <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
+        </div>
+      }
+      params={params}
+      username={username}
+    />
   )
 }
 
 const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
-  <div className="flex min-h-svh flex-col bg-canvas">
+  <div className="min-h-svh bg-canvas">
     <Suspense fallback={<LoadingFallback size="full" />}>
       <LoginContent searchParams={searchParams} />
     </Suspense>

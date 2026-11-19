@@ -245,8 +245,9 @@ interface Fragment {
 export const TRANSLATE_CONCURRENCY = 6
 
 export const fieldCost = (text: unknown) => {
-  const characters = collectSegments(text, 'cost').reduce((sum, segment) => sum + segment.text.length, 0)
-  return Math.max(1, Math.ceil(characters / MAX_CHUNK_CHARS))
+  const segments = collectSegments(text, 'cost')
+  const characters = segments.reduce((sum, segment) => sum + segment.text.length, 0)
+  return Math.max(1, Math.ceil(characters / MAX_CHUNK_CHARS), Math.ceil(segments.length / MAX_CHUNK_SEGMENTS))
 }
 
 export const createLimiter = (max: number): Limiter => {

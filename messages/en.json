@@ -1170,7 +1170,8 @@
       },
       "seals": {
         "label": "Completed skill courses",
-        "title": "Skill courses: {count} of {min}",
+        "heading": "Skill courses",
+        "count": "{count} of {min} completed",
         "missing": "Not yet"
       },
       "note": {
@@ -1187,7 +1188,8 @@
       "path": {
         "title": "Also on your path",
         "compass": "Set your skill compass",
-        "percent": "{percent}%"
+        "percent": "{percent}%",
+        "continue": "Continue"
       },
       "preview": {
         "title": "Certificate preview",

@@ -1170,7 +1170,8 @@
       },
       "seals": {
         "label": "Corsi sulle competenze completati",
-        "title": "Corsi sulle competenze: {count} di {min}",
+        "heading": "Corsi sulle competenze",
+        "count": "{count} di {min} completati",
         "missing": "Non ancora"
       },
       "note": {
@@ -1187,7 +1188,8 @@
       "path": {
         "title": "Altre cose da fare",
         "compass": "Imposta la tua bussola delle competenze",
-        "percent": "{percent}%"
+        "percent": "{percent}%",
+        "continue": "Continua"
       },
       "preview": {
         "title": "Anteprima del certificato",

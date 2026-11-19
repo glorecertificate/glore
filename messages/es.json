@@ -1170,7 +1170,8 @@
       },
       "seals": {
         "label": "Cursos de habilidades completados",
-        "title": "Cursos de habilidades: {count} de {min}",
+        "heading": "Cursos de habilidades",
+        "count": "{count} de {min} completados",
         "missing": "Pendiente"
       },
       "note": {
@@ -1187,7 +1188,8 @@
       "path": {
         "title": "Otras cosas por hacer",
         "compass": "Define tu brújula de habilidades",
-        "percent": "{percent} %"
+        "percent": "{percent} %",
+        "continue": "Continuar"
       },
       "preview": {
         "title": "Vista previa del certificado",

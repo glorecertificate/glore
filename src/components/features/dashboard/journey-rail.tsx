@@ -2,6 +2,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 
 import { type JourneyStage, type VolunteerSummary } from '@/actions/dashboard/core'
 import { JourneyMarker } from '@/components/features/dashboard/journey-marker'
+import { JourneySteps } from '@/components/features/dashboard/journey-steps'
 import { Card } from '@/components/ui/card'
 import { timestampMillis } from '@/db/queries/organization'
 import { cn } from '@/lib/utils'
@@ -13,19 +14,12 @@ const LABEL_TONES = {
   upcoming: 'text-fg-2',
 }
 
-export const JourneyRail = ({
-  className,
-  path,
-  volunteer,
-}: {
-  className?: string
-  path?: React.ReactNode
-  volunteer: VolunteerSummary
-}) => {
+export const JourneyRail = ({ className, volunteer }: { className?: string; volunteer: VolunteerSummary }) => {
   const t = useTranslations('Dashboard.journey')
   const { dateTime } = useFormatter()
   const { certificate, eligibility, journey, review } = volunteer
-  const { phase } = journey
+  const { phase, steps } = journey
+  const showSteps = (phase === 'draft' || phase === 'changes') && steps.length > 0
 
   const date = (value: string | null | undefined) =>
     value ? dateTime(new Date(timestampMillis(value)), { dateStyle: 'medium' }) : null
@@ -55,8 +49,8 @@ export const JourneyRail = ({
   }
 
   return (
-    <Card className={cn('gap-6 p-6', className)} data-slot="journey-rail">
-      <div className="flex flex-col gap-0.5">
+    <Card className={cn('gap-5 p-6', className)} data-slot="journey-rail">
+      <div className="flex items-baseline justify-between gap-3">
         <h2 className="type-heading text-fg-title" id="journey-rail-title">
           {t('title')}
         </h2>
@@ -90,12 +84,12 @@ export const JourneyRail = ({
               <div className="flex min-w-0 flex-1 flex-col gap-0.5 pt-0.5">
                 <span className={cn('type-label', LABEL_TONES[stage.state])}>{t(`stages.${stage.key}`)}</span>
                 {line && <span className="type-caption text-fg-2">{line}</span>}
+                {showSteps && stage.key === 'request' && <JourneySteps className="mt-2.5" steps={steps} />}
               </div>
             </li>
           )
         })}
       </ol>
-      {path}
     </Card>
   )
 }

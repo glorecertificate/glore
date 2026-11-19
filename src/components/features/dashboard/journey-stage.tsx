@@ -6,8 +6,7 @@ import { type VolunteerSummary, type nextSkillCourse } from '@/actions/dashboard
 import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { CertificatePreviewDialog } from '@/components/features/dashboard/certificate-preview-dialog'
-import { JourneySteps, WIZARD_STEP_LABELS } from '@/components/features/dashboard/journey-steps'
-import { SkillSeals } from '@/components/features/dashboard/skill-seals'
+import { WIZARD_STEP_LABELS } from '@/components/features/dashboard/journey-steps'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
@@ -15,8 +14,6 @@ import { ShareButton } from '@/components/ui/share-button'
 import { timestampMillis } from '@/db/queries/organization'
 import { VERIFY_ROOT } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-
-const SEAL_PHASES = new Set(['draft', 'learn', 'ready'])
 
 const CodeBlock = ({ code, href }: { code: string; href?: Route }) => {
   const t = useTranslations('Dashboard.journey')
@@ -51,7 +48,7 @@ export const JourneyStage = ({
   const t = useTranslations('Dashboard.journey')
   const tWizard = useTranslations('CertificateWizard')
   const { dateTime, list } = useFormatter()
-  const { certificate, eligibility, journey, review, skills } = volunteer
+  const { certificate, eligibility, journey, review } = volunteer
   const { phase, steps } = journey
 
   const date = (value: string | null | undefined) =>
@@ -94,66 +91,60 @@ export const JourneyStage = ({
 
   const action = primary()
   const showRequest = phase === 'changes' || phase === 'review' || phase === 'rejected' || phase === 'withdrawn'
+  const hasActions = Boolean(action) || (Boolean(certificate) && phase !== 'learn' && phase !== 'ready')
+  const stageKey = journey.stages[journey.current]?.key ?? 'learn'
 
   return (
-    <Card className={cn('min-w-0 gap-6 p-6', className)} data-phase={phase} data-slot="journey-stage">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1">
-          <h2 className="type-heading text-fg-title" id="journey-stage-title">
-            {t(`phases.${phase}.title`)}
-          </h2>
-          <p className="max-w-prose text-sm text-fg-2">{lead()}</p>
-        </div>
+    <Card className={cn('min-w-0 gap-5 p-6 sm:p-9', className)} data-phase={phase} data-slot="journey-stage">
+      <div className="flex min-h-5 items-center justify-between gap-4">
+        <span className="type-overline text-fg-2">{t(`stages.${stageKey}`)}</span>
         {certificate && <CertificateStatusBadge className="shrink-0" status={certificate.status} />}
       </div>
-      <div className="flex flex-1 flex-col gap-6">
-        {(phase === 'draft' || phase === 'changes') && steps.length > 0 && <JourneySteps steps={steps} />}
-        {SEAL_PHASES.has(phase) && (
-          <div className="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface-muted p-5">
-            <p className="type-label text-fg-2">
-              {t('seals.title', { count: eligibility.completedSkillCount, min: eligibility.minSkills })}
-            </p>
-            <SkillSeals min={eligibility.minSkills} skills={skills} />
-          </div>
-        )}
-        {phase === 'changes' && (
-          <div className="flex flex-col gap-4">
-            {review?.comment && (
-              <figure className="flex flex-col gap-2 rounded-lg bg-warning-subtle p-4">
-                <figcaption className="type-label text-warning-text">
-                  {review.tutor ? t('note.from', { name: review.tutor }) : t('note.tutor')}
-                </figcaption>
-                <blockquote className="text-sm whitespace-pre-line text-fg-1">{review.comment}</blockquote>
-              </figure>
-            )}
-            {flagged.length > 0 && (
-              <p className="text-sm text-fg-2">{t('note.steps', { steps: list(flagged, { type: 'conjunction' }) })}</p>
-            )}
-          </div>
-        )}
-        {phase === 'review' && certificate?.code && (
-          <div className="flex flex-col gap-3">
-            <CodeBlock code={certificate.code} />
-            {certificate.submittedAt && (
-              <p className="text-sm text-fg-2">{t('sent', { date: date(certificate.submittedAt) })}</p>
-            )}
-          </div>
-        )}
-        {phase === 'issued' && certificate?.code && (
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <CertificatePreview certificate={certificate} className="w-40 shrink-0" />
-            <CodeBlock code={certificate.code} href={`${VERIFY_ROOT}/${certificate.code}` as Route} />
-          </div>
-        )}
-        {(phase === 'rejected' || phase === 'revoked') && reason && (
-          <div className="flex flex-col gap-1">
-            <span className="type-label text-fg-2">{t('reason.label')}</span>
-            <p className="text-sm whitespace-pre-line text-fg-1">{reason}</p>
-          </div>
-        )}
-        <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-border-subtle pt-6 max-sm:*:w-full">
+      <div className="flex min-w-0 flex-col gap-2.5">
+        <h2 className="type-display text-balance text-fg-title" id="journey-stage-title">
+          {t(`phases.${phase}.title`)}
+        </h2>
+        <p className="max-w-prose text-base text-fg-2">{lead()}</p>
+      </div>
+      {phase === 'changes' && (review?.comment || flagged.length > 0) && (
+        <div className="flex flex-col gap-4">
+          {review?.comment && (
+            <figure className="flex flex-col gap-2 rounded-lg bg-warning-subtle p-4">
+              <figcaption className="type-label text-warning-text">
+                {review.tutor ? t('note.from', { name: review.tutor }) : t('note.tutor')}
+              </figcaption>
+              <blockquote className="text-sm whitespace-pre-line text-fg-1">{review.comment}</blockquote>
+            </figure>
+          )}
+          {flagged.length > 0 && (
+            <p className="text-sm text-fg-2">{t('note.steps', { steps: list(flagged, { type: 'conjunction' }) })}</p>
+          )}
+        </div>
+      )}
+      {phase === 'review' && certificate?.code && (
+        <div className="flex flex-col gap-3">
+          <CodeBlock code={certificate.code} />
+          {certificate.submittedAt && (
+            <p className="text-sm text-fg-2">{t('sent', { date: date(certificate.submittedAt) })}</p>
+          )}
+        </div>
+      )}
+      {phase === 'issued' && certificate?.code && (
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+          <CertificatePreview certificate={certificate} className="w-40 shrink-0" />
+          <CodeBlock code={certificate.code} href={`${VERIFY_ROOT}/${certificate.code}` as Route} />
+        </div>
+      )}
+      {(phase === 'rejected' || phase === 'revoked') && reason && (
+        <div className="flex flex-col gap-1">
+          <span className="type-label text-fg-2">{t('reason.label')}</span>
+          <p className="text-sm whitespace-pre-line text-fg-1">{reason}</p>
+        </div>
+      )}
+      {hasActions && (
+        <div className="flex flex-wrap items-center gap-3 max-sm:*:w-full">
           {action && (
-            <Button asChild className="max-w-full" variant="brand">
+            <Button asChild className="max-w-full" size="lg" variant="brand">
               <Link href={action.href}>
                 <span className="truncate">{action.label}</span>
               </Link>
@@ -161,7 +152,7 @@ export const JourneyStage = ({
           )}
           {phase === 'issued' && certificate && (
             <>
-              <Button asChild icon="download" variant="brand">
+              <Button asChild icon="download" size="lg" variant="brand">
                 <a
                   href={certificate.documentUrl ?? `/api/v1/certificates/${certificate.id}/pdf`}
                   rel="noopener noreferrer"
@@ -174,6 +165,7 @@ export const JourneyStage = ({
                 copiedLabel={t('actions.copied')}
                 failedLabel={t('actions.copyFailed')}
                 icon="share-2"
+                size="lg"
                 title={t('actions.shareTitle')}
                 url={`${VERIFY_ROOT}/${certificate.code}`}
                 variant="outline"
@@ -186,17 +178,17 @@ export const JourneyStage = ({
             <CertificatePreviewDialog certificate={certificate} />
           )}
           {showRequest && certificate && (
-            <Button asChild variant="outline">
+            <Button asChild size="lg" variant="outline">
               <Link href={requestHref}>{t('actions.viewRequest')}</Link>
             </Button>
           )}
           {phase === 'revoked' && certificate && (
-            <Button asChild variant="outline">
+            <Button asChild size="lg" variant="outline">
               <Link href={requestHref}>{t('actions.viewCertificate')}</Link>
             </Button>
           )}
         </div>
-      </div>
+      )}
     </Card>
   )
 }

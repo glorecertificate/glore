@@ -427,7 +427,7 @@ interface AttentionCourse {
   title: string
 }
 
-export type HealthStatus = Exclude<PublicationState, 'archived'>
+type HealthStatus = Exclude<PublicationState, 'archived'>
 
 export interface HealthCourse {
   empty: boolean
@@ -441,7 +441,7 @@ export interface HealthCourse {
   title: string
 }
 
-export type HealthColumns = Record<'assessment' | 'group' | Locale, number>
+type HealthColumns = Record<'assessment' | 'group' | Locale, number>
 
 export interface ContentHealth {
   attention: AttentionCourse[]

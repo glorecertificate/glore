@@ -157,7 +157,17 @@ const transports = {
     }),
 }
 
-const mailTransport = process.env.NODE_ENV === 'production' ? 'smtp' : (process.env.MAIL_TRANSPORT ?? 'smtp')
+const isLocalApp = () => {
+  const hostname = URL.canParse(process.env.APP_URL ?? '') ? new URL(process.env.APP_URL ?? '').hostname : ''
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.localhost')
+}
+
+const resolveTransport = (): keyof typeof transports => {
+  if (process.env.NODE_ENV !== 'production') return process.env.MAIL_TRANSPORT ?? 'smtp'
+  return process.env.MAIL_TRANSPORT === 'mailpit' && isLocalApp() ? 'mailpit' : 'smtp'
+}
+
+const mailTransport = resolveTransport()
 
 const transporter = transports[mailTransport]()
 

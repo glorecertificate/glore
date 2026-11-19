@@ -145,7 +145,8 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 1. Run `pnpm run mail:up`.
 2. Confirm delivery with `pnpm run test:e2e -- e2e/invitations.spec.ts`. It fails when no mail reaches Mailpit, usually because `.env.local` lacks `MAIL_TRANSPORT=mailpit`.
 3. When that variable is missing, ask the user to set it. Env files are unreadable to agents, and dev otherwise sends real SMTP email.
-4. Drive the flow, then read the message and its links from `http://localhost:8025/api/v1/search?query=to:"<email>"`.
+4. A production build (`next build` and `next start` on a local `APP_URL`) also honors `MAIL_TRANSPORT=mailpit`, so the mail specs run against it. CI uses SMTP to the Mailpit service.
+5. Drive the flow, then read the message and its links from `http://localhost:8025/api/v1/search?query=to:"<email>"`.
 
 ## Docs sync
 

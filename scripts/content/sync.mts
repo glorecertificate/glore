@@ -97,7 +97,7 @@ const deleteAssessments = async (ctx: Context, assessmentIds: number[]) => {
   stats.assessments.deleted += assessmentIds.length
 }
 
-const deleteLessons = async (ctx: Context, lessonIds: number[]) => {
+export const deleteLessons = async (ctx: Context, lessonIds: number[]) => {
   const { client, stats } = ctx
   if (lessonIds.length === 0) return
   const questions = await run(client, 'select id from questions where lesson_id = any($1::int[])', [lessonIds])

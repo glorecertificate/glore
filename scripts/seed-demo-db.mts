@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto'
 
 import { type PoolClient } from 'pg'
 
+import { createStats, deleteLessons } from './content/sync.mts'
 import { type MembershipRole } from './seed-data.ts'
 import { APPLICATION_MOTIVATION, ORGANIZATION_DESCRIPTIONS } from './seed-demo-copy.ts'
 import { APPLICANT, DAY_MS, DEMO_ORGANIZATIONS, DEMO_USERS, ago, demoEmail } from './seed-demo-data.ts'
@@ -188,7 +189,11 @@ export const upsertEditorCourses = async ({ client, now }: Context, ids: DemoIds
       ]
     )
     const [{ id }] = rows
-    await client.query('delete from lessons where course_id = $1', [id])
+    const { rows: lessons } = await client.query<{ id: number }>('select id from lessons where course_id = $1', [id])
+    await deleteLessons(
+      { client, stats: createStats() },
+      lessons.map(lesson => lesson.id)
+    )
     for (const [position, title] of course.lessons.entries()) {
       await client.query(
         'insert into lessons (course_id, title, sort_order, created_at, updated_at) values ($1, $2::jsonb, $3, $4, $4)',

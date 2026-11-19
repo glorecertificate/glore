@@ -70,9 +70,9 @@ test.describe('volunteer', () => {
     await expect(page.locator('main')).toBeVisible()
   })
 
-  test('opens the course list with progress tabs', async ({ page }) => {
+  test('opens the course list with the progress filters', async ({ page }) => {
     await page.goto('/courses')
-    await expect(page.getByRole('tab', { name: /Not started/u })).toBeVisible()
+    await expect(page.getByRole('checkbox', { name: /Not started/u })).toBeVisible()
     await expect(page.getByText('Something went wrong')).toBeHidden()
   })
 })

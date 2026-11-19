@@ -62,12 +62,15 @@ export const queryAdminCertificates = async (input: AdminCertificatesQuery) => {
   if (!parsed.success) throw adminError('INVALID_INPUT')
 
   const where = buildFilters(parsed.data)
-  const [totals] = await db
-    .select({ total: count() })
-    .from(certificates)
-    .leftJoin(users, eq(users.id, certificates.userId))
-    .innerJoin(organizations, eq(organizations.id, certificates.organizationId))
-    .where(where)
+  const [[totals], facets] = await Promise.all([
+    db
+      .select({ total: count() })
+      .from(certificates)
+      .leftJoin(users, eq(users.id, certificates.userId))
+      .innerJoin(organizations, eq(organizations.id, certificates.organizationId))
+      .where(where),
+    countStatuses(parsed.data),
+  ])
   const total = totals?.total ?? 0
   const pageCount = Math.max(1, Math.ceil(total / ADMIN_CERTIFICATES_PAGE_SIZE))
   const page = Math.min(parsed.data.page ?? 1, pageCount)
@@ -128,6 +131,6 @@ export const queryAdminCertificates = async (input: AdminCertificatesQuery) => {
 
   return {
     ...toPage(rows, { page, pageSize: ADMIN_CERTIFICATES_PAGE_SIZE, total }),
-    facets: { status: await countStatuses(parsed.data) },
+    facets: { status: facets },
   }
 }

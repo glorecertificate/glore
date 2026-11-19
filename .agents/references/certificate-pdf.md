@@ -10,13 +10,21 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 | ----------- | ---------------------------------------------------------------------------------------------- |
 | Navy text   | `#315070` (names `#305071`)                                                                    |
 | Green       | `#7fbf73` (bars, skill labels, filled dots, "SOFT SKILLS" in the heading, bullets, level word) |
-| Gray        | `#f0f0f0` (empty dots, icon and logo placeholders)                                             |
+| Gray        | `#f0f0f0` (empty dots, icon placeholder)                                                       |
 | Level label | `#3c4045`                                                                                      |
 | Banner fill | `#345372`                                                                                      |
 | Logo colors | blue `#5ab9cf`, olive `#afc761`, teal `#397b97`, navy `#304f71`                                |
-| Fonts       | Roboto Regular, Bold, Black (bundle the TTFs locally)                                          |
+| Fonts       | Roboto 2.136 hinted Regular, Bold, Black, the build the template embeds (see "Fonts")          |
 | Logo fonts  | Avenir Next Condensed DemiBold and Tw Cen MT: ship the logo as vector paths, never as text     |
 | Dates       | `DD.MM.YYYY` in every language                                                                 |
+
+## Fonts
+
+- `public/fonts/roboto/` holds Roboto 2.136 hinted from the `googlefonts/roboto` v2.136 release (`roboto-hinted.zip`).
+- The template embeds this build: every advance width and outline matches it. Roboto 3.x advances differ by up to 2 units.
+- The files are subset to 923 code points (Latin, Greek, Cyrillic) with hinting and all layout features kept, about 180 KB each.
+- Illustrator skipped some class kerning. The files zero the left classes of H, D and b, and the right class of e, in the class kerning subtable.
+- With these changes every kerned pair of the template matches, except one wider space before "have been".
 
 ## Text placement
 
@@ -24,9 +32,10 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 - react-pdf puts the first baseline at top plus the Roboto hhea ascent (1900 / 2048 = 0.928 x font size) whatever the line height.
 - `placed(top, size)` in `certificate-layout.ts` therefore adds 0.128 x size to every template top.
 - The template is slightly irregular: its first skill block sits 1 pt higher relative to its statement, dots, and level line than blocks 2 to 4 do.
-- Per-block offsets from the label top follow the template exactly: description 28.2, 27.2, 27.2, 27.2; dots 85.1, 84.1, 84.1, 84.1; level line 86.75, 85.65, 85.65, 85.65 (`SKILL_*_OFFSETS`). The measured max deviation is 0.31 pt.
-- Headings carry +0.73 pt tracking, the banner text about -0.2 pt, and skill labels end 14.8 pt after the name. The level line is one text run, "level: good", with the space tracked at -1.2 pt to match the template.
-- Row lines (From, to, hours, at, Represented by) land on the template y within 0.1 pt and x within 0.1 pt, except the Represented line, which starts after its longer label. Row line padding is 1.5 pt so a bold `DD.MM.YYYY` value fits the 53.9 pt From line.
+- Per-block offsets from the label top follow the template: description 28.28, 27.28, 27.28, 27.28 and dots 85.1, 84.1, 84.1, 84.1 (`SKILL_*_OFFSETS`).
+- The level line offsets are 86.75, 85.75, 85.75, 85.75. The first label raises its name 0.31 pt (`SKILL_LABEL_RAISE`), as the template does.
+- Headings carry +0.712 pt tracking, the banner text about -0.2 pt, and skill labels end 14.8 pt after the name. The level line is one text run, "level: good", with the space tracked at -1.2 pt to match the template.
+- Volunteering labels start at x 45.66 and "to" at 127.57. Row lines (From, to, hours, at, Represented by) land on the template within 0.1 pt, except the Represented line, which starts after its longer label. Row line padding is 1.5 pt so a bold `DD.MM.YYYY` value fits the 53.9 pt From line.
 
 ## Shared layout and preview
 
@@ -37,27 +46,27 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 
 ## Left column
 
-| Element              | Spec                                                                                                                                                               |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Logo                 | "THE GLORE NETWORK" with the arrow globe, x 24 to 233, y 23 to 102.                                                                                                |
-| Banner               | Box `#345372` x 24.7 to 219.0, y 105.3 to 128.0. White Roboto Regular caps about 15.9 pt, x 29.4 to 214.3: "SOFT SKILLS CERTIFICATE", localized.                   |
-| Name                 | First name Roboto Regular 36 pt at x 23.6, top 137.0. Last name Roboto Bold 36 pt at x 23.6, top 173.0.                                                            |
-| Personal block       | Green bar x 26.9 to 29.7, y 230.3 to 269.0. Lines at x 45.3, tops 227.0, 243.0, 259.0: label Regular 9 pt plus value Black 9 pt uppercase.                         |
-| Personal labels      | "Nationality:", "Date of birth:", "Place of birth:".                                                                                                               |
-| Section bars         | Navy x 26.9 to 29.7: y 299.0 to 472.9 (Volunteering) and y 503.3 to 687.7 (Main tasks).                                                                            |
-| Volunteering heading | "VOLUNTEERING" Roboto Black 13.2 pt at x 46.1, top 296.1.                                                                                                          |
-| Period row           | Top 322.8: "From", line x 70.2 to 124.1, "to", line x 138.8 to 220.9. Lines 0.75 pt navy at y 333.1.                                                               |
-| Hours row            | Top 340.8: "hours", line x 72.6 to 124.1 at y 351.0.                                                                                                               |
-| Location row         | Top 358.8: "at", line x 56.8 to 220.9 at y 369.0.                                                                                                                  |
-| Row values           | Roboto Bold 10 pt navy, sitting just above each line.                                                                                                              |
-| Partner              | "In partnership with" Regular 10 pt at top 385.1. Org name Black 10 pt from top 417.2, wrapping within x 46 to 112, shrinking to 6.5 pt so it stays above y 472.9. |
-| Partner logo         | Slot x 119.2 to 209.9, y 418.0 to 472.6, contain-fit. The gray placeholder shows only when the org has no logo.                                                    |
-| Tasks heading        | "MAIN TASKS" Roboto Black 13.2 pt at x 46.1, top 499.0.                                                                                                            |
-| Tasks intro          | Two lines Regular 10 pt at top 521.6, line height 13: "During the volunteering period I carried out the following activities:".                                    |
-| Task bullets         | Green Black "•" plus Regular 10 pt, line height 12, pitch 40 from top 550.6, text within x 46.3 to 205. Up to 4 tasks of 110 chars.                                |
-| Signatory            | "Represented by" Regular 10 pt at x 46.1, top 676.8; line x 109.5 to 217.4 at y 687.3. Name above the line; optional signature image above it.                     |
-| Date                 | "DATE 01.01.2022" Roboto Black 10 pt at x 46.1, top 708.3.                                                                                                         |
-| Verification (U3)    | QR 52 pt square at x 46.1, top 735. To its right: Regular 7.5 pt navy "Verify this certificate" and the short URL, code in Black 8 pt.                             |
+| Element              | Spec                                                                                                                                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Logo                 | "THE GLORE NETWORK" with the arrow globe, x 24 to 233, y 23 to 102.                                                                                                                             |
+| Banner               | Box `#345372` x 24.7 to 219.0, y 105.3 to 128.0. White Roboto Regular caps about 15.9 pt, x 29.4 to 214.3: "SOFT SKILLS CERTIFICATE", localized.                                                |
+| Name                 | First name Roboto Regular 36 pt at x 23.6, top 137.0. Last name Roboto Bold 36 pt at x 23.6, top 173.0.                                                                                         |
+| Personal block       | Green bar x 26.9 to 29.7, y 230.3 to 269.0. Lines at x 45.3, tops 227.0, 243.0, 259.0: label Regular 9 pt plus value Black 9 pt uppercase.                                                      |
+| Personal labels      | "Nationality:", "Date of birth:", "Place of birth:".                                                                                                                                            |
+| Section bars         | Navy x 26.9 to 29.7: y 299.0 to 472.9 (Volunteering) and y 503.3 to 687.7 (Main tasks).                                                                                                         |
+| Volunteering heading | "VOLUNTEERING" Roboto Black 13.23 pt at x 46.1, top 296.1.                                                                                                                                      |
+| Period row           | Top 322.8: "From", line x 70.2 to 124.1, "to", line x 138.8 to 220.9. Lines 0.75 pt navy at y 333.1.                                                                                            |
+| Hours row            | Top 340.8: "hours", line x 72.6 to 124.1 at y 351.0.                                                                                                                                            |
+| Location row         | Top 358.8: "at", line x 56.8 to 220.9 at y 369.0.                                                                                                                                               |
+| Row values           | Roboto Bold 10 pt navy, sitting just above each line.                                                                                                                                           |
+| Partner              | "In partnership with" Regular 10 pt at top 385.1. Org name Black 10.05 pt from top 417.2, wrapping within x 46 to 112 (to 220.9 without a logo), shrinking to 6.5 pt so it stays above y 472.9. |
+| Partner logo         | Slot x 119.2 to 209.9, y 418.0 to 472.6, contain-fit. The slot stays empty when the org has no logo.                                                                                            |
+| Tasks heading        | "MAIN TASKS" Roboto Black 13.23 pt at x 46.1, top 499.0.                                                                                                                                        |
+| Tasks intro          | Two lines Regular 10 pt at top 521.6, line height 13: "During the volunteering period I carried out the following activities:".                                                                 |
+| Task bullets         | Green Black "•" plus Regular 10 pt, line height 12, pitch 40 from top 550.6, text within x 46.3 to 205. Up to 4 tasks of 110 chars.                                                             |
+| Signatory            | "Represented by" Regular 10 pt at x 46.1, top 676.8; line x 109.5 to 217.4 at y 687.3. Name above the line; optional signature image above it.                                                  |
+| Date                 | "DATE 01.01.2022" Roboto Black 10.05 pt at x 46.1, top 708.3.                                                                                                                                   |
+| Verification (U3)    | QR 52 pt square at x 46.1, top 735. To its right: Regular 7.5 pt navy "Verify this certificate" and the short URL, code in Black 8 pt.                                                          |
 
 ## Right column
 
@@ -93,3 +102,9 @@ The English values match the template text exactly, including "Recognizes". The 
 2. Render the template and the generated file at 150 dpi with PyMuPDF.
 3. Overlay them: every text baseline and shape must land within 1 pt, and outside the QR area only antialiasing may differ.
 4. Repeat with es and it labels and with a 3-skill certificate, checking that nothing overflows.
+
+Last result on 2026-11-19, on the template data with a logo:
+
+- Text spans land within 0.06 pt of the template. The level word sits 0.09 pt high because it shares a baseline with "level:".
+- Glyphs land within 0.16 pt, and 0.22% of pixels differ at 150 dpi.
+- The rest is content: 3 dots, the skill icon, "Represented by" (the template reads "Represent by"), and the banner and logo drawn as paths.

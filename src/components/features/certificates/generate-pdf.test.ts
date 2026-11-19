@@ -1,4 +1,4 @@
-import { inflateSync } from 'node:zlib'
+import { constants, inflateSync } from 'node:zlib'
 
 import { type ReactNode, isValidElement } from 'react'
 
@@ -14,7 +14,7 @@ const TEMPLATE_BASELINES: Record<number, number[]> = {
   9: [236.5, 252.5, 268.5, 322.8, 450.4, 577.9, 705.5],
   10: [265.3, 333.4, 351.4, 369.4, 395.7, 427.8, 439.9, 520.5, 532.1, 545.1, 561.1, 687.3, 718.9],
   11: [198.6, 211.8, 241.9, 370.8, 498.4, 626],
-  13.2: [310.1, 513],
+  13.2286: [310.1, 513],
   36: [175, 211],
 }
 
@@ -23,7 +23,9 @@ const textBaselines = (pdf: Buffer) => {
   for (const [, body] of pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/gu)) {
     const content = (() => {
       try {
-        return inflateSync(Buffer.from(body ?? '', 'latin1')).toString('latin1')
+        return inflateSync(Buffer.from(body ?? '', 'latin1'), { finishFlush: constants.Z_SYNC_FLUSH }).toString(
+          'latin1'
+        )
       } catch {
         return ''
       }
@@ -83,7 +85,12 @@ const templateInput = {
     nationality: 'BRITISH',
   },
   issuedAt: '2022-01-01',
-  organization: { legalRepresentative: 'Maria Rossi', logoUrl: null, name: 'Associazione JOINT', signatureUrl: null },
+  organization: {
+    legalRepresentative: 'Maria Rossi',
+    logoUrl: `${process.cwd()}/public/certificate/erasmus-plus.png`,
+    name: 'Associazione JOINT',
+    signatureUrl: null,
+  },
   skills: [1, 2, 3, 4].map(number => ({
     description: task,
     icon: 'users',
@@ -151,12 +158,19 @@ describe('generateCertificatePdf', () => {
   it('lands every template text baseline within 1 pt', async () => {
     const runs = textBaselines(await generateCertificatePdf(templateInput, 'en'))
     for (const [size, baselines] of Object.entries(TEMPLATE_BASELINES)) {
-      const actual = runs.filter(run => run.size === Number(size)).map(run => run.baseline)
+      const actual = runs.filter(run => Math.abs(run.size - Number(size)) < 0.05).map(run => run.baseline)
       for (const expected of baselines) {
         const nearest = Math.min(...actual.map(baseline => Math.abs(baseline - expected)))
         expect(nearest, `${size} pt baseline ${expected}`).toBeLessThanOrEqual(1)
       }
     }
+  })
+
+  it('puts the organization name on one line without a logo', async () => {
+    const organization = { ...templateInput.organization, logoUrl: null }
+    const runs = textBaselines(await generateCertificatePdf({ ...templateInput, organization }, 'en'))
+    const partner = runs.filter(run => run.x < 220 && run.baseline > 420 && run.baseline < 470)
+    expect(partner.map(run => Math.round(run.baseline))).toEqual([428])
   })
 
   it.each(['en', 'es', 'it'])('separates the level label from the level word in %s', async language => {
@@ -179,13 +193,13 @@ describe('generateCertificatePdf', () => {
 
 describe('partnerFontSize', () => {
   it('keeps the template size for a short organization name', () => {
-    expect(partnerFontSize('Joint')).toBe(10)
+    expect(partnerFontSize('Joint')).toBe(10.0464)
   })
 
   it('shrinks a long name until it stays inside its section bar', () => {
     const name = 'Associazione Culturale Giovanile per la Mobilita Internazionale e il Volontariato Europeo'
     const size = partnerFontSize(name)
-    expect(size).toBeLessThan(10)
+    expect(size).toBeLessThan(10.0464)
     expect(size).toBeGreaterThanOrEqual(6.5)
   })
 })

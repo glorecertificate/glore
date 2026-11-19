@@ -23,6 +23,7 @@ import {
   BANNER_TRACKING,
   type CertificatePdfData,
   type CertificatePdfLabels,
+  DATE_SIZE,
   DATE_TOP,
   DOT_LEFTS,
   DOT_SIZE,
@@ -53,7 +54,6 @@ import {
   PARTNER_LINE_HEIGHT,
   PARTNER_LOGO,
   PARTNER_TOP,
-  PARTNER_WIDTH,
   PERIOD_FROM,
   PERIOD_ROW,
   PERIOD_TO,
@@ -71,6 +71,7 @@ import {
   SKILL_DOT_OFFSETS,
   SKILL_ICON,
   SKILL_LABEL,
+  SKILL_LABEL_RAISE,
   SKILL_LABEL_TOPS,
   SKILL_LEVEL_OFFSETS,
   SKILL_NAME,
@@ -85,11 +86,13 @@ import {
   TASK_WIDTH,
   VERIFY_BOX,
   VOLUNTEERING,
+  VOLUNTEERING_LEFT,
   WHITE,
   formatDate,
   hyphenate,
   nameSize,
   partnerFontSize,
+  partnerWidth,
   placed,
   skillDots,
   skillNameSize,
@@ -166,10 +169,8 @@ const styles = StyleSheet.create({
     left: PARTNER_LEFT,
     lineHeight: PARTNER_LINE_HEIGHT,
     position: 'absolute',
-    width: PARTNER_WIDTH,
   },
   partnerLogo: { ...PARTNER_LOGO, objectFit: 'contain', position: 'absolute' },
-  partnerPlaceholder: { ...PARTNER_LOGO, backgroundColor: GRAY, position: 'absolute' },
   tasksIntro: {
     left: TASK_LEFT,
     lineHeight: TASKS_INTRO_LINE_HEIGHT,
@@ -365,29 +366,33 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         {/* Volunteering */}
         <View style={[styles.bar, { height: VOLUNTEERING.barHeight, top: VOLUNTEERING.barTop }]} />
         <Text style={[styles.heading, placed(VOLUNTEERING.headingTop, HEADING_SIZE)]}>{labels.volunteering}</Text>
-        <View style={[styles.row, { top: PERIOD_ROW.top, width: PERIOD_ROW.width }]}>
+        <View style={[styles.row, { left: VOLUNTEERING_LEFT, top: PERIOD_ROW.top, width: PERIOD_ROW.width }]}>
           <Text style={styles.rowLabel}>{labels.from}</Text>
           <RowLine spec={PERIOD_FROM} value={formatDate(activity.startDate)} />
           <Text style={styles.rowLabel}>{labels.to}</Text>
           <RowLine spec={PERIOD_TO} value={formatDate(activity.endDate)} />
         </View>
-        <View style={[styles.row, { top: HOURS_ROW.top, width: HOURS_ROW.width }]}>
+        <View style={[styles.row, { left: VOLUNTEERING_LEFT, top: HOURS_ROW.top, width: HOURS_ROW.width }]}>
           <Text style={styles.rowLabel}>{labels.hours}</Text>
           <RowLine spec={HOURS_ROW} value={activity.duration ? String(activity.duration) : ''} />
         </View>
-        <View style={[styles.row, { top: LOCATION_ROW.top, width: LOCATION_ROW.width }]}>
+        <View style={[styles.row, { left: VOLUNTEERING_LEFT, top: LOCATION_ROW.top, width: LOCATION_ROW.width }]}>
           <Text style={styles.rowLabel}>{labels.at}</Text>
           <RowLine spec={LOCATION_ROW} value={activity.location ?? ''} />
         </View>
-        <Text style={[styles.absolute, { left: PARTNER_LEFT }, placed(PARTNERSHIP_TOP, 10)]}>{labels.partnership}</Text>
-        <Text style={[styles.partnerName, placed(PARTNER_TOP, partnerFontSize(organization.name))]}>
+        <Text style={[styles.absolute, { left: VOLUNTEERING_LEFT }, placed(PARTNERSHIP_TOP, 10)]}>
+          {labels.partnership}
+        </Text>
+        <Text
+          style={[
+            styles.partnerName,
+            { width: partnerWidth(organization.logoUrl) },
+            placed(PARTNER_TOP, partnerFontSize(organization.name, partnerWidth(organization.logoUrl))),
+          ]}
+        >
           {organization.name}
         </Text>
-        {organization.logoUrl ? (
-          <Image src={organization.logoUrl} style={styles.partnerLogo} />
-        ) : (
-          <View style={styles.partnerPlaceholder} />
-        )}
+        {organization.logoUrl ? <Image src={organization.logoUrl} style={styles.partnerLogo} /> : null}
 
         {/* Main tasks */}
         <View style={[styles.bar, { height: TASKS_SECTION.barHeight, top: TASKS_SECTION.barTop }]} />
@@ -415,7 +420,7 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
           <Text style={styles.rowLabel}>{labels.representedBy}</Text>
           <RowLine spec={REPRESENTED_ROW} value={organization.legalRepresentative ?? ''} />
         </View>
-        <Text style={[styles.date, placed(DATE_TOP, 10)]}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
+        <Text style={[styles.date, placed(DATE_TOP, DATE_SIZE)]}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
 
         {/* Verification */}
         {data.qrPath ? (
@@ -441,7 +446,12 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
           const { level, steps } = skillDots(skill)
           return (
             <View key={skill.name}>
-              <View style={[styles.skillLabel, { top }]}>
+              <View
+                style={[
+                  styles.skillLabel,
+                  { paddingTop: SKILL_LABEL.paddingTop - (SKILL_LABEL_RAISE[index] ?? 0), top },
+                ]}
+              >
                 <SkillIcon iconNode={skill.iconNode} />
                 <Text style={[styles.skillName, { fontSize: skillNameSize(skill.name) }]}>{skill.name}</Text>
               </View>

@@ -110,7 +110,7 @@ const ROBOTO_FONT_ASCENT = 1900 / 2048
 const ROBOTO_FONT_DESCENT = 500 / 2048
 export const ROBOTO_LINE_HEIGHT = ROBOTO_FONT_ASCENT + ROBOTO_FONT_DESCENT
 export const BANNER_TRACKING = -0.0123
-export const HEADING_TRACKING = 0.73
+export const HEADING_TRACKING = 0.712
 
 export const textShift = (fontSize: number) => (TEMPLATE_FONT_ASCENT - ROBOTO_FONT_ASCENT) * fontSize
 
@@ -125,15 +125,16 @@ export const PERSONAL = { barTop: 230.3, barHeight: 38.7, left: 45.3, size: 9, t
 export const SECTION_BAR = { left: 26.9, width: 2.8 }
 export const VOLUNTEERING = { barHeight: 173.9, barTop: 299, headingTop: 296.1 }
 export const TASKS_SECTION = { barHeight: 184.4, barTop: 503.3, headingTop: 499, introTop: 521.6 }
-export const HEADING_SIZE = 13.2
+export const HEADING_SIZE = 13.2286
 export const HEADING_LEFT = 46.1
 export const ROW_LEFT = 46.1
+export const VOLUNTEERING_LEFT = 45.66
 
-export const PERIOD_ROW = { top: 322.8, width: 174.8 }
-export const PERIOD_FROM = { flex: 52.4, lineHeight: 10.3, marginLeft: 0.9, marginRight: 3 }
-export const PERIOD_TO = { flex: 80.6, lineHeight: 10.3, marginLeft: 2.8, marginRight: 0 }
-export const HOURS_ROW = { flex: 1, lineHeight: 10.2, marginLeft: 1.2, marginRight: 0, top: 340.8, width: 78 }
-export const LOCATION_ROW = { flex: 1, lineHeight: 10.2, marginLeft: 2, marginRight: 0, top: 358.8, width: 174.8 }
+export const PERIOD_ROW = { top: 322.8, width: 175.24 }
+export const PERIOD_FROM = { flex: 52.4, lineHeight: 10.3, marginLeft: 1.34, marginRight: 3.48 }
+export const PERIOD_TO = { flex: 80.6, lineHeight: 10.3, marginLeft: 2.32, marginRight: 0 }
+export const HOURS_ROW = { flex: 1, lineHeight: 10.2, marginLeft: 1.64, marginRight: 0, top: 340.8, width: 78.44 }
+export const LOCATION_ROW = { flex: 1, lineHeight: 10.2, marginLeft: 2.44, marginRight: 0, top: 358.8, width: 175.24 }
 export const REPRESENTED_ROW = { flex: 1, lineHeight: 10.5, marginLeft: 5.7, marginRight: 0, top: 676.8, width: 171.3 }
 export const ROW_LINE_WIDTH = 0.75
 export const ROW_LINE_PADDING = 1.5
@@ -143,15 +144,18 @@ export const PARTNERSHIP_TOP = 385.1
 export const PARTNER_TOP = 417.2
 const PARTNER_BOTTOM = 472.9
 export const PARTNER_LEFT = 46.1
-export const PARTNER_WIDTH = 68
-export const PARTNER_LINE_HEIGHT = 1.21
+const PARTNER_WIDTH = 68
+const PARTNER_FULL_WIDTH = 174.8
+export const PARTNER_LINE_HEIGHT = 1.2
 export const PARTNER_LOGO = { height: 54.6, left: 119.2, top: 418, width: 90.7 }
 
 const PARTNER_CHAR_WIDTH = 0.62
-const PARTNER_FONT_SIZES = [10, 9, 8, 7, 6.5] as const
+const PARTNER_FONT_SIZES = [10.0464, 9, 8, 7, 6.5] as const
 
-const partnerLines = (name: string, fontSize: number) => {
-  const perLine = Math.max(1, Math.floor(PARTNER_WIDTH / (PARTNER_CHAR_WIDTH * fontSize)))
+export const partnerWidth = (logoUrl: string | null) => (logoUrl ? PARTNER_WIDTH : PARTNER_FULL_WIDTH)
+
+const partnerLines = (name: string, fontSize: number, width: number) => {
+  const perLine = Math.max(1, Math.floor(width / (PARTNER_CHAR_WIDTH * fontSize)))
   return name.split(/\s+/u).reduce(
     (state, word) => {
       const chunks = Math.max(1, Math.ceil(word.length / perLine))
@@ -164,9 +168,9 @@ const partnerLines = (name: string, fontSize: number) => {
   ).lines
 }
 
-export const partnerFontSize = (name: string) =>
+export const partnerFontSize = (name: string, width = PARTNER_WIDTH) =>
   PARTNER_FONT_SIZES.find(
-    size => partnerLines(name, size) * size * PARTNER_LINE_HEIGHT <= PARTNER_BOTTOM - PARTNER_TOP
+    size => partnerLines(name, size, width) * size * PARTNER_LINE_HEIGHT <= PARTNER_BOTTOM - PARTNER_TOP
   ) ?? PARTNER_FONT_SIZES.at(-1)!
 
 export const TASK_LEFT = 46.3
@@ -220,15 +224,17 @@ export const taskPlan = (allTasks: string[], signed: boolean) => {
 
 export const SIGNATURE_BOX = { height: 28, left: 112, top: 646, width: 100 }
 export const DATE_TOP = 708.3
+export const DATE_SIZE = 10.0464
 export const QR_BOX = { left: 46.1, size: 52, top: 735 }
 export const VERIFY_BOX = { left: 106, top: 742, width: 130 }
 
 export const HEADING_RIGHT = { left: 264.8, lineHeight: 1.2, size: 11, top: 187, width: 290 }
 
 export const SKILL_LABEL_TOPS = [226.5, 355.1, 482.7, 610.3]
-export const SKILL_DESCRIPTION_OFFSETS = [28.2, 27.2, 27.2, 27.2]
+export const SKILL_DESCRIPTION_OFFSETS = [28.28, 27.28, 27.28, 27.28]
 export const SKILL_DOT_OFFSETS = [85.1, 84.1, 84.1, 84.1]
-export const SKILL_LEVEL_OFFSETS = [86.75, 85.65, 85.65, 85.65]
+export const SKILL_LEVEL_OFFSETS = [86.75, 85.75, 85.75, 85.75]
+export const SKILL_LABEL_RAISE = [0.62, 0, 0, 0]
 export const SKILL_LABEL = { height: 22.9, left: 269.3, paddingLeft: 7, paddingRight: 14.8, paddingTop: 1 }
 export const SKILL_ICON = { height: 14.3, offset: 1, width: 14.6 }
 export const SKILL_NAME = { marginLeft: 6.7, size: 11 }

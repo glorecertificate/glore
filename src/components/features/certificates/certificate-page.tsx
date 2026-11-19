@@ -12,6 +12,7 @@ import {
   BANNER_TRACKING,
   type CertificateInput,
   type CertificatePdfLabels,
+  DATE_SIZE,
   DATE_TOP,
   DOT_LEFTS,
   DOT_SIZE,
@@ -41,7 +42,6 @@ import {
   PARTNER_LINE_HEIGHT,
   PARTNER_LOGO,
   PARTNER_TOP,
-  PARTNER_WIDTH,
   PERIOD_FROM,
   PERIOD_ROW,
   PERIOD_TO,
@@ -59,6 +59,7 @@ import {
   SKILL_DOT_OFFSETS,
   SKILL_ICON,
   SKILL_LABEL,
+  SKILL_LABEL_RAISE,
   SKILL_LABEL_TOPS,
   SKILL_LEVEL_OFFSETS,
   SKILL_NAME,
@@ -72,11 +73,13 @@ import {
   TASK_TOP,
   TASK_WIDTH,
   VOLUNTEERING,
+  VOLUNTEERING_LEFT,
   WHITE,
   baselineTop,
   formatDate,
   nameSize,
   partnerFontSize,
+  partnerWidth,
   skillDots,
   skillNameSize,
   softHyphenate,
@@ -181,9 +184,17 @@ const RowLabel = ({ children }: { children: string }) => (
   </p>
 )
 
-const Row = ({ children, top, width }: { children: React.ReactNode; top: number; width: number }) => (
-  <div style={spot(ROW_LEFT, top, { alignItems: 'flex-start', display: 'flex', width: unit(width) })}>{children}</div>
-)
+const Row = ({
+  children,
+  left = ROW_LEFT,
+  top,
+  width,
+}: {
+  children: React.ReactNode
+  left?: number
+  top: number
+  width: number
+}) => <div style={spot(left, top, { alignItems: 'flex-start', display: 'flex', width: unit(width) })}>{children}</div>
 
 const ICON_BOX: React.CSSProperties = {
   display: 'block',
@@ -253,7 +264,8 @@ export const CertificatePage = ({
   const plan = taskPlan(activity.tasks, Boolean(organization.signatureUrl))
   const skills = input.skills.slice(0, SKILL_LABEL_TOPS.length)
   const bannerSize = titleSize(labels.title)
-  const partnerSize = partnerFontSize(organization.name)
+  const partnerSpan = partnerWidth(organization.logoUrl)
+  const partnerSize = partnerFontSize(organization.name, partnerSpan)
 
   return (
     <figure
@@ -355,26 +367,26 @@ export const CertificatePage = ({
         >
           {labels.volunteering}
         </p>
-        <Row top={PERIOD_ROW.top} width={PERIOD_ROW.width}>
+        <Row left={VOLUNTEERING_LEFT} top={PERIOD_ROW.top} width={PERIOD_ROW.width}>
           <RowLabel>{labels.from}</RowLabel>
           <RowLine spec={PERIOD_FROM} value={formatDate(activity.startDate)} />
           <RowLabel>{labels.to}</RowLabel>
           <RowLine spec={PERIOD_TO} value={formatDate(activity.endDate)} />
         </Row>
-        <Row top={HOURS_ROW.top} width={HOURS_ROW.width}>
+        <Row left={VOLUNTEERING_LEFT} top={HOURS_ROW.top} width={HOURS_ROW.width}>
           <RowLabel>{labels.hours}</RowLabel>
           <RowLine spec={HOURS_ROW} value={activity.duration ? String(activity.duration) : ''} />
         </Row>
-        <Row top={LOCATION_ROW.top} width={LOCATION_ROW.width}>
+        <Row left={VOLUNTEERING_LEFT} top={LOCATION_ROW.top} width={LOCATION_ROW.width}>
           <RowLabel>{labels.at}</RowLabel>
           <RowLine spec={LOCATION_ROW} value={activity.location ?? ''} />
         </Row>
-        <p style={textAt(PARTNER_LEFT, PARTNERSHIP_TOP, 10, 1, { whiteSpace: 'nowrap' })}>{labels.partnership}</p>
+        <p style={textAt(VOLUNTEERING_LEFT, PARTNERSHIP_TOP, 10, 1, { whiteSpace: 'nowrap' })}>{labels.partnership}</p>
         <p
           style={textAt(PARTNER_LEFT, PARTNER_TOP, partnerSize, PARTNER_LINE_HEIGHT, {
             fontWeight: 900,
             overflowWrap: 'anywhere',
-            width: unit(PARTNER_WIDTH),
+            width: unit(partnerSpan),
           })}
         >
           {softHyphenate(organization.name)}
@@ -392,15 +404,7 @@ export const CertificatePage = ({
             unoptimized
             width={64}
           />
-        ) : (
-          <div
-            style={spot(PARTNER_LOGO.left, PARTNER_LOGO.top, {
-              backgroundColor: GRAY,
-              height: unit(PARTNER_LOGO.height),
-              width: unit(PARTNER_LOGO.width),
-            })}
-          />
-        )}
+        ) : null}
 
         <Bar height={TASKS_SECTION.barHeight} top={TASKS_SECTION.barTop} />
         <p
@@ -468,7 +472,7 @@ export const CertificatePage = ({
           <RowLine spec={REPRESENTED_ROW} value={organization.legalRepresentative ?? ''} />
         </Row>
         <p
-          style={textAt(HEADING_LEFT, DATE_TOP, 10, 1, {
+          style={textAt(HEADING_LEFT, DATE_TOP, DATE_SIZE, 1, {
             fontWeight: 900,
             textTransform: 'uppercase',
             whiteSpace: 'pre',
@@ -500,7 +504,7 @@ export const CertificatePage = ({
                   height: unit(SKILL_LABEL.height),
                   paddingLeft: unit(SKILL_LABEL.paddingLeft),
                   paddingRight: unit(SKILL_LABEL.paddingRight),
-                  paddingTop: unit(SKILL_LABEL.paddingTop),
+                  paddingTop: unit(SKILL_LABEL.paddingTop - (SKILL_LABEL_RAISE[index] ?? 0)),
                 })}
               >
                 <SkillIcon icon={skill.icon} />

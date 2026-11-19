@@ -11,7 +11,7 @@ import { formatActivityPeriod, meetsActivityRule } from '@/components/features/c
 import { type ReviewFormValues } from '@/components/features/certificates/schemas'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { LevelDots } from '@/components/ui/level-dots'
 import { StatusBadge } from '@/components/ui/status-badge'
@@ -108,18 +108,20 @@ export const RequestPanel = ({
       </Card>
 
       <Card>
-        <CardHeader className="flex-row items-center justify-between gap-2">
+        <CardHeader>
           <CardTitle className="type-label">{t('experienceTitle')}</CardTitle>
-          <Button
-            aria-expanded={editing}
-            className="text-action-text"
-            onClick={() => setEditing(current => !current)}
-            size="sm"
-            type="button"
-            variant="ghost"
-          >
-            {editing ? t('doneEditing') : t('edit')}
-          </Button>
+          <CardAction>
+            <Button
+              aria-expanded={editing}
+              className="text-action-text"
+              onClick={() => setEditing(current => !current)}
+              size="sm"
+              type="button"
+              variant="ghost"
+            >
+              {editing ? t('doneEditing') : t('edit')}
+            </Button>
+          </CardAction>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {editing ? (

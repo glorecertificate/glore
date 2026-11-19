@@ -285,13 +285,6 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   return (
     <div className="flex flex-col gap-4 max-sm:pb-24">
       <div className="flex flex-col gap-3">
-        <div className="hidden sm:block">
-          <StepList aria-label={t('stepsLabel')} items={items} />
-        </div>
-        <div className="flex flex-col gap-2 sm:hidden">
-          <p className="text-sm font-medium">{t('stepOf', { current: step + 1, total: WIZARD_STEPS.length })}</p>
-          <Progress aria-label={t('stepsLabel')} value={((step + 1) / WIZARD_STEPS.length) * 100} />
-        </div>
         {!resubmit && (
           <div className="flex items-center justify-end gap-2">
             <output aria-live="polite" className="mr-auto text-xs text-muted-foreground">
@@ -331,6 +324,13 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
       </div>
 
       <Card className="gap-6 p-4 sm:p-6">
+        <div className="hidden sm:block">
+          <StepList aria-label={t('stepsLabel')} items={items} />
+        </div>
+        <div className="flex flex-col gap-2 sm:hidden">
+          <p className="text-sm font-medium">{t('stepOf', { current: step + 1, total: WIZARD_STEPS.length })}</p>
+          <Progress aria-label={t('stepsLabel')} value={((step + 1) / WIZARD_STEPS.length) * 100} />
+        </div>
         {resubmit && notes && (
           <Banner variant="warning">
             <div className="min-w-0 space-y-1">

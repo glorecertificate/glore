@@ -99,7 +99,9 @@ const CertificatesBand = async () => {
   return (
     <DashboardHeader
       actions={(volunteer || tutor) && <Suspense>{tutor ? <StartNextReview /> : <RequestAction />}</Suspense>}
-      description={manager ? null : <PageTitle name="description" namespace="CertificateList" />}
+      description={
+        manager ? null : <PageTitle name="description" namespace={tutor ? 'CertificateQueue' : 'CertificateList'} />
+      }
       title={<PageTitle name="certificates" namespace="Layout" />}
     />
   )

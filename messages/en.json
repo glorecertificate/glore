@@ -1944,7 +1944,7 @@
     "columnStatus": "Status",
     "columnCode": "Code",
     "tableLabel": "Your certificates",
-    "search": "Search by organization or code"
+    "search": "Organization or code"
   },
   "CertificateOrg": {
     "title": "Certificates",

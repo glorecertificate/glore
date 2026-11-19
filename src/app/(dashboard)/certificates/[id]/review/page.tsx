@@ -57,7 +57,7 @@ const ReviewBand = async ({ params }: { params: PageProps<'/certificates/[id]/re
         <span className="flex flex-col gap-3">
           <span>{certificate.organization.name}</span>
           <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <CertificateStatusBadge status={certificate.status} />
+            {!certificate.isSubmitted && <CertificateStatusBadge status={certificate.status} />}
             <span className="text-sm">{t('submittedAgo', { when: format.relativeTime(new Date(submittedAt)) })}</span>
           </span>
         </span>

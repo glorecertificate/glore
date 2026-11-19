@@ -1944,7 +1944,7 @@
     "columnStatus": "Estado",
     "columnCode": "Código",
     "tableLabel": "Tus certificados",
-    "search": "Buscar por organización o código"
+    "search": "Organización o código"
   },
   "CertificateOrg": {
     "title": "Certificados",

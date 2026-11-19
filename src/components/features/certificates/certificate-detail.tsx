@@ -55,7 +55,7 @@ export const CertificateDetail = ({
 
         {!certificate.isRevoked && (
           <div className="flex flex-col items-center gap-3">
-            <CertificatePreview certificate={certificate} className="w-full max-w-2xl" />
+            <CertificatePreview certificate={certificate} className="w-full max-w-xl" />
             {certificate.isApproved && (
               <Button asChild icon="external-link" size="sm" variant="outline">
                 <a href={pdfHref} rel="noopener noreferrer" target="_blank">

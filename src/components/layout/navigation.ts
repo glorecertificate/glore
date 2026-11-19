@@ -27,7 +27,6 @@ export type NavigationId =
   | 'courses'
   | 'dashboard'
   | 'docs'
-  | 'help'
   | 'invite-members'
   | 'notifications'
   | 'organization'
@@ -88,7 +87,6 @@ const NAVIGATION: NavigationEntry[] = [
   },
   { group: 'pages', href: '/docs', icon: 'book-marked', id: 'docs', sidebar: true, visible: everyone },
   { group: 'pages', href: '/notifications' as Route, icon: 'bell', id: 'notifications', visible: everyone },
-  { group: 'pages', href: '/help', icon: 'circle-help', id: 'help', visible: everyone },
   { group: 'pages', href: '/about', icon: 'info', id: 'about', visible: everyone },
   { group: 'settings', href: '/settings', icon: 'settings', id: 'settings', visible: everyone },
   {

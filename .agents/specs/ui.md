@@ -28,12 +28,12 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 
 The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `DESIGN.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
 
-- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a teal gradient active item (`bg-gradient-nav`, `shadow-glow-nav`), a white `logo-chip`, and a green `sidebar-badge` count. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
+- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a `bg-sidebar-active` item (white at 12%, `sidebar-ring` icon), and `Logo onNavy` with no chip (`/icon-on-navy.png`). The bell sits in the logo row. `SidebarCount` shows a plain number, or a white badge when `floating`. The `logo-chip` utility stays for auth pages. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
 - Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1826`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
-- `DashboardHeader` renders `PageBand`: gradient `bg-band`, inline SVG globe, `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it. With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
+- `DashboardHeader` renders `PageBand`: gradient `bg-band` (four stops from the sidebar navy to teal and green, no globe), `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it. With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
 - `Button` `primary` and `brand` are the teal gradient with white text. `band` (green, navy text) and `band-secondary` (scrim) sit on the band. Press scales to `.98` in 80 ms.
-- `StatCard` takes `accent` (`teal`, `navy`, `green`, `amber`) and `icon`: a 4px gradient strip and a 32px gradient tile. `stat-accent-*` classes set the `--stat-*` variables for any element that needs them.
-- `Badge` is a pill. `success` is green with navy text, `info` is navy with white text, `muted` is the draft grey. `highlight` (`bg-highlight`) is the navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
+- `StatCard` takes `accent` (`teal`, `navy`, `green`, `amber`) and `icon`: a flat 32px tile with accent-colored icon. `stat-accent-*` classes set the `--stat-*` variables for any element that needs them.
+- `Badge` status variants (`success`, `warning`, `destructive`, `info`, `muted`, and the certificate ones such as `approved`) render an 8px dot and a neutral label, never a filled pill. `outline` is for neutral labels such as a role. `highlight` (`bg-highlight`) is the navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
 - Text on a gradient passes 4.5:1 on its darkest stop in each theme. `check:theme` enforces every pair, and the table lives in `PALETTE_PAIRS` in `scripts/theme/tokens.ts`.
 
 ## Migrate a page to the band
@@ -46,12 +46,6 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 6. A page with a data-dependent heading passes `header` (see `DashboardBand`). One `h1` per page: the band owns it.
 7. Example: `.agents/references/ui-components.md`, "Band migration example".
 
-## Signed-out frames and settings
-
-- Auth pages (login, password reset, register, invitation, join, onboarding) use a split screen: a navy panel (`bg-band-from`) with the logo, plus the form column. `AuthFlow` shows the large globe on login and a 120 px globe below `lg`. `AuthSplit` (`features/auth/auth-split.tsx`) serves the other auth pages. Public verify, 404, offline, legal and legal acceptance keep `BrandShell`.
-- Account settings use the kit `SectionNav` (query param `tab`) and `StickySaveBar` with no band tab strip. `SettingsSection` stacks a muted title above its fields.
-- Docs index is a search-first hub: search, start tiles, a role tutorial row, topic columns and a contact card. Legal documents use document tabs and one versions table. Translations use the kit `FilterRail`.
-
 ## Release UI kit
 
 - Shared primitives live in `src/components/ui/`. They accept root props and localized labels.
@@ -62,7 +56,9 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
 - `StatCard` composes `NumberTicker`. Formatting follows next-intl, and the ticker respects reduced motion.
 - `Banner` supplies semantic status variants.
-- `StatusBadge` takes a `tone` (`neutral`, `info`, `success`, `warning`, `danger`) and an optional icon.
+- `StatusBadge` takes a `tone`: `neutral`, `info`, `success`, `warning`, `danger`, or a certificate tone (`draft`, `submitted`, `review`, `changes`, `approved`, `rejected`, `withdrawn`, `revoked`). It takes no icon. `Progress` has one neutral track and a fill that matches the status color.
+- `FilterRail` (`filter-rail.tsx`) is passed to `DataTable` as `rail` (groups with live counts, `extra`, `search`, `onReset`). From `lg` it is a panel with active chips. Below `lg` it is a search field and a Filters sheet with the active count. Counts come from the server (`FacetedPage.facets`) or from the rows.
+- `SectionNav` is the left section nav of a settings page (vertical from `md`, a scroller below). `StickySaveBar` sticks to the bottom of the column when a form is dirty. Use `useStickySaveBar(form)` with react-hook-form: it gives `count`, `discard`, and `saving`.
 - A domain status has one `StatusMeta` map (icon, label key, tone) in its feature folder. `CERTIFICATE_STATUS` lives in `features/certificates/status.ts`.
 - Render a certificate status with `CertificateStatusBadge`, and read a status label from `CERTIFICATE_STATUS`. Never add a second map.
 - `Kbd` and `KbdGroup` render key hints. `useModifierKey()` returns `⌘` on Apple systems and `Ctrl` elsewhere. Never hard-code `⌘`.

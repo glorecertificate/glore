@@ -425,7 +425,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DashboardSidebarUserItem href="/help" icon="circle-help" onClick={onLinkClick}>
+              <DashboardSidebarUserItem href="/docs" icon="circle-help" onClick={onLinkClick}>
                 {t('help')}
               </DashboardSidebarUserItem>
               <DashboardSidebarUserItem href="/about" icon="info" onClick={onLinkClick}>

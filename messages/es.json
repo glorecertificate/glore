@@ -1399,7 +1399,13 @@
       "navigation": "Más en esta categoría",
       "previous": "Anterior",
       "next": "Siguiente",
-      "onThisPage": "En esta página"
+      "onThisPage": "En esta página",
+      "helpful": "¿Te ha servido?",
+      "yes": "Sí",
+      "no": "No",
+      "thanks": "Gracias por tu respuesta.",
+      "tellUs": "Cuéntanos qué falta",
+      "related": "Preguntas relacionadas"
     },
     "hub": {
       "searchPlaceholder": "Buscar en la documentación",

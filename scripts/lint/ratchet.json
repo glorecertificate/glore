@@ -31,9 +31,6 @@
   "src/components/features/docs": {
     "no-arbitrary-value": 1
   },
-  "src/components/features/help": {
-    "no-arbitrary-value": 1
-  },
   "src/components/features/legal": {
     "no-arbitrary-value": 1
   },

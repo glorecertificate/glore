@@ -1,9 +1,11 @@
+import { type Route } from 'next'
 import { cache } from 'react'
 
 import { type Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
 import { loadDocArticle } from '@/actions/docs-core'
+import { ArticleFeedback } from '@/components/features/docs/article-feedback'
 import { extractHeadings, headingIdsByLine } from '@/components/features/docs/headings'
 import { ReadingMarkdown } from '@/components/features/docs/reading-markdown'
 import { ReadingToc } from '@/components/features/docs/reading-toc'
@@ -31,7 +33,8 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
   if (!data) return null
 
   const t = await getTranslations('Docs')
-  const { content, locale, siblings, article, translated } = data
+  const { content, locale, siblings, article, category, title, translated } = data
+  const related = category?.slug === 'faq' ? siblings.filter(item => item.slug !== article.slug).slice(0, 4) : []
 
   const index = siblings.findIndex(sibling => sibling.slug === article.slug)
   const previous = siblings[index - 1]
@@ -43,25 +46,53 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
   return (
     <article className="flex flex-col gap-6">
       <Card className="gap-6 p-6 sm:p-8">
+        {category && (
+          <Link
+            className="inline-flex min-h-11 w-fit items-center gap-1.5 text-sm font-medium text-action-text hover:underline focus-visible:focus-ring sm:min-h-9"
+            href={`/docs/${category.slug}` as Route}
+          >
+            <LucideIcon className="size-3.5" name="arrow-left" />
+            {pickLocale(category.title, locale) ?? category.slug}
+          </Link>
+        )}
         {translated && translated !== locale && (
           <Banner variant="info">
             <LucideIcon name="languages" className="mt-0.5 size-4 shrink-0" />
             <p>{t('article.fallbackLanguage', { language: languageLabel ?? translated })}</p>
           </Banner>
         )}
-        <div className="grid gap-8 lg:grid-cols-4 lg:gap-10">
-          <div className="max-w-prose min-w-0 lg:col-span-3">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,45rem)_minmax(0,1fr)] lg:gap-10">
+          <div className="flex min-w-0 flex-col gap-8">
             {content ? (
               <ReadingMarkdown ids={headingIdsByLine(headings)}>{content}</ReadingMarkdown>
             ) : (
               <p className="text-fg-2">{t('article.noContent')}</p>
             )}
+            <ArticleFeedback title={title} />
           </div>
-          <div className="order-first min-w-0 lg:order-0 lg:col-start-4 lg:row-start-1">
+          <div className="order-first min-w-0 lg:order-0 lg:col-start-2 lg:row-start-1">
             <ReadingToc headings={headings} />
           </div>
         </div>
       </Card>
+      {related.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <h2 className="type-heading text-fg-title">{t('article.related')}</h2>
+          <ul className="flex flex-col divide-y divide-border-subtle rounded-xl border border-border-subtle bg-card shadow-card">
+            {related.map(item => (
+              <li key={item.slug}>
+                <Link
+                  className="flex min-h-11 items-center justify-between gap-3 px-4 py-3 text-sm text-fg-1 transition-colors hover:bg-surface-hover focus-visible:focus-ring-inset"
+                  href={`/docs/articles/${item.slug}`}
+                >
+                  {pickLocale(item.title, locale) ?? item.slug}
+                  <LucideIcon className="size-3.5 shrink-0 text-fg-3" name="chevron-right" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {(previous || next) && (
         <nav aria-label={t('article.navigation')} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {previous ? (

@@ -31,7 +31,6 @@ export const useNavigationLabels = () => {
     courses: tLayout('courses'),
     dashboard: tLayout('dashboard'),
     docs: tLayout('docs'),
-    help: tLayout('help'),
     'invite-members': t('inviteMembers'),
     notifications: tLayout('notifications'),
     organization: tLayout('organization'),

@@ -111,20 +111,20 @@ const SingleGroup = ({ group }: { group: FilterRailGroup }) => {
 
 const fold = (value: string) => value.normalize('NFD').replaceAll(/\p{M}/gu, '').toLowerCase()
 
-const visibleOptions = (group: FilterRailGroup, query: string) => {
+const matches = (option: FilterRailOption, needle: string) => !needle || fold(option.label).includes(needle)
+
+const visibleOptions = (group: FilterRailGroup, needle: string) => {
   if (!group.searchable) return group.options
-  const needle = fold(query.trim())
   const selected = group.options.filter(option => group.values.includes(option.value))
-  const rest = group.options.filter(
-    option => !group.values.includes(option.value) && (!needle || fold(option.label).includes(needle))
-  )
+  const rest = group.options.filter(option => !group.values.includes(option.value) && matches(option, needle))
   return [...selected, ...rest]
 }
 
 const MultipleGroup = ({ group }: { group: FilterRailGroup }) => {
   const prefix = useId()
   const [query, setQuery] = useState('')
-  const options = visibleOptions(group, query)
+  const needle = fold(query.trim())
+  const options = visibleOptions(group, needle)
   const searchable = group.searchable
 
   return (
@@ -151,7 +151,7 @@ const MultipleGroup = ({ group }: { group: FilterRailGroup }) => {
             <OptionContent option={option} />
           </label>
         ))}
-        {searchable && query.trim() !== '' && options.every(option => group.values.includes(option.value)) && (
+        {searchable && needle !== '' && !group.options.some(option => matches(option, needle)) && (
           <p className="py-2 text-sm text-muted-foreground">{searchable.emptyLabel}</p>
         )}
       </div>

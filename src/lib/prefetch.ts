@@ -10,9 +10,12 @@ const LIST_LIMIT = 6
 
 const registry = new Map<string, { count: number; scope: Scope }>()
 
+const warmed = new Set<string>()
+
 let holdUntil = 0
 
 export const prefetchFull = (router: Router, href: string) => {
+  warmed.add(href)
   const prefetch = router.prefetch as unknown as FullPrefetch
   prefetch(href, { kind: 'full' })
 }
@@ -31,19 +34,35 @@ export const keepFresh = (href: string, scope: Scope = 'nav') => {
   }
 }
 
+interface ConnectionInfo {
+  saveData?: boolean
+}
+
+export const isEagerDevice = () => {
+  const connection = (navigator as Navigator & { connection?: ConnectionInfo }).connection
+  if (connection?.saveData) return false
+  return window.matchMedia('(pointer: fine) and (min-width: 1024px)').matches
+}
+
+const isRendered = (href: string) => {
+  const anchor = document.querySelector(`a[href="${CSS.escape(href)}"]`)
+  return Boolean(anchor?.checkVisibility({ visibilityProperty: true }))
+}
+
 const visibleTop = (href: string) => {
   const anchor = document.querySelector(`a[href="${CSS.escape(href)}"]`)
-  if (!anchor) return null
+  if (!anchor?.checkVisibility({ visibilityProperty: true })) return null
   const { bottom, top } = anchor.getBoundingClientRect()
   return bottom > 0 && top < window.innerHeight ? top : null
 }
 
-export const keptHrefs = () => {
+export const keptHrefs = (eager: boolean) => {
   const navigation: string[] = []
   const lists: { href: string; top: number }[] = []
   for (const [href, { scope }] of registry) {
+    if (!eager && !warmed.has(href)) continue
     if (scope === 'nav') {
-      navigation.push(href)
+      if (isRendered(href)) navigation.push(href)
       continue
     }
     const top = visibleTop(href)

@@ -3867,6 +3867,15 @@
       "review": "Rivedi il corso",
       "preview": "Anteprima del corso",
       "startError": "Non siamo riusciti ad avviare il corso. Riprova.",
+      "startDialog": {
+        "title": "Vuoi iniziare questo corso?",
+        "description": "{title} ha {count, plural, one {# lezione} other {# lezioni}}. I tuoi progressi vengono salvati dopo ogni lezione, così puoi fermarti e riprendere quando vuoi."
+      },
+      "startPrompt": {
+        "title": "Non hai ancora iniziato questo corso",
+        "description": "Inizia il corso per aprire le lezioni.",
+        "back": "Torna al corso"
+      },
       "minutes": "{minutes} min",
       "hours": "{hours} h",
       "hoursMinutes": "{hours} h {minutes} min",

@@ -87,6 +87,8 @@ Three domain facts shape recurring decisions:
 - Editors and admins author multilingual content in Plate.js with AI assistance.
 - Ordered lessons hold rich text, multiple-choice questions, evaluations (self-assessment prompts), and one final assessment per lesson (skill courses only, last step).
 - Members see an overview and enroll with an explicit Start, which records the locale. Progress is binary per lesson.
+- Start and the first lesson open one confirmation dialog. Confirming enrolls the member and opens the first lesson.
+- A lesson link of a course that is not started shows a start prompt, not a redirect.
 - Volunteers keep a skill compass (up to 3 strengths, 5 goals) that drives course recommendations.
 - The server grades quizzes and returns the explanation of each answer. There are no streaks or leaderboards (D15).
 - Publication states: archived, draft, partial, published.

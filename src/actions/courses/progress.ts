@@ -3,8 +3,9 @@
 import 'server-only'
 
 import { revalidateTag, updateTag } from 'next/cache'
+import { redirect } from 'next/navigation'
 
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { type Learner, finishLesson, gradeAnswer, rateCompletedCourse } from '@/actions/courses/learning'
@@ -48,38 +49,44 @@ const currentLearner = async (): Promise<Learner | null> => {
   return { canEdit: user.canEdit, organizationId, role, userId: user.id }
 }
 
-export const startCourse = async (courseId: number, locale: string) => {
-  const parsed = z.object({ courseId: idSchema, locale: z.enum(LOCALES) }).safeParse({ courseId, locale })
+const learnPath = (slug: string, locale: string, lessonId?: number) =>
+  `/courses/${slug}/learn?lang=${locale}${lessonId ? `&lesson=${lessonId}` : ''}` as const
+
+export const startCourse = async (courseId: number, locale: string, lessonId?: number) => {
+  const parsed = z
+    .object({ courseId: idSchema, lessonId: idSchema.optional(), locale: z.enum(LOCALES) })
+    .safeParse({ courseId, lessonId, locale })
   if (!parsed.success) return invalidInput()
 
   const user = await getCurrentUser()
   if (user.banned) return forbidden()
 
-  const existing = await db.query.userCourses.findFirst({
-    where: and(eq(userCourses.userId, user.id), eq(userCourses.courseId, courseId)),
-  })
-  if (existing) return { data: existing }
+  const [existing, course] = await Promise.all([
+    db.query.userCourses.findFirst({
+      columns: { locale: true },
+      where: and(eq(userCourses.userId, user.id), eq(userCourses.courseId, courseId)),
+    }),
+    db.query.courses.findFirst({
+      columns: { archivedAt: true, languages: true, slug: true, type: true },
+      where: eq(courses.id, courseId),
+    }),
+  ])
+  if (!course) return forbidden()
+  if (existing) return redirect(learnPath(course.slug, existing.locale))
+  if (course.archivedAt) return forbidden()
 
-  const course = await db.query.courses.findFirst({
-    where: and(eq(courses.id, courseId), isNull(courses.archivedAt)),
-    columns: { languages: true, type: true },
-  })
-  const enrollmentLocale = course?.languages?.includes(parsed.data.locale) ? parsed.data.locale : course?.languages?.[0]
-  if (!(course && enrollmentLocale)) return forbidden()
+  const enrollmentLocale = course.languages?.includes(parsed.data.locale) ? parsed.data.locale : course.languages?.[0]
+  if (!enrollmentLocale) return forbidden()
 
   const orgId = await getActiveOrgId()
   const role = user.organizations.find(({ id }) => id === orgId)?.role
   if (!role) return forbidden()
   if (!enrollableTypes(role).includes(course.type ?? 'intro')) return forbidden()
 
-  const [result] = await db
-    .insert(userCourses)
-    .values({ userId: user.id, courseId, locale: enrollmentLocale })
-    .onConflictDoNothing()
-    .returning()
+  await db.insert(userCourses).values({ userId: user.id, courseId, locale: enrollmentLocale }).onConflictDoNothing()
 
   updateTag(progressUserTag(user.id))
-  return { data: result }
+  return redirect(learnPath(course.slug, enrollmentLocale, parsed.data.lessonId))
 }
 
 export const setCourseLanguage = async (courseId: number, locale: string) => {

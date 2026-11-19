@@ -3867,6 +3867,15 @@
       "review": "Review course",
       "preview": "Preview course",
       "startError": "Could not start the course. Try again.",
+      "startDialog": {
+        "title": "Start this course?",
+        "description": "{title} has {count, plural, one {# lesson} other {# lessons}}. Your progress is saved after each lesson, so you can stop and come back at any time."
+      },
+      "startPrompt": {
+        "title": "You have not started this course yet",
+        "description": "Start the course to open its lessons.",
+        "back": "Back to the course"
+      },
       "minutes": "{minutes} min",
       "hours": "{hours} h",
       "hoursMinutes": "{hours} h {minutes} min",

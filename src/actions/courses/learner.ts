@@ -71,7 +71,7 @@ export const loadPlayer = cache(async (slug: string, requestedLesson: number | n
   if (!data) return { status: 'not-found' as const }
 
   const { access, overview, user } = data
-  if (access === 'learner' && !overview.enrollment) return { status: 'overview' as const }
+  if (access === 'learner' && !overview.enrollment) return { overview, status: 'start' as const }
 
   const target = resolveLessonTarget({ access, lessons: overview.lessons, requestedId: requestedLesson })
   if (target === null) return { status: 'overview' as const }

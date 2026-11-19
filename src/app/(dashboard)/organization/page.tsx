@@ -3,11 +3,6 @@ import { Suspense, cache } from 'react'
 
 import { loadOrganizationPanel } from '@/actions/organizations/panel-data'
 import { getViewerContext } from '@/actions/viewer'
-import {
-  OrganizationInviteButton,
-  OrganizationInviteHost,
-  OrganizationInviteRoles,
-} from '@/components/features/organization/invite-host'
 import { OrganizationPanel } from '@/components/features/organization/panel'
 import { OrganizationPanelRegion } from '@/components/features/organization/panel-region'
 import { OrganizationScope, OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
@@ -42,7 +37,6 @@ const OrganizationTabsBar = async () => {
   return (
     <>
       <OrganizationScope organizationId={data.organization.id} userId={data.currentUserId} />
-      <OrganizationInviteRoles isOrgAdmin={data.isOrgAdmin} />
       <OrganizationTabsList
         invitationCount={data.pendingInvitationsCount}
         isOrgAdmin={data.isOrgAdmin}
@@ -50,12 +44,6 @@ const OrganizationTabsBar = async () => {
       />
     </>
   )
-}
-
-const OrganizationDescription = async () => {
-  const data = await loadPanel()
-
-  return [data.organization.name, data.organization.city].filter(Boolean).join(' · ')
 }
 
 const OrganizationContent = async () => (
@@ -66,24 +54,16 @@ const OrganizationContent = async () => (
 
 const OrganizationPage = () => (
   <OrganizationTabs>
-    <OrganizationInviteHost>
-      <DashboardPage
-        actions={<OrganizationInviteButton />}
-        description={
-          <Suspense fallback={null}>
-            <OrganizationDescription />
-          </Suspense>
-        }
-        title={<PageTitle namespace="Organization" name="title" />}
-        breadcrumb={
-          <Suspense fallback={<Spinner size="md" />}>
-            <OrganizationTabsBar />
-          </Suspense>
-        }
-      >
-        <OrganizationContent />
-      </DashboardPage>
-    </OrganizationInviteHost>
+    <DashboardPage
+      title={<PageTitle namespace="Organization" name="title" />}
+      breadcrumb={
+        <Suspense fallback={<Spinner size="md" />}>
+          <OrganizationTabsBar />
+        </Suspense>
+      }
+    >
+      <OrganizationContent />
+    </DashboardPage>
   </OrganizationTabs>
 )
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { createContext, startTransition, use, useEffect, useState } from 'react'
+import { createContext, startTransition, use, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -15,22 +15,20 @@ import { InviteMemberDialog } from './invite-dialog'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES } from './utils'
 
 const OrganizationInviteContext = createContext<(() => void) | null>(null)
-const OrganizationInviteRolesContext = createContext<((isOrgAdmin: boolean) => void) | null>(null)
 
 export const OrganizationInviteHost = ({
   children,
-  isOrgAdmin: initialIsOrgAdmin = false,
+  isOrgAdmin,
   organizationId,
 }: {
   children: React.ReactNode
-  isOrgAdmin?: boolean
+  isOrgAdmin: boolean
   organizationId?: number
 }) => {
   const { refresh } = useRouter()
   const { locale } = useI18n()
   const { remember, restore } = useReturnFocus()
   const [open, setOpen] = useState(false)
-  const [isOrgAdmin, setIsOrgAdmin] = useState(initialIsOrgAdmin)
   const allowedRoles = isOrgAdmin ? [...MANAGEABLE_MEMBER_ROLES] : [...REPRESENTATIVE_INVITE_ROLES]
 
   const openDialog = () => {
@@ -40,7 +38,7 @@ export const OrganizationInviteHost = ({
 
   return (
     <OrganizationInviteContext value={openDialog}>
-      <OrganizationInviteRolesContext value={setIsOrgAdmin}>{children}</OrganizationInviteRolesContext>
+      {children}
       <InviteMemberDialog
         allowedRoles={allowedRoles}
         defaultLocale={locale}
@@ -64,14 +62,4 @@ export const OrganizationInviteButton = () => {
       {t('inviteMember')}
     </Button>
   )
-}
-
-export const OrganizationInviteRoles = ({ isOrgAdmin }: { isOrgAdmin: boolean }) => {
-  const setIsOrgAdmin = use(OrganizationInviteRolesContext)
-
-  useEffect(() => {
-    setIsOrgAdmin?.(isOrgAdmin)
-  }, [isOrgAdmin, setIsOrgAdmin])
-
-  return null
 }

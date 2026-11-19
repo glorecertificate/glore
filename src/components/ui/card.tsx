@@ -23,7 +23,7 @@ export const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>)
 )
 
 export const CardTitle = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('type-heading', className)} data-slot="card-title" {...props} />
+  <div className={cn('type-heading text-fg-title', className)} data-slot="card-title" {...props} />
 )
 
 export const CardDescription = ({ className, ...props }: React.ComponentProps<'div'>) => (

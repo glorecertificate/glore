@@ -511,7 +511,7 @@ const DashboardSidebarSearch = () => {
 }
 
 const DashboardSidebarBrand = () => (
-  <div className="flex h-10 items-center justify-between gap-2 px-2.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+  <div className="flex h-10 items-center justify-between gap-2 px-2.5 group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
     <HeaderLogo className="inline-flex group-data-[collapsible=icon]:hidden" href={APP_ROOT} prefetch={false}>
       <Logo className="h-7 w-auto" onNavy />
     </HeaderLogo>
@@ -527,7 +527,7 @@ const DashboardSidebarClose = () => {
 
   return (
     <Button
-      className="size-7 text-sidebar-muted hover:bg-sidebar-accent hover:text-sidebar-accent-foreground lg:hidden"
+      className="size-7 text-sidebar-muted group-data-[collapsible=icon]:hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground lg:hidden"
       data-sidebar="close"
       onClick={toggleSidebar}
       size="icon"

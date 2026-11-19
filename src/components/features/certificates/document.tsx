@@ -24,7 +24,6 @@ import {
   type CertificatePdfData,
   type CertificatePdfLabels,
   DATE_SIZE,
-  DATE_TOP,
   DOT_LEFTS,
   DOT_SIZE,
   EMBLEM_BOX,
@@ -78,7 +77,6 @@ import {
   TASKS_INTRO_LINE_HEIGHT,
   TASKS_INTRO_WIDTH,
   TASKS_SECTION,
-  TASK_GAP,
   TASK_LEFT,
   TASK_LINE_HEIGHT,
   TASK_PITCH,
@@ -88,12 +86,15 @@ import {
   VOLUNTEERING,
   VOLUNTEERING_LEFT,
   WHITE,
+  dateTop,
+  footerShift,
   formatDate,
   hyphenate,
   nameSize,
   partnerFontSize,
   partnerWidth,
   placed,
+  representedTop,
   skillDots,
   skillNameSize,
   taskPlan,
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
     lineHeight: PARTNER_LINE_HEIGHT,
     position: 'absolute',
   },
-  partnerLogo: { ...PARTNER_LOGO, objectFit: 'contain', position: 'absolute' },
+  partnerLogo: { ...PARTNER_LOGO, objectFit: 'contain', objectPosition: 'left center', position: 'absolute' },
   tasksIntro: {
     left: TASK_LEFT,
     lineHeight: TASKS_INTRO_LINE_HEIGHT,
@@ -179,10 +180,10 @@ const styles = StyleSheet.create({
     width: TASKS_INTRO_WIDTH,
   },
   task: { left: TASK_LEFT, lineHeight: TASK_LINE_HEIGHT, position: 'absolute', width: TASK_WIDTH },
-  taskFlow: { left: TASK_LEFT, position: 'absolute', rowGap: TASK_GAP, width: TASK_WIDTH },
+  taskFlow: { left: TASK_LEFT, position: 'absolute', width: TASK_WIDTH },
   taskFlowItem: { lineHeight: TASK_LINE_HEIGHT },
   bullet: { color: GREEN, fontWeight: 900 },
-  signatureImage: { ...SIGNATURE_BOX, objectFit: 'contain', position: 'absolute' },
+  signatureImage: { ...SIGNATURE_BOX, objectFit: 'contain', objectPosition: 'left center', position: 'absolute' },
   date: { fontWeight: 900, left: HEADING_LEFT, position: 'absolute', textTransform: 'uppercase' },
   qr: { left: QR_BOX.left, position: 'absolute', top: QR_BOX.top },
   verify: { fontSize: 7.5, ...VERIFY_BOX, position: 'absolute' },
@@ -305,6 +306,7 @@ const RowLine = ({ spec, value }: { spec: RowLineSpec; value: string }) => (
 export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) => {
   const { activity, holder, organization } = data
   const lastName = holder.lastName ?? ''
+  const footer = footerShift(Boolean(organization.signatureUrl))
   const plan = taskPlan(activity.tasks, Boolean(organization.signatureUrl))
   const skills = data.skills.slice(0, SKILL_LABEL_TOPS.length)
   const bannerSize = titleSize(labels.title)
@@ -393,7 +395,7 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         <Text style={[styles.heading, placed(TASKS_SECTION.headingTop, HEADING_SIZE)]}>{labels.mainTasks}</Text>
         <Text style={[styles.tasksIntro, placed(TASKS_SECTION.introTop, 10)]}>{labels.tasksIntro}</Text>
         {plan.flow ? (
-          <View style={[styles.taskFlow, { top: placed(TASK_TOP, plan.size).top }]}>
+          <View style={[styles.taskFlow, { rowGap: plan.gap, top: placed(TASK_TOP, plan.size).top }]}>
             {plan.tasks.map(task => (
               <Text key={task} style={[styles.taskFlowItem, { fontSize: plan.size }]}>
                 <Text style={styles.bullet}>{'• '}</Text>
@@ -409,21 +411,33 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
             </Text>
           ))
         )}
-        {organization.signatureUrl ? <Image src={organization.signatureUrl} style={styles.signatureImage} /> : null}
-        <View style={[styles.row, { top: REPRESENTED_ROW.top, width: REPRESENTED_ROW.width }]}>
+        <View
+          style={[
+            styles.row,
+            { top: representedTop(Boolean(organization.signatureUrl)), width: REPRESENTED_ROW.width },
+          ]}
+        >
           <Text style={styles.rowLabel}>{labels.representedBy}</Text>
           <RowLine spec={REPRESENTED_ROW} value={organization.legalRepresentative ?? ''} />
         </View>
-        <Text style={[styles.date, placed(DATE_TOP, DATE_SIZE)]}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
+        {organization.signatureUrl ? <Image src={organization.signatureUrl} style={styles.signatureImage} /> : null}
+        <Text
+          style={[styles.date, placed(dateTop(Boolean(organization.signatureUrl)), DATE_SIZE)]}
+        >{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
 
         {/* Verification */}
         {data.qrPath ? (
-          <Svg height={QR_BOX.size} style={styles.qr} viewBox={`0 0 ${data.qrSize} ${data.qrSize}`} width={QR_BOX.size}>
+          <Svg
+            height={QR_BOX.size}
+            style={[styles.qr, { top: QR_BOX.top + footer }]}
+            viewBox={`0 0 ${data.qrSize} ${data.qrSize}`}
+            width={QR_BOX.size}
+          >
             <Path d={data.qrPath} fill={NAVY} />
           </Svg>
         ) : null}
         {data.verifyUrl ? (
-          <View style={styles.verify}>
+          <View style={[styles.verify, { top: VERIFY_BOX.top + footer }]}>
             <Text>{labels.verify}</Text>
             <Text style={[styles.verifyCode, { fontSize: verifySize(data.verifyUrl) }]}>{data.verifyUrl}</Text>
           </View>

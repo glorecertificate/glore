@@ -13,7 +13,6 @@ import {
   type CertificateInput,
   type CertificatePdfLabels,
   DATE_SIZE,
-  DATE_TOP,
   DOT_LEFTS,
   DOT_SIZE,
   EMBLEM_BOX,
@@ -66,7 +65,6 @@ import {
   TASKS_INTRO_LINE_HEIGHT,
   TASKS_INTRO_WIDTH,
   TASKS_SECTION,
-  TASK_GAP,
   TASK_LEFT,
   TASK_LINE_HEIGHT,
   TASK_PITCH,
@@ -76,10 +74,12 @@ import {
   VOLUNTEERING_LEFT,
   WHITE,
   baselineTop,
+  dateTop,
   formatDate,
   nameSize,
   partnerFontSize,
   partnerWidth,
+  representedTop,
   skillDots,
   skillNameSize,
   softHyphenate,
@@ -428,7 +428,7 @@ export const CertificatePage = ({
             style={textAt(TASK_LEFT, TASK_TOP, plan.size, TASK_LINE_HEIGHT, {
               display: 'flex',
               flexDirection: 'column',
-              rowGap: unit(TASK_GAP),
+              rowGap: unit(plan.gap),
               width: unit(TASK_WIDTH),
             })}
           >
@@ -453,6 +453,10 @@ export const CertificatePage = ({
             </p>
           ))
         )}
+        <Row top={representedTop(Boolean(organization.signatureUrl))} width={REPRESENTED_ROW.width}>
+          <RowLabel>{labels.representedBy}</RowLabel>
+          <RowLine spec={REPRESENTED_ROW} value={organization.legalRepresentative ?? ''} />
+        </Row>
         {organization.signatureUrl ? (
           <Image
             alt=""
@@ -461,18 +465,15 @@ export const CertificatePage = ({
             style={spot(SIGNATURE_BOX.left, SIGNATURE_BOX.top, {
               height: unit(SIGNATURE_BOX.height),
               objectFit: 'contain',
+              objectPosition: 'left center',
               width: unit(SIGNATURE_BOX.width),
             })}
             unoptimized
             width={64}
           />
         ) : null}
-        <Row top={REPRESENTED_ROW.top} width={REPRESENTED_ROW.width}>
-          <RowLabel>{labels.representedBy}</RowLabel>
-          <RowLine spec={REPRESENTED_ROW} value={organization.legalRepresentative ?? ''} />
-        </Row>
         <p
-          style={textAt(HEADING_LEFT, DATE_TOP, DATE_SIZE, 1, {
+          style={textAt(HEADING_LEFT, dateTop(Boolean(organization.signatureUrl)), DATE_SIZE, 1, {
             fontWeight: 900,
             textTransform: 'uppercase',
             whiteSpace: 'pre',

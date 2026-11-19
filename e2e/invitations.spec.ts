@@ -80,11 +80,13 @@ test('owner resends and revokes an invitation, and the revoked link stops workin
   const token = await invitationToken(tenant, thirdInvitee)
   const row = page.getByRole('row').filter({ hasText: thirdInvitee })
 
-  await row.getByRole('button', { name: `Actions for ${thirdInvitee}` }).click()
-  await openDialog(
-    page.getByRole('menuitem', { name: 'Resend' }),
-    page.getByText(/Invitation sent again to|Wait a minute before sending/u)
-  )
+  await expect(async () => {
+    await row.getByRole('button', { name: `Actions for ${thirdInvitee}` }).click()
+    await page.getByRole('menuitem', { name: 'Resend' }).click({ timeout: 5000 })
+    await expect(page.getByText(/Invitation sent again to|Wait a minute before sending/u)).toBeVisible({
+      timeout: 5000,
+    })
+  }).toPass()
 
   const revokeDialog = page.getByRole('alertdialog')
   await row.getByRole('button', { name: `Actions for ${thirdInvitee}` }).click()

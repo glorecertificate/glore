@@ -161,7 +161,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 ## Tutor (`tutor`)
 
 1. Dashboard and `/certificates` show the queue with age badges. A request 7 days old or more has a red badge, and one 3 to 6 days old has an amber badge.
-2. Open the `volunteer-review` request and click "Start review": it moves to "In review" and the volunteer gets a notification.
+2. Open the `volunteer-review` request and click "Start review": it moves to "In review". The volunteer gets an in-app notification. This step sends no email.
 3. Pick another level description for one skill, fill the blind evaluation, and request changes with a comment on tasks.
 4. As `volunteer-changes` (another browser), resubmit; back as `tutor`, approve after previewing the PDF.
 5. Reject the `member-01` request with a reason and check the volunteer's email.

@@ -294,6 +294,18 @@ const CERTIFICATE_SEEDS: CertificateSeed[] = [
     submitted: 4,
     rating: [5, 4, 4, true],
   },
+  {
+    key: 'volunteer-river',
+    holder: 'volunteer',
+    organization: 'ponte',
+    status: 'approved',
+    reviewer: 'tutor',
+    experience: 'river-cleanup',
+    skills: [skill('initiative', 4), skill('team-work', 3), skill('communication-and-active-listening', 4)],
+    submitted: 150,
+    decided: 147,
+    rating: [5, 4, 5, true],
+  },
 ]
 
 const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
@@ -499,7 +511,15 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
   }
 }
 
-const planCertificates = (now: Date) => CERTIFICATE_SEEDS.map((seed, index) => planCertificate(seed, index, now))
+const planCertificates = (now: Date) => {
+  const planned = CERTIFICATE_SEEDS.map((seed, index) => planCertificate(seed, index, now))
+  return planned.map((certificate, index) => ({
+    ...certificate,
+    isDefault:
+      certificate.isDefault &&
+      planned.findIndex(other => other.isDefault && other.holder === certificate.holder) === index,
+  }))
+}
 
 export interface DemoCourseProgress {
   user: string

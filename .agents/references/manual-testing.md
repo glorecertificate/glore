@@ -31,9 +31,9 @@ With `TEST_EMAIL=name@example.org`, the key `volunteer` logs in as `name+glore-v
 | `editor`             | Editor (en)                      | none                                  | Owns two draft courses with missing translations: `demo-active-listening-in-teams` (English title only) and `demo-giving-and-receiving-feedback` (no Italian).                                                                                                                                                                |
 | `owner`              | Org owner (en)                   | Ponte Volunteers (Demo), Milan, Italy | Profile, legal name, registry ID, and legal representative complete; no signature or logo. Two pending invitations, one active invite link with approval (1 of 20 uses), one pending join request, two unread notifications.                                                                                                  |
 | `rep`                | Representative (it)              | Ponte Volunteers (Demo)               | Default member; sees the same unread join request and escalation.                                                                                                                                                                                                                                                             |
-| `tutor`              | Tutor (en)                       | Ponte Volunteers (Demo)               | `volunteer-review` `submitted`, `member-01` `in_review` (9 days old, flagged), `volunteer-changes` in `changes_requested`; past decisions: `volunteer` approved, `member-04` rejected; one withdrawn request. Two unread notifications.                                                                                       |
+| `tutor`              | Tutor (en)                       | Ponte Volunteers (Demo)               | `volunteer-review` `submitted`, `member-01` `in_review` (9 days old, flagged), `volunteer-changes` in `changes_requested`; past decisions: `volunteer` approved twice, `member-04` rejected; one withdrawn request. Two unread notifications.                                                                                 |
 | `tutor2`             | Tutor (it)                       | Ponte Volunteers (Demo)               | `member-02` `submitted`, assigned to `tutor2`, for reassignment; five approved and one revoked certificate in history; two unread notifications.                                                                                                                                                                              |
-| `volunteer`          | Volunteer (en)                   | Ponte Volunteers (Demo)               | Eligible (four skill courses done), one approved certificate (food bank, featured, no stored PDF), one draft with three skills, public profile on, skill compass set.                                                                                                                                                         |
+| `volunteer`          | Volunteer (en)                   | Ponte Volunteers (Demo)               | Eligible (four skill courses done), two approved certificates (food bank, featured, no stored PDF, and river clean-up, older), one draft with three skills, public profile on, skill compass set.                                                                                                                             |
 | `volunteer-progress` | Volunteer (it)                   | Ponte Volunteers (Demo)               | `team-work` and `self-awareness` done, `problem-solving` half done (2 of 4 lessons, one question solved, one wrong attempt). No birth place or nationality, so the wizard asks for them once the third course is done (the wizard opens only after three skill courses). Private profile, skill compass set. No certificates. |
 | `volunteer-review`   | Volunteer (it)                   | Ponte Volunteers (Demo)               | Request `submitted` 2 days ago, assigned to `tutor`.                                                                                                                                                                                                                                                                          |
 | `volunteer-changes`  | Volunteer (it)                   | Ponte Volunteers (Demo)               | Request in `changes_requested` with a comment and section comments on tasks and experience; one unread notification.                                                                                                                                                                                                          |
@@ -77,17 +77,18 @@ Red has three ratings, which is the minimum for its aggregate to show.
 
 Codes are derived from the certificate handle, so they are the same on every database.
 
-| Key            | Status                   | Code             |
-| -------------- | ------------------------ | ---------------- |
-| `volunteer`    | approved                 | `B1JA-7MDX-CS44` |
-| `member-03`    | approved                 | `KJRY-HGDA-BPRZ` |
-| `member-06`    | approved                 | `YE5A-4W4N-MSN8` |
-| `member-07`    | approved                 | `5HTR-H07V-DRPY` |
-| `member-08`    | approved                 | `T65E-2TFE-060V` |
-| `member-10`    | revoked (Ponte)          | `MDTD-PBWR-PCSW` |
-| `red-01`       | approved (Red)           | `5REG-P4QQ-1G6N` |
-| `red-02`       | revoked (Red)            | `B8YR-MG6F-WY26` |
-| deleted holder | approved, holder deleted | `ANGN-EWXR-GZB9` |
+| Key            | Status                    | Code             |
+| -------------- | ------------------------- | ---------------- |
+| `volunteer`    | approved, featured        | `B1JA-7MDX-CS44` |
+| `volunteer`    | approved (river clean-up) | `BPKN-8G45-J4T1` |
+| `member-03`    | approved                  | `KJRY-HGDA-BPRZ` |
+| `member-06`    | approved                  | `YE5A-4W4N-MSN8` |
+| `member-07`    | approved                  | `5HTR-H07V-DRPY` |
+| `member-08`    | approved                  | `T65E-2TFE-060V` |
+| `member-10`    | revoked (Ponte)           | `MDTD-PBWR-PCSW` |
+| `red-01`       | approved (Red)            | `5REG-P4QQ-1G6N` |
+| `red-02`       | revoked (Red)             | `B8YR-MG6F-WY26` |
+| deleted holder | approved, holder deleted  | `ANGN-EWXR-GZB9` |
 
 Other requests also carry codes from submission; `pnpm run db:seed:demo` prints all of them.
 

@@ -39,6 +39,7 @@
     "test:e2e": "dotenv -e .env.local -e .env -- playwright test",
     "test:perf": "dotenv -e .env.local -e .env -- playwright test -c e2e/perf/playwright.config.ts",
     "qa:atlas": "node scripts/atlas.mts",
+    "e2e:bucket": "node scripts/e2e-bucket.mts",
     "qa:perf": "node scripts/perf.mts",
     "deploy:preview": "dotenv -- sh -c 'vercel build && vercel --prebuilt'",
     "deploy:production": "dotenv -- sh -c 'vercel build && vercel --prebuilt --prod'",

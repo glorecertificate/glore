@@ -186,6 +186,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 ## Storage (R2)
 
 - `src/lib/storage.ts` holds the R2 helpers (`r2Put`, `r2Delete`, `r2List`, `r2PresignAvatar`, `r2PresignSignature`, `r2VerifyAvatar`).
+- `R2_ENDPOINT` (optional) points the client at an S3-compatible server and switches to path-style URLs. `e2e.yml` runs MinIO on port 9000 with `pnpm run e2e:bucket` (public-read bucket), so the PDF approval test runs in CI.
 - Avatars upload directly to R2 through a presigned PUT, which avoids the Server Action 1MB and Vercel 4.5MB body limits.
 - The flow: `create*AvatarUploadUrl(contentType)` (the server picks the key and presigns), then the client `fetch(url, { method: 'PUT' })`, then `confirm*Avatar(key)` persists `avatarUrl`.
 - A direct browser PUT requires bucket CORS that allows PUT from the app origin (`https://glore.localhost` in dev, the production domain).

@@ -77,7 +77,7 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 - `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then `deploy.yml` deploys a preview on a push to `main`, and on a PR only when it has the `preview` label.
 - `preview.yml` deploys a PR preview when the PR gets the `preview` label. Later pushes to that PR deploy again through `ci.yml`.
 - Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
-- `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
+- `e2e.yml` starts Postgres and Mailpit services and a MinIO container (`R2_ENDPOINT`, `pnpm run e2e:bucket`), migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - `perf.yml` runs outside the merge queue. Four `Measure` shards use the same setup, build the base commit too, and measure both on one runner with `test:perf --shard`. The final job `Perf` merges the shard results and writes the report once (`performance.md`).
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
 - CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.

@@ -13,7 +13,7 @@ import {
 import { InfoTip } from '@/components/ui/info-tip'
 import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { Link, LinkProps } from '@/components/ui/link'
-import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
+import { SidebarTrigger, useSidebarAction } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useScroll } from '@/hooks/use-scroll'
 import { SHORTCUTS } from '@/lib/shortcuts'
@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
 export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<typeof SidebarTrigger>) => {
-  const { action } = useSidebar()
+  const action = useSidebarAction()
 
   return (
     <Tooltip delayDuration={600} disableHoverableContent>

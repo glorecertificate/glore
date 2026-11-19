@@ -6,11 +6,12 @@ import { useUnreadCount } from '@/components/features/notifications/use-unread-c
 import { showsOrganizationSwitcher } from '@/components/layout/navigation'
 import { INVITATIONS_POLL_INTERVAL, readInvitations } from '@/components/layout/organization-switcher'
 import { useSession } from '@/components/providers/session'
-import { useSidebar } from '@/components/ui/sidebar'
+import { useSidebar, useSidebarDrawer } from '@/components/ui/sidebar'
 import { usePoll } from '@/hooks/use-poll'
 
 export const useMenuIndicator = () => {
-  const { isMobile, isTablet, open, openMobile } = useSidebar()
+  const { isMobile, isTablet, open } = useSidebar()
+  const { openMobile } = useSidebarDrawer()
   const { user } = useSession()
   const t = useTranslations('Notifications')
   const unread = useUnreadCount()

@@ -21,9 +21,9 @@ The source of truth for the numbers is `config/performance.json`. Each value is 
 | Load        | FCP         | `first-contentful-paint`                                          | 500 ms  | 1200 ms |
 | Load        | LCP         | Last `largest-contentful-paint` entry                             | 800 ms  | 1800 ms |
 | Load        | CLS         | Sum of `layout-shift` values without recent input                 | 0.01    | 0.01    |
-| Load        | TBT         | Sum of `long-animation-frame` `blockingDuration` after FCP        | 50 ms   | 200 ms  |
+| Load        | TBT         | Sum of `long-animation-frame` `blockingDuration` since navigation | 50 ms   | 200 ms  |
 | Load        | Hydration   | First `button` or `input` with React props attached               | 800 ms  | 1800 ms |
-| Load        | JS KB       | Transfer size of script resources until the page is quiet         | budget  | budget  |
+| Load        | JS KB       | Transfer size of scripts that start before hydration ends         | budget  | budget  |
 | Load        | Prefetch KB | Transfer size of `_rsc` prefetch requests until the page is quiet | budget  | budget  |
 | Navigation  | Shell       | Pointer down to the first frame where the clicked item is active  | 100 ms  | 200 ms  |
 | Navigation  | Complete    | Pointer down to the last DOM change before 1 s of quiet           | 300 ms  | 800 ms  |
@@ -78,6 +78,8 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - It runs each case 5 times on each server. A metric regresses when its median grows by more than 10% and by more than the noise floor: 20 ms, 2 KB, or 0.005 CLS.
 - The fastest run must also be slower than the baseline median plus the noise floor. This rule ignores a bimodal metric that lands in its slow mode by chance.
 - On four A/A comparisons of about 420 cells, on one machine and on one CI runner, this rule flagged no regression.
+- Each shard then re-measures its flagged cases with `PERF_PASS=confirm PERF_RUNS=10` into `.playwright/perf/confirm/`. A ▲ stands only when the same case and metric flag again in that pass. A case the pass did not measure keeps its ▲. `qa:perf --flagged` prints the grep of the flagged cases, and `qa:perf --confirm <dir>` applies the pass.
+- TBT starts at navigation, not at FCP, so a faster FCP moves no hydration work into the window. JS KB counts only scripts that start before hydration ends, so route prefetches after hydration stay in the Prefetch KB column.
 - The job fails on a regression.
 - It reports target misses in the step summary. `qa:perf --strict` also fails on a miss.
 - `Perf` is not a required check.

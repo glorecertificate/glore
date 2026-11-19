@@ -105,6 +105,14 @@ jobs:
           pnpm run build
       - name: Measure
         run: pnpm run test:perf --shard=${{ matrix.shard }}/4
+      - name: Confirm the flagged cases
+        run: |
+          FLAGGED="$(node scripts/perf.mts --flagged --baseline .playwright/perf/baseline)"
+          if [ -z "$FLAGGED" ]; then
+            echo "No case flagged."
+            exit 0
+          fi
+          PERF_PASS=confirm PERF_RUNS=10 pnpm run test:perf --grep "$FLAGGED"
       - if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -146,7 +154,7 @@ jobs:
       - name: Compare
         run: |
           if [ -d .playwright/perf/baseline ]; then
-            pnpm run qa:perf --baseline .playwright/perf/baseline
+            pnpm run qa:perf --baseline .playwright/perf/baseline --confirm .playwright/perf/confirm
             exit 0
           fi
           pnpm run qa:perf

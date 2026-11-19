@@ -23,8 +23,9 @@ export const PROFILE_NAMES = Object.keys(PROFILES) as ProfileName[]
 
 export const RUNS = Number(process.env.PERF_RUNS ?? 3)
 
-const RESULTS_DIR = join('.playwright', 'perf', 'results')
-const BASELINE_DIR = join('.playwright', 'perf', 'baseline')
+const PASS_DIR = join('.playwright', 'perf', process.env.PERF_PASS ?? '')
+const RESULTS_DIR = join(PASS_DIR, 'results')
+const BASELINE_DIR = join(PASS_DIR, 'baseline')
 
 interface Target {
   dir: string
@@ -252,8 +253,9 @@ export const readLoad = async (page: Page) =>
     const store = window.perfVitals
     const [navigation] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
     const fcp = performance.getEntriesByName('first-contentful-paint')[0]?.startTime ?? 0
+    const hydrated = store.hydrated || Number.POSITIVE_INFINITY
     const scripts = (performance.getEntriesByType('resource') as PerformanceResourceTiming[]).filter(
-      entry => entry.initiatorType === 'script' || /\.m?js(\?|$)/u.test(entry.name)
+      entry => (entry.initiatorType === 'script' || /\.m?js(\?|$)/u.test(entry.name)) && entry.startTime < hydrated
     )
     const entries = performance.getEntriesByType('resource') as PerformanceResourceTiming[]
     const prefetches = entries.filter(entry => entry.initiatorType === 'fetch' && /[?&]_rsc=/u.test(entry.name))
@@ -267,7 +269,7 @@ export const readLoad = async (page: Page) =>
       lcp: store.lcp,
       prefetchKb: kb(prefetches),
       scriptKb: kb(scripts),
-      tbt: store.frames.filter(frame => frame.start >= fcp).reduce((total, frame) => total + frame.blocking, 0),
+      tbt: store.frames.reduce((total, frame) => total + frame.blocking, 0),
       ttfb: navigation?.responseStart ?? 0,
     }
   })

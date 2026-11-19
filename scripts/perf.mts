@@ -74,6 +74,8 @@ const MARKS: Record<Status, string> = { miss: ' ✗', ok: ' ✓', regressed: ' �
 const { values: args } = parseArgs({
   options: {
     baseline: { type: 'string' },
+    confirm: { type: 'string' },
+    flagged: { default: false, type: 'boolean' },
     results: { default: join('.playwright', 'perf', 'results'), type: 'string' },
     strict: { default: false, type: 'boolean' },
   },
@@ -96,6 +98,8 @@ const readResults = async (dir: string) => {
   )
   return new Map(results.map(result => [result.id, result]))
 }
+
+const escapeRegExp = (text: string) => text.replaceAll(/[.*+?^${}()|[\]\\/]/gu, String.raw`\$&`)
 
 const current = await readResults(args.results)
 const baseline = args.baseline ? await readResults(args.baseline) : new Map<string, Result>()
@@ -125,11 +129,23 @@ const regressed = (result: Result, value: number, base: number | undefined, metr
   return !isNumber(best) || best > base + floorFor(metric)
 }
 
+const confirmation = args.confirm ? await readResults(join(args.confirm, 'results')) : undefined
+const confirmationBase = args.confirm ? await readResults(join(args.confirm, 'baseline')) : undefined
+
+const confirmed = (result: Result, metric: string) => {
+  const rerun = confirmation?.get(result.id)
+  if (!rerun) return true
+  const base = confirmationBase?.get(result.id)?.metrics[metric]
+  return regressed(rerun, rerun.metrics[metric] ?? Number.NaN, base, metric)
+}
+
 const evaluate = (result: Result, metric: string): Cell => {
   const value = result.metrics[metric] ?? Number.NaN
   const cell = { baseline: baseline.get(result.id)?.metrics[metric], metric, target: targetFor(result, metric), value }
   if (devMode || !isNumber(value)) return { ...cell, status: 'unchecked' }
-  if (regressed(result, value, cell.baseline, metric)) return { ...cell, status: 'regressed' }
+  if (regressed(result, value, cell.baseline, metric) && confirmed(result, metric)) {
+    return { ...cell, status: 'regressed' }
+  }
   if (isNumber(cell.target) && value > cell.target) return { ...cell, status: 'miss' }
   return { ...cell, status: 'ok' }
 }
@@ -212,12 +228,20 @@ const notes = [
 const report = [
   '## Performance',
   '',
-  `Medians of ${Math.max(...evaluated.map(({ result }) => result.runs), 0)} runs per case. ✓ meets the target and ✗ misses it. ▲ is a regression: the median grew by more than ${config.regression.ratio * 100}% and the noise floor, and even the fastest run is slower than the baseline median plus the noise floor.`,
+  `Medians of ${Math.max(...evaluated.map(({ result }) => result.runs), 0)} runs per case. ✓ meets the target and ✗ misses it. ▲ is a regression: the median grew by more than ${config.regression.ratio * 100}% and the noise floor, and even the fastest run is slower than the baseline median plus the noise floor. A ▲ stands only when the same case flags again in a confirmation pass of 10 interleaved runs.`,
   '',
   ...notes.flatMap(note => [`- ${note}`]),
   ...(notes.length ? [''] : []),
   ...KINDS.flatMap(renderTable),
 ].join('\n')
+
+if (args.flagged) {
+  const ids = evaluated
+    .filter(({ cells }) => cells.some(cell => cell.status === 'regressed'))
+    .map(({ result }) => result.id)
+  console.info(ids.length ? `(${ids.map(escapeRegExp).join('|')})$` : '')
+  process.exit(0)
+}
 
 if (!current.size) {
   console.error(`No performance results found in ${args.results}.`)

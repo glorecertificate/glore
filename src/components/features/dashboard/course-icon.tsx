@@ -1,6 +1,6 @@
 'use client'
 
-import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
+import { courseIconVariants } from '@/components/features/courses/course-list/icon-variants'
 import { LucideIcon } from '@/components/icons/lucide'
 import { type EnumType } from '@/db/types'
 import { type IconName } from '@/lib/types'

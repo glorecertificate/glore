@@ -1,8 +1,7 @@
-import { CourseList } from '@/components/features/courses/course-list'
 import { CourseListActions } from '@/components/features/courses/course-list/actions'
 import { CourseListDescription } from '@/components/features/courses/course-list/description'
-import { CourseListTabs, CourseListTabsList } from '@/components/features/courses/course-list/tabs'
-import { CourseListToolbar } from '@/components/features/courses/course-list/toolbar'
+import { CourseListSection } from '@/components/features/courses/course-list/section'
+import { CourseListTabs } from '@/components/features/courses/course-list/tabs'
 import { SkillCompassSection } from '@/components/features/courses/skill-compass/section'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { NavigationLabel } from '@/components/layout/navigation-label'
@@ -16,14 +15,12 @@ export const generateMetadata = generateIntlMetadata({
 const CoursesPage = () => (
   <DashboardPage
     actions={<CourseListActions />}
-    breadcrumb={<CourseListTabsList />}
     description={<CourseListDescription />}
     provider={CourseListTabs}
     title={<NavigationLabel id="courses" />}
   >
-    <CourseListToolbar />
     <SkillCompassSection />
-    <CourseList />
+    <CourseListSection />
   </DashboardPage>
 )
 

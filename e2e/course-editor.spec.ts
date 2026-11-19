@@ -28,7 +28,7 @@ test.describe('course editor', () => {
     await expect(title).toHaveValue('New Course')
     await title.fill('E2E course')
     await title.blur()
-    await page.getByRole('button', { name: 'Save' }).click()
+    await page.getByRole('button', { name: 'Save draft' }).click()
     await expect(page.getByText('Course saved')).toBeVisible()
 
     await page.getByRole('tab', { name: /Spanish/u }).click()
@@ -36,14 +36,13 @@ test.describe('course editor', () => {
     await expect(spanishTitle).toHaveValue('Nuevo Curso')
     await spanishTitle.fill('Curso E2E')
     await spanishTitle.blur()
-    await page.getByRole('button', { name: 'Save' }).click()
+    await page.getByRole('button', { name: 'Save draft' }).click()
     await expect(page.getByText('Course saved')).toBeVisible()
 
-    await page.getByRole('radio', { name: 'Published' }).click()
-    await page.getByRole('button', { name: 'Save' }).click()
+    await page.getByRole('button', { exact: true, name: 'Publish' }).click()
     const publishAnyway = page.getByRole('button', { name: 'Publish anyway' })
     if (await publishAnyway.isVisible()) await publishAnyway.click()
-    await expect(page.getByRole('radio', { name: 'Published', checked: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Publish changes' })).toBeVisible()
 
     await page.goto('/courses')
     await expect(page.getByText('E2E course').first()).toBeVisible()

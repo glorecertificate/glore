@@ -11,9 +11,6 @@ import { CourseAnalyticsSheet } from '@/components/features/courses/course-edito
 import { CourseBarTitle } from '@/components/features/courses/course-editor/bar-title'
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
 import { CourseHeading } from '@/components/features/courses/course-editor/heading'
-import { CourseLanguageTabs } from '@/components/features/courses/course-editor/language-tabs'
-import { PublishControl } from '@/components/features/courses/course-editor/publish-control'
-import { CourseTranslation } from '@/components/features/courses/course-editor/translation'
 import { LucideIcon } from '@/components/icons/lucide'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { useI18n } from '@/components/providers/i18n'
@@ -28,7 +25,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { DialogTrigger } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
 import { StatusBadge } from '@/components/ui/status-badge'
@@ -39,6 +35,45 @@ import { COURSE_TITLE_MAX_LENGTH } from '@/lib/constants'
 import { type IntlRecord } from '@/lib/i18n'
 import { isTempId } from '@/lib/utils'
 
+const CourseMenu = ({
+  onAnalytics,
+  onSettings,
+  onUnpublish,
+}: {
+  onAnalytics: () => void
+  onSettings: () => void
+  onUnpublish: (() => void) | null
+}) => {
+  const t = useTranslations('CourseEditor')
+  const tCourseCommon = useTranslations('CourseCommon')
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-label={t('moreActions')} size="icon" variant="band-secondary">
+          <LucideIcon name="ellipsis" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-56">
+        <DropdownMenuItem onSelect={onSettings}>
+          <LucideIcon aria-hidden name="settings" />
+          {tCourseCommon('settings')}
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onAnalytics}>
+          <LucideIcon aria-hidden name="chart-no-axes-column" />
+          {t('analyticsSheet')}
+        </DropdownMenuItem>
+        {onUnpublish && (
+          <DropdownMenuItem onSelect={onUnpublish}>
+            <LucideIcon aria-hidden name="eye-off" />
+            {t('unpublish')}
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 export const CourseHeader = () => {
   const { replace } = useRouter()
   const { localeItems } = useI18n()
@@ -48,20 +83,13 @@ export const CourseHeader = () => {
   const tEditor = useTranslations('Learning.editor')
   const { course, language, languageStatus, status, step, saveCourse } = useCourse()
   const [incompleteAlertOpen, setIncompleteAlertOpen] = useState(false)
-  const [publishTarget, setPublishTarget] = useState(languageStatus.published)
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState<'draft' | 'publish' | null>(null)
+  const [justSaved, setJustSaved] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const mounted = useMounted()
   const [analyticsOpen, setAnalyticsOpen] = useState(false)
-  const prevLanguageRef = useRef(language)
   const alertResolverRef = useRef<((value: boolean) => void) | null>(null)
 
-  if (prevLanguageRef.current !== language) {
-    prevLanguageRef.current = language
-    setPublishTarget(languageStatus.published)
-  }
-
-  const languageLabel = localeItems.find(item => item.value === language)?.displayLabel ?? language
   const previewLesson = course.lessons[step - 1]
   const previewHref =
     previewLesson && !isTempId(previewLesson.id)
@@ -75,11 +103,18 @@ export const CourseHeader = () => {
     return acc
   }, [])
 
-  const publishedLanguageCount = localeItems.filter(({ value }) =>
-    value === language ? publishTarget : status[value].published
-  ).length
+  const publishedLanguageCount = localeItems.filter(({ value }) => status[value].published).length
 
-  const saveDisabled = !languageStatus.hasUpdates && publishTarget === languageStatus.published
+  const isPublished = languageStatus.published
+  const primaryDisabled = isPublished && !languageStatus.hasUpdates
+  const draftDisabled = !languageStatus.hasUpdates
+
+  const stateText = (() => {
+    if (saving) return t('saving')
+    if (languageStatus.hasUpdates) return t('unsavedChanges')
+    if (justSaved) return t('savedJustNow')
+    return null
+  })()
 
   const validateQuiz = () => {
     for (const [lessonIndex, lesson] of course.lessons.entries()) {
@@ -98,28 +133,24 @@ export const CourseHeader = () => {
     return null
   }
 
-  const handleSave = async () => {
-    if (saveDisabled) return
+  const handleSave = async (publish: boolean | null) => {
     const quizError = validateQuiz()
     if (quizError) {
       toast.error(quizError)
       return
     }
-    const publish =
-      publishTarget && !languageStatus.published ? true : !publishTarget && languageStatus.published ? false : null
     if (publish === true && !languageStatus.hasContent) {
       const confirmed = await new Promise<boolean>(resolve => {
         alertResolverRef.current = resolve
         setIncompleteAlertOpen(true)
       })
-      if (!confirmed) {
-        setPublishTarget(languageStatus.published)
-        return
-      }
+      if (!confirmed) return
     }
     try {
-      setSaving(true)
+      setSaving(publish === null && !isPublished ? 'draft' : 'publish')
+      setJustSaved(false)
       await saveCourse({ locale: language, publish })
+      setJustSaved(true)
       toast.success(t('saveSuccess'))
     } catch (error) {
       const code = (error as { code?: string } | null)?.code
@@ -130,9 +161,13 @@ export const CourseHeader = () => {
       }
       toast.error(errorMessage())
     } finally {
-      setSaving(false)
+      setSaving(null)
     }
   }
+
+  const onPrimary = () => handleSave(isPublished ? null : true)
+  const onSaveDraft = () => handleSave(null)
+  const onUnpublish = () => handleSave(false)
 
   const handleAlertCancel = () => {
     alertResolverRef.current?.(false)
@@ -153,28 +188,11 @@ export const CourseHeader = () => {
           <DashboardHeader
             actions={
               <div className="contents max-md:hidden">
-                <CourseDialog
-                  course={course}
-                  onOpenChange={setSettingsOpen}
-                  onSuccess={updated => {
-                    if (updated.slug !== course.slug) {
-                      replace(`/courses/${updated.slug}?lesson=${step}&lang=${language}`)
-                    }
-                  }}
-                  open={settingsOpen}
-                >
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <DialogTrigger asChild>
-                        <Button aria-label={tCourseCommon('settings')} size="icon" variant="band-secondary">
-                          <LucideIcon name="settings" />
-                        </Button>
-                      </DialogTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>{tCourseCommon('settings')}</TooltipContent>
-                  </Tooltip>
-                </CourseDialog>
-                <CourseAnalyticsSheet />
+                {stateText && (
+                  <span aria-live="polite" className="text-sm text-band-text">
+                    {stateText}
+                  </span>
+                )}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button asChild variant="band-secondary">
@@ -186,32 +204,36 @@ export const CourseHeader = () => {
                   </TooltipTrigger>
                   <TooltipContent className="max-w-72 text-center">{tEditor('previewHint')}</TooltipContent>
                 </Tooltip>
-                <PublishControl
-                  disabled={saving}
-                  language={languageLabel}
-                  onChange={setPublishTarget}
-                  published={publishTarget}
+                <CourseMenu
+                  onAnalytics={() => setAnalyticsOpen(true)}
+                  onSettings={() => setSettingsOpen(true)}
+                  onUnpublish={isPublished ? onUnpublish : null}
                 />
-                {saveDisabled ? (
+                {!isPublished && (
+                  <Button
+                    disabled={draftDisabled || saving !== null}
+                    loading={saving === 'draft'}
+                    onClick={onSaveDraft}
+                    variant="band-secondary"
+                  >
+                    {t('saveDraft')}
+                  </Button>
+                )}
+                {primaryDisabled ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span>
-                        <Button disabled icon="save" variant="band">
-                          {t('save')}
+                        <Button disabled variant="band">
+                          {t('publishChanges')}
                         </Button>
                       </span>
                     </TooltipTrigger>
-                    <TooltipContent>{t('nothingToSave')}</TooltipContent>
+                    <TooltipContent>{t('noChangesToPublish')}</TooltipContent>
                   </Tooltip>
                 ) : (
-                  <Button icon="save" loading={saving} onClick={handleSave} variant="band">
-                    {t('save')}
+                  <Button disabled={saving !== null} loading={saving === 'publish'} onClick={onPrimary} variant="band">
+                    {isPublished ? t('publishChanges') : t('publish')}
                   </Button>
-                )}
-                {saveDisabled && (
-                  <span className="hidden basis-full text-right text-xs text-band-text pointer-coarse:block">
-                    {t('nothingToSave')}
-                  </span>
                 )}
               </div>
             }
@@ -222,7 +244,6 @@ export const CourseHeader = () => {
                   <StatusBadge tone={languageStatus.published ? 'success' : 'neutral'}>
                     {languageStatus.published ? t('publishSwitchPublished') : t('publishSwitchDraft')}
                   </StatusBadge>
-                  {languageStatus.hasUpdates && <StatusBadge tone="warning">{t('unsavedChanges')}</StatusBadge>}
                   <span>{t('visibleLanguages', { count: publishedLanguageCount })}</span>
                   <span className="max-md:hidden">{t('lessonsCount', { count: course.lessons.length })}</span>
                   {counter}
@@ -248,14 +269,15 @@ export const CourseHeader = () => {
                             {tEditor('previewAsLearner')}
                           </Link>
                         </DropdownMenuItem>
+                        {isPublished && (
+                          <DropdownMenuItem onSelect={onUnpublish}>
+                            <LucideIcon aria-hidden name="eye-off" />
+                            {t('unpublish')}
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
-                    <CourseAnalyticsSheet onOpenChange={setAnalyticsOpen} open={analyticsOpen} />
                   </div>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <CourseLanguageTabs />
-                  <CourseTranslation />
                 </div>
               </div>
             }
@@ -266,6 +288,17 @@ export const CourseHeader = () => {
           />
         )}
       </CourseHeading>
+      <CourseDialog
+        course={course}
+        onOpenChange={setSettingsOpen}
+        onSuccess={updated => {
+          if (updated.slug !== course.slug) {
+            replace(`/courses/${updated.slug}?lesson=${step}&lang=${language}`)
+          }
+        }}
+        open={settingsOpen}
+      />
+      <CourseAnalyticsSheet onOpenChange={setAnalyticsOpen} open={analyticsOpen} />
       {mounted &&
         createPortal(
           <section
@@ -273,18 +306,30 @@ export const CourseHeader = () => {
             className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 px-page pt-2 pb-bar-safe backdrop-blur-sm md:hidden"
           >
             <div className="flex items-center justify-between gap-3">
-              <PublishControl
-                disabled={saving}
-                language={languageLabel}
-                onChange={setPublishTarget}
-                published={publishTarget}
-                tone="surface"
-              />
-              <Button disabled={saveDisabled} icon="save" loading={saving} onClick={handleSave} variant="brand">
-                {t('save')}
-              </Button>
+              <span aria-live="polite" className="min-w-0 truncate text-sm text-muted-foreground">
+                {stateText}
+              </span>
+              <div className="flex shrink-0 items-center gap-2">
+                {!isPublished && (
+                  <Button
+                    disabled={draftDisabled || saving !== null}
+                    loading={saving === 'draft'}
+                    onClick={onSaveDraft}
+                    variant="outline"
+                  >
+                    {t('saveDraft')}
+                  </Button>
+                )}
+                <Button
+                  disabled={primaryDisabled || saving !== null}
+                  loading={saving === 'publish'}
+                  onClick={onPrimary}
+                  variant="brand"
+                >
+                  {isPublished ? t('publishChanges') : t('publish')}
+                </Button>
+              </div>
             </div>
-            {saveDisabled && <p className="pt-1 text-right type-caption text-muted-foreground">{t('nothingToSave')}</p>}
           </section>,
           document.body
         )}

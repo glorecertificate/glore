@@ -914,7 +914,15 @@
     "moveBlockDown": "Sposta giù",
     "descriptionShowMore": "Mostra tutto",
     "descriptionShowLess": "Mostra meno",
-    "saveBarLabel": "Salva e pubblica"
+    "saveBarLabel": "Salva e pubblica",
+    "publish": "Pubblica",
+    "publishChanges": "Pubblica le modifiche",
+    "saveDraft": "Salva bozza",
+    "saving": "Salvataggio…",
+    "savedJustNow": "Salvato poco fa",
+    "unpublish": "Rimuovi dalla pubblicazione",
+    "noChangesToPublish": "Nessuna modifica da pubblicare",
+    "editingLanguage": "Modifica in {language}"
   },
   "CourseList": {
     "active": "Attivi",
@@ -1007,7 +1015,9 @@
     "emptyMessage-published": "Non ci sono corsi pubblicati",
     "archiveAction": "Archivia",
     "moreActions": "Altre azioni",
-    "descriptionLearner": "Corsi brevi su come funziona GloRe e su argomenti pratici. I corsi sulle competenze e i certificati sono per i volontari."
+    "descriptionLearner": "Corsi brevi su come funziona GloRe e su argomenti pratici. I corsi sulle competenze e i certificati sono per i volontari.",
+    "showing": "{shown} di {total, plural, one {# corso} other {# corsi}}",
+    "showMore": "Mostra altri corsi"
   },
   "ContentTranslation": {
     "title": "Traduzione",
@@ -3913,7 +3923,9 @@
         "selfAssessment": "Autovalutazione",
         "finalAssessment": "Valutazione finale"
       },
-      "viewCompletion": "Vedi riepilogo"
+      "viewCompletion": "Vedi riepilogo",
+      "factDuration": "Durata",
+      "factLessons": "Lezioni"
     },
     "player": {
       "lessons": "Lezioni",
@@ -4030,7 +4042,12 @@
       "assignError": "Non è stato possibile spostare il corso.",
       "openCourse": "Apri corso",
       "cancel": "Annulla",
-      "edit": "Modifica"
+      "edit": "Modifica",
+      "groupActions": "Azioni del gruppo",
+      "moveToGroup": "Sposta in un gruppo",
+      "skillSummary": "{count, plural, one {# competenza} other {# competenze}}, {published} pubblicate, {drafts, plural, one {# bozza} other {# bozze}}",
+      "toggleGroup": "Mostra o nascondi le competenze di {group}",
+      "ungroupedEmpty": "Ogni corso di competenza ha un gruppo."
     },
     "catalog": {
       "rating": "{rating} ({count})",
@@ -4048,7 +4065,8 @@
         "recommendedTitle": "Consigliati per te",
         "save": "Salva bussola",
         "saved": "Bussola delle competenze salvata",
-        "saveError": "Non è stato possibile salvare la bussola. Riprova."
+        "saveError": "Non è stato possibile salvare la bussola. Riprova.",
+        "summary": "{strengths, plural, one {# punto di forza} other {# punti di forza}} e {goals, plural, one {# obiettivo} other {# obiettivi}} impostati"
       }
     }
   },

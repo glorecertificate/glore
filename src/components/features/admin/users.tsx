@@ -18,7 +18,6 @@ import { type AdminUserRow, type FacetedPage, type PlatformRole, isBanActive } f
 import { timestampMillis } from '@/db/queries/organization'
 import { useReturnFocus } from '@/hooks/use-return-focus'
 import { type IconName } from '@/lib/types'
-import { cn } from '@/lib/utils'
 
 import { BanDialog } from './ban-dialog'
 import { ImpersonateDialog } from './impersonate-dialog'
@@ -110,8 +109,8 @@ export const AdminUsers = ({
     <>
       <DataTable
         tabIndex={-1}
-        aria-busy={pending}
-        className={cn('outline-none', pending && 'opacity-60 transition-opacity')}
+        className="outline-none"
+        refreshing={pending}
         columns={[
           {
             cell: user => (

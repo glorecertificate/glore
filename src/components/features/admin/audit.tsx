@@ -21,7 +21,6 @@ import {
   type AuditCategory,
 } from '@/db/queries/admin-audit'
 import { timestampMillis } from '@/db/queries/organization'
-import { cn } from '@/lib/utils'
 
 import { adminAuditParsers } from './audit-params'
 
@@ -127,8 +126,7 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
 
   return (
     <DataTable
-      aria-busy={pending}
-      className={cn(pending && 'opacity-60 transition-opacity')}
+      refreshing={pending}
       columns={[
         {
           cell: row => (

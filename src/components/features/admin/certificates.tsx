@@ -19,7 +19,7 @@ import {
   type AdminCertificateStatus,
 } from '@/db/queries/admin-certificate'
 import { timestampMillis } from '@/db/queries/organization'
-import { cn, fullName } from '@/lib/utils'
+import { fullName } from '@/lib/utils'
 
 import { AdminCertificateActions } from './certificate-actions'
 import { adminCertificatesParsers } from './certificates-params'
@@ -88,8 +88,8 @@ export const AdminCertificates = ({
   return (
     <DataTable
       tabIndex={-1}
-      aria-busy={pending}
-      className={cn('outline-none', pending && 'opacity-60 transition-opacity')}
+      className="outline-none"
+      refreshing={pending}
       columns={[
         {
           cell: certificate =>

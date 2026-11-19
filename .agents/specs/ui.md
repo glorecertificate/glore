@@ -55,6 +55,7 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - `LevelDots` takes a level, a number of `steps`, and a localized level label. It renders only after issue or in the tutor workspace.
 - `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
 - `StatCard` shows its value at once, with no count-up. Formatting follows next-intl.
+- A `DataTable` that refetches after a filter change keeps its rows as they are and shows a small spinner before the result count (`refreshing`). It never fades or covers the table.
 - `Banner` supplies semantic status variants.
 - `StatusBadge` takes a `tone`: `neutral`, `info`, `success`, `warning`, `danger`, or a certificate tone (`draft`, `submitted`, `review`, `changes`, `approved`, `rejected`, `withdrawn`, `revoked`). It takes no icon. `Progress` has one neutral track and a fill that matches the status color.
 - `FilterRail` (`filter-rail.tsx`) is passed to `DataTable` as `rail` (groups with live counts, `extra`, `search`, `onReset`). From `lg` it is a panel with active chips. Below `lg` it is a search field and a Filters sheet with the active count. Counts come from the server (`FacetedPage.facets`) or from the rows.

@@ -155,20 +155,22 @@ export const ApplicationForm = () => {
         {step === 'charter' && <CharterStep form={form} onEdit={goTo} />}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Button
-            disabled={stepIndex === 0 || loading}
-            onClick={() => setStepIndex(current => current - 1)}
-            type="button"
-            variant="ghost"
-          >
-            {t('back')}
-          </Button>
+          {stepIndex > 0 && (
+            <Button
+              disabled={loading}
+              onClick={() => setStepIndex(current => current - 1)}
+              type="button"
+              variant="ghost"
+            >
+              {t('back')}
+            </Button>
+          )}
           {isLast ? (
-            <Button key="submit" loading={loading} loadingText={t('submitting')} type="submit">
+            <Button className="sm:ml-auto" key="submit" loading={loading} loadingText={t('submitting')} type="submit">
               {t('submit')}
             </Button>
           ) : (
-            <Button key="next" onClick={handleNext} type="button">
+            <Button className="sm:ml-auto" key="next" onClick={handleNext} type="button">
               {t('next')}
             </Button>
           )}

@@ -10,7 +10,7 @@ import {
 import { listCourses } from '@/actions/courses/queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { EligibilityPanel } from '@/components/features/certificates/eligibility-panel'
-import { type SkillOption } from '@/components/features/certificates/new/values'
+import { type SkillOption, withdrawnSource } from '@/components/features/certificates/new/values'
 import { CertificateWizard } from '@/components/features/certificates/new/wizard'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -59,6 +59,7 @@ const CertificatesNewContent = async ({ searchParams }: Pick<PageProps<'/certifi
       : []
   )
 
+  const prefill = certificate ? null : withdrawnSource(certificates ?? [], activeOrgId)
   const organization = certificate?.organization ?? activeOrg
   const notes = certificate?.isChangesRequested
     ? ((await findCertificateActivity(certificate.id)).data?.review ?? null)
@@ -75,6 +76,7 @@ const CertificatesNewContent = async ({ searchParams }: Pick<PageProps<'/certifi
         nationality: user.nationality,
       }}
       notes={notes}
+      prefill={prefill}
       organization={{
         logoUrl: 'avatarUrl' in organization ? organization.avatarUrl : null,
         name: organization.name,

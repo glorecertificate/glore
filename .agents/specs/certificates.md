@@ -81,6 +81,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
 - One column in a centered card. A toolbar above it holds the stepper (phones: "Step N of 4" and a progress bar), the save status, Save and exit, and an overflow menu with Discard draft. Review is a check-your-answers list with a Change button per row, then the live thumbnail, language, and missing personal data. The footer hides Back on step 1, and sticks to the bottom on phones.
 - Drafts autosave through `saveCertificateDraft` only after the volunteer edits a field, so opening the wizard never creates a draft. Hitting the 5 draft cap shows a dedicated message. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
+- A new request after a withdrawal starts prefilled from the withdrawn request of the active organization (`withdrawnSource`, `prefillValues`). Skills that are no longer completed are dropped, and the blind description step stays as it is. Nothing is saved until the volunteer edits a field.
 - A `changes_requested` id opens the same wizard in resubmit mode with the tutor's comments.
 - `EligibilityPanel` replaces the wizard when eligibility fails or a request is already open.
 

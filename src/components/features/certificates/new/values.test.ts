@@ -4,8 +4,10 @@ import {
   type WizardDraft,
   certificateWizardValues,
   emptyWizardValues,
+  prefillValues,
   resumeStep,
   toEditValues,
+  withdrawnSource,
 } from '@/components/features/certificates/new/values'
 import { wizardSchema } from '@/components/features/certificates/schemas'
 import { type Certificate } from '@/db/queries/certificate'
@@ -149,5 +151,54 @@ describe('resumeStep', () => {
 
   it('opens on the review step when only personal data is missing', () => {
     expect(resumeStep(complete(), ['nationality'])).toBe(3)
+  })
+})
+
+describe('withdrawnSource', () => {
+  const make = (id: number, status: string, createdAt: string, organizationId = 1) =>
+    ({
+      createdAt,
+      id,
+      isDraft: status === 'draft',
+      isWithdrawn: status === 'withdrawn',
+      organization: { id: organizationId },
+      status,
+    }) as unknown as Certificate
+
+  it('returns the latest request of the organization when it was withdrawn', () => {
+    const list = [make(1, 'approved', '2026-01-01'), make(2, 'withdrawn', '2026-03-01'), make(3, 'draft', '2026-04-01')]
+    expect(withdrawnSource(list, 1)?.id).toBe(2)
+  })
+
+  it('returns nothing when a later request exists or another organization withdrew', () => {
+    const list = [
+      make(1, 'withdrawn', '2026-01-01'),
+      make(2, 'approved', '2026-02-01'),
+      make(3, 'withdrawn', '2026-03-01', 2),
+    ]
+    expect(withdrawnSource(list, 1)).toBeNull()
+    expect(withdrawnSource([], 1)).toBeNull()
+  })
+})
+
+describe('prefillValues', () => {
+  it('keeps the withdrawn answers and drops skills that are no longer completed', () => {
+    const source = {
+      activityDuration: 120,
+      activityEndDate: '2026-02-01',
+      activityLocation: 'Milan',
+      activityStartDate: '2026-01-01',
+      language: 'en',
+      rating: null,
+      skills: [
+        { course: { id: 1 }, evidence: 'a', sortOrder: 0 },
+        { course: { id: 2 }, evidence: 'b', sortOrder: 1 },
+      ],
+      tasks: ['Welcomed guests'],
+    } as unknown as Certificate
+    const values = prefillValues(source, emptyWizardValues('en', holder), [1])
+    expect(values.activityLocation).toBe('Milan')
+    expect(values.tasks).toEqual([{ text: 'Welcomed guests' }])
+    expect(values.skills).toEqual([{ courseId: 1, evidence: 'a' }])
   })
 })

@@ -26,6 +26,7 @@ import {
   type WizardDraft,
   certificateWizardValues,
   emptyWizardValues,
+  prefillValues,
   resumeStep,
   toEditValues,
 } from '@/components/features/certificates/new/values'
@@ -85,10 +86,18 @@ interface CertificateWizardProps {
   holder: HolderProfile & { firstName: string }
   notes: CertificateReviewNotes | null
   organization: { logoUrl: string | null; name: string }
+  prefill?: Certificate | null
   skills: SkillOption[]
 }
 
-export const CertificateWizard = ({ certificate, holder, notes, organization, skills }: CertificateWizardProps) => {
+export const CertificateWizard = ({
+  certificate,
+  holder,
+  notes,
+  organization,
+  prefill = null,
+  skills,
+}: CertificateWizardProps) => {
   const t = useTranslations('CertificateWizard')
   const { locale } = useI18n()
   const { push } = useRouter()
@@ -110,7 +119,15 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   const moved = useRef(false)
 
   const base = emptyWizardValues(locale, holder)
-  const defaultValues = certificate ? certificateWizardValues(certificate, base) : base
+  const defaultValues = certificate
+    ? certificateWizardValues(certificate, base)
+    : prefill
+      ? prefillValues(
+          prefill,
+          base,
+          skills.map(({ id }) => id)
+        )
+      : base
   const [step, setStep] = useState(() => (certificate?.isDraft ? resumeStep(defaultValues, missing) : 0))
   const form = useForm<WizardValues>({
     defaultValues,

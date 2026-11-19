@@ -72,7 +72,7 @@ export const GroupFieldTranslate = ({
             icon="languages"
             loading={running}
             size="xs"
-            stable
+            spinner="size-3.5"
             type="button"
             variant="ghost"
           >

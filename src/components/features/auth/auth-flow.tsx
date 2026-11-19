@@ -1,6 +1,6 @@
 'use client'
 
-import React, { startTransition, useEffect, useLayoutEffect, useState } from 'react'
+import React, { addTransitionType, startTransition, useEffect, useLayoutEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { Values, useQueryStates } from 'nuqs'
@@ -177,7 +177,10 @@ export const AuthFlow = ({
   useEffect(() => () => setGlobe(AUTH_GLOBE_IDLE), [setGlobe])
 
   const changeView: React.Dispatch<React.SetStateAction<Enum<AuthView>>> = next => {
-    startTransition(() => setView(next))
+    startTransition(() => {
+      addTransitionType('auth-view')
+      setView(next)
+    })
   }
 
   const goToLogin = () => {

@@ -52,7 +52,12 @@ export const AuthMain = ({
         <AuthLanguageSelect className="max-lg:border-band-border max-lg:bg-band-scrim max-lg:text-band-foreground max-lg:hover:not-disabled:bg-band-scrim/60" />
       </div>
     )}
-    <ViewTransition default="none" name="auth-main" share="auth-surface" update="auth-surface">
+    <ViewTransition
+      default="none"
+      name="auth-main"
+      share="auth-surface"
+      update={{ 'auth-view': 'auth-surface', default: 'none' }}
+    >
       <main
         className="flex flex-1 items-center justify-center px-page py-8 lg:px-10 lg:pt-28 lg:pb-20"
         data-slot="auth-main"

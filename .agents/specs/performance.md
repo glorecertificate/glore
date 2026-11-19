@@ -124,5 +124,5 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - The kit `Link` also upgrades to a full prefetch on hover (60 ms), focus, and touch start.
 - Cost: each registered link refetches once per 30 s while the user is active, about 13 requests per 30 s for an admin. Keep the registered set small.
 - A detail page whose `generateMetadata` reads the request (`connection()`, cookies, uncached session) cannot prefetch its head. Read `getSessionUser()` there, as `getAdminOrganizationName` does.
-- A `dynamic()` tab chunk loads on first visit and shows a fallback. Preload it from the list (`preloadAdminOrganizationDetail`).
+- A `dynamic()` tab chunk loads on first visit and shows a fallback. Preload it from the list (`preloadAdminOrganizationDetail`), and on mount of the detail and `/organization` pages once on idle, so a tab switch never waits for a chunk.
 - `LoadingFallback` takes `delay={false}` for route fallbacks, so the spinner shows in the first frame instead of after 300 ms.

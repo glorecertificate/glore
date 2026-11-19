@@ -116,6 +116,10 @@ export const warmOrganizationData = async (scope: OrganizationScope) => {
   await Promise.all([prefetchInsights(scope), prefetchCertificates(scope)])
 }
 
+export const preloadAllOrganizationTabs = async (scope: OrganizationScope) => {
+  await Promise.all(Object.values(TABS_BY_NAME).map(lazy => lazy.preload(scope)))
+}
+
 const PRELOAD_TIMEOUT_MS = 3000
 
 export const preloadWithin = async (tab: string, scope: OrganizationScope) => {

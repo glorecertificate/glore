@@ -6,6 +6,7 @@ import { startTransition, useEffect, useState } from 'react'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useSession } from '@/components/providers/session'
 import { type User } from '@/db/queries/user'
+import { whenIdle } from '@/lib/prefetch'
 
 import { OrganizationCertificatesPanel } from './certificates-panel'
 import {
@@ -15,6 +16,7 @@ import {
   invitationsTab,
   joinRequestsTab,
   membersTab,
+  preloadAllOrganizationTabs,
   preloadOrganizationTab,
   settingsTab,
   warmOrganizationData,
@@ -51,6 +53,12 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     void preloadOrganizationTab(tab, scope)
     void warmOrganizationData(scope)
   }, [data.currentUserId, data.organization.id, tab])
+
+  useEffect(() => {
+    const scope = { organizationId: data.organization.id, userId: data.currentUserId }
+    const warm = () => void preloadAllOrganizationTabs(scope)
+    return whenIdle(warm)
+  }, [data.currentUserId, data.organization.id])
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab
 

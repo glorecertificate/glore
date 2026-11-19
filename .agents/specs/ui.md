@@ -84,6 +84,7 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - `Card` sets neither `h-full` nor `justify-between`, because a percentage height under the flex `Main` stretched cards to the page height and grid-stretched cards spread their rows.
 - Pass `h-full` at call sites that need full height (course cards, `StatLink`, doc article cards). `StatCard` and the course list card keep `justify-between` explicitly.
 - Tab lists use `min-w-0 justify-start`, so an overflowing list does not center and clip its first tabs.
+- A tab switch never shows an empty or spinner-only panel. Pass every tab's data from the server in one payload, keep each panel mounted in `<Activity mode>` (`TabsContent forceMount`), and preload lazy chunks and client caches once on idle (`preloadAdminOrganizationDetail`, `preloadAllOrganizationTabs`, `prefetchCertificates`). A new tab with its own fetch joins that preload.
 - `SegmentedControl` and `SegmentedControlItem` use Radix radio semantics and keyboard navigation.
 - `CopyButton` handles clipboard failures and ignores stale completions after its value changes.
 - `QrCode` imports the QR encoder on demand and provides loading and error states.

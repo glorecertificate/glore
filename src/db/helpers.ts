@@ -72,6 +72,13 @@ const errorCode = (error: Error): QueryErrorCode | typeof IMPERSONATION_LOCKED =
   return messageCode(message) ?? 'QUERY_ERROR'
 }
 
+const appError = (error: Error) => {
+  const code = errorCode(error)
+  if (code === IMPERSONATION_LOCKED) return { code, message: error.message }
+  if (code === 'QUERY_ERROR') console.error('[query] unclassified error', { message: error.message, name: error.name })
+  return { code, message: DATABASE_ERROR_MESSAGES[code] }
+}
+
 const logDatabaseError = (error: Error, code: QueryErrorCode) => {
   const cause = databaseCause(error)
   console.error('[db] query failed', {
@@ -87,7 +94,7 @@ const logDatabaseError = (error: Error, code: QueryErrorCode) => {
 export const queryError = (e: unknown) => {
   unstable_rethrow(e)
   const error = e instanceof Error ? e : new Error(String(e))
-  if (!isDatabaseError(error)) return { code: errorCode(error), message: error.message }
+  if (!isDatabaseError(error)) return appError(error)
   const code = databaseCode(error)
   logDatabaseError(error, code)
   return { code, message: DATABASE_ERROR_MESSAGES[code] }

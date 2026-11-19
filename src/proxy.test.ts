@@ -30,4 +30,28 @@ describe('proxy session redirects', () => {
     const response = await proxy(request('/login'), {} as never)
     expect(new URL(response?.headers.get('location') ?? '', 'http://app.test').pathname).toBe('/api/v1/session')
   })
+
+  it('sends a signed-in visit to the login page to its safe next path', async () => {
+    mocks.session.current = { user: { id: 'u1', onboardedAt: 'x' } }
+    const response = await proxy(request('/login?next=%2Fcertificates%3Ftab%3Dpool'), {} as never)
+    const location = new URL(response?.headers.get('location') ?? '', 'http://app.test')
+    expect(location.pathname).toBe('/certificates')
+    expect(location.search).toBe('?tab=pool')
+  })
+
+  it('ignores an unsafe next path on a signed-in visit to the login page', async () => {
+    mocks.session.current = { user: { id: 'u1', onboardedAt: 'x' } }
+    for (const next of ['https://evil.test', '//evil.test', '/login', '/api/v1/session', '%5Cevil']) {
+      const response = await proxy(request(`/login?next=${encodeURIComponent(next)}`), {} as never)
+      const location = new URL(response?.headers.get('location') ?? '', 'http://app.test')
+      expect(location.origin, next).toBe('http://app.test')
+      expect(location.pathname, next).toBe('/dashboard')
+    }
+  })
+
+  it('sends a signed-in visit to the login page without next to the dashboard', async () => {
+    mocks.session.current = { user: { id: 'u1', onboardedAt: 'x' } }
+    const response = await proxy(request('/login'), {} as never)
+    expect(new URL(response?.headers.get('location') ?? '', 'http://app.test').pathname).toBe('/dashboard')
+  })
 })

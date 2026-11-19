@@ -21,6 +21,10 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - With auto sign-in on, the invitee's session cookie would be written onto the inviter's response.
 - Self-registration does not use `signUpEmail`: it creates a `pending` join request, so `signInEmail` login is unaffected.
 
+### Password rule
+
+- A `hooks.before` middleware in `src/lib/auth.ts` checks `newPassword` against `PASSWORD_REGEX` on `/reset-password`, `/change-password`, and `/admin/set-user-password`, so the server enforces the rule and not only the length.
+
 ### Plugins
 
 - `username()`: username and display username.
@@ -40,7 +44,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`).
 - A Better Auth `databaseHooks.user.update.after` hook in `src/lib/auth.ts` expires `userTag(id)` with `revalidateTag(tag, { expire: 0 })`, so changes the library makes itself (the email change link, `setRole`, `banUser`, `unbanUser`) reach `getCurrentUser` at once. `updateTag` would throw in the verify-email route handler.
 - Login and password reset answer unknown users exactly like wrong passwords and real resets, in content and in work: `login` hashes the password for an unknown user, and the recovery mail is sent through `after()` so a real reset does not wait on SMTP.
-- `updatePassword` and `changePassword` map library errors to `INVALID_TOKEN`, `INVALID_PASSWORD`, `INVALID_INPUT`, or `AUTH_ERROR` with fixed messages, never the library text.
+- `updatePassword` and `changePassword` map library errors (including `PASSWORD_TOO_WEAK`) to `INVALID_TOKEN`, `INVALID_PASSWORD`, `INVALID_INPUT`, or `AUTH_ERROR` with fixed messages, never the library text.
 - A reset through the emailed link sends the `account/password-changed` mail from `onPasswordReset`, after the response, like `changePassword` does.
 - Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address through `emailVerification.sendVerificationEmail`.
 
@@ -151,7 +155,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - `safeQuery()` wraps a query in try/catch and returns `{ data, error: null }` or `{ data: null, error: { code, message } }`.
 - `queryError()` normalizes unknown errors into that `{ code, message }` shape.
 - Database errors (`DrizzleQueryError` and raw Postgres errors) are classified by SQLSTATE: `23505` is `CONFLICT`, other `23xxx` is `CONSTRAINT_VIOLATION`, `42501` is `UNAUTHORIZED`, `57014` is `TIMEOUT`, `08xxx`, `53300`, and `57Pxx` are `CONNECTION_ERROR`, the rest is `QUERY_ERROR`.
-- They return a fixed message per code and log the SQLSTATE, constraint, table, driver message, and statement (never the bound values) with `console.error('[db] query failed')`. Errors the app throws itself keep their message.
+- They return a fixed message per code and log the SQLSTATE, constraint, table, driver message, and statement (never the bound values) with `console.error('[db] query failed')`. Errors the app throws itself get the fixed message of their code too, and an unclassified one is logged; only the impersonation lock keeps its message.
 - Server actions return `{ data, error }` or `{ error }`, and callers MUST check.
 - Mutations that fail throw. Queries that fail return error objects.
 - The global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, and refresh (`ErrorActions`).

@@ -5,7 +5,7 @@ import { after } from 'next/server'
 
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { createAuthEndpoint, getSessionFromCtx } from 'better-auth/api'
+import { APIError, createAuthEndpoint, createAuthMiddleware, getSessionFromCtx } from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
 import { nextCookies } from 'better-auth/next-js'
 import { admin, username } from 'better-auth/plugins'
@@ -21,12 +21,20 @@ import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
 import { describeAuthError } from '@/lib/auth-log'
 import { CacheTag, userTag } from '@/lib/cache'
-import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
+import {
+  APP_ROOT,
+  AUTH_LINK_EXPIRY_SECONDS,
+  ONBOARDING_ERROR_ROOT,
+  ONBOARDING_ROOT,
+  PASSWORD_REGEX,
+} from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { impersonationGuard } from '@/lib/impersonation-guard'
 import { hashToken } from '@/lib/secret-token'
 import appConfig from '~/config/app.json'
 import metadata from '~/config/metadata.json'
+
+const PASSWORD_PATHS = ['/admin/set-user-password', '/change-password', '/reset-password']
 
 const afterResponse = async (task: () => Promise<void>) => {
   try {
@@ -141,6 +149,16 @@ export const auth = betterAuth({
         template: { name: 'account/password-changed', props: { userName: user.name || undefined } },
       })
     },
+  },
+  hooks: {
+    before: createAuthMiddleware(ctx => {
+      if (!PASSWORD_PATHS.includes(ctx.path)) return Promise.resolve()
+      const password = (ctx.body as { newPassword?: unknown } | null | undefined)?.newPassword
+      if (typeof password === 'string' && PASSWORD_REGEX.test(password)) return Promise.resolve()
+      return Promise.reject(
+        new APIError('BAD_REQUEST', { code: 'PASSWORD_TOO_WEAK', message: 'Password does not meet the requirements' })
+      )
+    }),
   },
   databaseHooks: {
     user: {

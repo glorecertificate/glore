@@ -97,7 +97,10 @@ export const queryAdminUsers = async (input: AdminUsersQuery) => {
   if (!parsed.success) throw adminError('INVALID_INPUT')
 
   const where = buildFilters(parsed.data)
-  const [totals] = await db.select({ total: count() }).from(users).where(where)
+  const [[totals], facets] = await Promise.all([
+    db.select({ total: count() }).from(users).where(where),
+    countFacets(parsed.data),
+  ])
   const total = totals?.total ?? 0
   const pageCount = Math.max(1, Math.ceil(total / ADMIN_USERS_PAGE_SIZE))
   const page = Math.min(parsed.data.page ?? 1, pageCount)
@@ -132,5 +135,5 @@ export const queryAdminUsers = async (input: AdminUsersQuery) => {
     platformRole: platformRoleOf({ isEditor, role }),
   }))
 
-  return { ...toPage(rows, { page, pageSize: ADMIN_USERS_PAGE_SIZE, total }), facets: await countFacets(parsed.data) }
+  return { ...toPage(rows, { page, pageSize: ADMIN_USERS_PAGE_SIZE, total }), facets }
 }

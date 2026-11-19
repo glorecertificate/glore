@@ -215,3 +215,5 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 - `local` needs a localhost `DATABASE_URL`.
 - `staging` needs a remote one whose database comment is `glore:staging` (`COMMENT ON DATABASE`, set on the Neon `staging` branch only, since Neon forbids custom database settings).
 - Production never has the comment, so it is never seeded.
+
+The agent label was tested end to end.

@@ -11,11 +11,13 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 
 ## Deploy model
 
-- A push to `main` runs `ci.yml`: check and e2e, then `deploy.yml` deploys `main` with the Vercel Preview env vars to the preview domain.
+- This pipeline is temporary. Until launch, a push to `main` migrates and deploys staging and production. After launch, production goes back to tags only.
+- A push to `main` runs `ci.yml`: check and e2e, then `deploy.yml` migrates staging and deploys `main` with the Vercel Preview env vars to the preview domain. Then `deploy.yml` migrates production and deploys it.
 - A PR gets a preview deploy only with the `preview` label (`github.md`, "Workflows"). The Neon Vercel integration is disconnected, so every preview uses the unscoped Preview `DATABASE_URL` (Neon `staging`). Never add a branch-scoped `DATABASE_URL`.
 - The `Default branch` ruleset and its required checks are in `github.md`, "Deploys". Admins can bypass it.
-- A `v*` tag runs `release.yml`, which deploys production with `vercel deploy --target=production`. A push to `main` never reaches production.
-- The production build prerenders against the production database, so production must be migrated before the tag.
+- A PR deploy never migrates, so a PR never changes staging.
+- A `v*` tag runs `release.yml`, which migrates and deploys production with `vercel deploy --target=production`. After launch, a push to `main` no longer reaches production.
+- The production build prerenders against the production database, so `deploy.yml` migrates it before `vercel build` (`migrate: true`).
 - `deploy.yml` builds on the runner from `vercel pull`, which cannot read Secret variables. Every variable the build validates must use the Config type.
 
 ## State
@@ -33,7 +35,7 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 3. CI deploys the preview domain once check and e2e pass on `main`.
 4. Import the catalog and seed the demo data per `manual-testing.md`, "Setup", step 6.
 5. Validate the preview with `manual-testing.md`, then run "Verify" below against the preview domain.
-6. When `main` gains a migration, migrate staging before you validate: `DATABASE_URL='<staging url>' pnpm run db migrate`. The preview build runs new code against staging, so a missing table breaks its pages.
+6. CI migrates staging on each push to `main`, before the preview build. Check that the `Deploy preview` job passed before you validate.
 7. After 0033, insert the level description drafts with the same prefix: `pnpm run content:levels --target staging`.
 
 ## Production env vars

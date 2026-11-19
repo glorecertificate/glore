@@ -75,19 +75,24 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 ## Workflows
 
 - `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then `deploy.yml` deploys a preview on a push to `main`, and on a PR only when it has the `preview` label.
+- Temporary until launch: a push to `main` runs the `deploy` job with `migrate: true`, which migrates and deploys staging. Then the `production` job needs `deploy`, and migrates and deploys production. A PR deploy never migrates. After launch, remove the `production` job and the `migrate` input from `ci.yml`, so production goes back to tags only.
+- On a push, `ci.yml` never cancels a run in progress, so a newer push cannot stop a migration.
 - `preview.yml` deploys a PR preview when the PR gets the `preview` label. Later pushes to that PR deploy again through `ci.yml`.
 - Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
 - `e2e.yml` starts Postgres and Mailpit services and an S3Mock service for R2 (`R2_ENDPOINT`), migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - `perf.yml` runs outside the merge queue. Four `Measure` shards use the same setup, build the base commit too, and measure both on one runner with `test:perf --shard`. The final job `Perf` merges the shard results and writes the report once (`performance.md`).
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
 - CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.
-- `release.yml` deploys production after `check.yml` only.
+- `release.yml` deploys production after `check.yml` only, with `migrate: true`.
 - `tasks.yml` fails while the PR body has an open task, or when the PR title fails commitlint. Check each template item, or delete it.
 - `claude-review.yml` and `tasks.yml` skip their jobs in the merge queue, and a skipped required check passes. An empty review result fails, except on a PR that changes a Claude workflow.
 - `labeler.yml` runs on `pull_request_target` with no checkout. It reads `.github/labeler.yml` from `main`, so a new rule works only after merge.
 
 ## Deploys
 
+- `deploy.yml` takes a `migrate` input, false by default. When true, it runs `pnpm exec dotenv -e .vercel/.env.<target>.local -- pnpm exec drizzle-kit migrate` after `vercel pull` and before `vercel build`. The build prerenders against the migrated database.
+- Migrations read `DATABASE_URL` from the pulled env file. `drizzle.config.ts` reads no unpooled variable. The workflow never prints or uploads the env file.
+- Until launch, a push to `main` migrates and deploys staging, then production. Production deploys run one at a time and never cancel. After launch, production deploys only on a `v*` tag.
 - Only CI deploys. `vercel.json` sets `git.deploymentEnabled: false`, so Vercel makes no Git builds and no `Vercel` check.
 - Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails.
 - The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, and CodeQL.

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { startTransition, useState } from 'react'
+import { startTransition, useEffect, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -74,12 +74,18 @@ export const InvitationCard = ({
   const errorMessage = useInvitationError()
   const [pending, setPending] = useState<Pending | null>(null)
   const [password, setPassword] = useState('')
+  const passwordRef = useRef<HTMLInputElement>(null)
   const [declineOpen, setDeclineOpen] = useState(false)
   const [proofSent, setProofSent] = useState(false)
 
   const roleLabel = tRoles(`role_${role}`)
   const expires = new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(timestampMillis(expiresAt)))
   const busy = pending !== null
+
+  useEffect(() => {
+    const filled = passwordRef.current?.value
+    if (filled) setPassword(filled)
+  }, [])
 
   const refresh = () => startTransition(() => router.refresh())
 
@@ -235,6 +241,7 @@ export const InvitationCard = ({
                 disabled={busy}
                 id="invitation-password"
                 onChange={event => setPassword(event.target.value)}
+                ref={passwordRef}
                 required
                 value={password}
               />

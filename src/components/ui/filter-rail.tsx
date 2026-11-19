@@ -115,8 +115,8 @@ export const FilterRailToolbar = ({ extra, groups, onReset, search, searchActive
   const count = activeCount(groups)
 
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-2 lg:hidden" data-slot="filter-rail-toolbar">
-      <div className="min-w-0 flex-1 *:w-full [&_input]:w-full">{search?.('toolbar')}</div>
+    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 lg:hidden" data-slot="filter-rail-toolbar">
+      <div className="min-w-0 basis-full *:w-full sm:flex-1 sm:basis-0 [&_input]:w-full">{search?.('toolbar')}</div>
       <Sheet>
         <SheetTrigger asChild>
           <Button

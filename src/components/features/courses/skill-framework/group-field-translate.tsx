@@ -9,7 +9,6 @@ import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/toast'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
 import { hasText } from '@/lib/translate'
 
@@ -66,24 +65,20 @@ export const GroupFieldTranslate = ({
   return (
     <span className="-my-1 inline-flex shrink-0 self-center">
       <DropdownMenu>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <Button
-                aria-label={t('field.trigger')}
-                className="disabled:pointer-events-none disabled:opacity-100"
-                disabled={running}
-                icon="languages"
-                loading={running}
-                size="icon-sm"
-                stable
-                type="button"
-                variant="transparent"
-              />
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent size="sm">{t('field.trigger')}</TooltipContent>
-        </Tooltip>
+        <DropdownMenuTrigger asChild>
+          <Button
+            className="disabled:pointer-events-none disabled:opacity-100"
+            disabled={running}
+            icon="languages"
+            loading={running}
+            size="xs"
+            stable
+            type="button"
+            variant="ghost"
+          >
+            {t('open')}
+          </Button>
+        </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {sources.length === 0 && <DropdownMenuItem disabled>{tGroup('translateEmpty')}</DropdownMenuItem>}
           {sources.map(locale => (

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseCsv, toCsv } from './csv'
+import { extractCsvEmails, parseCsv, toCsv } from './csv'
 
 describe('csv', () => {
   it('quotes cells with commas, quotes and line breaks', () => {
@@ -24,5 +24,10 @@ describe('csv', () => {
       ['a@x.org', 'learner'],
       ['b@x.org', 'tutor'],
     ])
+  })
+
+  it('extracts unique lowercase addresses from any column and skips headers and bad cells', () => {
+    const text = 'Email,Name\nAna@X.org,Ana\nbad-address,Bo\nana@x.org,Dup\n"Cy <c@x.org>",Cy\nd@x.org;Dee\n'
+    expect(extractCsvEmails(text)).toEqual(['ana@x.org', 'd@x.org'])
   })
 })

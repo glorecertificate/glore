@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
 
 import { type InvitationRowResult, type InviteInput } from '@/actions/organizations/invite-core'
 import { useInvitationError } from '@/components/features/organization/use-invitation-error'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -24,6 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
+import { extractCsvEmails } from '@/lib/csv'
 import { cn } from '@/lib/utils'
 import config from '~/config/app.json'
 
@@ -31,6 +33,8 @@ import { InviteResults } from './invite-results'
 import { parseEmails } from './utils'
 
 type InviteMode = 'bulk' | 'single'
+
+const MAX_CSV_BYTES = 256 * 1024
 
 interface InviteMemberDialogProps {
   allowedRoles: OrganizationMembershipRole[]
@@ -69,6 +73,25 @@ export const InviteMemberDialog = ({
   const max = config.maxBulkInvites
   const tooMany = emails.length > max
   const roleValue = allowedRoles.includes(role) ? role : (allowedRoles[0] ?? 'learner')
+
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const [file] = event.target.files ?? []
+    event.target.value = ''
+    if (!file) return
+    if (file.size > MAX_CSV_BYTES) {
+      toast.error(t('bulkUploadTooLarge'))
+      return
+    }
+    const found = extractCsvEmails(await file.text())
+    if (found.length === 0) {
+      toast.error(t('bulkUploadEmpty'))
+      return
+    }
+    setText(current => [...new Set([...parseEmails(current), ...found])].join('\n'))
+    toast.success(t('bulkUploadRead', { count: found.length }))
+  }
 
   const reset = () => {
     setMode('single')
@@ -171,6 +194,28 @@ export const InviteMemberDialog = ({
                   placeholder={t('bulkPlaceholder')}
                   value={text}
                 />
+                <div className="flex items-center gap-2">
+                  <input
+                    accept=".csv,text/csv,text/plain"
+                    aria-label={t('bulkUpload')}
+                    className="sr-only"
+                    onChange={handleFile}
+                    ref={fileRef}
+                    tabIndex={-1}
+                    type="file"
+                  />
+                  <Button
+                    disabled={submitting}
+                    onClick={() => fileRef.current?.click()}
+                    size="sm"
+                    type="button"
+                    variant="outline"
+                  >
+                    <LucideIcon name="cloud-upload" />
+                    {t('bulkUpload')}
+                  </Button>
+                  <span className="text-xs text-muted-foreground">{t('bulkUploadHint')}</span>
+                </div>
                 <p
                   className={cn('text-xs text-muted-foreground', tooMany && 'text-destructive-text')}
                   id="organization-invite-emails-hint"

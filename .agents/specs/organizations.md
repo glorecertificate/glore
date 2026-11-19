@@ -9,6 +9,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Invitations never create memberships or accounts for an existing person. Accepting one does (`src/db/mutations/invitation.ts`).
 - Never call `signUpEmail` or insert a membership for an invitee outside that mutation.
 - A person who already holds a membership (for example through an invite link sent after the invitation) is upgraded when the invited role outranks the current one (`learner`, `volunteer`, `tutor`, `representative`, `admin`). A lower or equal invited role keeps the current role.
+- In bulk mode the invite dialog reads a CSV file (up to 256 KB) with `extractCsvEmails` (`lib/csv.ts`): any cell that holds an address counts, headers and bad cells are skipped, and the addresses join the text box. The box then follows the paste rules, including `maxBulkInvites`, and sending still creates invitations only.
 - Inviting issues a token and records its hash, a role, an optional message, and an expiry of `invitationExpiryDays` (7), and mails `/invite/[token]?proof=...`.
   - The daily cron sends a reminder on `invitationReminderDay` (5). `pruneExpiredRecords` deletes expired or revoked rows after `invitationRetentionDays` (30).
   - `org_invitations_open_email_key` allows one open invitation per organization and `lower(email)`.

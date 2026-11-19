@@ -53,3 +53,16 @@ export const parseCsv = (text: string) => {
   if (row.some(value => value.trim() !== '')) rows.push(row)
   return rows
 }
+
+const EMAIL_CELL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u
+
+export const extractCsvEmails = (text: string) => [
+  ...new Set(
+    parseCsv(text).flatMap(row =>
+      row.flatMap(cell => {
+        const email = cell.trim().toLowerCase()
+        return EMAIL_CELL.test(email) ? [email] : []
+      })
+    )
+  ),
+]

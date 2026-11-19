@@ -3774,7 +3774,12 @@
     "filterExpired": "Expired",
     "filterAccepted": "Accepted",
     "rowActions": "Actions for {email}",
-    "searchPlaceholder": "Search invitations"
+    "searchPlaceholder": "Search invitations",
+    "bulkUpload": "Upload CSV file",
+    "bulkUploadHint": "Any column can hold the addresses.",
+    "bulkUploadTooLarge": "The file is larger than 256 KB.",
+    "bulkUploadEmpty": "No email addresses found in the file.",
+    "bulkUploadRead": "{count, plural, one {# address added from the file} other {# addresses added from the file}}"
   },
   "Learning": {
     "overview": {

@@ -3774,7 +3774,12 @@
     "filterExpired": "Scadute",
     "filterAccepted": "Accettate",
     "rowActions": "Azioni per {email}",
-    "searchPlaceholder": "Cerca inviti"
+    "searchPlaceholder": "Cerca inviti",
+    "bulkUpload": "Carica file CSV",
+    "bulkUploadHint": "Gli indirizzi possono stare in qualsiasi colonna.",
+    "bulkUploadTooLarge": "Il file supera i 256 KB.",
+    "bulkUploadEmpty": "Nessun indirizzo email trovato nel file.",
+    "bulkUploadRead": "{count, plural, one {# indirizzo aggiunto dal file} other {# indirizzi aggiunti dal file}}"
   },
   "Learning": {
     "overview": {

@@ -3774,7 +3774,12 @@
     "filterExpired": "Caducadas",
     "filterAccepted": "Aceptadas",
     "rowActions": "Acciones para {email}",
-    "searchPlaceholder": "Buscar invitaciones"
+    "searchPlaceholder": "Buscar invitaciones",
+    "bulkUpload": "Subir archivo CSV",
+    "bulkUploadHint": "Las direcciones pueden estar en cualquier columna.",
+    "bulkUploadTooLarge": "El archivo supera los 256 KB.",
+    "bulkUploadEmpty": "No se encontraron direcciones de correo en el archivo.",
+    "bulkUploadRead": "{count, plural, one {# dirección añadida del archivo} other {# direcciones añadidas del archivo}}"
   },
   "Learning": {
     "overview": {

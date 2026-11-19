@@ -7,7 +7,6 @@ import { z } from 'zod'
 
 import { updateAccount } from '@/actions/user'
 import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
-import { SettingsSaveBar } from '@/components/features/users/settings-save-bar'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
@@ -15,10 +14,10 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Separator } from '@/components/ui/separator'
+import { StickySaveBar, useStickySaveBar } from '@/components/ui/sticky-save-bar'
 import { toast } from '@/components/ui/toast'
 import { type User } from '@/db/queries/user'
 import { useActionError } from '@/hooks/use-action-error'
-import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { USERNAME_REGEX } from '@/lib/constants'
 import { LOCALES } from '@/lib/i18n'
 import { type Any } from '@/lib/types'
@@ -55,7 +54,7 @@ export const AccountForm = () => {
     resolver: zodResolver(accountSchema),
   })
 
-  const disabled = useFormDisabled(form.control)
+  const saveBar = useStickySaveBar(form)
 
   const onSubmit = async (values: z.infer<typeof accountSchema>) => {
     const updates: { email?: string; locale?: Locale | null; username?: string } = {}
@@ -161,7 +160,7 @@ export const AccountForm = () => {
           />
         </SettingsSection>
 
-        <SettingsSaveBar dirty={!disabled} loading={form.formState.isSubmitting} onReset={() => form.reset()} />
+        <StickySaveBar count={saveBar.count} onDiscard={saveBar.discard} saving={saveBar.saving} />
       </form>
     </Form>
   )

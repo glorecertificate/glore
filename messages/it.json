@@ -1398,6 +1398,12 @@
       "previous": "Precedente",
       "next": "Successivo",
       "onThisPage": "In questa pagina"
+    },
+    "hub": {
+      "searchPlaceholder": "Cerca nella documentazione",
+      "startHere": "Inizia da qui",
+      "forYourRole": "Per il tuo ruolo",
+      "seeAll": "Vedi tutti ({count})"
     }
   },
   "About": {
@@ -2710,7 +2716,6 @@
     "sessionsShowAll": "Mostra tutte le {count} sessioni",
     "sessionsShowLess": "Mostra meno sessioni",
     "bioCount": "{count} di {max}",
-    "unsavedChanges": "Hai modifiche non salvate.",
     "settingsSections": "Sezioni delle impostazioni"
   },
   "Register": {

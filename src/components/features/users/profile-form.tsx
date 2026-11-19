@@ -9,7 +9,6 @@ import { z } from 'zod'
 
 import { confirmAvatar, createAvatarUploadUrl, removeAvatar } from '@/actions/storage'
 import { updateProfile } from '@/actions/user'
-import { SettingsSaveBar } from '@/components/features/users/settings-save-bar'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import {
@@ -30,9 +29,9 @@ import { Input } from '@/components/ui/input'
 import { PhoneInput } from '@/components/ui/phone-input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { SpokenLanguagesSelect } from '@/components/ui/spoken-languages-select'
+import { StickySaveBar, useStickySaveBar } from '@/components/ui/sticky-save-bar'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
-import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { type Any } from '@/lib/types'
 import i18nConfig from '~/config/i18n.json'
 
@@ -97,7 +96,6 @@ export const ProfileForm = () => {
       country: user.country ?? '',
     },
   })
-  const formDisabled = useFormDisabled(form.control)
 
   const languagesChanged = (() => {
     const original = user.languages ?? []
@@ -105,7 +103,8 @@ export const ProfileForm = () => {
     return languages.some(l => !original.includes(l))
   })()
 
-  const disabled = formDisabled && !languagesChanged
+  const saveBar = useStickySaveBar(form)
+  const dirtyCount = saveBar.count + (languagesChanged ? 1 : 0)
 
   const handleAvatarUpload = async (file: File) => {
     try {
@@ -412,13 +411,13 @@ export const ProfileForm = () => {
           </SettingsSection>
         </div>
 
-        <SettingsSaveBar
-          dirty={!disabled}
-          loading={form.formState.isSubmitting}
-          onReset={() => {
+        <StickySaveBar
+          count={dirtyCount}
+          onDiscard={() => {
             form.reset()
             setLanguages(user.languages ?? [])
           }}
+          saving={form.formState.isSubmitting}
         />
 
         <AlertDialog onOpenChange={setRemoveAvatarOpen} open={removeAvatarOpen}>

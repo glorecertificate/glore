@@ -1398,6 +1398,12 @@
       "previous": "Anterior",
       "next": "Siguiente",
       "onThisPage": "En esta página"
+    },
+    "hub": {
+      "searchPlaceholder": "Buscar en la documentación",
+      "startHere": "Empieza aquí",
+      "forYourRole": "Para tu rol",
+      "seeAll": "Ver los {count}"
     }
   },
   "About": {
@@ -2710,7 +2716,6 @@
     "sessionsShowAll": "Mostrar las {count} sesiones",
     "sessionsShowLess": "Mostrar menos sesiones",
     "bioCount": "{count} de {max}",
-    "unsavedChanges": "Tienes cambios sin guardar.",
     "settingsSections": "Secciones de ajustes"
   },
   "Register": {

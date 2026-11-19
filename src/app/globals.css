@@ -247,6 +247,7 @@
 
 @theme {
   --spacing-page: --spacing(4);
+  --spacing-connector: 1.5px;
 }
 
 @utility type-display {

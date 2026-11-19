@@ -98,6 +98,11 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - Shell decision (owner, 2026-11-18): a full prefetch makes the click wait one round trip for the dynamic part. So Shell ends at the first frame where the clicked sidebar item shows active (`data-active` or `aria-current`). The sidebar item turns active on `pointerdown`, before the round trip. Base and head use the same script. Complete is unchanged: pointer down to the last DOM change before 1 s of quiet.
 - A warm sidebar click must commit no fallback. Measure with a production build: `LoadingFallback` appears only after 300 ms, so a fallback in the DOM is a data wait to fix, not a style choice.
 
+- A provider above the shell never sets state after mount, from an effect, `requestAnimationFrame`, or a timer. Each `useSidebar` consumer re-renders on the change, and on the mobile profile that was one 150 ms task right after hydration (TBT 4x on `/courses`). Flip a DOM attribute from a callback ref instead (`settle` in `ui/sidebar.tsx`).
+- A sidebar link press closes the phone drawer one frame after the press, with no exit animation, so the drawer is gone before the route commits. A close on commit adds the exit animation and the unmount to Complete.
+- The invitation poll of the menu indicator starts on mount. A deferred start lands a state change inside a later navigation and the router queues the click behind the server action.
+- `settle` in `e2e/perf/vitals.ts` also waits for requests still in flight. A resource entry exists only after the download ends, so a streaming prefetch looked quiet and the click raced it.
+
 - Measure the affected cases before and after each change with `PERF_RUNS=5`, and put both tables in the pull request.
 - A block is done when its cases meet the targets on both profiles. If not, the pull request names the blocker.
 - Never trade a metric for another without a reason in the pull request.

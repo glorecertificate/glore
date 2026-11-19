@@ -136,7 +136,7 @@ const DashboardSidebarItem = ({
   onClick,
   route,
 }: DashboardSidebarItemProps) => {
-  const { activePath, setActivePath } = useSidebar()
+  const { activePath, leaveMobile, setActivePath } = useSidebar()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const pressed = useRef(false)
@@ -168,6 +168,7 @@ const DashboardSidebarItem = ({
   const setPath = (e: React.MouseEvent<HTMLButtonElement>) => {
     pressed.current = false
     setActivePath(route)
+    leaveMobile()
     onClick?.(e)
   }
 

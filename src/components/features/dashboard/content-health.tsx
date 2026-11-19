@@ -19,8 +19,17 @@ const GRID = 'md:grid md:grid-cols-[minmax(0,1fr)_5.25rem_5.25rem_2.25rem_2.25re
 
 const MissingDot = () => <span aria-hidden className="size-2 shrink-0 rounded-full bg-status-changes" />
 
-const Cell = ({ item, missing }: { item: string; missing: boolean }) => {
+const Cell = ({ applies = true, item, missing }: { applies?: boolean; item: string; missing: boolean }) => {
   const t = useTranslations('Dashboard.editor')
+  if (!applies) {
+    return (
+      <span className="hidden justify-center md:flex">
+        <LucideIcon aria-hidden className="size-3.5 text-muted-foreground/50" name="minus" />
+        <span className="sr-only">{t('healthNotNeeded', { item })}</span>
+      </span>
+    )
+  }
+
   return (
     <span className="hidden justify-center md:flex">
       {missing ? <MissingDot /> : <LucideIcon aria-hidden className="size-3.5 text-muted-foreground" name="check" />}
@@ -67,8 +76,8 @@ const CourseRow = ({ course }: { course: HealthCourse }) => {
           <span className="shrink-0">{`· ${details}`}</span>
         </p>
       </div>
-      <Cell item={t('healthAssessment')} missing={course.missingAssessment} />
-      <Cell item={t('healthGroup')} missing={course.missingGroup} />
+      <Cell applies={course.skill} item={t('healthAssessment')} missing={course.missingAssessment} />
+      <Cell applies={course.skill} item={t('healthGroup')} missing={course.missingGroup} />
       {LOCALES.map(locale => (
         <Cell item={locale.toUpperCase()} key={locale} missing={course.missing.includes(locale)} />
       ))}

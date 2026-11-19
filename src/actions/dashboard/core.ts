@@ -435,6 +435,7 @@ export interface HealthCourse {
   missing: Locale[]
   missingAssessment: boolean
   missingGroup: boolean
+  skill: boolean
   slug: string
   status: HealthStatus
   title: string
@@ -485,6 +486,7 @@ export const buildContentHealth = (courses: EditorCourseRow[]): ContentHealth =>
             missing,
             missingAssessment: course.type === 'skill' && !course.hasAssessment,
             missingGroup: course.type === 'skill' && course.skillGroupId === null,
+            skill: course.type === 'skill',
             slug: course.slug,
             status: publicationState(course) as HealthStatus,
             title: course.title,

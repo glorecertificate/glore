@@ -1344,6 +1344,7 @@
       "healthGroup": "Grupo de competencias",
       "healthMissing": "{item}: falta",
       "healthDone": "{item}: listo",
+      "healthNotNeeded": "{item}: no se necesita en este curso",
       "healthColumnTotal": "{item}: faltan {count}",
       "healthAll": "{count, plural, one {# curso en total} other {# cursos en total}}",
       "healthShowAll": "Ver los {count} cursos",

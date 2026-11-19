@@ -56,8 +56,12 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
 
   useEffect(() => {
     const scope = { organizationId: data.organization.id, userId: data.currentUserId }
-    const warm = () => void preloadAllOrganizationTabs(scope)
-    return whenIdle(warm)
+    const controller = new AbortController()
+    const cancel = whenIdle(() => void preloadAllOrganizationTabs(scope, controller.signal))
+    return () => {
+      cancel()
+      controller.abort()
+    }
   }, [data.currentUserId, data.organization.id])
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab

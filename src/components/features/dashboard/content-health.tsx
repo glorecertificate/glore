@@ -10,8 +10,6 @@ import { Progress } from '@/components/ui/progress'
 import { LOCALES } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-const VISIBLE_ROWS = 6
-
 const GRID = 'md:grid md:grid-cols-[minmax(0,1fr)_5.25rem_5.25rem_2.25rem_2.25rem_2.25rem] md:items-center md:gap-2'
 
 const MissingDot = () => <span aria-hidden className="size-2 shrink-0 rounded-full bg-status-changes" />
@@ -94,8 +92,7 @@ const CourseRow = ({ course }: { course: HealthCourse }) => {
 export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
   const t = useTranslations('Dashboard.editor')
   const { columns, complete, courses, total } = health
-  const rows = courses.slice(0, VISIBLE_ROWS)
-  const truncated = courses.length > VISIBLE_ROWS
+  const needWork = total - complete
 
   return (
     <Card>
@@ -107,10 +104,10 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <span className="type-stat text-foreground tabular-nums">{complete}</span>
             <span className="text-sm text-muted-foreground">{t('healthCompleteOf', { total })}</span>
-            {courses.length > 0 && (
+            {needWork > 0 && (
               <span className="ml-auto flex items-center gap-2 text-sm">
                 <MissingDot />
-                <span className="tabular-nums">{t('healthNeedWork', { count: courses.length })}</span>
+                <span className="tabular-nums">{t('healthNeedWork', { count: needWork })}</span>
               </span>
             )}
           </div>
@@ -121,7 +118,7 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
           />
         </div>
 
-        {courses.length === 0 && <p className="text-sm text-muted-foreground">{t('healthClear')}</p>}
+        {needWork === 0 && <p className="text-sm text-muted-foreground">{t('healthClear')}</p>}
 
         {courses.length > 0 && (
           <div className="flex flex-1 flex-col">
@@ -135,8 +132,8 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
                 </span>
               ))}
             </div>
-            <ul className="flex flex-col divide-y md:divide-y-0 lg:flex-1">
-              {rows.map(course => (
+            <ul className="-mx-2 flex max-h-112 flex-col divide-y overflow-y-auto px-2 md:divide-y-0 xl:max-h-none xl:min-h-84 xl:grow xl:basis-0">
+              {courses.map(course => (
                 <CourseRow course={course} key={course.id} />
               ))}
             </ul>
@@ -148,16 +145,11 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
                 <ColumnTotal count={columns[locale]} item={locale.toUpperCase()} key={locale} />
               ))}
             </div>
-            {truncated && (
-              <div className="mt-auto flex items-center justify-between gap-3 border-t pt-3.5 text-sm">
-                <Link className="font-medium" href="/courses" variant="link">
-                  {t('healthViewAll', { count: total })}
-                </Link>
-                <span className="text-muted-foreground tabular-nums">
-                  {t('healthShowing', { shown: rows.length, total: courses.length })}
-                </span>
-              </div>
-            )}
+            <div className="border-t pt-3.5 text-sm">
+              <Link className="font-medium" href="/courses" variant="link">
+                {t('healthViewAll', { count: total })}
+              </Link>
+            </div>
           </div>
         )}
       </CardContent>

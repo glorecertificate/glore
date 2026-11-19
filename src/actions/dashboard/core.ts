@@ -471,30 +471,27 @@ export const buildContentHealth = (courses: EditorCourseRow[]): ContentHealth =>
   ) as Record<Locale, number>
   const issues: Record<ContentIssue, number> = { empty: 0, noAssessment: 0, noGroup: 0 }
 
-  const needing = live
-    .flatMap(course => {
+  const entries = live
+    .map(course => {
       const found = courseIssues(course)
       for (const issue of found) issues[issue] += 1
-      const missing = LOCALES.filter(locale => !course.languages?.includes(locale))
-      if (found.length === 0 && missing.length === 0) return []
-      return [
-        {
-          course: {
-            empty: course.lessonCount === 0,
-            id: course.id,
-            missing,
-            missingAssessment: course.type === 'skill' && !course.hasAssessment,
-            missingGroup: course.type === 'skill' && course.skillGroupId === null,
-            skill: course.type === 'skill',
-            slug: course.slug,
-            status: publicationState(course) as HealthStatus,
-            title: course.title,
-          },
-          issues: found,
+      return {
+        course: {
+          empty: course.lessonCount === 0,
+          id: course.id,
+          missing: LOCALES.filter(locale => !course.languages?.includes(locale)),
+          missingAssessment: course.type === 'skill' && !course.hasAssessment,
+          missingGroup: course.type === 'skill' && course.skillGroupId === null,
+          skill: course.type === 'skill',
+          slug: course.slug,
+          status: publicationState(course) as HealthStatus,
+          title: course.title,
         },
-      ]
+        issues: found,
+      }
     })
     .toSorted((a, b) => b.issues.length - a.issues.length || b.course.missing.length - a.course.missing.length)
+  const needing = entries.filter(({ course, issues: found }) => found.length > 0 || course.missing.length > 0)
 
   const attention = needing.map(({ course, issues: found }) => ({
     issues: found,
@@ -513,7 +510,7 @@ export const buildContentHealth = (courses: EditorCourseRow[]): ContentHealth =>
     attention: attention.slice(0, ATTENTION_LIMIT),
     columns,
     complete: live.length - rows.length,
-    courses: rows,
+    courses: entries.map(({ course }) => course),
     issues,
     states,
     total: live.length,

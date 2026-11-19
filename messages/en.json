@@ -1344,7 +1344,6 @@
       "healthNotNeeded": "{item}: not needed for this course",
       "healthColumnTotal": "{item}: {count} missing",
       "healthAll": "{count, plural, one {All # course} other {All # courses}}",
-      "healthShowing": "Showing {shown} of {total}",
       "healthStatus": {
         "draft": "Draft",
         "partial": "Partial",

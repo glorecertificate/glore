@@ -1172,6 +1172,7 @@
         "label": "Cursos de habilidades completados",
         "heading": "Cursos de habilidades",
         "count": "{count} de {min} completados",
+        "total": "{count} completados",
         "missing": "Pendiente"
       },
       "note": {

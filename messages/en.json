@@ -1172,6 +1172,7 @@
         "label": "Completed skill courses",
         "heading": "Skill courses",
         "count": "{count} of {min} completed",
+        "total": "{count} completed",
         "missing": "Not yet"
       },
       "note": {

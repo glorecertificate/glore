@@ -74,7 +74,7 @@ export const JourneyRail = ({ className, volunteer }: { className?: string; volu
                 >
                   <span
                     className={cn(
-                      'block size-full origin-top bg-earned transition-transform duration-240 ease-out motion-reduce:transition-none',
+                      'block size-full origin-top bg-primary transition-transform duration-240 ease-out motion-reduce:transition-none',
                       stage.state === 'done' ? 'scale-y-100' : 'scale-y-0'
                     )}
                   />

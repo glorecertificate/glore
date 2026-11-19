@@ -13,14 +13,14 @@ export const WIZARD_STEP_LABELS = {
 } as const satisfies Record<WizardStep, string>
 
 const StepDot = ({ state }: { state: JourneyStepState }) => {
-  if (state === 'done') return <LucideIcon aria-hidden className="size-3.5 shrink-0 text-earned-text" name="check" />
+  if (state === 'done') return <LucideIcon aria-hidden className="size-3.5 shrink-0 text-brand-text" name="check" />
   if (state === 'flagged') {
     return <LucideIcon aria-hidden className="size-3.5 shrink-0 text-warning-text" name="circle-alert" />
   }
   if (state === 'current') {
     return (
       <span aria-hidden className="flex size-3.5 shrink-0 items-center justify-center">
-        <span className="size-2 rounded-full bg-current-fill" />
+        <span className="size-2 rounded-full bg-primary" />
       </span>
     )
   }
@@ -47,7 +47,7 @@ export const JourneySteps = ({ className, steps }: { className?: string; steps: 
           <span
             className={cn(
               'truncate type-label',
-              state === 'current' && 'font-semibold text-action-text',
+              state === 'current' && 'font-semibold text-brand-text',
               state === 'flagged' && 'font-medium text-fg-1',
               state === 'done' && 'text-fg-1',
               state === 'upcoming' && 'text-fg-2'

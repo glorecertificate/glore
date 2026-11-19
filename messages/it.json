@@ -1172,6 +1172,7 @@
         "label": "Corsi sulle competenze completati",
         "heading": "Corsi sulle competenze",
         "count": "{count} di {min} completati",
+        "total": "{count} completati",
         "missing": "Non ancora"
       },
       "note": {

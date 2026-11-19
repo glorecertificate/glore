@@ -47,7 +47,9 @@ export const JourneyCourses = ({
             <h3 className="type-heading text-fg-title" id="journey-skills-title">
               {t('seals.heading')}
             </h3>
-            <span className="type-label text-fg-2">{t('seals.count', { count: completed, min })}</span>
+            <span className="type-label text-fg-2">
+              {completed > min ? t('seals.total', { count: completed }) : t('seals.count', { count: completed, min })}
+            </span>
           </div>
           <ul aria-label={t('seals.label')}>
             {skills.map(skill => (

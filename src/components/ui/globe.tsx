@@ -79,6 +79,35 @@ const paletteColorAt = (palette: Rgb[], time: number) => {
   return mix(palette[index]!, palette[(index + 1) % palette.length]!, smoothstep(position - index))
 }
 
+const probeWebgl = (failIfMajorPerformanceCaveat: boolean) => {
+  const probe = document.createElement('canvas')
+  const attributes = { failIfMajorPerformanceCaveat }
+  const gl = (probe.getContext('webgl2', attributes) ?? probe.getContext('webgl', attributes)) as
+    | WebGL2RenderingContext
+    | WebGLRenderingContext
+    | null
+  if (!gl) return false
+  gl.getExtension('WEBGL_lose_context')?.loseContext()
+  return true
+}
+
+const paintDisc = (canvas: HTMLCanvasElement, base: Rgb, glow: Rgb) => {
+  const context = canvas.getContext('2d')
+  if (!context) return
+  const size = (canvas.offsetWidth || canvas.width) * 2
+  canvas.width = size
+  canvas.height = size
+  const rgb = (color: Rgb, alpha: number) => `rgba(${color.map(value => Math.round(value * 255)).join(',')},${alpha})`
+  const center = size / 2
+  const gradient = context.createRadialGradient(center * 0.8, center * 0.7, center * 0.1, center, center, center * 0.96)
+  gradient.addColorStop(0, rgb(glow, 0.55))
+  gradient.addColorStop(1, rgb(base, 0.35))
+  context.fillStyle = gradient
+  context.beginPath()
+  context.arc(center, center, center * 0.96, 0, Math.PI * 2)
+  context.fill()
+}
+
 export const Globe = ({ className, ...options }: GlobeProps) => {
   const merged = { ...GLOBE_OPTIONS, ...options }
 
@@ -251,6 +280,11 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
       let color = propsRef.current.baseColor[0]!
       let lastTime = performance.now()
       let paletteTime = 0
+      const animated = probeWebgl(true)
+      if (!(animated || probeWebgl(false))) {
+        paintDisc(canvas, color, propsRef.current.glowColor)
+        return
+      }
 
       const globe = createGlobe(canvas, {
         arcs: [],
@@ -322,11 +356,11 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
         }
 
         globe.update(state as COBEOptions)
-        frame = onscreen && !document.hidden ? requestAnimationFrame(tick) : 0
+        frame = animated && onscreen && !document.hidden ? requestAnimationFrame(tick) : 0
       }
 
       const start = () => {
-        if (frame || !onscreen || document.hidden || !hasContext) return
+        if (frame || !animated || !onscreen || document.hidden || !hasContext) return
         lastTime = performance.now()
         frame = requestAnimationFrame(tick)
       }
@@ -344,6 +378,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
       intersectionObserver.observe(canvas)
       document.addEventListener('visibilitychange', onVisibilityChange)
 
+      if (!animated) tick(performance.now())
       start()
 
       teardown = () => {

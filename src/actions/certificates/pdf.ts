@@ -4,11 +4,11 @@ import { eq } from 'drizzle-orm'
 
 import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
-import { renderSnapshotSkill } from '@/components/features/certificates/snapshot'
+import { snapshotLocale, snapshotPdfInput } from '@/components/features/certificates/pdf-input'
 import { db } from '@/db/client'
 import { type SkillLevelDescriptionsByCourse, plainDescription } from '@/db/queries/skill-level-description'
 import { type CertificateSnapshot, certificates } from '@/db/schema'
-import { DEFAULT_LOCALE, type IntlRecord, LOCALES, localizeRecord } from '@/lib/i18n'
+import { DEFAULT_LOCALE, type IntlRecord } from '@/lib/i18n'
 
 const pdfSourceWith = {
   organization: {
@@ -74,43 +74,8 @@ export const certificateSnapshot = (
   language: cert.language,
 })
 
-const regionName = (value: string | null, language: string) => {
-  if (!value) return null
-  if (!/^[a-z]{2}$/iu.test(value)) return value
-  return new Intl.DisplayNames([language], { type: 'region' }).of(value.toUpperCase()) ?? value
-}
-
-export const renderCertificatePdf = async (snapshot: CertificateSnapshot, code: string | null) => {
-  const locale = LOCALES.find(item => item === snapshot.language) ?? DEFAULT_LOCALE
-  const { organization } = snapshot
-  return await generateCertificatePdf(
-    {
-      activity: snapshot.activity,
-      code,
-      holder: { ...snapshot.holder, nationality: regionName(snapshot.holder.nationality, locale) },
-      issuedAt: snapshot.issuedAt || null,
-      organization: {
-        legalRepresentative: organization.legalRepresentative,
-        logoUrl: organization.logoUrl,
-        name: organization.name,
-        signatureUrl: organization.signatureUrl,
-      },
-      skills: snapshot.skills.map(skill => {
-        const { description, label, level, steps } = renderSnapshotSkill(skill, snapshot.labels?.levels)
-        return {
-          description: description ? localizeRecord(description, locale, DEFAULT_LOCALE) : null,
-          icon: skill.icon,
-          level,
-          levelLabel: label,
-          name: localizeRecord(skill.name, locale, DEFAULT_LOCALE),
-          steps,
-        }
-      }),
-    },
-    locale,
-    snapshot.labels
-  )
-}
+export const renderCertificatePdf = async (snapshot: CertificateSnapshot, code: string | null) =>
+  await generateCertificatePdf(snapshotPdfInput(snapshot, code), snapshotLocale(snapshot), snapshot.labels)
 
 export const certificatePdf = async (id: number) => {
   const cert = await findCertificateWithSource(id)

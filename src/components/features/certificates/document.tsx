@@ -16,82 +16,96 @@ import {
   View,
 } from '@react-pdf/renderer'
 
-import { ARROW_PATHS, LOGO_PATHS } from '@/components/features/certificates/pdf-assets'
+import {
+  ARROWS_BOX,
+  BANNER,
+  BANNER_BOX,
+  BANNER_TRACKING,
+  type CertificatePdfData,
+  type CertificatePdfLabels,
+  DATE_TOP,
+  DOT_LEFTS,
+  DOT_SIZE,
+  EMBLEM_BOX,
+  EMBLEM_SRC,
+  FADED_ARROWS,
+  GRAY,
+  GREEN,
+  HEADING_LEFT,
+  HEADING_RIGHT,
+  HEADING_SIZE,
+  HEADING_TRACKING,
+  HOURS_ROW,
+  type IconNode,
+  LEVEL_GRAY,
+  LEVEL_RIGHT,
+  LEVEL_SIZE,
+  LEVEL_SPACE_TRACKING,
+  LOCATION_ROW,
+  LOGO_BOX,
+  NAME_BOX,
+  NAME_COLOR,
+  NAVY,
+  PAGE_HEIGHT,
+  PAGE_WIDTH,
+  PARTNERSHIP_TOP,
+  PARTNER_LEFT,
+  PARTNER_LINE_HEIGHT,
+  PARTNER_LOGO,
+  PARTNER_TOP,
+  PARTNER_WIDTH,
+  PERIOD_FROM,
+  PERIOD_ROW,
+  PERIOD_TO,
+  PERSONAL,
+  QR_BOX,
+  REPRESENTED_ROW,
+  ROW_LEFT,
+  ROW_LINE_PADDING,
+  ROW_LINE_WIDTH,
+  ROW_VALUE_TOP,
+  SECTION_BAR,
+  SIGNATURE_BOX,
+  SKILL_DESCRIPTION,
+  SKILL_DESCRIPTION_OFFSETS,
+  SKILL_DOT_OFFSETS,
+  SKILL_ICON,
+  SKILL_LABEL,
+  SKILL_LABEL_TOPS,
+  SKILL_LEVEL_OFFSETS,
+  SKILL_NAME,
+  TASKS_INTRO_LINE_HEIGHT,
+  TASKS_INTRO_WIDTH,
+  TASKS_SECTION,
+  TASK_GAP,
+  TASK_LEFT,
+  TASK_LINE_HEIGHT,
+  TASK_PITCH,
+  TASK_TOP,
+  TASK_WIDTH,
+  VERIFY_BOX,
+  VOLUNTEERING,
+  WHITE,
+  formatDate,
+  hyphenate,
+  nameSize,
+  partnerFontSize,
+  placed,
+  skillDots,
+  skillNameSize,
+  taskPlan,
+  textShift,
+  titleSize,
+} from '@/components/features/certificates/certificate-layout'
+import { LOGO_PATHS } from '@/components/features/certificates/pdf-assets'
 
-type IconNode = [string, Record<string, string>][]
-
-export interface CertificatePdfSkill {
-  description: string | null
-  iconNode?: IconNode | null
-  level: number
-  levelLabel?: string | null
-  name: string
-  steps: number
-}
-
-export interface CertificatePdfData {
-  activity: {
-    duration: number | null
-    endDate: string | null
-    location: string | null
-    startDate: string | null
-    tasks: string[]
-  }
-  code: string | null
-  holder: {
-    birthPlace: string | null
-    birthday: string | null
-    firstName: string
-    lastName: string | null
-    nationality: string | null
-  }
-  issuedAt: string | null
-  organization: {
-    legalRepresentative: string | null
-    logoUrl: string | null
-    name: string
-    signatureUrl: string | null
-  }
-  qrPath: string | null
-  qrSize: number
-  skills: CertificatePdfSkill[]
-  verifyUrl: string | null
-}
-
-export interface CertificatePdfLabels {
-  at: string
-  date: string
-  dateOfBirth: string
-  from: string
-  headingAfter: string
-  headingBefore: string
-  headingHighlight: string
-  hours: string
-  level: string
-  levels: string[]
-  mainTasks: string
-  nationality: string
-  partnership: string
-  placeOfBirth: string
-  representedBy: string
-  tasksIntro: string
-  title: string
-  to: string
-  verify: string
-  volunteering: string
-}
+export type { CertificatePdfLabels }
+export { partnerFontSize }
 
 export interface CertificateDocumentProps {
   data: CertificatePdfData
   labels: CertificatePdfLabels
 }
-
-const NAVY = '#315070'
-const GREEN = '#7fbf73'
-const GRAY = '#f0f0f0'
-const LEVEL_GRAY = '#3c4045'
-const BANNER = '#345372'
-const ARROW_OPACITY = 0.12
 
 const assetSource = (file: string) => (typeof window === 'undefined' ? `${process.cwd()}/public${file}` : file)
 
@@ -103,130 +117,40 @@ Font.register({
     { src: assetSource('/fonts/roboto/Roboto-Black.ttf'), fontWeight: 900 },
   ],
 })
-Font.registerHyphenationCallback(word => [word])
-
-const fade = (hex: string) => {
-  const channel = (index: number) => {
-    const value = Number.parseInt(hex.slice(index, index + 2), 16)
-    return Math.round(255 - ARROW_OPACITY * (255 - value))
-      .toString(16)
-      .padStart(2, '0')
-  }
-  return `#${channel(1)}${channel(3)}${channel(5)}`
-}
-
-const FADED_ARROWS = ARROW_PATHS.map(path => ({ ...path, fill: fade(path.fill) }))
-
-const TEMPLATE_FONT_ASCENT = 1.056
-const ROBOTO_FONT_ASCENT = 1900 / 2048
-const BANNER_TRACKING = -0.0123
-const HEADING_TRACKING = 0.73
-
-const textShift = (fontSize: number) => (TEMPLATE_FONT_ASCENT - ROBOTO_FONT_ASCENT) * fontSize
-
-const placed = (top: number, fontSize: number) => ({ fontSize, top: top + textShift(fontSize) })
-
-const SKILL_TOPS = [226.5, 355.1, 482.7, 610.3]
-const DOT_LEFTS = [269.3, 304.8, 340.4, 375.9, 411.5]
-const DESCRIPTION_OFFSET = 27.8
-const LEVEL_OFFSET = 86.25
-const LEVEL_RIGHT = 595.28 - 544.4
-const TASK_TOP = 550.6
-const TASK_PITCH = 40
-const TASK_BOTTOM = 672
-const TASK_SIGNED_BOTTOM = 643
-const TASK_GAP = 3
-const TASK_WIDTH = 158.7
-const TASK_LINE_HEIGHT = 1.2
-const TASK_CHAR_WIDTH = 0.45
-const TASK_FONT_SIZES = [10, 9.5, 9, 8.5, 8, 7.5, 7]
-
-const taskLines = (task: string, fontSize: number) => {
-  const limit = Math.max(1, Math.floor(TASK_WIDTH / (fontSize * TASK_CHAR_WIDTH)))
-  return `\u2022 ${task}`
-    .split(/\s+/u)
-    .reduce(
-      ({ length, lines }, word) =>
-        length === 0 || length + 1 + word.length > limit
-          ? { length: word.length, lines: lines + 1 }
-          : { length: length + 1 + word.length, lines },
-      { length: 0, lines: 0 }
-    ).lines
-}
-
-const taskHeight = (task: string, fontSize: number) => taskLines(task, fontSize) * fontSize * TASK_LINE_HEIGHT
-
-const flowHeight = (tasks: string[], fontSize: number) =>
-  tasks.reduce((height, task) => height + taskHeight(task, fontSize), TASK_GAP * Math.max(0, tasks.length - 1))
-
-const fitsPitch = (tasks: string[], bottom: number) =>
-  tasks.every(
-    (task, index) =>
-      taskHeight(task, 10) <= TASK_PITCH - TASK_GAP && TASK_TOP + index * TASK_PITCH + taskHeight(task, 10) <= bottom
-  )
-
-const PARTNER_TOP = 417.2
-const PARTNER_BOTTOM = 472.9
-const PARTNER_WIDTH = 68
-const PARTNER_LINE_HEIGHT = 1.21
-const PARTNER_CHAR_WIDTH = 0.62
-const PARTNER_FONT_SIZES = [10, 9, 8, 7, 6.5] as const
-
-const partnerLines = (name: string, fontSize: number) => {
-  const perLine = Math.max(1, Math.floor(PARTNER_WIDTH / (PARTNER_CHAR_WIDTH * fontSize)))
-  return name.split(/\s+/u).reduce(
-    (state, word) => {
-      const chunks = Math.max(1, Math.ceil(word.length / perLine))
-      if (state.used > 0 && state.used + 1 + word.length <= perLine) {
-        return { lines: state.lines, used: state.used + 1 + word.length }
-      }
-      return { lines: state.lines + chunks, used: word.length - (chunks - 1) * perLine }
-    },
-    { lines: 0, used: 0 }
-  ).lines
-}
-
-export const partnerFontSize = (name: string) =>
-  PARTNER_FONT_SIZES.find(
-    size => partnerLines(name, size) * size * PARTNER_LINE_HEIGHT <= PARTNER_BOTTOM - PARTNER_TOP
-  ) ?? PARTNER_FONT_SIZES.at(-1)!
-
-const flowFontSize = (tasks: string[], bottom: number) =>
-  TASK_FONT_SIZES.find(size => flowHeight(tasks, size) <= bottom - TASK_TOP) ?? 7
+Font.registerHyphenationCallback(hyphenate)
 
 const styles = StyleSheet.create({
-  page: { backgroundColor: '#ffffff', color: NAVY, fontFamily: 'Roboto', fontSize: 10, fontWeight: 400 },
+  page: { backgroundColor: WHITE, color: NAVY, fontFamily: 'Roboto', fontSize: 10, fontWeight: 400 },
   absolute: { position: 'absolute' },
   banner: {
     backgroundColor: BANNER,
-    height: 22.7,
+    height: BANNER_BOX.height,
     justifyContent: 'center',
-    left: 24.7,
-    minWidth: 194.3,
-    paddingHorizontal: 4,
+    left: BANNER_BOX.left,
+    minWidth: BANNER_BOX.minWidth,
+    paddingHorizontal: BANNER_BOX.paddingHorizontal,
+    paddingTop: BANNER_BOX.paddingTop,
     position: 'absolute',
-    top: 105.3,
+    top: BANNER_BOX.top,
   },
-  bannerText: { color: '#ffffff', textTransform: 'uppercase' },
-  name: { color: '#305071', left: 23.6, position: 'absolute', width: 230 },
-  bar: { backgroundColor: NAVY, left: 26.9, position: 'absolute', width: 2.8 },
-  personalLine: { left: 45.3, position: 'absolute' },
+  bannerText: { color: WHITE, textTransform: 'uppercase' },
+  name: { color: NAME_COLOR, left: NAME_BOX.left, position: 'absolute', width: NAME_BOX.width },
+  bar: { backgroundColor: NAVY, left: SECTION_BAR.left, position: 'absolute', width: SECTION_BAR.width },
+  personalLine: { left: PERSONAL.left, position: 'absolute' },
   strong: { fontWeight: 900, textTransform: 'uppercase' },
   heading: {
     fontWeight: 900,
-    left: 46.1,
+    left: HEADING_LEFT,
     letterSpacing: HEADING_TRACKING,
     position: 'absolute',
     textTransform: 'uppercase',
   },
-  row: { alignItems: 'flex-start', flexDirection: 'row', left: 46.1, position: 'absolute', width: 176.3 },
+  row: { alignItems: 'flex-start', flexDirection: 'row', left: ROW_LEFT, position: 'absolute' },
   rowLabel: { marginTop: textShift(10) },
   rowLine: {
     borderBottomColor: NAVY,
-    borderBottomWidth: 0.75,
-    marginHorizontal: 1.5,
-    minHeight: 10,
-    paddingLeft: 3,
+    borderBottomWidth: ROW_LINE_WIDTH,
+    paddingLeft: ROW_LINE_PADDING,
   },
   rowValue: {
     fontSize: 10,
@@ -235,58 +159,70 @@ const styles = StyleSheet.create({
     maxLines: 1,
     position: 'relative',
     textOverflow: 'ellipsis',
-    top: 0.6,
+    top: ROW_VALUE_TOP,
   },
-  partnerName: { fontWeight: 900, lineHeight: 1.21, left: 46.1, position: 'absolute', width: 68 },
-  partnerLogo: { height: 54.6, left: 119.2, objectFit: 'contain', position: 'absolute', top: 418, width: 90.7 },
-  partnerPlaceholder: { backgroundColor: GRAY, height: 54.6, left: 119.2, position: 'absolute', top: 418, width: 90.7 },
-  tasksIntro: { left: 46.3, lineHeight: 1.3, position: 'absolute', width: 172 },
-  task: { left: 46.3, lineHeight: 1.2, position: 'absolute', width: 158.7 },
-  taskFlow: { left: 46.3, position: 'absolute', rowGap: 3, width: 158.7 },
-  taskFlowItem: { lineHeight: 1.2 },
+  partnerName: {
+    fontWeight: 900,
+    left: PARTNER_LEFT,
+    lineHeight: PARTNER_LINE_HEIGHT,
+    position: 'absolute',
+    width: PARTNER_WIDTH,
+  },
+  partnerLogo: { ...PARTNER_LOGO, objectFit: 'contain', position: 'absolute' },
+  partnerPlaceholder: { ...PARTNER_LOGO, backgroundColor: GRAY, position: 'absolute' },
+  tasksIntro: {
+    left: TASK_LEFT,
+    lineHeight: TASKS_INTRO_LINE_HEIGHT,
+    position: 'absolute',
+    width: TASKS_INTRO_WIDTH,
+  },
+  task: { left: TASK_LEFT, lineHeight: TASK_LINE_HEIGHT, position: 'absolute', width: TASK_WIDTH },
+  taskFlow: { left: TASK_LEFT, position: 'absolute', rowGap: TASK_GAP, width: TASK_WIDTH },
+  taskFlowItem: { lineHeight: TASK_LINE_HEIGHT },
   bullet: { color: GREEN, fontWeight: 900 },
-  signatureImage: { height: 28, left: 112, objectFit: 'contain', position: 'absolute', top: 646, width: 100 },
-  date: { fontWeight: 900, left: 46.1, position: 'absolute', textTransform: 'uppercase' },
-  qr: { left: 46.1, position: 'absolute', top: 735 },
-  verify: { fontSize: 7.5, left: 106, position: 'absolute', top: 742, width: 130 },
+  signatureImage: { ...SIGNATURE_BOX, objectFit: 'contain', position: 'absolute' },
+  date: { fontWeight: 900, left: HEADING_LEFT, position: 'absolute', textTransform: 'uppercase' },
+  qr: { left: QR_BOX.left, position: 'absolute', top: QR_BOX.top },
+  verify: { fontSize: 7.5, ...VERIFY_BOX, position: 'absolute' },
   verifyCode: { fontSize: 8, fontWeight: 900, marginTop: 2 },
-  headingRight: { fontWeight: 700, left: 264.8, lineHeight: 1.2, position: 'absolute', width: 290 },
+  headingRight: {
+    fontWeight: 700,
+    left: HEADING_RIGHT.left,
+    lineHeight: HEADING_RIGHT.lineHeight,
+    position: 'absolute',
+    width: HEADING_RIGHT.width,
+  },
   highlight: { color: GREEN, textTransform: 'uppercase' },
   skillLabel: {
     alignItems: 'center',
     backgroundColor: GREEN,
     flexDirection: 'row',
-    height: 22.9,
-    left: 269.3,
-    paddingLeft: 7,
-    paddingRight: 14.8,
-    paddingTop: 1,
+    height: SKILL_LABEL.height,
+    left: SKILL_LABEL.left,
+    paddingLeft: SKILL_LABEL.paddingLeft,
+    paddingRight: SKILL_LABEL.paddingRight,
+    paddingTop: SKILL_LABEL.paddingTop,
     position: 'absolute',
   },
-  skillName: { color: '#ffffff', fontSize: 11, fontWeight: 900, marginLeft: 6.7, textTransform: 'uppercase' },
+  skillName: {
+    color: WHITE,
+    fontSize: SKILL_NAME.size,
+    fontWeight: 900,
+    marginLeft: SKILL_NAME.marginLeft,
+    textTransform: 'uppercase',
+  },
   description: {
-    left: 269.1,
-    lineHeight: 1.4,
-    maxLines: 3,
+    left: SKILL_DESCRIPTION.left,
+    lineHeight: SKILL_DESCRIPTION.lineHeight,
+    maxLines: SKILL_DESCRIPTION.maxLines,
     position: 'absolute',
     textOverflow: 'ellipsis',
-    width: 280.4,
+    width: SKILL_DESCRIPTION.width,
   },
   levelText: { color: LEVEL_GRAY, position: 'absolute', right: LEVEL_RIGHT, textAlign: 'right' },
   levelWord: { color: GREEN, fontWeight: 900, textTransform: 'lowercase' },
-  emblem: { height: 34.1, left: 397.5, position: 'absolute', top: 767.9, width: 150.1 },
+  emblem: { ...EMBLEM_BOX, position: 'absolute' },
 })
-
-const formatDate = (value: string | null) => {
-  if (!value) return ''
-  const [year, month, day] = value.slice(0, 10).split('-')
-  if (!(year && month && day)) return ''
-  return `${day}.${month}.${year}`
-}
-
-const nameSize = (value: string) => Math.min(36, Math.floor(400 / Math.max(value.length, 1)))
-
-const skillNameSize = (value: string) => Math.min(11, Math.floor(3300 / Math.max(value.length, 1)) / 10)
 
 const ICON_STROKE = {
   fill: 'none',
@@ -320,10 +256,22 @@ const IconShape = ({ attrs, tag }: { attrs: Record<string, string>; tag: string 
   return null
 }
 
+const ICON_PLACEHOLDER = {
+  backgroundColor: GRAY,
+  height: SKILL_ICON.height,
+  marginTop: SKILL_ICON.offset,
+  width: SKILL_ICON.width,
+}
+
 const SkillIcon = ({ iconNode }: { iconNode?: IconNode | null }) => {
-  if (!iconNode) return <View style={{ height: 14.3, width: 14.6 }} />
+  if (!iconNode) return <View style={ICON_PLACEHOLDER} />
   return (
-    <Svg height={14.3} viewBox="0 0 24 24" width={14.6}>
+    <Svg
+      height={SKILL_ICON.height}
+      style={{ marginTop: SKILL_ICON.offset }}
+      viewBox="0 0 24 24"
+      width={SKILL_ICON.width}
+    >
       {iconNode.map(([tag, attrs]) => (
         <IconShape
           attrs={attrs}
@@ -335,8 +283,26 @@ const SkillIcon = ({ iconNode }: { iconNode?: IconNode | null }) => {
   )
 }
 
-const RowLine = ({ flex, inset = 1.5, value }: { flex: number; inset?: number; value: string }) => (
-  <View style={[styles.rowLine, { flexBasis: 0, flexGrow: flex, marginLeft: inset }]}>
+interface RowLineSpec {
+  flex: number
+  lineHeight: number
+  marginLeft: number
+  marginRight: number
+}
+
+const RowLine = ({ spec, value }: { spec: RowLineSpec; value: string }) => (
+  <View
+    style={[
+      styles.rowLine,
+      {
+        flexBasis: 0,
+        flexGrow: spec.flex,
+        marginLeft: spec.marginLeft,
+        marginRight: spec.marginRight,
+        minHeight: spec.lineHeight,
+      },
+    ]}
+  >
     <Text style={styles.rowValue}>{value}</Text>
   </View>
 )
@@ -344,68 +310,76 @@ const RowLine = ({ flex, inset = 1.5, value }: { flex: number; inset?: number; v
 export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) => {
   const { activity, holder, organization } = data
   const lastName = holder.lastName ?? ''
-  const tasks = activity.tasks.filter(Boolean).slice(0, 4)
-  const tasksBottom = organization.signatureUrl ? TASK_SIGNED_BOTTOM : TASK_BOTTOM
-  const flowSize = flowFontSize(tasks, tasksBottom)
-  const skills = data.skills.slice(0, 4)
-  const titleSize = Math.min(15.9, (15.9 * 23) / Math.max(labels.title.length, 1))
+  const plan = taskPlan(activity.tasks, Boolean(organization.signatureUrl))
+  const skills = data.skills.slice(0, SKILL_LABEL_TOPS.length)
+  const bannerSize = titleSize(labels.title)
 
   return (
     <Document author="GloRe" title={`${labels.title}: ${holder.firstName} ${lastName}`.trim()}>
-      <Page size="A4" style={styles.page}>
-        <Svg height={306.5} style={[styles.absolute, { left: 256, top: 19.5 }]} viewBox="0 0 319.5 306.5" width={319.5}>
+      <Page size={[PAGE_WIDTH, PAGE_HEIGHT]} style={styles.page}>
+        <Svg
+          height={ARROWS_BOX.height}
+          style={[styles.absolute, { left: ARROWS_BOX.left, top: ARROWS_BOX.top }]}
+          viewBox={`0 0 ${ARROWS_BOX.width} ${ARROWS_BOX.height}`}
+          width={ARROWS_BOX.width}
+        >
           {FADED_ARROWS.map(path => (
             <Path d={path.d} fill={path.fill} key={path.d.slice(0, 24)} />
           ))}
         </Svg>
 
         {/* Header */}
-        <Svg height={86} style={[styles.absolute, { left: 20, top: 18 }]} viewBox="0 0 218 86" width={218}>
+        <Svg
+          height={LOGO_BOX.height}
+          style={[styles.absolute, { left: LOGO_BOX.left, top: LOGO_BOX.top }]}
+          viewBox={`0 0 ${LOGO_BOX.width} ${LOGO_BOX.height}`}
+          width={LOGO_BOX.width}
+        >
           {LOGO_PATHS.map(path => (
             <Path d={path.d} fill={path.fill} key={path.d.slice(0, 24)} />
           ))}
         </Svg>
         <View style={styles.banner}>
-          <Text style={[styles.bannerText, { fontSize: titleSize, letterSpacing: BANNER_TRACKING * titleSize }]}>
+          <Text style={[styles.bannerText, { fontSize: bannerSize, letterSpacing: BANNER_TRACKING * bannerSize }]}>
             {labels.title}
           </Text>
         </View>
-        <Text style={[styles.name, placed(137, nameSize(holder.firstName))]}>{holder.firstName}</Text>
-        <Text style={[styles.name, { fontWeight: 700 }, placed(173, nameSize(lastName))]}>{lastName}</Text>
+        <Text style={[styles.name, placed(NAME_BOX.firstTop, nameSize(holder.firstName))]}>{holder.firstName}</Text>
+        <Text style={[styles.name, { fontWeight: 700 }, placed(NAME_BOX.lastTop, nameSize(lastName))]}>{lastName}</Text>
 
         {/* Personal */}
-        <View style={[styles.bar, { backgroundColor: GREEN, height: 38.7, top: 230.3 }]} />
-        <Text style={[styles.personalLine, placed(227, 9)]}>
+        <View style={[styles.bar, { backgroundColor: GREEN, height: PERSONAL.barHeight, top: PERSONAL.barTop }]} />
+        <Text style={[styles.personalLine, placed(PERSONAL.tops[0]!, PERSONAL.size)]}>
           {`${labels.nationality} `}
           <Text style={styles.strong}>{holder.nationality ?? ''}</Text>
         </Text>
-        <Text style={[styles.personalLine, placed(243, 9)]}>
+        <Text style={[styles.personalLine, placed(PERSONAL.tops[1]!, PERSONAL.size)]}>
           {`${labels.dateOfBirth} `}
           <Text style={styles.strong}>{formatDate(holder.birthday)}</Text>
         </Text>
-        <Text style={[styles.personalLine, placed(259, 9)]}>
+        <Text style={[styles.personalLine, placed(PERSONAL.tops[2]!, PERSONAL.size)]}>
           {`${labels.placeOfBirth} `}
           <Text style={styles.strong}>{holder.birthPlace ?? ''}</Text>
         </Text>
 
         {/* Volunteering */}
-        <View style={[styles.bar, { height: 173.9, top: 299 }]} />
-        <Text style={[styles.heading, placed(296.1, 13.2)]}>{labels.volunteering}</Text>
-        <View style={[styles.row, { top: 322.8 }]}>
+        <View style={[styles.bar, { height: VOLUNTEERING.barHeight, top: VOLUNTEERING.barTop }]} />
+        <Text style={[styles.heading, placed(VOLUNTEERING.headingTop, HEADING_SIZE)]}>{labels.volunteering}</Text>
+        <View style={[styles.row, { top: PERIOD_ROW.top, width: PERIOD_ROW.width }]}>
           <Text style={styles.rowLabel}>{labels.from}</Text>
-          <RowLine flex={53.9} value={formatDate(activity.startDate)} />
+          <RowLine spec={PERIOD_FROM} value={formatDate(activity.startDate)} />
           <Text style={styles.rowLabel}>{labels.to}</Text>
-          <RowLine flex={82.1} value={formatDate(activity.endDate)} />
+          <RowLine spec={PERIOD_TO} value={formatDate(activity.endDate)} />
         </View>
-        <View style={[styles.row, { top: 340.8, width: 79.5 }]}>
+        <View style={[styles.row, { top: HOURS_ROW.top, width: HOURS_ROW.width }]}>
           <Text style={styles.rowLabel}>{labels.hours}</Text>
-          <RowLine flex={1} value={activity.duration ? String(activity.duration) : ''} />
+          <RowLine spec={HOURS_ROW} value={activity.duration ? String(activity.duration) : ''} />
         </View>
-        <View style={[styles.row, { top: 358.8 }]}>
+        <View style={[styles.row, { top: LOCATION_ROW.top, width: LOCATION_ROW.width }]}>
           <Text style={styles.rowLabel}>{labels.at}</Text>
-          <RowLine flex={1} value={activity.location ?? ''} />
+          <RowLine spec={LOCATION_ROW} value={activity.location ?? ''} />
         </View>
-        <Text style={[styles.absolute, { left: 46.1 }, placed(385.1, 10)]}>{labels.partnership}</Text>
+        <Text style={[styles.absolute, { left: PARTNER_LEFT }, placed(PARTNERSHIP_TOP, 10)]}>{labels.partnership}</Text>
         <Text style={[styles.partnerName, placed(PARTNER_TOP, partnerFontSize(organization.name))]}>
           {organization.name}
         </Text>
@@ -416,36 +390,36 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         )}
 
         {/* Main tasks */}
-        <View style={[styles.bar, { height: 184.4, top: 503.3 }]} />
-        <Text style={[styles.heading, placed(499, 13.2)]}>{labels.mainTasks}</Text>
-        <Text style={[styles.tasksIntro, placed(521.6, 10)]}>{labels.tasksIntro}</Text>
-        {fitsPitch(tasks, tasksBottom) ? (
-          tasks.map((task, index) => (
-            <Text key={task} style={[styles.task, placed(TASK_TOP + index * TASK_PITCH, 10)]}>
-              <Text style={styles.bullet}>{'• '}</Text>
-              {task}
-            </Text>
-          ))
-        ) : (
-          <View style={[styles.taskFlow, { top: placed(TASK_TOP, flowSize).top }]}>
-            {tasks.map(task => (
-              <Text key={task} style={[styles.taskFlowItem, { fontSize: flowSize }]}>
+        <View style={[styles.bar, { height: TASKS_SECTION.barHeight, top: TASKS_SECTION.barTop }]} />
+        <Text style={[styles.heading, placed(TASKS_SECTION.headingTop, HEADING_SIZE)]}>{labels.mainTasks}</Text>
+        <Text style={[styles.tasksIntro, placed(TASKS_SECTION.introTop, 10)]}>{labels.tasksIntro}</Text>
+        {plan.flow ? (
+          <View style={[styles.taskFlow, { top: placed(TASK_TOP, plan.size).top }]}>
+            {plan.tasks.map(task => (
+              <Text key={task} style={[styles.taskFlowItem, { fontSize: plan.size }]}>
                 <Text style={styles.bullet}>{'• '}</Text>
                 {task}
               </Text>
             ))}
           </View>
+        ) : (
+          plan.tasks.map((task, index) => (
+            <Text key={task} style={[styles.task, placed(TASK_TOP + index * TASK_PITCH, 10)]}>
+              <Text style={styles.bullet}>{'• '}</Text>
+              {task}
+            </Text>
+          ))
         )}
         {organization.signatureUrl ? <Image src={organization.signatureUrl} style={styles.signatureImage} /> : null}
-        <View style={[styles.row, { top: 676.8, width: 172.8 }]}>
+        <View style={[styles.row, { top: REPRESENTED_ROW.top, width: REPRESENTED_ROW.width }]}>
           <Text style={styles.rowLabel}>{labels.representedBy}</Text>
-          <RowLine flex={1} inset={5.7} value={organization.legalRepresentative ?? ''} />
+          <RowLine spec={REPRESENTED_ROW} value={organization.legalRepresentative ?? ''} />
         </View>
-        <Text style={[styles.date, placed(708.3, 10)]}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
+        <Text style={[styles.date, placed(DATE_TOP, 10)]}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
 
         {/* Verification */}
         {data.qrPath ? (
-          <Svg height={52} style={styles.qr} viewBox={`0 0 ${data.qrSize} ${data.qrSize}`} width={52}>
+          <Svg height={QR_BOX.size} style={styles.qr} viewBox={`0 0 ${data.qrSize} ${data.qrSize}`} width={QR_BOX.size}>
             <Path d={data.qrPath} fill={NAVY} />
           </Svg>
         ) : null}
@@ -457,15 +431,14 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         ) : null}
 
         {/* Skills */}
-        <Text style={[styles.headingRight, placed(187, 11)]}>
+        <Text style={[styles.headingRight, placed(HEADING_RIGHT.top, HEADING_RIGHT.size)]}>
           {labels.headingBefore}
           <Text style={styles.highlight}>{labels.headingHighlight}</Text>
           {labels.headingAfter}
         </Text>
         {skills.map((skill, index) => {
-          const top = SKILL_TOPS[index] ?? 0
-          const steps = Math.min(DOT_LEFTS.length, skill.steps)
-          const level = Math.max(0, Math.min(steps, skill.level))
+          const top = SKILL_LABEL_TOPS[index] ?? 0
+          const { level, steps } = skillDots(skill)
           return (
             <View key={skill.name}>
               <View style={[styles.skillLabel, { top }]}>
@@ -473,16 +446,34 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
                 <Text style={[styles.skillName, { fontSize: skillNameSize(skill.name) }]}>{skill.name}</Text>
               </View>
               {skill.description ? (
-                <Text style={[styles.description, placed(top + DESCRIPTION_OFFSET, 10)]}>{skill.description}</Text>
+                <Text
+                  style={[
+                    styles.description,
+                    placed(top + (SKILL_DESCRIPTION_OFFSETS[index] ?? 0), SKILL_DESCRIPTION.size),
+                  ]}
+                >
+                  {skill.description}
+                </Text>
               ) : null}
-              <Svg height={11.2} style={[styles.absolute, { left: DOT_LEFTS[0], top: top + 85.1 }]} width={153.4}>
+              <Svg
+                height={DOT_SIZE}
+                style={[styles.absolute, { left: DOT_LEFTS[0], top: top + (SKILL_DOT_OFFSETS[index] ?? 0) }]}
+                width={DOT_LEFTS[4]! - DOT_LEFTS[0]! + DOT_SIZE}
+              >
                 {DOT_LEFTS.slice(0, steps).map((left, dot) => (
-                  <Circle cx={left - 269.3 + 5.6} cy={5.6} fill={dot < level ? GREEN : GRAY} key={left} r={5.6} />
+                  <Circle
+                    cx={left - DOT_LEFTS[0]! + DOT_SIZE / 2}
+                    cy={DOT_SIZE / 2}
+                    fill={dot < level ? GREEN : GRAY}
+                    key={left}
+                    r={DOT_SIZE / 2}
+                  />
                 ))}
               </Svg>
               {level > 0 ? (
-                <Text style={[styles.levelText, placed(top + LEVEL_OFFSET, 9)]}>
-                  {`${labels.level} `}
+                <Text style={[styles.levelText, placed(top + (SKILL_LEVEL_OFFSETS[index] ?? 0), LEVEL_SIZE)]}>
+                  {labels.level}
+                  <Text style={{ letterSpacing: LEVEL_SPACE_TRACKING }}> </Text>
                   <Text style={styles.levelWord}>{skill.levelLabel ?? labels.levels[level - 1] ?? ''}</Text>
                 </Text>
               ) : null}
@@ -491,7 +482,7 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         })}
 
         {/* Footer */}
-        <Image src={assetSource('/certificate/erasmus-plus.png')} style={styles.emblem} />
+        <Image src={assetSource(EMBLEM_SRC)} style={styles.emblem} />
       </Page>
     </Document>
   )

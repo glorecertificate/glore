@@ -16,7 +16,7 @@ type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name
   profile: Pick<InferSelectModel<typeof organizationProfiles>, 'avatarUrl'> | null
 }
 type RatingRow = InferSelectModel<typeof organizationRatings>
-type CourseRow = Pick<InferSelectModel<typeof courses>, 'id' | 'slug' | 'title'>
+type CourseRow = Pick<InferSelectModel<typeof courses>, 'icon' | 'id' | 'slug' | 'title'>
 type CertificateSkillRow = Omit<InferSelectModel<typeof certificateSkills>, 'courseId'> & { course: CourseRow }
 type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName' | 'lastName'> &
   Partial<Pick<InferSelectModel<typeof users>, 'email'>>

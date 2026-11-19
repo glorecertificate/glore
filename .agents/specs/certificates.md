@@ -42,6 +42,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - An `in_review` request goes back to `submitted` when its tutor changes. `changes_requested` keeps its status.
 - Tutors self-assign unassigned `submitted` requests of their org.
 - The tutor queue is scoped to the active org. Drafts are visible to their owner only.
+- The pre-issue preview data (`findCertificatePreview`) uses the same gate as the detail page and the PDF route (`findCertificate`).
 - ONLY tutors review. Admins and representatives manage assignment but never review directly.
 - Demoting, removing, or losing a tutor returns open reviews to the pool (`certificate.unassigned`).
 
@@ -78,7 +79,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Skills: 3 to 4 completed skill courses. The chosen description is shown read-only (the choice in the course is final), with no level name, and the reflection is prefilled as evidence.
 - Your organization: anonymous rating, shown to the org only as an aggregate of 3 or more.
   - Fields: `experience`, `support`, `certificationSupport` (1 to 5), `wouldRecommend`, and a `comment` of up to 400 characters.
-- Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
+- Review: language from the UI locale, missing personal data inline, live `CertificatePage`, a scaled copy of the PDF page.
 - One column in a centered card. A toolbar above it holds the stepper (phones: "Step N of 4" and a progress bar), the save status, Save and exit, and an overflow menu with Discard draft. Review is a check-your-answers list with a Change button per row, then the live thumbnail, language, and missing personal data. The footer hides Back on step 1, and sticks to the bottom on phones.
 - Drafts autosave through `saveCertificateDraft` only after the volunteer edits a field, so opening the wizard never creates a draft. Hitting the 5 draft cap shows a dedicated message. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
 - A new request after a withdrawal starts prefilled from the withdrawn request of the active organization (`withdrawnSource`, `prefillValues`). Skills that are no longer completed are dropped, and the blind description step stays as it is. Nothing is saved until the volunteer edits a field.
@@ -120,7 +121,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Left side: the previous feedback (neutral card), the volunteer, experience and tasks (read-only, with an Edit button that opens the fields in place), and skills with the chosen description, evidence, and the reflection (`findReviewContext`, reviewer only).
 - The band shows the status and "Submitted N days ago" as text, and Start review for a `submitted` request.
 - Right side, a sticky 400 px "Your review" panel (wider than the 320 px rail because it holds inputs): per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a general comment, collapsible notes per section, then Approve, Request changes, and Reject. A `changes_requested` request replaces the panel with a waiting note.
-- Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`. On coarse pointers the dialog shows the HTML `CertificateThumbnail` built from the form values, plus an Open PDF link to the blob, because iOS Safari renders `<object>` PDFs poorly (`useCoarsePointer`). Desktop keeps the `<object>` embed.
+- Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`. On coarse pointers the dialog shows the HTML `CertificatePage` built from the form values and the signatory of `findCertificatePreview`, plus an Open PDF link to the blob, because iOS Safari renders `<object>` PDFs poorly (`useCoarsePointer`). Desktop keeps the `<object>` embed.
 - Below `lg`, the panel follows the evidence, and a fixed bottom bar holds Approve.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
 - `Start review` (`StartReviewButton` in the band) claims a `submitted` request.

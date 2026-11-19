@@ -6,6 +6,30 @@
 
 @plugin "tailwind-scrollbar-hide";
 
+@font-face {
+  font-family: "Certificate Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Certificate Roboto";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/roboto/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Certificate Roboto";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/roboto/Roboto-Black.ttf") format("truetype");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

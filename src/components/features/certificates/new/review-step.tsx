@@ -3,11 +3,12 @@
 import { type Locale, useTranslations } from 'next-intl'
 import { useFormContext, useWatch } from 'react-hook-form'
 
-import { CertificateThumbnail } from '@/components/features/certificates/certificate-thumbnail'
+import { CertificatePage } from '@/components/features/certificates/certificate-page'
 import { FieldError } from '@/components/features/certificates/field-error'
 import { SectionNote } from '@/components/features/certificates/new/section-note'
 import { type SkillOption } from '@/components/features/certificates/new/values'
-import { type PersonalField, formatActivityPeriod, pdfDate } from '@/components/features/certificates/rules'
+import { regionName } from '@/components/features/certificates/region-name'
+import { type PersonalField, formatActivityPeriod } from '@/components/features/certificates/rules'
 import { type WizardValues } from '@/components/features/certificates/schemas'
 import { useI18n } from '@/components/providers/i18n'
 import { Banner } from '@/components/ui/banner'
@@ -17,7 +18,6 @@ import { DatePicker } from '@/components/ui/date-picker'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
-import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 
 interface ReviewStepProps {
@@ -49,20 +49,48 @@ const Thumbnail = ({
   const holderLastName = values.personal?.lastName?.trim() || lastName
 
   return (
-    <CertificateThumbnail
-      end={pdfDate(values.activityEndDate)}
-      firstName={firstName}
-      hours={Number(values.activityDuration) || null}
+    <CertificatePage
+      input={{
+        activity: {
+          duration: Number(values.activityDuration) || null,
+          endDate: values.activityEndDate || null,
+          location: values.activityLocation || null,
+          startDate: values.activityStartDate || null,
+          tasks: (values.tasks ?? []).flatMap(task => (task?.text?.trim() ? [task.text.trim()] : [])),
+        },
+        code: null,
+        holder: {
+          birthPlace: values.personal?.birthPlace || null,
+          birthday: values.personal?.birthday || null,
+          firstName,
+          lastName: holderLastName ?? null,
+          nationality: regionName(values.personal?.nationality || null, language),
+        },
+        issuedAt: null,
+        organization: {
+          legalRepresentative: null,
+          logoUrl: organization.logoUrl,
+          name: organization.name,
+          signatureUrl: null,
+        },
+        skills: (values.skills ?? []).flatMap(skill => {
+          const option = options.find(({ id }) => id === skill?.courseId)
+          if (!option) return []
+          return [
+            {
+              description: option.description
+                ? localizeRecord(option.description, language as Locale, DEFAULT_LOCALE) || null
+                : null,
+              icon: option.icon,
+              level: 0,
+              name: titles.get(option.id) ?? '',
+              steps: 0,
+            },
+          ]
+        }),
+      }}
       label={t('thumbnailLabel')}
-      lastName={holderLastName}
-      location={values.activityLocation}
-      logoUrl={organization.logoUrl}
-      organization={organization.name}
-      skills={(values.skills ?? []).flatMap(skill =>
-        skill?.courseId ? [{ level: null, name: titles.get(skill.courseId) ?? '', steps: SKILL_LEVELS.length }] : []
-      )}
-      start={pdfDate(values.activityStartDate)}
-      tasks={(values.tasks ?? []).flatMap(task => (task?.text?.trim() ? [task.text.trim()] : []))}
+      language={language}
     />
   )
 }

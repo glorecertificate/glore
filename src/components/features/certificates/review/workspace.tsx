@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 
+import { findCertificatePreview } from '@/actions/certificates/preview'
 import { type CertificateReviewNotes, type HolderCourseResult, type ReviewHolder } from '@/actions/certificates/queries'
 import {
   approveCertificate,
@@ -14,9 +15,11 @@ import {
   rejectCertificate,
   requestCertificateChanges,
 } from '@/actions/certificates/review'
+import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
 import { FieldError } from '@/components/features/certificates/field-error'
+import { regionName } from '@/components/features/certificates/region-name'
 import { EvaluationSection } from '@/components/features/certificates/review/evaluation-section'
-import { type PreviewCertificate, PreviewDialog } from '@/components/features/certificates/review/preview-dialog'
+import { PreviewDialog } from '@/components/features/certificates/review/preview-dialog'
 import { RejectDialog } from '@/components/features/certificates/review/reject-dialog'
 import { RequestPanel } from '@/components/features/certificates/review/request-panel'
 import { SectionComment } from '@/components/features/certificates/review/section-comment'
@@ -27,7 +30,6 @@ import {
   hasChangeRequest,
   reviewDefaults,
 } from '@/components/features/certificates/review/values'
-import { pdfDate } from '@/components/features/certificates/rules'
 import { type ReviewFormValues, reviewFormSchema } from '@/components/features/certificates/schemas'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
@@ -50,15 +52,13 @@ const SECTION_LABELS = {
 
 type Busy = 'approve' | 'changes' | 'preview' | 'reject' | null
 
-const emptyPreview: PreviewCertificate = {
-  end: null,
-  firstName: '',
-  hours: null,
-  location: null,
-  organization: '',
+const emptyPreview: CertificateInput = {
+  activity: { duration: null, endDate: null, location: null, startDate: null, tasks: [] },
+  code: null,
+  holder: { birthPlace: null, birthday: null, firstName: '', lastName: null, nationality: null },
+  issuedAt: null,
+  organization: { legalRepresentative: null, logoUrl: null, name: '', signatureUrl: null },
   skills: [],
-  start: null,
-  tasks: [],
 }
 
 const decodePdf = (base64: string) => {
@@ -80,7 +80,7 @@ export const ReviewWorkspace = ({
   const t = useTranslations('CertificateReview')
   const { localize } = useI18n()
   const { push } = useRouter()
-  const [previewData, setPreviewData] = useState<PreviewCertificate | null>(null)
+  const [previewData, setPreviewData] = useState<CertificateInput | null>(null)
   const [busy, setBusy] = useState<Busy>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [rejecting, setRejecting] = useState(false)
@@ -106,28 +106,46 @@ export const ReviewWorkspace = ({
     return t('errorGeneric')
   }
 
-  const previewCertificate = (values: ReviewFormValues): PreviewCertificate => ({
+  const previewCertificate = (
+    values: ReviewFormValues,
+    signatory: CertificateInput['organization'] | null
+  ): CertificateInput => ({
+    activity: {
+      duration: values.activityDuration || null,
+      endDate: values.activityEndDate || null,
+      location: values.activityLocation || null,
+      startDate: values.activityStartDate || null,
+      tasks: values.tasks.map(({ text }) => text),
+    },
     code: certificate.code,
-    end: pdfDate(values.activityEndDate),
-    firstName: certificate.holder?.firstName ?? '',
-    hours: values.activityDuration || null,
-    lastName: certificate.holder?.lastName,
-    location: values.activityLocation,
-    logoUrl: certificate.organization.avatarUrl,
-    organization: certificate.organization.name,
+    holder: {
+      birthPlace: holder.birthPlace,
+      birthday: holder.birthday,
+      firstName: certificate.holder?.firstName ?? '',
+      lastName: certificate.holder?.lastName ?? null,
+      nationality: regionName(holder.nationality, certificate.language),
+    },
+    issuedAt: null,
+    organization: {
+      legalRepresentative: signatory?.legalRepresentative ?? null,
+      logoUrl: certificate.organization.avatarUrl,
+      name: certificate.organization.name,
+      signatureUrl: signatory?.signatureUrl ?? null,
+    },
     skills: values.skills.flatMap(({ courseId, include, level }) => {
       const skill = certificate.skills.find(item => item.course.id === courseId)
       if (!include || !skill) return []
+      const text = level ? results[courseId]?.descriptions[level] : null
       return [
         {
-          level: level ? SKILL_LEVELS.indexOf(level) + 1 : null,
+          description: text ? localize(text) : null,
+          icon: skill.course.icon,
+          level: level ? SKILL_LEVELS.indexOf(level) + 1 : 0,
           name: skill.course.title ? localize(skill.course.title) : skill.course.slug,
           steps: SKILL_LEVELS.length,
         },
       ]
     }),
-    start: pdfDate(values.activityStartDate),
-    tasks: values.tasks.map(({ text }) => text),
   })
 
   const closePreview = () => {
@@ -145,9 +163,14 @@ export const ReviewWorkspace = ({
   }
 
   const preview = form.handleSubmit(async values => {
-    const { data, error } = await run('preview', () => previewCertificatePdf(certificate.id, approvalPayload(values)))
+    const [{ data, error }, source] = await run('preview', () =>
+      Promise.all([
+        previewCertificatePdf(certificate.id, approvalPayload(values)),
+        findCertificatePreview(certificate.id),
+      ])
+    )
     if (error || !data) return toast.error(failure(error?.code ?? ''))
-    setPreviewData(previewCertificate(values))
+    setPreviewData(previewCertificate(values, source.data?.organization ?? null))
     return setPreviewUrl(decodePdf(data.pdf))
   })
 
@@ -291,6 +314,7 @@ export const ReviewWorkspace = ({
       <PreviewDialog
         busy={busy === 'approve'}
         certificate={previewData ?? emptyPreview}
+        language={certificate.language}
         onConfirm={() => void approve()}
         onOpenChange={open => {
           if (!open) closePreview()

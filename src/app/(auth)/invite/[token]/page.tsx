@@ -2,12 +2,12 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInvitationPreview } from '@/actions/organizations/previews'
-import { BrandShell } from '@/components/features/auth/brand-shell'
+import { AuthSplit } from '@/components/features/auth/auth-split'
 import { InvitationCard } from '@/components/features/organization/invite/invitation-card'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { maskEmail } from '@/components/features/organization/utils'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { Card } from '@/components/ui/card'
+import { PageTitle } from '@/components/layout/page-title'
 import { normalizeEmail } from '@/db/mutations/invitation'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -67,13 +67,14 @@ const InviteContent = async ({
 }
 
 const InvitePage = ({ params, searchParams }: PageProps<'/invite/[token]'>) => (
-  <BrandShell size="sm">
-    <Card className="gap-6 p-6 sm:p-8">
-      <Suspense fallback={<LoadingFallback />}>
-        <InviteContent params={params} searchParams={searchParams} />
-      </Suspense>
-    </Card>
-  </BrandShell>
+  <AuthSplit
+    message={<PageTitle namespace="Invite" name="panelMessage" />}
+    title={<PageTitle namespace="Invite" name="panelTitle" />}
+  >
+    <Suspense fallback={<LoadingFallback />}>
+      <InviteContent params={params} searchParams={searchParams} />
+    </Suspense>
+  </AuthSplit>
 )
 
 export default InvitePage

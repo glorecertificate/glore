@@ -793,7 +793,9 @@
     "sendLink": "Invia link",
     "sendingLink": "Invio in corso…",
     "savePassword": "Salva password",
-    "savingPassword": "Salvataggio in corso…"
+    "savingPassword": "Salvataggio in corso…",
+    "panelTitle": "Entra nella rete GloRe",
+    "panelMessage": "Dai valore alle tue esperienze di volontariato."
   },
   "CourseCommon": {
     "courseCreationFailed": "Impossibile creare il corso. Riprova.",
@@ -2785,7 +2787,9 @@
     "error_number": "Inserisci un numero intero maggiore di zero.",
     "error_charter": "Devi accettare la Carta della Qualità per candidarti.",
     "termsAccept": "Accetto i <terms>Termini d'uso</terms> a nome dell'organizzazione.",
-    "error_terms": "Devi accettare i termini d'uso per candidarti."
+    "error_terms": "Devi accettare i termini d'uso per candidarti.",
+    "panelTitle": "Registra la tua organizzazione",
+    "panelMessage": "Raccontaci la tua organizzazione. Esaminiamo ogni richiesta prima di aprire un account."
   },
   "Admin": {
     "team": {
@@ -3276,7 +3280,9 @@
     "next_organization": "Configura la tua organizzazione",
     "goToDashboard": "Vai alla dashboard",
     "termsAccept": "Accetto i <terms>Termini d'uso</terms> e ho letto l''<privacy>Informativa sulla privacy</privacy>.",
-    "termsRequired": "Devi accettare i termini d'uso per continuare."
+    "termsRequired": "Devi accettare i termini d'uso per continuare.",
+    "panelTitle": "Benvenuto su GloRe",
+    "panelMessage": "Conferma alcuni dati per completare il tuo account."
   },
   "Email": {
     "auth/invite": {
@@ -3595,7 +3601,9 @@
     "sendProofAgain": "Invia di nuovo il link",
     "proofSent": "Abbiamo inviato un link di conferma a {email}. Aprilo dalla tua casella di posta per continuare.",
     "status_member_title": "Sei già un membro",
-    "status_member_description": "Fai già parte di {organization}. Apri la dashboard per continuare."
+    "status_member_description": "Fai già parte di {organization}. Apri la dashboard per continuare.",
+    "panelTitle": "Sei stato invitato",
+    "panelMessage": "Unisciti alla tua organizzazione su GloRe e inizia a raccogliere certificati."
   },
   "JoinLink": {
     "metaTitle": "Unisciti a un'organizzazione",
@@ -3623,7 +3631,9 @@
     "requestedTitle": "Richiesta inviata",
     "requestedDescription": "Il team di {organization} la esaminerà. Ti avviseremo via email della decisione.",
     "goToDashboard": "Vai alla dashboard",
-    "goToLogin": "Vai all'accesso"
+    "goToLogin": "Vai all'accesso",
+    "panelTitle": "Sei stato invitato",
+    "panelMessage": "Unisciti alla tua organizzazione su GloRe e inizia a raccogliere certificati."
   },
   "Invitations": {
     "tab": "Inviti",

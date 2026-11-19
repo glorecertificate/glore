@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
@@ -63,9 +62,14 @@ export const PrivacyForm = () => {
               {user.publicProfile ? t('publicProfileOn') : t('publicProfileOff')}
             </p>
             {user.publicProfile && user.username && (
-              <Link className="text-sm underline underline-offset-4" href={`/${user.username}`} target="_blank">
-                {`/${user.username}`}
-              </Link>
+              <a
+                className="text-sm underline underline-offset-4"
+                href={`/@${user.username}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {`/@${user.username}`}
+              </a>
             )}
           </div>
           <Switch

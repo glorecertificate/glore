@@ -99,7 +99,7 @@ Three domain facts shape recurring decisions:
 - Volunteers certify each skill by a blind choice among three level descriptions in the last lesson of the course. They submit a certificate tied to a volunteering experience: selected skill courses, language, activity dates, duration, location, description, and an organization rating of 1 to 5.
 - Submission auto-assigns a tutor. Approval generates the PDF.
 - `/verify/<code>` is the canonical public page (`certificates.md`, "Public verification").
-- `/{username}` shows the featured certificate for holders who opted in.
+- `/@{username}` shows the featured certificate for holders who opted in.
 - The public page shows a verified badge, volunteer and org, activity metrics, issued date, PDF download, QR code, share meta (Open Graph, Twitter Card), and a join-GloRe CTA.
 
 ### AI writing assistant

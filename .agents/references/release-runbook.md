@@ -83,7 +83,7 @@ The import refuses production once any course or doc exists, so steps 4 and 5 pa
 Run these on the preview domain before the release and on the production domain after it.
 
 1. Log in as an existing user and open the dashboard.
-2. Open a legacy profile link with `?v=<handle>` and a `/verify/<code>` link.
+2. Open a legacy profile link `/<username>?v=<handle>`, a `/@<username>` profile, and a `/verify/<code>` link.
 3. Request a password reset and confirm the mail arrives.
 4. As an editor, open a course and run one AI menu command.
 5. Editors review the imported courses and publish them per language.

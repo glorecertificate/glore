@@ -18,11 +18,32 @@ import {
 } from '@/lib/constants'
 import { prefixCookieName } from '@/lib/cookies'
 import { safeNextPath } from '@/lib/next-path'
+import { isReservedUsername } from '@/lib/username'
 
 export const config: ProxyConfig = {
   matcher: [
     '/((?!_next/static|_next/image|api/|favicon.ico|sitemap.xml|robots.txt|manifest.json|sw.js|offline|.*.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
+}
+
+const PROFILE_PATH = /^\/@([a-zA-Z0-9.]+)(\/opengraph-image[\w-]*)?$/u
+const PROFILE_INTERNAL_PATH = /^\/u\/([a-zA-Z0-9.]+)$/u
+const PROFILE_IMAGE_PATH = /^\/u\/[a-zA-Z0-9.]+\/opengraph-image[\w-]*$/u
+const LEGACY_PROFILE_PATH = /^\/([a-zA-Z0-9.]+)$/u
+
+const profileResponse = (request: NextRequest) => {
+  const { nextUrl, url } = request
+  const { pathname, searchParams } = nextUrl
+
+  const internal = PROFILE_INTERNAL_PATH.exec(pathname)
+  if (internal) return NextResponse.redirect(new URL(`/@${internal[1]}`, url), 308)
+
+  const profile = PROFILE_PATH.exec(pathname)
+  if (profile) return NextResponse.rewrite(new URL(`/u/${profile[1]}${profile[2] ?? ''}${nextUrl.search}`, url))
+
+  const legacy = LEGACY_PROFILE_PATH.exec(pathname)
+  if (!legacy || !searchParams.has('v') || isReservedUsername(legacy[1] ?? '')) return null
+  return NextResponse.rewrite(new URL(`/u/${legacy[1]}/legacy${nextUrl.search}`, url))
 }
 
 const isPublicPath = (pathname: string) =>
@@ -34,6 +55,7 @@ const isPublicPath = (pathname: string) =>
   pathname.startsWith(`${JOIN_LINK_ROOT}/`) ||
   pathname === VERIFY_ROOT ||
   pathname.startsWith(`${VERIFY_ROOT}/`) ||
+  PROFILE_IMAGE_PATH.test(pathname) ||
   (!DASHBOARD_ROOTS.some(root => pathname.startsWith(root)) && /^\/[a-zA-Z0-9.]+$/u.test(pathname))
 
 const returnPath = (request: NextRequest) => {
@@ -72,6 +94,9 @@ const restoreCourseListParams = (request: NextRequest) => {
 
 export const proxy: NextProxy = async request => {
   const { headers, nextUrl } = request
+  const profile = profileResponse(request)
+  if (profile) return profile
+
   const response = NextResponse.next({ request: { headers } })
   const isPublic = isPublicPath(nextUrl.pathname)
   const isOnboarding = nextUrl.pathname.startsWith(ONBOARDING_ROOT)

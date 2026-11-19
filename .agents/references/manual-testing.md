@@ -182,7 +182,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 4. Resume the draft from `/certificates`, complete personal details, submit, then withdraw and submit again.
 5. As `volunteer`, open the approved certificate: download the PDF and compare it with the template.
 6. Use the share panel: copy the link, open "Add to LinkedIn", and scan the QR code with a phone.
-7. In Settings, Privacy, set the featured certificate, then open the public profile.
+7. In Settings, Privacy, set the featured certificate, then open the public profile at `/@<username>`.
 8. After each step, open `/dashboard`: the rail stage, the stage title, and the primary action follow the request. At 390px, open "Request steps".
 
 ## Learner (`learner`)

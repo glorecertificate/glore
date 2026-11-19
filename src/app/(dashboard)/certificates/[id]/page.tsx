@@ -30,6 +30,12 @@ const CertificatePageContent = async ({ params }: { params: PageProps<'/certific
       ({ id: orgId, role }) => orgId === certificate.organizationId && (role === 'admin' || role === 'representative')
     )
 
+  const verifyUrl = certificate.code ? `${process.env.APP_URL}${VERIFY_ROOT}/${certificate.code}` : null
+  const shareUrl =
+    certificate.isDefault && certificate.userId === user.id && user.publicProfile && user.username
+      ? `${process.env.APP_URL}/@${user.username}`
+      : verifyUrl
+
   return (
     <CertificateDetail
       canManage={canManage}
@@ -37,7 +43,8 @@ const CertificatePageContent = async ({ params }: { params: PageProps<'/certific
       events={activity?.events ?? []}
       notes={activity?.review ?? null}
       tutors={tutors ?? undefined}
-      verifyUrl={certificate.code ? `${process.env.APP_URL}${VERIFY_ROOT}/${certificate.code}` : null}
+      shareUrl={shareUrl}
+      verifyUrl={verifyUrl}
     />
   )
 }

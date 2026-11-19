@@ -1,16 +1,15 @@
-import { notFound, permanentRedirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { getTranslations } from 'next-intl/server'
 
-import { findPublicCertificate, lookupLegacyCertificateCode } from '@/actions/certificates/queries'
+import { findPublicCertificate } from '@/actions/certificates/queries'
 import { PublicCertificateView } from '@/components/features/certificates/public-certificate-view'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { VERIFY_ROOT } from '@/lib/constants'
 import { fullName } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
-export const generateMetadata = async ({ params }: PageProps<'/[username]'>) => {
+export const generateMetadata = async ({ params }: PageProps<'/u/[username]'>) => {
   const { username } = await params
   const [{ data: cert }, t] = await Promise.all([findPublicCertificate(username), getTranslations('CertificatePublic')])
 
@@ -18,7 +17,7 @@ export const generateMetadata = async ({ params }: PageProps<'/[username]'>) => 
 
   const volunteerName = cert.user ? fullName(cert.user) : username
   const description = t('publicOgDescription', { name: volunteerName, org: cert.organization.name })
-  const url = `/${username}`
+  const url = `/@${username}`
 
   return {
     title: volunteerName,
@@ -38,22 +37,14 @@ export const generateMetadata = async ({ params }: PageProps<'/[username]'>) => 
   }
 }
 
-const UserPageContent = async ({ params, searchParams }: PageProps<'/[username]'>) => {
-  const [{ username }, { v: handle }] = await Promise.all([params, searchParams])
-  const legacyHandle = typeof handle === 'string' ? handle : handle?.[0]
-
-  if (legacyHandle) {
-    const code = await lookupLegacyCertificateCode(username, legacyHandle)
-    if (!code) notFound()
-    permanentRedirect(`${VERIFY_ROOT}/${code}`)
-  }
-
+const UserPageContent = async ({ params }: PageProps<'/u/[username]'>) => {
+  const { username } = await params
   const { data } = await findPublicCertificate(username)
   if (!data) notFound()
   return <PublicCertificateView certificate={data} username={username} />
 }
 
-const UserPage = (props: PageProps<'/[username]'>) => (
+const UserPage = (props: PageProps<'/u/[username]'>) => (
   <Suspense fallback={<LoadingFallback size="full" />}>
     <UserPageContent {...props} />
   </Suspense>

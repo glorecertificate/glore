@@ -65,7 +65,7 @@ describe.skipIf(!isLocalDatabase)('public certificate routes under a rate limit'
   it('answers 429 from the profile image without reading the user', async () => {
     const find = vi.spyOn(client.db.query.users, 'findFirst')
     state.limited.add('profile:')
-    const { default: image } = await import('@/app/[username]/opengraph-image')
+    const { default: image } = await import('@/app/u/[username]/opengraph-image')
 
     const response = await image({ params: Promise.resolve({ username: 'someone' }) })
 

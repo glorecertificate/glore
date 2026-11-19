@@ -64,7 +64,7 @@ glorecertificate.net claims 25 skills, and all 8 of its skill pages (`/soft-skil
   - Runner-up: One certificate per user and org.
 - D5: Public `code`: Crockford base32 `XXXX-XXXX-XXXX` (60 random bits), unique. `/verify/[code]` is canonical. Legacy `/{username}?v={handle}` redirects.
   - Runner-up: `XXXX-XXXX-XXXX-XXXX`.
-- D6: `/verify/[code]` shows the holder's full name, is `noindex`, and is rate limited. `/{username}` profiles are opt-in, off by default (GDPR article 25). Runner-up: Youthpass name check, if GloRe's DPO asks.
+- D6: `/verify/[code]` shows the holder's full name, is `noindex`, and is rate limited. `/@{username}` profiles are opt-in, off by default (GDPR article 25). Runner-up: Youthpass name check, if GloRe's DPO asks.
 - D9: Method elements return: required reflection at each self-assessment, blind choice of a level description per skill, tutor-confirmed description, blind tutor evaluation, anonymous org rating shown only as an aggregate of 3 or more.
 
 ### Certificate PDF

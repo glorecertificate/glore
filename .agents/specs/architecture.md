@@ -43,7 +43,7 @@ src/
 │   ├── (auth)/         # Unauthenticated: invite/[token], join/[token], login, onboarding, register
 │   ├── (dashboard)/    # Authenticated (sidebar layout, own error and not-found): about, admin, certificates,
 │   │                   #   courses, dashboard, dev/ui, docs, emails, help, legal, notifications, organization, settings
-│   ├── [username]/     # Public profile page (page, opengraph-image, not-found)
+│   ├── u/[username]/   # Internal public profile, served at /@username (page, opengraph-image, not-found, legacy/route)
 │   ├── api/            # API routes (auth catch-all + v1/)
 │   ├── offline/        # Offline fallback page
 │   ├── legal/accept/   # Re-accept gate (outside the dashboard group)

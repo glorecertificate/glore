@@ -102,7 +102,9 @@ draft -> submitted -> in_review -> approved -> revoked
 - The band shows the status dot, the organization, and one primary action by status and role. Withdraw, Feature on public profile, and revoke sit in a More actions menu. The holder's featured certificate says in the band that the public profile shows it. A revoked, rejected, or withdrawn request offers Request a new certificate.
 - Main column: `CertificateJourney` with the date of each reached stage (`journeyDates`), `CertificateFeedback` (revocation reasons use a neutral card), the preview (none when revoked), skills, tasks, and the timeline from `findCertificateActivity`.
 - A 320 px right rail holds Details, `CertificateShare` (owner and approved only), and the reviewer row. On phones the rail stacks after the preview.
-- `CertificateShare`: verify link with one Copy button, QR, LinkedIn "Add to profile" link, LinkedIn and Facebook share, and native share.
+- `CertificateShare`: link with one Copy button, QR, LinkedIn "Add to profile" link, LinkedIn and Facebook share, and native share.
+  - The page builds `shareUrl` on the server: `/@<username>` when the certificate is featured (`isDefault`) and the holder's profile is public, else `/verify/<code>`.
+  - Copy, QR, share, and native share use `shareUrl`. "Add to profile" always uses the verify URL with its `certId`.
 - The certificate page shows no confetti or other celebration effect.
 
 ### Tutor queue
@@ -158,7 +160,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with their level and description, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.
-- `findPublicCertificate` (the `/{username}` page, its metadata, and its image) is limited to 60 reads a minute per IP under `profile:<ip>`, deduped per request. The image answers 429 and the page answers not found.
+- `findPublicCertificate` (the `/@{username}` page, its metadata, and its image) is limited to 60 reads a minute per IP under `profile:<ip>`, deduped per request. The image answers 429 and the page answers not found.
 - `lookupLegacyCertificateCode` applies the 30 lookups a minute limiter to the `?v=` redirect.
 - An approved certificate reads `valid`. Every other status is `unknown`.
 - A revoked certificate reads `revoked` with its date and shows only the holder, organization, code, and issue date.
@@ -166,9 +168,9 @@ draft -> submitted -> in_review -> approved -> revoked
 - The page reads the issued `snapshot`, so later profile edits never change it.
 - Approval freezes the `CertificatePdf` labels in `snapshot.labels`, so later message overrides never change an issued PDF.
 - A snapshot without `labels` renders with the current messages.
-- `/{username}` is opt-in (`users.publicProfile`, default off) and shows the featured certificate.
+- `/@{username}` is opt-in (`users.publicProfile`, default off) and shows the featured certificate.
 - A private profile renders the not-found page. It streams with status 200 and `noindex`, so it looks like an unknown user.
-- The legacy `/{username}?v={handle}` permanently redirects to `/verify/<code>`.
+- The legacy `/{username}?v={handle}` (proxy rewrite to `u/[username]/legacy`) permanently redirects to `/verify/<code>`.
 
 ## Account deletion
 

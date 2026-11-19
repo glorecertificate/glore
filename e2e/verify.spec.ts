@@ -68,7 +68,7 @@ test.describe('certificate verification', () => {
   })
 
   test('hides a private profile and redirects legacy links to the verify page', async ({ page }) => {
-    await page.goto(`/${USERNAME}`)
+    await page.goto(`/@${USERNAME}`)
     await expect(page.getByText('This profile does not exist or is not public.')).toBeVisible()
     await expect(page.getByText('Verified certificate')).toBeHidden()
 
@@ -79,7 +79,7 @@ test.describe('certificate verification', () => {
 
   test('serves the profile once the holder opts in', async ({ page }) => {
     await setPublicProfile({ email: VOLUNTEER, publicProfile: true, username: USERNAME })
-    const response = await page.goto(`/${USERNAME}`)
+    const response = await page.goto(`/@${USERNAME}`)
     expect(response?.status()).toBe(200)
     await expect(page.getByText('Verified certificate')).toBeVisible()
   })

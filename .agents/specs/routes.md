@@ -15,10 +15,19 @@ Route groups, route gates, API routes, and the proxy lifecycle. Authentication d
 - `/register`: organization application (`organizations.md`).
 - `/invite/[token]` and `/join/[token]`: token pages (`organizations.md`).
 - `/verify` and `/verify/[code]`: certificate verification.
-- `/[username]`: opt-in public profile. Its 404 offers guests join and login links and signed-in users the dashboard.
+- `/@<username>`: opt-in public profile ("Public profile" below).
 - `/privacy`, `/terms`: the published version from the database (`reference.md`), with an `en` fallback notice.
 - `LEGAL_ROOTS` feeds the proxy and the reserved usernames.
 - `/offline`: PWA fallback.
+
+## Public profile
+
+- `/@<username>` is built as the internal route `src/app/u/[username]/`, because Next reserves `@folder` for parallel routes.
+- The proxy rewrites `/@<username>` and `/@<username>/opengraph-image*` to it, and permanently redirects a direct `/u/<username>` to `/@<username>`.
+- The `og:image` tag points to `/u/<username>/opengraph-image`, so `isPublicPath` lets guests load that path.
+- A single-segment path with a `v` param that is not a reserved username rewrites to `/u/<username>/legacy`.
+- That route handler permanently redirects the legacy `/<username>?v=<handle>` to `/verify/<code>`. Any other root `/<username>` answers not found.
+- The profile 404 offers guests join and login links and signed-in users the dashboard.
 
 ## Authenticated routes
 

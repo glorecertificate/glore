@@ -3,16 +3,24 @@ import { readFile } from 'node:fs/promises'
 import { type Page, expect, test } from '@playwright/test'
 
 import en from '~/messages/en.json' with { type: 'json' }
-import es from '~/messages/es.json' with { type: 'json' }
-import it from '~/messages/it.json' with { type: 'json' }
+import { DEFAULT_LOCALE, LOCALES } from '~/scripts/content/config.mts'
 
 import { type AuthRole, authFile } from './helpers'
 
 type Catalog = typeof en
 
-const CATALOGS = { es, it } as const satisfies Record<string, Catalog>
+const SMOKE_LOCALES = LOCALES.filter(locale => locale !== DEFAULT_LOCALE)
 
-type SmokeLocale = keyof typeof CATALOGS
+type SmokeLocale = (typeof SMOKE_LOCALES)[number]
+
+const CATALOGS = Object.fromEntries(
+  await Promise.all(
+    SMOKE_LOCALES.map(async locale => [
+      locale,
+      JSON.parse(await readFile(`messages/${locale}.json`, 'utf8')) as Catalog,
+    ])
+  )
+) as Record<SmokeLocale, Catalog>
 
 interface PageCheck {
   partial?: boolean
@@ -105,7 +113,7 @@ const expectLocalized = async (page: Page, { exact = true, expected, locale, pat
   expect(problems, `${path} logged missing messages`).toEqual([])
 }
 
-for (const locale of Object.keys(CATALOGS) as SmokeLocale[]) {
+for (const locale of SMOKE_LOCALES) {
   const catalog = CATALOGS[locale]
 
   test.describe(`${locale} anonymous`, () => {

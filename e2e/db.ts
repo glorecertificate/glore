@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { hashPassword } from 'better-auth/crypto'
 import { Pool } from 'pg'
 
+import { LOCALES } from '~/scripts/content/config.mts'
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE, SEED_PASSWORD } from '~/scripts/seed-data'
 
 export const clearRateLimits = async (connectionString = process.env.DATABASE_URL) => {
@@ -105,7 +106,7 @@ export const seedPublicCertificate = async ({
           },
           skills: courses.rows.map(course => ({
             courseId: course.id,
-            description: { en: E2E_DESCRIPTION, es: E2E_DESCRIPTION, it: E2E_DESCRIPTION },
+            description: Object.fromEntries(LOCALES.map(locale => [locale, E2E_DESCRIPTION])),
             icon: null,
             level: 'good',
             name: course.title ?? { en: 'E2E skill' },

@@ -16,11 +16,10 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-const calendarLocales = {
-  en: () => Promise.resolve(defaultLocale),
+const calendarLocales: Partial<Record<Locale, () => Promise<typeof defaultLocale>>> = {
   es: async () => (await import('react-day-picker/locale/es')).es,
   it: async () => (await import('react-day-picker/locale/it')).it,
-} satisfies Record<Locale, () => Promise<typeof defaultLocale>>
+}
 
 const Calendar = ({
   buttonVariant = 'ghost',
@@ -41,7 +40,7 @@ const Calendar = ({
 
   const getCalendarLocale = useEffectEvent(async () => {
     try {
-      setCalendarLocale(await calendarLocales[locale]())
+      setCalendarLocale((await calendarLocales[locale]?.()) ?? defaultLocale)
     } catch {
       setCalendarLocale(defaultLocale)
     }

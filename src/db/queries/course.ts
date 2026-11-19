@@ -5,7 +5,7 @@ import { type LessonWithRelations, parseLesson } from '@/db/queries/lesson'
 import { type PublicUserWithRelations, parseUser } from '@/db/queries/user'
 import { type courses, type skillGroups } from '@/db/schema'
 import { type EnumType } from '@/db/types'
-import { type IntlRecord, LOCALES } from '@/lib/i18n'
+import { LOCALES, intlRecordWithFallback } from '@/lib/i18n'
 
 type CourseRow = InferSelectModel<typeof courses>
 type SkillGroupRow = Pick<InferSelectModel<typeof skillGroups>, 'id' | 'name' | 'slug'> | null
@@ -29,11 +29,11 @@ export const COURSE_TYPES = ['intro', 'learner', 'skill'] satisfies EnumType<'co
 export const COURSE_SLUG_MIN_LENGTH = 3
 
 const DEFAULT_COURSE = {
-  title: {
+  title: intlRecordWithFallback({
     en: 'New Course',
     es: 'Nuevo Curso',
     it: 'Nuovo Corso',
-  } satisfies IntlRecord,
+  }),
 }
 
 export const parseCourse = (course: CourseWithRelations) => {

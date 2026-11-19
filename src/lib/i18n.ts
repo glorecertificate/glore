@@ -45,6 +45,9 @@ export const LOCALE_ITEMS = Object.entries(locales).map(([locale, item]) => ({ .
 export const TITLEIZED_LOCALES = titleizedLocales as Locale[]
 export const INTL_PLACEHOLDER = LOCALES.reduce((record, locale) => ({ ...record, [locale]: '' }), {} as IntlRecord<''>)
 
+export const intlRecordWithFallback = (record: Partial<IntlRecord>) =>
+  Object.fromEntries(LOCALES.map(locale => [locale, record[locale] ?? record[DEFAULT_LOCALE] ?? ''])) as IntlRecord
+
 const SERVER_NAMESPACES = serverNamespaces as string[]
 
 export const clientMessages = (messages: Messages) =>

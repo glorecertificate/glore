@@ -146,6 +146,12 @@ export interface AdminPage<T> {
   total: number
 }
 
+export type FacetCounts = Record<string, Record<string, number>>
+
+export interface FacetedPage<T> extends AdminPage<T> {
+  facets: FacetCounts
+}
+
 export const toPage = <T>(rows: T[], { page, pageSize, total }: { page: number; pageSize: number; total: number }) => ({
   page,
   pageCount: Math.max(1, Math.ceil(total / pageSize)),

@@ -25,7 +25,7 @@ export const Main = ({
 }: React.ComponentProps<'main'> & VariantProps<typeof mainWidthVariants> & { overlap?: boolean }) => (
   <main
     className={cn(
-      'relative mx-auto flex size-full max-w-310 flex-col px-page pb-12 sm:pb-16',
+      'relative mx-auto flex size-full max-w-296 flex-col px-page pb-12 sm:pb-16',
       overlap ? '-mt-16' : 'pt-6',
       className
     )}

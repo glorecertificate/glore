@@ -34,7 +34,7 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="type-heading text-fg-1">{title}</CardTitle>
             {article.isDraft && (
-              <Badge className="shrink-0" size="sm" variant="muted">
+              <Badge className="shrink-0" size="sm" variant="outline">
                 {t('draft')}
               </Badge>
             )}

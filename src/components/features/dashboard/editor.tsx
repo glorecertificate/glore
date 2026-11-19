@@ -223,7 +223,7 @@ export const EditorDashboard = ({
                       </Badge>
                     ))}
                     {course.missing.map(locale => (
-                      <Badge key={locale} variant="muted">
+                      <Badge key={locale} variant="outline">
                         {t('editor.missing', { language: locale.toUpperCase() })}
                       </Badge>
                     ))}

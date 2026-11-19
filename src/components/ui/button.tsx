@@ -41,7 +41,7 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'bg-gradient-action text-action-foreground shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
-        secondary: 'bg-secondary text-secondary-foreground hover:not-disabled:bg-secondary/80',
+        secondary: 'border border-border-strong bg-field text-foreground hover:not-disabled:bg-accent/60',
         destructive: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent',
         warning: 'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent',
         success: 'bg-success text-success-foreground hover:not-disabled:bg-success-accent',
@@ -79,7 +79,7 @@ export const buttonVariants = cva(
     },
     compoundVariants: [
       {
-        variant: ['secondary', 'destructive', 'warning', 'success', 'brand-secondary', 'brand-tertiary'],
+        variant: ['destructive', 'warning', 'success', 'brand-secondary', 'brand-tertiary'],
         className:
           'bg-linear-to-b from-white/12 to-transparent not-disabled:shadow-xs not-disabled:inset-shadow-2xs not-disabled:inset-shadow-white/20 not-disabled:[:active,[data-pressed]]:shadow-none',
       },

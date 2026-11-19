@@ -34,7 +34,7 @@ export const SessionRow = ({
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-center gap-2 type-label">
           <span className="truncate">{device}</span>
-          {session.current && <Badge variant="muted">{t('sessionCurrent')}</Badge>}
+          {session.current && <Badge variant="outline">{t('sessionCurrent')}</Badge>}
         </p>
         <p className="truncate type-caption text-muted-foreground">
           {t('sessionActive', { time: format.relativeTime(new Date(session.updatedAt), now) })}

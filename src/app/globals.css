@@ -153,7 +153,9 @@
   --color-sidebar-badge-foreground: var(--sidebar-badge-foreground);
   --color-fg-on-dark: var(--fg-on-dark);
   --color-band-from: var(--band-from);
+  --color-sidebar-active: var(--sidebar-active);
   --color-band-via: var(--band-via);
+  --color-band-via-2: var(--band-via-2);
   --color-band-to: var(--band-to);
   --color-band-foreground: var(--band-foreground);
   --color-band-muted: var(--band-muted);
@@ -199,6 +201,15 @@
   --color-stat-amber-strip-to: var(--stat-amber-strip-to);
   --color-stat-amber-foreground: var(--stat-amber-foreground);
   --color-stat-amber-text: var(--stat-amber-text);
+  --color-status-draft: var(--status-draft);
+  --color-status-submitted: var(--status-submitted);
+  --color-status-review: var(--status-review);
+  --color-status-changes: var(--status-changes);
+  --color-status-approved: var(--status-approved);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-withdrawn: var(--status-withdrawn);
+  --color-status-revoked: var(--status-revoked);
+  --color-status-track: var(--status-track);
   --color-pill-approved: var(--pill-approved);
   --color-pill-approved-foreground: var(--pill-approved-foreground);
   --color-pill-review: var(--pill-review);
@@ -322,7 +333,13 @@
 }
 
 @utility bg-band {
-  background-image: linear-gradient(120deg, var(--band-from) 0%, var(--band-via) 55%, var(--band-to) 100%);
+  background-image: linear-gradient(
+    100deg,
+    var(--band-from) 0%,
+    var(--band-via) 45%,
+    var(--band-via-2) 75%,
+    var(--band-to) 100%
+  );
 }
 
 @utility bg-gradient-action {

@@ -147,7 +147,7 @@ export const SpokenLanguagesSelect = ({
             <Badge
               className="group/lang animate-in gap-1 py-1 pr-1 pl-2.5 duration-200 zoom-in-95 fade-in"
               key={language}
-              variant="muted"
+              variant="outline"
             >
               <span className="text-sm leading-none">{flag(language)}</span>
               {translate(language)}

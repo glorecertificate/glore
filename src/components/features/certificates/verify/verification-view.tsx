@@ -53,9 +53,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
           )}
         >
           {!revoked && <PageBandGlobe className="-top-32 -right-24" />}
-          <StatusBadge icon={revoked ? 'ban' : 'circle-check'} tone={revoked ? 'danger' : 'success'}>
-            {revoked ? t('revoked') : t('valid')}
-          </StatusBadge>
+          <StatusBadge tone={revoked ? 'danger' : 'success'}>{revoked ? t('revoked') : t('valid')}</StatusBadge>
           <div className="flex flex-col items-center gap-2">
             <h1 className={cn('type-display text-balance', revoked ? 'text-fg-title' : 'text-band-foreground')}>
               {holderName}

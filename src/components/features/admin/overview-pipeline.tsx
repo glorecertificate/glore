@@ -8,13 +8,13 @@ import { SkeletonText } from '@/components/ui/skeleton'
 import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
 
 const PIPELINE_COLORS = {
-  approved: 'success',
-  changes_requested: 'warning',
-  in_review: 'brand-tertiary',
-  rejected: 'warning',
-  revoked: 'warning',
-  submitted: 'brand',
-  withdrawn: 'default',
+  approved: 'approved',
+  changes_requested: 'changes',
+  in_review: 'review',
+  rejected: 'rejected',
+  revoked: 'revoked',
+  submitted: 'submitted',
+  withdrawn: 'withdrawn',
 } as const
 
 export const AdminOverviewPipeline = ({

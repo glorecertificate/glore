@@ -40,7 +40,7 @@ export const TranslationRowItem = ({
           {row.key}
         </button>
         {row.protected && (
-          <Badge variant="muted">
+          <Badge variant="outline">
             <LucideIcon name="lock" />
             {t('badges.protected')}
           </Badge>

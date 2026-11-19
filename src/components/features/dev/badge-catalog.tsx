@@ -1,10 +1,9 @@
 import { CatalogRow } from '@/components/features/dev/catalog-row'
 import { CatalogSection } from '@/components/features/dev/catalog-section'
-import { type IconName } from '@/components/icons/registry'
 import { Badge, type BadgeVariant } from '@/components/ui/badge'
 import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { KbdShortcut } from '@/components/ui/kbd-shortcut'
-import { StatusBadge, type StatusMeta } from '@/components/ui/status-badge'
+import { StatusBadge, type StatusTone } from '@/components/ui/status-badge'
 import { SHORTCUTS } from '@/lib/shortcuts'
 
 const VARIANTS = [
@@ -23,12 +22,20 @@ const VARIANTS = [
 const SIZES = ['sm', 'default', 'lg'] as const satisfies NonNullable<React.ComponentProps<typeof Badge>['size']>[]
 
 const TONES = [
-  { icon: 'circle-dashed', tone: 'neutral' },
-  { icon: 'info', tone: 'info' },
-  { icon: 'circle-check', tone: 'success' },
-  { icon: 'circle-alert', tone: 'warning' },
-  { icon: 'circle-x', tone: 'danger' },
-] as const satisfies { icon: IconName; tone: StatusMeta['tone'] }[]
+  'neutral',
+  'info',
+  'success',
+  'warning',
+  'danger',
+  'draft',
+  'submitted',
+  'review',
+  'changes',
+  'approved',
+  'rejected',
+  'withdrawn',
+  'revoked',
+] as const satisfies StatusTone[]
 
 export const BadgeCatalog = () => (
   <>
@@ -55,14 +62,7 @@ export const BadgeCatalog = () => (
     </CatalogSection>
     <CatalogSection id="status-badge" name="StatusBadge">
       <CatalogRow label="tone">
-        {TONES.map(({ icon, tone }) => (
-          <StatusBadge icon={icon} key={tone} tone={tone}>
-            {tone}
-          </StatusBadge>
-        ))}
-      </CatalogRow>
-      <CatalogRow label="tone (no icon)">
-        {TONES.map(({ tone }) => (
+        {TONES.map(tone => (
           <StatusBadge key={tone} tone={tone}>
             {tone}
           </StatusBadge>

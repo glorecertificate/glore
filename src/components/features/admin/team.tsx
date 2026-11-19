@@ -215,13 +215,9 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
           {
             cell: user =>
               getUserStatus(user) === 'pending' ? (
-                <StatusBadge icon="clock" tone="warning">
-                  {t('status_pending')}
-                </StatusBadge>
+                <StatusBadge tone="warning">{t('status_pending')}</StatusBadge>
               ) : (
-                <StatusBadge icon="circle-check" tone="success">
-                  {t('status_joined')}
-                </StatusBadge>
+                <StatusBadge tone="success">{t('status_joined')}</StatusBadge>
               ),
             header: t('columns.status'),
             id: 'status',

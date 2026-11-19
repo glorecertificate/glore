@@ -212,11 +212,7 @@ export const CourseListCard = ({
                     {localizeRecord(course.skillGroup.name, language)}
                   </Badge>
                 )}
-                {course.completed && (
-                  <StatusBadge icon="circle-check" tone="success">
-                    {t('completed')}
-                  </StatusBadge>
-                )}
+                {course.completed && <StatusBadge tone="success">{t('completed')}</StatusBadge>}
               </div>
             )}
           </div>

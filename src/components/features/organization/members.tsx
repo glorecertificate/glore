@@ -185,7 +185,7 @@ export const OrganizationMembers = ({
                   </Avatar>
                   <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
                     <span className="font-medium wrap-anywhere">{getDisplayName(member.user)}</span>
-                    {member.user.id === currentUserId && <Badge variant="muted">{t('you')}</Badge>}
+                    {member.user.id === currentUserId && <Badge variant="outline">{t('you')}</Badge>}
                   </div>
                 </div>
               ),
@@ -207,10 +207,7 @@ export const OrganizationMembers = ({
             },
             {
               cell: member => (
-                <StatusBadge
-                  icon={member.isPending ? 'clock' : 'circle-check'}
-                  tone={member.isPending ? 'warning' : 'success'}
-                >
+                <StatusBadge tone={member.isPending ? 'warning' : 'success'}>
                   {member.isPending ? t('statusPending') : t('statusJoined')}
                 </StatusBadge>
               ),

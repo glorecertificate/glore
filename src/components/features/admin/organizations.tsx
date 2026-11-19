@@ -189,24 +189,12 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
           {
             cell: org => {
               if (org.isPending) {
-                return (
-                  <StatusBadge icon="clock" tone="warning">
-                    {t('statusPending')}
-                  </StatusBadge>
-                )
+                return <StatusBadge tone="warning">{t('statusPending')}</StatusBadge>
               }
               if (org.isRejected) {
-                return (
-                  <StatusBadge icon="circle-x" tone="danger">
-                    {t('statusRejected')}
-                  </StatusBadge>
-                )
+                return <StatusBadge tone="danger">{t('statusRejected')}</StatusBadge>
               }
-              return (
-                <StatusBadge icon="circle-check" tone="success">
-                  {t('statusActive')}
-                </StatusBadge>
-              )
+              return <StatusBadge tone="success">{t('statusActive')}</StatusBadge>
             },
             header: t('columns.status'),
             id: 'status',

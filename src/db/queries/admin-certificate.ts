@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { type AdminPage } from '@/db/queries/admin-user'
+import { type FacetedPage } from '@/db/queries/admin-user'
 import { type CertificateStatus } from '@/db/queries/certificate'
 
 export const ADMIN_CERTIFICATES_PAGE_SIZE = 20
@@ -36,4 +36,4 @@ export interface AdminCertificateRow {
   submittedAt: string | null
 }
 
-export type AdminCertificatePage = AdminPage<AdminCertificateRow>
+export type AdminCertificatePage = FacetedPage<AdminCertificateRow>

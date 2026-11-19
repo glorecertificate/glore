@@ -62,11 +62,7 @@ export const AlertDialogContent = ({
 }
 
 export const AlertDialogHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div
-    className={cn('flex flex-col gap-2 text-center sm:text-left', className)}
-    data-slot="alert-dialog-header"
-    {...props}
-  />
+  <div className={cn('flex flex-col gap-2 text-left', className)} data-slot="alert-dialog-header" {...props} />
 )
 
 export const AlertDialogFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (

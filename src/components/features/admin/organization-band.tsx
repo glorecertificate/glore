@@ -40,7 +40,7 @@ export const AdminOrganizationBandMeta = ({
   const { dateTime } = useFormatter()
   const t = useTranslations('Admin.organizations')
   const translateCountry = useCountryName()
-  const { icon, label, tone } = STATUS[status]
+  const { label, tone } = STATUS[status]
 
   const country =
     organization.country && `${translateCountry(organization.country)} ${countryCodeToFlag(organization.country)}`
@@ -48,9 +48,7 @@ export const AdminOrganizationBandMeta = ({
 
   return (
     <span className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-      <StatusBadge icon={icon} tone={tone}>
-        {t(label)}
-      </StatusBadge>
+      <StatusBadge tone={tone}>{t(label)}</StatusBadge>
       {location && (
         <span className="flex items-center gap-1.5">
           <LucideIcon className="shrink-0" name="map-pin" />

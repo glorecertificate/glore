@@ -151,7 +151,6 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
           cell: row => (
             <StatusBadge
               className="max-w-full max-sm:text-left max-sm:whitespace-normal"
-              icon={CATEGORY_META[row.category].icon}
               tone={CATEGORY_META[row.category].tone}
             >
               {t(`categories.${row.category}`)}

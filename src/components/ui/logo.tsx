@@ -3,7 +3,7 @@ import { useId } from 'react'
 import { type IconProps } from '@/lib/types'
 import { publicFile } from '@/lib/utils'
 
-export const Logo = ({ height, width, ...props }: IconProps) => {
+export const Logo = ({ height, onNavy = false, width, ...props }: IconProps & { onNavy?: boolean }) => {
   const pattern = useId()
 
   return (
@@ -11,7 +11,7 @@ export const Logo = ({ height, width, ...props }: IconProps) => {
       <pattern height="1" id={pattern} patternContentUnits="objectBoundingBox" width="1">
         <image
           height="225"
-          href={publicFile('/icon.png')}
+          href={publicFile(onNavy ? '/icon-on-navy.png' : '/icon.png')}
           suppressHydrationWarning
           preserveAspectRatio="none"
           transform="matrix(.00445119 0 0 .00405119 0.02 0)"

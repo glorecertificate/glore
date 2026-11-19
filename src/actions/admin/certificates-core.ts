@@ -46,6 +46,17 @@ const buildFilters = (query: ParsedQuery) => {
   return and(...conditions)
 }
 
+const countStatuses = async (query: ParsedQuery) => {
+  const rows = await db
+    .select({ status: certificates.status, total: count() })
+    .from(certificates)
+    .leftJoin(users, eq(users.id, certificates.userId))
+    .innerJoin(organizations, eq(organizations.id, certificates.organizationId))
+    .where(buildFilters({ ...query, status: null }))
+    .groupBy(certificates.status)
+  return Object.fromEntries(rows.map(row => [row.status, row.total]))
+}
+
 export const queryAdminCertificates = async (input: AdminCertificatesQuery) => {
   const parsed = adminCertificatesQuerySchema.safeParse(input)
   if (!parsed.success) throw adminError('INVALID_INPUT')
@@ -115,5 +126,8 @@ export const queryAdminCertificates = async (input: AdminCertificatesQuery) => {
           ]
   )
 
-  return toPage(rows, { page, pageSize: ADMIN_CERTIFICATES_PAGE_SIZE, total })
+  return {
+    ...toPage(rows, { page, pageSize: ADMIN_CERTIFICATES_PAGE_SIZE, total }),
+    facets: { status: await countStatuses(parsed.data) },
+  }
 }

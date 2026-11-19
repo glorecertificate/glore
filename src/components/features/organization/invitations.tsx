@@ -177,10 +177,7 @@ export const OrganizationInvitations = ({
               {
                 cell: invitation => (
                   <div className="flex flex-col gap-1">
-                    <StatusBadge
-                      icon={INVITATION_STATUS[invitation.state].icon}
-                      tone={INVITATION_STATUS[invitation.state].tone}
-                    >
+                    <StatusBadge tone={INVITATION_STATUS[invitation.state].tone}>
                       {t(INVITATION_STATUS[invitation.state].labelKey)}
                     </StatusBadge>
                     <span className="type-caption text-muted-foreground">{expiryText(invitation)}</span>

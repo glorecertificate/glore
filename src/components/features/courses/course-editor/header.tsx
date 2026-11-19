@@ -219,17 +219,10 @@ export const CourseHeader = () => {
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-band-text">
                   {icon}
-                  <StatusBadge
-                    icon={languageStatus.published ? 'circle-check' : 'circle-dashed'}
-                    tone={languageStatus.published ? 'success' : 'neutral'}
-                  >
+                  <StatusBadge tone={languageStatus.published ? 'success' : 'neutral'}>
                     {languageStatus.published ? t('publishSwitchPublished') : t('publishSwitchDraft')}
                   </StatusBadge>
-                  {languageStatus.hasUpdates && (
-                    <StatusBadge icon="pencil" tone="warning">
-                      {t('unsavedChanges')}
-                    </StatusBadge>
-                  )}
+                  {languageStatus.hasUpdates && <StatusBadge tone="warning">{t('unsavedChanges')}</StatusBadge>}
                   <span>{t('visibleLanguages', { count: publishedLanguageCount })}</span>
                   <span className="max-md:hidden">{t('lessonsCount', { count: course.lessons.length })}</span>
                   {counter}

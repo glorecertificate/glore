@@ -32,7 +32,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -60,7 +59,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
-  sidebarMenuButtonVariants,
   useSidebar,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
@@ -211,7 +209,7 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
   const adminHref = adminSectionHref(viewer)
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="pt-3">
       <SidebarMenu>
         {sidebarEntriesFor(viewer).map(({ href, icon, id }) => (
           <DashboardSidebarItem icon={icon} key={id} label={labels[id]} route={href} />
@@ -461,7 +459,6 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 
 const DashboardSidebarSearch = () => {
   const t = useTranslations('Search')
-  const tLayout = useTranslations('Layout')
   const [open, setOpen] = useState(false)
   const [activated, setActivated] = useState(false)
 
@@ -477,7 +474,7 @@ const DashboardSidebarSearch = () => {
 
   return (
     <>
-      <SidebarGroup>
+      <SidebarGroup className="pb-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -494,11 +491,6 @@ const DashboardSidebarSearch = () => {
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <NotificationBell className={cn(sidebarMenuButtonVariants(), 'justify-start font-normal')}>
-              <span>{tLayout('notifications')}</span>
-            </NotificationBell>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>
       {activated && <SearchCommand onOpenChange={setOpen} open={open} />}
@@ -506,26 +498,17 @@ const DashboardSidebarSearch = () => {
   )
 }
 
-const DashboardSidebarBrand = () => {
-  const { user } = useSession()
-  const t = useTranslations('Layout')
-
-  return (
-    <div className="flex items-center justify-between gap-2 px-1 group-data-[collapsible=icon]:hidden">
-      <HeaderLogo className="inline-flex rounded-lg logo-chip px-2.5 py-1.5" href={APP_ROOT} prefetch={false}>
-        <Logo className="h-4.5 w-auto" />
-      </HeaderLogo>
-      <div className="flex items-center gap-1">
-        {user.isAdmin && (
-          <Badge className="bg-sidebar-badge text-sidebar-badge-foreground" variant="ghost">
-            {t('admin')}
-          </Badge>
-        )}
-        <DashboardSidebarClose />
-      </div>
+const DashboardSidebarBrand = () => (
+  <div className="flex h-10 items-center justify-between gap-2 px-2.5 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+    <HeaderLogo className="inline-flex group-data-[collapsible=icon]:hidden" href={APP_ROOT} prefetch={false}>
+      <Logo className="h-7 w-auto" onNavy />
+    </HeaderLogo>
+    <div className="flex items-center gap-1">
+      <NotificationBell className="size-9 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+      <DashboardSidebarClose />
     </div>
-  )
-}
+  </div>
+)
 
 const DashboardSidebarClose = () => {
   const { action, toggleSidebar } = useSidebar()

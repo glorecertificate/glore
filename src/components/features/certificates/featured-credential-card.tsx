@@ -41,9 +41,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
     <div className="grid overflow-hidden rounded-xl bg-card shadow-stat lg:grid-cols-[minmax(0,1fr)_21rem]">
       <div className="flex flex-col gap-5 p-6 sm:p-8">
         <div className="flex flex-wrap items-center gap-2">
-          <StatusBadge icon="badge-check" tone="success">
-            {t('verifiedCredential')}
-          </StatusBadge>
+          <StatusBadge tone="success">{t('verifiedCredential')}</StatusBadge>
           <span className="type-caption text-muted-foreground">{certificate.code}</span>
         </div>
 

@@ -61,9 +61,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
       <article className="overflow-hidden rounded-xl border border-border-subtle bg-card text-card-foreground shadow-card">
         <header className="relative isolate flex flex-col items-center gap-4 overflow-hidden border-b bg-band px-6 py-10 text-center text-band-foreground band-scope">
           <PageBandGlobe className="-top-32 -right-24" />
-          <StatusBadge icon="circle-check" tone="success">
-            {t('publicVerified')}
-          </StatusBadge>
+          <StatusBadge tone="success">{t('publicVerified')}</StatusBadge>
           <div className="flex flex-col items-center gap-2">
             <h1 className="type-display text-balance text-band-foreground">{volunteerName}</h1>
             <p className="text-base text-muted-foreground">{certificate.organization.name}</p>

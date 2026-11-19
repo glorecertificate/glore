@@ -134,7 +134,7 @@ const dialogContentVariants = cva(
 )
 
 export const DialogHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('flex flex-col gap-2 text-center sm:text-left', className)} data-slot="dialog-header" {...props} />
+  <div className={cn('flex flex-col gap-2 text-left', className)} data-slot="dialog-header" {...props} />
 )
 
 export const DialogFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (

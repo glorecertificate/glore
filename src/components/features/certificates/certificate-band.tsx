@@ -38,9 +38,7 @@ export const CertificateBand = async ({ id }: { id: number }) => {
             <CertificateStatusBadge status={certificate.status} />
             {certificate.isHolderDeleted && <Badge variant="outline">{tOrg('holderDeleted')}</Badge>}
             {certificate.isApproved && certificate.isDefault && (
-              <StatusBadge icon="star" tone="info">
-                {t('featuredBadge')}
-              </StatusBadge>
+              <StatusBadge tone="info">{t('featuredBadge')}</StatusBadge>
             )}
           </span>
           <span>{t(`statusMessage.${certificate.status}`)}</span>

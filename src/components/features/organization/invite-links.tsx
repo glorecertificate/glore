@@ -130,7 +130,7 @@ export const InviteLinks = ({ links, onRefresh }: InviteLinksProps) => {
             {
               cell: link => (
                 <div className="flex flex-col gap-1">
-                  <StatusBadge icon={INVITE_LINK_STATUS[link.state].icon} tone={INVITE_LINK_STATUS[link.state].tone}>
+                  <StatusBadge tone={INVITE_LINK_STATUS[link.state].tone}>
                     {t(INVITE_LINK_STATUS[link.state].labelKey)}
                   </StatusBadge>
                   {link.creatorName && (

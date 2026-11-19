@@ -74,20 +74,31 @@ const RequestAction = async () => {
   )
 }
 
+const StartNextReview = async () => {
+  const [{ data: assigned }, t] = await Promise.all([loadTutorCertificates(), getTranslations('CertificateQueue')])
+  const next = (assigned ?? [])
+    .filter(({ isInReview, isSubmitted }) => isSubmitted || isInReview)
+    .toSorted(
+      (a, b) => new Date(a.submittedAt ?? a.createdAt).getTime() - new Date(b.submittedAt ?? b.createdAt).getTime()
+    )[0]
+  if (!next) return null
+
+  return (
+    <Button asChild icon="clipboard-check" variant="band">
+      <Link href={`/certificates/${next.id}/review`}>{t('startNext')}</Link>
+    </Button>
+  )
+}
+
 const CertificatesBand = async () => {
   const { orgId: activeOrgId, role } = await getViewerContext()
   const manager = activeOrgId && (role === 'admin' || role === 'representative')
   const volunteer = role === 'volunteer'
+  const tutor = role === 'tutor'
 
   return (
     <DashboardHeader
-      actions={
-        volunteer && (
-          <Suspense>
-            <RequestAction />
-          </Suspense>
-        )
-      }
+      actions={(volunteer || tutor) && <Suspense>{tutor ? <StartNextReview /> : <RequestAction />}</Suspense>}
       description={manager ? null : <PageTitle name="description" namespace="CertificateList" />}
       title={<PageTitle name="certificates" namespace="Layout" />}
     />

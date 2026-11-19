@@ -20,7 +20,6 @@ import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { useTutorQueueAge, useTutorQueueStatus, useTutorQueueTab } from '@/components/features/certificates/use-params'
 import { type FilterRailProps } from '@/components/ui/filter-rail'
 import { SearchInput } from '@/components/ui/search'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useSearch } from '@/hooks/use-search'
@@ -100,6 +99,19 @@ export const TutorCertificatesContent = ({
 
   const railFor = (tabKey: TutorQueueTab): FilterRailProps => ({
     groups: [
+      {
+        id: 'queue',
+        label: t('queue'),
+        onChange: (value: string | null) => {
+          if (!value) return
+          setTab(value as TutorQueueTab)
+          setSelected([])
+          setStatus(null)
+          setAge(null)
+        },
+        options: TUTOR_QUEUE_TABS.map(key => ({ count: counts[key], label: t(`tabs.${key}`), value: key })),
+        value: tabKey,
+      },
       ...(statusOptions.length > 0
         ? [
             {
@@ -153,43 +165,15 @@ export const TutorCertificatesContent = ({
   })
 
   return (
-    <div className="flex flex-col gap-6">
-      <Tabs
-        className="gap-4"
-        onValueChange={value => {
-          setTab(value as TutorQueueTab)
-          setSelected([])
-          setStatus(null)
-          setAge(null)
-        }}
-        value={tab}
-      >
-        <TabsList>
-          {TUTOR_QUEUE_TABS.map(key => (
-            <TabsTrigger key={key} value={key}>
-              {t(`tabs.${key}`)}
-              <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">{counts[key]}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {TUTOR_QUEUE_TABS.map(key => {
-          const rows = filter(key)
-          return (
-            <TabsContent className="flex flex-col gap-3" key={key} value={key}>
-              <CertificateQueue
-                claiming={claiming}
-                filtered={isFiltered}
-                onClaim={claim}
-                onSelectionChange={setSelected}
-                rail={railFor(key)}
-                rows={rows}
-                selectedIds={selected}
-                tab={key}
-              />
-            </TabsContent>
-          )
-        })}
-      </Tabs>
-    </div>
+    <CertificateQueue
+      claiming={claiming}
+      filtered={isFiltered}
+      onClaim={claim}
+      onSelectionChange={setSelected}
+      rail={railFor(tab)}
+      rows={filter(tab)}
+      selectedIds={selected}
+      tab={tab}
+    />
   )
 }

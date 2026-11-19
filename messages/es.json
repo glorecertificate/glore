@@ -1998,7 +1998,6 @@
     "volunteer": "Persona voluntaria",
     "unknownVolunteer": "Persona voluntaria desconocida",
     "ageColumn": "Espera",
-    "submitted": "Enviado",
     "waitingVolunteer": "Esperando a la persona voluntaria",
     "notApplicable": "Cerrado",
     "claim": "Reclamar revisión",
@@ -2025,7 +2024,9 @@
     "emptyFiltered": {
       "title": "Sin resultados",
       "description": "Ningún certificado coincide con los filtros. Quítalos para ver toda la lista."
-    }
+    },
+    "queue": "Cola",
+    "startNext": "Empezar la siguiente revisión"
   },
   "CertificateReview": {
     "previousFeedback": "Tus comentarios anteriores",

@@ -1998,7 +1998,6 @@
     "volunteer": "Volontario",
     "unknownVolunteer": "Volontario sconosciuto",
     "ageColumn": "Attesa",
-    "submitted": "Inviato",
     "waitingVolunteer": "In attesa del volontario",
     "notApplicable": "Chiuso",
     "claim": "Prendi in carico",
@@ -2025,7 +2024,9 @@
     "emptyFiltered": {
       "title": "Nessun risultato",
       "description": "Nessun certificato corrisponde ai filtri. Rimuovili per vedere tutto l'elenco."
-    }
+    },
+    "queue": "Coda",
+    "startNext": "Inizia la prossima revisione"
   },
   "CertificateReview": {
     "previousFeedback": "Il tuo commento precedente",

@@ -106,7 +106,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ### Tutor queue
 
 - Route: `/certificates`, for tutors.
-- Tabs: assigned to me (open), unassigned (org pool, self-claim), and completed, in a `DataTable`.
+- One `DataTable` with the `FilterRail`. The Queue facet (with counts) selects assigned to me (open), unassigned (org pool, self-claim), or completed. The band holds Start next review, which opens the oldest assigned request.
 - Search and the status and waiting-time filters are nuqs params (`tab`, `q`, `status`, `age`) in a `FilterBar` with Clear filters. `/` focuses the search.
 - A filtered empty table shows its own "No matches" state.
 - Claim is optimistic: the row leaves the unassigned tab at once and returns with an error toast if the claim fails. The unassigned tab uses `DataTable` row selection: selected rows show a count and a "Claim N reviews" bulk action, and the table announces the count. The organization table shows a skeleton while it loads.

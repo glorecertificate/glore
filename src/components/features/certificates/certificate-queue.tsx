@@ -6,7 +6,6 @@ import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { type TutorQueueTab } from '@/components/features/certificates/params'
 import { ageTone, daysBetween } from '@/components/features/certificates/rules'
-import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
 import { type FilterRailProps } from '@/components/ui/filter-rail'
@@ -37,8 +36,6 @@ export const CertificateQueue = ({
   tab: TutorQueueTab
 }) => {
   const t = useTranslations('CertificateQueue')
-  const { locale } = useI18n()
-  const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
   const selectable = tab === 'pool'
 
@@ -91,16 +88,6 @@ export const CertificateQueue = ({
           header: t('ageColumn'),
           id: 'age',
           sortValue: certificate => (certificate.isPending ? certificateAge(certificate) : -1),
-        },
-        {
-          cell: certificate => (
-            <time className="text-sm text-muted-foreground" dateTime={certificate.submittedAt ?? certificate.createdAt}>
-              {formatter.format(new Date(certificate.submittedAt ?? certificate.createdAt))}
-            </time>
-          ),
-          header: t('submitted'),
-          id: 'submitted',
-          sortValue: certificate => new Date(certificate.submittedAt ?? certificate.createdAt),
         },
       ]}
       emptyDescription={filtered ? t('emptyFiltered.description') : t(`empty.${tab}.description`)}

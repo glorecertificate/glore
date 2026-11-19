@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { getBlockType, setBlockType } from '@/components/ui/rich-text-editor/utils'
 import { ToolbarButton, ToolbarMenuGroup } from '@/components/ui/toolbar'
+import { cn } from '@/lib/utils'
 
 export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
   const editor = useEditorRef()
@@ -131,7 +132,16 @@ export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
         <ToolbarButton className="min-w-[31.35px] pr-2 pl-3 font-normal" isDropdown pressed={open}>
-          {selectedItem.label}
+          <span className="grid text-left">
+            {turnIntoItems.map(item => (
+              <span
+                className={cn('col-start-1 row-start-1', item.value !== selectedItem.value && 'invisible')}
+                key={item.value}
+              >
+                {item.label}
+              </span>
+            ))}
+          </span>
         </ToolbarButton>
       </DropdownMenuTrigger>
 

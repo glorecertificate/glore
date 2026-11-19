@@ -23,7 +23,8 @@ export const organizationTabParser = parseAsStringEnum([...ORGANIZATION_TABS]).w
 
 export interface OrganizationTabState {
   pending: boolean
-  scope: InsightsScope
+  scope: InsightsScope | null
+  setScope: (scope: InsightsScope) => void
   setTab: (tab: OrganizationTab) => void
   shown: OrganizationTab
   tab: OrganizationTab

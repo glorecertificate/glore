@@ -260,6 +260,13 @@
       "when": 1795096229284,
       "tag": "0036_docs_audiences",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1795109382546,
+      "tag": "0037_drop_course_duration",
+      "breakpoints": true
     }
   ]
 }

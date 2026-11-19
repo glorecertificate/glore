@@ -9,7 +9,6 @@ import { resolveCourseLanguage, useCourseLanguages } from '@/components/features
 import { CourseCardActions } from '@/components/features/courses/course-list/card-actions'
 import { courseIconVariants } from '@/components/features/courses/course-list/icon-variants'
 import { useCourseListSearch, useCourseListTab } from '@/components/features/courses/course-list/use-params'
-import { CourseDuration } from '@/components/features/courses/course-overview/duration'
 import { skillGroupTone, skillGroupToneVariants } from '@/components/features/courses/skill-group'
 import { UserCard } from '@/components/features/users/user-card'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -263,12 +262,6 @@ export const CourseListCard = ({
           )}
           {!user.canEdit && (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-normal text-muted-foreground">
-              {course.durationMinutes ? (
-                <span className="flex items-center gap-1.5">
-                  <LucideIcon name="clock" className="size-3.5" />
-                  <CourseDuration minutes={course.durationMinutes} />
-                </span>
-              ) : null}
               {course.rating.average !== null && (
                 <span className="flex items-center gap-1.5">
                   <LucideIcon name="star" className="size-3.5" />

@@ -39,7 +39,6 @@ export const courseSchema = z.strictObject({
   icon,
   title: localized(text),
   description: localized(text),
-  durationMinutes: z.number().int().min(5).max(600),
   outcomes: localized(z.array(text).min(1).max(8)),
   sortOrder,
 })

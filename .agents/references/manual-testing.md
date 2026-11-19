@@ -129,7 +129,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 ## Editor (`editor`)
 
 1. Create a skill course, add four lessons, a quiz with explanations, evaluations, and a final assessment.
-2. Fill duration and outcomes, translate to es and it (AI assistant allowed), and publish each language.
+2. Fill outcomes, translate to es and it (AI assistant allowed), and publish each language.
 3. Open `/courses/skills`, edit a skill group description, and reorder the groups.
 4. Preview the course as a learner, then open its analytics sheet.
 5. Confirm there is no Organization or Certificates item in the sidebar.

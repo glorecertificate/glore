@@ -13,7 +13,6 @@
     "es": "Un curso de habilidad muy breve que muestra el formato del contenido. Nunca se importa sin --examples.",
     "it": "Un breve corso di competenza che mostra il formato dei contenuti. Non viene mai importato senza --examples."
   },
-  "durationMinutes": 15,
   "outcomes": {
     "en": ["Read a lesson written in Markdown", "Answer a quiz question", "Rate yourself and reflect"],
     "es": ["Leer una lección escrita en Markdown", "Responder una pregunta de cuestionario", "Valorarte y reflexionar"],

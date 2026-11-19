@@ -8,7 +8,7 @@ Editors write the content learners see. You do not see the Organization or Certi
 ## Create a course
 
 1. Open Courses and select New course.
-2. Fill in the title, description, icon, course type, duration and outcomes. For a skill course, choose its skill group.
+2. Fill in the title, description, icon, course type and outcomes. For a skill course, choose its skill group.
 3. Add lessons. The editor handles headings, lists, quotes and links. Type / to open the AI assistant, which can generate, improve, summarize and translate text. Always read what it writes.
 4. Add quiz questions to a lesson. Each question has several options, exactly one correct, and an explanation that teaches why.
 5. In the last lesson of a skill course, add the self-assessment statements and the final assessment.

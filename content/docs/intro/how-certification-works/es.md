@@ -8,7 +8,7 @@ El camino tiene seis pasos. Tu organización y un tutor o una tutora forman part
 ## Los pasos
 
 1. Entra a través de una organización. Alguien de la organización te invita, o abres un enlace de invitación que han compartido.
-2. Haz cursos de habilidades. Cada uno tiene cuatro lecciones breves y dura unos 35 o 40 minutos. Un cuestionario comprueba que lo has entendido, y la última lección te pide que elijas la descripción que mejor te representa.
+2. Haz cursos de habilidades. Cada uno tiene cuatro lecciones breves. Un cuestionario comprueba que lo has entendido, y la última lección te pide que elijas la descripción que mejor te representa.
 3. Alcanza el mínimo. Necesitas al menos 3 cursos de habilidades completados. Los cursos de introducción y los cursos para estudiantes no cuentan.
 4. Describe tu voluntariado. En la solicitud añades fechas, horas, lugar y hasta 4 tareas, eliges 3 o 4 de tus habilidades y valoras tu experiencia con la organización. Tu actividad debe sumar al menos 100 horas, o durar al menos 3 meses entre la fecha de inicio y la de fin.
 5. Espera la revisión. Un tutor o una tutora de tu organización lee la solicitud y los resultados de tus cursos, confirma o cambia la descripción de cada habilidad y la aprueba, pide cambios o la rechaza con un motivo.

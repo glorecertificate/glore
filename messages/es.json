@@ -3880,9 +3880,6 @@
         "description": "Empieza el curso para abrir sus lecciones.",
         "back": "Volver al curso"
       },
-      "minutes": "{minutes} min",
-      "hours": "{hours} h",
-      "hoursMinutes": "{hours} h {minutes} min",
       "lessonsCount": "{count, plural, one {# lección} other {# lecciones}}",
       "rating": "{rating} de 5 ({count, plural, one {# valoración} other {# valoraciones}})",
       "languageLabel": "Idioma del curso",
@@ -3910,7 +3907,6 @@
         "finalAssessment": "Evaluación final"
       },
       "viewCompletion": "Ver resumen",
-      "factDuration": "Duración",
       "factLessons": "Lecciones"
     },
     "player": {
@@ -3984,10 +3980,6 @@
       "previewAsLearner": "Ver como participante",
       "previewHint": "Abre la versión guardada del curso tal como la ven los miembros. Nada de lo que hagas allí se guarda.",
       "coverage": "{language}: {done} de {total} elementos traducidos",
-      "durationLabel": "Duración",
-      "durationDescription": "Tiempo estimado para completar el curso, en minutos.",
-      "durationPlaceholder": "Por ejemplo 45",
-      "durationInvalid": "Introduce un número entero de minutos entre 1 y {max}.",
       "outcomesLabel": "Qué conseguirán las personas",
       "outcomesDescription": "Un resultado por línea, hasta {max}. Aparecen en la presentación del curso.",
       "outcomesPlaceholder": "Reconocer técnicas de escucha activa",

@@ -69,7 +69,6 @@ describe('locale helpers', () => {
 const row = (overrides: Partial<OverviewRow> = {}): OverviewRow => ({
   archivedAt: null,
   description: { en: 'About' },
-  durationMinutes: 30,
   icon: 'heart',
   id: 1,
   languages: ['en', 'it'],

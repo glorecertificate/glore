@@ -27,7 +27,6 @@ export interface CatalogCourse {
   icon: string
   title: Localized
   description: Localized
-  durationMinutes: number
   outcomes: Localized<string[]>
   sortOrder: number
   lessons: CatalogLesson[]
@@ -68,7 +67,6 @@ export const buildCatalog = (content: LoadedContent): Catalog => ({
         ? [
             {
               description: meta.description,
-              durationMinutes: meta.durationMinutes,
               example,
               icon: meta.icon,
               lessons: lessons.map(buildLesson),

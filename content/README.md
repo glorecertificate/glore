@@ -41,17 +41,16 @@ The slug is the upsert key and must match the database row. Icons are lucide nam
 
 ## `course.json`
 
-| Key               | Rule                                                                            |
-| ----------------- | ------------------------------------------------------------------------------- |
-| `slug`            | Kebab-case, at least 3 characters, equal to the directory name. The upsert key. |
-| `type`            | `intro`, `skill`, or `learner`.                                                 |
-| `skillGroup`      | A group slug. Required for `skill`, forbidden for the other types.              |
-| `icon`            | A lucide name from `config/icons.json`.                                         |
-| `title`           | `{ en, es, it }`, all non-empty.                                                |
-| `description`     | `{ en, es, it }`, all non-empty.                                                |
-| `durationMinutes` | Integer from 5 to 600.                                                          |
-| `outcomes`        | `{ en: [..], es: [..], it: [..] }`, 1 to 8 non-empty strings per locale.        |
-| `sortOrder`       | Positive integer, unique per type and skill group among the real courses.       |
+| Key           | Rule                                                                            |
+| ------------- | ------------------------------------------------------------------------------- |
+| `slug`        | Kebab-case, at least 3 characters, equal to the directory name. The upsert key. |
+| `type`        | `intro`, `skill`, or `learner`.                                                 |
+| `skillGroup`  | A group slug. Required for `skill`, forbidden for the other types.              |
+| `icon`        | A lucide name from `config/icons.json`.                                         |
+| `title`       | `{ en, es, it }`, all non-empty.                                                |
+| `description` | `{ en, es, it }`, all non-empty.                                                |
+| `outcomes`    | `{ en: [..], es: [..], it: [..] }`, 1 to 8 non-empty strings per locale.        |
+| `sortOrder`   | Positive integer, unique per type and skill group among the real courses.       |
 
 Unknown keys are errors.
 
@@ -96,7 +95,6 @@ The player shows a lesson's quiz, evaluations, or assessment below its body. Kee
   "icon": "book-open",
   "title": { "en": "Example: course format", "es": "Ejemplo: formato de curso", "it": "Esempio: formato del corso" },
   "description": { "en": "...", "es": "...", "it": "..." },
-  "durationMinutes": 15,
   "outcomes": { "en": ["Read a lesson written in Markdown"], "es": ["..."], "it": ["..."] },
   "sortOrder": 1
 }

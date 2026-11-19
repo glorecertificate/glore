@@ -16,7 +16,6 @@ export const courses = pgTable(
     description: jsonb().$type<IntlJsonbNullable>(),
     icon: text(),
     languages: text().array(),
-    durationMinutes: integer(),
     outcomes: jsonb().$type<IntlListJsonb>(),
     skillGroupId: integer().references(() => skillGroups.id),
     creatorId: text().references(() => users.id, { onDelete: 'set null' }),

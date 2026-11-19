@@ -9,7 +9,7 @@ Como estudiante exploras las habilidades blandas y el voluntariado a tu ritmo. N
 
 1. Inicia sesión. Tu dashboard muestra los cursos que puedes continuar.
 2. Abre Cursos en la barra lateral. Ves los cursos de introducción y los cursos para estudiantes. Los cursos de habilidades no aparecen para estudiantes.
-3. Abre un curso para ver su duración y lo que vas a aprender. Pulsa Empezar curso.
+3. Abre un curso para ver lo que vas a aprender. Pulsa Empezar curso.
 
 ## Avanza por un curso
 

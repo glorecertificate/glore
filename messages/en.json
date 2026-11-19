@@ -3880,9 +3880,6 @@
         "description": "Start the course to open its lessons.",
         "back": "Back to the course"
       },
-      "minutes": "{minutes} min",
-      "hours": "{hours} h",
-      "hoursMinutes": "{hours} h {minutes} min",
       "lessonsCount": "{count, plural, one {# lesson} other {# lessons}}",
       "rating": "{rating} out of 5 ({count, plural, one {# rating} other {# ratings}})",
       "languageLabel": "Course language",
@@ -3910,7 +3907,6 @@
         "finalAssessment": "Final assessment"
       },
       "viewCompletion": "View summary",
-      "factDuration": "Duration",
       "factLessons": "Lessons"
     },
     "player": {
@@ -3984,10 +3980,6 @@
       "previewAsLearner": "Preview as learner",
       "previewHint": "Opens the saved version of the course as members see it. Nothing you do there is stored.",
       "coverage": "{language}: {done} of {total} items translated",
-      "durationLabel": "Duration",
-      "durationDescription": "Estimated time to complete the course, in minutes.",
-      "durationPlaceholder": "For example 45",
-      "durationInvalid": "Enter a whole number of minutes between 1 and {max}.",
       "outcomesLabel": "What learners will gain",
       "outcomesDescription": "One outcome per line, up to {max}. They appear on the course overview.",
       "outcomesPlaceholder": "Recognize active listening techniques",

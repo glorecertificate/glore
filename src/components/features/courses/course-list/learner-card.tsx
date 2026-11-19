@@ -4,7 +4,6 @@ import { type Locale, useTranslations } from 'next-intl'
 
 import { resolveCourseLanguage, useCourseLanguages } from '@/components/features/courses/course-languages'
 import { useCourseListSearch } from '@/components/features/courses/course-list/use-params'
-import { CourseDuration } from '@/components/features/courses/course-overview/duration'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
@@ -80,12 +79,6 @@ export const LearnerCourseCard = ({
       )}
       <div className="flex items-center justify-between gap-3 text-sm">
         <span className="flex min-w-0 items-center gap-3 text-xs text-muted-foreground">
-          {course.durationMinutes ? (
-            <span className="flex items-center gap-1.5">
-              <LucideIcon aria-hidden className="size-3.5" name="clock" />
-              <CourseDuration minutes={course.durationMinutes} />
-            </span>
-          ) : null}
           <span className="flex items-center gap-1.5">
             <LucideIcon aria-hidden className="size-3.5" name="book-open" />
             {course.lessonCount > 0

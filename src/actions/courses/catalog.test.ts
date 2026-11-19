@@ -23,7 +23,6 @@ const emptyCourse = {
   createdAt: '2026-01-01',
   creator: null,
   description: null,
-  durationMinutes: null,
   icon: null,
   id: 1,
   languages: ['en'],

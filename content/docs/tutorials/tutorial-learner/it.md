@@ -9,7 +9,7 @@ Come studente esplori le competenze trasversali e il volontariato al tuo ritmo. 
 
 1. Accedi. La tua dashboard mostra i corsi che puoi continuare.
 2. Apri Corsi nella barra laterale. Vedi i corsi introduttivi e quelli per studenti. I corsi sulle competenze non compaiono per gli studenti.
-3. Apri un corso per vedere la durata e cosa imparerai. Premi Inizia il corso.
+3. Apri un corso per vedere cosa imparerai. Premi Inizia il corso.
 
 ## Segui un corso
 

@@ -13,7 +13,6 @@
     "es": "Compara tus opciones, elige a tiempo con la información que tienes y responde del resultado, aunque no puedas estar seguro.",
     "it": "Confronta le tue opzioni, scegli in tempo con le informazioni che hai e rispondi del risultato, anche quando non puoi essere sicuro."
   },
-  "durationMinutes": 35,
   "outcomes": {
     "en": [
       "List the options you have and what each one costs or brings",

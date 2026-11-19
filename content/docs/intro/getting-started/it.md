@@ -25,7 +25,7 @@ Al tuo primo accesso GloRe ti chiede nome e cognome, data di nascita, nazionalit
 
 ## Segui il tuo primo corso
 
-Apri Corsi e inizia Benvenuto in GloRe, una breve introduzione di circa 20 minuti. Se sei un volontario, imposta poi la tua bussola delle competenze: scegli fino a 3 punti di forza e fino a 5 obiettivi, e GloRe ti consiglia dei corsi.
+Apri Corsi e inizia Benvenuto in GloRe, una breve introduzione. Se sei un volontario, imposta poi la tua bussola delle competenze: scegli fino a 3 punti di forza e fino a 5 obiettivi, e GloRe ti consiglia dei corsi.
 
 ## Passi successivi
 

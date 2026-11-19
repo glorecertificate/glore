@@ -170,8 +170,8 @@ export const upsertEditorCourses = async ({ client, now }: Context, ids: DemoIds
     if (!groupId) throw new Error(`Skill group ${course.group} is missing. Run pnpm run content:import first.`)
     const createdAt = ago(now, course.createdDaysAgo)
     const { rows } = await client.query<{ id: number }>(
-      `insert into courses (slug, type, title, icon, languages, duration_minutes, skill_group_id, creator_id, sort_order, archived_at, created_at, updated_at)
-       values ($1, 'skill', $2::jsonb, $3, $4::text[], 20, $5, $6, $7, null, $8, $8)
+      `insert into courses (slug, type, title, icon, languages, skill_group_id, creator_id, sort_order, archived_at, created_at, updated_at)
+       values ($1, 'skill', $2::jsonb, $3, $4::text[], $5, $6, $7, null, $8, $8)
        on conflict (slug) do update set
          title = excluded.title, icon = excluded.icon, languages = excluded.languages, skill_group_id = excluded.skill_group_id,
          creator_id = excluded.creator_id, sort_order = excluded.sort_order, archived_at = null,

@@ -2,7 +2,6 @@ import { useTranslations } from 'next-intl'
 
 import { type CourseCompletionData } from '@/components/features/courses/course-complete'
 import { CourseCompletedCard } from '@/components/features/courses/course-overview/completed'
-import { CourseDuration } from '@/components/features/courses/course-overview/duration'
 import { CourseLanguageSwitch } from '@/components/features/courses/course-overview/language-switch'
 import { CourseOutline } from '@/components/features/courses/course-overview/outline'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -56,7 +55,7 @@ export const CourseOverviewView = ({
   overview: CourseOverview
 }) => {
   const t = useTranslations('Learning.overview')
-  const { durationMinutes, enrollment, language, languages, lessons, outcomes, progress } = overview
+  const { enrollment, language, languages, lessons, outcomes, progress } = overview
 
   return (
     <div className={cn('grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start', className)} {...props}>
@@ -78,14 +77,6 @@ export const CourseOverviewView = ({
             </div>
           )}
           <dl className="flex flex-col gap-3 text-sm">
-            {durationMinutes ? (
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-muted-foreground">{t('factDuration')}</dt>
-                <dd className="font-medium">
-                  <CourseDuration minutes={durationMinutes} />
-                </dd>
-              </div>
-            ) : null}
             <div className="flex items-center justify-between gap-3">
               <dt className="text-muted-foreground">{t('factLessons')}</dt>
               <dd className="font-medium">{lessons.length}</dd>

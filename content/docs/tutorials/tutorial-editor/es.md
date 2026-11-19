@@ -8,7 +8,7 @@ Los editores escriben el contenido que ven los estudiantes y voluntarios. No ves
 ## Crea un curso
 
 1. Abre Cursos y pulsa Nuevo curso.
-2. Rellena el título, la descripción, el icono, el tipo de curso, la duración y los objetivos. En un curso de habilidades, elige su grupo de habilidades.
+2. Rellena el título, la descripción, el icono, el tipo de curso y los objetivos. En un curso de habilidades, elige su grupo de habilidades.
 3. Añade lecciones. El editor admite títulos, listas, citas y enlaces. Escribe / para abrir el asistente de IA, que puede generar, mejorar, resumir y traducir texto. Lee siempre lo que escribe.
 4. Añade preguntas de cuestionario a una lección. Cada pregunta tiene varias opciones, exactamente una correcta, y una explicación que enseña por qué.
 5. En la última lección de un curso de habilidades, añade las afirmaciones de autoevaluación y la evaluación final.

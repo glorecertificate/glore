@@ -19,7 +19,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { EmailText } from '@/components/ui/email-text'
+import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { type OrganizationMembershipRole, canManageMemberRole, timestampMillis } from '@/db/queries/organization'
 import { type User } from '@/db/queries/user'
@@ -195,6 +197,40 @@ export const OrganizationMembers = ({
     },
   ]
 
+  const platformFilters = (
+    <FilterBar
+      active={roleFilter !== 'all' || search.length > 0}
+      count={Number(roleFilter !== 'all')}
+      onClear={clearFilters}
+      search={
+        <SearchInput
+          aria-label={t('searchMembers')}
+          className="w-full sm:w-64"
+          hotkey="/"
+          onValueChange={setSearch}
+          placeholder={t('searchMembers')}
+          size="sm"
+          value={search}
+        />
+      }
+      size="sm"
+    >
+      <Select onValueChange={value => setRoleFilter(value as typeof roleFilter)} value={roleFilter}>
+        <SelectTrigger aria-label={t('filterRole')} className="w-auto gap-1.5" size="sm">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">{t('allRoles')}</SelectItem>
+          {ROLE_FILTERS.map(role => (
+            <SelectItem key={role} value={role}>
+              {formatRoleLabel(role, t)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </FilterBar>
+  )
+
   return (
     <>
       <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
@@ -202,54 +238,59 @@ export const OrganizationMembers = ({
           columns={columns}
           emptyDescription={members.length === 0 ? t('noMembersDescription') : t('noMembersFilteredDescription')}
           emptyTitle={members.length === 0 ? t('noMembers') : t('noMembersFiltered')}
-          rail={{
-            groups: [
-              {
-                id: 'role',
-                label: t('filterRole'),
-                onChange: value => setRoleFilter((value as OrganizationMembershipRole | null) ?? 'all'),
-                options: ROLE_FILTERS.map(role => ({
-                  count: members.filter(m => m.role === role && memberMatches(m, { role: false })).length,
-                  label: formatRoleLabel(role, t),
-                  value: role,
-                })),
-                value: roleFilter === 'all' ? null : roleFilter,
-              },
-              {
-                id: 'status',
-                label: t('filterStatus'),
-                onChange: value => setStatusFilter((value as 'active' | 'pending' | null) ?? 'all'),
-                options: [
-                  {
-                    count: members.filter(m => !m.isPending && memberMatches(m, { status: false })).length,
-                    label: t('statusJoined'),
-                    tone: 'success',
-                    value: 'active',
-                  },
-                  {
-                    count: members.filter(m => m.isPending && memberMatches(m, { status: false })).length,
-                    label: t('statusPending'),
-                    tone: 'warning',
-                    value: 'pending',
-                  },
-                ],
-                value: statusFilter === 'all' ? null : statusFilter,
-              },
-            ],
-            onReset: clearFilters,
-            search: placement => (
-              <SearchInput
-                aria-label={t('searchMembers')}
-                className="w-full"
-                hotkey={placement === 'panel' ? '/' : undefined}
-                onValueChange={setSearch}
-                placeholder={t('searchMembers')}
-                size="sm"
-                value={search}
-              />
-            ),
-            searchActive: search.length > 0,
-          }}
+          filters={platform ? platformFilters : undefined}
+          rail={
+            platform
+              ? undefined
+              : {
+                  groups: [
+                    {
+                      id: 'role',
+                      label: t('filterRole'),
+                      onChange: value => setRoleFilter((value as OrganizationMembershipRole | null) ?? 'all'),
+                      options: ROLE_FILTERS.map(role => ({
+                        count: members.filter(m => m.role === role && memberMatches(m, { role: false })).length,
+                        label: formatRoleLabel(role, t),
+                        value: role,
+                      })),
+                      value: roleFilter === 'all' ? null : roleFilter,
+                    },
+                    {
+                      id: 'status',
+                      label: t('filterStatus'),
+                      onChange: value => setStatusFilter((value as 'active' | 'pending' | null) ?? 'all'),
+                      options: [
+                        {
+                          count: members.filter(m => !m.isPending && memberMatches(m, { status: false })).length,
+                          label: t('statusJoined'),
+                          tone: 'success',
+                          value: 'active',
+                        },
+                        {
+                          count: members.filter(m => m.isPending && memberMatches(m, { status: false })).length,
+                          label: t('statusPending'),
+                          tone: 'warning',
+                          value: 'pending',
+                        },
+                      ],
+                      value: statusFilter === 'all' ? null : statusFilter,
+                    },
+                  ],
+                  onReset: clearFilters,
+                  search: placement => (
+                    <SearchInput
+                      aria-label={t('searchMembers')}
+                      className="w-full"
+                      hotkey={placement === 'panel' ? '/' : undefined}
+                      onValueChange={setSearch}
+                      placeholder={t('searchMembers')}
+                      size="sm"
+                      value={search}
+                    />
+                  ),
+                  searchActive: search.length > 0,
+                }
+          }
           getRowId={member => member.id}
           label={t('membersTitle')}
           rowActions={member => {

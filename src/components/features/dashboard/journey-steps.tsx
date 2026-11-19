@@ -33,13 +33,24 @@ export const JourneySteps = ({ className, steps }: { className?: string; steps: 
   const tWizard = useTranslations('CertificateWizard')
 
   return (
-    <ol aria-label={t('stepsLabel')} className={cn('flex flex-col gap-2', className)} data-slot="journey-steps">
+    <ol
+      aria-label={t('stepsLabel')}
+      className={cn('grid grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))] gap-2', className)}
+      data-slot="journey-steps"
+    >
       {steps.map(({ key, state }) => (
-        <li aria-current={state === 'current' ? 'step' : undefined} className="flex items-center gap-2.5" key={key}>
+        <li
+          aria-current={state === 'current' ? 'step' : undefined}
+          className={cn(
+            'flex min-w-0 items-center gap-2.5 rounded-lg border bg-surface-0 px-3 py-2.5',
+            state === 'current' ? 'border-current-fill' : 'border-border-subtle'
+          )}
+          key={key}
+        >
           <StepDot state={state} />
           <span
             className={cn(
-              'type-caption',
+              'truncate type-caption',
               state === 'current' && 'font-medium text-fg-title',
               state === 'flagged' && 'font-medium text-fg-1',
               (state === 'done' || state === 'upcoming') && 'text-fg-2'

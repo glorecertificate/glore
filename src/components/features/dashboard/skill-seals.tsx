@@ -12,7 +12,7 @@ const Seal = ({ icon }: { icon: string | null | false }) => (
   <span
     aria-hidden
     className={cn(
-      'flex size-14 shrink-0 items-center justify-center rounded-full border p-1',
+      'flex size-12 shrink-0 items-center justify-center rounded-full border p-1',
       icon === false ? 'border-dashed border-border-strong' : 'border-earned-border'
     )}
   >
@@ -22,7 +22,7 @@ const Seal = ({ icon }: { icon: string | null | false }) => (
         icon === false ? 'bg-surface-muted' : 'border border-earned-border bg-earned-subtle text-earned-text'
       )}
     >
-      {icon !== false && <LucideIcon className="size-5" name={(icon ?? 'award') as IconName} />}
+      {icon !== false && <LucideIcon className="size-4.5" name={(icon ?? 'award') as IconName} />}
     </span>
   </span>
 )
@@ -34,22 +34,22 @@ export const SkillSeals = ({ className, min, skills }: { className?: string; min
   return (
     <ul
       aria-label={t('seals.label')}
-      className={cn('flex flex-wrap gap-x-3 gap-y-4', className)}
+      className={cn('grid grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] gap-4', className)}
       data-slot="skill-seals"
     >
       {skills.map(skill => (
         <li key={skill.id}>
           <Link
-            className="group flex w-32 flex-col items-center gap-2 rounded-md text-center focus-visible:focus-ring"
+            className="group flex min-w-0 items-center gap-3 rounded-md focus-visible:focus-ring"
             href={`/courses/${skill.slug}` as Route}
           >
             <Seal icon={skill.icon} />
-            <span className="type-caption text-balance text-fg-1 group-hover:text-fg-title">{skill.title}</span>
+            <span className="type-label text-balance text-fg-1 group-hover:text-fg-title">{skill.title}</span>
           </Link>
         </li>
       ))}
       {slots.map(slot => (
-        <li className="flex w-32 flex-col items-center gap-2 text-center" key={slot}>
+        <li className="flex min-w-0 items-center gap-3" key={slot}>
           <Seal icon={false} />
           <span className="type-caption text-fg-2">{t('seals.missing')}</span>
         </li>

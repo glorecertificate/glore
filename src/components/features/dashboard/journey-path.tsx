@@ -29,7 +29,7 @@ export const JourneyPath = ({
   return (
     <section
       aria-labelledby="journey-path-title"
-      className={cn('flex flex-col gap-2', className)}
+      className={cn('flex flex-col gap-2 border-t border-border-subtle pt-5', className)}
       data-slot="journey-path"
     >
       <h3 className="type-label text-fg-2" id="journey-path-title">

@@ -6,7 +6,7 @@ import { type VolunteerSummary, type nextSkillCourse } from '@/actions/dashboard
 import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { CertificatePreviewDialog } from '@/components/features/dashboard/certificate-preview-dialog'
-import { WIZARD_STEP_LABELS } from '@/components/features/dashboard/journey-steps'
+import { JourneySteps, WIZARD_STEP_LABELS } from '@/components/features/dashboard/journey-steps'
 import { SkillSeals } from '@/components/features/dashboard/skill-seals'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -96,7 +96,7 @@ export const JourneyStage = ({
   const showRequest = phase === 'changes' || phase === 'review' || phase === 'rejected' || phase === 'withdrawn'
 
   return (
-    <Card className={cn('min-w-0 gap-6', className)} data-phase={phase} data-slot="journey-stage">
+    <Card className={cn('min-w-0 gap-6 p-6', className)} data-phase={phase} data-slot="journey-stage">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-col gap-1">
           <h2 className="type-heading text-fg-title" id="journey-stage-title">
@@ -106,9 +106,10 @@ export const JourneyStage = ({
         </div>
         {certificate && <CertificateStatusBadge className="shrink-0" status={certificate.status} />}
       </div>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-1 flex-col gap-6">
+        {(phase === 'draft' || phase === 'changes') && steps.length > 0 && <JourneySteps steps={steps} />}
         {SEAL_PHASES.has(phase) && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface-muted p-5">
             <p className="type-label text-fg-2">
               {t('seals.title', { count: eligibility.completedSkillCount, min: eligibility.minSkills })}
             </p>
@@ -150,7 +151,7 @@ export const JourneyStage = ({
             <p className="text-sm whitespace-pre-line text-fg-1">{reason}</p>
           </div>
         )}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-border-subtle pt-6 max-sm:*:w-full">
           {action && (
             <Button asChild className="max-w-full" variant="brand">
               <Link href={action.href}>

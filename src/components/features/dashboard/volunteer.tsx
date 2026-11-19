@@ -9,13 +9,13 @@ export const VolunteerDashboard = ({ volunteer }: { volunteer: VolunteerSummary 
   const compass = learning && !volunteer.compassSet
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[20rem_minmax(0,1fr)]" data-slot="volunteer-dashboard">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]" data-slot="volunteer-dashboard">
       <JourneyRail
-        className="order-2 lg:order-1"
+        className="order-2"
         path={<JourneyPath compass={compass} courses={volunteer.courses.continuing} exclude={next?.slug} />}
         volunteer={volunteer}
       />
-      <JourneyStage className="order-1 lg:order-2" next={next} volunteer={volunteer} />
+      <JourneyStage className="order-1" next={next} volunteer={volunteer} />
     </div>
   )
 }

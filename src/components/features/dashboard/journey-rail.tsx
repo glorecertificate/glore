@@ -2,7 +2,6 @@ import { useFormatter, useTranslations } from 'next-intl'
 
 import { type JourneyStage, type VolunteerSummary } from '@/actions/dashboard/core'
 import { JourneyMarker } from '@/components/features/dashboard/journey-marker'
-import { JourneySteps } from '@/components/features/dashboard/journey-steps'
 import { Card } from '@/components/ui/card'
 import { timestampMillis } from '@/db/queries/organization'
 import { cn } from '@/lib/utils'
@@ -56,7 +55,7 @@ export const JourneyRail = ({
   }
 
   return (
-    <Card className={cn('gap-6', className)} data-slot="journey-rail">
+    <Card className={cn('gap-6 p-6', className)} data-slot="journey-rail">
       <div className="flex flex-col gap-0.5">
         <h2 className="type-heading text-fg-title" id="journey-rail-title">
           {t('title')}
@@ -91,9 +90,6 @@ export const JourneyRail = ({
               <div className="flex min-w-0 flex-1 flex-col gap-0.5 pt-0.5">
                 <span className={cn('type-label', LABEL_TONES[stage.state])}>{t(`stages.${stage.key}`)}</span>
                 {line && <span className="type-caption text-fg-2">{line}</span>}
-                {stage.state === 'current' && stage.key === 'request' && journey.steps.length > 0 && (
-                  <JourneySteps className="mt-3" steps={journey.steps} />
-                )}
               </div>
             </li>
           )

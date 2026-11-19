@@ -1342,7 +1342,7 @@
       "healthMissing": "{item}: missing",
       "healthDone": "{item}: done",
       "healthNotNeeded": "{item}: not needed for this course",
-      "healthColumnTotal": "{item}: {count} missing",
+      "healthColumnTotal": "{item}: {count, plural, other {# missing}}",
       "healthAll": "{count, plural, one {All # course} other {All # courses}}",
       "healthStatus": {
         "draft": "Draft",
@@ -1377,7 +1377,7 @@
         "doc_category": "Categories",
         "skill_group": "Skill groups"
       },
-      "translationsMissingCell": "{kind}, {language}: {count} missing",
+      "translationsMissingCell": "{kind}, {language}: {count, plural, other {# missing}}",
       "translationsCompleteCell": "{kind}, {language}: nothing missing",
       "healthViewAll": "View all {count} courses",
       "translationsMissingTotal": "{language}: {count, plural, one {# part missing} other {# parts missing}}",

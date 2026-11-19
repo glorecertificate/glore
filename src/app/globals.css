@@ -201,6 +201,7 @@
   --color-stat-amber-strip-to: var(--stat-amber-strip-to);
   --color-stat-amber-foreground: var(--stat-amber-foreground);
   --color-stat-amber-text: var(--stat-amber-text);
+  --color-stat-text: var(--stat-text);
   --color-status-draft: var(--status-draft);
   --color-status-submitted: var(--status-submitted);
   --color-status-review: var(--status-review);

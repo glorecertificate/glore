@@ -39,7 +39,6 @@ import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { Spinner } from '@/components/ui/spinner'
 import { type Course } from '@/db/queries/course'
 import { useDebounce } from '@/hooks/use-debounce'
-import { APP_ROOT } from '@/lib/constants'
 
 const IDLE_GROUPS: NavigationGroup[] = ['pages', 'actions', 'content', 'admin']
 const GROUPS: NavigationGroup[] = ['pages', 'actions', 'settings', 'organization', 'content', 'admin']
@@ -55,7 +54,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
   const tCertificates = useTranslations('CertificateStatus')
   const { push } = useRouter()
   const { localize } = useI18n()
-  const { organization: active, setOrganization, user } = useSession()
+  const { organization: active, switchOrganization, user } = useSession()
   const docs = useDocsSearch()
   const [courses, setCourses] = useState<Course[]>([])
   const [fuse, setFuse] = useState<typeof Fuse | null>(null)
@@ -118,8 +117,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
 
   const selectOrganization = (id: number) => {
     handleOpenChange(false)
-    setOrganization(id)
-    push(APP_ROOT)
+    switchOrganization(id)
   }
 
   const labels = useNavigationLabels()

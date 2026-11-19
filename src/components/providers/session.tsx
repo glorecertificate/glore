@@ -1,9 +1,11 @@
 'use client'
 
-import { createContext, use, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createContext, use, useRef, useState, useTransition } from 'react'
 
 import { type User } from '@/db/queries/user'
 import { useCookies } from '@/hooks/use-cookies'
+import { APP_ROOT } from '@/lib/constants'
 
 interface SessionContextValue {
   impersonating?: boolean
@@ -15,6 +17,8 @@ const useSessionContext = (value: SessionContextValue) => {
   const cookies = useCookies()
   const cookiesRef = useRef(cookies)
   cookiesRef.current = cookies
+  const { push, refresh } = useRouter()
+  const [switching, startSwitching] = useTransition()
 
   const [userState, setUser] = useState(value.user)
   const [prev, setPrev] = useState(value.user)
@@ -31,6 +35,14 @@ const useSessionContext = (value: SessionContextValue) => {
   const setOrganization = (id: number) => {
     setOrgId(id)
     cookiesRef.current.set('org', id)
+  }
+
+  const switchOrganization = (id: number) => {
+    setOrganization(id)
+    startSwitching(() => {
+      refresh()
+      push(APP_ROOT)
+    })
   }
 
   const updateOrganization = (id: number, patch: Partial<User['organizations'][number]>) => {
@@ -71,6 +83,8 @@ const useSessionContext = (value: SessionContextValue) => {
     setUser,
     organization,
     setOrganization,
+    switchOrganization,
+    switching,
     updateOrganization,
   }
 }

@@ -1,6 +1,10 @@
 export const EMAIL_COLORS = {
   action: '#037fa8',
   actionText: '#026e90',
+  bandFrom: '#16304f',
+  bandTo: '#2a6f60',
+  bandVia: '#1b4d74',
+  bandVia2: '#13607f',
   border: '#e6edf3',
   canvas: '#e9f1f6',
   danger: '#da3834',
@@ -17,6 +21,10 @@ export const EMAIL_COLORS = {
 export const EMAIL_COLORS_DARK = {
   action: '#44b5dc',
   actionText: '#59bcdf',
+  bandFrom: '#0f2234',
+  bandTo: '#1f5e55',
+  bandVia: '#134260',
+  bandVia2: '#0f5570',
   border: '#213a5c',
   canvas: '#0b1826',
   danger: '#da3834',

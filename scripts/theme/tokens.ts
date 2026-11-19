@@ -514,6 +514,10 @@ export const buildTheme = (config: SystemConfig): Theme => {
   const emailOf = (mode: typeof light, border: string) => ({
     action: hexOf(mode, 'action'),
     actionText: hexOf(mode, 'action-text'),
+    bandFrom: hexOf(mode, 'band-from'),
+    bandTo: hexOf(mode, 'band-to'),
+    bandVia: hexOf(mode, 'band-via'),
+    bandVia2: hexOf(mode, 'band-via-2'),
     border: hexOf(mode, border),
     canvas: hexOf(mode, 'surface-sunken'),
     danger: hexOf(mode, 'danger-fill'),

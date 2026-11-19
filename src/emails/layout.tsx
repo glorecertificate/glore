@@ -48,8 +48,12 @@ const imageStyle: React.CSSProperties = {
   maxWidth: '100%',
 }
 
+const bandGradient = (palette: typeof EMAIL_COLORS | typeof EMAIL_COLORS_DARK) =>
+  `linear-gradient(100deg,${palette.bandFrom}_0%,${palette.bandVia}_45%,${palette.bandVia2}_75%,${palette.bandTo}_100%)`
+
+const plateClass = `bg-[${EMAIL_COLORS.bandFrom}] bg-[${bandGradient(EMAIL_COLORS)}] dark:bg-[${EMAIL_COLORS_DARK.bandFrom}] dark:bg-[${bandGradient(EMAIL_COLORS_DARK)}]`
+
 const plateStyle: React.CSSProperties = {
-  backgroundColor: EMAIL_COLORS.surface,
   borderRadius: '16px 16px 0 0',
 }
 
@@ -91,12 +95,12 @@ export const EmailLayout = ({
           <Section className={EMAIL_CLASSES.canvas}>
             <Container className="mx-auto max-w-140">
               <Section className={EMAIL_CLASSES.card}>
-                <Section style={plateStyle}>
+                <Section bgcolor={EMAIL_COLORS.bandFrom} className={plateClass} style={plateStyle}>
                   <Link className="no-underline" href={process.env.APP_URL}>
                     <Img
                       alt={metadata.name}
                       height={144}
-                      src={publicFile('/email/header.png')}
+                      src={publicFile('/email/logo.png')}
                       style={imageStyle}
                       width={560}
                     />

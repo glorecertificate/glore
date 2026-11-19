@@ -54,7 +54,7 @@ export const CourseTranslation = () => {
   }
 
   const trigger = (
-    <Button disabled={!saved} icon="languages" loading={running} stable variant="outline">
+    <Button disabled={!saved} icon="languages" loading={running} variant="outline">
       {t('open')}
     </Button>
   )

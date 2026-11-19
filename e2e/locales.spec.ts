@@ -40,21 +40,21 @@ const ROLE_PAGES = {
     { path: '/notifications', text: m => m.Notifications.title },
   ],
   owner: [
-    { path: '/dashboard', text: m => m.Dashboard.manager.invitations },
+    { path: '/dashboard', text: m => m.OrganizationAttention.title },
     { path: '/organization', text: m => m.Organization.overview },
     { path: '/organization?tab=members', text: m => m.Organization.membersTitle },
     { path: '/organization?tab=certificates', text: m => m.CertificateOrg.title },
   ],
   representative: [
-    { path: '/dashboard', text: m => m.Dashboard.manager.invitations },
+    { path: '/dashboard', text: m => m.OrganizationAttention.title },
     { path: '/organization?tab=members', text: m => m.Organization.membersTitle },
   ],
   tutor: [
-    { path: '/dashboard', text: m => m.Dashboard.tutor.reviewTime },
+    { path: '/dashboard', text: m => m.Dashboard.tutor.queueTitle },
     { partial: true, path: '/certificates', text: m => m.CertificateQueue.tabs.assigned },
   ],
   volunteer: [
-    { path: '/dashboard', text: m => m.Dashboard.journey.title },
+    { path: '/dashboard', text: m => m.Dashboard.volunteer.requestTitle },
     { path: '/courses', text: m => m.CourseCommon.courses },
     { path: '/certificates', text: m => m.Layout.certificates },
     { path: '/notifications', text: m => m.Notifications.title },

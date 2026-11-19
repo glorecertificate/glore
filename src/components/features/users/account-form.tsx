@@ -7,10 +7,10 @@ import { z } from 'zod'
 
 import { updateAccount } from '@/actions/user'
 import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
+import { SettingsSaveBar } from '@/components/features/users/settings-save-bar'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
-import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -94,7 +94,7 @@ export const AccountForm = () => {
   return (
     <Form {...form}>
       <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
-        <SettingsSection description={t('preferencesDescription')} title={t('preferences')}>
+        <SettingsSection title={t('preferences')}>
           <FormField
             control={form.control}
             name="locale"
@@ -117,7 +117,7 @@ export const AccountForm = () => {
 
         <Separator className="my-8" />
 
-        <SettingsSection description={t('accountDescription')} title={t('account')}>
+        <SettingsSection title={t('account')}>
           <ImpersonationLockNote />
           <FormField
             control={form.control}
@@ -161,21 +161,7 @@ export const AccountForm = () => {
           />
         </SettingsSection>
 
-        <Separator className="my-8" />
-
-        <div className="flex justify-end gap-3">
-          <Button
-            disabled={disabled || form.formState.isSubmitting}
-            onClick={() => form.reset()}
-            type="button"
-            variant="outline"
-          >
-            {t('reset')}
-          </Button>
-          <Button disabled={disabled} loading={form.formState.isSubmitting} type="submit" variant="brand">
-            {t('saveChanges')}
-          </Button>
-        </div>
+        <SettingsSaveBar dirty={!disabled} loading={form.formState.isSubmitting} onReset={() => form.reset()} />
       </form>
     </Form>
   )

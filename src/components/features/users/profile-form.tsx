@@ -9,6 +9,7 @@ import { z } from 'zod'
 
 import { confirmAvatar, createAvatarUploadUrl, removeAvatar } from '@/actions/storage'
 import { updateProfile } from '@/actions/user'
+import { SettingsSaveBar } from '@/components/features/users/settings-save-bar'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import {
@@ -21,7 +22,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -29,7 +29,6 @@ import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
 import { PhoneInput } from '@/components/ui/phone-input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
 import { SpokenLanguagesSelect } from '@/components/ui/spoken-languages-select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
@@ -192,26 +191,30 @@ export const ProfileForm = () => {
   return (
     <Form {...form}>
       <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
-        <SettingsSection description={t('profilePictureDescription')} title={t('profilePicture')}>
-          <div ref={avatarRef}>
-            <ImageCropper
-              disabled={form.formState.isSubmitting}
-              fallback={user.initials}
-              onChange={handleAvatarUpload}
-              onRemove={(event?: React.MouseEvent<HTMLElement>) => {
-                returnFocus.current = event?.currentTarget ?? null
-                setRemoveAvatarOpen(true)
-              }}
-              value={avatarPreview}
-            />
-          </div>
-        </SettingsSection>
-
-        <Separator className="mt-4 mb-8" />
+        <div className="pb-8" ref={avatarRef}>
+          <ImageCropper
+            disabled={form.formState.isSubmitting}
+            fallback={user.initials}
+            heading={
+              <div className="min-w-0">
+                <p className="truncate text-lg font-medium">
+                  {[user.firstName, user.lastName].filter(Boolean).join(' ')}
+                </p>
+                <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+              </div>
+            }
+            onChange={handleAvatarUpload}
+            onRemove={(event?: React.MouseEvent<HTMLElement>) => {
+              returnFocus.current = event?.currentTarget ?? null
+              setRemoveAvatarOpen(true)
+            }}
+            value={avatarPreview}
+          />
+        </div>
 
         <div className="flex flex-col gap-8">
           {/* Personal information */}
-          <SettingsSection description={t('personalInfoDescription')} title={t('personalInfo')}>
+          <SettingsSection title={t('personalInfo')}>
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -273,7 +276,7 @@ export const ProfileForm = () => {
             />
           </SettingsSection>
           {/* Personal details */}
-          <SettingsSection description={t('personalDetailsDescription')} title={t('personalDetails')}>
+          <SettingsSection title={t('personalDetails')}>
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -361,7 +364,7 @@ export const ProfileForm = () => {
             </div>
           </SettingsSection>
           {/* Location */}
-          <SettingsSection description={t('locationDescription')} title={t('location')}>
+          <SettingsSection title={t('location')}>
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -399,7 +402,7 @@ export const ProfileForm = () => {
             </div>
           </SettingsSection>
           {/* Languages */}
-          <SettingsSection description={t('spokenLanguagesDescription')} title={t('spokenLanguages')}>
+          <SettingsSection title={t('spokenLanguages')}>
             <SpokenLanguagesSelect
               disabled={form.formState.isSubmitting}
               onChange={setLanguages}
@@ -409,24 +412,14 @@ export const ProfileForm = () => {
           </SettingsSection>
         </div>
 
-        <Separator className="my-8" />
-
-        <div className="flex justify-end gap-3">
-          <Button
-            disabled={disabled || form.formState.isSubmitting}
-            onClick={() => {
-              form.reset()
-              setLanguages(user.languages ?? [])
-            }}
-            type="button"
-            variant="outline"
-          >
-            {t('reset')}
-          </Button>
-          <Button disabled={disabled} loading={form.formState.isSubmitting} type="submit" variant="brand">
-            {t('saveChanges')}
-          </Button>
-        </div>
+        <SettingsSaveBar
+          dirty={!disabled}
+          loading={form.formState.isSubmitting}
+          onReset={() => {
+            form.reset()
+            setLanguages(user.languages ?? [])
+          }}
+        />
 
         <AlertDialog onOpenChange={setRemoveAvatarOpen} open={removeAvatarOpen}>
           <AlertDialogContent

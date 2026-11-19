@@ -88,6 +88,7 @@ export const InlineCombobox = ({
    * insertText if the combobox closes due to a selection change.
    */
   const insertPoint = useRef<Point | null>(null)
+  const removedRef = useRef(false)
 
   useEffect(() => {
     const path = editor.api.findPath(element)
@@ -114,6 +115,7 @@ export const InlineCombobox = ({
     cancelInputOnBlur: true,
     cursorState,
     onCancelInput: cause => {
+      if (removedRef.current) return
       if (cause !== 'backspace') {
         editor.tf.insertText(trigger + value, {
           at: insertPoint?.current ?? undefined,
@@ -135,7 +137,10 @@ export const InlineCombobox = ({
     filter,
     inputProps,
     inputRef,
-    removeInput,
+    removeInput: focusEditor => {
+      removedRef.current = true
+      removeInput(focusEditor)
+    },
     setHasEmpty,
     showTrigger,
     trigger,

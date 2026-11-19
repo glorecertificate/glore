@@ -910,7 +910,15 @@
     "moveBlockDown": "Bajar",
     "descriptionShowMore": "Ver más",
     "descriptionShowLess": "Ver menos",
-    "saveBarLabel": "Guardar y publicar"
+    "saveBarLabel": "Guardar y publicar",
+    "publish": "Publicar",
+    "publishChanges": "Publicar cambios",
+    "saveDraft": "Guardar borrador",
+    "saving": "Guardando…",
+    "savedJustNow": "Guardado hace un momento",
+    "unpublish": "Despublicar",
+    "noChangesToPublish": "No hay cambios que publicar",
+    "editingLanguage": "Editando en {language}"
   },
   "CourseList": {
     "active": "Activos",
@@ -1003,7 +1011,9 @@
     "selectAllGroups": "Seleccionar todos",
     "archiveAction": "Archivar",
     "moreActions": "Más acciones",
-    "descriptionLearner": "Cursos cortos sobre cómo funciona GloRe y sobre temas prácticos. Los cursos de habilidades y los certificados son para voluntarios."
+    "descriptionLearner": "Cursos cortos sobre cómo funciona GloRe y sobre temas prácticos. Los cursos de habilidades y los certificados son para voluntarios.",
+    "showing": "Mostrando {shown} de {total, plural, one {# curso} other {# cursos}}",
+    "showMore": "Mostrar más cursos"
   },
   "ContentTranslation": {
     "title": "Traducción",
@@ -3783,7 +3793,9 @@
         "selfAssessment": "Autoevaluación",
         "finalAssessment": "Evaluación final"
       },
-      "viewCompletion": "Ver resumen"
+      "viewCompletion": "Ver resumen",
+      "factDuration": "Duración",
+      "factLessons": "Lecciones"
     },
     "player": {
       "lessons": "Lecciones",
@@ -3900,7 +3912,12 @@
       "assignError": "No se pudo mover el curso.",
       "openCourse": "Abrir curso",
       "cancel": "Cancelar",
-      "edit": "Editar"
+      "edit": "Editar",
+      "groupActions": "Acciones del grupo",
+      "moveToGroup": "Mover a un grupo",
+      "skillSummary": "{count, plural, one {# habilidad} other {# habilidades}}, {published} publicadas, {drafts, plural, one {# borrador} other {# borradores}}",
+      "toggleGroup": "Mostrar u ocultar las habilidades de {group}",
+      "ungroupedEmpty": "Todos los cursos de habilidades tienen un grupo."
     },
     "catalog": {
       "rating": "{rating} ({count})",
@@ -3918,7 +3935,8 @@
         "recommendedTitle": "Recomendados para ti",
         "save": "Guardar brújula",
         "saved": "Brújula de habilidades guardada",
-        "saveError": "No se pudo guardar la brújula. Inténtalo de nuevo."
+        "saveError": "No se pudo guardar la brújula. Inténtalo de nuevo.",
+        "summary": "{strengths, plural, one {# fortaleza} other {# fortalezas}} y {goals, plural, one {# objetivo} other {# objetivos}} definidos"
       }
     }
   },

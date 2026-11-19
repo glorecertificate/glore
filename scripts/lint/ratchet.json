@@ -20,7 +20,7 @@
     "no-arbitrary-value": 2
   },
   "src/components/features/courses/course-list": {
-    "no-arbitrary-value": 4
+    "no-arbitrary-value": 3
   },
   "src/components/features/courses/skill-compass": {
     "no-arbitrary-value": 1

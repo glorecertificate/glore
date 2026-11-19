@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/toast'
 
 export const SkillGroupControls = ({
@@ -65,32 +66,30 @@ export const SkillGroupControls = ({
 
   return (
     <div className="flex items-center gap-1">
-      <Button
-        aria-label={t('moveUp')}
-        disabled={!canMoveUp || busy}
-        onClick={() => move('up')}
-        size="icon"
-        variant="ghost"
-      >
-        <LucideIcon className="size-4" name="arrow-up" />
-      </Button>
-      <Button
-        aria-label={t('moveDown')}
-        disabled={!canMoveDown || busy}
-        onClick={() => move('down')}
-        size="icon"
-        variant="ghost"
-      >
-        <LucideIcon className="size-4" name="arrow-down" />
-      </Button>
       <SkillGroupDialog group={group}>
-        <Button aria-label={t('edit')} size="icon" variant="ghost">
-          <LucideIcon className="size-4" name="pencil" />
-        </Button>
+        <Button variant="outline">{t('editGroup')}</Button>
       </SkillGroupDialog>
-      <Button aria-label={t('delete')} onClick={() => setConfirming(true)} size="icon" variant="ghost">
-        <LucideIcon className="size-4" name="trash-2" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button aria-label={t('groupActions')} disabled={busy} size="icon" variant="ghost">
+            <LucideIcon name="ellipsis" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-48">
+          <DropdownMenuItem disabled={!canMoveUp} onSelect={() => move('up')}>
+            <LucideIcon aria-hidden name="arrow-up" />
+            {t('moveUp')}
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={!canMoveDown} onSelect={() => move('down')}>
+            <LucideIcon aria-hidden name="arrow-down" />
+            {t('moveDown')}
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setConfirming(true)} variant="destructive">
+            <LucideIcon aria-hidden name="trash-2" />
+            {t('delete')}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <AlertDialog onOpenChange={setConfirming} open={confirming}>
         <AlertDialogContent>
           <AlertDialogHeader>

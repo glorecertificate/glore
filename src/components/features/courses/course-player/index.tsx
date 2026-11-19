@@ -81,49 +81,69 @@ const PlayerLesson = ({
   }
   const hint = progress.blocker ? hints[progress.blocker] : null
 
+  const primaryClass = 'min-w-0 flex-1 whitespace-nowrap sm:flex-none'
+
   return (
-    <Card className="min-w-0 gap-6 p-6 sm:p-8">
-      <header className="flex min-w-0 flex-col gap-1.5">
-        <p className="text-sm font-medium text-brand-text">
-          {t('step', { current: index + 1, total: lessons.length })}
-        </p>
-        <h2 className="type-title text-balance">{lesson.title}</h2>
-      </header>
-      {!saves && (
-        <Banner variant="warning">
-          <LucideIcon className="mt-0.5 size-4 shrink-0" name="eye" />
-          <p>{t('previewNote')}</p>
-        </Banner>
-      )}
-      {lesson.contentLanguage && lesson.contentLanguage !== language && (
-        <Banner variant="info">
-          <LucideIcon className="mt-0.5 size-4 shrink-0" name="languages" />
-          <p>{t('fallbackLanguage', { language: fallbackLabel ?? lesson.contentLanguage })}</p>
-        </Banner>
-      )}
-      {lesson.content ? (
-        <LessonReader content={lesson.content} version={`${lesson.id}-${language}`} />
-      ) : (
-        <p className="text-sm text-muted-foreground">{t('noContent')}</p>
-      )}
-      <LessonQuiz gated={!done} lesson={lesson} progress={progress} />
-      <LessonSelfAssessment disabled={done} lesson={lesson} progress={progress} />
-      <footer className="flex flex-col gap-3 border-t pt-6">
-        {!done && hint && <p className="text-sm text-muted-foreground">{hint}</p>}
-        <div className={cn('flex items-center gap-3', previous ? 'justify-between' : 'justify-end')}>
-          {previous && (
-            <Button asChild variant="outline">
-              <Link href={lessonHref(previous.id)}>{t('previous')}</Link>
+    <div className="flex min-w-0 flex-col gap-4">
+      <Card className="mx-auto w-full max-w-210 min-w-0 gap-6 p-5 sm:p-8">
+        <header className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:justify-between sm:gap-4">
+          <h2 className="type-title text-balance sm:text-3xl">{lesson.title}</h2>
+          <CourseLanguageSwitch
+            className="shrink-0"
+            courseId={overview.id}
+            language={language}
+            languages={overview.languages}
+            lessonId={lesson.id}
+            persist={saves}
+            slug={slug}
+          />
+        </header>
+        {!saves && (
+          <Banner variant="warning">
+            <LucideIcon className="mt-0.5 size-4 shrink-0" name="eye" />
+            <p>{t('previewNote')}</p>
+          </Banner>
+        )}
+        {lesson.contentLanguage && lesson.contentLanguage !== language && (
+          <Banner variant="info">
+            <LucideIcon className="mt-0.5 size-4 shrink-0" name="languages" />
+            <p>{t('fallbackLanguage', { language: fallbackLabel ?? lesson.contentLanguage })}</p>
+          </Banner>
+        )}
+        {lesson.content ? (
+          <LessonReader content={lesson.content} version={`${lesson.id}-${language}`} />
+        ) : (
+          <p className="text-sm text-muted-foreground">{t('noContent')}</p>
+        )}
+        <LessonQuiz gated={!done} lesson={lesson} progress={progress} />
+        <LessonSelfAssessment disabled={done} lesson={lesson} progress={progress} />
+      </Card>
+      <div
+        className="sticky bottom-0 z-10 mx-auto -mb-2 flex w-full max-w-210 flex-col gap-2 rounded-xl border border-border-subtle bg-surface-1/95 px-3 pt-3 pb-bar-safe shadow-card backdrop-blur sm:px-4"
+        data-slot="lesson-bar"
+      >
+        {!done && hint && <p className="text-sm text-muted-foreground sm:hidden">{hint}</p>}
+        <div className="flex items-center gap-3">
+          {previous ? (
+            <Button asChild className="shrink-0" variant="outline">
+              <Link href={lessonHref(previous.id)}>
+                <LucideIcon className="sm:hidden" name="arrow-left" />
+                <span className="max-sm:sr-only">{t('previous')}</span>
+              </Link>
             </Button>
-          )}
+          ) : null}
+          <p className="hidden min-w-0 grow text-center text-sm text-muted-foreground sm:block">
+            {!done && hint ? hint : t('step', { current: index + 1, total: lessons.length })}
+          </p>
           {done ? (
-            <Button asChild>
+            <Button asChild className={primaryClass}>
               <Link href={next ? lessonHref(next.id) : finishHref}>
                 {next ? t('next') : saves ? t('viewSummary') : t('backToOverview')}
               </Link>
             </Button>
           ) : isLast ? (
             <ConfettiButton
+              className={primaryClass}
               disabled={!!progress.blocker || saving}
               effect="fireworks"
               loading={saving}
@@ -132,13 +152,13 @@ const PlayerLesson = ({
               {t('finish')}
             </ConfettiButton>
           ) : (
-            <Button disabled={!!progress.blocker} loading={saving} onClick={onComplete}>
+            <Button className={primaryClass} disabled={!!progress.blocker} loading={saving} onClick={onComplete}>
               {t('complete')}
             </Button>
           )}
         </div>
-      </footer>
-    </Card>
+      </div>
+    </div>
   )
 }
 
@@ -154,25 +174,25 @@ export const CoursePlayer = ({
   overview: CourseOverview
 }) => {
   const t = useTranslations('Learning.player')
-  const { language, languages, progress, slug } = overview
+  const { progress } = overview
 
   useEffect(() => {
     void preloadMarkdown()
   }, [])
 
   return (
-    <div className={cn('grid gap-8 md:grid-cols-[16rem_1fr]', className)} {...props}>
-      <aside className="flex flex-col gap-4 rounded-xl border border-border-subtle bg-card p-4 shadow-card md:sticky md:top-6 md:self-start">
+    <div className={cn('grid gap-6 md:grid-cols-[17.5rem_minmax(0,1fr)] md:items-start', className)} {...props}>
+      <aside className="flex flex-col gap-4 rounded-xl border border-border-subtle bg-card p-4 shadow-card md:sticky md:top-6">
         {access === 'learner' && (
           <div className="flex flex-col gap-1.5">
-            <Progress color={progress.percent === 100 ? 'success' : 'brand'} value={progress.percent} />
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm font-medium">
               {t('progress', { completed: progress.completed, total: progress.total })}
             </span>
+            <Progress color={progress.percent === 100 ? 'success' : 'default'} value={progress.percent} />
           </div>
         )}
         <details className="group/lessons md:hidden">
-          <summary className="relative flex cursor-pointer list-none items-center gap-1.5 text-sm font-medium pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-3 pointer-coarse:before:content-[''] [&::-webkit-details-marker]:hidden">
+          <summary className="relative flex min-h-11 cursor-pointer list-none items-center gap-1.5 text-sm font-medium [&::-webkit-details-marker]:hidden">
             <LucideIcon
               className="size-4 text-muted-foreground transition-transform group-open/lessons:rotate-90 motion-reduce:transition-none"
               name="chevron-right"
@@ -182,14 +202,6 @@ export const CoursePlayer = ({
           <PlayerOutline access={access} className="mt-2" currentId={lesson.id} overview={overview} />
         </details>
         <PlayerOutline access={access} className="hidden md:flex" currentId={lesson.id} overview={overview} />
-        <CourseLanguageSwitch
-          courseId={overview.id}
-          language={language}
-          languages={languages}
-          lessonId={lesson.id}
-          persist={access === 'learner'}
-          slug={slug}
-        />
       </aside>
       <PlayerLesson access={access} key={lesson.id} lesson={lesson} overview={overview} />
     </div>

@@ -6,12 +6,20 @@ import { startTransition, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { assignSkillGroup } from '@/actions/courses/skill-groups'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { LucideIcon } from '@/components/icons/lucide'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/toast'
 
-const NONE = 'none'
-
-export const AssignSkillGroup = ({
+export const CourseRowMenu = ({
   courseId,
   courseTitle,
   groupId,
@@ -26,10 +34,10 @@ export const AssignSkillGroup = ({
   const { refresh } = useRouter()
   const [busy, setBusy] = useState(false)
 
-  const onChange = (value: string) => {
+  const move = (target: number | null) => {
     setBusy(true)
     startTransition(async () => {
-      const result = await assignSkillGroup({ courseId, groupId: value === NONE ? null : Number(value) })
+      const result = await assignSkillGroup({ courseId, groupId: target })
       setBusy(false)
       if ('error' in result) {
         toast.error(t('assignError'))
@@ -41,21 +49,28 @@ export const AssignSkillGroup = ({
   }
 
   return (
-    <Select disabled={busy} onValueChange={onChange} value={groupId ? String(groupId) : NONE}>
-      <SelectTrigger
-        aria-label={t('assignLabel', { course: courseTitle })}
-        className="w-full whitespace-nowrap sm:w-48"
-      >
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value={NONE}>{t('assignNone')}</SelectItem>
-        {groups.map(group => (
-          <SelectItem key={group.id} value={String(group.id)}>
-            {group.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-label={t('assignLabel', { course: courseTitle })} disabled={busy} size="icon" variant="ghost">
+          <LucideIcon name="ellipsis" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-52">
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <LucideIcon aria-hidden name="folder-open" />
+            {t('moveToGroup')}
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            {groups.map(group => (
+              <DropdownMenuItem disabled={group.id === groupId} key={group.id} onSelect={() => move(group.id)}>
+                {group.name}
+              </DropdownMenuItem>
+            ))}
+            {groupId !== null && <DropdownMenuItem onSelect={() => move(null)}>{t('assignNone')}</DropdownMenuItem>}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

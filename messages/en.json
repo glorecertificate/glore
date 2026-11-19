@@ -910,7 +910,15 @@
     "moveBlockDown": "Move down",
     "descriptionShowMore": "Show more",
     "descriptionShowLess": "Show less",
-    "saveBarLabel": "Save and publish"
+    "saveBarLabel": "Save and publish",
+    "publish": "Publish",
+    "publishChanges": "Publish changes",
+    "saveDraft": "Save draft",
+    "saving": "Saving…",
+    "savedJustNow": "Saved just now",
+    "unpublish": "Unpublish",
+    "noChangesToPublish": "No changes to publish",
+    "editingLanguage": "Editing {language}"
   },
   "CourseList": {
     "active": "Active",
@@ -1003,7 +1011,9 @@
     "selectAllGroups": "Select all",
     "archiveAction": "Archive",
     "moreActions": "More actions",
-    "descriptionLearner": "Short courses on how GloRe works and on practical topics. Skill courses and certificates are for volunteers."
+    "descriptionLearner": "Short courses on how GloRe works and on practical topics. Skill courses and certificates are for volunteers.",
+    "showing": "Showing {shown} of {total, plural, one {# course} other {# courses}}",
+    "showMore": "Show more courses"
   },
   "ContentTranslation": {
     "title": "Translation",
@@ -3783,7 +3793,9 @@
         "selfAssessment": "Self-assessment",
         "finalAssessment": "Final assessment"
       },
-      "viewCompletion": "View summary"
+      "viewCompletion": "View summary",
+      "factDuration": "Duration",
+      "factLessons": "Lessons"
     },
     "player": {
       "lessons": "Lessons",
@@ -3900,7 +3912,12 @@
       "assignError": "The course could not be moved.",
       "openCourse": "Open course",
       "cancel": "Cancel",
-      "edit": "Edit"
+      "edit": "Edit",
+      "groupActions": "Group actions",
+      "moveToGroup": "Move to group",
+      "skillSummary": "{count, plural, one {# skill} other {# skills}}, {published} published, {drafts, plural, one {# draft} other {# drafts}}",
+      "toggleGroup": "Show or hide the skills of {group}",
+      "ungroupedEmpty": "Every skill course has a group."
     },
     "catalog": {
       "rating": "{rating} ({count})",
@@ -3918,7 +3935,8 @@
         "recommendedTitle": "Recommended for you",
         "save": "Save compass",
         "saved": "Skill compass saved",
-        "saveError": "Could not save the compass. Try again."
+        "saveError": "Could not save the compass. Try again.",
+        "summary": "{strengths, plural, one {# strength} other {# strengths}} and {goals, plural, one {# goal} other {# goals}} set"
       }
     }
   },

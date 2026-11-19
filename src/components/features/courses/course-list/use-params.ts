@@ -188,7 +188,53 @@ export const useCourseList = () => {
   return { courseList }
 }
 
+interface CourseFacets {
+  groups: string[]
+  languages: Locale[]
+  skillGroupCount: number
+  types: EnumType<'course_type'>[]
+}
+
+export const matchesFacets = (course: CourseSummary, facets: CourseFacets) => {
+  if (facets.languages.length < LOCALES.length) {
+    if (course.publicationStatus === 'draft') return false
+    if (!course.languages || course.languages.length === 0) return false
+    if (!course.languages.some(language => facets.languages.includes(language))) return false
+  }
+  if (facets.types.length < COURSE_TYPES.length && !facets.types.includes(course.type)) return false
+  if (facets.groups.length < facets.skillGroupCount) {
+    const group = course.skillGroup?.id.toString()
+    if (!(group && facets.groups.includes(group))) return false
+  }
+  return true
+}
+
+const PROGRESS_RANK = { completed: 2, inProgress: 0, notStarted: 1 } as const
+
+const bySortOrder = (a: CourseSummary, b: CourseSummary) => {
+  if (a.sortOrder === null || b.sortOrder === null) return 0
+  return a.sortOrder - b.sortOrder
+}
+
+const byProgress = (a: CourseSummary, b: CourseSummary) =>
+  PROGRESS_RANK[a.progressStatus] - PROGRESS_RANK[b.progressStatus] || bySortOrder(a, b)
+
+export const useCourseListFacets = () => {
+  const { skillGroups } = useCourses()
+  const { activeTypes } = useCourseListTypes()
+  const { activeLanguages } = useCourseListLanguages()
+  const { activeSkillGroups } = useCourseListSkillGroups()
+
+  return {
+    groups: activeSkillGroups,
+    languages: activeLanguages,
+    skillGroupCount: skillGroups.length,
+    types: activeTypes,
+  } satisfies CourseFacets
+}
+
 export const useDisplayCourses = () => {
+  const { user } = useSession()
   const { locale, localize } = useI18n()
   const { skillGroups } = useCourses()
   const { tab } = useCourseListTab()
@@ -199,6 +245,7 @@ export const useDisplayCourses = () => {
   const { searching, matchSearch } = useCourseListSearch()
   const { languages: cardLanguages } = useCourseLanguages()
   const { courseList } = useCourseList()
+  const facets = useCourseListFacets()
 
   const hasFilters =
     activeTypes.length < COURSE_TYPES.length ||
@@ -210,28 +257,10 @@ export const useDisplayCourses = () => {
 
   const displayCourses = (() => {
     const data = courseList[camelize(tab as CourseListTab)]
-    if (data.length < 2 || isDefaultView) return data
+    if (data.length < 2) return data
+    if (isDefaultView) return user.canEdit ? data : data.toSorted(byProgress)
 
-    let values = data.values()
-
-    if (activeLanguages.length < LOCALES.length) {
-      values = values.filter(course => {
-        if (course.publicationStatus === 'draft') return false
-        if (!course.languages || course.languages.length === 0) return false
-        return course.languages.some(language => activeLanguages.includes(language))
-      })
-    }
-
-    if (activeTypes.length < COURSE_TYPES.length) {
-      values = values.filter(course => activeTypes.includes(course.type))
-    }
-
-    if (activeSkillGroups.length < skillGroups.length) {
-      values = values.filter(course => {
-        const courseSkillGroup = course.skillGroup?.id.toString()
-        return courseSkillGroup ? activeSkillGroups.includes(courseSkillGroup) : false
-      })
-    }
+    let values = data.values().filter(course => matchesFacets(course, facets))
 
     if (searching) {
       values = values.filter(course => {
@@ -278,8 +307,7 @@ export const useDisplayCourses = () => {
           return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
         }
         default:
-          if (a.sortOrder === null || b.sortOrder === null) return 0
-          return a.sortOrder - b.sortOrder
+          return user.canEdit ? bySortOrder(a, b) : byProgress(a, b)
       }
     })
   })()

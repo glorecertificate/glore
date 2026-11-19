@@ -930,7 +930,16 @@
     "savedJustNow": "Salvato poco fa",
     "unpublish": "Rimuovi dalla pubblicazione",
     "noChangesToPublish": "Nessuna modifica da pubblicare",
-    "editingLanguage": "Modifica in {language}"
+    "editingLanguage": "Modifica in {language}",
+    "markOptionCorrect": "Segna l'opzione {number} come corretta",
+    "optionNumber": "Opzione {number}",
+    "removeOption": "Elimina l'opzione {number}",
+    "removeQuestion": "Elimina la domanda {number}",
+    "removeEvaluation": "Elimina l'autovalutazione {number}",
+    "removeAssessment": "Elimina la valutazione finale",
+    "quizMinOptionsHint": "Aggiungi almeno {count} opzioni",
+    "activityDescription": "Descrizione",
+    "activityLevels": "Livelli"
   },
   "CourseList": {
     "active": "Attivi",

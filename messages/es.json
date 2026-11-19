@@ -930,7 +930,16 @@
     "savedJustNow": "Guardado hace un momento",
     "unpublish": "Despublicar",
     "noChangesToPublish": "No hay cambios que publicar",
-    "editingLanguage": "Editando en {language}"
+    "editingLanguage": "Editando en {language}",
+    "markOptionCorrect": "Marcar la opción {number} como correcta",
+    "optionNumber": "Opción {number}",
+    "removeOption": "Eliminar la opción {number}",
+    "removeQuestion": "Eliminar la pregunta {number}",
+    "removeEvaluation": "Eliminar la autoevaluación {number}",
+    "removeAssessment": "Eliminar la evaluación final",
+    "quizMinOptionsHint": "Añade al menos {count} opciones",
+    "activityDescription": "Descripción",
+    "activityLevels": "Niveles"
   },
   "CourseList": {
     "active": "Activos",

@@ -930,7 +930,16 @@
     "savedJustNow": "Saved just now",
     "unpublish": "Unpublish",
     "noChangesToPublish": "No changes to publish",
-    "editingLanguage": "Editing {language}"
+    "editingLanguage": "Editing {language}",
+    "markOptionCorrect": "Mark option {number} as correct",
+    "optionNumber": "Option {number}",
+    "removeOption": "Delete option {number}",
+    "removeQuestion": "Delete question {number}",
+    "removeEvaluation": "Delete self-assessment {number}",
+    "removeAssessment": "Delete final assessment",
+    "quizMinOptionsHint": "Add at least {count} options",
+    "activityDescription": "Description",
+    "activityLevels": "Levels"
   },
   "CourseList": {
     "active": "Active",

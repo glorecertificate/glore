@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
+import { useDraft } from '@/components/features/courses/course-editor/use-draft'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
@@ -36,7 +37,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { type Course } from '@/db/queries/course'
 import { type Lesson } from '@/db/queries/lesson'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
-import { cn, debounce } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 const MAX_LESSON_TITLE_LENGTH = 120
 
@@ -74,16 +75,22 @@ const CourseSidebarItem = ({
 
   const title = lesson.title ? localizeRecord(lesson.title, language) : t('untitledLesson')
   const fallbackTitle = lesson.title ? localizeRecord(lesson.title, DEFAULT_LOCALE) : t('untitledLesson')
-  const [draftTitle, setDraftTitle] = useState(title)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const lessonRef = useRef(lesson)
   lessonRef.current = lesson
 
-  useEffect(() => {
-    if (document.activeElement !== inputRef.current) {
-      setDraftTitle(title)
-    }
-  }, [title])
+  const commitTitle = (value: string) => {
+    const current = lessonRef.current
+    setLesson({
+      id: current.id,
+      title: {
+        ...current.title,
+        [language]: value,
+      },
+    } as Lesson)
+  }
+
+  const { draft: draftTitle, onBlur: flushTitle, onChange: onDraftTitleChange } = useDraft(title, commitTitle)
 
   const hasUpdates = (() => {
     const initialLesson = initialCourse.lessons.find(l => l.id === lesson.id)
@@ -104,21 +111,13 @@ const CourseSidebarItem = ({
     return JSON.stringify(initialLessonData) !== JSON.stringify(lessonData)
   })()
 
-  const commitTitle = debounce(value => {
-    const current = lessonRef.current
-    setLesson({
-      id: current.id,
-      title: {
-        ...current.title,
-        [language]: value,
-      },
-    } as Lesson)
-  }, 250)
+  const onTitleBlur = () => {
+    if (draftTitle.trim() === '') return
+    flushTitle()
+  }
 
   const onTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value.slice(0, MAX_LESSON_TITLE_LENGTH)
-    setDraftTitle(value)
-    commitTitle(value)
+    onDraftTitleChange(e.target.value.slice(0, MAX_LESSON_TITLE_LENGTH))
   }
 
   const onLessonClick = () => {
@@ -171,6 +170,7 @@ const CourseSidebarItem = ({
                       aria-label={t('renameLesson')}
                       className="peer -ml-1 max-w-[calc(100%-12px)] cursor-text focus:max-w-full"
                       maxLength={MAX_LESSON_TITLE_LENGTH}
+                      onBlur={onTitleBlur}
                       onChange={onTitleChange}
                       onClick={e => e.stopPropagation()}
                       placeholder={fallbackTitle}

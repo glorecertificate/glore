@@ -13,7 +13,7 @@ import { courseIconVariants } from '@/components/features/courses/course-list/ic
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
-import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { IconPicker } from '@/components/ui/icon-picker'
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group'
 import { Label } from '@/components/ui/label'
@@ -284,7 +284,7 @@ export const CourseSettings = ({
             render={({ field: { onChange, ...field } }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col gap-y-1">
-                  <Label>{t('courseSlug')}</Label>
+                  <Label htmlFor={slugId}>{t('courseSlug')}</Label>
                   <FormDescription>{t('courseSlugDescription')}</FormDescription>
                 </div>
                 <div className="space-y-1.5">
@@ -314,7 +314,7 @@ export const CourseSettings = ({
               </FormItem>
             )}
           />
-          <div className="space-y-1">
+          <div className="space-y-3">
             <div className="flex flex-col gap-y-1">
               <Label>{tEditor('outcomesLabel')}</Label>
               <FormDescription>{tEditor('outcomesDescription', { max: OUTCOMES_MAX })}</FormDescription>
@@ -328,13 +328,15 @@ export const CourseSettings = ({
                   render={({ field }) => (
                     <FormItem className="space-y-1">
                       <FormLabel className="text-xs text-muted-foreground">{label}</FormLabel>
-                      <Textarea
-                        className="min-h-20 text-sm"
-                        onBlur={field.onBlur}
-                        onChange={field.onChange}
-                        placeholder={tEditor('outcomesPlaceholder')}
-                        value={field.value}
-                      />
+                      <FormControl>
+                        <Textarea
+                          className="min-h-20 resize-none"
+                          onBlur={field.onBlur}
+                          onChange={field.onChange}
+                          placeholder={tEditor('outcomesPlaceholder')}
+                          value={field.value}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -342,7 +344,7 @@ export const CourseSettings = ({
             </div>
           </div>
         </div>
-        <div className="sticky bottom-0 -mx-8 -mb-8 flex flex-col gap-2 border-t bg-background px-8 py-4">
+        <div className="sticky -bottom-8 -mx-8 -mb-8 flex flex-col gap-2 border-t bg-background px-8 py-4">
           {(errors.length > 0 || !(isIntro || form.getValues('skillGroupId'))) && (
             <output className="flex flex-col gap-0.5 text-sm text-muted-foreground">
               {errors.length > 0

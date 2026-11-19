@@ -124,7 +124,7 @@ export const ApplicationForm = () => {
 
   if (submittedEmail) {
     return (
-      <output className="flex flex-col items-center gap-6 rounded-xl border bg-card p-8 text-center shadow-2xs">
+      <output className="flex flex-col items-center gap-6 text-center">
         <LucideIcon className="size-12 text-success-text" name="circle-check" />
         <div className="flex flex-col gap-2">
           <h2 className="type-heading">{t('successTitle')}</h2>

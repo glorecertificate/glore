@@ -36,7 +36,7 @@ const OnboardingContent = async () => {
 
   return (
     <I18nProvider locale={locale} messages={clientMessages(messages)}>
-      <AuthFrame logo={false} size="lg">
+      <AuthFrame back={false} language={false} size="lg">
         <OnboardingForm
           email={user.email}
           firstName={profile?.firstName ?? ''}

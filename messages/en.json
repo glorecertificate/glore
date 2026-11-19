@@ -742,8 +742,7 @@
     "content": "Content"
   },
   "Auth": {
-    "backToLogin": "Go to login",
-    "close": "Close",
+    "backToLogin": "Back to login",
     "emailSentMessage": "We sent a password reset link to <email></email>. If it does not arrive, check your spam folder or request a new one.",
     "emailSentMetaTitle": "Check your email",
     "emailSentTitle": "Check your email",
@@ -781,11 +780,6 @@
     "passwordUpdatedTitle": "Your password has been updated",
     "resendEmail": "Send another email",
     "resendTimer": "Send another email in {seconds}s",
-    "signupDialogMessage": "<p>You can sign up only with an invitation from your organization.</p><p>If your organization is already on GloRe, ask someone there to invite you.</p><p>If it is not, send a registration request below.</p><p>For more information, <link>visit our website</link>.</p>",
-    "signupDialogRegister": "Register your organization",
-    "signupDialogTitle": "How to sign up",
-    "signupMessage": "Do not have an account? See <link>how to sign up</link>",
-    "skipAndLogin": "Skip and go to login",
     "userLabel": "Email or username",
     "userRequired": "Enter a valid email or username",
     "userTooShort": "Username is too short",
@@ -795,7 +789,18 @@
     "sendLink": "Send link",
     "sendingLink": "Sending…",
     "savePassword": "Save password",
-    "savingPassword": "Saving…"
+    "savingPassword": "Saving…",
+    "applyMessage": "Organizations join through an application.",
+    "applyTitle": "Apply as an organization",
+    "heroMessage": "Certify the soft skills you gain through volunteering.",
+    "heroTitle": "Join the GloRe Network",
+    "invitationMessage": "Open the link in your email.",
+    "invitationTitle": "Have an invitation?",
+    "newPasswordLabel": "New password",
+    "otherWays": "Other ways in",
+    "passwordLabel": "Password",
+    "verifyMessage": "Check a code printed on a certificate.",
+    "verifyTitle": "Verify a certificate"
   },
   "CourseCommon": {
     "courseCreationFailed": "Could not create the course. Try again.",

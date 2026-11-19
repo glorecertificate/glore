@@ -9,12 +9,12 @@ import { z } from 'zod'
 
 import { resetPassword } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/ui/toast'
 import { useCookies } from '@/hooks/use-cookies'
 import { AuthView } from '@/lib/types'
-import { cn, isValidUsername } from '@/lib/utils'
+import { isValidUsername } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
   setErrored,
@@ -77,55 +77,40 @@ export const PasswordRequestForm = ({
     setErrored(hasErrors)
   }
 
-  const backToLogin = () => {
-    setView('login')
-    setUsername('')
-  }
-
   return (
-    <>
-      <Form {...form}>
-        <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid gap-6">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      autoCapitalize="none"
-                      autoComplete="username"
-                      autoFocus
-                      disabled={form.formState.isSubmitting}
-                      open
-                      placeholder={t('userLabel')}
-                      variant="floating"
-                      ref={inputRef}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button className="w-full [&_svg]:size-4" loading={form.formState.isSubmitting} type="submit" variant="brand">
-            {form.formState.isSubmitting ? t('sendingLink') : t('sendLink')}
-          </Button>
-        </form>
-      </Form>
-      <div className="mt-2 flex w-full justify-end">
+    <Form {...form}>
+      <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('userLabel')}</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  autoCapitalize="none"
+                  autoComplete="username"
+                  autoFocus
+                  disabled={form.formState.isSubmitting}
+                  size="lg"
+                  ref={inputRef}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
-          className={cn(form.formState.isSubmitting && 'pointer-events-none')}
-          disabled={form.formState.isSubmitting}
-          onClick={backToLogin}
-          size="text"
-          variant="link"
+          className="w-full [&_svg]:size-4"
+          loading={form.formState.isSubmitting}
+          size="lg"
+          type="submit"
+          variant="brand"
         >
-          {t('backToLogin')}
+          {form.formState.isSubmitting ? t('sendingLink') : t('sendLink')}
         </Button>
-      </div>
-    </>
+      </form>
+    </Form>
   )
 }

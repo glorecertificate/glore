@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { createSearchParamsCache } from 'nuqs/server'
 
+import { AuthBand } from '@/components/features/auth/auth-band'
 import { AuthFlow } from '@/components/features/auth/auth-flow'
 import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
 import { authParsers } from '@/components/features/auth/params'
@@ -26,17 +27,18 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
   return (
     <>
       <AuthFlow params={params} username={username} />
-      <div className="flex items-center justify-between gap-4">
+      <footer className="flex items-center justify-between gap-4 px-page py-5">
         <LegalLinks />
         <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
-      </div>
+      </footer>
     </>
   )
 }
 
 const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
-  <div className="flex h-full min-h-screen flex-col gap-4 bg-background p-6 md:p-8">
-    <Suspense fallback={<LoadingFallback size="full" />}>
+  <div className="flex min-h-svh flex-col bg-canvas">
+    <AuthBand />
+    <Suspense fallback={<LoadingFallback className="flex-1" />}>
       <LoginContent searchParams={searchParams} />
     </Suspense>
   </div>

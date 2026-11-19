@@ -1,3 +1,4 @@
+import { Link } from '@/components/ui/link'
 import { Logo } from '@/components/ui/logo'
 import { PageBandGlobe } from '@/components/ui/page-band'
 import { cn } from '@/lib/utils'
@@ -23,9 +24,9 @@ export const BrandShell = ({
       <PageBandGlobe />
       <div className={cn('relative mx-auto flex w-full flex-col gap-6 px-page pt-5 pb-24 sm:pt-7', WIDTHS[size])}>
         <div className="flex min-h-8 items-center justify-between gap-4">
-          <span className="inline-flex rounded-md logo-chip px-2 py-1">
-            <Logo className="h-5 w-auto" />
-          </span>
+          <Link href="/" className="inline-flex rounded-md px-2 py-1">
+            <Logo className="h-7 w-auto" />
+          </Link>
           {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
         </div>
         {(title || description) && (

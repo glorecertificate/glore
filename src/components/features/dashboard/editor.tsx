@@ -7,10 +7,9 @@ import { ContentHealth } from '@/components/features/dashboard/content-health'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
 import { StatLink } from '@/components/features/dashboard/section'
+import { TranslationGaps } from '@/components/features/dashboard/translation-gaps'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
-import { Progress } from '@/components/ui/progress'
-import { LOCALES } from '@/lib/i18n'
 
 export const EditorDashboard = ({
   editor,
@@ -22,9 +21,8 @@ export const EditorDashboard = ({
   organization: string | null
 }) => {
   const t = useTranslations('Dashboard')
-  const tIntl = useTranslations('Intl.Languages')
   const { dateTime } = useFormatter()
-  const { engagement, health, stats, top, translations } = editor
+  const { engagement, gaps, health, stats, top } = editor
   const hasEngagement = engagement.some(({ completed, started }) => started + completed > 0)
 
   return (
@@ -75,47 +73,10 @@ export const EditorDashboard = ({
         />
       </section>
 
-      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ContentHealth health={health} />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('editor.translationsTitle')}</CardTitle>
-            <CardDescription>{t('editor.translationsDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="flex flex-col gap-4">
-              {LOCALES.map(locale => {
-                const complete = health.total - health.gaps[locale]
-                const coverage = translations.find(item => item.locale === locale)
-                return (
-                  <li className="flex flex-col gap-1.5" key={locale}>
-                    <div className="flex items-center justify-between gap-3 text-sm">
-                      <span className="font-medium">{tIntl(locale)}</span>
-                      <span className="text-muted-foreground tabular-nums">
-                        {t('editor.translationsCount', { complete, total: health.total })}
-                      </span>
-                    </div>
-                    <Progress
-                      aria-label={tIntl(locale)}
-                      color={health.gaps[locale] === 0 ? 'success' : 'brand'}
-                      value={health.total > 0 ? (complete / health.total) * 100 : 0}
-                    />
-                    {coverage && (
-                      <p className="text-xs text-muted-foreground tabular-nums">
-                        {t('editor.translationsReviewed', {
-                          reviewed: coverage.reviewed,
-                          total: coverage.total,
-                          translated: coverage.translated,
-                        })}
-                      </p>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </CardContent>
-        </Card>
+        <TranslationGaps gaps={gaps} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

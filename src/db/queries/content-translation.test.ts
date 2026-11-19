@@ -7,7 +7,6 @@ import {
   changedLocales,
   classifyTranslation,
   countStates,
-  coverageOf,
   hasLocaleContent,
   languageChanges,
   lessonTarget,
@@ -115,7 +114,7 @@ describe('state helpers', () => {
     })
   })
 
-  it('summarizes one locale and builds coverage without the default locale', () => {
+  it('summarizes one locale', () => {
     const items: TargetTranslations[] = [
       {
         entityId: 1,
@@ -136,10 +135,6 @@ describe('state helpers', () => {
     ]
     expect(summarizeLocale(items, 'es')).toEqual({ hasContent: true, locale: 'es', state: 'machine' })
     expect(summarizeLocale(items, 'it').state).toBe('missing')
-    expect(coverageOf(items)).toEqual([
-      { locale: 'es', reviewed: 1, total: 2, translated: 2 },
-      { locale: 'it', reviewed: 1, total: 2, translated: 1 },
-    ])
   })
 })
 

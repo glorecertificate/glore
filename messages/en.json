@@ -1331,9 +1331,6 @@
       "completions": "Completions",
       "topEmpty": "No one has enrolled yet.",
       "translationsTitle": "Translation gaps",
-      "translationsDescription": "Courses fully available in each language",
-      "translationsCount": "{complete} of {total} courses",
-      "translationsReviewed": "Parts of all content: {translated} translated, {reviewed} reviewed, {total} in total",
       "healthTitle": "Content health",
       "healthClear": "Every course is complete and translated.",
       "healthCompleteOf": "of {total, plural, one {# course} other {# courses}} complete",
@@ -1347,8 +1344,6 @@
       "healthNotNeeded": "{item}: not needed for this course",
       "healthColumnTotal": "{item}: {count} missing",
       "healthAll": "{count, plural, one {All # course} other {All # courses}}",
-      "healthShowAll": "Show all {count} courses",
-      "healthShowFewer": "Show fewer",
       "healthShowing": "Showing {shown} of {total}",
       "healthStatus": {
         "draft": "Draft",
@@ -1371,7 +1366,23 @@
         "draftDescription": "Not visible to learners",
         "archived": "Archived",
         "archivedDescription": "Hidden from the catalog"
-      }
+      },
+      "translationsSubtitle": "What is left to translate, by kind of content",
+      "translationsTranslated": "Parts translated",
+      "translationsMissing": "Parts missing",
+      "translationsInTotal": "{count} in total",
+      "translationsKind": {
+        "course": "Courses",
+        "lesson": "Lessons",
+        "doc_article": "Articles",
+        "doc_category": "Categories",
+        "skill_group": "Skill groups"
+      },
+      "translationsMissingCell": "{kind}, {language}: {count} missing",
+      "translationsCompleteCell": "{kind}, {language}: nothing missing",
+      "healthViewAll": "View all {count} courses",
+      "translationsMissingTotal": "{language}: {count, plural, one {# part missing} other {# parts missing}}",
+      "translationsProgressLabel": "{language}, parts translated"
     },
     "none": {
       "title": "Welcome, {name}",

@@ -13,7 +13,7 @@ import {
   toEngagementSeries,
   topCourses,
 } from '@/actions/dashboard/core'
-import { loadTranslationCoverage } from '@/actions/translations/coverage'
+import { loadTranslationGaps } from '@/actions/translations/coverage'
 import { db } from '@/db/client'
 import { pickLocale } from '@/db/queries/learning'
 import { lastMonths } from '@/db/queries/organization-insights'
@@ -23,7 +23,7 @@ import { CacheTag } from '@/lib/cache'
 const monthOf = (column: typeof userCourses.createdAt | typeof userCourses.completedAt) =>
   sql<string>`to_char(date_trunc('month', ${column}), 'YYYY-MM')`
 
-const queryEditorSummary = async (language: Locale): Promise<Omit<EditorSummary, 'pending' | 'translations'>> => {
+const queryEditorSummary = async (language: Locale): Promise<Omit<EditorSummary, 'gaps' | 'pending'>> => {
   const months = lastMonths(new Date(), 6)
   const since = `${months[0]}-01`
 
@@ -103,9 +103,9 @@ const fetchEditorSummary = async (language: Locale) => {
 }
 
 export const loadEditorSummary = async (language: Locale, { cache = true }: { cache?: boolean } = {}) => {
-  const [summary, translations] = await Promise.all([
+  const [summary, gaps] = await Promise.all([
     cache ? fetchEditorSummary(language) : queryEditorSummary(language),
-    loadTranslationCoverage({ cache }),
+    loadTranslationGaps({ cache }),
   ])
-  return { ...summary, translations }
+  return { ...summary, gaps }
 }

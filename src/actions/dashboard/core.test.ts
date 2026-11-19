@@ -284,7 +284,7 @@ describe('buildContentHealth', () => {
     ])
     expect(health.total).toBe(4)
     expect(health.states).toEqual({ archived: 1, draft: 1, partial: 1, published: 2 })
-    expect(health.gaps).toEqual({ en: 1, es: 2, it: 2 })
+    expect(health.columns).toMatchObject({ en: 1, es: 2, it: 2 })
     expect(health.issues).toEqual({ empty: 1, noAssessment: 1, noGroup: 1 })
   })
 

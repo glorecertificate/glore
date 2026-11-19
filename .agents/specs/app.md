@@ -130,7 +130,7 @@ Three domain facts shape recurring decisions:
 - The skill group dialog (Add and Edit, `skill-framework/group-dialog.tsx`) uses the same flow on its own state. It has the icon picker first, language tabs with a status dot (green when the locale has a name and a description, grey otherwise, plus a warning dot for unsaved edits), one name input and one description textarea. Each label row has an always visible translate button (`group-field-translate.tsx`) with a source menu of the other locales that have text for the field (a disabled message when none). The result lands in the dialog as unsaved text and saves with the dialog. There are no review cards. `translateEntity` and `reviewTranslation` have no UI user left.
 - `doc_articles.languages` publishes a doc per locale next to the `published` master switch, and unpublished locales are blanked for non-editors.
 - Changing `courses.languages` or `doc_articles.languages` records `course.locale_published` or `doc.locale_published`.
-- The editor dashboard shows reviewed and translated counts per locale (`actions/translations/coverage.ts`). Its Content health card comes before Translation gaps. It shows a complete-share bar and a check matrix of the courses that need work (final assessment, skill group, EN, ES, IT), six rows first and a button to show all. Each row links to `/courses/<slug>`.
+- The editor dashboard shows Content health (a complete-share bar and a check matrix of six courses, with a `View all N courses` link to `/courses`) beside an informative Translation gaps card (`actions/translations/coverage.ts`). Gaps count, per kind of content and locale, the parts with no text in that locale. The two cards of a row share one height.
 
 ### Skill level descriptions
 

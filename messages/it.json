@@ -1331,9 +1331,6 @@
       "completions": "Completamenti",
       "topEmpty": "Nessuno si è ancora iscritto.",
       "translationsTitle": "Traduzioni mancanti",
-      "translationsDescription": "Corsi disponibili per intero in ogni lingua",
-      "translationsCount": "{complete} corsi su {total}",
-      "translationsReviewed": "Parti di tutti i contenuti: {translated} tradotte, {reviewed} riviste, {total} in totale",
       "healthTitle": "Stato dei contenuti",
       "healthClear": "Tutti i corsi sono completi e tradotti.",
       "healthCompleteOf": "su {total, plural, one {# corso completo} other {# corsi completi}}",
@@ -1345,10 +1342,8 @@
       "healthMissing": "{item}: manca",
       "healthDone": "{item}: fatto",
       "healthNotNeeded": "{item}: non serve per questo corso",
-      "healthColumnTotal": "{item}: mancano {count}",
+      "healthColumnTotal": "{item}: {count, plural, one {manca #} other {mancano #}}",
       "healthAll": "{count, plural, one {# corso in totale} other {# corsi in totale}}",
-      "healthShowAll": "Mostra tutti i {count} corsi",
-      "healthShowFewer": "Mostra meno",
       "healthShowing": "Mostrati {shown} di {total}",
       "healthStatus": {
         "draft": "Bozza",
@@ -1371,7 +1366,23 @@
         "draftDescription": "Non visibili ai partecipanti",
         "archived": "Archiviati",
         "archivedDescription": "Nascosti dal catalogo"
-      }
+      },
+      "translationsSubtitle": "Cosa resta da tradurre, per tipo di contenuto",
+      "translationsTranslated": "Parti tradotte",
+      "translationsMissing": "Parti mancanti",
+      "translationsInTotal": "{count} in totale",
+      "translationsKind": {
+        "course": "Corsi",
+        "lesson": "Lezioni",
+        "doc_article": "Articoli",
+        "doc_category": "Categorie",
+        "skill_group": "Gruppi di competenze"
+      },
+      "translationsMissingCell": "{kind}, {language}: {count, plural, one {ne manca #} other {ne mancano #}}",
+      "translationsCompleteCell": "{kind}, {language}: non manca nulla",
+      "healthViewAll": "Vedi tutti i {count} corsi",
+      "translationsMissingTotal": "{language}: {count, plural, one {manca # parte} other {mancano # contenuti}}",
+      "translationsProgressLabel": "{language}, contenuti tradotti"
     },
     "none": {
       "title": "Ti diamo il benvenuto, {name}",

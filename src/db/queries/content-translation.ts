@@ -69,8 +69,16 @@ export interface TranslationCounts {
   translated: number
 }
 
-export interface LocaleCoverage extends TranslationCounts {
-  locale: Locale
+interface GapKind {
+  kind: (typeof CONTENT_ENTITY_TYPES)[number]
+  missing: Record<Locale, number>
+  total: number
+}
+
+export interface TranslationGaps {
+  kinds: GapKind[]
+  missing: Record<Locale, number>
+  total: number
 }
 
 export const TARGET_LOCALES = LOCALES.filter(locale => locale !== DEFAULT_LOCALE)
@@ -133,15 +141,6 @@ export const summarizeLocale = (items: TargetTranslations[], locale: Locale): Lo
     state: entries.length === 0 ? 'missing' : weakestState(entries.map(entry => entry.state)),
   }
 }
-
-const localeStates = (items: TargetTranslations[], locale: Locale) =>
-  items.flatMap(item => item.locales.flatMap(entry => (entry.locale === locale ? [entry.state] : [])))
-
-export const coverageOf = (items: TargetTranslations[]): LocaleCoverage[] =>
-  TARGET_LOCALES.map(locale => ({
-    locale,
-    ...countStates(localeStates(items, locale)),
-  }))
 
 export const targetField = (
   table: TranslationField['table'],
@@ -224,3 +223,17 @@ export const skillGroupTarget = (row: { description: unknown; id: number; name: 
     targetField('skill_groups', row.id, 'description', row.description),
   ],
 })
+
+export const gapsOf = (targets: TranslationTarget[]): TranslationGaps => {
+  const kinds = CONTENT_ENTITY_TYPES.map(kind => {
+    const items = targets.filter(target => target.entityType === kind)
+    const missing = Object.fromEntries(
+      LOCALES.map(locale => [locale, items.filter(target => !hasLocaleContent(target, locale)).length])
+    ) as Record<Locale, number>
+    return { kind, missing, total: items.length }
+  })
+  const missing = Object.fromEntries(
+    LOCALES.map(locale => [locale, kinds.reduce((sum, item) => sum + item.missing[locale], 0)])
+  ) as Record<Locale, number>
+  return { kinds, missing, total: kinds.reduce((sum, item) => sum + item.total, 0) }
+}

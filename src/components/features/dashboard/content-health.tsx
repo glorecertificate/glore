@@ -1,12 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-
 import { useTranslations } from 'next-intl'
 
 import { type ContentHealth as ContentHealthData, type HealthCourse } from '@/actions/dashboard/core'
 import { LucideIcon } from '@/components/icons/lucide'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
@@ -96,17 +93,16 @@ const CourseRow = ({ course }: { course: HealthCourse }) => {
 
 export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
   const t = useTranslations('Dashboard.editor')
-  const [expanded, setExpanded] = useState(false)
   const { columns, complete, courses, total } = health
-  const collapsible = courses.length > VISIBLE_ROWS
-  const rows = expanded ? courses : courses.slice(0, VISIBLE_ROWS)
+  const rows = courses.slice(0, VISIBLE_ROWS)
+  const truncated = courses.length > VISIBLE_ROWS
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t('healthTitle')}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <span className="type-stat text-foreground tabular-nums">{complete}</span>
@@ -128,7 +124,7 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
         {courses.length === 0 && <p className="text-sm text-muted-foreground">{t('healthClear')}</p>}
 
         {courses.length > 0 && (
-          <div className="flex flex-col">
+          <div className="flex flex-1 flex-col">
             <div className={cn(GRID, 'hidden border-b pb-2 type-overline text-muted-foreground')}>
               <span>{t('healthCourse')}</span>
               <span className="truncate text-center">{t('healthAssessment')}</span>
@@ -139,7 +135,7 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
                 </span>
               ))}
             </div>
-            <ul className="flex flex-col divide-y md:divide-y-0">
+            <ul className="flex flex-col divide-y md:divide-y-0 lg:flex-1">
               {rows.map(course => (
                 <CourseRow course={course} key={course.id} />
               ))}
@@ -152,19 +148,12 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
                 <ColumnTotal count={columns[locale]} item={locale.toUpperCase()} key={locale} />
               ))}
             </div>
-            {collapsible && (
-              <div className="mt-3 flex items-center justify-between gap-3 border-t pt-3">
-                <Button
-                  aria-expanded={expanded}
-                  className="-ml-2.5"
-                  onClick={() => setExpanded(current => !current)}
-                  size="xs"
-                  variant="link"
-                >
-                  {expanded ? t('healthShowFewer') : t('healthShowAll', { count: courses.length })}
-                  <LucideIcon aria-hidden name={expanded ? 'chevron-up' : 'chevron-down'} />
-                </Button>
-                <span className="text-xs text-muted-foreground tabular-nums">
+            {truncated && (
+              <div className="mt-auto flex items-center justify-between gap-3 border-t pt-3.5 text-sm">
+                <Link className="font-medium" href="/courses" variant="link">
+                  {t('healthViewAll', { count: total })}
+                </Link>
+                <span className="text-muted-foreground tabular-nums">
                   {t('healthShowing', { shown: rows.length, total: courses.length })}
                 </span>
               </div>

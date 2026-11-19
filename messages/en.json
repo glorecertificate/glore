@@ -1357,8 +1357,14 @@
     },
     "none": {
       "title": "Welcome, {name}",
-      "description": "You are not part of an organization yet. Ask your organization for an invitation to start learning and requesting certificates.",
-      "help": "Read the help guide"
+      "description": "Organizations invite their volunteers and staff to GloRe by email. Open your invitation to join, and your courses and certificate requests appear here.",
+      "help": "Read the help guide",
+      "dashboardTitle": "Join an organization to get started",
+      "coursesTitle": "Courses open when you join an organization",
+      "noInvitations": "No invitations yet. When your organization invites you, the invitation shows here and in your email.",
+      "invitedAs": "Invited as {role} until {date}",
+      "openInvitation": "Open invitation",
+      "registerHint": "Do you lead an organization that is new to GloRe?"
     }
   },
   "Docs": {

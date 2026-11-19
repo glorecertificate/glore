@@ -2,6 +2,7 @@ import { type Route } from 'next'
 
 import { type Locale } from 'next-intl'
 
+import { type PendingInvitation } from '@/actions/shell/invitations-core'
 import { type AgeTone, WIZARD_STEPS, type WizardStep, ageTone } from '@/components/features/certificates/rules'
 import { type Certificate, type CertificateStatus, OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
 import { type LocaleCoverage } from '@/db/queries/content-translation'
@@ -591,7 +592,7 @@ export interface EditorSummary {
 }
 
 export type DashboardData =
-  | (DashboardBase & { view: 'none' })
+  | (DashboardBase & { invitations: PendingInvitation[]; view: 'none' })
   | (DashboardBase & { editor: EditorSummary; view: 'editor' })
   | (DashboardBase & { manager: ManagerSummary; view: 'manager' })
   | (DashboardBase & { member: MemberSummary; view: 'learner' })

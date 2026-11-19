@@ -22,5 +22,5 @@ export const DashboardContent = ({ data }: { data: DashboardData }) => {
   if (data.view === 'learner') {
     return <MemberDashboard firstName={data.firstName} member={data.member} organization={data.organization} />
   }
-  return <NoOrganization />
+  return <NoOrganization invitations={data.invitations} />
 }

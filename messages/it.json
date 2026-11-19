@@ -1357,8 +1357,14 @@
     },
     "none": {
       "title": "Ti diamo il benvenuto, {name}",
-      "description": "Non fai ancora parte di nessuna organizzazione. Chiedi un invito alla tua organizzazione per iniziare a imparare e a richiedere certificati.",
-      "help": "Leggi la guida"
+      "description": "Le organizzazioni invitano su GloRe i propri volontari e il proprio staff via email. Apri il tuo invito per unirti: i tuoi corsi e le richieste di certificato appariranno qui.",
+      "help": "Leggi la guida",
+      "dashboardTitle": "Unisciti a un'organizzazione per iniziare",
+      "coursesTitle": "I corsi si aprono quando ti unisci a un'organizzazione",
+      "noInvitations": "Ancora nessun invito. Quando la tua organizzazione ti invita, l'invito appare qui e nella tua email.",
+      "invitedAs": "Invito come {role} fino al {date}",
+      "openInvitation": "Apri invito",
+      "registerHint": "Guidi un'organizzazione che non è ancora su GloRe?"
     }
   },
   "Docs": {

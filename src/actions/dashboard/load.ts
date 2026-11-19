@@ -13,6 +13,7 @@ import { loadLearnerSummary, loadVolunteerSummary } from '@/actions/dashboard/me
 import { readClock } from '@/actions/dashboard/now'
 import { loadTutorSummary } from '@/actions/dashboard/tutor'
 import { fetchNotificationPreview } from '@/actions/notifications/preview'
+import { loadViewerInvitations } from '@/actions/shell/invitations-core'
 import { getViewer, getViewerOrgId } from '@/actions/viewer'
 
 export const loadDashboard = cache(async (): Promise<DashboardData> => {
@@ -31,7 +32,8 @@ export const loadDashboard = cache(async (): Promise<DashboardData> => {
 
   if (view === 'manager') {
     const manager = await loadManagerSummary(await readClock())
-    return manager ? { ...base, manager, view } : { ...base, view: 'none' }
+    if (manager) return { ...base, manager, view }
+    return { ...base, invitations: await loadViewerInvitations(), view: 'none' }
   }
 
   if (view === 'tutor') {
@@ -63,5 +65,5 @@ export const loadDashboard = cache(async (): Promise<DashboardData> => {
     return { ...base, view, volunteer }
   }
 
-  return { ...base, view: 'none' }
+  return { ...base, invitations: await loadViewerInvitations(), view: 'none' }
 })

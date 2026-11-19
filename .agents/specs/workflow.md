@@ -164,6 +164,7 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 
 - `pnpm run test` runs Vitest in the Node environment over `src/**/*.test.ts` and `scripts/**/*.test.ts`.
 - `vitest.config.ts` resolves tsconfig paths and aliases `server-only` to an empty module, so server actions import cleanly. Mock `@/actions/auth` and `next/cache` per test.
+- `testTimeout` is 30 s and `hookTimeout` is 60 s, because DB-backed suites slow down when several worktrees share one Postgres. Run with `--no-file-parallelism` in a lane.
 - It loads `.env` and `.env.local`, so DB-backed tests (for example `src/db/mutations/certificate.test.ts`) run against the local DB and skip themselves when `DATABASE_URL` is not local.
 - The certificate suites build their own org and users with `src/actions/certificates/test-harness.ts`.
 

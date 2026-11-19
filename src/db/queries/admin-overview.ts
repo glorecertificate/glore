@@ -42,6 +42,7 @@ interface AdminOverviewReview {
 
 export interface AdminOverview {
   certificates: { drafts: number; pipeline: Pipeline; total: number }
+  decisions: { oldestApplication: { createdAt: string; id: number } | null; teamInvitations: number }
   generatedAt: string
   monthly: AdminOverviewMonth[]
   organizations: { active: number; pending: number; rejected: number; total: number }

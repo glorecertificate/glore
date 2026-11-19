@@ -2,7 +2,7 @@ import 'server-only'
 
 import { cacheLife, cacheTag } from 'next/cache'
 
-import { type SQL, and, count, gte, isNotNull, sql } from 'drizzle-orm'
+import { type SQL, and, asc, count, eq, gte, isNotNull, isNull, or, sql } from 'drizzle-orm'
 import { type PgColumn, type PgTable } from 'drizzle-orm/pg-core'
 
 import { getViewer } from '@/actions/viewer'
@@ -55,7 +55,7 @@ const hasRejectedApplication = sql`exists (
 
 export const fetchOverview = async (): Promise<AdminOverview> => {
   'use cache'
-  cacheTag(CacheTag.AdminOverview)
+  cacheTag(CacheTag.AdminOverview, CacheTag.Organizations, CacheTag.TeamMembers)
   cacheLife('minutes')
 
   const now = new Date()
@@ -74,6 +74,8 @@ export const fetchOverview = async (): Promise<AdminOverview> => {
     reviewTotals,
     reviewMonths,
     backlog,
+    oldestApplication,
+    teamPending,
   ] = await Promise.all([
     db
       .select({
@@ -114,6 +116,16 @@ export const fetchOverview = async (): Promise<AdminOverview> => {
         waiting: countFilter(sql`${certificates.status} in ('submitted', 'in_review')`),
       })
       .from(certificates),
+    db
+      .select({ createdAt: organizations.createdAt, id: organizations.id })
+      .from(organizations)
+      .where(sql`${organizations.approvedAt} is null and not ${hasRejectedApplication}`)
+      .orderBy(asc(organizations.createdAt))
+      .limit(1),
+    db
+      .select({ total: count() })
+      .from(users)
+      .where(and(or(eq(users.role, 'admin'), eq(users.isEditor, true)), isNull(users.onboardedAt))),
   ])
 
   const pipeline = toPipeline(statuses.map(({ status, total }) => ({ status, total })))
@@ -121,6 +133,7 @@ export const fetchOverview = async (): Promise<AdminOverview> => {
 
   return {
     certificates: { drafts, pipeline, total: sumPipeline(pipeline) },
+    decisions: { oldestApplication: oldestApplication[0] ?? null, teamInvitations: teamPending[0]?.total ?? 0 },
     generatedAt: now.toISOString(),
     monthly: toOverviewMonthly(months, {
       certificatesApproved,

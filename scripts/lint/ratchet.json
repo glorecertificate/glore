@@ -28,9 +28,6 @@
   "src/components/features/courses/skill-framework": {
     "no-arbitrary-value": 1
   },
-  "src/components/features/docs": {
-    "no-arbitrary-value": 1
-  },
   "src/components/features/legal": {
     "no-arbitrary-value": 1
   },

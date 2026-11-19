@@ -5,7 +5,6 @@ import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { ArticleEditor } from '@/components/features/docs/article-editor'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
 import { useHelpRole } from '@/components/features/help/use-help-role'
@@ -56,18 +55,9 @@ const ArticleLink = ({ article }: { article: DocArticle }) => {
   )
 }
 
-const TopicColumn = ({
-  allCategories,
-  canEdit,
-  category,
-}: {
-  allCategories: DocCategory[]
-  canEdit: boolean
-  category: DocCategory
-}) => {
+const TopicColumn = ({ canEdit, category }: { canEdit: boolean; category: DocCategory }) => {
   const t = useTranslations('Docs')
   const { localize } = useI18n()
-  const [editorOpen, setEditorOpen] = useState(false)
   const browsable = BROWSABLE.includes(category.slug)
   const shown = browsable ? category.articles.slice(0, COLUMN_PREVIEW) : category.articles
 
@@ -93,18 +83,12 @@ const TopicColumn = ({
         </Link>
       )}
       {canEdit && (
-        <>
-          <Button className="mt-1 w-fit" onClick={() => setEditorOpen(true)} size="sm" variant="outline">
+        <Button asChild className="mt-1 w-fit" size="sm" variant="outline">
+          <Link href={`/docs/new?category=${category.id}` as Route}>
             <LucideIcon className="size-4" name="plus" />
             {t('editor.newArticle')}
-          </Button>
-          <ArticleEditor
-            categories={allCategories}
-            defaultCategoryId={category.id}
-            onOpenChange={setEditorOpen}
-            open={editorOpen}
-          />
-        </>
+          </Link>
+        </Button>
       )}
     </section>
   )
@@ -211,7 +195,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {categories.map(category => (
-              <TopicColumn allCategories={categories} canEdit={canEdit} category={category} key={category.id} />
+              <TopicColumn canEdit={canEdit} category={category} key={category.id} />
             ))}
           </div>
         </>

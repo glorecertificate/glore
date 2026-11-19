@@ -1,22 +1,22 @@
 import { getFormatter, getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
-import { listDocCategories } from '@/actions/docs'
-import { ArticleActions } from '@/components/features/docs/article-actions'
 import { loadArticle } from '@/components/features/docs/article-view'
 import { LucideIcon } from '@/components/icons/lucide'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
+import { Button } from '@/components/ui/button'
+import { Link } from '@/components/ui/link'
 import { pickLocale } from '@/db/queries/learning'
 
 export const ArticleHeader = async ({ slug }: { slug: string }) => {
   const data = await loadArticle(slug)
   if (!data) return <DashboardHeader parent="docs" />
 
-  const [t, format, user, categories] = await Promise.all([
+  const [t, tEditor, format, user] = await Promise.all([
     getTranslations('Docs'),
+    getTranslations('Docs.editor'),
     getFormatter(),
     getAuthUser(),
-    listDocCategories({ includeUnpublished: true }),
   ])
   const canEdit = user?.role === 'admin' || Boolean(user?.isEditor)
   const { article, category, excerpt, locale, title } = data
@@ -24,7 +24,16 @@ export const ArticleHeader = async ({ slug }: { slug: string }) => {
 
   return (
     <DashboardHeader
-      actions={canEdit ? <ArticleActions article={article} categories={categories.data ?? []} /> : null}
+      actions={
+        canEdit ? (
+          <Button asChild size="sm" variant="band-secondary">
+            <Link href={`/docs/articles/${article.slug}`}>
+              <LucideIcon name="pencil" className="size-3.5" />
+              {tEditor('editArticle')}
+            </Link>
+          </Button>
+        ) : null
+      }
       breadcrumb={
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-band-text">
           {categoryTitle && <span className="font-medium text-band-foreground">{categoryTitle}</span>}

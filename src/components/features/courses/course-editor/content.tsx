@@ -30,7 +30,7 @@ export const preloadLessonEditor = async () => {
 const LessonEditor = lessonEditor.Component
 const RichTextEditorProvider = richTextEditorProvider.Component
 
-const CourseEditor = ({
+export const RichContentEditor = ({
   initialValue,
   onChange,
   readOnly,
@@ -106,7 +106,7 @@ export const CourseContent = () => {
 
   return (
     <>
-      <CourseEditor
+      <RichContentEditor
         key={editorVersion}
         flushRef={contentFlushRef}
         initialValue={initialContent as Value}

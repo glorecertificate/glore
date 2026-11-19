@@ -37,19 +37,17 @@ export const SheetContent = ({
   children,
   className,
   closeSrText,
-  overlayClassName,
   side = 'right',
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   closeSrText?: string
-  overlayClassName?: string
   side?: 'top' | 'right' | 'bottom' | 'left'
 }) => {
   const t = useTranslations('Components.Dialog')
 
   return (
     <SheetPortal>
-      <SheetOverlay className={overlayClassName} />
+      <SheetOverlay />
       <DialogPrimitive.Content
         className={cn(
           'fixed z-50 flex flex-col gap-4 bg-background shadow-lg ease-out data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=open]:duration-300 motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none',

@@ -427,8 +427,26 @@ interface AttentionCourse {
   title: string
 }
 
+export type HealthStatus = Exclude<PublicationState, 'archived'>
+
+export interface HealthCourse {
+  empty: boolean
+  id: number
+  missing: Locale[]
+  missingAssessment: boolean
+  missingGroup: boolean
+  slug: string
+  status: HealthStatus
+  title: string
+}
+
+export type HealthColumns = Record<'assessment' | 'group' | Locale, number>
+
 export interface ContentHealth {
   attention: AttentionCourse[]
+  columns: HealthColumns
+  complete: number
+  courses: HealthCourse[]
   gaps: Record<Locale, number>
   issues: Record<ContentIssue, number>
   states: Record<PublicationState, number>
@@ -453,18 +471,53 @@ export const buildContentHealth = (courses: EditorCourseRow[]): ContentHealth =>
   ) as Record<Locale, number>
   const issues: Record<ContentIssue, number> = { empty: 0, noAssessment: 0, noGroup: 0 }
 
-  const attention = live
+  const needing = live
     .flatMap(course => {
       const found = courseIssues(course)
       for (const issue of found) issues[issue] += 1
       const missing = LOCALES.filter(locale => !course.languages?.includes(locale))
-      return found.length > 0 || missing.length > 0
-        ? [{ issues: found, missing, slug: course.slug, title: course.title }]
-        : []
+      if (found.length === 0 && missing.length === 0) return []
+      return [
+        {
+          course: {
+            empty: course.lessonCount === 0,
+            id: course.id,
+            missing,
+            missingAssessment: course.type === 'skill' && !course.hasAssessment,
+            missingGroup: course.type === 'skill' && course.skillGroupId === null,
+            slug: course.slug,
+            status: publicationState(course) as HealthStatus,
+            title: course.title,
+          },
+          issues: found,
+        },
+      ]
     })
-    .toSorted((a, b) => b.issues.length - a.issues.length || b.missing.length - a.missing.length)
+    .toSorted((a, b) => b.issues.length - a.issues.length || b.course.missing.length - a.course.missing.length)
 
-  return { attention: attention.slice(0, ATTENTION_LIMIT), gaps, issues, states, total: live.length }
+  const attention = needing.map(({ course, issues: found }) => ({
+    issues: found,
+    missing: course.missing,
+    slug: course.slug,
+    title: course.title,
+  }))
+  const rows = needing.map(({ course }) => course)
+  const columns = {
+    assessment: rows.filter(course => course.missingAssessment).length,
+    group: rows.filter(course => course.missingGroup).length,
+    ...gaps,
+  }
+
+  return {
+    attention: attention.slice(0, ATTENTION_LIMIT),
+    columns,
+    complete: live.length - rows.length,
+    courses: rows,
+    gaps,
+    issues,
+    states,
+    total: live.length,
+  }
 }
 
 export interface EngagementPoint {

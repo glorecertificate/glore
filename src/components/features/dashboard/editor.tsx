@@ -3,13 +3,12 @@
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type EditorSummary } from '@/actions/dashboard/core'
+import { ContentHealth } from '@/components/features/dashboard/content-health'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
 import { StatLink } from '@/components/features/dashboard/section'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
-import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { LOCALES } from '@/lib/i18n'
 
@@ -76,7 +75,9 @@ export const EditorDashboard = ({
         />
       </section>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+        <ContentHealth health={health} />
+
         <Card>
           <CardHeader>
             <CardTitle>{t('editor.translationsTitle')}</CardTitle>
@@ -113,40 +114,6 @@ export const EditorDashboard = ({
                 )
               })}
             </ul>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('editor.healthTitle')}</CardTitle>
-            {health.attention.length > 0 && <CardDescription>{t('editor.healthDescription')}</CardDescription>}
-          </CardHeader>
-          <CardContent>
-            {health.attention.length === 0 && <DashboardEmpty icon="circle-check" title={t('editor.healthClear')} />}
-            {health.attention.length > 0 && (
-              <ul className="divide-y">
-                {health.attention.map(course => (
-                  <li className="flex flex-wrap items-center gap-2 py-3 first:pt-0 last:pb-0" key={course.slug}>
-                    <Link
-                      className="min-w-0 flex-1 truncate text-sm font-medium hover:underline"
-                      href={`/courses/${course.slug}`}
-                    >
-                      {course.title}
-                    </Link>
-                    {course.issues.map(issue => (
-                      <Badge key={issue} variant="warning">
-                        {t(`editor.issue.${issue}`)}
-                      </Badge>
-                    ))}
-                    {course.missing.map(locale => (
-                      <Badge key={locale} variant="outline">
-                        {t('editor.missing', { language: locale.toUpperCase() })}
-                      </Badge>
-                    ))}
-                  </li>
-                ))}
-              </ul>
-            )}
           </CardContent>
         </Card>
       </div>

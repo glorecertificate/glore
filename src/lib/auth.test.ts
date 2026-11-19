@@ -1,3 +1,4 @@
+import { APIError } from 'better-auth/api'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/db/client', () => ({ db: {} }))
@@ -64,6 +65,30 @@ describe('auth hardening', () => {
         })
       )
       expect(response.status, path).toBe(404)
+    }
+  })
+
+  it('refuses a password that breaks the rule on every password endpoint', async () => {
+    const auth = await loadAuth()
+    const paths = endpointPaths(auth)
+    const calls = {
+      '/change-password': (newPassword: string) =>
+        auth.api.changePassword({ body: { currentPassword: 'Password1!', newPassword } }),
+      '/reset-password': (newPassword: string) => auth.api.resetPassword({ body: { newPassword, token: 'token' } }),
+    }
+
+    for (const [path, call] of Object.entries(calls)) {
+      expect(paths.has(path), `${path} is not a Better Auth endpoint`).toBe(true)
+      for (const newPassword of ['password1', 'PASSWORD1!', 'Passwordabc!', 'Password!!!!']) {
+        let failure: unknown = null
+        try {
+          await call(newPassword)
+        } catch (e) {
+          failure = e
+        }
+        expect(failure, `${path} ${newPassword}`).toBeInstanceOf(APIError)
+        expect((failure as APIError).body?.code, `${path} ${newPassword}`).toBe('PASSWORD_TOO_WEAK')
+      }
     }
   })
 })

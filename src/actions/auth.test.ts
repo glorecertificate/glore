@@ -144,6 +144,19 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     })
   })
 
+  it('answers a password that breaks the rule with an input code on reset and change', async () => {
+    await actions.resetPassword(fixture.emails.resetter)
+    await flush()
+    const url = sent.find(mail => mail.template.name === 'auth/recovery')?.template.props.url
+    const token = url ? new URL(url).pathname.split('/').pop() : undefined
+    const refused = { error: { code: 'INVALID_INPUT', message: 'Password does not meet the requirements' } }
+
+    expect(await actions.updatePassword(token ?? '', 'password1')).toEqual({ data: null, ...refused })
+
+    as(await fixture.signIn('wrong'))
+    expect(await actions.changePassword(PASSWORD, 'password1')).toEqual(refused)
+  })
+
   it('answers a wrong current password with its own code and no library text', async () => {
     as(await fixture.signIn('wrong'))
 

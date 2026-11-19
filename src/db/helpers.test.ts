@@ -93,11 +93,32 @@ describe('queryError', () => {
     expect(logged).not.toContain('hash-that-must-stay-private')
   })
 
-  it('keeps the message and classification of errors the app throws itself', () => {
-    expect(queryError(new Error('User not found'))).toEqual({ code: 'NOT_FOUND', message: 'User not found' })
-    expect(queryError(new Error('Something broke'))).toEqual({ code: 'QUERY_ERROR', message: 'Something broke' })
-    expect(queryError('boom')).toEqual({ code: 'QUERY_ERROR', message: 'boom' })
-    expect(console.error).not.toHaveBeenCalled()
+  it('classifies an error the app throws and answers with the fixed message of its code', () => {
+    expect(queryError(new Error('User not found'))).toEqual({ code: 'NOT_FOUND', message: 'Not found' })
+    expect(queryError(new Error('Something broke'))).toEqual({ code: 'QUERY_ERROR', message: 'Query failed' })
+    expect(queryError('boom')).toEqual({ code: 'QUERY_ERROR', message: 'Query failed' })
+  })
+
+  it('never returns the message of an error that does not come from the database', () => {
+    const secret = 'https://user:token@storage.internal/bucket failed with key AKIA123'
+    for (const error of [new Error(secret), new TypeError(secret), secret]) {
+      expect(JSON.stringify(queryError(error))).not.toContain('AKIA123')
+    }
+  })
+
+  it('keeps the message of the impersonation lock', () => {
+    const locked = Object.assign(new Error('Read only while impersonating'), {
+      code: 'NOT_ALLOWED_WHILE_IMPERSONATING',
+    })
+    expect(queryError(locked)).toEqual({
+      code: 'NOT_ALLOWED_WHILE_IMPERSONATING',
+      message: 'Read only while impersonating',
+    })
+  })
+
+  it('logs an unclassified error on the server', () => {
+    queryError(new Error('Something broke'))
+    expect(JSON.stringify(vi.mocked(console.error).mock.calls)).toContain('Something broke')
   })
 })
 

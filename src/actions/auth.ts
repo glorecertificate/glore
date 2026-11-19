@@ -30,6 +30,7 @@ const PASSWORD_CHANGE_RATE_LIMIT_WINDOW = 60 * 60 * 1000
 const PASSWORD_ERRORS = {
   INVALID_PASSWORD: { code: 'INVALID_PASSWORD', message: 'Invalid current password' },
   INVALID_TOKEN: { code: 'INVALID_TOKEN', message: 'Invalid or expired link' },
+  PASSWORD_TOO_WEAK: { code: 'INVALID_INPUT', message: 'Password does not meet the requirements' },
   PASSWORD_TOO_LONG: { code: 'INVALID_INPUT', message: 'Password does not meet the requirements' },
   PASSWORD_TOO_SHORT: { code: 'INVALID_INPUT', message: 'Password does not meet the requirements' },
 } as const

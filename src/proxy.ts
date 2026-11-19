@@ -81,7 +81,9 @@ export const proxy: NextProxy = async request => {
 
     if (!session?.user) return isPublic ? response : expireSession(request, { returnTo: true })
     if (session.user.banned) return revokeSession(request)
-    if (nextUrl.pathname === AUTH_ROOT) return NextResponse.redirect(new URL(APP_ROOT, request.url))
+    if (nextUrl.pathname === AUTH_ROOT) {
+      return NextResponse.redirect(new URL(safeNextPath(nextUrl.searchParams.get('next')) ?? APP_ROOT, request.url))
+    }
     if (!(session.user.onboardedAt || isOnboarding)) return NextResponse.redirect(new URL(ONBOARDING_ROOT, request.url))
     if (session.user.onboardedAt && isOnboarding) return NextResponse.redirect(new URL(APP_ROOT, request.url))
 

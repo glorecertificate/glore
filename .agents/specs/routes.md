@@ -81,7 +81,7 @@ Dashboard layout with an extra gate:
    - `safeNextPath` (`src/lib/next-path.ts`) is the only reader of `next`. It accepts one same-site path starting with a single `/`, normalizes dot segments, and answers null for other origins, `//`, backslashes, control characters, `/login`, `/register`, and `/api`. `login` redirects to the result or `/dashboard`.
 3. An authenticated user with a null `onboardedAt` redirects to `/onboarding`.
 4. An onboarded user on `/onboarding` redirects to `/dashboard`.
-5. An authenticated user on `/login` redirects to `/dashboard`.
+5. An authenticated user on `/login` redirects to the `safeNextPath` of `?next=`, or `/dashboard`.
 
 - A single-segment public path matching `/^\/[a-zA-Z0-9.]+$/` that is not a dashboard root passes `isPublicPath`.
 - The saved course-list filters redirect here for document requests (`architecture.md`, "Server vs client components").

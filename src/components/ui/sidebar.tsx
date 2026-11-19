@@ -40,9 +40,7 @@ interface SidebarContext {
   isMobile: boolean
   isTablet: boolean
   open: boolean
-  leaving: boolean
   leaveMobile: () => void
-  openMobile: boolean
   setActivePath: (path: Route) => void
   setIsDraggingRail: (isDraggingRail: boolean) => void
   setOpen: (open: boolean) => void
@@ -53,7 +51,27 @@ interface SidebarContext {
   width: string
 }
 
+interface SidebarDrawerContext {
+  action: string
+  leaving: boolean
+  openMobile: boolean
+}
+
 const SidebarContext = createContext<SidebarContext | null>(null)
+
+const SidebarDrawerContext = createContext<SidebarDrawerContext | null>(null)
+
+export const useSidebarDrawer = () => {
+  const context = use(SidebarDrawerContext)
+  if (!context) throw new Error('useSidebarDrawer must be used within a SidebarProvider')
+  return context
+}
+
+export const useSidebarAction = () => {
+  const { action, isMobile } = useSidebar()
+  const drawer = useSidebarDrawer()
+  return isMobile ? drawer.action : action
+}
 
 export const useSidebar = () => {
   const context = use(SidebarContext)
@@ -100,7 +118,12 @@ export const SidebarProvider = ({
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   const state = open ? 'expanded' : 'collapsed'
-  const action = (isMobile ? openMobile : open) ? t('close') : t('open')
+  const action = open ? t('close') : t('open')
+  const drawerValue: SidebarDrawerContext = {
+    action: openMobile ? t('close') : t('open'),
+    leaving,
+    openMobile,
+  }
 
   useEffect(() => {
     openRef.current = open
@@ -172,8 +195,6 @@ export const SidebarProvider = ({
     isTablet,
     open,
     leaveMobile,
-    leaving,
-    openMobile,
     setActivePath,
     setIsDraggingRail,
     setOpen,
@@ -187,22 +208,24 @@ export const SidebarProvider = ({
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <TooltipProvider delayDuration={0}>
-        <div
-          className={cn('group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar', className)}
-          ref={wrapperRef}
-          style={
-            {
-              '--sidebar-width': width,
-              '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
-              ...style,
-            } as React.CSSProperties
-          }
-          {...props}
-        >
-          {children}
-        </div>
-      </TooltipProvider>
+      <SidebarDrawerContext.Provider value={drawerValue}>
+        <TooltipProvider delayDuration={0}>
+          <div
+            className={cn('group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar', className)}
+            ref={wrapperRef}
+            style={
+              {
+                '--sidebar-width': width,
+                '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+                ...style,
+              } as React.CSSProperties
+            }
+            {...props}
+          >
+            {children}
+          </div>
+        </TooltipProvider>
+      </SidebarDrawerContext.Provider>
     </SidebarContext.Provider>
   )
 }
@@ -226,7 +249,8 @@ export const Sidebar = ({
   variant?: 'sidebar' | 'floating' | 'inset'
   collapsible?: 'offcanvas' | 'icon' | 'none'
 }) => {
-  const { isMobile, isTablet, isDraggingRail, leaving, open, openMobile, setOpen, setOpenMobile, state } = useSidebar()
+  const { isMobile, isTablet, isDraggingRail, open, setOpen, setOpenMobile, state } = useSidebar()
+  const { leaving, openMobile } = useSidebarDrawer()
 
   if (collapsible === 'none') {
     return (
@@ -329,7 +353,8 @@ export const SidebarTrigger = ({
   onClick,
   ...props
 }: ButtonProps & { indicator?: boolean; indicatorLabel?: string }) => {
-  const { action, toggleSidebar } = useSidebar()
+  const { toggleSidebar } = useSidebar()
+  const action = useSidebarAction()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)

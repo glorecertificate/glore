@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
-import { redirect, usePathname, useSearchParams } from 'next/navigation'
+import { redirect, unstable_rethrow, usePathname, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { useTranslations } from 'next-intl'
@@ -291,6 +291,15 @@ const DashboardSidebarUserItem = ({
   )
 }
 
+const isNavigationError = (error: unknown) => {
+  try {
+    unstable_rethrow(error)
+  } catch {
+    return true
+  }
+  return false
+}
+
 const DashboardSidebarUser = ({ organization }: { organization: UserOrganization | null }) => {
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
@@ -317,7 +326,8 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 
     try {
       await logout({ loggedOut: true })
-    } catch {
+    } catch (error) {
+      if (isNavigationError(error)) return
       toast.error(t('logoutFailed'))
       setLoggingOut(false)
       return

@@ -117,10 +117,9 @@
 
 ### Page
 
-- `AdminOverview` (`features/admin/overview.tsx`, server rendered, `Admin.overview` messages) shows four `StatCard`s: users, organizations, certificate requests, and awaiting review with the overdue count.
-- It shows two lazy `Chart`s over the 12 months: users and organizations as lines, submitted and approved certificates as bars. An all-zero series passes empty data so the chart shows its empty state.
-- It shows `AdminOverviewPipeline` (status badges with share bars) and review time (average and median, hours below 48 then days; helpers in `overview-utils.ts`).
-- It shows `AdminOverviewShortcuts`: users, `organizations?tab=pending` with the pending count, certificates with the waiting count, and audit.
+- `AdminOverview` (`features/admin/overview.tsx`, server rendered, `Admin.overview` messages) opens with `AdminOverviewDecisions`: pending organization applications, certificate requests waiting past the last reminder day, and team invitations not accepted. Rows at zero hide.
+- A divided figure strip follows (users, organizations, certificate requests with the average review time, courses), then `AdminOverviewPipeline` (status dots with neutral tracks) beside one lazy `Chart` of submitted and approved certificates per month, then `AdminOverviewHealth` (content health from `loadEditorSummary`).
+- The band primary opens the oldest pending application (`decisions.oldestApplication`), or the certificates page when none is pending.
 
 ### Data and cache
 
@@ -130,6 +129,7 @@
 - The payload (`AdminOverview`, `db/queries/admin-overview.ts`) holds `users`: total, admins, editors, pending onboarding, active bans.
 - It holds `organizations`: active, pending, rejected. Pending and rejected follow the sidebar badge rule: `approvedAt` null and no rejected admin join request.
 - It holds `certificates`: `pipeline` by status without drafts, `drafts`, `total`.
+- It holds `decisions`: the oldest pending application (`id`, `createdAt`) and the count of unaccepted team invitations. The query is also tagged `Organizations` and `TeamMembers`.
 - It holds `monthly`: 12 UTC months of users joined, organizations registered and approved, certificates submitted and approved.
 - It holds `review`: average and median hours from `submittedAt` to `reviewedAt`, overall and per month of `reviewedAt`.
 - It also holds `waiting` for `submitted` and `in_review` requests, and `overdue` past the longest `reviewReminderDays`.

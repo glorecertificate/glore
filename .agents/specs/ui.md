@@ -26,15 +26,7 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 
 ## Direction B: brand-forward
 
-The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `DESIGN.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
-
-- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a teal gradient active item (`bg-gradient-nav`, `shadow-glow-nav`), a white `logo-chip`, and a green `sidebar-badge` count. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
-- Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1826`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
-- `DashboardHeader` renders `PageBand`: gradient `bg-band`, inline SVG globe, `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it. With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
-- `Button` `primary` and `brand` are the teal gradient with white text. `band` (green, navy text) and `band-secondary` (scrim) sit on the band. Press scales to `.98` in 80 ms.
-- `StatCard` takes `accent` (`teal`, `navy`, `green`, `amber`) and `icon`: a 4px gradient strip and a 32px gradient tile. `stat-accent-*` classes set the `--stat-*` variables for any element that needs them.
-- `Badge` is a pill. `success` is green with navy text, `info` is navy with white text, `muted` is the draft grey. `highlight` (`bg-highlight`) is the navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
-- Text on a gradient passes 4.5:1 on its darkest stop in each theme. `check:theme` enforces every pair, and the table lives in `PALETTE_PAIRS` in `scripts/theme/tokens.ts`.
+- Detail moved to `.agents/references/ui-components.md`, "Direction B detail". The rules still apply.
 
 ## Migrate a page to the band
 
@@ -182,8 +174,9 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 ## Moved detail
 
 - `Markdown`, `MarkdownLazy`, `DialogContent`, and `InlineInput` rules: `.agents/references/ui-components.md`, "Controls detail".
+- Dashboard layout and the shared `AttentionList` and rail cards: `app.md`, Dashboard.
 
 ## Design briefs
 
 - Impeccable surface briefs live in `.impeccable/surfaces/`, one per surface, and stay untracked.
-- The volunteer dashboard brief records the Journey rail direction chosen in #84.
+- The volunteer dashboard brief records the earlier Journey rail direction. The dashboard now follows the picked step bar layout (`app.md`, Dashboard).

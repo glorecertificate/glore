@@ -4,7 +4,7 @@ import { PageTitle } from '@/components/layout/page-title'
 
 const DocsLoadingPage = () => (
   <DashboardPage fallback={null} title={<PageTitle name="docs" namespace="Layout" />}>
-    <LoadingFallback />
+    <LoadingFallback delay={false} />
   </DashboardPage>
 )
 

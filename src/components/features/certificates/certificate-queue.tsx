@@ -112,7 +112,10 @@ export const CertificateQueue = ({
             size="sm"
             variant={reviewable ? 'brand' : 'outline'}
           >
-            <Link href={reviewable ? `/certificates/${certificate.id}/review` : `/certificates/${certificate.id}`}>
+            <Link
+              href={reviewable ? `/certificates/${certificate.id}/review` : `/certificates/${certificate.id}`}
+              keepFresh="list"
+            >
               {reviewable ? t('review') : t('view')}
             </Link>
           </Button>

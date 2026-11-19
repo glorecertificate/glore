@@ -16,18 +16,20 @@ import { type AdminOrganizationStatus } from './organization-band'
 import { AdminOrganizationRail } from './organization-rail'
 import { organizationState } from './utils'
 
-const OrganizationActivity = dynamic(
-  async () => (await import('@/components/features/organization/activity')).OrganizationActivity
-)
-const OrganizationInvitations = dynamic(
-  async () => (await import('@/components/features/organization/invitations')).OrganizationInvitations
-)
-const OrganizationMembers = dynamic(
-  async () => (await import('@/components/features/organization/members')).OrganizationMembers
-)
-const OrganizationSettings = dynamic(
-  async () => (await import('@/components/features/organization/settings')).OrganizationSettings
-)
+const loadActivity = async () => (await import('@/components/features/organization/activity')).OrganizationActivity
+const loadInvitations = async () =>
+  (await import('@/components/features/organization/invitations')).OrganizationInvitations
+const loadMembers = async () => (await import('@/components/features/organization/members')).OrganizationMembers
+const loadSettings = async () => (await import('@/components/features/organization/settings')).OrganizationSettings
+
+const OrganizationActivity = dynamic(loadActivity)
+const OrganizationInvitations = dynamic(loadInvitations)
+const OrganizationMembers = dynamic(loadMembers)
+const OrganizationSettings = dynamic(loadSettings)
+
+export const preloadAdminOrganizationDetail = () => {
+  void Promise.all([loadActivity(), loadInvitations(), loadMembers(), loadSettings()])
+}
 
 type AdminOrganizationData = NonNullable<Awaited<ReturnType<typeof getAdminOrganization>>['data']>
 

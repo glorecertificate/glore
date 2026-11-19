@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
 
@@ -47,6 +47,12 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const t = useTranslations('Admin.organizations')
 
   const [orgs, setOrgs] = useState(initialOrgs)
+
+  useEffect(() => {
+    const preload = async () => (await import('./organization-detail')).preloadAdminOrganizationDetail()
+    const id = window.setTimeout(preload, 500)
+    return () => window.clearTimeout(id)
+  }, [])
   const [filter, setFilter] = useState<OrgFilter>('all')
   const [search, setSearch] = useState('')
   const [country, setCountry] = useState('all')
@@ -242,7 +248,11 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
                   <AvatarFallback className="rounded-lg">{org.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex max-w-32 min-w-0 flex-col">
-                  <Link className="truncate font-medium hover:underline" href={`/admin/organizations/${org.id}`}>
+                  <Link
+                    className="truncate font-medium hover:underline"
+                    href={`/admin/organizations/${org.id}`}
+                    keepFresh="list"
+                  >
                     <SearchHighlight query={search} value={org.name} />
                   </Link>
                   <span className="truncate text-xs text-muted-foreground">{org.email}</span>
@@ -352,7 +362,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link href={`/admin/organizations/${org.id}`}>
+                  <Link href={`/admin/organizations/${org.id}`} keepFresh="list">
                     <LucideIcon name="building-2" />
                     {t('openOrg')}
                   </Link>

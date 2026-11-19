@@ -95,6 +95,7 @@ export const CertificatesContent = ({ certificates, draftSteps, eligibility }: C
               <Link
                 className="flex items-center gap-1.5 font-medium text-foreground hover:underline"
                 href={`/certificates/${certificate.id}`}
+                keepFresh="list"
               >
                 {t('itemTitle')}
                 {certificate.isApproved && certificate.isDefault && (

@@ -10,6 +10,7 @@ import { EditorPreload } from '@/components/layout/editor-preload'
 import { LiveRefresh } from '@/components/layout/live-refresh'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PhoneAppBar } from '@/components/layout/phone-app-bar'
+import { PrefetchKeeper } from '@/components/layout/prefetch-keeper'
 import { PwaInstallBanner } from '@/components/layout/pwa-install-prompt'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -42,6 +43,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
         </SidebarInset>
         <PhoneAppBar />
         <LiveRefresh />
+        <PrefetchKeeper />
         {user.canEdit && <EditorPreload />}
         <ImpersonationBanner />
       </SessionProvider>

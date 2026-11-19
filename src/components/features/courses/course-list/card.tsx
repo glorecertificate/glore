@@ -155,6 +155,7 @@ export const CourseListCard = ({
                 <Link
                   className="type-heading transition-none"
                   href={coursePath}
+                  keepFresh="list"
                   prefetch
                   title={t('viewCourse')}
                   suppressHydrationWarning
@@ -193,6 +194,7 @@ export const CourseListCard = ({
               <Link
                 className="type-heading transition-none"
                 href={coursePath}
+                keepFresh="list"
                 prefetch
                 title={t('viewCourse')}
                 suppressHydrationWarning

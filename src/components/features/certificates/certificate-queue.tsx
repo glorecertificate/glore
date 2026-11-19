@@ -9,6 +9,7 @@ import { ageTone, daysBetween } from '@/components/features/certificates/rules'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
+import { type FilterRailProps } from '@/components/ui/filter-rail'
 import { Link } from '@/components/ui/link'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
@@ -18,19 +19,19 @@ export const certificateAge = (certificate: Certificate) =>
 
 export const CertificateQueue = ({
   filtered,
-  filters,
   claiming,
   onClaim,
   onSelectionChange,
+  rail,
   rows,
   selectedIds,
   tab,
 }: {
   claiming: boolean
   filtered: boolean
-  filters: React.ReactNode
   onClaim: (ids: number[]) => void
   onSelectionChange: (ids: number[]) => void
+  rail: FilterRailProps
   rows: Certificate[]
   selectedIds: number[]
   tab: TutorQueueTab
@@ -104,10 +105,10 @@ export const CertificateQueue = ({
       ]}
       emptyDescription={filtered ? t('emptyFiltered.description') : t(`empty.${tab}.description`)}
       emptyTitle={filtered ? t('emptyFiltered.title') : t(`empty.${tab}.title`)}
-      filters={filters}
       getRowId={certificate => certificate.id}
       label={t(`tabs.${tab}`)}
       onSelectionChange={ids => onSelectionChange(ids.map(Number))}
+      rail={rail}
       rowActions={certificate => {
         if (tab === 'pool') {
           return (

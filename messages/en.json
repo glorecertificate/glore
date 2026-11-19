@@ -2879,6 +2879,7 @@
       "filter_all": "All",
       "filter_pending": "Pending",
       "filter_rejected": "Rejected",
+      "filterStatus": "Status",
       "filterCountry": "Country",
       "inviteCity": "City",
       "inviteCityPlaceholder": "Rome",
@@ -3099,6 +3100,7 @@
       "unknownPerson": "A removed account",
       "unknownTarget": "an unknown item",
       "filters": {
+        "dates": "Dates",
         "allCategories": "All categories",
         "category": "Category",
         "from": "From date",

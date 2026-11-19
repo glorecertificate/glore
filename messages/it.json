@@ -2879,6 +2879,7 @@
       "filter_all": "Tutte",
       "filter_pending": "In attesa",
       "filter_rejected": "Rifiutate",
+      "filterStatus": "Stato",
       "filterCountry": "Paese",
       "inviteCity": "Città",
       "inviteCityPlaceholder": "Roma",
@@ -3099,6 +3100,7 @@
       "unknownPerson": "Un account rimosso",
       "unknownTarget": "un elemento sconosciuto",
       "filters": {
+        "dates": "Date",
         "allCategories": "Tutte le categorie",
         "category": "Categoria",
         "from": "Dalla data",

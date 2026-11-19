@@ -11,6 +11,7 @@ import {
   type AuditRecord,
   adminAuditQuerySchema,
   auditActionsOf,
+  auditCategoryOf,
   auditCertificateIds,
   auditDayEnd,
   auditDayStart,
@@ -93,6 +94,22 @@ const resolveRows = async (records: AuditRecord[]) => {
   })
 }
 
+const countCategories = async (query: ParsedQuery) => {
+  const rows = await db
+    .select({ action: activityEvents.action, total: count() })
+    .from(activityEvents)
+    .leftJoin(actor, eq(actor.id, activityEvents.actorId))
+    .leftJoin(target, eq(target.id, targetUserId))
+    .where(buildFilters({ ...query, category: null }))
+    .groupBy(activityEvents.action)
+  const totals: Record<string, number> = {}
+  for (const row of rows) {
+    const category = auditCategoryOf(row.action)
+    if (category) totals[category] = (totals[category] ?? 0) + row.total
+  }
+  return totals
+}
+
 export const queryAdminAudit = async (input: AdminAuditQuery) => {
   const parsed = adminAuditQuerySchema.safeParse(input)
   if (!parsed.success) throw adminError('INVALID_INPUT')
@@ -129,5 +146,8 @@ export const queryAdminAudit = async (input: AdminAuditQuery) => {
   const rows = await resolveRows(
     records.map(record => ({ ...record, metadata: record.metadata as Record<string, unknown> }))
   )
-  return toPage(rows, { page, pageSize: ADMIN_AUDIT_PAGE_SIZE, total })
+  return {
+    ...toPage(rows, { page, pageSize: ADMIN_AUDIT_PAGE_SIZE, total }),
+    facets: { category: await countCategories(parsed.data) },
+  }
 }

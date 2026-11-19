@@ -18,12 +18,9 @@ import { Button } from '@/components/ui/button'
 import { countryCodeToFlag } from '@/components/ui/country-select'
 import { DataTable } from '@/components/ui/data-table'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
 import { SearchHighlight, SearchInput } from '@/components/ui/search'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusBadge } from '@/components/ui/status-badge'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
@@ -35,6 +32,14 @@ import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, RejectDialog } from '.
 import { listFocusTarget } from './utils'
 
 type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
+
+const STATUS_MATCHERS = {
+  active: (o: AdminOrganization) => o.isApproved,
+  pending: (o: AdminOrganization) => o.isPending,
+  rejected: (o: AdminOrganization) => o.isRejected,
+} as const
+
+const STATUS_TONES = { active: 'success', pending: 'warning', rejected: 'danger' } as const
 
 export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganization[] }) => {
   const { locale } = useI18n()
@@ -53,8 +58,6 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
   const translateCountry = useCountryName()
 
-  const pendingCount = orgs.filter(o => o.isPending).length
-
   const countryOptions = (() => {
     const codes = [...new Set(orgs.map(o => o.country?.toLowerCase()).filter((c): c is string => Boolean(c)))]
     return codes
@@ -62,15 +65,11 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       .toSorted((a, b) => a.label.localeCompare(b.label, locale))
   })()
 
-  const hasFilters = search.trim() !== '' || country !== 'all' || filter !== 'all'
-
-  const displayOrgs = (() => {
+  const matching = (status: OrgFilter | null, countryCode: string | null) => {
     let list = orgs
 
-    if (filter === 'pending') list = list.filter(o => o.isPending)
-    if (filter === 'active') list = list.filter(o => o.isApproved)
-    if (filter === 'rejected') list = list.filter(o => o.isRejected)
-    if (country !== 'all') list = list.filter(o => o.country?.toLowerCase() === country)
+    if (status && status !== 'all') list = list.filter(STATUS_MATCHERS[status])
+    if (countryCode && countryCode !== 'all') list = list.filter(o => o.country?.toLowerCase() === countryCode)
 
     const needle = search.trim().toLowerCase()
     if (needle) {
@@ -78,7 +77,9 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     }
 
     return list
-  })()
+  }
+
+  const displayOrgs = matching(filter, country)
 
   const refreshOrgs = async () => {
     const { data } = await getOrganizations({ cache: false })
@@ -228,54 +229,46 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         ]}
         emptyDescription={orgs.length === 0 ? t('emptyMessage') : t('emptyFilteredMessage')}
         emptyTitle={orgs.length === 0 ? t('emptyTitle') : t('emptyFilteredTitle')}
-        filters={
-          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-            <Tabs onValueChange={value => setFilter(value as OrgFilter)} value={filter}>
-              <TabsList>
-                <TabsTrigger value="all">{t('filter_all')}</TabsTrigger>
-                <TabsTrigger count={pendingCount} value="pending">
-                  {t('filter_pending')}
-                </TabsTrigger>
-                <TabsTrigger value="active">{t('filter_active')}</TabsTrigger>
-                <TabsTrigger value="rejected">{t('filter_rejected')}</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <FilterBar
-              active={hasFilters}
-              onClear={resetFilters}
-              count={Number(country !== 'all')}
+        rail={{
+          groups: [
+            {
+              id: 'status',
+              label: t('filterStatus'),
+              onChange: value => setFilter((value as OrgFilter | null) ?? 'all'),
+              options: (['pending', 'active', 'rejected'] as const).map(key => ({
+                count: matching(null, country).filter(STATUS_MATCHERS[key]).length,
+                label: t(`filter_${key}`),
+                tone: STATUS_TONES[key],
+                value: key,
+              })),
+              value: filter === 'all' ? null : filter,
+            },
+            {
+              id: 'country',
+              label: t('filterCountry'),
+              onChange: value => setCountry(value ?? 'all'),
+              options: countryOptions.map(({ code, label }) => ({
+                count: matching(filter, null).filter(o => o.country?.toLowerCase() === code).length,
+                label: `${countryCodeToFlag(code)} ${label}`,
+                value: code,
+              })),
+              value: country === 'all' ? null : country,
+            },
+          ],
+          onReset: resetFilters,
+          search: placement => (
+            <SearchInput
+              aria-label={t('searchPlaceholder')}
+              className="w-full"
+              hotkey={placement === 'panel' ? SHORTCUTS.filter.key : undefined}
+              onValueChange={setSearch}
+              placeholder={t('searchPlaceholder')}
               size="sm"
-              search={
-                <SearchInput
-                  aria-label={t('searchPlaceholder')}
-                  className="w-full sm:w-56"
-                  hotkey={SHORTCUTS.filter.key}
-                  onValueChange={setSearch}
-                  placeholder={t('searchPlaceholder')}
-                  size="sm"
-                  value={search}
-                />
-              }
-            >
-              {countryOptions.length > 0 && (
-                <Select onValueChange={setCountry} value={country}>
-                  <SelectTrigger aria-label={t('filterCountry')} className="w-auto gap-1.5" size="sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{t('allCountries')}</SelectItem>
-                    {countryOptions.map(({ code, label }) => (
-                      <SelectItem key={code} value={code}>
-                        <span className="mr-1">{countryCodeToFlag(code)}</span>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </FilterBar>
-          </div>
-        }
+              value={search}
+            />
+          ),
+          searchActive: search.trim() !== '',
+        }}
         getRowId={org => org.id}
         label={t('tableLabel')}
         rowActions={org => (

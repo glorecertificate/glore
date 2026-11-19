@@ -2879,6 +2879,7 @@
       "filter_all": "Todas",
       "filter_pending": "Pendientes",
       "filter_rejected": "Rechazadas",
+      "filterStatus": "Estado",
       "filterCountry": "País",
       "inviteCity": "Ciudad",
       "inviteCityPlaceholder": "Madrid",
@@ -3099,6 +3100,7 @@
       "unknownPerson": "Una cuenta eliminada",
       "unknownTarget": "un elemento desconocido",
       "filters": {
+        "dates": "Fechas",
         "allCategories": "Todas las categorías",
         "category": "Categoría",
         "from": "Desde la fecha",

@@ -1,8 +1,10 @@
 import { type Locale } from 'next-intl'
 
+import { type DocAudience } from '@/db/queries/doc'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 
 export interface ArticleDraft {
+  audiences: DocAudience[]
   categoryId: number | null
   contents: IntlRecord
   excerpts: IntlRecord
@@ -33,6 +35,7 @@ export const buildArticlePayload = (draft: ArticleDraft, locale: Locale, publish
     return publish
   })
   return {
+    audiences: draft.audiences,
     categoryId: draft.categoryId ?? undefined,
     content: draft.contents,
     excerpt: draft.excerpts,

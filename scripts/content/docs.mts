@@ -40,6 +40,7 @@ export interface LoadedDocs {
 }
 
 interface DocCatalogArticle {
+  audiences: string[]
   slug: string
   category: string
   sortOrder: number
@@ -215,6 +216,7 @@ export const buildDocCatalog = ({ categories, docs }: LoadedDocs): DocCatalog =>
         doc.meta
           ? [
               {
+                audiences: doc.meta.audiences ?? [],
                 category: doc.category,
                 content: pick(doc, file => file.body),
                 excerpt: pick(doc, file => file.excerpt),

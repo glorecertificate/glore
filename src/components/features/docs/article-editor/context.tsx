@@ -12,7 +12,7 @@ import {
   ArticleSaveError,
   buildArticlePayload,
 } from '@/components/features/docs/article-editor/payload'
-import { type DocArticle, type DocCategory } from '@/db/queries/doc'
+import { DOC_AUDIENCES, type DocArticle, type DocAudience, type DocCategory } from '@/db/queries/doc'
 import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALES } from '@/lib/i18n'
 
 interface ArticleSaveOptions {
@@ -46,6 +46,7 @@ const slugify = (input: string) =>
 const toDraft = ({ article, defaultCategoryId }: Pick<ArticleProviderOptions, 'article' | 'defaultCategoryId'>) => {
   if (!article) {
     return {
+      audiences: [],
       categoryId: defaultCategoryId ?? null,
       contents: { ...INTL_PLACEHOLDER },
       excerpts: { ...INTL_PLACEHOLDER },
@@ -55,6 +56,7 @@ const toDraft = ({ article, defaultCategoryId }: Pick<ArticleProviderOptions, 'a
     } satisfies ArticleDraft
   }
   return {
+    audiences: DOC_AUDIENCES.filter(audience => article.audiences.includes(audience)),
     categoryId: article.categoryId,
     contents: { ...INTL_PLACEHOLDER, ...(article.content as IntlRecord) },
     excerpts: { ...INTL_PLACEHOLDER, ...(article.excerpt as IntlRecord | null) },
@@ -112,6 +114,12 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
 
   const setCategory = (categoryId: number | null) => update(current => ({ ...current, categoryId }))
 
+  const toggleAudience = (audience: DocAudience, checked: boolean) =>
+    update(current => ({
+      ...current,
+      audiences: DOC_AUDIENCES.filter(item => (item === audience ? checked : current.audiences.includes(item))),
+    }))
+
   const status = Object.fromEntries(
     LOCALES.map(locale => [
       locale,
@@ -119,7 +127,10 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
     ])
   ) as Record<Locale, { hasUpdates: boolean; published: boolean }>
 
-  const settingsChanged = draft.slug !== saved.slug || draft.categoryId !== saved.categoryId
+  const settingsChanged =
+    draft.slug !== saved.slug ||
+    draft.categoryId !== saved.categoryId ||
+    draft.audiences.join() !== saved.audiences.join()
   const hasAnyUpdates = settingsChanged || LOCALES.some(locale => status[locale].hasUpdates)
 
   const saveArticle = async ({ locale, publish }: ArticleSaveOptions) => {
@@ -159,6 +170,7 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
     setSlug,
     setTitle,
     status,
+    toggleAudience,
   }
 }
 

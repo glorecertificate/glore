@@ -165,6 +165,9 @@ Three domain facts shape recurring decisions:
 ### Documentation
 
 - `/docs` with `/docs/intro`, `/docs/faq`, `/docs/tutorials`: live-editable guides authored by admins and editors.
+  - `doc_articles.audiences` lists the help roles of an article (`volunteer`, `learner`, `tutor`, `manager`, `team`). An empty list means everyone.
+  - Lists, search, and previous and next links show a user only the articles for their help role (`useHelpRole`). The team sees all articles, with audience badges.
+  - A direct link to an article for another role still opens.
 
 ### Settings
 

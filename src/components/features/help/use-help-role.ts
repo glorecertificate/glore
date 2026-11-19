@@ -1,8 +1,9 @@
 'use client'
 
 import { useSession } from '@/components/providers/session'
+import { type DocAudience } from '@/db/queries/doc'
 
-export type HelpRole = 'team' | 'manager' | 'tutor' | 'volunteer' | 'learner'
+export type HelpRole = DocAudience
 
 export const useHelpRole = (): HelpRole => {
   const { user } = useSession()

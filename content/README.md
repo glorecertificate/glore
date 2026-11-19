@@ -175,10 +175,11 @@ An array of categories. Every key is required, and `title` and `description` nee
 
 ### `docs/<category>/<slug>/doc.json`
 
-| Key         | Rule                                                                                           |
-| ----------- | ---------------------------------------------------------------------------------------------- |
-| `slug`      | Kebab-case, at most 100 characters, equal to the directory name. Unique across all categories. |
-| `sortOrder` | Positive integer, unique inside the category. The list shows articles in this order.           |
+| Key         | Rule                                                                                                    |
+| ----------- | ------------------------------------------------------------------------------------------------------- |
+| `slug`      | Kebab-case, at most 100 characters, equal to the directory name. Unique across all categories.          |
+| `sortOrder` | Positive integer, unique inside the category. The list shows articles in this order.                    |
+| `audiences` | Optional. One or more of `volunteer`, `learner`, `tutor`, `manager`, `team`. Leave it out for everyone. |
 
 The parent directory is the category and must be listed in `categories.json`. Unknown keys are errors.
 
@@ -210,6 +211,7 @@ Rules on top of the lesson rules (no hard wraps, quoting, no em or en dashes):
 
 - Without `--drafts` (local and staging) articles are `published`. With `--drafts` (always on production) new articles are drafts and existing ones keep their `published` state, so an import never unpublishes anything. The same rule applies to `doc_articles.languages`: articles import with all three locales, and drafts import with none.
 - The docs tables have no order column, and the app lists by `created_at`. The importer therefore sets `created_at` from `sortOrder` (a fixed date plus one minute per step), so the order is the same on every environment. Articles an editor adds in the app sort after the imported ones.
+- `audiences` imports to `doc_articles.audiences`. The docs lists show an article only to those roles, and the team sees all articles.
 - Re-running reports every row as unchanged. A changed article gets a new `updated_at`.
 - Docs that disappear from `content/` are not deleted; delete them in the docs UI.
 

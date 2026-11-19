@@ -3,6 +3,9 @@ import { type InferSelectModel } from 'drizzle-orm'
 import { type docArticles, type docCategories } from '@/db/schema'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
 
+export const DOC_AUDIENCES = ['volunteer', 'learner', 'tutor', 'manager', 'team'] as const
+
+export type DocAudience = (typeof DOC_AUDIENCES)[number]
 export type DocCategory = ReturnType<typeof parseDocCategory>
 export type DocArticle = ReturnType<typeof parseDocArticle>
 

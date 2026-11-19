@@ -1,1 +1,1 @@
-{ "slug": "faq-activity-rule", "sortOrder": 7 }
+{ "slug": "faq-activity-rule", "sortOrder": 7, "audiences": ["volunteer", "tutor", "manager"] }

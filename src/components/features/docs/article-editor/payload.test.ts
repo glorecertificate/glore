@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { ArticleSaveError, buildArticlePayload } from '@/components/features/docs/article-editor/payload'
 
 const draft = {
+  audiences: ['volunteer' as const, 'tutor' as const],
   categoryId: 3,
   contents: { en: '## Hi', es: '', it: 'Ciao' },
   excerpts: { en: '', es: '', it: '' },
@@ -14,6 +15,7 @@ const draft = {
 describe('payload', () => {
   it('keeps the published languages when saving a draft', () => {
     expect(buildArticlePayload(draft, 'it', null)).toMatchObject({
+      audiences: ['volunteer', 'tutor'],
       categoryId: 3,
       languages: ['en'],
       published: true,

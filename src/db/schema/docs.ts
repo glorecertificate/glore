@@ -33,6 +33,10 @@ export const docArticles = pgTable(
       .array()
       .notNull()
       .default(sql`'{en,es,it}'::text[]`),
+    audiences: text()
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp({ mode: 'string' })
       .defaultNow()

@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
+import { listedCategories } from '@/components/features/docs/visibility'
 import { useHelpRole } from '@/components/features/help/use-help-role'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
@@ -20,6 +21,7 @@ import { SearchInput } from '@/components/ui/search'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
 import { pickLocale } from '@/db/queries/learning'
 import { SHORTCUTS } from '@/lib/shortcuts'
+import { cn } from '@/lib/utils'
 
 const START_SLUGS = ['what-is-glore', 'how-certification-works', 'roles', 'getting-started']
 const BROWSABLE = ['intro', 'tutorials', 'faq']
@@ -102,13 +104,16 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
   const t = useTranslations('Docs')
   const { locale } = useI18n()
   const { email, website } = useSettings()
+  const role = useHelpRole()
   const tutorialSlug = useRoleTutorial()
 
-  const docs = useDocsSearch(categories)
+  const listed = listedCategories(categories, role)
+  const columns = listed.filter(category => canEdit || category.articles.length > 0)
+  const docs = useDocsSearch(listed)
   const term = query.trim()
   const results = term ? docs.search(term, 500) : []
 
-  const articles = categories.flatMap(category => category.articles)
+  const articles = listed.flatMap(category => category.articles)
   const bySlug = (slug: string) => articles.find(article => article.slug === slug)
   const startArticles = START_SLUGS.map(bySlug).filter((article): article is DocArticle => Boolean(article))
   const tutorial = bySlug(tutorialSlug)
@@ -163,7 +168,12 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
           {startArticles.length > 0 && (
             <section className="flex flex-col gap-3">
               <h2 className="type-heading text-fg-title">{t('hub.startHere')}</h2>
-              <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 xl:grid-cols-4">
+              <div
+                className={cn(
+                  'grid grid-cols-1 gap-3 min-[480px]:grid-cols-2',
+                  startArticles.length === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'
+                )}
+              >
                 {startArticles.map(article => (
                   <Link
                     className="rounded-xl focus-visible:focus-ring"
@@ -194,7 +204,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
           )}
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {categories.map(category => (
+            {columns.map(category => (
               <TopicColumn canEdit={canEdit} category={category} key={category.id} />
             ))}
           </div>

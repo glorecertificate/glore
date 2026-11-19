@@ -5,6 +5,8 @@ import { type Route } from 'next'
 import { useTranslations } from 'next-intl'
 
 import { ArticleCard } from '@/components/features/docs/article-card'
+import { isListedArticle } from '@/components/features/docs/visibility'
+import { useHelpRole } from '@/components/features/help/use-help-role'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
@@ -23,6 +25,8 @@ interface DocsSectionProps {
 export const DocsSection = ({ canEdit, category, showTitle = true }: DocsSectionProps) => {
   const t = useTranslations('Docs')
   const { localize } = useI18n()
+  const role = useHelpRole()
+  const articles = category.articles.filter(article => isListedArticle(article, role))
 
   const newArticleHref = `/docs/new?category=${category.id}` as Route
 
@@ -48,7 +52,7 @@ export const DocsSection = ({ canEdit, category, showTitle = true }: DocsSection
         )}
       </div>
 
-      {category.articles.length === 0 ? (
+      {articles.length === 0 ? (
         <Empty className="border py-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -69,7 +73,7 @@ export const DocsSection = ({ canEdit, category, showTitle = true }: DocsSection
         </Empty>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {category.articles.map(article => (
+          {articles.map(article => (
             <ArticleCard key={article.id} article={article} className="h-full" />
           ))}
         </div>

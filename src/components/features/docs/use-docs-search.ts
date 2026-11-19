@@ -4,11 +4,14 @@ import { useState } from 'react'
 
 import { listDocCategories } from '@/actions/docs'
 import { buildDocIndex, searchDocs } from '@/components/features/docs/search'
+import { listedCategories } from '@/components/features/docs/visibility'
+import { useHelpRole } from '@/components/features/help/use-help-role'
 import { useI18n } from '@/components/providers/i18n'
 import { type DocCategory } from '@/db/queries/doc'
 
 export const useDocsSearch = (initial?: DocCategory[]) => {
   const { locale } = useI18n()
+  const role = useHelpRole()
   const [loaded, setLoaded] = useState<DocCategory[] | null>(null)
   const categories = initial ?? loaded
   const [loading, setLoading] = useState(false)
@@ -27,7 +30,7 @@ export const useDocsSearch = (initial?: DocCategory[]) => {
     setLoaded(data)
   }
 
-  const index = categories ? buildDocIndex(categories, locale) : []
+  const index = categories ? buildDocIndex(listedCategories(categories, role), locale) : []
   const search = (query: string, limit?: number) => searchDocs(index, query, limit)
 
   return { failed, load, loading, ready: categories !== null, search }

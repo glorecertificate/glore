@@ -5,15 +5,19 @@ import { useTranslations } from 'next-intl'
 import { useArticle } from '@/components/features/docs/article-editor/context'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { DOC_AUDIENCES } from '@/db/queries/doc'
 import { type IntlRecord } from '@/lib/i18n'
 
 export const ArticleSettings = () => {
   const t = useTranslations('Docs.editor')
+  const tAudience = useTranslations('Docs.audience')
+  const tRoles = useTranslations('Help.roles')
   const { localize } = useI18n()
-  const { categories, draft, generateSlug, setCategory, setSlug } = useArticle()
+  const { categories, draft, generateSlug, setCategory, setSlug, toggleAudience } = useArticle()
 
   return (
     <section
@@ -52,6 +56,26 @@ export const ArticleSettings = () => {
           </SelectContent>
         </Select>
       </div>
+      <fieldset aria-describedby="article-audience-hint" className="flex min-w-0 flex-col gap-2 sm:col-span-2">
+        <legend className="mb-2 text-sm leading-none font-medium">{tAudience('label')}</legend>
+        <div className="flex flex-wrap gap-x-5 gap-y-3">
+          {DOC_AUDIENCES.map(audience => (
+            <div className="flex items-center gap-2" key={audience}>
+              <Checkbox
+                checked={draft.audiences.includes(audience)}
+                id={`article-audience-${audience}`}
+                onCheckedChange={checked => toggleAudience(audience, checked === true)}
+              />
+              <Label className="font-normal" htmlFor={`article-audience-${audience}`}>
+                {tRoles(`${audience}.label`)}
+              </Label>
+            </div>
+          ))}
+        </div>
+        <p className="text-sm text-fg-2" id="article-audience-hint">
+          {tAudience('hint')}
+        </p>
+      </fieldset>
     </section>
   )
 }

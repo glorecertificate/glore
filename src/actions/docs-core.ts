@@ -60,7 +60,7 @@ const queryDocArticle = async (slug: string, withDrafts: boolean) => {
   const article = withDrafts ? rawArticle : redactArticle(rawArticle)
   const siblings = row.categoryId
     ? await db.query.docArticles.findMany({
-        columns: { id: true, languages: true, published: true, slug: true, title: true },
+        columns: { audiences: true, id: true, languages: true, published: true, slug: true, title: true },
         orderBy: [asc(docArticles.createdAt)],
         where: eq(docArticles.categoryId, row.categoryId),
       })
@@ -68,12 +68,14 @@ const queryDocArticle = async (slug: string, withDrafts: boolean) => {
   return {
     article: parseDocArticle(article),
     category,
-    siblings: siblings.reduce<{ slug: string; title: IntlRecord }[]>((list, sibling) => {
+    siblings: siblings.reduce<{ audiences: string[]; slug: string; title: IntlRecord }[]>((list, sibling) => {
       if (withDrafts) {
-        list.push({ slug: sibling.slug, title: sibling.title })
+        list.push({ audiences: sibling.audiences, slug: sibling.slug, title: sibling.title })
         return list
       }
-      if (isPublicArticle(sibling)) list.push({ slug: sibling.slug, title: redactArticle(sibling).title })
+      if (isPublicArticle(sibling)) {
+        list.push({ audiences: sibling.audiences, slug: sibling.slug, title: redactArticle(sibling).title })
+      }
       return list
     }, []),
   }

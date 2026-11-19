@@ -1356,6 +1356,10 @@
     "empty": "No documentation yet. Check back later.",
     "draft": "Draft",
     "lastUpdated": "Last updated: {date}",
+    "audience": {
+      "label": "Audience",
+      "hint": "Leave all unchecked to show the article to everyone."
+    },
     "editor": {
       "newArticle": "New article",
       "settings": "Article settings",

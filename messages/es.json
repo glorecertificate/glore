@@ -1356,6 +1356,10 @@
     "empty": "Todavía no hay documentación. Vuelve más tarde.",
     "draft": "Borrador",
     "lastUpdated": "Última actualización: {date}",
+    "audience": {
+      "label": "Público",
+      "hint": "Déjalos todos sin marcar para mostrar el artículo a todo el mundo."
+    },
     "editor": {
       "newArticle": "Nuevo artículo",
       "settings": "Ajustes del artículo",

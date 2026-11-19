@@ -1356,6 +1356,10 @@
     "empty": "Non c'è ancora documentazione. Torna più tardi.",
     "draft": "Bozza",
     "lastUpdated": "Ultimo aggiornamento: {date}",
+    "audience": {
+      "label": "Destinatari",
+      "hint": "Lascia tutto deselezionato per mostrare l'articolo a tutti."
+    },
     "editor": {
       "newArticle": "Nuovo articolo",
       "settings": "Impostazioni articolo",

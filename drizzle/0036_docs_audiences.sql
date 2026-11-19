@@ -1,0 +1,1 @@
+ALTER TABLE "doc_articles" ADD COLUMN "audiences" text[] DEFAULT '{}'::text[] NOT NULL;

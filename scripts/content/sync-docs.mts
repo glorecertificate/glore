@@ -83,14 +83,14 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
     const categoryId = categoryIds.get(article.category) as number
     const createdAt = orderedTimestamp(article.sortOrder)
     const { rows } = await client.query(
-      `select id, title, content, excerpt, category_id, published, languages, ${CREATED} as created from doc_articles where slug = $1`,
+      `select id, title, content, excerpt, category_id, published, languages, audiences, ${CREATED} as created from doc_articles where slug = $1`,
       [article.slug]
     )
     const [existing] = rows
     if (!existing) {
       await client.query(
-        `insert into doc_articles (slug, title, content, excerpt, category_id, published, languages, created_at)
-         values ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5, $6, $7::text[], $8::timestamp)`,
+        `insert into doc_articles (slug, title, content, excerpt, category_id, published, languages, created_at, audiences)
+         values ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5, $6, $7::text[], $8::timestamp, $9::text[])`,
         [
           article.slug,
           json(article.title),
@@ -100,6 +100,7 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
           !drafts,
           drafts ? [] : LOCALES,
           createdAt,
+          article.audiences,
         ]
       )
       stats.docArticles.created++
@@ -114,6 +115,7 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
       existing.category_id === categoryId &&
       existing.published === published &&
       same(existing.languages, languages) &&
+      same(existing.audiences, article.audiences) &&
       existing.created === createdAt
     ) {
       stats.docArticles.unchanged++
@@ -121,7 +123,8 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
     }
     await client.query(
       `update doc_articles set title = $2::jsonb, content = $3::jsonb, excerpt = $4::jsonb, category_id = $5,
-         published = $6, languages = $7::text[], created_at = $8::timestamp, updated_at = now() where id = $1`,
+         published = $6, languages = $7::text[], created_at = $8::timestamp, audiences = $9::text[], updated_at = now()
+         where id = $1`,
       [
         existing.id,
         json(article.title),
@@ -131,6 +134,7 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
         published,
         languages,
         createdAt,
+        article.audiences,
       ]
     )
     stats.docArticles.updated++

@@ -2954,7 +2954,26 @@
       "tableLabel": "Organizzazioni",
       "openOrg": "Apri organizzazione",
       "commentLabelOptional": "Commento (facoltativo)",
-      "statusActive": "Attiva"
+      "statusActive": "Attiva",
+      "review": "Esamina",
+      "moreOptions": "Altre opzioni",
+      "selectOrg": "Seleziona {name}",
+      "commentLabelRequired": "Motivo (obbligatorio)",
+      "bulkApproveSuccess": "{count, plural, one {# organizzazione approvata} other {# organizzazioni approvate}}",
+      "bulkRejectSuccess": "{count, plural, one {# organizzazione rifiutata} other {# organizzazioni rifiutate}}",
+      "bulkError": "Impossibile aggiornare {failed} su {total}. Riprova.",
+      "bulkRejectTitle": "Rifiuta {count} organizzazioni",
+      "bulkRejectDescription": "Rifiutare le richieste di registrazione selezionate? Ogni rappresentante riceve il motivo via email.",
+      "bulkSelectionLabel": "{count, plural, one {# organizzazione} other {# organizzazioni}}",
+      "about": "Informazioni",
+      "aboutStatus": "Stato",
+      "aboutOwner": "Titolare",
+      "aboutLocation": "Sede",
+      "aboutEmail": "Email",
+      "aboutWebsite": "Sito web",
+      "aboutRegistered": "Registrata",
+      "aboutNone": "Non indicato",
+      "emailOrg": "Scrivi all'organizzazione"
     },
     "users": {
       "title": "Utenti",
@@ -3747,7 +3766,11 @@
     "error_ROLE_TAKEN": "Questo ruolo è già occupato nell'organizzazione.",
     "error_TOO_SOON": "Attendi un minuto prima di reinviare questo invito.",
     "error_generic": "Qualcosa è andato storto. Riprova.",
-    "error_PROOF_REQUIRED": "Apri il link dell'email di invito oppure chiedici di inviarti un nuovo link di conferma."
+    "error_PROOF_REQUIRED": "Apri il link dell'email di invito oppure chiedici di inviarti un nuovo link di conferma.",
+    "filterExpired": "Scadute",
+    "filterAccepted": "Accettate",
+    "rowActions": "Azioni per {email}",
+    "searchPlaceholder": "Cerca inviti"
   },
   "Learning": {
     "overview": {

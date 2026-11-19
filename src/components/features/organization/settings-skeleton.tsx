@@ -7,14 +7,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 import { FieldSkeleton } from './field-skeleton'
 import { SettingsSection } from './settings-section'
-import { TabHeader } from './tab-header'
 
 export const SettingsSkeleton = () => {
   const t = useTranslations('Organization')
 
   return (
     <div className="flex flex-col gap-8">
-      <TabHeader description={t('settingsPageDescription')} title={t('settings')} />
       <SettingsSection description={t('brandingDescription')} title={t('branding')}>
         <Skeleton className="size-16 rounded-full" />
       </SettingsSection>

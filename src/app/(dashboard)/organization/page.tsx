@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 
 import { loadOrganizationPanel } from '@/actions/organizations/panel-data'
 import { getViewerContext } from '@/actions/viewer'
+import { OrganizationInviteButton, OrganizationInviteHost } from '@/components/features/organization/invite-host'
 import { OrganizationPanel } from '@/components/features/organization/panel'
 import { OrganizationPanelRegion } from '@/components/features/organization/panel-region'
 import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
@@ -30,20 +31,24 @@ const OrganizationContent = async () => {
 
   return (
     <OrganizationTabs organizationId={data.organization.id} userId={data.currentUserId}>
-      <DashboardPage
-        title={<PageTitle namespace="Organization" name="title" />}
-        breadcrumb={
-          <OrganizationTabsList
-            invitationCount={data.pendingInvitationsCount}
-            isOrgAdmin={data.isOrgAdmin}
-            joinRequestCount={data.pendingJoinRequestsCount}
-          />
-        }
-      >
-        <OrganizationPanelRegion>
-          <OrganizationPanel initialData={data} />
-        </OrganizationPanelRegion>
-      </DashboardPage>
+      <OrganizationInviteHost isOrgAdmin={data.isOrgAdmin}>
+        <DashboardPage
+          actions={<OrganizationInviteButton />}
+          description={[data.organization.name, data.organization.city].filter(Boolean).join(' · ')}
+          title={<PageTitle namespace="Organization" name="title" />}
+          breadcrumb={
+            <OrganizationTabsList
+              invitationCount={data.pendingInvitationsCount}
+              isOrgAdmin={data.isOrgAdmin}
+              joinRequestCount={data.pendingJoinRequestsCount}
+            />
+          }
+        >
+          <OrganizationPanelRegion>
+            <OrganizationPanel initialData={data} />
+          </OrganizationPanelRegion>
+        </DashboardPage>
+      </OrganizationInviteHost>
     </OrganizationTabs>
   )
 }

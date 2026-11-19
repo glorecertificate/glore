@@ -12,6 +12,8 @@ import { OrganizationCertificatesPanel } from '@/components/features/organizatio
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { ApplicationSummary } from './application-summary'
+import { type AdminOrganizationStatus } from './organization-band'
+import { AdminOrganizationRail } from './organization-rail'
 import { organizationState } from './utils'
 
 const OrganizationActivity = dynamic(
@@ -91,7 +93,13 @@ export const AdminOrganizationTabsList = ({
   )
 }
 
-export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrganizationData }) => {
+export const AdminOrganizationDetail = ({
+  initialData,
+  status,
+}: {
+  initialData: AdminOrganizationData
+  status: AdminOrganizationStatus
+}) => {
   const { refresh: routerRefresh } = useRouter()
   const { hasApplication } = organizationState(initialData)
   const request = initialData.joinRequests.find(item => item.role === 'admin') ?? null
@@ -101,46 +109,49 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
   }
 
   return (
-    <>
-      {hasApplication && (
-        <TabsContent value="application">
-          <ApplicationSummary organization={initialData} request={request} />
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="min-w-0">
+        {hasApplication && (
+          <TabsContent value="application">
+            <ApplicationSummary organization={initialData} request={request} />
+          </TabsContent>
+        )}
+        <TabsContent value="members">
+          <OrganizationMembers
+            currentUserId={initialData.currentUserId}
+            isOrgAdmin
+            members={initialData.memberships}
+            onRefresh={refresh}
+            organizationId={initialData.id}
+            organizationName={initialData.name}
+          />
         </TabsContent>
-      )}
-      <TabsContent value="members">
-        <OrganizationMembers
-          currentUserId={initialData.currentUserId}
-          isOrgAdmin
-          members={initialData.memberships}
-          onRefresh={refresh}
-          organizationId={initialData.id}
-          organizationName={initialData.name}
-        />
-      </TabsContent>
-      <TabsContent value="invitations">
-        <OrganizationInvitations
-          currentUserId={initialData.currentUserId}
-          invitations={initialData.invitations}
-          isOrgAdmin
-          onRefresh={refresh}
-          organizationId={initialData.id}
-        />
-      </TabsContent>
-      <TabsContent value="certificates">
-        <OrganizationCertificatesPanel organizationId={initialData.id} />
-      </TabsContent>
-      <TabsContent value="activity">
-        <OrganizationActivity initial={initialData.activity} organizationId={initialData.id} />
-      </TabsContent>
-      <TabsContent value="settings">
-        <OrganizationSettings
-          key={initialData.updatedAt}
-          members={initialData.memberships}
-          onRefresh={refresh}
-          organization={{ ...initialData, role: null }}
-          organizationId={initialData.id}
-        />
-      </TabsContent>
-    </>
+        <TabsContent value="invitations">
+          <OrganizationInvitations
+            currentUserId={initialData.currentUserId}
+            invitations={initialData.invitations}
+            isOrgAdmin
+            onRefresh={refresh}
+            organizationId={initialData.id}
+          />
+        </TabsContent>
+        <TabsContent value="certificates">
+          <OrganizationCertificatesPanel organizationId={initialData.id} />
+        </TabsContent>
+        <TabsContent value="activity">
+          <OrganizationActivity initial={initialData.activity} organizationId={initialData.id} />
+        </TabsContent>
+        <TabsContent value="settings">
+          <OrganizationSettings
+            key={initialData.updatedAt}
+            members={initialData.memberships}
+            onRefresh={refresh}
+            organization={{ ...initialData, role: null }}
+            organizationId={initialData.id}
+          />
+        </TabsContent>
+      </div>
+      <AdminOrganizationRail data={initialData} status={status} />
+    </div>
   )
 }

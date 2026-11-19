@@ -24,9 +24,11 @@ import { CountrySelect } from '@/components/ui/country-select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PhoneInput } from '@/components/ui/phone-input'
+import { SectionNav } from '@/components/ui/section-nav'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
 import { Separator } from '@/components/ui/separator'
+import { StickySaveBar, useStickySaveBar } from '@/components/ui/sticky-save-bar'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { type User } from '@/db/queries/user'
@@ -40,7 +42,6 @@ import { DeleteOrganizationDialog } from './delete-organization-dialog'
 import { organizationSettingsSchema } from './schemas'
 import { SettingsSection } from './settings-section'
 import { SignatureUpload } from './signature-upload'
-import { TabHeader } from './tab-header'
 import { TransferOwnershipDialog } from './transfer-ownership-dialog'
 import { useMemberError } from './use-member-error'
 
@@ -173,6 +174,23 @@ export const OrganizationSettings = ({
   }
 
   const disabled = useFormDisabled(form.control)
+  const saveBar = useStickySaveBar(form)
+  const [section, setSection] = useState('branding')
+
+  const goToSection = (id: string) => {
+    setSection(id)
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const sections = [
+    { id: 'branding', label: t('branding') },
+    { id: 'general', label: t('settingsTitle') },
+    { id: 'description', label: t('description') },
+    { id: 'legal', label: t('legalTitle') },
+    { id: 'signatory', label: t('signatoryTitle') },
+    { id: 'contact', label: t('contactDetails') },
+    ...(platform ? [] : [{ id: 'danger', label: t('dangerZone') }]),
+  ]
 
   return (
     <div
@@ -181,330 +199,327 @@ export const OrganizationSettings = ({
         !platform && 'rounded-xl border border-border-subtle bg-card p-5 shadow-card sm:p-6'
       )}
     >
-      {!platform && <TabHeader description={t('settingsPageDescription')} title={t('settings')} />}
       {platform && <h2 className="sr-only">{t('settings')}</h2>}
-      <Form {...form}>
-        <form className="flex flex-col gap-8" onSubmit={form.handleSubmit(handleSubmit)}>
-          <SettingsSection description={t('brandingDescription')} title={t('branding')}>
-            <OrganizationAvatarMenu
-              fallback={sessionOrg?.name?.slice(0, 2).toUpperCase() ?? organization.name.slice(0, 2).toUpperCase()}
-              name={organization.name}
-              onAvatarRemove={handleAvatarRemove}
-              onAvatarUpload={handleAvatarUpload}
-              value={organization.avatarUrl}
-            />
-          </SettingsSection>
-
-          <Separator />
-
-          <SettingsSection description={t('settingsDescription')} title={t('settingsTitle')}>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('organizationName')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('organizationNamePlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('email')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('emailPlaceholder')} type="email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('phone')}</FormLabel>
-                    <FormControl>
-                      <PhoneInput onChange={field.onChange} placeholder={t('phonePlaceholder')} value={field.value} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('website')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('websitePlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </SettingsSection>
-
-          <Separator />
-
-          <SettingsSection description={t('descriptionLocaleHelp')} title={t('description')}>
-            <SegmentedControl
-              aria-label={t('descriptionLanguage')}
-              onValueChange={value => setDescriptionLocale(value as Locale)}
-              value={descriptionLocale}
-            >
-              {LOCALES.map(locale => (
-                <SegmentedControlItem key={locale} value={locale}>
-                  {tLanguages(locale)}
-                </SegmentedControlItem>
-              ))}
-            </SegmentedControl>
-            <FormField
-              control={form.control}
-              key={descriptionLocale}
-              name={`description.${descriptionLocale}`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="sr-only">
-                    {t('descriptionIn', { language: tLanguages(descriptionLocale) })}
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea placeholder={t('descriptionPlaceholder')} rows={5} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </SettingsSection>
-
-          <Separator />
-
-          <SettingsSection description={t('legalDescription')} title={t('legalTitle')}>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="legalName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('legalName')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('legalNamePlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="registryId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('registryId')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('registryIdPlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </SettingsSection>
-
-          <Separator />
-
-          <SettingsSection description={t('signatoryDescription')} title={t('signatoryTitle')}>
-            <FormField
-              control={form.control}
-              name="legalRepresentative"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('legalRepresentative')}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t('legalRepresentativePlaceholder')} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <SignatureUpload
-              name={organization.legalRepresentative ?? organization.name}
-              onChanged={onRefresh}
-              organizationId={organizationId}
-              value={organization.signatureUrl}
-            />
-          </SettingsSection>
-
-          <Separator />
-
-          <SettingsSection description={t('contactDescription')} title={t('contactDetails')}>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem className="sm:col-span-2">
-                    <FormLabel>{t('address')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('addressPlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('city')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('cityPlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="postcode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('postcode')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('postcodePlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('country')}</FormLabel>
-                    <FormControl>
-                      <CountrySelect onChange={field.onChange} value={field.value} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="region"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('region')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('regionPlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </SettingsSection>
-
-          <div className="sticky bottom-0 z-10 -mx-page flex items-center justify-end gap-2 border-t bg-background/90 px-page py-3 backdrop-blur-sm">
-            {form.formState.isDirty && (
-              <Button
-                disabled={form.formState.isSubmitting}
-                onClick={() => form.reset()}
-                size="sm"
-                type="button"
-                variant="ghost"
-              >
-                {t('discardChanges')}
-              </Button>
-            )}
-            <Button
-              disabled={disabled || !form.formState.isDirty || form.formState.isSubmitting}
-              loading={form.formState.isSubmitting}
-              loadingText={t('saving')}
-              size="sm"
-              type="submit"
-            >
-              {t('saveChanges')}
-            </Button>
-          </div>
-        </form>
-      </Form>
-
-      <Separator />
-
-      <SettingsSection description={t('dangerDescription')} title={t('dangerZone')}>
-        <ImpersonationLockNote />
-        {!platform && (
-          <Card className="border-danger-border bg-danger-subtle">
-            <CardHeader>
-              <CardTitle className="type-heading text-danger-text">{t('transferTitle')}</CardTitle>
-              <CardDescription>{t('transferHelp')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                disabled={impersonating}
-                onClick={() => {
-                  remember()
-                  setTransferOpen(true)
-                }}
-                size="sm"
-                type="button"
-                variant="destructive"
-              >
-                {t('transferOwnership')}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-        <Card className="border-danger-border bg-danger-subtle">
-          <CardHeader>
-            <CardTitle className="type-heading text-danger-text">{t('deleteOrganizationTitle')}</CardTitle>
-            <CardDescription>{t('deleteOrganizationHelp')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button
-              disabled={impersonating}
-              onClick={() => {
-                remember()
-                setDeleteOpen(true)
-              }}
-              size="sm"
-              type="button"
-              variant="destructive"
-            >
-              {t('deleteOrganization')}
-            </Button>
-          </CardContent>
-        </Card>
-      </SettingsSection>
-
-      <DeleteOrganizationDialog
-        onConfirm={handleDelete}
-        onCloseAutoFocus={restore}
-        onOpenChange={setDeleteOpen}
-        open={deleteOpen}
-        organizationName={organization.name}
-      />
-      {!platform && (
-        <TransferOwnershipDialog
-          candidates={candidates}
-          onCloseAutoFocus={restore}
-          onOpenChange={setTransferOpen}
-          onTransferred={handleTransferred}
-          open={transferOpen}
-          organizationName={organization.name}
+      <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+        <SectionNav
+          className="md:w-auto md:flex-row md:overflow-x-auto lg:sticky lg:top-4 lg:w-52 lg:flex-col lg:self-start lg:overflow-visible"
+          items={sections}
+          onValueChange={goToSection}
+          value={section}
         />
-      )}
+        <div className="flex min-w-0 flex-1 flex-col gap-8">
+          <Form {...form}>
+            <form className="flex flex-col gap-8" onSubmit={form.handleSubmit(handleSubmit)}>
+              <SettingsSection description={t('brandingDescription')} id="branding" title={t('branding')}>
+                <OrganizationAvatarMenu
+                  fallback={sessionOrg?.name?.slice(0, 2).toUpperCase() ?? organization.name.slice(0, 2).toUpperCase()}
+                  name={organization.name}
+                  onAvatarRemove={handleAvatarRemove}
+                  onAvatarUpload={handleAvatarUpload}
+                  value={organization.avatarUrl}
+                />
+              </SettingsSection>
+
+              <Separator />
+
+              <SettingsSection description={t('settingsDescription')} id="general" title={t('settingsTitle')}>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('organizationName')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('organizationNamePlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('email')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('emailPlaceholder')} type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('phone')}</FormLabel>
+                        <FormControl>
+                          <PhoneInput
+                            onChange={field.onChange}
+                            placeholder={t('phonePlaceholder')}
+                            value={field.value}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('website')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('websitePlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </SettingsSection>
+
+              <Separator />
+
+              <SettingsSection description={t('descriptionLocaleHelp')} id="description" title={t('description')}>
+                <SegmentedControl
+                  aria-label={t('descriptionLanguage')}
+                  onValueChange={value => setDescriptionLocale(value as Locale)}
+                  value={descriptionLocale}
+                >
+                  {LOCALES.map(locale => (
+                    <SegmentedControlItem key={locale} value={locale}>
+                      {tLanguages(locale)}
+                    </SegmentedControlItem>
+                  ))}
+                </SegmentedControl>
+                <FormField
+                  control={form.control}
+                  key={descriptionLocale}
+                  name={`description.${descriptionLocale}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="sr-only">
+                        {t('descriptionIn', { language: tLanguages(descriptionLocale) })}
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea placeholder={t('descriptionPlaceholder')} rows={5} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </SettingsSection>
+
+              <Separator />
+
+              <SettingsSection description={t('legalDescription')} id="legal" title={t('legalTitle')}>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="legalName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('legalName')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('legalNamePlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="registryId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('registryId')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('registryIdPlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </SettingsSection>
+
+              <Separator />
+
+              <SettingsSection description={t('signatoryDescription')} id="signatory" title={t('signatoryTitle')}>
+                <FormField
+                  control={form.control}
+                  name="legalRepresentative"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('legalRepresentative')}</FormLabel>
+                      <FormControl>
+                        <Input placeholder={t('legalRepresentativePlaceholder')} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SignatureUpload
+                  name={organization.legalRepresentative ?? organization.name}
+                  onChanged={onRefresh}
+                  organizationId={organizationId}
+                  value={organization.signatureUrl}
+                />
+              </SettingsSection>
+
+              <Separator />
+
+              <SettingsSection description={t('contactDescription')} id="contact" title={t('contactDetails')}>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem className="sm:col-span-2">
+                        <FormLabel>{t('address')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('addressPlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('city')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('cityPlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="postcode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('postcode')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('postcodePlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('country')}</FormLabel>
+                        <FormControl>
+                          <CountrySelect onChange={field.onChange} value={field.value} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="region"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('region')}</FormLabel>
+                        <FormControl>
+                          <Input placeholder={t('regionPlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </SettingsSection>
+
+              <StickySaveBar
+                count={saveBar.count}
+                onDiscard={saveBar.discard}
+                saving={saveBar.saving || disabled}
+                visible={saveBar.visible}
+              />
+            </form>
+          </Form>
+
+          {!platform && (
+            <>
+              <Separator />
+
+              <SettingsSection description={t('dangerDescription')} id="danger" title={t('dangerZone')}>
+                <ImpersonationLockNote />
+                <Card className="border-danger-border bg-danger-subtle">
+                  <CardHeader>
+                    <CardTitle className="type-heading text-danger-text">{t('transferTitle')}</CardTitle>
+                    <CardDescription>{t('transferHelp')}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      disabled={impersonating}
+                      onClick={() => {
+                        remember()
+                        setTransferOpen(true)
+                      }}
+                      size="sm"
+                      type="button"
+                      variant="destructive"
+                    >
+                      {t('transferOwnership')}
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card className="border-danger-border bg-danger-subtle">
+                  <CardHeader>
+                    <CardTitle className="type-heading text-danger-text">{t('deleteOrganizationTitle')}</CardTitle>
+                    <CardDescription>{t('deleteOrganizationHelp')}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      disabled={impersonating}
+                      onClick={() => {
+                        remember()
+                        setDeleteOpen(true)
+                      }}
+                      size="sm"
+                      type="button"
+                      variant="destructive"
+                    >
+                      {t('deleteOrganization')}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </SettingsSection>
+
+              <DeleteOrganizationDialog
+                onConfirm={handleDelete}
+                onCloseAutoFocus={restore}
+                onOpenChange={setDeleteOpen}
+                open={deleteOpen}
+                organizationName={organization.name}
+              />
+              <TransferOwnershipDialog
+                candidates={candidates}
+                onCloseAutoFocus={restore}
+                onOpenChange={setTransferOpen}
+                onTransferred={handleTransferred}
+                open={transferOpen}
+                organizationName={organization.name}
+              />
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

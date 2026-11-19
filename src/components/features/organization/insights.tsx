@@ -19,7 +19,6 @@ import { useReveal } from '@/hooks/use-reveal'
 import { cn } from '@/lib/utils'
 
 import { type InsightsScope, createInsightsCache } from './insights-cache'
-import { TabHeader } from './tab-header'
 
 const HOURS_PER_DAY = 24
 
@@ -95,7 +94,6 @@ const InsightsContent = ({
   if (failed) {
     return (
       <div className="flex flex-col gap-6">
-        <TabHeader description={t('insightsDescription')} title={t('insights')} />
         <Banner className="items-center justify-between" role="alert" variant="destructive">
           {t('insightsError')}
           <Button onClick={onRetry} size="sm" type="button" variant="outline">
@@ -139,7 +137,6 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
   return (
     <div aria-busy={loading || undefined} className={cn('flex flex-col gap-6', reveal && 'animate-reveal')}>
       {loading && <LoadingFallback className="sr-only" spinner={false} />}
-      <TabHeader description={t('insightsDescription')} title={t('insights')} />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           accent="teal"

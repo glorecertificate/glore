@@ -2954,7 +2954,26 @@
       "tableLabel": "Organizaciones",
       "openOrg": "Abrir organización",
       "commentLabelOptional": "Comentario (opcional)",
-      "statusActive": "Activa"
+      "statusActive": "Activa",
+      "review": "Revisar",
+      "moreOptions": "Más opciones",
+      "selectOrg": "Seleccionar {name}",
+      "commentLabelRequired": "Motivo (obligatorio)",
+      "bulkApproveSuccess": "{count, plural, one {# organización aprobada} other {# organizaciones aprobadas}}",
+      "bulkRejectSuccess": "{count, plural, one {# organización rechazada} other {# organizaciones rechazadas}}",
+      "bulkError": "No se pudieron actualizar {failed} de {total}. Inténtalo de nuevo.",
+      "bulkRejectTitle": "Rechazar {count} organizaciones",
+      "bulkRejectDescription": "¿Rechazar las solicitudes de registro seleccionadas? Cada representante recibe tu motivo por correo.",
+      "bulkSelectionLabel": "{count, plural, one {# organización} other {# organizaciones}}",
+      "about": "Información",
+      "aboutStatus": "Estado",
+      "aboutOwner": "Propietario",
+      "aboutLocation": "Ubicación",
+      "aboutEmail": "Correo",
+      "aboutWebsite": "Sitio web",
+      "aboutRegistered": "Registro",
+      "aboutNone": "No indicado",
+      "emailOrg": "Escribir a la organización"
     },
     "users": {
       "title": "Usuarios",
@@ -3747,7 +3766,11 @@
     "error_ROLE_TAKEN": "Este rol ya está ocupado en la organización.",
     "error_TOO_SOON": "Espera un minuto antes de volver a enviar esta invitación.",
     "error_generic": "Algo ha salido mal. Inténtalo de nuevo.",
-    "error_PROOF_REQUIRED": "Abre el enlace del correo de invitación o pídenos que te enviemos un nuevo enlace de confirmación."
+    "error_PROOF_REQUIRED": "Abre el enlace del correo de invitación o pídenos que te enviemos un nuevo enlace de confirmación.",
+    "filterExpired": "Caducadas",
+    "filterAccepted": "Aceptadas",
+    "rowActions": "Acciones para {email}",
+    "searchPlaceholder": "Buscar invitaciones"
   },
   "Learning": {
     "overview": {

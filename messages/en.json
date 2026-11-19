@@ -2954,7 +2954,26 @@
       "tableLabel": "Organizations",
       "openOrg": "Open organization",
       "commentLabelOptional": "Comment (optional)",
-      "statusActive": "Active"
+      "statusActive": "Active",
+      "review": "Review",
+      "moreOptions": "More options",
+      "selectOrg": "Select {name}",
+      "commentLabelRequired": "Reason (required)",
+      "bulkApproveSuccess": "{count, plural, one {# organization approved} other {# organizations approved}}",
+      "bulkRejectSuccess": "{count, plural, one {# organization rejected} other {# organizations rejected}}",
+      "bulkError": "{failed} of {total} could not be updated. Try again.",
+      "bulkRejectTitle": "Reject {count} organizations",
+      "bulkRejectDescription": "Reject the selected registration requests? Each representative receives your reason by email.",
+      "bulkSelectionLabel": "{count, plural, one {# organization} other {# organizations}}",
+      "about": "About",
+      "aboutStatus": "Status",
+      "aboutOwner": "Owner",
+      "aboutLocation": "Location",
+      "aboutEmail": "Email",
+      "aboutWebsite": "Website",
+      "aboutRegistered": "Registered",
+      "aboutNone": "Not provided",
+      "emailOrg": "Email the organization"
     },
     "users": {
       "title": "Users",
@@ -3747,7 +3766,11 @@
     "error_ROLE_TAKEN": "This role is already taken in the organization.",
     "error_TOO_SOON": "Wait a minute before sending this invitation again.",
     "error_generic": "Something went wrong. Try again.",
-    "error_PROOF_REQUIRED": "Open the link from the invitation email, or ask us to send you a new confirmation link."
+    "error_PROOF_REQUIRED": "Open the link from the invitation email, or ask us to send you a new confirmation link.",
+    "filterExpired": "Expired",
+    "filterAccepted": "Accepted",
+    "rowActions": "Actions for {email}",
+    "searchPlaceholder": "Search invitations"
   },
   "Learning": {
     "overview": {

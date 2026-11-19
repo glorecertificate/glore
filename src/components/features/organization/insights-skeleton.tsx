@@ -7,14 +7,11 @@ import { Chart } from '@/components/ui/chart'
 import { Skeleton } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
 
-import { TabHeader } from './tab-header'
-
 export const InsightsSkeleton = () => {
   const t = useTranslations('Organization')
 
   return (
     <div className="flex flex-col gap-6">
-      <TabHeader description={t('insightsDescription')} title={t('insights')} />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[t('insightsStarted'), t('insightsCompleted'), t('insightsReviewTime'), t('insightsApproved')].map(label => (
           <StatCard description="" key={label} label={label} loading value={0} />

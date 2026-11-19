@@ -28,7 +28,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/components/ui/toast'
 import { useReturnFocus } from '@/hooks/use-return-focus'
 
-import { TabHeader } from './tab-header'
 import { formatRoleLabel } from './utils'
 
 const RejectRequestDialog = ({
@@ -154,8 +153,6 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
   return (
     <>
       <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
-        <TabHeader description={t('joinRequestsDescription')} title={t('joinRequestsTitle')} />
-
         {joinRequests.length === 0 && (
           <Empty className="border">
             <EmptyHeader>

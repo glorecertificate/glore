@@ -12,8 +12,16 @@ import {
   ArticleSaveError,
   buildArticlePayload,
 } from '@/components/features/docs/article-editor/payload'
+import {
+  articleSlot,
+  articleValueOf,
+  parseArticleFieldKey,
+  readArticleField,
+} from '@/components/features/docs/article-editor/translation-fields'
+import { type TranslatedField } from '@/components/features/translations/use-translate'
 import { DOC_AUDIENCES, type DocArticle, type DocAudience, type DocCategory } from '@/db/queries/doc'
 import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALES } from '@/lib/i18n'
+import { hasText } from '@/lib/translate'
 
 interface ArticleSaveOptions {
   locale: Locale
@@ -82,6 +90,7 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
   const [draft, setDraftState] = useState(() => toDraft(options))
   const [saved, setSaved] = useState(draft)
   const [saveVersion, setSaveVersion] = useState(0)
+  const [bodyVersion, setBodyVersion] = useState(0)
   const draftRef = useRef(draft)
   const slugTouchedRef = useRef(Boolean(options.article))
   const contentFlushRef = useRef<(() => unknown) | null>(null)
@@ -101,6 +110,15 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
   const setTitle = (locale: Locale, value: string) => setField('titles', locale, value)
   const setExcerpt = (locale: Locale, value: string) => setField('excerpts', locale, value)
   const setContent = (locale: Locale, value: string) => setField('contents', locale, value)
+
+  const applyTranslated = (event: TranslatedField, seen: ReadonlyMap<string, string>) => {
+    const field = parseArticleFieldKey(event.key)
+    if (!field) return
+    const current = readArticleField(draftRef.current, field, event.locale)
+    if (hasText(current) && current !== seen.get(event.key)) return
+    setField(articleSlot(field), event.locale as Locale, articleValueOf(field, event.value))
+    if (field === 'content') setBodyVersion(version => version + 1)
+  }
 
   const setSlug = (slug: string) => {
     slugTouchedRef.current = true
@@ -153,7 +171,9 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
   }
 
   return {
+    applyTranslated,
     article,
+    bodyVersion,
     categories: options.categories,
     contentFlushRef,
     draft,

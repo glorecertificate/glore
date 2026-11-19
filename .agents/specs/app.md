@@ -120,13 +120,14 @@ Three domain facts shape recurring decisions:
 - A course covers its title, description, and outcomes. Each lesson is its own target (title, content, questions, options, evaluations, assessment descriptions).
 - A manual save in a non-default locale sets `draft` and keeps the old hash, so a stale locale stays `outdated` until review or re-translation.
 - Mark as reviewed stores the current hash and records `content.translation_reviewed`.
-- Editors see the status in the course header popover, the doc article dialog, and the skill group dialog (`features/translations/panel.tsx`). Doc categories have no editor UI.
+- Editors see the status in the skill group dialog (`features/translations/panel.tsx`). Doc categories have no editor UI.
 - `translateEntity` (`actions/translations/ai.ts`) translates one entity per call, and the client loops over a course and its lessons. Human text needs `overwrite`.
 - AI translation is limited to 150 an hour per editor (`content-translate:<id>`, `RATE_LIMITED`). Every translation write expires `CacheTag.ContentTranslations` (`expireTranslationCaches`).
 - It validates keys, placeholders, link URLs, and length before saving as `machine`. `src/lib/translate.ts` skips code blocks, inline code, and text without letters.
 - The course editor translates with AI from any language that has text. The Translate button beside the lesson tabs lists the other languages that have text for the current lesson ("Translate from <language>", or a message when none has). A selection translates the lesson title, body, and activities (questions, options, explanations, evaluations, assessment) into the editing language and replaces the text there without confirmation. It is disabled for an unsaved lesson. There is no whole-course translation. The course title and description have their own field menus (shown while the field is focused) with the same source list.
 - Both menus call `POST /api/v1/ai/translate` (NDJSON stream, 2 runs per user, 3000 units an hour). The result lands in the draft as unsaved changes and is the current text. A result is dropped if the field changed after the run started. The normal save path applies (`markTranslationsEdited`). There is no per-field origin and no review step in the course editor.
-- Doc article and skill group dialogs still use `translateEntity` and `panel.tsx`. Moving them needs an editor field list for those entities and a dialog host.
+- The doc article editor uses the same flow on the draft (`docs/article-editor/translation.tsx`, `field-translate-button.tsx`): the title and excerpt have focus-revealed field menus, and the Translate menu beside the language tabs translates title, excerpt, and body (as a Plate value, saved back as markdown). It has no status or review step.
+- The skill group dialog still uses `translateEntity` and `panel.tsx`. Moving it needs an editor field list for that entity and a dialog host.
 - `doc_articles.languages` publishes a doc per locale next to the `published` master switch, and unpublished locales are blanked for non-editors.
 - Changing `courses.languages` or `doc_articles.languages` records `course.locale_published` or `doc.locale_published`.
 - The editor dashboard shows reviewed and translated counts per locale (`actions/translations/coverage.ts`).

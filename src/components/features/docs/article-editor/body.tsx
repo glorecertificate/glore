@@ -7,7 +7,7 @@ import { useArticle } from '@/components/features/docs/article-editor/context'
 import { articleValueToMarkdown, markdownToArticleValue } from '@/components/features/docs/article-markdown'
 
 export const ArticleBody = () => {
-  const { contentFlushRef, draft, language, setContent } = useArticle()
+  const { bodyVersion, contentFlushRef, draft, language, setContent } = useArticle()
   const [initialValue] = useState(() => markdownToArticleValue(draft.contents[language]))
 
   return (
@@ -16,7 +16,7 @@ export const ArticleBody = () => {
       initialValue={initialValue}
       onChange={value => setContent(language, articleValueToMarkdown(value))}
       readOnly={false}
-      version={language}
+      version={`${language}-${bodyVersion}`}
     />
   )
 }

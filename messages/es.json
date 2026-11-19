@@ -4009,8 +4009,8 @@
       "description": "Los grupos de habilidades y el curso de cada habilidad.",
       "addGroup": "Añadir grupo",
       "editGroup": "Editar grupo",
-      "nameLabel": "Nombre en {language}",
-      "descriptionLabel": "Descripción en {language}",
+      "nameLabel": "Nombre",
+      "descriptionLabel": "Descripción",
       "iconLabel": "Icono",
       "iconChoose": "Elegir un icono",
       "slugLabel": "Identificador",
@@ -4041,7 +4041,11 @@
       "moveToGroup": "Mover a un grupo",
       "skillSummary": "{count, plural, one {# habilidad} other {# habilidades}}, {published} publicadas, {drafts, plural, one {# borrador} other {# borradores}}",
       "toggleGroup": "Mostrar u ocultar las habilidades de {group}",
-      "ungroupedEmpty": "Todos los cursos de habilidades tienen un grupo."
+      "ungroupedEmpty": "Todos los cursos de habilidades tienen un grupo.",
+      "statusComplete": "Completo",
+      "statusIncomplete": "Incompleto",
+      "statusUnsaved": "Cambios sin guardar",
+      "translateEmpty": "Ningún otro idioma tiene texto para este campo todavía."
     },
     "catalog": {
       "rating": "{rating} ({count})",

@@ -4009,8 +4009,8 @@
       "description": "I gruppi di competenze e il corso di ogni competenza.",
       "addGroup": "Aggiungi gruppo",
       "editGroup": "Modifica gruppo",
-      "nameLabel": "Nome in {language}",
-      "descriptionLabel": "Descrizione in {language}",
+      "nameLabel": "Nome",
+      "descriptionLabel": "Descrizione",
       "iconLabel": "Icona",
       "iconChoose": "Scegli un'icona",
       "slugLabel": "Identificativo",
@@ -4041,7 +4041,11 @@
       "moveToGroup": "Sposta in un gruppo",
       "skillSummary": "{count, plural, one {# competenza} other {# competenze}}, {published} pubblicate, {drafts, plural, one {# bozza} other {# bozze}}",
       "toggleGroup": "Mostra o nascondi le competenze di {group}",
-      "ungroupedEmpty": "Ogni corso di competenza ha un gruppo."
+      "ungroupedEmpty": "Ogni corso di competenza ha un gruppo.",
+      "statusComplete": "Completo",
+      "statusIncomplete": "Incompleto",
+      "statusUnsaved": "Modifiche non salvate",
+      "translateEmpty": "Nessun'altra lingua ha ancora testo per questo campo."
     },
     "catalog": {
       "rating": "{rating} ({count})",

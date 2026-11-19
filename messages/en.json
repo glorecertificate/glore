@@ -4009,8 +4009,8 @@
       "description": "The skill groups and the skill course for each skill.",
       "addGroup": "Add group",
       "editGroup": "Edit group",
-      "nameLabel": "Name in {language}",
-      "descriptionLabel": "Description in {language}",
+      "nameLabel": "Name",
+      "descriptionLabel": "Description",
       "iconLabel": "Icon",
       "iconChoose": "Choose an icon",
       "slugLabel": "Identifier",
@@ -4041,7 +4041,11 @@
       "moveToGroup": "Move to group",
       "skillSummary": "{count, plural, one {# skill} other {# skills}}, {published} published, {drafts, plural, one {# draft} other {# drafts}}",
       "toggleGroup": "Show or hide the skills of {group}",
-      "ungroupedEmpty": "Every skill course has a group."
+      "ungroupedEmpty": "Every skill course has a group.",
+      "statusComplete": "Complete",
+      "statusIncomplete": "Incomplete",
+      "statusUnsaved": "Unsaved changes",
+      "translateEmpty": "No other language has text for this field yet."
     },
     "catalog": {
       "rating": "{rating} ({count})",

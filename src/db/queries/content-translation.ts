@@ -134,7 +134,7 @@ export const summarizeLocale = (items: TargetTranslations[], locale: Locale): Lo
   }
 }
 
-export const localeStates = (items: TargetTranslations[], locale: Locale) =>
+const localeStates = (items: TargetTranslations[], locale: Locale) =>
   items.flatMap(item => item.locales.flatMap(entry => (entry.locale === locale ? [entry.state] : [])))
 
 export const coverageOf = (items: TargetTranslations[]): LocaleCoverage[] =>

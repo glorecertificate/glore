@@ -69,7 +69,7 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
     startTransition,
   })
   const [search, setSearch] = useState(params.q)
-  const filtersActive = Boolean(params.q || params.category || params.from || params.to)
+  const filtersActive = Boolean(params.q || params.category.length > 0 || params.from || params.to)
 
   const handleSearch = (value: string) => {
     setSearch(value)
@@ -206,15 +206,14 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
           {
             id: 'category',
             label: t('filters.category'),
-            onChange: ([value]) => setParams({ category: (value as AuditCategory | undefined) ?? null, page: 1 }),
+            onChange: values => setParams({ category: values as AuditCategory[], page: 1 }),
             options: AUDIT_CATEGORIES.map(category => ({
               count: page.facets.category?.[category] ?? 0,
               label: t(`categories.${category}`),
               tone: CATEGORY_META[category].tone,
               value: category,
             })),
-            selection: 'single',
-            values: params.category ? [params.category] : [],
+            values: params.category,
           },
         ],
         onReset: handleClear,

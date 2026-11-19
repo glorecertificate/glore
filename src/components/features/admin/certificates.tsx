@@ -45,7 +45,7 @@ export const AdminCertificates = ({
   })
   const [search, setSearch] = useState(params.q)
   const scoped = params.org !== null
-  const filtersActive = Boolean(params.q || params.status)
+  const filtersActive = Boolean(params.q || params.status.length > 0)
 
   const handleSearch = (value: string) => {
     setSearch(value)
@@ -165,16 +165,14 @@ export const AdminCertificates = ({
           {
             id: 'status',
             label: t('filters.status'),
-            onChange: ([value]) =>
-              setParams({ page: 1, status: (value as AdminCertificateStatus | undefined) ?? null }),
+            onChange: values => setParams({ page: 1, status: values as AdminCertificateStatus[] }),
             options: ADMIN_CERTIFICATE_STATUSES.map(status => ({
               count: page?.facets.status?.[status] ?? 0,
               label: tCertificates(CERTIFICATE_STATUS[status].labelKey),
               tone: CERTIFICATE_STATUS[status].tone,
               value: status,
             })),
-            selection: 'single',
-            values: params.status ? [params.status] : [],
+            values: params.status,
           },
         ],
         onReset: handleClear,

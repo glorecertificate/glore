@@ -97,7 +97,7 @@ export const impersonationInputSchema = z.object({
 
 export type ImpersonationInput = z.input<typeof impersonationInputSchema>
 
-const facetValues = <T extends readonly [string, ...string[]]>(values: T) =>
+export const facetValues = <T extends readonly [string, ...string[]]>(values: T) =>
   z
     .union([z.enum(values), z.array(z.enum(values))])
     .nullish()

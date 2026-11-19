@@ -54,8 +54,18 @@ describe('audit categories', () => {
 
   it('narrows the actions to a category', () => {
     expect(auditActionsOf(null)).toEqual(AUDITED_ACTIONS)
-    expect(auditActionsOf('impersonation')).toEqual(['impersonation.started', 'impersonation.stopped'])
-    expect(auditActionsOf('legal')).toEqual(['legal.version_published', 'legal.accepted'])
+    expect(auditActionsOf([])).toEqual(AUDITED_ACTIONS)
+    expect(auditActionsOf(['impersonation'])).toEqual(['impersonation.started', 'impersonation.stopped'])
+    expect(auditActionsOf(['legal'])).toEqual(['legal.version_published', 'legal.accepted'])
+  })
+
+  it('combines several categories with OR', () => {
+    expect(auditActionsOf(['impersonation', 'legal'])).toEqual([
+      'impersonation.started',
+      'impersonation.stopped',
+      'legal.version_published',
+      'legal.accepted',
+    ])
   })
 })
 
@@ -129,6 +139,13 @@ describe('adminAuditQuerySchema', () => {
       expect(adminAuditQuerySchema.safeParse(input).success).toBe(false)
     }
   )
+
+  it('normalizes a single category or a list into a list', () => {
+    expect(adminAuditQuerySchema.parse({}).category).toEqual([])
+    expect(adminAuditQuerySchema.parse({ category: 'moderation' }).category).toEqual(['moderation'])
+    expect(adminAuditQuerySchema.parse({ category: ['moderation', 'legal'] }).category).toEqual(['moderation', 'legal'])
+    expect(adminAuditQuerySchema.safeParse({ category: ['moderation', 'unknown'] }).success).toBe(false)
+  })
 
   it('covers a whole day in UTC', () => {
     expect(auditDayStart('2026-12-31')).toBe('2026-12-31T00:00:00.000Z')

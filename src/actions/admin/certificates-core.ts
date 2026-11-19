@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { type SQL, and, count, desc, eq, ilike, ne, or, sql } from 'drizzle-orm'
+import { type SQL, and, count, desc, eq, ilike, inArray, ne, or, sql } from 'drizzle-orm'
 
 import { normalizeCertificateCode } from '@/components/features/certificates/rules'
 import { db } from '@/db/client'
@@ -21,7 +21,7 @@ const snapshotLastName = sql<string | null>`${certificates.snapshot}->'holder'->
 
 const buildFilters = (query: ParsedQuery) => {
   const conditions: (SQL | undefined)[] = [ne(certificates.status, 'draft')]
-  if (query.status) conditions.push(eq(certificates.status, query.status))
+  if (query.status.length > 0) conditions.push(inArray(certificates.status, query.status))
 
   const code = query.q ? normalizeCertificateCode(query.q) : null
   if (code) {
@@ -52,7 +52,7 @@ const countStatuses = async (query: ParsedQuery) => {
     .from(certificates)
     .leftJoin(users, eq(users.id, certificates.userId))
     .innerJoin(organizations, eq(organizations.id, certificates.organizationId))
-    .where(buildFilters({ ...query, status: null }))
+    .where(buildFilters({ ...query, status: [] }))
     .groupBy(certificates.status)
   return Object.fromEntries(rows.map(row => [row.status, row.total]))
 }

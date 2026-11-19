@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { type FacetedPage } from '@/db/queries/admin-user'
+import { type FacetedPage, facetValues } from '@/db/queries/admin-user'
 import { type CertificateStatus } from '@/db/queries/certificate'
 
 export const ADMIN_CERTIFICATES_PAGE_SIZE = 20
@@ -20,7 +20,7 @@ export type AdminCertificateStatus = (typeof ADMIN_CERTIFICATE_STATUSES)[number]
 export const adminCertificatesQuerySchema = z.object({
   page: z.number().int().min(1).max(10_000).nullish(),
   q: z.string().max(200).nullish(),
-  status: z.enum(ADMIN_CERTIFICATE_STATUSES).nullish(),
+  status: facetValues(ADMIN_CERTIFICATE_STATUSES),
 })
 
 export type AdminCertificatesQuery = z.input<typeof adminCertificatesQuerySchema>

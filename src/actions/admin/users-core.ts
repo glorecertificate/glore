@@ -5,6 +5,7 @@ import {
   and,
   asc,
   count,
+  countDistinct,
   desc,
   eq,
   exists,
@@ -61,13 +62,13 @@ const buildFilters = (query: ParsedQuery) => {
   if (query.banned.length === 1) {
     conditions.push(query.banned[0] === 'yes' ? activeBan : sql`not coalesce(${activeBan}, false)`)
   }
-  if (query.organizationId) {
+  if (query.organizationIds.length > 0) {
     conditions.push(
       exists(
         db
           .select({ id: memberships.id })
           .from(memberships)
-          .where(and(eq(memberships.userId, users.id), eq(memberships.organizationId, query.organizationId)))
+          .where(and(eq(memberships.userId, users.id), inArray(memberships.organizationId, query.organizationIds)))
       )
     )
   }
@@ -96,8 +97,8 @@ const FACET_EXPRESSIONS = {
   status: sql<string>`case when ${users.onboardedAt} is not null then 'active' else 'pending' end`,
 } as const
 
-const countFacets = async (query: ParsedQuery): Promise<FacetCounts> => {
-  const entries = await Promise.all(
+const countExpressionFacets = async (query: ParsedQuery) =>
+  await Promise.all(
     (Object.keys(FACET_EXPRESSIONS) as (keyof typeof FACET_EXPRESSIONS)[]).map(async key => {
       const expression = FACET_EXPRESSIONS[key]
       const rows = await db
@@ -108,7 +109,21 @@ const countFacets = async (query: ParsedQuery): Promise<FacetCounts> => {
       return [key, Object.fromEntries(rows.map(row => [row.key, row.total]))] as const
     })
   )
-  return Object.fromEntries(entries)
+
+const countOrganizationFacets = async (query: ParsedQuery) =>
+  await db
+    .select({ key: memberships.organizationId, total: countDistinct(users.id) })
+    .from(memberships)
+    .innerJoin(users, eq(users.id, memberships.userId))
+    .where(buildFilters({ ...query, organizationIds: [] }))
+    .groupBy(memberships.organizationId)
+
+const countFacets = async (query: ParsedQuery): Promise<FacetCounts> => {
+  const [entries, organizationRows] = await Promise.all([countExpressionFacets(query), countOrganizationFacets(query)])
+  return {
+    ...Object.fromEntries(entries),
+    organization: Object.fromEntries(organizationRows.map(row => [String(row.key), row.total])),
+  }
 }
 
 export const queryAdminUsers = async (input: AdminUsersQuery) => {

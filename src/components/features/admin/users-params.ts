@@ -4,7 +4,7 @@ import { BAN_FILTERS, PLATFORM_ROLES, USER_STATUSES } from '@/db/queries/admin-u
 
 export const adminUsersParsers = {
   banned: parseAsArrayOf(parseAsStringEnum([...BAN_FILTERS])).withDefault([]),
-  org: parseAsInteger,
+  org: parseAsArrayOf(parseAsInteger).withDefault([]),
   page: parseAsInteger.withDefault(1),
   q: parseAsString.withDefault(''),
   role: parseAsArrayOf(parseAsStringEnum([...PLATFORM_ROLES])).withDefault([]),

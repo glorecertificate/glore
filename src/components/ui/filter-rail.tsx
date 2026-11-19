@@ -1,6 +1,6 @@
 'use client'
 
-import { useId } from 'react'
+import { useId, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { SearchInput } from '@/components/ui/search'
 import {
   Sheet,
   SheetClose,
@@ -29,11 +30,17 @@ interface FilterRailOption {
   value: string
 }
 
+interface FilterRailGroupSearch {
+  emptyLabel: string
+  placeholder: string
+}
+
 export interface FilterRailGroup {
   id: string
   label: string
   onChange: (values: string[]) => void
   options: FilterRailOption[]
+  searchable?: FilterRailGroupSearch
   selection?: 'multiple' | 'required' | 'single'
   values: string[]
 }
@@ -54,7 +61,7 @@ const toggle = (values: string[], value: string, checked: boolean) =>
 
 const OptionContent = ({ option }: { option: FilterRailOption }) => (
   <>
-    <span className="min-w-0 flex-1 truncate">
+    <span className="min-w-0 flex-1 truncate" title={option.tone ? undefined : option.label}>
       {option.tone ? <StatusBadge tone={option.tone}>{option.label}</StatusBadge> : option.label}
     </span>
     {option.count !== undefined && <span className="text-xs text-muted-foreground tabular-nums">{option.count}</span>}
@@ -102,22 +109,52 @@ const SingleGroup = ({ group }: { group: FilterRailGroup }) => {
   )
 }
 
+const fold = (value: string) => value.normalize('NFD').replaceAll(/\p{M}/gu, '').toLowerCase()
+
+const visibleOptions = (group: FilterRailGroup, query: string) => {
+  if (!group.searchable) return group.options
+  const needle = fold(query.trim())
+  const selected = group.options.filter(option => group.values.includes(option.value))
+  const rest = group.options.filter(
+    option => !group.values.includes(option.value) && (!needle || fold(option.label).includes(needle))
+  )
+  return [...selected, ...rest]
+}
+
 const MultipleGroup = ({ group }: { group: FilterRailGroup }) => {
   const prefix = useId()
+  const [query, setQuery] = useState('')
+  const options = visibleOptions(group, query)
+  const searchable = group.searchable
 
   return (
     <fieldset className="flex min-w-0 flex-col gap-1" data-slot="filter-rail-group">
-      <legend className="mb-1 type-label text-fg-title">{group.label}</legend>
-      {group.options.map(option => (
-        <label className={OPTION_CLASS} htmlFor={`${prefix}${option.value}`} key={option.value}>
-          <Checkbox
-            id={`${prefix}${option.value}`}
-            checked={group.values.includes(option.value)}
-            onCheckedChange={next => group.onChange(toggle(group.values, option.value, next === true))}
-          />
-          <OptionContent option={option} />
-        </label>
-      ))}
+      <legend className="mb-1 flex min-h-7 w-full items-center type-label text-fg-title">{group.label}</legend>
+      {searchable && (
+        <SearchInput
+          aria-label={searchable.placeholder}
+          className="w-full"
+          onValueChange={setQuery}
+          placeholder={searchable.placeholder}
+          size="sm"
+          value={query}
+        />
+      )}
+      <div className={cn('flex min-w-0 flex-col gap-1', searchable && 'mt-1 max-h-60 overflow-y-auto')}>
+        {options.map(option => (
+          <label className={OPTION_CLASS} htmlFor={`${prefix}${option.value}`} key={option.value}>
+            <Checkbox
+              id={`${prefix}${option.value}`}
+              checked={group.values.includes(option.value)}
+              onCheckedChange={next => group.onChange(toggle(group.values, option.value, next === true))}
+            />
+            <OptionContent option={option} />
+          </label>
+        ))}
+        {searchable && query.trim() !== '' && options.every(option => group.values.includes(option.value)) && (
+          <p className="py-2 text-sm text-muted-foreground">{searchable.emptyLabel}</p>
+        )}
+      </div>
     </fieldset>
   )
 }

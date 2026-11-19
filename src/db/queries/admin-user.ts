@@ -108,7 +108,13 @@ export const facetValues = <T extends readonly [string, ...string[]]>(values: T)
 
 export const adminUsersQuerySchema = z.object({
   banned: facetValues(BAN_FILTERS),
-  organizationId: z.number().int().positive().nullish(),
+  organizationIds: z
+    .union([z.number().int().positive(), z.array(z.number().int().positive()).max(200)])
+    .nullish()
+    .transform(value => {
+      if (!value) return []
+      return Array.isArray(value) ? value : [value]
+    }),
   page: z.number().int().min(1).max(10_000).nullish(),
   q: z.string().max(200).nullish(),
   role: facetValues(PLATFORM_ROLES),

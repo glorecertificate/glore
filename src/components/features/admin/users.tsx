@@ -62,7 +62,7 @@ export const AdminUsers = ({
   const [busyId, setBusyId] = useState<string | null>(null)
 
   const filtersActive = Boolean(
-    params.banned.length > 0 || params.org || params.q || params.role.length > 0 || params.status.length > 0
+    params.banned.length > 0 || params.org.length > 0 || params.q || params.role.length > 0 || params.status.length > 0
   )
 
   const handleSearch = (value: string) => {

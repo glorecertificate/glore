@@ -3065,13 +3065,14 @@
       "searchPlaceholder": "Search by name, email, or username",
       "filters": {
         "allBans": "Any suspension state",
-        "allOrganizations": "All organizations",
         "allRoles": "All roles",
         "allStatuses": "All statuses",
         "banned": "Suspension",
         "bannedNo": "Not suspended",
         "bannedYes": "Suspended",
         "organization": "Organization",
+        "organizationEmpty": "No organizations match",
+        "organizationSearch": "Search organizations",
         "role": "Role",
         "status": "Status"
       },

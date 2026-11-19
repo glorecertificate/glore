@@ -8,6 +8,7 @@ import { type LocaleCoverage } from '@/db/queries/content-translation'
 import { type SkillOption } from '@/db/queries/learning'
 import { type Notification } from '@/db/queries/notification'
 import { timestampMillis } from '@/db/queries/organization'
+import { type AttentionItem } from '@/db/queries/organization-attention'
 import { type ActivityItem, type OrganizationChecklist, type Pipeline } from '@/db/queries/organization-insights'
 import { type EnumType } from '@/db/types'
 import { LOCALES } from '@/lib/i18n'
@@ -54,6 +55,7 @@ interface WaitingItem {
   days: number
   holder: string | null
   id: number
+  status: CertificateStatus
   tone: AgeTone
 }
 
@@ -63,6 +65,7 @@ const toWaiting = (certificate: QueueCertificate, now: number): WaitingItem => {
     days,
     holder: certificate.user ? fullName(certificate.user) || null : null,
     id: certificate.id,
+    status: certificate.status,
     tone: ageTone(days),
   }
 }
@@ -121,7 +124,7 @@ export const buildTutorSummary = (
 ): TutorSummary => {
   const mine = summarizeWaiting(assigned, now)
   const pool = summarizeWaiting(unassigned, now)
-  const queue: TutorQueueItem[] = [
+  const waiting: TutorQueueItem[] = [
     ...assigned.flatMap(certificate =>
       isWaiting(certificate) ? [{ ...toWaiting(certificate, now), source: 'assigned' as const }] : []
     ),
@@ -129,9 +132,13 @@ export const buildTutorSummary = (
       isWaiting(certificate) ? [{ ...toWaiting(certificate, now), source: 'pool' as const }] : []
     ),
   ].toSorted(byAge)
+  const flagged: TutorQueueItem[] = assigned.flatMap(certificate =>
+    certificate.status === 'changes_requested' ? [{ ...toWaiting(certificate, now), source: 'assigned' as const }] : []
+  )
+  const queue = [...waiting, ...flagged].toSorted(byAge)
   return {
     assigned: mine,
-    oldest: queue[0] ?? null,
+    oldest: waiting[0] ?? null,
     pool,
     queue: queue.slice(0, QUEUE_PREVIEW_SIZE),
     reviewTime: summarizeReviewTime(assigned, now),
@@ -160,9 +167,9 @@ type JourneyPhase = 'changes' | 'draft' | 'issued' | 'learn' | 'ready' | 'reject
 
 type JourneyStageKey = 'certificate' | 'learn' | 'request' | 'review'
 
-export type JourneyStageState = 'current' | 'done' | 'ended' | 'upcoming'
+type JourneyStageState = 'current' | 'done' | 'ended' | 'upcoming'
 
-export type JourneyStepState = 'current' | 'done' | 'flagged' | 'upcoming'
+type JourneyStepState = 'current' | 'done' | 'flagged' | 'upcoming'
 
 export type ReviewSection = 'experience' | 'personal' | 'skills' | 'tasks'
 
@@ -171,7 +178,7 @@ export interface JourneyStage {
   state: JourneyStageState
 }
 
-export interface JourneyWizardStep {
+interface JourneyWizardStep {
   key: WizardStep
   state: JourneyStepState
 }
@@ -517,6 +524,7 @@ export const summarizeEditorStats = (courses: EditorCourseRow[]): EditorStats =>
 export interface ManagerSummary {
   activeLinks: number
   activity: ActivityItem[]
+  attention: AttentionItem[]
   checklist: OrganizationChecklist
   isOwner: boolean
   members: { id: string; placeholder: string; url: string | null }[]
@@ -551,7 +559,7 @@ export interface MemberSummary {
   notifications: Notification[]
 }
 
-export interface EarnedSkill {
+interface EarnedSkill {
   icon: string | null
   id: number
   slug: string
@@ -563,10 +571,19 @@ interface JourneyReview {
   tutor: string | null
 }
 
+export interface SkillCourseRow {
+  completed: boolean
+  icon: string | null
+  percent: number
+  slug: string
+  title: string
+}
+
 export interface VolunteerSummary {
   certificate: Certificate | null
   compassSet: boolean
   courses: MemberCourseSummary
+  skillCourses: SkillCourseRow[]
   eligibility: EligibilityView
   journey: VolunteerJourney
   review: JourneyReview | null

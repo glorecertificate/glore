@@ -5,17 +5,12 @@ import { type Route } from 'next'
 import { useTranslations } from 'next-intl'
 
 import { type ManagerSummary } from '@/actions/dashboard/core'
-import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { DashboardChecklist } from '@/components/features/dashboard/checklist'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
-import { StatLink } from '@/components/features/dashboard/section'
 import { ActivityList } from '@/components/features/organization/activity-list'
-import { OrganizationPipeline } from '@/components/features/organization/pipeline'
-import { LucideIcon } from '@/components/icons/lucide'
-import { AvatarStack } from '@/components/ui/avatar-stack'
-import { Banner } from '@/components/ui/banner'
-import { Button } from '@/components/ui/button'
+import { AttentionList } from '@/components/features/organization/attention-list'
+import { OrganizationCertificatesCard, OrganizationMembersCard } from '@/components/features/organization/overview-rail'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
 
@@ -37,8 +32,7 @@ export const ManagerDashboard = ({
 }) => {
   const t = useTranslations('Dashboard')
   const tOrganization = useTranslations('Organization')
-  const { activeLinks, activity, checklist, isOwner, members, pipeline, stats, waiting } = manager
-  const inReview = pipeline.submitted + pipeline.in_review + pipeline.changes_requested
+  const { activity, attention, checklist, isOwner, pipeline, stats } = manager
 
   const entries = CHECKLIST_STEPS.map(({ key, tab }) => ({
     action: tOrganization(`checklist_${key}_action`),
@@ -50,31 +44,12 @@ export const ManagerDashboard = ({
   }))
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <DashboardHero
-        action={{ href: '/organization', label: t('manager.openOrganization') }}
         organization={organization}
         subtitle={t('subtitle.manager')}
         title={t('greeting', { name: firstName })}
       />
-
-      {waiting.count > 0 && waiting.oldest && (
-        <Banner className="flex-wrap items-center justify-between" variant="warning">
-          <div className="flex items-start gap-3">
-            <LucideIcon name="file-clock" className="mt-0.5 size-4 shrink-0" />
-            <div className="space-y-1">
-              <p className="font-semibold">{t('manager.waitingTitle', { count: waiting.count })}</p>
-              <p className="text-sm text-muted-foreground">{t('manager.waitingDescription')}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <AgeBadge days={waiting.oldest.days} tone={waiting.oldest.tone} />
-            <Button asChild size="sm" variant="brand">
-              <Link href="/organization?tab=certificates">{t('manager.assign')}</Link>
-            </Button>
-          </div>
-        </Banner>
-      )}
 
       <DashboardChecklist
         entries={entries}
@@ -82,70 +57,44 @@ export const ManagerDashboard = ({
         title={tOrganization('checklistTitle')}
       />
 
-      <section className="grid grid-cols-2 gap-4 xl:grid-cols-5">
-        <StatLink
-          accent="teal"
-          href="/organization?tab=members"
-          icon="users"
-          label={t('manager.members')}
-          value={stats.members}
-        >
-          <AvatarStack avatars={members} />
-        </StatLink>
-        <StatLink
-          accent="navy"
-          description={t('manager.invitationsDescription', { links: activeLinks })}
-          href="/organization?tab=invitations"
-          icon="mail"
-          label={t('manager.invitations')}
-          value={manager.pendingInvitations}
-        />
-        <StatLink
-          accent="amber"
-          description={t('manager.requestsDescription')}
-          href="/organization?tab=requests"
-          icon="user-plus"
-          label={t('manager.requests')}
-          value={manager.pendingJoinRequests}
-        />
-        <StatLink
-          accent="teal"
-          description={t('manager.inReviewDescription')}
-          href="/organization?tab=certificates"
-          icon="clipboard-list"
-          label={t('manager.inReview')}
-          value={inReview}
-        />
-        <StatLink
-          accent="green"
-          description={t('manager.issuedDescription')}
-          href="/organization?tab=certificates"
-          icon="award"
-          label={t('manager.issued')}
-          value={pipeline.approved}
-        />
-      </section>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-        <OrganizationPipeline pipeline={pipeline} />
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('manager.activity')}</CardTitle>
-            <CardAction>
-              <Link className="text-sm font-medium" href="/organization?tab=activity" variant="primary">
-                {t('viewAll')}
-              </Link>
-            </CardAction>
-          </CardHeader>
-          <CardContent>
-            {activity.length === 0 ? (
-              <DashboardEmpty icon="activity" title={tOrganization('activityEmpty')} />
-            ) : (
-              <ActivityList items={activity} label={t('manager.activity')} />
-            )}
-          </CardContent>
-        </Card>
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <div className="flex min-w-0 flex-col gap-6">
+          <AttentionList items={attention} organization={organization ?? ''} />
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('manager.activity')}</CardTitle>
+              <CardAction>
+                <Link
+                  className="inline-flex min-h-8 items-center text-sm font-medium"
+                  href="/organization?tab=activity"
+                  variant="primary"
+                >
+                  {t('viewAll')}
+                </Link>
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              {activity.length === 0 ? (
+                <DashboardEmpty icon="activity" title={tOrganization('activityEmpty')} />
+              ) : (
+                <ActivityList items={activity} label={t('manager.activity')} />
+              )}
+            </CardContent>
+          </Card>
+        </div>
+        <div className="flex min-w-0 flex-col gap-6">
+          <OrganizationCertificatesCard pipeline={pipeline} />
+          <OrganizationMembersCard
+            stats={{
+              adminCount: stats.admins,
+              learnerCount: stats.learners,
+              memberCount: stats.members,
+              representativeCount: stats.representatives,
+              tutorCount: stats.tutors,
+              volunteerCount: stats.volunteers,
+            }}
+          />
+        </div>
       </div>
     </div>
   )

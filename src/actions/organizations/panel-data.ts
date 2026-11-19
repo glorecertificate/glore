@@ -15,6 +15,7 @@ import {
   parseOrganizationInvitation,
   parseOrganizationInviteLink,
 } from '@/db/queries/organization'
+import { buildAttention } from '@/db/queries/organization-attention'
 import { buildChecklist, toPipeline } from '@/db/queries/organization-insights'
 import {
   certificates,
@@ -41,6 +42,7 @@ export const queryOrganizationPanel = async (
     inviteLinkRecords,
     pipelineRows,
     activity,
+    changedRecords,
   ] = await Promise.all([
     db.query.organizations.findFirst({
       with: {
@@ -88,6 +90,14 @@ export const queryOrganizationPanel = async (
       .where(eq(certificates.organizationId, organizationId))
       .groupBy(certificates.status),
     listOrganizationActivity(organizationId),
+    isManager &&
+      db.query.certificates.findMany({
+        columns: { id: true, updatedAt: true },
+        where: and(eq(certificates.organizationId, organizationId), eq(certificates.status, 'changes_requested')),
+        with: { reviewer: { columns: reviewerColumns }, user: { columns: reviewerColumns } },
+        orderBy: (records, { asc }) => [asc(records.updatedAt)],
+        limit: 6,
+      }),
   ])
 
   if (!organizationRecord) {
@@ -133,9 +143,20 @@ export const queryOrganizationPanel = async (
   })
   const inviteLinks = (inviteLinkRecords || []).map(record => parseOrganizationInviteLink(record))
 
+  const attention = role
+    ? buildAttention({
+        certificates: changedRecords || [],
+        invitations,
+        requests: parsedOrganization.joinRequests,
+        role,
+        userId,
+      })
+    : []
+
   return {
     activity,
     approvedCertificatesCount: pipeline.approved,
+    attention,
     checklist,
     currentUserId: userId,
     inviteLinks,

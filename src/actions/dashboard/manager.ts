@@ -17,6 +17,7 @@ export const loadManagerSummary = async (now: number): Promise<ManagerSummary | 
   return {
     activeLinks: panel.inviteLinks.filter(({ state }) => state === 'active').length,
     activity: panel.activity.items.slice(0, ACTIVITY_PREVIEW),
+    attention: panel.attention,
     checklist: panel.checklist,
     isOwner: panel.isOrgAdmin,
     members: panel.members.slice(0, AVATAR_PREVIEW).map(member => ({

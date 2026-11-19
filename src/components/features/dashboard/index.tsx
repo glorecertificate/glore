@@ -14,16 +14,11 @@ export const DashboardContent = ({ data }: { data: DashboardData }) => {
     return <ManagerDashboard firstName={data.firstName} manager={data.manager} organization={data.organization} />
   }
   if (data.view === 'tutor') {
-    return (
-      <TutorDashboard
-        firstName={data.firstName}
-        notifications={data.notifications}
-        organization={data.organization}
-        tutor={data.tutor}
-      />
-    )
+    return <TutorDashboard firstName={data.firstName} notifications={data.notifications} tutor={data.tutor} />
   }
-  if (data.view === 'volunteer') return <VolunteerDashboard volunteer={data.volunteer} />
+  if (data.view === 'volunteer') {
+    return <VolunteerDashboard firstName={data.firstName} organization={data.organization} volunteer={data.volunteer} />
+  }
   if (data.view === 'learner') {
     return <MemberDashboard firstName={data.firstName} member={data.member} organization={data.organization} />
   }

@@ -1081,6 +1081,7 @@
     "journey": {
       "title": "Il tuo certificato",
       "position": "Passaggio {current} di {total}",
+      "stepLabel": "{index}. {name}",
       "stages": {
         "learn": "Impara",
         "request": "Richiedi",
@@ -1194,6 +1195,27 @@
         "label": "Motivazione"
       }
     },
+    "volunteer": {
+      "eyebrow": "Il tuo certificato · passo {current} di {total}",
+      "coursesTitle": "Corsi sulle competenze",
+      "coursesProgress": "{count} di {min} obbligatori completati",
+      "completed": "Completato",
+      "notStarted": "Non iniziato",
+      "viewCourses": "Vedi tutti i corsi",
+      "requestTitle": "Richiesta di certificato",
+      "organization": "Organizzazione",
+      "skills": "Competenze",
+      "noSkills": "Ancora nessuna",
+      "experience": "Esperienza",
+      "hours": "{hours, plural, one {# ora} other {# ore}}",
+      "notEntered": "Non ancora inserita",
+      "lastSaved": "Ultimo salvataggio",
+      "upcoming": {
+        "request": "Dopo {min} corsi sulle competenze",
+        "review": "Dopo l'invio",
+        "certificate": "Emesso dopo l'approvazione"
+      }
+    },
     "stats": {
       "enrolled": "Iscritti",
       "inProgress": "In corso",
@@ -1219,7 +1241,8 @@
     },
     "updates": {
       "title": "Ultimi aggiornamenti",
-      "empty": "Ancora nessun aggiornamento. Qui vedrai le decisioni sui certificati e le novità dei corsi."
+      "empty": "Ancora nessun aggiornamento. Qui vedrai le decisioni sui certificati e le novità dei corsi.",
+      "all": "Tutti gli aggiornamenti"
     },
     "tutor": {
       "openQueue": "Apri la coda di revisione",
@@ -1242,14 +1265,21 @@
       "poolDescription": "Chiunque nel team può prenderle in carico",
       "waitingVolunteer": "In attesa dei volontari",
       "waitingVolunteerDescription": "Modifiche richieste",
-      "queueTitle": "Richieste più vecchie",
-      "queueEmptyTitle": "Niente in attesa",
-      "queueEmptyDescription": "Le nuove richieste della tua organizzazione compaiono qui appena i volontari le inviano.",
+      "queueTitle": "Da rivedere",
+      "queueEmptyTitle": "Nessuna richiesta in attesa",
+      "queueEmptyDescription": "{count, plural, =0 {Le nuove richieste compariranno qui appena i volontari le inviano.} one {# richiesta non assegnata è aperta al team.} other {# richieste non assegnate sono aperte al team.}}",
       "volunteer": "Volontario",
       "source": "Coda",
       "sourceAssigned": "Assegnata",
       "sourcePool": "Pool",
-      "waiting": "Attesa"
+      "waiting": "Attesa",
+      "workload": "{assigned} assegnate a te, {pool} non assegnate, {waiting} in attesa dei volontari",
+      "startNext": "Inizia la prossima revisione",
+      "claimNext": "Prendi in carico la prossima richiesta",
+      "startReview": "Inizia la revisione",
+      "view": "Vedi",
+      "reviewBasis": "Tempo medio di revisione {value}, su {count, plural, one {# revisione} other {# revisioni}}",
+      "claimRequest": "Prendi in carico una richiesta"
     },
     "manager": {
       "openOrganization": "Apri l'organizzazione",
@@ -2559,6 +2589,29 @@
     "discardChanges": "Annulla modifiche",
     "tabLoadError": "Impossibile caricare questa scheda. Riprova.",
     "activityEmptyTitle": "Ancora nessuna attività"
+  },
+  "OrganizationAttention": {
+    "title": "Richiede la tua attenzione",
+    "count": "{count, plural, one {# elemento} other {# elementi}}",
+    "empty": "Al momento nulla richiede la tua attenzione.",
+    "requestTitle": "{name} ha chiesto di unirsi a {organization}",
+    "requestContext": "Richiesta di adesione, inviata il {date}",
+    "reviewRequest": "Esamina la richiesta",
+    "changesTitle": "{holder} deve aggiornare una richiesta di certificato",
+    "changesContext": "Modifiche richieste da {tutor}, {date}",
+    "changesContextUnnamed": "Modifiche richieste, {date}",
+    "openCertificate": "Apri il certificato",
+    "expiredTitle": "L'invito per {email} è scaduto",
+    "expiredContext": "Scaduto il {date}",
+    "resend": "Reinvia"
+  },
+  "OrganizationRail": {
+    "certificates": "Certificati",
+    "requests": "{count, plural, one {# richiesta} other {# richieste}}",
+    "certificatesEmpty": "Ancora nessuna richiesta di certificato.",
+    "openCertificates": "Apri i certificati",
+    "members": "Membri",
+    "manage": "Gestisci i membri"
   },
   "Users": {
     "admin": "Utente admin",

@@ -1081,6 +1081,7 @@
     "journey": {
       "title": "Your certificate",
       "position": "Step {current} of {total}",
+      "stepLabel": "{index}. {name}",
       "stages": {
         "learn": "Learn",
         "request": "Request",
@@ -1194,6 +1195,27 @@
         "label": "Reason"
       }
     },
+    "volunteer": {
+      "eyebrow": "Your certificate · step {current} of {total}",
+      "coursesTitle": "Skill courses",
+      "coursesProgress": "{count} of {min} required completed",
+      "completed": "Completed",
+      "notStarted": "Not started",
+      "viewCourses": "View all courses",
+      "requestTitle": "Certificate request",
+      "organization": "Organization",
+      "skills": "Skills",
+      "noSkills": "None yet",
+      "experience": "Experience",
+      "hours": "{hours, plural, one {# hour} other {# hours}}",
+      "notEntered": "Not entered yet",
+      "lastSaved": "Last saved",
+      "upcoming": {
+        "request": "After {min} skill courses",
+        "review": "After you send it",
+        "certificate": "Issued after approval"
+      }
+    },
     "stats": {
       "enrolled": "Enrolled",
       "inProgress": "In progress",
@@ -1219,7 +1241,8 @@
     },
     "updates": {
       "title": "Latest updates",
-      "empty": "No updates yet. Certificate decisions and course news show up here."
+      "empty": "No updates yet. Certificate decisions and course news show up here.",
+      "all": "All updates"
     },
     "tutor": {
       "openQueue": "Open review queue",
@@ -1242,14 +1265,21 @@
       "poolDescription": "Anyone on the team can claim these",
       "waitingVolunteer": "Waiting for volunteers",
       "waitingVolunteerDescription": "Changes requested",
-      "queueTitle": "Oldest requests",
-      "queueEmptyTitle": "Nothing is waiting",
-      "queueEmptyDescription": "New requests from your organization appear here as soon as volunteers submit them.",
+      "queueTitle": "Needs your review",
+      "queueEmptyTitle": "No requests waiting",
+      "queueEmptyDescription": "{count, plural, =0 {New requests appear here as soon as volunteers send them.} one {# unassigned request is open to the team.} other {# unassigned requests are open to the team.}}",
       "volunteer": "Volunteer",
       "source": "Queue",
       "sourceAssigned": "Assigned",
       "sourcePool": "Pool",
-      "waiting": "Waiting"
+      "waiting": "Waiting",
+      "workload": "{assigned} assigned to you, {pool} unassigned, {waiting} waiting for volunteers",
+      "startNext": "Start next review",
+      "claimNext": "Claim next request",
+      "startReview": "Start review",
+      "view": "View",
+      "reviewBasis": "Average review time {value}, from {count, plural, one {# review} other {# reviews}}",
+      "claimRequest": "Claim a request"
     },
     "manager": {
       "openOrganization": "Open organization",
@@ -2559,6 +2589,29 @@
     "discardChanges": "Discard changes",
     "tabLoadError": "Could not load this tab. Try again.",
     "activityEmptyTitle": "No activity yet"
+  },
+  "OrganizationAttention": {
+    "title": "Needs your attention",
+    "count": "{count, plural, one {# item} other {# items}}",
+    "empty": "Nothing needs you right now.",
+    "requestTitle": "{name} asked to join {organization}",
+    "requestContext": "Join request, sent {date}",
+    "reviewRequest": "Review request",
+    "changesTitle": "{holder} needs to update a certificate request",
+    "changesContext": "Changes requested by {tutor}, {date}",
+    "changesContextUnnamed": "Changes requested, {date}",
+    "openCertificate": "Open certificate",
+    "expiredTitle": "The invitation for {email} expired",
+    "expiredContext": "Expired on {date}",
+    "resend": "Resend"
+  },
+  "OrganizationRail": {
+    "certificates": "Certificates",
+    "requests": "{count, plural, one {# request} other {# requests}}",
+    "certificatesEmpty": "No certificate requests yet.",
+    "openCertificates": "Open certificates",
+    "members": "Members",
+    "manage": "Manage members"
   },
   "Users": {
     "admin": "Admin user",

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 type StepState = 'current' | 'done' | 'failed' | 'upcoming'
 
 export interface StepItem {
+  caption?: string | null
   description?: string
   key: string
   label: string
@@ -57,6 +58,7 @@ export const StepList = ({
           >
             {item.label}
           </p>
+          {item.caption && <p className="truncate text-xs text-muted-foreground">{item.caption}</p>}
           {item.description && (
             <p className="hidden truncate text-xs text-muted-foreground sm:block">{item.description}</p>
           )}

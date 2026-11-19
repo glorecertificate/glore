@@ -1,4 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 import {
   findCertificateActivity,
@@ -11,6 +12,7 @@ import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { EligibilityPanel } from '@/components/features/certificates/eligibility-panel'
 import { type SkillOption } from '@/components/features/certificates/new/values'
 import { CertificateWizard } from '@/components/features/certificates/new/wizard'
+import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 
@@ -82,8 +84,30 @@ const CertificatesNewContent = async ({ searchParams }: Pick<PageProps<'/certifi
   )
 }
 
+const NewRequestOrganization = async () => {
+  const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  return user.organizations.find(({ id }) => id === activeOrgId)?.name ?? null
+}
+
+const CertificatesNewBand = ({ organization }: { organization?: React.ReactNode }) => (
+  <DashboardHeader
+    description={organization}
+    heading={<PageTitle name="requestCertificate" namespace="CertificateList" />}
+    parent="certificates"
+    title={<PageTitle name="newRequest" namespace="CertificateWizard" />}
+  />
+)
+
 const CertificatesNewPage = (props: PageProps<'/certificates/new'>) => (
-  <DashboardPage overlap title={<PageTitle name="requestCertificate" namespace="CertificateList" />} width="content">
+  <DashboardPage
+    overlap
+    header={
+      <Suspense fallback={<CertificatesNewBand />}>
+        <CertificatesNewBand organization={<NewRequestOrganization />} />
+      </Suspense>
+    }
+    width="content"
+  >
     <CertificatesNewContent searchParams={props.searchParams} />
   </DashboardPage>
 )

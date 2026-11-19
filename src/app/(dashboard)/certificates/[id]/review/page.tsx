@@ -1,12 +1,13 @@
 import { notFound, redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
+import { getFormatter, getTranslations } from 'next-intl/server'
+
 import { loadCertificate, loadCertificateActivity, loadReviewContext } from '@/actions/certificates/detail-data'
 import { getViewer } from '@/actions/viewer'
-import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { StartReviewButton } from '@/components/features/certificates/review/start-review'
 import { ReviewWorkspace } from '@/components/features/certificates/review/workspace'
-import { ageTone, daysBetween } from '@/components/features/certificates/rules'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -46,16 +47,18 @@ const ReviewBand = async ({ params }: { params: PageProps<'/certificates/[id]/re
   if (!certificateId || Number.isNaN(certificateId)) notFound()
   const certificate = await loadCertificate(certificateId)
   if (!certificate) notFound()
-  const age = daysBetween(certificate.submittedAt ?? certificate.createdAt)
+  const [format, t] = await Promise.all([getFormatter(), getTranslations('CertificateReview')])
+  const submittedAt = certificate.submittedAt ?? certificate.createdAt
 
   return (
     <DashboardHeader
+      actions={certificate.isSubmitted && <StartReviewButton id={certificate.id} />}
       description={
         <span className="flex flex-col gap-3">
           <span>{certificate.organization.name}</span>
-          <span className="flex flex-wrap items-center gap-2">
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <CertificateStatusBadge status={certificate.status} />
-            {certificate.isPending && <AgeBadge days={age} tone={ageTone(age)} />}
+            <span className="text-sm">{t('submittedAgo', { when: format.relativeTime(new Date(submittedAt)) })}</span>
           </span>
         </span>
       }

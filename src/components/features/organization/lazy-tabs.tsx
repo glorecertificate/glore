@@ -3,6 +3,8 @@
 import dynamic from 'next/dynamic'
 import { type ComponentType } from 'react'
 
+import { whenIdle } from '@/lib/prefetch'
+
 import { type InsightsScope as OrganizationScope } from './insights-cache'
 import { type OrganizationTab } from './tab-context'
 
@@ -116,8 +118,24 @@ export const warmOrganizationData = async (scope: OrganizationScope) => {
   await Promise.all([prefetchInsights(scope), prefetchCertificates(scope)])
 }
 
+const nextIdle = () =>
+  new Promise<void>(resolve => {
+    whenIdle(resolve, 500)
+  })
+
+const preloadInSequence = async (
+  scope: OrganizationScope,
+  tabs: { preload: (scope: OrganizationScope) => Promise<void> }[]
+) => {
+  const [lazy, ...rest] = tabs
+  if (!lazy) return
+  await lazy.preload(scope)
+  await nextIdle()
+  await preloadInSequence(scope, rest)
+}
+
 export const preloadAllOrganizationTabs = async (scope: OrganizationScope) => {
-  await Promise.all(Object.values(TABS_BY_NAME).map(lazy => lazy.preload(scope)))
+  await preloadInSequence(scope, Object.values(TABS_BY_NAME))
 }
 
 const PRELOAD_TIMEOUT_MS = 3000

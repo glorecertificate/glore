@@ -102,7 +102,7 @@ Three domain facts shape recurring decisions:
 
 ### AI writing assistant
 
-- The Plate.js editor offers slash commands (`/api/v1/ai/command`: generate, improve, summarize, translate) and a copilot (`/api/v1/ai/copilot`: next word or sentence).
+- The Plate.js editor offers slash commands (`/api/v1/ai/command`: generate, improve, summarize, translate).
 - Google Gemini only, through `@ai-sdk/google` and `GEMINI_API_KEY` (free tier).
 - The model chain is `aiModels` in `config/app.json` (`gemini-3.8-flash`, then `gemini-3.5-flash-lite`). `GEMINI_MODEL` is an optional override tried first.
 - `src/lib/ai.ts` moves to the next model when one fails before any text streams (404 retired, 429 quota, 5xx).

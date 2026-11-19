@@ -52,12 +52,14 @@ interface OrganizationMembersProps {
   members: OrganizationPanelData['members']
   onRefresh: () => void
   onSyncUser?: (user: User) => void
+  emptyDescription?: string
   organizationId?: number
   organizationName: string
 }
 
 export const OrganizationMembers = ({
   currentUserId,
+  emptyDescription,
   isOrgAdmin,
   members,
   onRefresh,
@@ -252,7 +254,9 @@ export const OrganizationMembers = ({
       <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
         <DataTable
           columns={columns}
-          emptyDescription={members.length === 0 ? t('noMembersDescription') : t('noMembersFilteredDescription')}
+          emptyDescription={
+            members.length === 0 ? (emptyDescription ?? t('noMembersDescription')) : t('noMembersFilteredDescription')
+          }
           emptyTitle={members.length === 0 ? t('noMembers') : t('noMembersFiltered')}
           filters={platform ? platformFilters : undefined}
           rail={

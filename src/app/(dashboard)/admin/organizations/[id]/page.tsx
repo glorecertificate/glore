@@ -50,7 +50,7 @@ const AdminOrganizationLoaded = async ({ params }: { params: PageProps<'/admin/o
                   <AdminOrganizationBandActions id={data.id} name={data.name} />
                 ) : (
                   <>
-                    <OrganizationInviteButton />
+                    {!state.isRejected && <OrganizationInviteButton />}
                     <AdminOrganizationBandMenu email={data.email} />
                   </>
                 )

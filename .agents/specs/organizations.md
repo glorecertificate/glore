@@ -15,6 +15,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
   - `org_invitations_open_email_key` allows one open invitation per organization and `lower(email)`.
   - Invitation copy never names a role as the sender: it says "someone from your organization" (U16).
 - The row carries `userId` when an account with that email exists, still without a membership.
+- A rejected organization (unapproved, with a rejected `admin` registration request) cannot invite. `assertOrganizationOpen` in `db/mutations/invitation.ts` runs in `createInvitation`, `resendInvitation`, and `createInviteLink` and throws `ORGANIZATION_REJECTED`. Pending organizations are not blocked by this rule. The admin page then hides the invite button and shows a danger `Banner` with the decision date, reviewer, and comment.
 - Invitation and invite-link tokens are never stored in plaintext. `tokenHash` (SHA-256) serves lookups.
 - `tokenCipher` (AES-256-GCM, key derived from `BETTER_AUTH_SECRET`, `src/lib/secret-token.ts`) lets copy and reminder links be rebuilt.
 - A row without a readable seal (migrated rows, or a rotated secret) gets a fresh token when its link is rebuilt, which ends the old link.

@@ -54,6 +54,7 @@ const ERROR_MESSAGES = {
   LINK_REVOKED: 'This invite link was revoked',
   MISMATCH: 'This invitation was sent to a different account',
   NOT_FOUND: 'Not found',
+  ORGANIZATION_REJECTED: 'The application of this organization was rejected',
   PROOF_REQUIRED: 'Confirm the email address first',
   RATE_LIMITED: 'Too many attempts',
   REQUEST_DECIDED: 'This request was already reviewed',
@@ -63,6 +64,21 @@ const ERROR_MESSAGES = {
 } satisfies Record<InvitationErrorCode, string>
 
 export const invitationError = (code: InvitationErrorCode) => Object.assign(new Error(ERROR_MESSAGES[code]), { code })
+
+export const assertOrganizationOpen = async (tx: Transaction, organizationId: number) => {
+  const organization = await tx.query.organizations.findFirst({
+    columns: { approvedAt: true },
+    where: eq(organizations.id, organizationId),
+    with: {
+      joinRequests: {
+        columns: { id: true },
+        where: and(eq(organizationJoinRequests.role, 'admin'), eq(organizationJoinRequests.status, 'rejected')),
+      },
+    },
+  })
+  if (!organization) throw invitationError('NOT_FOUND')
+  if (!organization.approvedAt && organization.joinRequests.length > 0) throw invitationError('ORGANIZATION_REJECTED')
+}
 
 export const isInvitationError = (error: unknown): error is Error & { code: InvitationErrorCode } =>
   error instanceof Error && 'code' in error && typeof error.code === 'string' && error.code in ERROR_MESSAGES
@@ -206,6 +222,7 @@ export const createInvitation = async (
     where: eq(organizations.id, organizationId),
   })
   if (!organization) throw invitationError('NOT_FOUND')
+  await assertOrganizationOpen(tx, organizationId)
 
   const account = await tx.query.users.findFirst({ columns: { id: true }, where: eq(users.email, address) })
   if (account && (await isMember(tx, organizationId, account.id))) throw invitationError('ALREADY_MEMBER')
@@ -288,6 +305,7 @@ export const resendInvitation = async (
     with: { organization: { columns: { name: true } } },
   })
   if (!current) throw invitationError('NOT_FOUND')
+  await assertOrganizationOpen(tx, organizationId)
 
   const now = Date.now()
   const state = invitationState(current, now)
@@ -387,6 +405,7 @@ const claimInvitation = async (
   invitation: { id: number; organizationId: number; role: OrganizationMembershipRole },
   userId: string
 ) => {
+  await assertOrganizationOpen(tx, invitation.organizationId)
   if (invitation.role === 'admin') {
     const owner = await tx.query.memberships.findFirst({
       columns: { userId: true },
@@ -553,6 +572,7 @@ export const createInviteLink = async (
   }
 ) => {
   if (role !== 'volunteer' && role !== 'learner') throw invitationError('INVALID')
+  await assertOrganizationOpen(tx, organizationId)
 
   const { token, tokenCipher, tokenHash } = issueToken()
   const [link] = await tx

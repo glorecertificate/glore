@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ApplicationSummary } from './application-summary'
 import { type AdminOrganizationStatus } from './organization-band'
 import { AdminOrganizationRail } from './organization-rail'
+import { AdminOrganizationRejection } from './organization-rejection'
 import { organizationState } from './utils'
 
 const loadActivity = async () => (await import('@/components/features/organization/activity')).OrganizationActivity
@@ -103,6 +104,7 @@ export const AdminOrganizationDetail = ({
   status: AdminOrganizationStatus
 }) => {
   const { refresh: routerRefresh } = useRouter()
+  const tAdmin = useTranslations('Admin.organizations')
   const { hasApplication } = organizationState(initialData)
   const request = initialData.joinRequests.find(item => item.role === 'admin') ?? null
 
@@ -112,6 +114,7 @@ export const AdminOrganizationDetail = ({
 
   return (
     <div className="@container/detail">
+      {status === 'rejected' && <AdminOrganizationRejection request={request} />}
       <div className="grid items-start gap-6 @5xl/detail:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0">
           {hasApplication && (
@@ -123,6 +126,7 @@ export const AdminOrganizationDetail = ({
             <OrganizationMembers
               currentUserId={initialData.currentUserId}
               isOrgAdmin
+              emptyDescription={status === 'rejected' ? tAdmin('rejectedMembersEmpty') : undefined}
               members={initialData.memberships}
               onRefresh={refresh}
               organizationId={initialData.id}

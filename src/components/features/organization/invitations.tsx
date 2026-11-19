@@ -49,6 +49,14 @@ const FILTER_LABELS = {
   open: 'filterOpen',
 } as const
 
+const STATE_RANK: Record<Invitation['state'], number> = {
+  accepted: 2,
+  declined: 3,
+  expired: 1,
+  pending: 0,
+  revoked: 4,
+}
+
 type InvitationFilter = 'accepted' | 'all' | 'expired' | 'open'
 
 const FILTERS: Record<InvitationFilter, (invitation: Invitation) => boolean> = {
@@ -83,7 +91,7 @@ export const OrganizationInvitations = ({
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<InvitationFilter>('open')
+  const [filter, setFilter] = useState<InvitationFilter>('all')
   const [activeId, setActiveId] = useState<number | null>(null)
   const [revokeTarget, setRevokeTarget] = useState<Invitation | null>(null)
 
@@ -91,7 +99,7 @@ export const OrganizationInvitations = ({
   const formatDate = (value: string) => dateFormatter.format(new Date(timestampMillis(value)))
   const needle = search.trim().toLowerCase()
   const searched = invitations.filter(({ email }) => !needle || email.toLowerCase().includes(needle))
-  const rows = searched.filter(FILTERS[filter])
+  const rows = searched.filter(FILTERS[filter]).toSorted((a, b) => STATE_RANK[a.state] - STATE_RANK[b.state])
 
   const canManage = (invitation: Invitation) =>
     canManageInvitation(isOrgAdmin ? 'admin' : 'representative', invitation, currentUserId)

@@ -61,12 +61,12 @@ export const CertificatesContent = ({ certificates, draftSteps, eligibility }: C
   const rows = sortCertificates(
     certificates.filter(
       certificate =>
-        (!status || certificate.status === status) &&
-        (!org || certificate.organization.id === org) &&
+        (status.length === 0 || status.includes(certificate.status)) &&
+        (org.length === 0 || org.includes(certificate.organization.id)) &&
         matchSearch([certificate.organization.name, certificate.code])
     )
   )
-  const filtered = Boolean(status || org || searchValue.trim())
+  const filtered = Boolean(status.length > 0 || org.length > 0 || searchValue.trim())
 
   const secondLine = (certificate: Certificate) => {
     if (certificate.isDraft) {
@@ -82,8 +82,8 @@ export const CertificatesContent = ({ certificates, draftSteps, eligibility }: C
 
   const clearFilters = () => {
     setSearch('')
-    setStatus(null)
-    setOrg(null)
+    setStatus([])
+    setOrg([])
   }
 
   return (
@@ -144,29 +144,31 @@ export const CertificatesContent = ({ certificates, draftSteps, eligibility }: C
           {
             id: 'status',
             label: t('columnStatus'),
-            onChange: ([value]) => setStatus((value as CertListStatus | undefined) ?? null),
+            onChange: values => setStatus(values as CertListStatus[]),
             options: presentStatuses.map(value => ({
-              count: certificates.filter(c => c.status === value).length,
+              count: certificates.filter(
+                c => c.status === value && (org.length === 0 || org.includes(c.organization.id))
+              ).length,
               label: tStatus(CERTIFICATE_STATUS[value].labelKey),
               tone: CERTIFICATE_STATUS[value].tone,
               value,
             })),
-            selection: 'single',
-            values: status ? [status] : [],
+            values: status,
           },
           ...(organizations.length > 1
             ? [
                 {
                   id: 'organization',
                   label: t('organization'),
-                  onChange: ([value]: string[]) => setOrg(value === undefined ? null : Number(value)),
+                  onChange: (values: string[]) => setOrg(values.map(Number)),
                   options: organizations.map(([id, name]) => ({
-                    count: certificates.filter(c => c.organization.id === id).length,
+                    count: certificates.filter(
+                      c => c.organization.id === id && (status.length === 0 || status.includes(c.status))
+                    ).length,
                     label: name,
                     value: String(id),
                   })),
-                  selection: 'single' as const,
-                  values: org === null ? [] : [String(org)],
+                  values: org.map(String),
                 },
               ]
             : []),

@@ -17,19 +17,19 @@ import {
 
 const paramsOptions = { history: 'push', startTransition } as const
 
-const statusParser = parseAsStringEnum([...CERT_LIST_STATUS_VALUES])
-const orgParser = parseAsInteger
+const statusParser = parseAsArrayOf(parseAsStringEnum([...CERT_LIST_STATUS_VALUES]))
+const orgParser = parseAsArrayOf(parseAsInteger)
 
 export const useCertListStatus = () => {
-  const [status, setStatusRaw] = useQueryState(CERT_LIST_PARAMS.STATUS, { ...statusParser, ...paramsOptions })
-  const setStatus = (s: CertListStatus | null) => setStatusRaw(s)
-  return { setStatus, status }
+  const [status, setStatusRaw] = useQueryState(CERT_LIST_PARAMS.STATUS, statusParser.withOptions(paramsOptions))
+  const setStatus = (values: CertListStatus[]) => setStatusRaw(values.length > 0 ? values : null)
+  return { setStatus, status: status ?? [] }
 }
 
 export const useCertListOrg = () => {
-  const [org, setOrgRaw] = useQueryState(CERT_LIST_PARAMS.ORG, { ...orgParser, ...paramsOptions })
-  const setOrg = (value: number | null) => setOrgRaw(value)
-  return { org, setOrg }
+  const [org, setOrgRaw] = useQueryState(CERT_LIST_PARAMS.ORG, orgParser.withOptions(paramsOptions))
+  const setOrg = (values: number[]) => setOrgRaw(values.length > 0 ? values : null)
+  return { org: org ?? [], setOrg }
 }
 
 const tabParser = parseAsStringEnum([...TUTOR_QUEUE_TABS]).withDefault('assigned')

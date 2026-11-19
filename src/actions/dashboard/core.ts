@@ -382,14 +382,9 @@ export const learnerChecklist = ({
   { done: completedByType.learner > 0, href: '/courses', key: 'learner' },
 ]
 
-export const nextSkillCourse = ({
-  continuing,
-  recommendations,
-}: Pick<MemberCourseSummary, 'continuing' | 'recommendations'>) => {
+export const nextSkillCourse = ({ continuing }: Pick<MemberCourseSummary, 'continuing'>) => {
   const started = continuing.find(({ type }) => type === 'skill')
-  if (started) return { slug: started.slug, started: true, title: started.title }
-  const suggested = recommendations.find(({ type }) => type === 'skill')
-  return suggested ? { slug: suggested.slug, started: false, title: suggested.title } : null
+  return started ? { slug: started.slug, title: started.title } : null
 }
 
 export interface EditorCourseRow {

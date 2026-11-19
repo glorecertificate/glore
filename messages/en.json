@@ -1206,7 +1206,6 @@
       },
       "actions": {
         "continueCourse": "Continue {course}",
-        "startCourse": "Start {course}",
         "browseCourses": "Go to courses",
         "start": "Start request",
         "continueDraft": "Continue draft",

@@ -1206,7 +1206,6 @@
       },
       "actions": {
         "continueCourse": "Continuar {course}",
-        "startCourse": "Empezar {course}",
         "browseCourses": "Ir a los cursos",
         "start": "Empezar la solicitud",
         "continueDraft": "Continuar borrador",

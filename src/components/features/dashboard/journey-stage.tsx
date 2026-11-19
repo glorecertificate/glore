@@ -76,7 +76,7 @@ export const JourneyStage = ({
     if (phase === 'learn' && next) {
       return {
         href: `/courses/${next.slug}` as Route,
-        label: t(next.started ? 'actions.continueCourse' : 'actions.startCourse', { course: next.title }),
+        label: t('actions.continueCourse', { course: next.title }),
       }
     }
     if (phase === 'learn') return { href: '/courses' as Route, label: t('actions.browseCourses') }

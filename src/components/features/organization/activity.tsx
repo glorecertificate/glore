@@ -13,7 +13,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 
 import { ActivityList } from './activity-list'
-import { TabHeader } from './tab-header'
 
 export const OrganizationActivity = ({
   initial,
@@ -42,7 +41,6 @@ export const OrganizationActivity = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <TabHeader description={t('activityDescription')} title={t('activityTitle')} />
       {page.items.length === 0 && (
         <Empty className="border">
           <EmptyHeader>

@@ -3,136 +3,194 @@
 import { useTranslations } from 'next-intl'
 
 import { type CertificateEligibility } from '@/actions/certificates/queries'
-import { CertificateCard } from '@/components/features/certificates/certificate-card'
+import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { EligibilityPanel } from '@/components/features/certificates/eligibility-panel'
-import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
 import { CERT_LIST_STATUS_VALUES, type CertListStatus } from '@/components/features/certificates/params'
+import { formatActivityDate, formatActivityPeriod } from '@/components/features/certificates/rules'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
-import { useCertListSort, useCertListStatus } from '@/components/features/certificates/use-params'
+import { useCertListOrg, useCertListStatus } from '@/components/features/certificates/use-params'
 import { LucideIcon } from '@/components/icons/lucide'
-import { Banner } from '@/components/ui/banner'
+import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { FilterBar } from '@/components/ui/filter-bar'
+import { DataTable } from '@/components/ui/data-table'
 import { Link } from '@/components/ui/link'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SearchInput } from '@/components/ui/search'
 import { type Certificate } from '@/db/queries/certificate'
+import { useSearch } from '@/hooks/use-search'
+import { SHORTCUTS } from '@/lib/shortcuts'
+
+const WIZARD_STEPS = ['stepsExperience', 'stepsSkills', 'stepsOrganization', 'stepsReview'] as const
+
+const rank = (certificate: Certificate) => {
+  if (certificate.isDraft) return 0
+  if (certificate.isOpen) return 1
+  if (certificate.isApproved) return certificate.isDefault ? 2 : 3
+  if (certificate.isRevoked) return 4
+  return 5
+}
+
+const sortCertificates = (certificates: Certificate[]) =>
+  certificates.toSorted(
+    (a, b) => rank(a) - rank(b) || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
 
 interface CertificatesContentProps {
   certificates: Certificate[]
+  draftSteps: Record<number, number>
   eligibility: CertificateEligibility
 }
 
-export const CertificatesContent = ({ certificates, eligibility }: CertificatesContentProps) => {
+export const CertificatesContent = ({ certificates, draftSteps, eligibility }: CertificatesContentProps) => {
   const t = useTranslations('CertificateList')
-  const tStatus = useTranslations('CertificateStatus')
-  const tCommon = useTranslations('Common')
   const tDetail = useTranslations('CertificateDetail')
+  const tStatus = useTranslations('CertificateStatus')
+  const tWizard = useTranslations('CertificateWizard')
+  const { locale } = useI18n()
   const { setStatus, status } = useCertListStatus()
-  const { setSort, sort } = useCertListSort()
+  const { org, setOrg } = useCertListOrg()
+  const { matchSearch, searchValue, setSearch } = useSearch()
 
-  const { eligible } = eligibility
-  const hasCertificates = certificates.length > 0
+  if (!eligibility.eligible && certificates.length === 0) return <EligibilityPanel eligibility={eligibility} />
 
-  const displayCertificates = (() => {
-    const filtered = status ? certificates.filter(c => c.status === status) : certificates
-    return filtered.toSorted((a, b) => {
-      const dateA = new Date(a.createdAt).getTime()
-      const dateB = new Date(b.createdAt).getTime()
-      return sort === 'oldest' ? dateA - dateB : dateB - dateA
-    })
-  })()
+  const periodFormatter = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' })
+  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
-  if (!eligible && !hasCertificates) return <EligibilityPanel eligibility={eligibility} />
-
+  const organizations = [...new Map(certificates.map(({ organization }) => [organization.id, organization.name]))]
   const presentStatuses = CERT_LIST_STATUS_VALUES.filter(value => certificates.some(c => c.status === value))
-  const featured = certificates.find(({ isApproved, isDefault }) => isApproved && isDefault)
-  const hasOpenRequest = certificates.some(({ isOpen }) => isOpen)
+
+  const rows = sortCertificates(
+    certificates.filter(
+      certificate =>
+        (!status || certificate.status === status) &&
+        (!org || certificate.organization.id === org) &&
+        matchSearch([certificate.organization.name, certificate.code])
+    )
+  )
+  const filtered = Boolean(status || org || searchValue.trim())
+
+  const secondLine = (certificate: Certificate) => {
+    if (certificate.isDraft) {
+      const step = draftSteps[certificate.id] ?? 0
+      return t('draftStep', { current: step + 1, name: tWizard(WIZARD_STEPS[step]), total: WIZARD_STEPS.length })
+    }
+    if (certificate.isRevoked && certificate.revokedAt) {
+      return t('revokedOn', { date: formatActivityDate(certificate.revokedAt.slice(0, 10), dateFormatter) ?? '-' })
+    }
+    const period = formatActivityPeriod(certificate, periodFormatter, values => tDetail('periodValue', values))
+    return `${period} · ${tDetail('hoursValue', { hours: certificate.activityDuration })}`
+  }
+
+  const clearFilters = () => {
+    setSearch('')
+    setStatus(null)
+    setOrg(null)
+  }
 
   return (
-    <div className="flex flex-col gap-8">
-      {eligible && !hasOpenRequest && (
-        <Banner className="flex-wrap items-center justify-between" variant="info">
-          <div className="space-y-1">
-            <p className="font-semibold text-brand-text">{t('requestCertificateTitle')}</p>
-            <p className="text-sm text-muted-foreground">{t('requestCertificateMessage')}</p>
-          </div>
-          <Button asChild icon="plus" size="sm" variant="brand">
-            <Link href="/certificates/new">{t('requestCertificate')}</Link>
-          </Button>
-        </Banner>
-      )}
-
-      {featured && (
-        <section aria-labelledby="featured-certificate" className="flex flex-col gap-3">
-          <h2 className="type-heading" id="featured-certificate">
-            {tDetail('featuredTitle')}
-          </h2>
+    <DataTable
+      columns={[
+        {
+          cell: certificate => (
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <Link
+                className="flex items-center gap-1.5 font-medium text-foreground hover:underline"
+                href={`/certificates/${certificate.id}`}
+                keepFresh="list"
+              >
+                {t('itemTitle')}
+                {certificate.isApproved && certificate.isDefault && (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-brand-text">
+                    <LucideIcon className="size-3.5" name="star" />
+                    {tDetail('featuredBadge')}
+                  </span>
+                )}
+              </Link>
+              <span className="text-xs text-muted-foreground">{secondLine(certificate)}</span>
+            </div>
+          ),
+          header: t('columnCertificate'),
+          id: 'certificate',
+        },
+        {
+          cell: certificate => <span className="text-sm">{certificate.organization.name}</span>,
+          header: t('organization'),
+          id: 'organization',
+          sortValue: certificate => certificate.organization.name,
+        },
+        {
+          cell: certificate => <CertificateStatusBadge status={certificate.status} />,
+          header: t('columnStatus'),
+          id: 'status',
+          sortValue: certificate => certificate.status,
+        },
+        {
+          cell: certificate =>
+            (certificate.isApproved || certificate.isRevoked) && certificate.code ? (
+              <span className="font-mono text-xs text-muted-foreground">{certificate.code}</span>
+            ) : (
+              <span className="text-muted-foreground">{'-'}</span>
+            ),
+          header: t('columnCode'),
+          id: 'code',
+        },
+      ]}
+      emptyDescription={filtered ? t('noFilteredCertificatesMessage') : t('noCertificatesMessage')}
+      emptyTitle={filtered ? t('noFilteredCertificates') : t('noCertificates')}
+      getRowId={certificate => certificate.id}
+      label={t('tableLabel')}
+      pageSize={20}
+      rail={{
+        groups: [
+          {
+            id: 'status',
+            label: t('columnStatus'),
+            onChange: value => setStatus(value as CertListStatus | null),
+            options: presentStatuses.map(value => ({
+              count: certificates.filter(c => c.status === value).length,
+              label: tStatus(CERTIFICATE_STATUS[value].labelKey),
+              tone: CERTIFICATE_STATUS[value].tone,
+              value,
+            })),
+            value: status,
+          },
+          ...(organizations.length > 1
+            ? [
+                {
+                  id: 'organization',
+                  label: t('organization'),
+                  onChange: (value: string | null) => setOrg(value === null ? null : Number(value)),
+                  options: organizations.map(([id, name]) => ({
+                    count: certificates.filter(c => c.organization.id === id).length,
+                    label: name,
+                    value: String(id),
+                  })),
+                  value: org === null ? null : String(org),
+                },
+              ]
+            : []),
+        ],
+        onReset: clearFilters,
+        search: placement => (
+          <SearchInput
+            aria-label={t('search')}
+            className="w-full"
+            hotkey={placement === 'panel' ? SHORTCUTS.filter.key : undefined}
+            placeholder={t('search')}
+            size="sm"
+          />
+        ),
+        searchActive: Boolean(searchValue.trim()),
+      }}
+      rowActions={certificate => (
+        <Button asChild size="sm" variant={certificate.isDraft ? 'primary' : 'outline'}>
           <Link
-            className="group/featured block rounded-xl focus-visible:focus-ring"
-            href={`/certificates/${featured.id}`}
+            href={certificate.isDraft ? `/certificates/new?draft=${certificate.id}` : `/certificates/${certificate.id}`}
           >
-            <FeaturedCredentialCard certificate={featured} />
+            {certificate.isDraft ? t('rowContinue') : t('rowOpen')}
           </Link>
-        </section>
+        </Button>
       )}
-
-      {hasCertificates && (
-        <FilterBar active={Boolean(status)} onClear={() => setStatus(null)}>
-          <Select
-            onValueChange={value => setStatus(value === 'all' ? null : (value as CertListStatus))}
-            value={status ?? 'all'}
-          >
-            <SelectTrigger aria-label={t('filterStatus')} className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('filterAll')}</SelectItem>
-              {presentStatuses.map(s => (
-                <SelectItem key={s} value={s}>
-                  {tStatus(CERTIFICATE_STATUS[s].labelKey)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
-            <SelectTrigger aria-label={tCommon('sortBy')} className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">{t('sortNewest')}</SelectItem>
-              <SelectItem value="oldest">{t('sortOldest')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </FilterBar>
-      )}
-
-      {displayCertificates.length > 0 ? (
-        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {displayCertificates.map(cert => (
-            <CertificateCard certificate={cert} key={cert.id} />
-          ))}
-        </div>
-      ) : (
-        <Empty className="border">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              {status ? <LucideIcon name="search-x" /> : <LucideIcon name="award" />}
-            </EmptyMedia>
-            <EmptyTitle>{status ? t('noFilteredCertificates') : t('noCertificates')}</EmptyTitle>
-            <EmptyDescription>
-              {status ? t('noFilteredCertificatesMessage') : t('noCertificatesMessage')}
-            </EmptyDescription>
-          </EmptyHeader>
-          {status && (
-            <EmptyContent>
-              <Button onClick={() => setStatus(null)} size="sm" variant="outline">
-                {tCommon('clearFilters')}
-              </Button>
-            </EmptyContent>
-          )}
-        </Empty>
-      )}
-    </div>
+      rows={rows}
+    />
   )
 }

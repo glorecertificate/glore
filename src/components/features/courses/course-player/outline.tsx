@@ -29,7 +29,7 @@ export const PlayerOutline = ({
               className={cn(
                 'flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium',
                 lesson.status === 'completed' && 'bg-success-subtle text-success-text',
-                lesson.status !== 'completed' && current && 'bg-primary text-primary-foreground',
+                lesson.status !== 'completed' && current && 'border-2 border-chart-teal text-fg-title',
                 lesson.status !== 'completed' && !current && 'bg-muted text-muted-foreground'
               )}
             >
@@ -45,7 +45,7 @@ export const PlayerOutline = ({
               <Link
                 aria-current={current ? 'step' : undefined}
                 className={cn(
-                  'flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-surface-hover',
+                  'flex min-h-11 items-center gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-surface-hover md:min-h-0',
                   current && 'bg-surface-selected font-medium'
                 )}
                 href={`/courses/${slug}/learn?lang=${language}&lesson=${lesson.id}`}
@@ -53,9 +53,13 @@ export const PlayerOutline = ({
                 {body}
               </Link>
             ) : (
-              <span className="flex flex-col gap-0.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground">
-                <span className="flex items-center gap-2.5 opacity-60">{body}</span>
-                <span className="pl-8.5 text-xs">{tPlayer('locked')}</span>
+              <span
+                className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground"
+                title={tPlayer('locked')}
+              >
+                {body}
+                <LucideIcon aria-hidden className="size-3.5 shrink-0" name="lock" />
+                <span className="sr-only">{tPlayer('locked')}</span>
               </span>
             )}
           </li>

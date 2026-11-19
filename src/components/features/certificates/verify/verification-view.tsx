@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/ui/copy-button'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { Image } from '@/components/ui/image'
-import { PageBandGlobe } from '@/components/ui/page-band'
 import { QrCode } from '@/components/ui/qr-code'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { VERIFY_ROOT } from '@/lib/constants'
@@ -45,87 +44,84 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
         {serializeJsonLd(structuredData(verification, url, t('credentialName', { name: holderName })))}
       </Script>
 
-      <article className="overflow-hidden rounded-xl border border-border-subtle bg-card text-card-foreground shadow-card">
-        <header
-          className={cn(
-            'relative isolate flex flex-col items-center gap-4 overflow-hidden border-b px-6 py-10 text-center',
-            revoked ? 'bg-surface-sunken' : 'bg-band text-band-foreground band-scope'
-          )}
-        >
-          {!revoked && <PageBandGlobe className="-top-32 -right-24" />}
-          <StatusBadge icon={revoked ? 'ban' : 'circle-check'} tone={revoked ? 'danger' : 'success'}>
-            {revoked ? t('revoked') : t('valid')}
-          </StatusBadge>
-          <div className="flex flex-col items-center gap-2">
-            <h1 className={cn('type-display text-balance', revoked ? 'text-fg-title' : 'text-band-foreground')}>
-              {holderName}
-            </h1>
-            <p className="flex items-center justify-center gap-2 text-base text-muted-foreground">
-              {organization.logoUrl && (
-                <Image
-                  alt=""
-                  className="size-6 rounded object-contain"
-                  height={24}
-                  src={organization.logoUrl}
-                  unoptimized
-                  width={24}
-                />
-              )}
-              {organization.name}
+      <article className="flex flex-col overflow-hidden rounded-xl border border-border-subtle bg-card text-card-foreground shadow-card">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b px-6 py-4">
+          <div className="flex min-w-0 flex-col gap-1">
+            <StatusBadge className="self-start text-base font-semibold" tone={revoked ? 'danger' : 'success'}>
+              {revoked ? t('revoked') : t('valid')}
+            </StatusBadge>
+            <p className={cn('text-sm', revoked ? 'text-danger-text' : 'text-muted-foreground')}>
+              {revoked
+                ? verification.revokedAt
+                  ? t('revokedOn', { date: dateFormatter.format(new Date(verification.revokedAt)) })
+                  : t('revokedMessage')
+                : t('validDetail', { date: dateFormatter.format(new Date(verification.issuedAt)) })}
             </p>
           </div>
-          <p className={revoked ? 'max-w-prose text-sm text-danger-text' : 'max-w-prose text-sm text-muted-foreground'}>
-            {revoked
-              ? verification.revokedAt
-                ? t('revokedOn', { date: dateFormatter.format(new Date(verification.revokedAt)) })
-                : t('revokedMessage')
-              : t('validMessage', { date: dateFormatter.format(new Date(verification.issuedAt)) })}
-          </p>
-          {verification.holderDeleted && <p className="max-w-prose text-xs text-muted-foreground">{t('holderLeft')}</p>}
-          {verification.documentUrl && (
+          {!revoked && verification.documentUrl && (
             <Button
               asChild
-              className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
+              className="relative max-sm:w-full pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
               icon="download"
               size="sm"
-              variant="band"
+              variant="outline"
             >
               <a download href={verification.documentUrl} rel="noopener noreferrer" target="_blank">
                 {t('downloadPdf')}
               </a>
             </Button>
           )}
+        </div>
+
+        <header className="flex flex-col gap-2 px-6 pt-6">
+          <h1 className="type-display text-balance text-fg-title">{holderName}</h1>
+          <p className="flex items-center gap-2 text-base text-muted-foreground">
+            {organization.logoUrl && (
+              <Image
+                alt=""
+                className="size-6 rounded object-contain"
+                height={24}
+                src={organization.logoUrl}
+                unoptimized
+                width={24}
+              />
+            )}
+            {t('volunteerAt', { organization: organization.name })}
+          </p>
+          {verification.holderDeleted && <p className="max-w-prose text-sm text-muted-foreground">{t('holderLeft')}</p>}
         </header>
 
         {!revoked && (
-          <>
-            <section aria-labelledby="verify-facts" className="border-b px-6 py-4">
-              <h2 className="sr-only" id="verify-facts">
-                {t('period')}
-              </h2>
-              <DescriptionList layout="rows">
-                <DescriptionItem>
-                  <DescriptionTerm>{t('period')}</DescriptionTerm>
-                  <DescriptionDetails>
-                    {t('periodValue', {
-                      end: dateFormatter.format(new Date(activity.endDate)),
-                      start: dateFormatter.format(new Date(activity.startDate)),
-                    })}
-                  </DescriptionDetails>
-                </DescriptionItem>
-                <DescriptionItem>
-                  <DescriptionTerm>{t('hours')}</DescriptionTerm>
-                  <DescriptionDetails>{t('hoursValue', { hours: activity.duration })}</DescriptionDetails>
-                </DescriptionItem>
-                <DescriptionItem>
-                  <DescriptionTerm>{t('location')}</DescriptionTerm>
-                  <DescriptionDetails>{activity.location}</DescriptionDetails>
-                </DescriptionItem>
-              </DescriptionList>
-            </section>
+          <section aria-labelledby="verify-facts" className="px-6 py-4">
+            <h2 className="sr-only" id="verify-facts">
+              {t('period')}
+            </h2>
+            <DescriptionList layout="rows">
+              <DescriptionItem>
+                <DescriptionTerm>{t('period')}</DescriptionTerm>
+                <DescriptionDetails>
+                  {t('periodValue', {
+                    end: dateFormatter.format(new Date(activity.endDate)),
+                    start: dateFormatter.format(new Date(activity.startDate)),
+                  })}
+                </DescriptionDetails>
+              </DescriptionItem>
+              <DescriptionItem>
+                <DescriptionTerm>{t('hours')}</DescriptionTerm>
+                <DescriptionDetails>{t('hoursValue', { hours: activity.duration })}</DescriptionDetails>
+              </DescriptionItem>
+              <DescriptionItem>
+                <DescriptionTerm>{t('location')}</DescriptionTerm>
+                <DescriptionDetails>{activity.location}</DescriptionDetails>
+              </DescriptionItem>
+            </DescriptionList>
+          </section>
+        )}
 
-            {activity.tasks.length > 0 && (
-              <section aria-labelledby="verify-tasks" className="flex flex-col gap-3 border-b p-6">
+        {!revoked && (
+          <div className="grid gap-6 border-t p-6 max-md:*:last:order-first md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+            {activity.tasks.length > 0 ? (
+              <section aria-labelledby="verify-tasks" className="flex flex-col gap-3">
                 <h2 className="type-label text-muted-foreground" id="verify-tasks">
                   {t('tasks')}
                 </h2>
@@ -135,9 +131,10 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
                   ))}
                 </ul>
               </section>
+            ) : (
+              <span />
             )}
-
-            <section aria-labelledby="verify-skills" className="flex flex-col gap-4 border-b p-6">
+            <section aria-labelledby="verify-skills" className="flex flex-col gap-4">
               <h2 className="type-label text-muted-foreground" id="verify-skills">
                 {t('skills')}
               </h2>
@@ -153,10 +150,10 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
                 })}
               </ul>
             </section>
-          </>
+          </div>
         )}
 
-        <footer className="flex flex-col items-start gap-6 p-6 sm:flex-row sm:items-center sm:justify-between">
+        <footer className="mt-auto flex flex-col items-start gap-6 border-t p-6 sm:flex-row sm:items-center sm:justify-between">
           <DescriptionList>
             <DescriptionItem>
               <DescriptionTerm>{t('code')}</DescriptionTerm>

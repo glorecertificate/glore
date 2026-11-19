@@ -36,6 +36,8 @@ const AUTO_ROTATE_SPEED = 0.005
 const PALETTE_CYCLE_MS = 2800
 
 const NO_MARKERS: Marker[] = []
+const SMALL_SCREEN_QUERY = '(max-width: 767px)'
+const SMALL_SCREEN_RATIO = 1.5
 
 const GLOBE_OPTIONS = {
   baseColor: [1, 1, 1] as Rgb,
@@ -161,6 +163,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     theta: clamp(merged.theta, MIN_THETA, MAX_THETA),
   })
   const sentMarkersRef = useRef<Marker[] | null>(null)
+  const wakeRef = useRef<() => void>(() => {})
 
   useEffect(() => {
     baseRotationRef.current.phi = merged.phi
@@ -168,6 +171,10 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
   }, [merged.phi, merged.theta])
 
   const deltaRef = useRef({ phi: 0, theta: 0 })
+
+  useEffect(() => {
+    wakeRef.current()
+  })
 
   const updateDrag = (x: number, y: number) => {
     if (!pointerRef.current) return
@@ -194,6 +201,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
 
   const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     pointerRef.current = { x: e.clientX, y: e.clientY }
+    wakeRef.current()
     if (!canvasRef.current) return
 
     canvasRef.current.style.cursor = 'grabbing'
@@ -226,6 +234,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     if (!touch) return
 
     pointerRef.current = { x: touch.clientX, y: touch.clientY }
+    wakeRef.current()
     if (canvasRef.current) {
       canvasRef.current.style.cursor = 'grabbing'
     }
@@ -250,6 +259,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     let reduced = motion.matches
     const onMotionChange = () => {
       reduced = motion.matches
+      wakeRef.current()
     }
     motion.addEventListener('change', onMotionChange)
 
@@ -257,6 +267,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     let appliedWidth = widthRef.current
     const resizeObserver = new ResizeObserver(() => {
       widthRef.current = canvas.offsetWidth
+      wakeRef.current()
     })
     resizeObserver.observe(canvas)
 
@@ -290,7 +301,9 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
         arcs: [],
         baseColor: color,
         dark: propsRef.current.dark,
-        devicePixelRatio: propsRef.current.devicePixelRatio,
+        devicePixelRatio: window.matchMedia(SMALL_SCREEN_QUERY).matches
+          ? Math.min(propsRef.current.devicePixelRatio, SMALL_SCREEN_RATIO)
+          : propsRef.current.devicePixelRatio,
         diffuse: propsRef.current.diffuse,
         glowColor: propsRef.current.glowColor,
         height: initialWidth,
@@ -313,7 +326,14 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
 
       const hasContext = !!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
 
+      let dirty = true
+
       const tick = (time: number) => {
+        if (reduced && !pointerRef.current && !dirty) {
+          frame = 0
+          return
+        }
+        dirty = false
         const elapsed = Math.max(time - lastTime, 0)
         lastTime = time
 
@@ -377,11 +397,16 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
       })
       intersectionObserver.observe(canvas)
       document.addEventListener('visibilitychange', onVisibilityChange)
+      wakeRef.current = () => {
+        dirty = true
+        start()
+      }
 
       if (!animated) tick(performance.now())
       start()
 
       teardown = () => {
+        wakeRef.current = () => {}
         cancelAnimationFrame(frame)
         intersectionObserver.disconnect()
         document.removeEventListener('visibilitychange', onVisibilityChange)
@@ -404,7 +429,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     <canvas
       aria-hidden
       className={cn(
-        'cursor-grab bg-transparent opacity-0 transition-opacity duration-300 motion-reduce:transition-none',
+        'cursor-grab touch-none bg-transparent opacity-0 transition-opacity duration-300 motion-reduce:transition-none',
         className
       )}
       onPointerCancel={onPointerLeave}

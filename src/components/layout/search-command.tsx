@@ -41,8 +41,8 @@ import { type Course } from '@/db/queries/course'
 import { useDebounce } from '@/hooks/use-debounce'
 import { APP_ROOT } from '@/lib/constants'
 
-const IDLE_GROUPS: NavigationGroup[] = ['pages', 'actions', 'admin']
-const GROUPS: NavigationGroup[] = ['pages', 'actions', 'settings', 'organization', 'admin']
+const IDLE_GROUPS: NavigationGroup[] = ['pages', 'actions', 'content', 'admin']
+const GROUPS: NavigationGroup[] = ['pages', 'actions', 'settings', 'organization', 'content', 'admin']
 
 interface RemoteResults extends WorkspaceSearchResult {
   failed: boolean
@@ -127,6 +127,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
   const headings = {
     actions: t('actions'),
     admin: t('admin'),
+    content: t('content'),
     organization: t('organization'),
     pages: t('pages'),
     settings: t('settings'),

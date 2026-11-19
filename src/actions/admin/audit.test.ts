@@ -235,6 +235,27 @@ describe.skipIf(!isLocalDatabase)('admin audit log', () => {
     expect(error?.code).toBe('INVALID_INPUT')
   })
 
+  it('refuses to export for callers who are not platform admins', async () => {
+    as('member')
+    const { data, error } = await actions.exportAdminAudit({ q: tag })
+    expect(data).toBeNull()
+    expect(error?.code).toBe('FORBIDDEN')
+  })
+
+  it('exports every event that matches the filters as CSV', async () => {
+    as('admin')
+    const all = await actions.exportAdminAudit({ q: tag })
+    expect(all.error).toBeNull()
+    const listed = await list({})
+    expect(all.data?.count).toBe(listed.total)
+    expect(all.data?.csv.split('\r\n')[0]).toBe('date,category,action,actor,actor_email,target,organization,reason')
+
+    const filtered = await actions.exportAdminAudit({ category: 'moderation', q: tag })
+    const moderated = await list({ category: 'moderation' })
+    expect(filtered.data?.count).toBe(moderated.total)
+    expect(filtered.data?.truncated).toBe(false)
+  })
+
   it('lists audited events newest first and leaves out other actions', async () => {
     const page = await list({})
     const listed = page.rows.map(({ id }) => id)

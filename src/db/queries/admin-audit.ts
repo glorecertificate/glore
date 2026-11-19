@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { type EventType } from '@/db/queries/activity-event'
-import { type AdminPage } from '@/db/queries/admin-user'
+import { type FacetedPage } from '@/db/queries/admin-user'
 
 export const ADMIN_AUDIT_PAGE_SIZE = 25
 
@@ -96,7 +96,7 @@ export interface AdminAuditRow {
   target: AuditTarget | null
 }
 
-export type AdminAuditPage = AdminPage<AdminAuditRow>
+export type AdminAuditPage = FacetedPage<AdminAuditRow>
 
 export interface AuditRecord {
   action: string

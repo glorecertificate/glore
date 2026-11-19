@@ -65,7 +65,7 @@ export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListS
       value={courses}
     >
       <SortableContent asChild>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2">
           <AnimatedList>
             {courses.map(course => (
               <SortableItem

@@ -1,6 +1,6 @@
 'use client'
 
-import { startTransition, useId } from 'react'
+import { startTransition, useId, useLayoutEffect, useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { useQueryStates } from 'nuqs'
@@ -16,6 +16,12 @@ import { LOCALES } from '@/lib/i18n'
 
 const NO_CATEGORY = 'none'
 
+const FRAME_WIDTHS = { desktop: 640, phone: 390 }
+
+const FRAME_HEIGHT = 'min(44rem, 75vh)'
+
+type Device = keyof typeof FRAME_WIDTHS
+
 interface AdminEmailsProps {
   html: string | null
   subject: string | null
@@ -28,11 +34,27 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
   const tLanguages = useTranslations('Intl.Languages')
   const templateId = useId()
   const categoryId = useId()
+  const frameRef = useRef<HTMLDivElement>(null)
+  const [device, setDevice] = useState<Device>('phone')
+  const [available, setAvailable] = useState(0)
   const [{ category, lang }, setParams] = useQueryStates(emailPreviewParsers, {
     clearOnDefault: true,
     shallow: false,
     startTransition,
   })
+
+  const width = FRAME_WIDTHS[device]
+  const scale = available > 0 ? Math.min(1, available / width) : 1
+
+  useLayoutEffect(() => {
+    const element = frameRef.current
+    if (!element) return
+    const measure = () => setAvailable(element.clientWidth)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [html])
 
   return (
     <Card className="gap-4 p-4">
@@ -91,6 +113,18 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
             </SelectContent>
           </Select>
         </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label>{t('device')}</Label>
+          <SegmentedControl
+            aria-label={t('device')}
+            onValueChange={value => value && setDevice(value as Device)}
+            value={device}
+          >
+            <SegmentedControlItem value="phone">{t('devicePhone')}</SegmentedControlItem>
+            <SegmentedControlItem value="desktop">{t('deviceDesktop')}</SegmentedControlItem>
+          </SegmentedControl>
+        </div>
       </div>
 
       {html === null || subject === null ? (
@@ -100,8 +134,18 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
       ) : (
         <div className="overflow-hidden rounded-lg border">
           <p className="border-b px-4 py-3 type-label">{t('subject', { subject })}</p>
-          <div className="overflow-x-auto">
-            <iframe className="h-176 w-full min-w-160" sandbox="" srcDoc={html} title={t('frameTitle', { template })} />
+          <div className="overflow-hidden bg-surface-muted" ref={frameRef} style={{ height: FRAME_HEIGHT }}>
+            <div
+              className="origin-top-left"
+              style={{
+                height: `calc(${FRAME_HEIGHT} / ${scale})`,
+                marginInline: scale < 1 ? 0 : 'auto',
+                scale,
+                width: `${width}px`,
+              }}
+            >
+              <iframe className="size-full bg-white" sandbox="" srcDoc={html} title={t('frameTitle', { template })} />
+            </div>
           </div>
         </div>
       )}

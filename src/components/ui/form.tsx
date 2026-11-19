@@ -13,6 +13,7 @@ import {
   useFormState,
 } from 'react-hook-form'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
@@ -128,11 +129,16 @@ export const FormMessage = ({ className, ...props }: React.ComponentProps<'p'>) 
 
   return (
     <p
-      className={cn('text-sm leading-[normal] text-destructive-text', className)}
+      className={cn(
+        'text-sm leading-[normal]',
+        error ? 'flex items-start gap-1.5 text-destructive-text' : 'text-muted-foreground',
+        className
+      )}
       data-slot="form-message"
       id={formMessageId}
       {...props}
     >
+      {error && <LucideIcon aria-hidden className="mt-0.5 size-3.5 shrink-0" name="circle-alert" />}
       {body}
     </p>
   )

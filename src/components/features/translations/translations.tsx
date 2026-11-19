@@ -12,9 +12,8 @@ import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { FilterBar } from '@/components/ui/filter-bar'
+import { FilterRailChips, FilterRailPanel, type FilterRailProps, FilterRailToolbar } from '@/components/ui/filter-rail'
 import { SearchInput } from '@/components/ui/search'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { type RawCatalog } from '@/lib/message-validation'
 import {
@@ -33,8 +32,6 @@ import { translationsParsers } from './translations-params'
 
 const TranslationEditor = dynamic(async () => (await import('./translation-editor')).TranslationEditor)
 
-const ALL = 'all'
-
 const SEARCH_DEBOUNCE_MS = 250
 
 export const Translations = ({
@@ -51,7 +48,7 @@ export const Translations = ({
   const [params, setParams] = useQueryStates(translationsParsers, { clearOnDefault: true })
   const [search, setSearch] = useState(params.q)
   const query = useDeferredValue(search)
-  const filter: TranslationFilter = params.filter ?? ALL
+  const filter: TranslationFilter = params.filter ?? 'all'
 
   const rows = buildRows({ catalogs, defaultLocale: DEFAULT_LOCALE, locales: LOCALES, overrides })
   const filtered = filterRows(rows, { filter, namespace: params.namespace, query })
@@ -78,81 +75,90 @@ export const Translations = ({
     if ('data' in result) setOverrides(result.data)
   }
 
+  const namespaceCounts = rows.reduce<Record<string, number>>((acc, row) => {
+    acc[row.namespace] = (acc[row.namespace] ?? 0) + 1
+    return acc
+  }, {})
+
+  const rail: FilterRailProps = {
+    groups: [
+      {
+        id: 'state',
+        label: t('filters.state'),
+        onChange: value => setParams({ filter: value as TranslationState | null }),
+        options: TRANSLATION_STATES.map(state => ({
+          count: counts[state],
+          label: t(`states.${state}`),
+          value: state,
+        })),
+        value: params.filter,
+      },
+      {
+        id: 'namespace',
+        label: t('filters.namespace'),
+        onChange: value => setParams({ namespace: value }),
+        options: namespaces.map(namespace => ({
+          count: namespaceCounts[namespace],
+          label: namespace,
+          value: namespace,
+        })),
+        value: params.namespace,
+      },
+    ],
+    onReset: handleClear,
+    search: placement => (
+      <SearchInput
+        aria-label={t('searchPlaceholder')}
+        className="w-full"
+        onValueChange={handleSearch}
+        placeholder={t('searchPlaceholder')}
+        size={placement === 'panel' ? 'md' : 'sm'}
+        value={search}
+      />
+    ),
+    searchActive: Boolean(search),
+  }
+
   return (
-    <Card className="min-w-0 gap-4 p-4">
-      <FilterBar active={filtersActive} onClear={handleClear}>
-        <SearchInput
-          aria-label={t('searchPlaceholder')}
-          className="w-full sm:w-80"
-          size="sm"
-          onValueChange={handleSearch}
-          placeholder={t('searchPlaceholder')}
-          value={search}
-        />
-        <Select
-          onValueChange={value => setParams({ filter: value === ALL ? null : (value as TranslationState) })}
-          value={filter}
-        >
-          <SelectTrigger aria-label={t('filters.state')} className="w-auto gap-1.5" size="sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>{t('states.all')}</SelectItem>
-            {TRANSLATION_STATES.map(state => (
-              <SelectItem key={state} value={state}>
-                {t('filters.option', { count: counts[state], label: t(`states.${state}`) })}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          onValueChange={value => setParams({ namespace: value === ALL ? null : value })}
-          value={params.namespace ?? ALL}
-        >
-          <SelectTrigger aria-label={t('filters.namespace')} className="w-auto gap-1.5" size="sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>{t('filters.allNamespaces')}</SelectItem>
-            {namespaces.map(namespace => (
-              <SelectItem key={namespace} value={namespace}>
-                {namespace}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <output aria-live="polite" className="ml-auto text-sm text-muted-foreground">
-          {t('count', { count: filtered.length })}
-        </output>
-      </FilterBar>
-      {filtered.length === 0 ? (
-        <Empty>
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <LucideIcon name="search-x" />
-            </EmptyMedia>
-            <EmptyTitle>{t('empty.title')}</EmptyTitle>
-            <EmptyDescription>{t('empty.description')}</EmptyDescription>
-          </EmptyHeader>
-          {filtersActive && (
-            <EmptyContent>
-              <Button onClick={handleClear} size="sm" variant="outline">
-                {tCommon('clearFilters')}
-              </Button>
-            </EmptyContent>
-          )}
-        </Empty>
-      ) : (
-        <TranslationList
-          key={`${filter}:${params.namespace ?? ''}:${query}`}
-          locales={locales}
-          onOpen={handleOpen}
-          rows={filtered}
-        />
-      )}
-      {selected && (
-        <TranslationEditor onChanged={handleChanged} onClose={() => setParams({ key: null })} row={selected} />
-      )}
+    <Card className="min-w-0 flex-row gap-0 overflow-hidden p-0">
+      <FilterRailPanel {...rail} className="max-h-dialog self-start overflow-y-auto max-lg:hidden" />
+      <div className="flex min-w-0 flex-1 flex-col gap-4 p-4">
+        <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
+          <FilterRailToolbar {...rail} />
+          <output aria-live="polite" className="ml-auto text-sm text-muted-foreground">
+            {t('count', { count: filtered.length })}
+          </output>
+        </div>
+        <FilterRailChips groups={rail.groups} />
+        {filtered.length === 0 ? (
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <LucideIcon name="search-x" />
+              </EmptyMedia>
+              <EmptyTitle>{t('empty.title')}</EmptyTitle>
+              <EmptyDescription>{t('empty.description')}</EmptyDescription>
+            </EmptyHeader>
+            {filtersActive && (
+              <EmptyContent>
+                <Button onClick={handleClear} size="sm" variant="outline">
+                  {tCommon('clearFilters')}
+                </Button>
+              </EmptyContent>
+            )}
+          </Empty>
+        ) : (
+          <TranslationList
+            key={`${filter}:${params.namespace ?? ''}:${query}`}
+            locales={locales}
+            onOpen={handleOpen}
+            rows={filtered}
+          />
+        )}
+        {selected && (
+          <TranslationEditor onChanged={handleChanged} onClose={() => setParams({ key: null })} row={selected} />
+        )}
+      </div>
     </Card>
   )
 }

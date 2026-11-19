@@ -24,7 +24,7 @@ export const NotificationBell = ({ children, className, ...props }: React.Compon
           <LucideIcon className="size-4" name="bell" />
           {children}
           {!children && <span className="sr-only">{t('bell')}</span>}
-          {unread > 0 && <SidebarCount count={unread} label={t('bellUnread', { count: unread })} />}
+          {unread > 0 && <SidebarCount count={unread} floating label={t('bellUnread', { count: unread })} />}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[min(24rem,calc(100vw-1.5rem))] p-0" sideOffset={8}>

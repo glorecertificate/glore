@@ -14,19 +14,25 @@ import { type AdminOrganization } from '@/db/queries/organization'
 import { ActionDialog } from './action-dialog'
 
 const ReviewDialog = ({
+  description,
   onCloseAutoFocus,
   mode,
   onConfirm,
   onOpenChange,
   open,
   org,
+  requireComment = false,
+  title,
 }: {
+  description?: React.ReactNode
   onCloseAutoFocus?: (event: Event) => void
   mode: 'approve' | 'reject'
   onConfirm: (comment?: string) => Promise<boolean>
   onOpenChange: (open: boolean) => void
   open: boolean
   org: Pick<AdminOrganization, 'name'> | null
+  requireComment?: boolean
+  title?: React.ReactNode
 }) => {
   const t = useTranslations('Admin.organizations')
   const [comment, setComment] = useState('')
@@ -54,17 +60,18 @@ const ReviewDialog = ({
       onCloseAutoFocus={onCloseAutoFocus}
       busy={loading}
       cancelLabel={t('cancel')}
+      confirmDisabled={requireComment && comment.trim() === ''}
       confirmLabel={approving ? t('approve') : t('reject')}
-      description={t(approving ? 'approveDescription' : 'rejectDescription', { name: org?.name ?? '' })}
+      description={description ?? t(approving ? 'approveDescription' : 'rejectDescription', { name: org?.name ?? '' })}
       loadingLabel={approving ? t('approving') : t('rejecting')}
       onConfirm={handleConfirm}
       onOpenChange={handleOpenChange}
       open={open}
-      title={approving ? t('approveTitle') : t('rejectTitle')}
+      title={title ?? t(approving ? 'approveTitle' : 'rejectTitle')}
       tone={approving ? 'default' : 'destructive'}
     >
       <div className="flex flex-col gap-y-2">
-        <Label htmlFor={id}>{t('commentLabelOptional')}</Label>
+        <Label htmlFor={id}>{t(requireComment ? 'commentLabelRequired' : 'commentLabelOptional')}</Label>
         <Textarea
           disabled={loading}
           id={id}

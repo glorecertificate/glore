@@ -3,7 +3,6 @@
 import { Route } from 'next'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-import { LucideIcon } from '@/components/icons/lucide'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,9 +10,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
+import { InfoTip } from '@/components/ui/info-tip'
 import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { Link, LinkProps } from '@/components/ui/link'
-import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
+import { SidebarTrigger, useSidebarAction } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useScroll } from '@/hooks/use-scroll'
 import { SHORTCUTS } from '@/lib/shortcuts'
@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
 export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<typeof SidebarTrigger>) => {
-  const { action } = useSidebar()
+  const action = useSidebarAction()
 
   return (
     <Tooltip delayDuration={600} disableHoverableContent>
@@ -84,19 +84,7 @@ export const HeaderBreadcrumb = ({
               ) : (
                 <h1 className={cn(BAR_TEXT, 'font-medium text-foreground')}>{title}</h1>
               ))}
-            {description && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <LucideIcon
-                    name="info"
-                    className="mt-px size-3.5 cursor-help text-foreground/60 not-data-[state=closed]:text-foreground hover:text-foreground"
-                  />
-                </TooltipTrigger>
-                <TooltipContent className="text-[13px]" showArrow>
-                  {description}
-                </TooltipContent>
-              </Tooltip>
-            )}
+            {description && <InfoTip className="mt-px">{description}</InfoTip>}
           </BreadcrumbItem>
         )}
         {children}
@@ -112,7 +100,7 @@ export const HeaderLogo = <T,>({ className, href, ...props }: LinkProps<T>) => {
   return (
     <Link
       aria-label={metadata.name}
-      className={cn(href === pathname && !searchParams.toString() && 'pointer-events-none', className)}
+      className={cn('touch-hit', href === pathname && !searchParams.toString() && 'pointer-events-none', className)}
       href={href}
       {...props}
     />

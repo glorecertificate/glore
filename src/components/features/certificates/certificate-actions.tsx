@@ -9,6 +9,7 @@ import { featureCertificate, withdrawCertificate } from '@/actions/certificates/
 import { revokeCertificate } from '@/actions/certificates/review'
 import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { MIN_REASON_LENGTH, ReasonDialog } from '@/components/features/certificates/reason-dialog'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
@@ -21,10 +22,14 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useActionError } from '@/hooks/use-action-error'
+
+const TOUCH =
+  'relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5'
 
 export const CertificateActions = ({ canManage, certificate }: { canManage: boolean; certificate: Certificate }) => {
   const t = useTranslations('CertificateDetail')
@@ -72,80 +77,69 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
       return refresh()
     })
 
+  const hasMenu = canFeature || canWithdraw || canRevoke
+  const canRequestNew = isOwner && (certificate.isRevoked || certificate.isRejected || certificate.isWithdrawn)
+
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 max-sm:w-full max-sm:*:flex-1">
       {canEdit && (
-        <Button
-          asChild
-          icon="pencil"
-          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-          size="sm"
-          variant="band"
-        >
+        <Button asChild className={TOUCH} icon="pencil" size="sm" variant="band">
           <Link href={`/certificates/new?draft=${certificate.id}`}>
             {certificate.isDraft ? tWizard('continueDraft') : t('resubmitButton')}
           </Link>
         </Button>
       )}
       {canReview && (
-        <Button
-          asChild
-          icon="clipboard-check"
-          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-          size="sm"
-          variant="band"
-        >
+        <Button asChild className={TOUCH} icon="clipboard-check" size="sm" variant="band">
           <Link href={`/certificates/${certificate.id}/review`}>{t('openReview')}</Link>
         </Button>
       )}
       {certificate.isApproved && (
-        <Button
-          asChild
-          icon="download"
-          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-          size="sm"
-          variant="band-secondary"
-        >
+        <Button asChild className={TOUCH} icon="download" size="sm" variant="band">
           <a download href={pdfHref}>
             {t('download')}
           </a>
         </Button>
       )}
-      {canFeature && (
-        <Button
-          disabled={pending || impersonating}
-          icon="star"
-          onClick={feature}
-          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-          size="sm"
-          variant="band-secondary"
-        >
-          {t('makeFeatured')}
+      {canRequestNew && (
+        <Button asChild className={TOUCH} icon="plus" size="sm" variant="band-secondary">
+          <Link href="/certificates/new">{t('requestNew')}</Link>
         </Button>
       )}
-      {canWithdraw && (
-        <Button
-          disabled={pending}
-          icon="undo-2"
-          onClick={() => setWithdrawing(true)}
-          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-          size="sm"
-          variant="band-secondary"
-        >
-          {t('withdraw')}
-        </Button>
-      )}
-      {canRevoke && (
-        <Button
-          disabled={pending || impersonating}
-          icon="shield-off"
-          onClick={() => setRevoking(true)}
-          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5"
-          size="sm"
-          variant="band-secondary"
-        >
-          {t('revoke')}
-        </Button>
+      {hasMenu && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              aria-label={t('moreActions')}
+              className={TOUCH}
+              disabled={pending}
+              size="icon"
+              variant="band-secondary"
+            >
+              <LucideIcon name="ellipsis" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {canFeature && (
+              <DropdownMenuItem disabled={impersonating} onSelect={feature}>
+                <LucideIcon name="star" />
+                {t('makeFeatured')}
+              </DropdownMenuItem>
+            )}
+            {canWithdraw && (
+              <DropdownMenuItem onSelect={() => setWithdrawing(true)}>
+                <LucideIcon name="undo-2" />
+                {t('withdraw')}
+              </DropdownMenuItem>
+            )}
+            {canRevoke && (
+              <DropdownMenuItem disabled={impersonating} onSelect={() => setRevoking(true)} variant="destructive">
+                <LucideIcon name="shield-off" />
+                {t('revoke')}
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
       {(canFeature || canRevoke) && <ImpersonationLockNote className="basis-full" />}
 

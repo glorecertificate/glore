@@ -9,11 +9,9 @@ import { debounce, useQueryStates } from 'nuqs'
 import { type IconName } from '@/components/icons/registry'
 import { useI18n } from '@/components/providers/i18n'
 import { DataTable } from '@/components/ui/data-table'
-import { FilterBar } from '@/components/ui/filter-bar'
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { SearchInput } from '@/components/ui/search'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusBadge, type StatusMeta } from '@/components/ui/status-badge'
 import {
   AUDIT_CATEGORIES,
@@ -27,7 +25,6 @@ import { cn } from '@/lib/utils'
 
 import { adminAuditParsers } from './audit-params'
 
-const ALL = 'all'
 const SEARCH_DEBOUNCE_MS = 300
 
 const EVENT_KEYS = {
@@ -151,7 +148,6 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
           cell: row => (
             <StatusBadge
               className="max-w-full max-sm:text-left max-sm:whitespace-normal"
-              icon={CATEGORY_META[row.category].icon}
               tone={CATEGORY_META[row.category].tone}
             >
               {t(`categories.${row.category}`)}
@@ -186,52 +182,56 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
       ]}
       emptyDescription={filtersActive ? t('noResultsDescription') : t('noEventsDescription')}
       emptyTitle={filtersActive ? t('noResults') : t('noEvents')}
-      filters={
-        <FilterBar active={filtersActive} onClear={handleClear}>
+      rail={{
+        extra: (
+          <fieldset className="flex min-w-0 flex-col gap-2">
+            <legend className="mb-1 type-label text-fg-title">{t('filters.dates')}</legend>
+            <Input
+              aria-label={t('filters.from')}
+              max={params.to ?? undefined}
+              onChange={event => setParams({ from: event.target.value || null, page: 1 })}
+              size="sm"
+              type="date"
+              value={params.from ?? ''}
+            />
+            <Input
+              aria-label={t('filters.to')}
+              min={params.from ?? undefined}
+              onChange={event => setParams({ page: 1, to: event.target.value || null })}
+              size="sm"
+              type="date"
+              value={params.to ?? ''}
+            />
+          </fieldset>
+        ),
+        groups: [
+          {
+            id: 'category',
+            label: t('filters.category'),
+            onChange: value => setParams({ category: value as AuditCategory | null, page: 1 }),
+            options: AUDIT_CATEGORIES.map(category => ({
+              count: page.facets.category?.[category] ?? 0,
+              label: t(`categories.${category}`),
+              tone: CATEGORY_META[category].tone,
+              value: category,
+            })),
+            value: params.category,
+          },
+        ],
+        onReset: handleClear,
+        search: placement => (
           <SearchInput
             aria-label={t('searchPlaceholder')}
-            className="w-full sm:w-72"
-            size="sm"
+            className="w-full"
+            hotkey={placement === 'panel' ? '/' : undefined}
             onValueChange={handleSearch}
             placeholder={t('searchPlaceholder')}
+            size="sm"
             value={search}
           />
-          <Select
-            onValueChange={value => setParams({ category: value === ALL ? null : (value as AuditCategory), page: 1 })}
-            value={params.category ?? ALL}
-          >
-            <SelectTrigger aria-label={t('filters.category')} className="w-auto gap-1.5" size="sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL}>{t('filters.allCategories')}</SelectItem>
-              {AUDIT_CATEGORIES.map(category => (
-                <SelectItem key={category} value={category}>
-                  {t(`categories.${category}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            aria-label={t('filters.from')}
-            className="w-auto"
-            max={params.to ?? undefined}
-            onChange={event => setParams({ from: event.target.value || null, page: 1 })}
-            size="sm"
-            type="date"
-            value={params.from ?? ''}
-          />
-          <Input
-            aria-label={t('filters.to')}
-            className="w-auto"
-            min={params.from ?? undefined}
-            onChange={event => setParams({ page: 1, to: event.target.value || null })}
-            size="sm"
-            type="date"
-            value={params.to ?? ''}
-          />
-        </FilterBar>
-      }
+        ),
+        searchActive: search.length > 0 || Boolean(params.from || params.to),
+      }}
       getRowId={row => String(row.id)}
       label={t('tableLabel')}
       pageSize={page.pageSize}

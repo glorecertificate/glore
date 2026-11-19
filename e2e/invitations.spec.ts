@@ -46,7 +46,7 @@ test('owner sends a single invitation that reaches the inbox and shows as pendin
   const { page } = owner
   await page.goto('/organization?tab=invitations')
   const dialog = page.getByRole('dialog', { name: 'Invite people' })
-  await openDialog(page.getByRole('button', { name: 'Invite people' }), dialog)
+  await openDialog(page.getByRole('button', { name: 'Invite member' }), dialog)
   await dialog.getByLabel('Email address').fill(invitee)
   await dialog.getByRole('button', { name: 'Send invitation' }).click()
   await expect(page.getByText(`Invitation sent to ${invitee}`)).toBeVisible()
@@ -62,7 +62,7 @@ test('owner pastes several addresses and reads the result of each row', async ()
   const { page } = owner
   await page.goto('/organization?tab=invitations')
   const dialog = page.getByRole('dialog', { name: 'Invite people' })
-  await openDialog(page.getByRole('button', { name: 'Invite people' }), dialog)
+  await openDialog(page.getByRole('button', { name: 'Invite member' }), dialog)
   await dialog.getByRole('radio', { name: 'Several people' }).click()
   await dialog.getByLabel('Email addresses').fill(`${secondInvitee}, ${thirdInvitee}\n${invitee}`)
   await expect(dialog.getByText('3 addresses ready')).toBeVisible()
@@ -80,16 +80,23 @@ test('owner resends and revokes an invitation, and the revoked link stops workin
   const token = await invitationToken(tenant, thirdInvitee)
   const row = page.getByRole('row').filter({ hasText: thirdInvitee })
 
-  await openDialog(
-    row.getByRole('button', { name: 'Resend' }),
-    page.getByText(/Invitation sent again to|Wait a minute before sending/u)
-  )
+  await expect(async () => {
+    await row.getByRole('button', { name: `Actions for ${thirdInvitee}` }).click()
+    await page.getByRole('menuitem', { name: 'Resend' }).click({ timeout: 5000 })
+    await expect(page.getByText(/Invitation sent again to|Wait a minute before sending/u)).toBeVisible({
+      timeout: 5000,
+    })
+  }).toPass()
 
   const revokeDialog = page.getByRole('alertdialog')
-  await openDialog(row.getByRole('button', { name: 'Revoke' }), revokeDialog)
+  await row.getByRole('button', { name: `Actions for ${thirdInvitee}` }).click()
+  await openDialog(page.getByRole('menuitem', { name: 'Revoke' }), revokeDialog)
   await revokeDialog.getByRole('button', { name: 'Revoke' }).click()
   await expect(page.getByText(`Invitation to ${thirdInvitee} revoked`)).toBeVisible()
-  await expect(page.getByRole('row').filter({ hasText: thirdInvitee })).toHaveCount(0)
+  await expect(
+    page.getByRole('row').filter({ hasText: thirdInvitee }).getByText('Revoked', { exact: true })
+  ).toBeVisible()
+  await expect(row.getByRole('button', { name: `Actions for ${thirdInvitee}` })).toHaveCount(0)
   expect((await invitationRow(tenant, thirdInvitee))?.revoked_at).not.toBeNull()
 
   const guest = await browser.newContext({ ignoreHTTPSErrors: true, storageState: { cookies: [], origins: [] } })
@@ -172,7 +179,7 @@ test('representative sees only the roles they may invite', async () => {
   const { page } = representative
   await page.goto('/organization?tab=invitations')
   const dialog = page.getByRole('dialog', { name: 'Invite people' })
-  await openDialog(page.getByRole('button', { name: 'Invite people' }), dialog)
+  await openDialog(page.getByRole('button', { name: 'Invite member' }), dialog)
   await dialog.getByRole('combobox', { name: 'Role' }).click()
   await expect(page.getByRole('option', { name: 'Volunteer' })).toBeVisible()
   await expect(page.getByRole('option', { name: 'Tutor' })).toBeVisible()

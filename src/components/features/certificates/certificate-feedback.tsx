@@ -44,7 +44,11 @@ export const CertificateFeedback = ({
   return (
     <Card
       className={
-        kind === 'changes' ? 'border-warning-border bg-warning-subtle' : 'border-danger-border bg-danger-subtle'
+        kind === 'changes'
+          ? 'border-warning-border bg-warning-subtle'
+          : kind === 'rejected'
+            ? 'border-danger-border bg-danger-subtle'
+            : 'bg-surface-muted'
       }
     >
       <CardHeader>

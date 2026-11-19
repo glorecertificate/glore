@@ -23,7 +23,13 @@ export interface CourseCompletionData {
   skills: CompletionSkill[]
 }
 
-const NextSteps = ({ completion, overview }: { completion: CourseCompletionData; overview: CourseOverview }) => {
+export const CourseNextSteps = ({
+  completion,
+  overview,
+}: {
+  completion: CourseCompletionData
+  overview: CourseOverview
+}) => {
   const t = useTranslations('Learning.complete')
   const { eligibility, recommendation } = completion
 
@@ -129,7 +135,7 @@ export const CourseCompleteView = ({
       <Card>
         <CourseRatingForm courseId={overview.id} initial={completion.myRating} />
       </Card>
-      <NextSteps completion={completion} overview={overview} />
+      <CourseNextSteps completion={completion} overview={overview} />
     </div>
   )
 }

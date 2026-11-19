@@ -9,7 +9,7 @@ import { z } from 'zod'
 
 import { checkSlugAvailable } from '@/actions/courses/management'
 import { useCourses } from '@/components/features/courses/context'
-import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
+import { courseIconVariants } from '@/components/features/courses/course-list/icon-variants'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'

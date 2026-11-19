@@ -6,10 +6,11 @@ import { startTransition } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { Button } from '@/components/ui/button'
 import { countryCodeToFlag } from '@/components/ui/country-select'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { useCountryName } from '@/hooks/use-country-name'
-import { isHttpUrl } from '@/lib/url'
 
 import { OrganizationReviewActions } from './organization-review-actions'
 
@@ -26,8 +27,6 @@ interface AdminOrganizationBandOrganization {
   country: string | null
   createdAt: string
   email: string
-  memberCount: number
-  url: string | null
 }
 
 export const AdminOrganizationBandMeta = ({
@@ -40,17 +39,15 @@ export const AdminOrganizationBandMeta = ({
   const { dateTime } = useFormatter()
   const t = useTranslations('Admin.organizations')
   const translateCountry = useCountryName()
-  const { icon, label, tone } = STATUS[status]
+  const { label, tone } = STATUS[status]
 
   const country =
     organization.country && `${translateCountry(organization.country)} ${countryCodeToFlag(organization.country)}`
   const location = [organization.city, country].filter(Boolean).join(', ')
 
   return (
-    <span className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-      <StatusBadge icon={icon} tone={tone}>
-        {t(label)}
-      </StatusBadge>
+    <span className="flex min-w-0 flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+      <StatusBadge tone={tone}>{t(label)}</StatusBadge>
       {location && (
         <span className="flex items-center gap-1.5">
           <LucideIcon className="shrink-0" name="map-pin" />
@@ -60,21 +57,6 @@ export const AdminOrganizationBandMeta = ({
       <span className="flex min-w-0 items-center gap-1.5">
         <LucideIcon className="shrink-0" name="mail" />
         <span className="truncate">{organization.email}</span>
-      </span>
-      {organization.url && isHttpUrl(organization.url) && (
-        <a
-          className="flex items-center gap-1.5 hover:text-band-foreground hover:underline"
-          href={organization.url}
-          rel="noreferrer"
-          target="_blank"
-        >
-          <LucideIcon className="shrink-0" name="globe" />
-          {organization.url.replace(/^https?:\/\//u, '')}
-        </a>
-      )}
-      <span className="flex items-center gap-1.5">
-        <LucideIcon className="shrink-0" name="users" />
-        {t('memberCount', { count: organization.memberCount })}
       </span>
       <span className="flex items-center gap-1.5">
         <LucideIcon className="shrink-0" name="calendar" />
@@ -88,4 +70,26 @@ export const AdminOrganizationBandActions = ({ id, name }: { id: number; name: s
   const { refresh } = useRouter()
 
   return <OrganizationReviewActions id={id} name={name} onReviewed={() => startTransition(() => refresh())} />
+}
+
+export const AdminOrganizationBandMenu = ({ email }: { email: string }) => {
+  const t = useTranslations('Admin.organizations')
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-label={t('moreOptions')} size="icon" variant="band-secondary">
+          <LucideIcon name="ellipsis" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <a href={`mailto:${email}`}>
+            <LucideIcon name="mail" />
+            {t('emailOrg')}
+          </a>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }

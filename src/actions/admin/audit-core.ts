@@ -11,6 +11,7 @@ import {
   type AuditRecord,
   adminAuditQuerySchema,
   auditActionsOf,
+  auditCategoryOf,
   auditCertificateIds,
   auditDayEnd,
   auditDayStart,
@@ -20,6 +21,7 @@ import {
 } from '@/db/queries/admin-audit'
 import { likePattern, searchTokens, toPage } from '@/db/queries/admin-user'
 import { activityEvents, certificates, organizations, users } from '@/db/schema'
+import { toCsv } from '@/lib/csv'
 import { fullName } from '@/lib/utils'
 
 type ParsedQuery = ReturnType<typeof adminAuditQuerySchema.parse>
@@ -93,6 +95,22 @@ const resolveRows = async (records: AuditRecord[]) => {
   })
 }
 
+const countCategories = async (query: ParsedQuery) => {
+  const rows = await db
+    .select({ action: activityEvents.action, total: count() })
+    .from(activityEvents)
+    .leftJoin(actor, eq(actor.id, activityEvents.actorId))
+    .leftJoin(target, eq(target.id, targetUserId))
+    .where(buildFilters({ ...query, category: null }))
+    .groupBy(activityEvents.action)
+  const totals: Record<string, number> = {}
+  for (const row of rows) {
+    const category = auditCategoryOf(row.action)
+    if (category) totals[category] = (totals[category] ?? 0) + row.total
+  }
+  return totals
+}
+
 export const queryAdminAudit = async (input: AdminAuditQuery) => {
   const parsed = adminAuditQuerySchema.safeParse(input)
   if (!parsed.success) throw adminError('INVALID_INPUT')
@@ -129,5 +147,55 @@ export const queryAdminAudit = async (input: AdminAuditQuery) => {
   const rows = await resolveRows(
     records.map(record => ({ ...record, metadata: record.metadata as Record<string, unknown> }))
   )
-  return toPage(rows, { page, pageSize: ADMIN_AUDIT_PAGE_SIZE, total })
+  return {
+    ...toPage(rows, { page, pageSize: ADMIN_AUDIT_PAGE_SIZE, total }),
+    facets: { category: await countCategories(parsed.data) },
+  }
+}
+
+const AUDIT_EXPORT_LIMIT = 10_000
+
+export const exportAdminAuditCsv = async (input: AdminAuditQuery) => {
+  const parsed = adminAuditQuerySchema.safeParse({ ...input, page: null })
+  if (!parsed.success) throw adminError('INVALID_INPUT')
+
+  const records = await db
+    .select({
+      action: activityEvents.action,
+      actorId: activityEvents.actorId,
+      createdAt: activityEvents.createdAt,
+      id: activityEvents.id,
+      metadata: activityEvents.metadata,
+      organizationId: activityEvents.organizationId,
+      subjectId: activityEvents.subjectId,
+    })
+    .from(activityEvents)
+    .leftJoin(actor, eq(actor.id, activityEvents.actorId))
+    .leftJoin(target, eq(target.id, targetUserId))
+    .where(buildFilters(parsed.data))
+    .orderBy(desc(activityEvents.createdAt), desc(activityEvents.id))
+    .limit(AUDIT_EXPORT_LIMIT + 1)
+
+  const truncated = records.length > AUDIT_EXPORT_LIMIT
+  const rows = await resolveRows(
+    records
+      .slice(0, AUDIT_EXPORT_LIMIT)
+      .map(record => ({ ...record, metadata: record.metadata as Record<string, unknown> }))
+  )
+
+  const csv = toCsv([
+    ['date', 'category', 'action', 'actor', 'actor_email', 'target', 'organization', 'reason'],
+    ...rows.map(row => [
+      new Date(row.createdAt).toISOString(),
+      row.category,
+      row.action,
+      row.actor?.name ?? '',
+      row.actor?.email ?? '',
+      row.target?.label ?? '',
+      row.organization?.name ?? '',
+      row.detail.reason ?? row.detail.comment ?? '',
+    ]),
+  ])
+
+  return { count: rows.length, csv, truncated }
 }

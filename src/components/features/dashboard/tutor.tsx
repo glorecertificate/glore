@@ -5,195 +5,164 @@ import { type Route } from 'next'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type TutorQueueItem, type TutorSummary } from '@/actions/dashboard/core'
-import { AgeBadge } from '@/components/features/certificates/age-badge'
+import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
-import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
 import { NotificationList } from '@/components/features/notifications/notification-list'
-import { LucideIcon } from '@/components/icons/lucide'
-import { Badge } from '@/components/ui/badge'
-import { Banner } from '@/components/ui/banner'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { DataTable } from '@/components/ui/data-table'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
 import { type Notification } from '@/db/queries/notification'
 
 const HOURS_PER_DAY = 24
+const MIN_REVIEW_SAMPLE = 5
+
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part.charAt(0))
+    .join('')
+    .toUpperCase()
+
+const reviewHref = (item: TutorQueueItem) => {
+  if (item.source === 'pool') return '/certificates?tab=pool' as Route
+  return (item.status === 'changes_requested' ? `/certificates/${item.id}` : `/certificates/${item.id}/review`) as Route
+}
 
 export const TutorDashboard = ({
   firstName,
   notifications,
-  organization,
   tutor,
 }: {
   firstName: string
   notifications: Notification[]
-  organization: string | null
   tutor: TutorSummary
 }) => {
   const t = useTranslations('Dashboard')
+  const tQueue = useTranslations('CertificateQueue')
   const { number } = useFormatter()
   const { assigned, oldest, pool, queue, reviewTime, waitingVolunteer } = tutor
 
-  const heroAction = (() => {
-    if (assigned.count > 0) return { href: '/certificates?tab=assigned' as Route, label: t('tutor.openQueue') }
-    if (pool.count > 0) return { href: '/certificates?tab=pool' as Route, label: t('tutor.openPool') }
-    return { href: '/certificates' as Route, label: t('tutor.openQueue') }
+  const average = (() => {
+    if (reviewTime.averageHours === null || reviewTime.sample < MIN_REVIEW_SAMPLE) return null
+    const days = reviewTime.averageHours >= HOURS_PER_DAY * 2
+    return t('tutor.reviewBasis', {
+      count: reviewTime.sample,
+      value: days
+        ? t('tutor.reviewDays', { days: number(reviewTime.averageHours / HOURS_PER_DAY, { maximumFractionDigits: 1 }) })
+        : t('tutor.reviewHours', { hours: number(reviewTime.averageHours, { maximumFractionDigits: 1 }) }),
+    })
   })()
 
-  const reviewValue =
-    reviewTime.averageHours === null
-      ? t('tutor.noReviewTime')
-      : reviewTime.averageHours >= HOURS_PER_DAY * 2
-        ? t('tutor.reviewDays', { days: number(reviewTime.averageHours / HOURS_PER_DAY, { maximumFractionDigits: 1 }) })
-        : t('tutor.reviewHours', { hours: number(reviewTime.averageHours, { maximumFractionDigits: 1 }) })
+  const action = oldest
+    ? { href: reviewHref(oldest), label: t(oldest.source === 'assigned' ? 'tutor.startNext' : 'tutor.claimNext') }
+    : undefined
+
+  const rowLabel = (item: TutorQueueItem) => {
+    if (item.source === 'pool') return t('tutor.claim')
+    return t(item.status === 'changes_requested' ? 'tutor.view' : 'tutor.startReview')
+  }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <DashboardHero
-        action={heroAction}
-        organization={organization}
-        subtitle={t('subtitle.tutor')}
+        action={action}
+        subtitle={
+          <div className="flex flex-col gap-1">
+            <p>{t('tutor.workload', { assigned: assigned.count, pool: pool.count, waiting: waitingVolunteer })}</p>
+            {average && <p className="text-sm">{average}</p>}
+          </div>
+        }
         title={t('greeting', { name: firstName })}
       />
 
-      {oldest && (
-        <Banner
-          className="flex-wrap items-center justify-between"
-          variant={oldest.tone === 'fresh' ? 'info' : 'warning'}
-        >
-          <div className="space-y-1">
-            <p className="font-semibold">{t('tutor.oldestTitle')}</p>
-            <p className="text-sm text-muted-foreground">
-              {t(oldest.source === 'assigned' ? 'tutor.oldestAssigned' : 'tutor.oldestPool', {
-                holder: oldest.holder ?? t('tutor.unknownVolunteer'),
-              })}
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <AgeBadge days={oldest.days} tone={oldest.tone} />
-            <Button asChild size="sm" variant="brand">
+      <Card data-slot="tutor-queue">
+        <CardHeader>
+          <CardTitle>{t('tutor.queueTitle')}</CardTitle>
+          {queue.length > 0 && (
+            <CardAction>
               <Link
-                href={
-                  (oldest.source === 'assigned'
-                    ? `/certificates/${oldest.id}/review`
-                    : '/certificates?tab=pool') as Route
-                }
+                className="inline-flex min-h-8 items-center text-sm font-medium"
+                href="/certificates"
+                variant="primary"
               >
-                {oldest.source === 'assigned' ? t('tutor.review') : t('tutor.claim')}
+                {t('tutor.openQueue')}
               </Link>
-            </Button>
-          </div>
-        </Banner>
-      )}
+            </CardAction>
+          )}
+        </CardHeader>
+        {queue.length === 0 && (
+          <DashboardEmpty
+            description={t('tutor.queueEmptyDescription', { count: pool.count })}
+            icon="inbox"
+            title={t('tutor.queueEmptyTitle')}
+          />
+        )}
+        {queue.length === 0 && pool.count > 0 && (
+          <Button asChild className="self-center" variant="outline">
+            <Link href="/certificates?tab=pool">{t('tutor.claimRequest')}</Link>
+          </Button>
+        )}
+        {queue.length > 0 && (
+          <ul className="-mx-5 flex flex-col divide-y divide-border-subtle border-t border-border-subtle">
+            {queue.map(item => {
+              const name = item.holder ?? t('tutor.unknownVolunteer')
+              return (
+                <li
+                  className="flex flex-wrap items-center gap-x-3 gap-y-2 px-5 py-3 sm:flex-nowrap"
+                  key={`${item.source}-${item.id}`}
+                >
+                  <Avatar className="size-9">
+                    <AvatarFallback>{initials(name)}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
+                    <Link
+                      className="min-w-0 truncate text-sm font-medium text-fg-title hover:underline focus-visible:focus-ring"
+                      href={reviewHref(item)}
+                    >
+                      {name}
+                    </Link>
+                    <div className="flex items-center gap-3">
+                      <CertificateStatusBadge status={item.status} />
+                      <span className="type-caption text-fg-2">
+                        {item.days === 0 ? tQueue('ageToday') : tQueue('ageDays', { days: item.days })}
+                      </span>
+                    </div>
+                  </div>
+                  <Button asChild className="max-sm:w-full" size="sm" variant="outline">
+                    <Link href={reviewHref(item)}>{rowLabel(item)}</Link>
+                  </Button>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </Card>
 
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatLink
-          accent="teal"
-          description={t('tutor.assignedDescription')}
-          href="/certificates?tab=assigned"
-          icon="clipboard-check"
-          label={t('tutor.assigned')}
-          value={assigned.count}
-        />
-        <StatLink
-          accent="navy"
-          description={t('tutor.poolDescription')}
-          href="/certificates?tab=pool"
-          icon="inbox"
-          label={t('tutor.pool')}
-          value={pool.count}
-        />
-        <StatLink
-          accent="amber"
-          description={t('tutor.waitingVolunteerDescription')}
-          href="/certificates?tab=assigned"
-          icon="hourglass"
-          label={t('tutor.waitingVolunteer')}
-          value={waitingVolunteer}
-        />
-        <Card
-          className="justify-between gap-4 border-transparent bg-highlight p-5 pt-6 text-highlight-foreground shadow-stat"
-          data-slot="stat-card"
-        >
-          <CardHeader className="gap-2">
-            <div className="flex items-center gap-2.5">
-              <span
-                aria-hidden
-                className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-highlight-foreground/15"
-              >
-                <LucideIcon className="size-4" name="timer" />
-              </span>
-              <CardDescription className="text-highlight-muted">{t('tutor.reviewTime')}</CardDescription>
-            </div>
-            <CardTitle className="type-stat">{reviewValue}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-highlight-muted">
-            {reviewTime.sample > 0 ? t('tutor.reviewSample', { count: reviewTime.sample }) : t('tutor.reviewTimeEmpty')}
-          </CardContent>
-        </Card>
-      </section>
-
-      <DashboardSection action={{ href: '/certificates', label: t('viewAll') }} title={t('tutor.queueTitle')}>
-        <DataTable
-          columns={[
-            {
-              cell: (item: TutorQueueItem) => (
-                <span className="font-medium">{item.holder ?? t('tutor.unknownVolunteer')}</span>
-              ),
-              header: t('tutor.volunteer'),
-              id: 'holder',
-              sortValue: item => item.holder ?? '',
-            },
-            {
-              cell: item => (
-                <Badge variant={item.source === 'assigned' ? 'info' : 'muted'}>
-                  {item.source === 'assigned' ? t('tutor.sourceAssigned') : t('tutor.sourcePool')}
-                </Badge>
-              ),
-              header: t('tutor.source'),
-              id: 'source',
-              sortValue: item => item.source,
-            },
-            {
-              cell: item => <AgeBadge days={item.days} tone={item.tone} />,
-              header: t('tutor.waiting'),
-              id: 'waiting',
-              sortValue: item => item.days,
-            },
-          ]}
-          emptyDescription={t('tutor.queueEmptyDescription')}
-          emptyTitle={t('tutor.queueEmptyTitle')}
-          getRowId={item => `${item.source}-${item.id}`}
-          label={t('tutor.queueTitle')}
-          pageSize={5}
-          rowActions={item =>
-            item.source === 'assigned' ? (
-              <Button asChild icon="clipboard-check" size="sm" variant="brand">
-                <Link href={`/certificates/${item.id}/review`}>{t('tutor.review')}</Link>
-              </Button>
-            ) : (
-              <Button asChild icon="user-plus" size="sm" variant="outline">
-                <Link href="/certificates?tab=pool">{t('tutor.claim')}</Link>
-              </Button>
-            )
-          }
-          rows={queue}
-        />
-      </DashboardSection>
-
-      <DashboardSection action={{ href: '/notifications', label: t('viewAll') }} title={t('updates.title')}>
-        <Card>
-          <CardContent>
-            {notifications.length === 0 ? (
-              <DashboardEmpty icon="bell-off" title={t('updates.empty')} />
-            ) : (
-              <NotificationList notifications={notifications} />
-            )}
-          </CardContent>
-        </Card>
-      </DashboardSection>
+      <Card data-slot="tutor-updates">
+        <CardHeader>
+          <CardTitle>{t('updates.title')}</CardTitle>
+          <CardAction>
+            <Link
+              className="inline-flex min-h-8 items-center text-sm font-medium"
+              href="/notifications"
+              variant="primary"
+            >
+              {t('updates.all')}
+            </Link>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          {notifications.length === 0 ? (
+            <DashboardEmpty icon="bell-off" title={t('updates.empty')} />
+          ) : (
+            <NotificationList notifications={notifications} />
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

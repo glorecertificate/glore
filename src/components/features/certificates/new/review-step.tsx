@@ -7,9 +7,11 @@ import { CertificateThumbnail } from '@/components/features/certificates/certifi
 import { FieldError } from '@/components/features/certificates/field-error'
 import { SectionNote } from '@/components/features/certificates/new/section-note'
 import { type SkillOption } from '@/components/features/certificates/new/values'
-import { type PersonalField, pdfDate } from '@/components/features/certificates/rules'
+import { type PersonalField, formatActivityPeriod, pdfDate } from '@/components/features/certificates/rules'
 import { type WizardValues } from '@/components/features/certificates/schemas'
+import { useI18n } from '@/components/providers/i18n'
 import { Banner } from '@/components/ui/banner'
+import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
@@ -23,11 +25,17 @@ interface ReviewStepProps {
   firstName: string
   lastName: string | null
   missing: readonly PersonalField[]
+  onChange: (step: number) => void
   options: SkillOption[]
   organization: { logoUrl: string | null; name: string }
 }
 
-const Thumbnail = ({ firstName, lastName, options, organization }: Omit<ReviewStepProps, 'comment' | 'missing'>) => {
+const Thumbnail = ({
+  firstName,
+  lastName,
+  options,
+  organization,
+}: Omit<ReviewStepProps, 'comment' | 'missing' | 'onChange'>) => {
   const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<WizardValues>()
   const values = useWatch({ control })
@@ -59,14 +67,105 @@ const Thumbnail = ({ firstName, lastName, options, organization }: Omit<ReviewSt
   )
 }
 
-export const ReviewStep = ({ comment, missing, ...thumbnail }: ReviewStepProps) => {
+const RATINGS = ['experience', 'support', 'certificationSupport'] as const
+
+const Answers = ({ onChange, options }: { onChange: (step: number) => void; options: SkillOption[] }) => {
+  const t = useTranslations('CertificateWizard')
+  const tDetail = useTranslations('CertificateDetail')
+  const { locale } = useI18n()
+  const { control } = useFormContext<WizardValues>()
+  const values = useWatch({ control })
+  const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
+  const language = values.language ?? DEFAULT_LOCALE
+  const titles = new Map(
+    options.map(({ id, slug, title }) => [
+      id,
+      title ? localizeRecord(title as IntlRecord, language as Locale, DEFAULT_LOCALE) || slug : slug,
+    ])
+  )
+  const tasks = (values.tasks ?? []).flatMap(task => (task?.text?.trim() ? [task.text.trim()] : []))
+  const skills = (values.skills ?? []).flatMap(skill => (skill?.courseId ? [titles.get(skill.courseId) ?? ''] : []))
+  const rating = values.rating
+  const ratings = RATINGS.flatMap(key => {
+    const score = rating?.[key]
+    return typeof score === 'number'
+      ? [`${t(`rating${key[0]!.toUpperCase()}${key.slice(1)}` as 'ratingExperience')}: ${score}/5`]
+      : []
+  })
+
+  const rows = [
+    {
+      key: 'period',
+      label: t('summaryPeriod'),
+      step: 0,
+      value: formatActivityPeriod(
+        { activityEndDate: values.activityEndDate ?? '', activityStartDate: values.activityStartDate ?? '' },
+        formatter,
+        range => tDetail('periodValue', range)
+      ),
+    },
+    {
+      key: 'hours',
+      label: t('hours'),
+      step: 0,
+      value: tDetail('hoursValue', { hours: Number(values.activityDuration) || 0 }),
+    },
+    { key: 'location', label: t('location'), step: 0, value: values.activityLocation || '-' },
+    { key: 'tasks', label: t('tasksTitle'), step: 0, value: tasks },
+    { key: 'skills', label: t('stepsSkills'), step: 1, value: skills },
+    { key: 'rating', label: t('stepsOrganization'), step: 2, value: ratings },
+  ]
+
+  return (
+    <dl className="flex flex-col divide-y rounded-lg border" data-slot="answers">
+      {rows.map(row => (
+        <div
+          className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-1 px-4 py-3 sm:grid-cols-[10rem_minmax(0,1fr)_auto]"
+          key={row.key}
+        >
+          <dt className="text-sm text-muted-foreground max-sm:col-span-2">{row.label}</dt>
+          <dd className="min-w-0 text-sm font-medium">
+            {Array.isArray(row.value) ? (
+              <ul className="flex flex-col gap-0.5">
+                {row.value.map(item => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              row.value
+            )}
+          </dd>
+          <Button
+            aria-label={t('changeSection', { section: row.label })}
+            className="text-action-text"
+            onClick={() => onChange(row.step)}
+            size="sm"
+            type="button"
+            variant="ghost"
+          >
+            {t('change')}
+          </Button>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+export const ReviewStep = ({ comment, missing, onChange, ...thumbnail }: ReviewStepProps) => {
   const t = useTranslations('CertificateWizard')
   const { control } = useFormContext<WizardValues>()
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+    <div className="flex flex-col gap-6">
+      <SectionNote comment={comment} />
+      <Answers onChange={onChange} options={thumbnail.options} />
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-medium text-muted-foreground">{t('thumbnailTitle')}</p>
+        <div className="max-w-md">
+          <Thumbnail {...thumbnail} />
+        </div>
+      </div>
       <div className="flex flex-col gap-5">
-        <SectionNote comment={comment} />
         <FormField
           control={control}
           name="language"
@@ -152,11 +251,6 @@ export const ReviewStep = ({ comment, missing, ...thumbnail }: ReviewStepProps) 
         <Banner>
           <p>{t('submitNote')}</p>
         </Banner>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-medium text-muted-foreground">{t('thumbnailTitle')}</p>
-        <Thumbnail {...thumbnail} />
       </div>
     </div>
   )

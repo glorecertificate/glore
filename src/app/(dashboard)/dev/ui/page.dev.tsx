@@ -4,6 +4,7 @@ import { ButtonCatalog } from '@/components/features/dev/button-catalog'
 import { DataCatalog } from '@/components/features/dev/data-catalog'
 import { FeedbackCatalog } from '@/components/features/dev/feedback-catalog'
 import { FieldCatalog } from '@/components/features/dev/field-catalog'
+import { LayoutCatalog } from '@/components/features/dev/layout-catalog'
 import { NavigationCatalog } from '@/components/features/dev/navigation-catalog'
 import { OverlayCatalog } from '@/components/features/dev/overlay-catalog'
 import { DashboardPage } from '@/components/layout/dashboard-page'
@@ -18,6 +19,7 @@ const UiCatalogPage = () => (
       <BadgeCatalog />
       <FieldCatalog />
       <NavigationCatalog />
+      <LayoutCatalog />
       <FeedbackCatalog />
       <DataCatalog />
       <OverlayCatalog />

@@ -9,7 +9,7 @@ export interface NavigationViewer {
   role: OrganizationMembershipRole | null
 }
 
-export type NavigationGroup = 'actions' | 'admin' | 'organization' | 'pages' | 'settings'
+export type NavigationGroup = 'actions' | 'admin' | 'content' | 'organization' | 'pages' | 'settings'
 
 export type NavigationId =
   | 'admin-audit'
@@ -27,7 +27,6 @@ export type NavigationId =
   | 'courses'
   | 'dashboard'
   | 'docs'
-  | 'help'
   | 'invite-members'
   | 'notifications'
   | 'organization'
@@ -88,7 +87,6 @@ const NAVIGATION: NavigationEntry[] = [
   },
   { group: 'pages', href: '/docs', icon: 'book-marked', id: 'docs', sidebar: true, visible: everyone },
   { group: 'pages', href: '/notifications' as Route, icon: 'bell', id: 'notifications', visible: everyone },
-  { group: 'pages', href: '/help', icon: 'circle-help', id: 'help', visible: everyone },
   { group: 'pages', href: '/about', icon: 'info', id: 'about', visible: everyone },
   { group: 'settings', href: '/settings', icon: 'settings', id: 'settings', visible: everyone },
   {
@@ -203,14 +201,14 @@ const NAVIGATION: NavigationEntry[] = [
   { group: 'admin', href: '/admin/audit', icon: 'clipboard-list', id: 'admin-audit', visible: isAdmin },
   { group: 'admin', href: '/admin/settings', icon: 'settings-2', id: 'admin-settings', visible: isAdmin },
   {
-    group: 'admin',
+    group: 'content',
     href: '/translations' as Route,
     icon: 'languages',
     id: 'admin-translations',
     visible: isTeam,
   },
-  { group: 'admin', href: '/emails' as Route, icon: 'mail', id: 'admin-emails', visible: isTeam },
-  { group: 'admin', href: '/legal' as Route, icon: 'scale', id: 'admin-legal', visible: isTeam },
+  { group: 'content', href: '/emails' as Route, icon: 'mail', id: 'admin-emails', visible: isTeam },
+  { group: 'content', href: '/legal' as Route, icon: 'scale', id: 'admin-legal', visible: isTeam },
   {
     group: 'actions',
     href: '/certificates/new',

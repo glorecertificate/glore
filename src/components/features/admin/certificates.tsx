@@ -10,7 +10,6 @@ import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
 import { OrganizationCertificatesPanel } from '@/components/features/organization/certificates-panel'
 import { Card } from '@/components/ui/card'
 import { DataTable } from '@/components/ui/data-table'
-import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
 import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -63,7 +62,7 @@ export const AdminCertificates = ({
       onValueChange={value => setParams({ org: value === ALL ? null : Number(value), page: 1, q: null, status: null })}
       value={scoped ? String(params.org) : ALL}
     >
-      <SelectTrigger aria-label={t('filters.organization')} className="w-auto max-w-56 gap-1.5" size="sm">
+      <SelectTrigger aria-label={t('filters.organization')} className="w-full" size="sm">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -152,40 +151,44 @@ export const AdminCertificates = ({
       ]}
       emptyDescription={filtersActive ? t('noResultsDescription') : t('noCertificatesDescription')}
       emptyTitle={filtersActive ? t('noResults') : t('noCertificates')}
-      filters={
-        <FilterBar active={filtersActive} onClear={handleClear}>
-          <SearchInput
-            aria-label={t('searchPlaceholder')}
-            className="w-full sm:w-80"
-            size="sm"
-            onValueChange={handleSearch}
-            placeholder={t('searchPlaceholder')}
-            value={search}
-          />
-          <Select
-            onValueChange={value =>
-              setParams({ page: 1, status: value === ALL ? null : (value as AdminCertificateStatus) })
-            }
-            value={params.status ?? ALL}
-          >
-            <SelectTrigger aria-label={t('filters.status')} className="w-auto gap-1.5" size="sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL}>{t('filters.allStatuses')}</SelectItem>
-              {ADMIN_CERTIFICATE_STATUSES.map(status => (
-                <SelectItem key={status} value={status}>
-                  {tCertificates(CERTIFICATE_STATUS[status].labelKey)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {organizationSelect}
-        </FilterBar>
-      }
       getRowId={certificate => certificate.id}
       label={t('tableLabel')}
       pageSize={page?.pageSize}
+      rail={{
+        extra: (
+          <div className="flex min-w-0 flex-col gap-2">
+            <span className="type-label text-fg-title">{t('filters.organization')}</span>
+            {organizationSelect}
+          </div>
+        ),
+        groups: [
+          {
+            id: 'status',
+            label: t('filters.status'),
+            onChange: value => setParams({ page: 1, status: value as AdminCertificateStatus | null }),
+            options: ADMIN_CERTIFICATE_STATUSES.map(status => ({
+              count: page?.facets.status?.[status] ?? 0,
+              label: tCertificates(CERTIFICATE_STATUS[status].labelKey),
+              tone: CERTIFICATE_STATUS[status].tone,
+              value: status,
+            })),
+            value: params.status,
+          },
+        ],
+        onReset: handleClear,
+        search: placement => (
+          <SearchInput
+            aria-label={t('searchPlaceholder')}
+            className="w-full"
+            hotkey={placement === 'panel' ? '/' : undefined}
+            onValueChange={handleSearch}
+            placeholder={t('searchPlaceholder')}
+            size="sm"
+            value={search}
+          />
+        ),
+        searchActive: search.length > 0,
+      }}
       pagination={
         page
           ? {

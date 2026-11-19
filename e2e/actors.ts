@@ -59,16 +59,6 @@ export const submitFromLastStep = async (page: Page, label = 'Send request') => 
   await expect(page.getByText('Waiting for a tutor to start.')).toBeVisible()
 }
 
-export const completeWizard = async (page: Page) => {
-  await fillExperience(page)
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await pickSkills(page)
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await rateOrganization(page)
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await submitFromLastStep(page)
-}
-
 export const certificateIdFromUrl = (page: Page) => Number(new URL(page.url()).pathname.split('/')[2])
 
 export const tenantNames = (tenant: Tenant, key: string) => {

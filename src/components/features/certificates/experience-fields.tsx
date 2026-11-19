@@ -47,7 +47,7 @@ const TaskLength = ({ index }: { index: number }) => {
   const { control } = useFormContext<ExperienceFormValues>()
   const text = useWatch({ control, name: `tasks.${index}.text` })
   return (
-    <span className="text-xs text-muted-foreground tabular-nums">
+    <span className="pointer-events-none text-xs text-muted-foreground tabular-nums">
       {(text ?? '').length}
       {'/'}
       {MAX_TASK_LENGTH}
@@ -144,29 +144,30 @@ export const TaskFields = () => {
               name={`tasks.${index}.text`}
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center justify-between gap-2">
-                    <FormLabel>{t('taskLabel', { number: index + 1 })}</FormLabel>
-                    <TaskLength index={index} />
-                  </div>
-                  <div className="flex gap-2">
+                  <FormLabel>{t('taskLabel', { number: index + 1 })}</FormLabel>
+                  <div className="relative">
                     <FormControl>
                       <Input
                         autoComplete="off"
+                        className="pr-24"
                         maxLength={MAX_TASK_LENGTH + 40}
                         placeholder={t('taskPlaceholder')}
                         {...field}
                       />
                     </FormControl>
-                    <Button
-                      aria-label={t('removeTask', { number: index + 1 })}
-                      disabled={fields.length === 1}
-                      onClick={() => remove(index)}
-                      size="icon"
-                      type="button"
-                      variant="ghost"
-                    >
-                      <LucideIcon name="x" />
-                    </Button>
+                    <div className="absolute inset-y-0 right-1 flex items-center gap-1">
+                      <TaskLength index={index} />
+                      <Button
+                        aria-label={t('removeTask', { number: index + 1 })}
+                        disabled={fields.length === 1}
+                        onClick={() => remove(index)}
+                        size="icon-xs"
+                        type="button"
+                        variant="ghost"
+                      >
+                        <LucideIcon name="x" />
+                      </Button>
+                    </div>
                   </div>
                   <FieldError />
                 </FormItem>
@@ -176,13 +177,13 @@ export const TaskFields = () => {
         ))}
       </ul>
       <Button
-        className="self-start"
+        className="self-start text-action-text"
         disabled={fields.length >= MAX_CERTIFICATE_TASKS}
         icon="plus"
         onClick={() => append({ text: '' })}
-        size="sm"
+        size="text"
         type="button"
-        variant="outline"
+        variant="link"
       >
         {t('addTask')}
       </Button>

@@ -41,7 +41,7 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'bg-gradient-action text-action-foreground shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
-        secondary: 'bg-secondary text-secondary-foreground hover:not-disabled:bg-secondary/80',
+        secondary: 'border border-border-strong bg-field text-foreground hover:not-disabled:bg-accent/60',
         destructive: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent',
         warning: 'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent',
         success: 'bg-success text-success-foreground hover:not-disabled:bg-success-accent',
@@ -60,15 +60,15 @@ export const buttonVariants = cva(
         transparent: 'bg-transparent text-current',
       },
       size: {
-        '2xs': "h-6 gap-1 px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        xs: "h-7 gap-1.5 px-2.5 text-xs has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-3.5",
-        sm: 'h-8 gap-1.5 px-3 has-[>svg]:px-2.5',
-        md: 'h-9 px-4 has-[>svg]:px-3',
+        '2xs': "touch-hit h-6 gap-1 px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "touch-hit h-7 gap-1.5 px-2.5 text-xs has-[>svg]:px-2 [&_svg:not([class*='size-'])]:size-3.5",
+        sm: 'touch-hit h-8 gap-1.5 px-3 has-[>svg]:px-2.5',
+        md: 'touch-hit h-9 px-4 has-[>svg]:px-3',
         lg: 'h-11 px-5 text-base has-[>svg]:px-4',
-        'icon-2xs': "size-6 [&_svg:not([class*='size-'])]:size-3.5",
-        'icon-xs': "size-7 [&_svg:not([class*='size-'])]:size-3.5",
-        'icon-sm': 'size-8',
-        icon: 'size-9',
+        'icon-2xs': "touch-hit size-6 [&_svg:not([class*='size-'])]:size-3.5",
+        'icon-xs': "touch-hit size-7 [&_svg:not([class*='size-'])]:size-3.5",
+        'icon-sm': 'touch-hit size-8',
+        icon: 'touch-hit size-9',
         'icon-lg': 'size-11',
         text: 'h-auto p-0',
       },
@@ -79,7 +79,7 @@ export const buttonVariants = cva(
     },
     compoundVariants: [
       {
-        variant: ['secondary', 'destructive', 'warning', 'success', 'brand-secondary', 'brand-tertiary'],
+        variant: ['destructive', 'warning', 'success', 'brand-secondary', 'brand-tertiary'],
         className:
           'bg-linear-to-b from-white/12 to-transparent not-disabled:shadow-xs not-disabled:inset-shadow-2xs not-disabled:inset-shadow-white/20 not-disabled:[:active,[data-pressed]]:shadow-none',
       },

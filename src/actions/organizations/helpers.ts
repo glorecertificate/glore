@@ -21,6 +21,7 @@ import {
   type OrganizationMember,
   type OrganizationMembershipRole,
 } from '@/db/queries/organization'
+import { type AttentionItem } from '@/db/queries/organization-attention'
 import { type OrganizationChecklist, type Pipeline } from '@/db/queries/organization-insights'
 import { memberships } from '@/db/schema'
 import { CacheTag, userTag } from '@/lib/cache'
@@ -79,6 +80,7 @@ export const reviewerColumns = {
 export interface OrganizationPanelData {
   activity: ActivityPage
   approvedCertificatesCount: number
+  attention: AttentionItem[]
   checklist: OrganizationChecklist
   currentUserId: string
   inviteLinks: OrganizationInviteLink[]

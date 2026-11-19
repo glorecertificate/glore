@@ -137,3 +137,41 @@ After (the first block is a `DataTable` card, so `overlap` is set):
 - The course editor passes `header={<CourseHeader />}` and `provider={CourseEditorTabs}`. `CourseHeading` is a render prop that gives the editable title, description, icon, and length counter to `DashboardHeader`, whose `heading` prop replaces the `h1` content while `title` still feeds the breadcrumb.
 - The player, completion, skill framework, docs article, and about pages use `overlap` because their first block is an opaque card. Help, courses, docs, and the overview start after a clean gap.
 - The lesson reader overrides the vendored editor border from outside with a `[&_[data-slate-editor]]` wrapper, never inside `ui/rich-text-editor/`.
+
+## Mobile and touch
+
+Owner decisions, 2026-11-18. Controls keep their visible size on every device.
+
+- `touch-hit` adds a centered 44px pseudo-element hit area on coarse pointers. `touch-hit-y` extends only the height, for controls that sit edge to edge.
+- Button, select trigger, checkbox, switch, rating item, tabs trigger, toolbar button, sidebar menu button, dialog close, sheet close, and password toggle carry it.
+- Neighbouring hit areas must not overlap. `SidebarMenu` and `ToolbarGroup` add gap on coarse pointers. `ButtonGroup` children use the height-only form.
+- Touch growth is exactly 44px and never more. A touch gap is the smallest step that keeps neighbouring hit areas apart: 44px minus the control height. A 32px control gets 12px, a 36px control gets 8px.
+- Contiguous lists and grids cannot hold 44px hit areas without growing. On coarse pointers, menu, select, and command rows use `touch-row`, and calendar cells use `calendar-cell`. Set `--touch-row-min: 0px` and `--touch-cell: --spacing(8)` in `:root` to revert both.
+- Inputs, textareas, and the command input use 16px on coarse pointers. A caller that sets `text-sm` on a field breaks this rule.
+- `viewportFit: 'cover'` and `interactiveWidget: 'resizes-content'` are set in `lib/metadata.ts`. `pt-safe`, `pb-safe`, and `px-page-safe` add the safe-area insets to fixed bars.
+- `Dialog` and `AlertDialog` are bottom sheets below `sm`. The body scrolls, the footer sticks, and the confirm action is last and at the bottom.
+- `DropdownMenu` and `Popover` cap their height with the Radix available-height variable and scroll inside.
+- `InfoTip` opens a popover on tap. Use it instead of a tooltip for text that has no other path on touch. Pass `nested` inside another button. The nested form is hidden from assistive technology and adds the label as screen-reader text, because a control cannot sit inside a button.
+
+### Shell by width
+
+- Below 768px, the sidebar is a drawer. It closes on navigation, has its own close button, and uses `h-dvh`.
+- From 768px to 1023px, the sidebar is an icon rail (`collapsible="icon"`). The expand button at the top of the rail opens the full sidebar as an overlay with a backdrop. It closes on navigation, Escape, or a tap outside.
+- From 1024px, the full sidebar shows. `useDevice` returns `isTablet` for the middle range.
+- `PhoneAppBar` is a fixed bar below `md` with the menu button and the page title. It slides in when the band scrolls out. It stacks under the impersonation notice.
+- The menu button shows a dot for unread notifications and pending invitations. It shows only while the navigation is hidden.
+- `Kbd` and `KbdGroup` are hidden on coarse pointers.
+- A scrolling `TabsList`, the table container, and the sidebar content add vertical padding with a matching negative margin on coarse pointers, so the hit areas are not clipped and the layout does not move. `tabs-scroll-band` repaints the list background to its original height.
+- The offline promise is the offline page only. The service worker caches no course or certificate data.
+- `pb-bar-safe` pads a fixed bottom bar with at least 8px or the safe-area inset. Course editor controls take `touch-hit`, never a hand-written `before:` hit area.
+- `DataTable` stacks its count under the filters below `sm`, so the count never squeezes the search field.
+- `EmailText` renders an email with break points after `@` and before each dot. Use it where a long email wraps in a card.
+- The install prompt is a toast on pointer devices, shown only while no dialog is open. On touch it is `PwaInstallBanner`, a dismissible banner at the top of `SidebarInset`, so it never covers content.
+- Band tab lists read `--tabs-list-bg` (set by `band-tabs`), so the scrolling tab list on touch keeps the band scrim.
+
+## Course editor on phones and tablets
+
+- Below `xl` (1280px, because the full sidebar takes 256px at 1024px) the lesson picker opens a bottom `Sheet` with `CourseSidebar variant="sheet"`. The same component serves the inline sidebar from `lg`. On coarse pointers each row adds Move up, Move down, and Delete, next to the drag handle. Choosing a lesson closes the sheet.
+- Below `md` the band shows the title, the status chips, and the language tabs. Settings, analytics, and preview sit in a More menu. Save and the Draft or Published switch sit in a bottom bar portalled to `body` with the safe-area inset. The description shows 2 lines and expands on tap.
+- `course-editor/block-actions.tsx` is a touch-only Block menu (Move up, Move down, Duplicate, Turn into, Ask AI, Delete). It acts on the top-level block at the caret through the Plate editor API and replaces the context menu that `block-context-menu.tsx` turns off on touch.
+- `lesson-editor.tsx` wraps the vendored editor. Below `xl` the fixed toolbar is one row that scrolls sideways and sticks to the viewport. On coarse pointers the floating selection toolbar is hidden.

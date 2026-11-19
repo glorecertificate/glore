@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-import { type Browser, type BrowserContextOptions, type Page } from '@playwright/test'
+import { type Browser, type BrowserContextOptions, type Page, expect } from '@playwright/test'
 
 import { type AuthRole, authFile } from '~/e2e/helpers'
 
@@ -189,6 +189,8 @@ const observeVitals = () => {
   requestAnimationFrame(probeHydration)
 }
 
+const inflight = new WeakMap<Page, Set<unknown>>()
+
 export const openContext = async (browser: Browser, baseURL: string, profile: ProfileName, role: PerfRole) => {
   const { isMobile, viewport } = PROFILES[profile]
   const options: BrowserContextOptions = {
@@ -205,6 +207,11 @@ export const openContext = async (browser: Browser, baseURL: string, profile: Pr
   await context.addCookies([{ name: 'NEXT_LOCALE', url: baseURL, value: 'en' }])
   await context.addInitScript(observeVitals)
   const page = await context.newPage()
+  const pending = new Set<unknown>()
+  inflight.set(page, pending)
+  page.on('request', request => pending.add(request))
+  page.on('requestfinished', request => pending.delete(request))
+  page.on('requestfailed', request => pending.delete(request))
   const { cpu, network } = PROFILES[profile]
   const cdp = await context.newCDPSession(page)
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: cpu })
@@ -229,8 +236,8 @@ export const nextFrame = async (page: Page) => {
   )
 }
 
-export const settle = async (page: Page, quietMs = 1000) => {
-  await page.waitForLoadState('load')
+const waitQuiet = async (page: Page, quietMs: number) => {
+  await expect.poll(() => inflight.get(page)?.size ?? 0, { timeout: 20_000 }).toBe(0)
   await page.waitForFunction(
     quiet => {
       const { lastContent, lastResource } = window.perfVitals
@@ -239,6 +246,12 @@ export const settle = async (page: Page, quietMs = 1000) => {
     quietMs,
     { polling: 100, timeout: 20_000 }
   )
+}
+
+export const settle = async (page: Page, quietMs = 1000) => {
+  await page.waitForLoadState('load')
+  await waitQuiet(page, quietMs)
+  await expect.poll(() => inflight.get(page)?.size ?? 0, { timeout: 5000 }).toBe(0)
 }
 
 export const openMobileNav = async (page: Page, profile: ProfileName) => {

@@ -92,8 +92,9 @@ describe('waiting and review time', () => {
     expect(summary.assigned.count).toBe(1)
     expect(summary.pool.count).toBe(1)
     expect(summary.waitingVolunteer).toBe(1)
-    expect(summary.queue.map(({ id, source }) => `${source}:${id}`)).toEqual(['pool:3', 'assigned:1'])
+    expect(summary.queue.map(({ id, source }) => `${source}:${id}`)).toEqual(['pool:3', 'assigned:1', 'assigned:2'])
     expect(summary.oldest).toMatchObject({ id: 3, source: 'pool' })
+    expect(summary.queue.find(({ id }) => id === 2)?.status).toBe('changes_requested')
   })
 
   it('caps the queue preview', () => {

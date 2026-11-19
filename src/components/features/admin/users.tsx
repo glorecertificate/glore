@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { toast } from '@/components/ui/toast'
-import { type AdminPage, type AdminUserRow, type PlatformRole, isBanActive } from '@/db/queries/admin-user'
+import { type AdminUserRow, type FacetedPage, type PlatformRole, isBanActive } from '@/db/queries/admin-user'
 import { timestampMillis } from '@/db/queries/organization'
 import { useReturnFocus } from '@/hooks/use-return-focus'
 import { type IconName } from '@/lib/types'
@@ -25,7 +25,7 @@ import { ImpersonateDialog } from './impersonate-dialog'
 import { UnbanDialog } from './unban-dialog'
 import { useAdminError } from './use-admin-error'
 import { UserActions } from './user-actions'
-import { type UsersFilterValues, UsersFilters } from './users-filters'
+import { type UsersFilterValues, useUsersRail } from './users-filters'
 import { adminUsersParsers } from './users-params'
 import { listFocusTarget, userInitials, userLabel } from './utils'
 
@@ -44,7 +44,7 @@ export const AdminUsers = ({
   page,
 }: {
   organizations: { id: number; name: string }[]
-  page: AdminPage<AdminUserRow>
+  page: FacetedPage<AdminUserRow>
 }) => {
   const t = useTranslations('Admin.users')
   const { refresh } = useRouter()
@@ -75,6 +75,16 @@ export const AdminUsers = ({
     setSearch('')
     setParams({ banned: null, org: null, page: 1, q: null, role: null, status: null })
   }
+
+  const rail = useUsersRail({
+    facets: page.facets,
+    onClear: handleClear,
+    onFilter: handleFilter,
+    onSearch: handleSearch,
+    organizations,
+    search,
+    values: { banned: params.banned, org: params.org, role: params.role, status: params.status },
+  })
 
   const handleRole = async (user: AdminUserRow, role: PlatformRole) => {
     setBusyId(user.id)
@@ -141,9 +151,7 @@ export const AdminUsers = ({
               if (isBanActive(user)) {
                 return (
                   <div className="flex flex-col items-start gap-1">
-                    <StatusBadge icon="ban" tone="danger">
-                      {t('status_banned')}
-                    </StatusBadge>
+                    <StatusBadge tone="danger">{t('status_banned')}</StatusBadge>
                     {user.banExpires && (
                       <span className="text-xs text-muted-foreground">
                         {t('bannedUntil', {
@@ -160,17 +168,9 @@ export const AdminUsers = ({
                 )
               }
               if (!user.onboardedAt) {
-                return (
-                  <StatusBadge icon="clock" tone="warning">
-                    {t('status_pending')}
-                  </StatusBadge>
-                )
+                return <StatusBadge tone="warning">{t('status_pending')}</StatusBadge>
               }
-              return (
-                <StatusBadge icon="circle-check" tone="success">
-                  {t('status_active')}
-                </StatusBadge>
-              )
+              return <StatusBadge tone="success">{t('status_active')}</StatusBadge>
             },
             header: t('columns.status'),
             id: 'status',
@@ -194,20 +194,10 @@ export const AdminUsers = ({
         ]}
         emptyDescription={filtersActive ? t('tryAdjustingFiltersDescription') : t('noUsersDescription')}
         emptyTitle={filtersActive ? t('tryAdjustingFilters') : t('noUsers')}
-        filters={
-          <UsersFilters
-            active={filtersActive}
-            onClear={handleClear}
-            onFilter={handleFilter}
-            onSearch={handleSearch}
-            organizations={organizations}
-            search={search}
-            values={{ banned: params.banned, org: params.org, role: params.role, status: params.status }}
-          />
-        }
         getRowId={user => user.id}
         label={t('tableLabel')}
         pageSize={page.pageSize}
+        rail={rail}
         pagination={{
           onPageChange: next => setParams({ page: next }),
           page: page.page,

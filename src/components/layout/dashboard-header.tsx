@@ -1,9 +1,10 @@
 import { Suspense } from 'react'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { DashboardMenuButton } from '@/components/layout/dashboard-menu-button'
 import { type NavigationId, navigationHref } from '@/components/layout/navigation'
 import { NavigationLabel } from '@/components/layout/navigation-label'
-import { HeaderLogo, HeaderTrigger } from '@/components/ui/header'
+import { HeaderLogo } from '@/components/ui/header'
 import { Link } from '@/components/ui/link'
 import { Logo } from '@/components/ui/logo'
 import { PageBand } from '@/components/ui/page-band'
@@ -25,8 +26,9 @@ export const DashboardHeader = ({
   title?: React.ReactNode
 }) => (
   <PageBand>
-    <div className="flex min-h-8 min-w-0 items-center gap-2 text-[13px] text-band-muted">
-      <HeaderTrigger className="text-band-muted hover:bg-band-scrim hover:text-band-foreground" />
+    <div className="flex h-10 min-w-0 items-center gap-2 text-[13px] text-band-muted">
+      <DashboardMenuButton className="text-band-muted hover:bg-band-scrim hover:text-band-foreground" />
+      <span aria-hidden className="h-4 w-px bg-band-border" />
       {parent && (
         <>
           <Link className="hover:text-band-foreground" href={navigationHref(parent)}>
@@ -36,15 +38,11 @@ export const DashboardHeader = ({
           <span className="truncate text-band-foreground">{title && <Suspense>{title}</Suspense>}</span>
         </>
       )}
-      <HeaderLogo
-        className="ml-auto inline-flex rounded-md logo-chip px-2 py-1 md:hidden"
-        href={APP_ROOT}
-        prefetch={false}
-      >
-        <Logo className="h-4 w-auto" />
+      <HeaderLogo className="ml-auto inline-flex md:hidden" href={APP_ROOT} prefetch={false}>
+        <Logo className="h-5 w-auto" onNavy />
       </HeaderLogo>
     </div>
-    <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+    <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-4 sm:mt-14">
       <div className="flex min-w-0 grow flex-col gap-2">
         {(heading ?? title) && (
           <h1 className="type-band text-band-foreground">{heading ?? <Suspense>{title}</Suspense>}</h1>

@@ -153,7 +153,9 @@
   --color-sidebar-badge-foreground: var(--sidebar-badge-foreground);
   --color-fg-on-dark: var(--fg-on-dark);
   --color-band-from: var(--band-from);
+  --color-sidebar-active: var(--sidebar-active);
   --color-band-via: var(--band-via);
+  --color-band-via-2: var(--band-via-2);
   --color-band-to: var(--band-to);
   --color-band-foreground: var(--band-foreground);
   --color-band-muted: var(--band-muted);
@@ -199,6 +201,16 @@
   --color-stat-amber-strip-to: var(--stat-amber-strip-to);
   --color-stat-amber-foreground: var(--stat-amber-foreground);
   --color-stat-amber-text: var(--stat-amber-text);
+  --color-stat-text: var(--stat-text);
+  --color-status-draft: var(--status-draft);
+  --color-status-submitted: var(--status-submitted);
+  --color-status-review: var(--status-review);
+  --color-status-changes: var(--status-changes);
+  --color-status-approved: var(--status-approved);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-withdrawn: var(--status-withdrawn);
+  --color-status-revoked: var(--status-revoked);
+  --color-status-track: var(--status-track);
   --color-pill-approved: var(--pill-approved);
   --color-pill-approved-foreground: var(--pill-approved-foreground);
   --color-pill-review: var(--pill-review);
@@ -322,7 +334,13 @@
 }
 
 @utility bg-band {
-  background-image: linear-gradient(120deg, var(--band-from) 0%, var(--band-via) 55%, var(--band-to) 100%);
+  background-image: linear-gradient(
+    100deg,
+    var(--band-from) 0%,
+    var(--band-via) 45%,
+    var(--band-via-2) 75%,
+    var(--band-to) 100%
+  );
 }
 
 @utility bg-gradient-action {
@@ -443,6 +461,7 @@
 
 @utility band-tabs {
   [data-slot="tabs-list"] {
+    --tabs-list-bg: var(--band-scrim);
     background-color: var(--band-scrim);
   }
 
@@ -534,6 +553,88 @@
 
 @utility max-h-dialog {
   max-height: calc(100dvh - 2rem);
+}
+
+@utility touch-hit {
+  @media (pointer: coarse) {
+    &:where(:not(.absolute, .fixed, .sticky)) {
+      position: relative;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      translate: -50% -50%;
+    }
+  }
+}
+
+@utility touch-hit-y {
+  @media (pointer: coarse) {
+    &:where(:not(.absolute, .fixed, .sticky)) {
+      position: relative;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: max(100%, 44px);
+      translate: 0 -50%;
+    }
+  }
+}
+
+@utility tabs-scroll-band {
+  @media (pointer: coarse) {
+    background-color: transparent !important;
+    background-image: linear-gradient(var(--tabs-list-bg, var(--color-muted)), var(--tabs-list-bg, var(--color-muted)));
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% --spacing(9);
+  }
+}
+
+@utility touch-row {
+  @media (pointer: coarse) {
+    min-height: var(--touch-row-min, --spacing(11));
+    padding-block: 0 !important;
+  }
+}
+
+@utility calendar-cell {
+  --calendar-cell: --spacing(8);
+
+  @media (pointer: coarse) {
+    --calendar-cell: var(--touch-cell, --spacing(11));
+  }
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility px-page-safe {
+  padding-left: max(--spacing(4), env(safe-area-inset-left));
+  padding-right: max(--spacing(4), env(safe-area-inset-right));
+}
+
+@utility pb-sheet-footer {
+  padding-bottom: max(--spacing(6), env(safe-area-inset-bottom));
+}
+
+@utility pb-bar-safe {
+  padding-bottom: max(--spacing(2), env(safe-area-inset-bottom));
 }
 
 @utility sheet-fit {

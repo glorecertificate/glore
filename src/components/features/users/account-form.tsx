@@ -10,15 +10,14 @@ import { ImpersonationLockNote } from '@/components/features/admin/impersonation
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
-import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Separator } from '@/components/ui/separator'
+import { StickySaveBar, useStickySaveBar } from '@/components/ui/sticky-save-bar'
 import { toast } from '@/components/ui/toast'
 import { type User } from '@/db/queries/user'
 import { useActionError } from '@/hooks/use-action-error'
-import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { USERNAME_REGEX } from '@/lib/constants'
 import { LOCALES } from '@/lib/i18n'
 import { type Any } from '@/lib/types'
@@ -55,7 +54,7 @@ export const AccountForm = () => {
     resolver: zodResolver(accountSchema),
   })
 
-  const disabled = useFormDisabled(form.control)
+  const saveBar = useStickySaveBar(form)
 
   const onSubmit = async (values: z.infer<typeof accountSchema>) => {
     const updates: { email?: string; locale?: Locale | null; username?: string } = {}
@@ -94,7 +93,7 @@ export const AccountForm = () => {
   return (
     <Form {...form}>
       <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
-        <SettingsSection description={t('preferencesDescription')} title={t('preferences')}>
+        <SettingsSection title={t('preferences')}>
           <FormField
             control={form.control}
             name="locale"
@@ -117,7 +116,7 @@ export const AccountForm = () => {
 
         <Separator className="my-8" />
 
-        <SettingsSection description={t('accountDescription')} title={t('account')}>
+        <SettingsSection title={t('account')}>
           <ImpersonationLockNote />
           <FormField
             control={form.control}
@@ -161,21 +160,7 @@ export const AccountForm = () => {
           />
         </SettingsSection>
 
-        <Separator className="my-8" />
-
-        <div className="flex justify-end gap-3">
-          <Button
-            disabled={disabled || form.formState.isSubmitting}
-            onClick={() => form.reset()}
-            type="button"
-            variant="outline"
-          >
-            {t('reset')}
-          </Button>
-          <Button disabled={disabled} loading={form.formState.isSubmitting} type="submit" variant="brand">
-            {t('saveChanges')}
-          </Button>
-        </div>
+        <StickySaveBar count={saveBar.count} onDiscard={saveBar.discard} saving={saveBar.saving} />
       </form>
     </Form>
   )

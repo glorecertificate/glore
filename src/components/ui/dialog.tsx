@@ -7,6 +7,12 @@ import { useTranslations } from 'next-intl'
 import { LucideIcon } from '@/components/icons/lucide'
 import { cn } from '@/lib/utils'
 
+export const dialogSheetClassName =
+  'max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-w-none max-sm:translate-0 max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-0 max-sm:data-[state=closed]:slide-out-to-bottom max-sm:data-[state=closed]:zoom-out-100 max-sm:data-[state=open]:slide-in-from-bottom max-sm:data-[state=open]:zoom-in-100 motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none'
+
+export const dialogFooterClassName =
+  'flex flex-col gap-2 max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-6 max-sm:border-t max-sm:bg-background max-sm:px-6 max-sm:pt-3 max-sm:pb-sheet-footer sm:flex-row sm:justify-end'
+
 const VISIBLE = ':not([aria-hidden=true]):not([tabindex="-1"])'
 
 const FIELDS = [
@@ -51,7 +57,7 @@ export const DialogOverlay = ({
 }) => (
   <DialogPrimitive.Overlay
     className={cn(
-      'fixed inset-0 z-50 bg-black data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-black data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none',
       className
     )}
     data-slot="dialog-overlay"
@@ -80,7 +86,7 @@ export const DialogContent = ({
     <>
       {overlay && <DialogOverlay opacity={overlay} />}
       <DialogPrimitive.Content
-        className={cn(dialogContentVariants({ size }), showClose && 'pt-2', className)}
+        className={cn(dialogContentVariants({ size }), dialogSheetClassName, showClose && 'pt-2', className)}
         data-close={showClose}
         data-slot="dialog-content"
         aria-describedby={undefined}
@@ -94,7 +100,7 @@ export const DialogContent = ({
       >
         {showClose && (
           <div className="pointer-events-none sticky top-0 z-10 h-0" data-slot="dialog-close-anchor">
-            <DialogClose className="pointer-events-auto absolute top-1 -right-3 flex size-8 cursor-pointer items-center justify-center rounded-md bg-background text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+            <DialogClose className="pointer-events-auto touch-hit absolute top-1 -right-3 flex size-8 cursor-pointer items-center justify-center rounded-md bg-background text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
               <LucideIcon name="x" />
               <span className="sr-only">{t('close')}</span>
             </DialogClose>
@@ -128,15 +134,11 @@ const dialogContentVariants = cva(
 )
 
 export const DialogHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('flex flex-col gap-2 text-center sm:text-left', className)} data-slot="dialog-header" {...props} />
+  <div className={cn('flex flex-col gap-2 text-left', className)} data-slot="dialog-header" {...props} />
 )
 
 export const DialogFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div
-    className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
-    data-slot="dialog-footer"
-    {...props}
-  />
+  <div className={cn(dialogFooterClassName, className)} data-slot="dialog-footer" {...props} />
 )
 
 export const DialogTitle = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) => (

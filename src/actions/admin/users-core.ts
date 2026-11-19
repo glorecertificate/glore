@@ -8,6 +8,7 @@ import {
   ADMIN_USERS_PAGE_SIZE,
   type AdminUserRow,
   type AdminUsersQuery,
+  type FacetCounts,
   adminUsersQuerySchema,
   likePattern,
   platformRoleOf,
@@ -70,12 +71,36 @@ const loadOrganizations = async (userIds: string[]) => {
   }, new Map<string, AdminUserRow['organizations']>())
 }
 
+const FACET_EXPRESSIONS = {
+  banned: sql<string>`case when coalesce(${activeBan}, false) then 'yes' else 'no' end`,
+  role: sql<string>`case when ${users.role} = 'admin' then 'admin' when ${users.isEditor} then 'editor' else 'user' end`,
+  status: sql<string>`case when ${users.onboardedAt} is not null then 'active' else 'pending' end`,
+} as const
+
+const countFacets = async (query: ParsedQuery): Promise<FacetCounts> => {
+  const entries = await Promise.all(
+    (Object.keys(FACET_EXPRESSIONS) as (keyof typeof FACET_EXPRESSIONS)[]).map(async key => {
+      const expression = FACET_EXPRESSIONS[key]
+      const rows = await db
+        .select({ key: expression, total: count() })
+        .from(users)
+        .where(buildFilters({ ...query, [key]: null }))
+        .groupBy(sql`1`)
+      return [key, Object.fromEntries(rows.map(row => [row.key, row.total]))] as const
+    })
+  )
+  return Object.fromEntries(entries)
+}
+
 export const queryAdminUsers = async (input: AdminUsersQuery) => {
   const parsed = adminUsersQuerySchema.safeParse(input)
   if (!parsed.success) throw adminError('INVALID_INPUT')
 
   const where = buildFilters(parsed.data)
-  const [totals] = await db.select({ total: count() }).from(users).where(where)
+  const [[totals], facets] = await Promise.all([
+    db.select({ total: count() }).from(users).where(where),
+    countFacets(parsed.data),
+  ])
   const total = totals?.total ?? 0
   const pageCount = Math.max(1, Math.ceil(total / ADMIN_USERS_PAGE_SIZE))
   const page = Math.min(parsed.data.page ?? 1, pageCount)
@@ -110,5 +135,5 @@ export const queryAdminUsers = async (input: AdminUsersQuery) => {
     platformRole: platformRoleOf({ isEditor, role }),
   }))
 
-  return toPage(rows, { page, pageSize: ADMIN_USERS_PAGE_SIZE, total })
+  return { ...toPage(rows, { page, pageSize: ADMIN_USERS_PAGE_SIZE, total }), facets }
 }

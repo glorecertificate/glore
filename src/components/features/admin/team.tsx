@@ -215,13 +215,9 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
           {
             cell: user =>
               getUserStatus(user) === 'pending' ? (
-                <StatusBadge icon="clock" tone="warning">
-                  {t('status_pending')}
-                </StatusBadge>
+                <StatusBadge tone="warning">{t('status_pending')}</StatusBadge>
               ) : (
-                <StatusBadge icon="circle-check" tone="success">
-                  {t('status_joined')}
-                </StatusBadge>
+                <StatusBadge tone="success">{t('status_joined')}</StatusBadge>
               ),
             header: t('columns.status'),
             id: 'status',
@@ -237,7 +233,12 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
         emptyDescription={hasActiveFilters ? t('tryAdjustingFilters') : t('noMembersDescription')}
         emptyTitle={hasActiveFilters ? t('noMembersFiltered') : t('noMembers')}
         filters={
-          <FilterBar active={hasActiveFilters} onClear={clearFilters}>
+          <FilterBar
+            active={hasActiveFilters}
+            onClear={clearFilters}
+            count={Number(filterRole !== 'all') + Number(filterStatus !== 'all')}
+            size="sm"
+          >
             <Select onValueChange={v => setFilterRole(v as TeamRole | 'all')} value={filterRole}>
               <SelectTrigger aria-label={t('filterRoleLabel')} className="w-auto gap-1.5" size="sm">
                 <SelectValue />

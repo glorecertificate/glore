@@ -7,7 +7,7 @@ import { type Locale, useFormatter, useNow, useTranslations } from 'next-intl'
 import { useCourses } from '@/components/features/courses/context'
 import { resolveCourseLanguage, useCourseLanguages } from '@/components/features/courses/course-languages'
 import { CourseCardActions } from '@/components/features/courses/course-list/card-actions'
-import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
+import { courseIconVariants } from '@/components/features/courses/course-list/icon-variants'
 import { useCourseListSearch, useCourseListTab } from '@/components/features/courses/course-list/use-params'
 import { CourseDuration } from '@/components/features/courses/course-overview/duration'
 import { skillGroupTone, skillGroupToneVariants } from '@/components/features/courses/skill-group'
@@ -155,6 +155,7 @@ export const CourseListCard = ({
                 <Link
                   className="type-heading transition-none"
                   href={coursePath}
+                  keepFresh="list"
                   prefetch
                   title={t('viewCourse')}
                   suppressHydrationWarning
@@ -193,6 +194,7 @@ export const CourseListCard = ({
               <Link
                 className="type-heading transition-none"
                 href={coursePath}
+                keepFresh="list"
                 prefetch
                 title={t('viewCourse')}
                 suppressHydrationWarning
@@ -212,11 +214,7 @@ export const CourseListCard = ({
                     {localizeRecord(course.skillGroup.name, language)}
                   </Badge>
                 )}
-                {course.completed && (
-                  <StatusBadge icon="circle-check" tone="success">
-                    {t('completed')}
-                  </StatusBadge>
-                )}
+                {course.completed && <StatusBadge tone="success">{t('completed')}</StatusBadge>}
               </div>
             )}
           </div>
@@ -233,13 +231,13 @@ export const CourseListCard = ({
           {user.canEdit && languageItems.length > 1 && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
               <LucideIcon name="languages" className="size-3.5 text-muted-foreground" />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pointer-coarse:gap-6">
                 {languageItems.map(({ active, displayLabel, icon, published, value }) => (
                   <div className="flex flex-col items-center gap-0" key={value}>
                     <Tooltip delayDuration={300}>
                       <TooltipTrigger asChild>
                         <Button
-                          className={cn('relative text-base', active && 'pointer-events-none cursor-default')}
+                          className={cn('touch-hit relative text-base', active && 'pointer-events-none cursor-default')}
                           onClick={() => {
                             if (!active) {
                               setLanguage(value)

@@ -1,15 +1,8 @@
 import { useLocale, useTranslations } from 'next-intl'
 
-import { AssignSkillGroup } from '@/components/features/courses/skill-framework/assign-select'
-import { SkillGroupControls } from '@/components/features/courses/skill-framework/group-controls'
-import { skillGroupTone, skillGroupToneVariants } from '@/components/features/courses/skill-group'
-import { LucideIcon } from '@/components/icons/lucide'
-import { Card } from '@/components/ui/card'
-import { Link } from '@/components/ui/link'
-import { StatusBadge } from '@/components/ui/status-badge'
+import { SkillGroupCard, type SkillRow } from '@/components/features/courses/skill-framework/group-card'
 import { pickCourseTitle, pickLocale } from '@/db/queries/learning'
 import { type IntlRecord } from '@/lib/i18n'
-import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 interface FrameworkCourse {
@@ -29,38 +22,6 @@ export interface FrameworkGroup {
   slug: string
 }
 
-const CourseRow = ({
-  course,
-  groupId,
-  groups,
-}: {
-  course: FrameworkCourse
-  groupId: number | null
-  groups: { id: number; name: string }[]
-}) => {
-  const t = useTranslations('CourseList')
-  const tFramework = useTranslations('Learning.framework')
-  const locale = useLocale() as keyof IntlRecord
-  const title = pickCourseTitle(course.title ?? undefined, locale, course.slug)
-  const languages = course.languages ?? []
-  const status = course.archivedAt ? 'archived' : languages.length === 0 ? 'draft' : 'published'
-
-  return (
-    <li className="flex flex-wrap items-center gap-x-3 gap-y-2 py-2">
-      <Link
-        className="min-w-0 basis-full font-medium wrap-break-word hover:underline sm:flex-1 sm:basis-0 sm:truncate"
-        href={`/courses/${course.slug}`}
-      >
-        {title}
-      </Link>
-      <StatusBadge tone={status === 'published' ? 'success' : 'neutral'}>{t(status)}</StatusBadge>
-      <span className="text-xs text-muted-foreground uppercase">{languages.join(' ')}</span>
-      <AssignSkillGroup courseId={course.id} courseTitle={title} groupId={groupId} groups={groups} />
-      <span className="sr-only">{tFramework('openCourse')}</span>
-    </li>
-  )
-}
-
 export const SkillFramework = ({
   className,
   groups,
@@ -71,68 +32,57 @@ export const SkillFramework = ({
   const locale = useLocale() as keyof IntlRecord
   const options = groups.map(group => ({ id: group.id, name: pickLocale(group.name, locale) ?? group.slug }))
 
+  const toRows = (courses: FrameworkCourse[]): SkillRow[] =>
+    courses.map(course => {
+      const languages = course.languages ?? []
+      return {
+        id: course.id,
+        languages,
+        slug: course.slug,
+        status: course.archivedAt ? 'archived' : languages.length === 0 ? 'draft' : 'published',
+        title: pickCourseTitle(course.title ?? undefined, locale, course.slug),
+      }
+    })
+
+  const unassigned = (
+    <SkillGroupCard
+      attention={ungrouped.length > 0}
+      defaultOpen={ungrouped.length > 0}
+      description={ungrouped.length > 0 ? t('ungroupedHint') : null}
+      groupId={null}
+      groups={options}
+      id="ungrouped"
+      key="ungrouped"
+      name={t('ungroupedTitle')}
+      rows={toRows(ungrouped)}
+    />
+  )
+
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
-      {groups.map((group, index) => {
-        const name = pickLocale(group.name, locale) ?? group.slug
-        const description = pickLocale(group.description ?? undefined, locale)
-        return (
-          <Card key={group.id}>
-            <header className="flex flex-wrap items-start justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-3">
-                <span
-                  className={cn(
-                    'flex size-10 shrink-0 items-center justify-center rounded-full',
-                    skillGroupToneVariants({ surface: 'soft', tone: skillGroupTone(group.slug) })
-                  )}
-                >
-                  <LucideIcon className="size-5" name={(group.icon ?? 'layers') as IconName} />
-                </span>
-                <div className="flex min-w-0 flex-col">
-                  <h2 className="truncate type-heading">{name}</h2>
-                  <p className="text-sm text-muted-foreground">
-                    {t('skillCount', { count: group.courses.length })}
-                    {description ? ` · ${description}` : ''}
-                  </p>
-                </div>
-              </div>
-              <SkillGroupControls
-                canMoveDown={index < groups.length - 1}
-                canMoveUp={index > 0}
-                group={{
-                  description: group.description,
-                  icon: group.icon,
-                  id: group.id,
-                  name: group.name,
-                  slug: group.slug,
-                }}
-              />
-            </header>
-            {group.courses.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t('empty')}</p>
-            ) : (
-              <ul className="divide-y">
-                {group.courses.map(course => (
-                  <CourseRow course={course} groupId={group.id} groups={options} key={course.id} />
-                ))}
-              </ul>
-            )}
-          </Card>
-        )
-      })}
-      {ungrouped.length > 0 && (
-        <Card className="border-dashed shadow-none">
-          <header className="flex flex-col gap-1">
-            <h2 className="type-heading">{t('ungroupedTitle')}</h2>
-            <p className="text-sm text-muted-foreground">{t('ungroupedHint')}</p>
-          </header>
-          <ul className="divide-y">
-            {ungrouped.map(course => (
-              <CourseRow course={course} groupId={null} groups={options} key={course.id} />
-            ))}
-          </ul>
-        </Card>
-      )}
+    <div className={cn('mx-auto flex w-full max-w-240 flex-col gap-4', className)} {...props}>
+      {ungrouped.length > 0 && unassigned}
+      {groups.map((group, index) => (
+        <SkillGroupCard
+          canMoveDown={index < groups.length - 1}
+          canMoveUp={index > 0}
+          defaultOpen={index === 0 && ungrouped.length === 0}
+          description={pickLocale(group.description ?? undefined, locale)}
+          draft={{
+            description: group.description,
+            icon: group.icon,
+            id: group.id,
+            name: group.name,
+            slug: group.slug,
+          }}
+          groupId={group.id}
+          groups={options}
+          id={String(group.id)}
+          key={group.id}
+          name={pickLocale(group.name, locale) ?? group.slug}
+          rows={toRows(group.courses)}
+        />
+      ))}
+      {ungrouped.length === 0 && unassigned}
     </div>
   )
 }

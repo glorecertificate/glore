@@ -5,7 +5,7 @@ import { type ReactNode, isValidElement } from 'react'
 import { Text } from '@react-pdf/renderer'
 import { describe, expect, it } from 'vitest'
 
-import { CertificateDocument } from '@/components/features/certificates/document'
+import { CertificateDocument, partnerFontSize } from '@/components/features/certificates/document'
 import { certificatePdfLabels, generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
 
 const task = 'Welcomed new volunteers and organized weekly activities for children at the community centre'
@@ -174,5 +174,18 @@ describe('generateCertificatePdf', () => {
       })
     )
     expect(lines).toContain(`${labels.level} ${labels.levels[1]}`)
+  })
+})
+
+describe('partnerFontSize', () => {
+  it('keeps the template size for a short organization name', () => {
+    expect(partnerFontSize('Joint')).toBe(10)
+  })
+
+  it('shrinks a long name until it stays inside its section bar', () => {
+    const name = 'Associazione Culturale Giovanile per la Mobilita Internazionale e il Volontariato Europeo'
+    const size = partnerFontSize(name)
+    expect(size).toBeLessThan(10)
+    expect(size).toBeGreaterThanOrEqual(6.5)
   })
 })

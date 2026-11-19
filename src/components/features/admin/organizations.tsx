@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
 
@@ -16,14 +16,11 @@ import { useI18n } from '@/components/providers/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { countryCodeToFlag } from '@/components/ui/country-select'
-import { DataTable } from '@/components/ui/data-table'
+import { DataTable, type DataTableRowId } from '@/components/ui/data-table'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { FilterBar } from '@/components/ui/filter-bar'
 import { Link } from '@/components/ui/link'
 import { SearchHighlight, SearchInput } from '@/components/ui/search'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusBadge } from '@/components/ui/status-badge'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { useCountryName } from '@/hooks/use-country-name'
@@ -36,24 +33,37 @@ import { listFocusTarget } from './utils'
 
 type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
 
+const STATUS_MATCHERS = {
+  active: (o: AdminOrganization) => o.isApproved,
+  pending: (o: AdminOrganization) => o.isPending,
+  rejected: (o: AdminOrganization) => o.isRejected,
+} as const
+
+const STATUS_TONES = { active: 'success', pending: 'warning', rejected: 'danger' } as const
+
 export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganization[] }) => {
   const { locale } = useI18n()
   const { dateTime } = useFormatter()
   const t = useTranslations('Admin.organizations')
 
   const [orgs, setOrgs] = useState(initialOrgs)
+
+  useEffect(() => {
+    const preload = async () => (await import('./organization-detail')).preloadAdminOrganizationDetail()
+    const id = window.setTimeout(preload, 500)
+    return () => window.clearTimeout(id)
+  }, [])
   const [filter, setFilter] = useState<OrgFilter>('all')
   const [search, setSearch] = useState('')
   const [country, setCountry] = useState('all')
   const [approveTarget, setApproveTarget] = useState<AdminOrganization | null>(null)
   const [rejectTarget, setRejectTarget] = useState<AdminOrganization | null>(null)
   const [viewTarget, setViewTarget] = useState<AdminOrganization | null>(null)
+  const [bulkRejectIds, setBulkRejectIds] = useState<number[] | null>(null)
   const { close, current, remember, restore } = useAdminDialog()
   const returnFocus = (event: Event) => restore(event, listFocusTarget)
 
   const translateCountry = useCountryName()
-
-  const pendingCount = orgs.filter(o => o.isPending).length
 
   const countryOptions = (() => {
     const codes = [...new Set(orgs.map(o => o.country?.toLowerCase()).filter((c): c is string => Boolean(c)))]
@@ -62,15 +72,11 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       .toSorted((a, b) => a.label.localeCompare(b.label, locale))
   })()
 
-  const hasFilters = search.trim() !== '' || country !== 'all' || filter !== 'all'
-
-  const displayOrgs = (() => {
+  const matching = (status: OrgFilter | null, countryCode: string | null) => {
     let list = orgs
 
-    if (filter === 'pending') list = list.filter(o => o.isPending)
-    if (filter === 'active') list = list.filter(o => o.isApproved)
-    if (filter === 'rejected') list = list.filter(o => o.isRejected)
-    if (country !== 'all') list = list.filter(o => o.country?.toLowerCase() === country)
+    if (status && status !== 'all') list = list.filter(STATUS_MATCHERS[status])
+    if (countryCode && countryCode !== 'all') list = list.filter(o => o.country?.toLowerCase() === countryCode)
 
     const needle = search.trim().toLowerCase()
     if (needle) {
@@ -78,7 +84,9 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     }
 
     return list
-  })()
+  }
+
+  const displayOrgs = matching(filter, country)
 
   const refreshOrgs = async () => {
     const { data } = await getOrganizations({ cache: false })
@@ -158,12 +166,77 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     refreshOrgs()
   }
 
+  const pendingIds = (ids: DataTableRowId[]) =>
+    ids.filter((id): id is number => typeof id === 'number' && orgs.some(org => org.id === id && org.isPending))
+
+  const runBulk = async (
+    ids: number[],
+    run: (id: number) => Promise<{ error?: unknown }>,
+    successKey: 'bulkApproveSuccess' | 'bulkRejectSuccess'
+  ) => {
+    const results = await Promise.all(ids.map(run))
+    const succeeded = results.filter(({ error }) => !error).length
+    await refreshOrgs()
+    const failed = ids.length - succeeded
+    if (succeeded > 0) toast.success(t(successKey, { count: succeeded }))
+    if (failed > 0) toast.error(t('bulkError', { failed, total: ids.length }))
+    return failed === 0
+  }
+
+  const handleBulkApprove = async (ids: DataTableRowId[]) => {
+    const targets = pendingIds(ids)
+    if (targets.length === 0) return
+    await runBulk(targets, id => approveOrganization(id), 'bulkApproveSuccess')
+  }
+
+  const handleBulkReject = async (comment?: string) => {
+    if (!bulkRejectIds) return false
+    const done = await runBulk(bulkRejectIds, id => rejectOrganization(id, comment), 'bulkRejectSuccess')
+    setBulkRejectIds(null)
+    return done
+  }
+
+  const startReview = (org: AdminOrganization) => {
+    remember()
+    if (org.registrationRequest) return setViewTarget(org)
+    setApproveTarget(org)
+  }
+
   const formatDate = (value: string) => dateTime(new Date(value), { dateStyle: 'medium' })
 
   return (
     <>
       <DataTable
+        bulkActions={ids => {
+          const targets = pendingIds(ids)
+          return (
+            <>
+              <Button
+                disabled={targets.length === 0}
+                onClick={() => handleBulkApprove(ids)}
+                size="sm"
+                variant="primary"
+              >
+                <LucideIcon name="check" />
+                {t('approve')}
+              </Button>
+              <Button
+                disabled={targets.length === 0}
+                onClick={() => {
+                  remember()
+                  setBulkRejectIds(targets)
+                }}
+                size="sm"
+                variant="outline"
+              >
+                {t('reject')}
+              </Button>
+            </>
+          )
+        }}
         className="outline-none"
+        rowLabel={org => t('selectOrg', { name: org.name })}
+        selectable
         tabIndex={-1}
         pageResetKey={`${search}|${country}|${filter}`}
         columns={[
@@ -174,8 +247,12 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
                   {org.avatarUrl && <AvatarImage alt="" src={org.avatarUrl} />}
                   <AvatarFallback className="rounded-lg">{org.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
-                <div className="flex min-w-0 flex-col">
-                  <Link className="truncate font-medium hover:underline" href={`/admin/organizations/${org.id}`}>
+                <div className="flex max-w-32 min-w-0 flex-col">
+                  <Link
+                    className="truncate font-medium hover:underline"
+                    href={`/admin/organizations/${org.id}`}
+                    keepFresh="list"
+                  >
                     <SearchHighlight query={search} value={org.name} />
                   </Link>
                   <span className="truncate text-xs text-muted-foreground">{org.email}</span>
@@ -189,24 +266,12 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
           {
             cell: org => {
               if (org.isPending) {
-                return (
-                  <StatusBadge icon="clock" tone="warning">
-                    {t('statusPending')}
-                  </StatusBadge>
-                )
+                return <StatusBadge tone="warning">{t('statusPending')}</StatusBadge>
               }
               if (org.isRejected) {
-                return (
-                  <StatusBadge icon="circle-x" tone="danger">
-                    {t('statusRejected')}
-                  </StatusBadge>
-                )
+                return <StatusBadge tone="danger">{t('statusRejected')}</StatusBadge>
               }
-              return (
-                <StatusBadge icon="circle-check" tone="success">
-                  {t('statusActive')}
-                </StatusBadge>
-              )
+              return <StatusBadge tone="success">{t('statusActive')}</StatusBadge>
             },
             header: t('columns.status'),
             id: 'status',
@@ -220,7 +285,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
               ]
               return place.filter(Boolean).join(', ') || <span className="text-muted-foreground">{t('app_none')}</span>
             },
-            className: 'max-w-56 truncate',
+            className: 'max-w-36 truncate',
             header: t('columns.location'),
             id: 'country',
             sortValue: org => (org.country ? translateCountry(org.country) : ''),
@@ -240,99 +305,105 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         ]}
         emptyDescription={orgs.length === 0 ? t('emptyMessage') : t('emptyFilteredMessage')}
         emptyTitle={orgs.length === 0 ? t('emptyTitle') : t('emptyFilteredTitle')}
-        filters={
-          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-            <Tabs onValueChange={value => setFilter(value as OrgFilter)} value={filter}>
-              <TabsList>
-                <TabsTrigger value="all">{t('filter_all')}</TabsTrigger>
-                <TabsTrigger count={pendingCount} value="pending">
-                  {t('filter_pending')}
-                </TabsTrigger>
-                <TabsTrigger value="active">{t('filter_active')}</TabsTrigger>
-                <TabsTrigger value="rejected">{t('filter_rejected')}</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <FilterBar active={hasFilters} onClear={resetFilters}>
-              <SearchInput
-                aria-label={t('searchPlaceholder')}
-                className="w-full sm:w-56"
-                hotkey={SHORTCUTS.filter.key}
-                onValueChange={setSearch}
-                placeholder={t('searchPlaceholder')}
-                size="sm"
-                value={search}
-              />
-              {countryOptions.length > 0 && (
-                <Select onValueChange={setCountry} value={country}>
-                  <SelectTrigger aria-label={t('filterCountry')} className="w-auto gap-1.5" size="sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{t('allCountries')}</SelectItem>
-                    {countryOptions.map(({ code, label }) => (
-                      <SelectItem key={code} value={code}>
-                        <span className="mr-1">{countryCodeToFlag(code)}</span>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </FilterBar>
-          </div>
-        }
+        rail={{
+          groups: [
+            {
+              id: 'status',
+              label: t('filterStatus'),
+              onChange: value => setFilter((value as OrgFilter | null) ?? 'all'),
+              options: (['pending', 'active', 'rejected'] as const).map(key => ({
+                count: matching(null, country).filter(STATUS_MATCHERS[key]).length,
+                label: t(`filter_${key}`),
+                tone: STATUS_TONES[key],
+                value: key,
+              })),
+              value: filter === 'all' ? null : filter,
+            },
+            {
+              id: 'country',
+              label: t('filterCountry'),
+              onChange: value => setCountry(value ?? 'all'),
+              options: countryOptions.map(({ code, label }) => ({
+                count: matching(filter, null).filter(o => o.country?.toLowerCase() === code).length,
+                label: `${countryCodeToFlag(code)} ${label}`,
+                value: code,
+              })),
+              value: country === 'all' ? null : country,
+            },
+          ],
+          onReset: resetFilters,
+          search: placement => (
+            <SearchInput
+              aria-label={t('searchPlaceholder')}
+              className="w-full"
+              hotkey={placement === 'panel' ? SHORTCUTS.filter.key : undefined}
+              onValueChange={setSearch}
+              placeholder={t('searchPlaceholder')}
+              size="sm"
+              value={search}
+            />
+          ),
+          searchActive: search.trim() !== '',
+        }}
         getRowId={org => org.id}
         label={t('tableLabel')}
         rowActions={org => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button aria-label={`${t('actions')}: ${org.name}`} size="icon" variant="ghost">
-                <LucideIcon name="ellipsis" />
+          <div className="flex items-center justify-end gap-1">
+            {org.isPending && (
+              <Button onClick={() => startReview(org)} size="sm" variant="outline">
+                {t('review')}
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href={`/admin/organizations/${org.id}`}>
-                  <LucideIcon name="building-2" />
-                  {t('openOrg')}
-                </Link>
-              </DropdownMenuItem>
-              {org.registrationRequest && (
-                <DropdownMenuItem
-                  onSelect={() => {
-                    remember()
-                    setViewTarget(org)
-                  }}
-                >
-                  <LucideIcon name="file-text" />
-                  {t('app_view')}
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button aria-label={`${t('actions')}: ${org.name}`} size="icon-sm" variant="ghost">
+                  <LucideIcon name="ellipsis" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href={`/admin/organizations/${org.id}`} keepFresh="list">
+                    <LucideIcon name="building-2" />
+                    {t('openOrg')}
+                  </Link>
                 </DropdownMenuItem>
-              )}
-              {org.isPending && (
-                <>
+                {org.registrationRequest && (
                   <DropdownMenuItem
                     onSelect={() => {
                       remember()
-                      setApproveTarget(org)
+                      setViewTarget(org)
                     }}
                   >
-                    <LucideIcon name="check" />
-                    {t('approve')}
+                    <LucideIcon name="file-text" />
+                    {t('app_view')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onSelect={() => {
-                      remember()
-                      setRejectTarget(org)
-                    }}
-                    variant="destructive"
-                  >
-                    <LucideIcon name="x" />
-                    {t('reject')}
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                )}
+                {org.isPending && (
+                  <>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        remember()
+                        setApproveTarget(org)
+                      }}
+                    >
+                      <LucideIcon name="check" />
+                      {t('approve')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        remember()
+                        setRejectTarget(org)
+                      }}
+                      variant="destructive"
+                    >
+                      <LucideIcon name="x" />
+                      {t('reject')}
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         )}
         rows={displayOrgs}
       />
@@ -363,6 +434,16 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         onOpenChange={open => !open && setRejectTarget(null)}
         open={!!rejectTarget}
         org={rejectTarget}
+      />
+      <RejectDialog
+        description={t('bulkRejectDescription')}
+        onCloseAutoFocus={returnFocus}
+        onConfirm={handleBulkReject}
+        onOpenChange={open => !open && setBulkRejectIds(null)}
+        open={bulkRejectIds !== null}
+        org={null}
+        requireComment
+        title={t('bulkRejectTitle', { count: bulkRejectIds?.length ?? 0 })}
       />
       <OrgInviteDialog
         onCloseAutoFocus={returnFocus}

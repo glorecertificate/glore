@@ -8,6 +8,7 @@ import {
   formatActivityDate,
   formatActivityPeriod,
   generateCertificateCode,
+  journeyDates,
   journeySteps,
   linkedInProfileUrl,
   meetsActivityRule,
@@ -261,5 +262,36 @@ describe('normalizeCertificateCode', () => {
     expect(normalizeCertificateCode('ABCD-EFGH-JKMN-PQRS')).toBeNull()
     expect(normalizeCertificateCode('ABCD-EFGH-JKMU')).toBeNull()
     expect(normalizeCertificateCode("ABCD-EFGH-JK'; --")).toBeNull()
+  })
+})
+
+describe('journeyDates', () => {
+  const base = {
+    createdAt: '2026-01-01',
+    issuedAt: null,
+    reviewedAt: null,
+    revokedAt: null,
+    status: 'draft',
+    submittedAt: null,
+    withdrawnAt: null,
+  } as const
+
+  it('dates only the stages a certificate reached', () => {
+    expect(journeyDates(base)).toEqual({ draft: '2026-01-01', issued: null, review: null, submitted: null })
+    expect(journeyDates({ ...base, status: 'submitted', submittedAt: '2026-01-02' })).toMatchObject({
+      review: null,
+      submitted: '2026-01-02',
+    })
+  })
+
+  it('dates the issue from the approval, the revocation or the rejection', () => {
+    const approved = { ...base, issuedAt: '2026-02-01', reviewedAt: '2026-01-30', status: 'approved' } as const
+    expect(journeyDates(approved)).toMatchObject({ issued: '2026-02-01', review: '2026-01-30' })
+    expect(journeyDates({ ...approved, revokedAt: '2026-03-01', status: 'revoked' }).issued).toBe('2026-03-01')
+    expect(journeyDates({ ...base, reviewedAt: '2026-01-30', status: 'rejected' }).issued).toBe('2026-01-30')
+  })
+
+  it('dates a withdrawal on the review stage', () => {
+    expect(journeyDates({ ...base, status: 'withdrawn', withdrawnAt: '2026-01-05' }).review).toBe('2026-01-05')
   })
 })

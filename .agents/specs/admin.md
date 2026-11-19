@@ -10,7 +10,7 @@
 ## Screen anatomy
 
 - Every admin, translations, and emails page renders `PageIntro` (`ui/page-header.tsx`): a visible description and optional actions, then the content. The title stays in the header bar. The server-paged lists (users, certificates, audit) use `LoadingFallback` as the `Suspense` fallback, because the full table skeleton adds about 40 ms to the first paint on a slow phone.
-- Primary actions sit in the page header (`Create organization`, `Invite organization`, `Invite member`), never inside a table card.
+- Primary actions sit in the page header (`Create organization` as a split button with `Invite organization` in its menu, `Invite member`), never inside a table card.
 - Lists use `DataTable` with a `FilterBar`. `/admin/organizations` and `/admin/team` sort and filter locally with a header sort, and the server-paged lists (users, certificates, audit) sort by recency only.
 - States are `StatusBadge` tones: pending `warning`, active or joined `success`, rejected or banned `danger`. Roles and audit categories stay `Badge`.
 - The organization record header is a `PageHeader` (avatar, `PageHeaderTitle`, status, meta list) with the review actions in `PageHeaderActions`. The application tab links the website and emails.
@@ -92,6 +92,7 @@
 
 ### Search and rows
 
+- `exportAdminAudit` (`actions/admin/audit.ts`) returns the CSV of every event that matches the current filters, newest first, capped at 10,000 events (`AUDIT_EXPORT_LIMIT`, with a `truncated` flag). `AdminAuditExport` in the band downloads it. `lib/csv.ts` quotes cells and neutralizes formula starts.
 - `listAdminAudit` validates `adminAuditQuerySchema`: `category`, `from` and `to` (`YYYY-MM-DD`, whole UTC days), `q`, and `page`.
 - Each search token must match the actor or the affected person (name or email, joined through `metadata.userId` or `holderId`), the organization name, or the applicant name.
 - URL params (`audit-params.ts`): `q`, `category`, `from`, `to`, `page`.
@@ -106,6 +107,7 @@
 - Each key is validated alone. A missing or invalid stored value falls back to `config/metadata.json`.
 - `saveAppSettings` (`db/mutations/app-settings.ts`) stores only keys that differ from the effective value and records `settings.updated` with the changed keys. The action then calls `updateTag(CacheTag.Settings)`.
 - `loadSettings()` (`lib/settings.ts`) is a plain cached read with a defaults fallback, so emails and cron use it. The root layout feeds `SettingsProvider`, and client code calls `useSettings()`.
+- The `/emails` preview has a Phone (390 px) and Desktop (640 px) toggle. The sandboxed frame scales down to fit the card, so it never scrolls the page sideways.
 - Emails take `settings` as a prop (`EmailBaseProps`) and default to the config values, so React Email previews work unchanged.
 
 ## Overview
@@ -116,10 +118,9 @@
 
 ### Page
 
-- `AdminOverview` (`features/admin/overview.tsx`, server rendered, `Admin.overview` messages) shows four `StatCard`s: users, organizations, certificate requests, and awaiting review with the overdue count.
-- It shows two lazy `Chart`s over the 12 months: users and organizations as lines, submitted and approved certificates as bars. An all-zero series passes empty data so the chart shows its empty state.
-- It shows `AdminOverviewPipeline` (status badges with share bars) and review time (average and median, hours below 48 then days; helpers in `overview-utils.ts`).
-- It shows `AdminOverviewShortcuts`: users, `organizations?tab=pending` with the pending count, certificates with the waiting count, and audit.
+- `AdminOverview` (`features/admin/overview.tsx`, server rendered, `Admin.overview` messages) opens with `AdminOverviewDecisions`: pending organization applications, certificate requests waiting past the last reminder day, and team invitations not accepted. Rows at zero hide.
+- A divided figure strip follows (users, organizations, certificate requests with the average review time, courses), then `AdminOverviewPipeline` (status dots with neutral tracks) beside one lazy `Chart` of submitted and approved certificates per month, then `AdminOverviewHealth` (content health from `loadEditorSummary`).
+- The band primary opens the oldest pending application (`decisions.oldestApplication`), or the certificates page when none is pending.
 
 ### Data and cache
 
@@ -129,6 +130,7 @@
 - The payload (`AdminOverview`, `db/queries/admin-overview.ts`) holds `users`: total, admins, editors, pending onboarding, active bans.
 - It holds `organizations`: active, pending, rejected. Pending and rejected follow the sidebar badge rule: `approvedAt` null and no rejected admin join request.
 - It holds `certificates`: `pipeline` by status without drafts, `drafts`, `total`.
+- It holds `decisions`: the oldest pending application (`id`, `createdAt`) and the count of unaccepted team invitations. The query is also tagged `Organizations` and `TeamMembers`.
 - It holds `monthly`: 12 UTC months of users joined, organizations registered and approved, certificates submitted and approved.
 - It holds `review`: average and median hours from `submittedAt` to `reviewedAt`, overall and per month of `reviewedAt`.
 - It also holds `waiting` for `submitted` and `in_review` requests, and `overdue` past the longest `reviewReminderDays`.
@@ -181,9 +183,10 @@
 ## Translations
 
 - `/translations` (`app/(dashboard)/translations/page.tsx`) edits interface text. It sits outside the admin layout because editors reach it, as `/emails` does.
-- `/admin/translations` redirects to it (`next.config.ts`). The nav entry `admin-translations` (group `admin`, `visible: isTeam`) sits before `admin-emails`.
+- `/admin/translations` redirects to it (`next.config.ts`). The nav entry `admin-translations` (group `content`, `visible: isTeam`) sits before `admin-emails`. The sidebar shows the `content` group (translations, email previews, legal documents) under its own Content label, apart from the Admin group.
 - `loadTranslations` (`actions/translations.ts`) calls `authorizeEditor`, then returns the three bundled catalogs and every override. `maxDuration` is 60.
 - The table (`features/translations/`) is a real `<table>` virtualized with `@tanstack/react-virtual`: one row per `en` key, a cell per locale, and state badges.
+- Below `md` the list scrolls with the page through `useWindowVirtualizer` (`translation-list.tsx`, `'use no memo'` because the React Compiler would cache the visible rows). From `md` it keeps the fixed-height inner scroller with a sticky header. The choice follows `matchMedia`, and the editor sheet is the same on both.
 - URL params (`translations-params.ts`): `filter`, `key` (opens the editor sheet), `namespace`, `q`.
 - Filters (`TRANSLATION_STATES`): missing, overridden, outdated, incompatible, orphaned, unreviewed. Rows, filters, and counts are pure helpers in `lib/translation-table.ts`.
 

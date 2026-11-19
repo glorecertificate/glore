@@ -1,28 +1,17 @@
 'use client'
 
-import { type Route } from 'next'
-
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type EditorSummary } from '@/actions/dashboard/core'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
-import { DashboardSection, StatLink } from '@/components/features/dashboard/section'
+import { StatLink } from '@/components/features/dashboard/section'
 import { Badge } from '@/components/ui/badge'
-import { Banner } from '@/components/ui/banner'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { LOCALES } from '@/lib/i18n'
-
-const STATE_STATS = [
-  { accent: 'green', icon: 'circle-check', state: 'published' },
-  { accent: 'teal', icon: 'layers', state: 'partial' },
-  { accent: 'amber', icon: 'pencil', state: 'draft' },
-  { accent: 'navy', icon: 'archive', state: 'archived' },
-] as const
 
 export const EditorDashboard = ({
   editor,
@@ -36,9 +25,8 @@ export const EditorDashboard = ({
   const t = useTranslations('Dashboard')
   const tIntl = useTranslations('Intl.Languages')
   const { dateTime } = useFormatter()
-  const { engagement, health, pending, stats, top, translations } = editor
+  const { engagement, health, stats, top, translations } = editor
   const hasEngagement = engagement.some(({ completed, started }) => started + completed > 0)
-  const pendingTotal = (pending?.organizations ?? 0) + (pending?.team ?? 0)
 
   return (
     <div className="flex flex-col gap-8">
@@ -48,22 +36,6 @@ export const EditorDashboard = ({
         subtitle={t('subtitle.editor')}
         title={t('greeting', { name: firstName })}
       />
-
-      {pending && pendingTotal > 0 && (
-        <Banner className="flex-wrap items-center justify-between" variant="info">
-          <div className="space-y-1">
-            <p className="font-semibold">{t('editor.pendingTitle', { count: pendingTotal })}</p>
-            <p className="text-sm text-muted-foreground">
-              {t('editor.pendingDescription', { organizations: pending.organizations, team: pending.team })}
-            </p>
-          </div>
-          <Button asChild size="sm" variant="brand">
-            <Link href={(pending.organizations > 0 ? '/admin/organizations' : '/admin/team') as Route}>
-              {t('editor.reviewPending')}
-            </Link>
-          </Button>
-        </Banner>
-      )}
 
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatLink
@@ -103,62 +75,6 @@ export const EditorDashboard = ({
           value={stats.averageRating ?? 0}
         />
       </section>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('editor.engagementTitle')}</CardTitle>
-            <CardDescription>{t('editor.engagementDescription', { count: stats.enrollments })}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {hasEngagement ? (
-              <Chart
-                data={engagement.map(point => ({
-                  completed: point.completed,
-                  id: point.month,
-                  label: dateTime(new Date(`${point.month}-01T00:00:00Z`), { month: 'short', timeZone: 'UTC' }),
-                  started: point.started,
-                }))}
-                label={t('editor.engagementTitle')}
-                series={[
-                  { key: 'started', label: t('editor.started') },
-                  { key: 'completed', label: t('editor.completed') },
-                ]}
-                variant="area"
-              />
-            ) : (
-              <DashboardEmpty icon="chart-line" title={t('editor.engagementEmpty')} />
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('editor.topTitle')}</CardTitle>
-            <CardDescription>{t('editor.topDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {top.length > 0 ? (
-              <Chart
-                data={top.map(course => ({
-                  completions: course.completions,
-                  enrollments: course.enrollments,
-                  id: course.id,
-                  label: course.title,
-                }))}
-                label={t('editor.topTitle')}
-                series={[
-                  { key: 'enrollments', label: t('editor.enrollments') },
-                  { key: 'completions', label: t('editor.completions') },
-                ]}
-                variant="bar"
-              />
-            ) : (
-              <DashboardEmpty icon="chart-bar" title={t('editor.topEmpty')} />
-            )}
-          </CardContent>
-        </Card>
-      </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
@@ -223,7 +139,7 @@ export const EditorDashboard = ({
                       </Badge>
                     ))}
                     {course.missing.map(locale => (
-                      <Badge key={locale} variant="muted">
+                      <Badge key={locale} variant="outline">
                         {t('editor.missing', { language: locale.toUpperCase() })}
                       </Badge>
                     ))}
@@ -235,21 +151,61 @@ export const EditorDashboard = ({
         </Card>
       </div>
 
-      <DashboardSection title={t('editor.statesTitle')}>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {STATE_STATS.map(({ accent, icon, state }) => (
-            <StatLink
-              accent={accent}
-              description={t(`editor.state.${state}Description`)}
-              href="/courses"
-              icon={icon}
-              key={state}
-              label={t(`editor.state.${state}`)}
-              value={health.states[state]}
-            />
-          ))}
-        </div>
-      </DashboardSection>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('editor.engagementTitle')}</CardTitle>
+            <CardDescription>{t('editor.engagementDescription', { count: stats.enrollments })}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {hasEngagement ? (
+              <Chart
+                data={engagement.map(point => ({
+                  completed: point.completed,
+                  id: point.month,
+                  label: dateTime(new Date(`${point.month}-01T00:00:00Z`), { month: 'short', timeZone: 'UTC' }),
+                  started: point.started,
+                }))}
+                label={t('editor.engagementTitle')}
+                series={[
+                  { key: 'started', label: t('editor.started') },
+                  { key: 'completed', label: t('editor.completed') },
+                ]}
+                variant="area"
+              />
+            ) : (
+              <DashboardEmpty icon="chart-line" title={t('editor.engagementEmpty')} />
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('editor.topTitle')}</CardTitle>
+            <CardDescription>{t('editor.topDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {top.length > 0 ? (
+              <Chart
+                data={top.map(course => ({
+                  completions: course.completions,
+                  enrollments: course.enrollments,
+                  id: course.id,
+                  label: course.title,
+                }))}
+                label={t('editor.topTitle')}
+                series={[
+                  { key: 'enrollments', label: t('editor.enrollments') },
+                  { key: 'completions', label: t('editor.completions') },
+                ]}
+                variant="bar"
+              />
+            ) : (
+              <DashboardEmpty icon="chart-bar" title={t('editor.topEmpty')} />
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

@@ -2,13 +2,11 @@
 
 import { startTransition } from 'react'
 
-import { parseAsString, parseAsStringEnum, useQueryState } from 'nuqs'
+import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryState } from 'nuqs'
 
 import {
   CERT_LIST_PARAMS,
-  CERT_LIST_SORTS,
   CERT_LIST_STATUS_VALUES,
-  type CertListSort,
   type CertListStatus,
   TUTOR_QUEUE_AGES,
   TUTOR_QUEUE_PARAMS,
@@ -20,7 +18,7 @@ import {
 const paramsOptions = { history: 'push', startTransition } as const
 
 const statusParser = parseAsStringEnum([...CERT_LIST_STATUS_VALUES])
-const sortParser = parseAsStringEnum([...CERT_LIST_SORTS]).withDefault('newest')
+const orgParser = parseAsInteger
 
 export const useCertListStatus = () => {
   const [status, setStatusRaw] = useQueryState(CERT_LIST_PARAMS.STATUS, { ...statusParser, ...paramsOptions })
@@ -28,10 +26,10 @@ export const useCertListStatus = () => {
   return { setStatus, status }
 }
 
-export const useCertListSort = () => {
-  const [sort, setSortRaw] = useQueryState(CERT_LIST_PARAMS.SORT, { ...sortParser, ...paramsOptions })
-  const setSort = (s: CertListSort | null) => setSortRaw(s)
-  return { setSort, sort }
+export const useCertListOrg = () => {
+  const [org, setOrgRaw] = useQueryState(CERT_LIST_PARAMS.ORG, { ...orgParser, ...paramsOptions })
+  const setOrg = (value: number | null) => setOrgRaw(value)
+  return { org, setOrg }
 }
 
 const tabParser = parseAsStringEnum([...TUTOR_QUEUE_TABS]).withDefault('assigned')

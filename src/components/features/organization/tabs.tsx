@@ -8,6 +8,7 @@ import { useQueryState } from 'nuqs'
 import { Tabs, TabsList } from '@/components/ui/tabs'
 
 import { type InsightsScope } from './insights-cache'
+import { OrganizationInviteButton, OrganizationInviteHost } from './invite-host'
 import { preloadWithin } from './lazy-tabs'
 import {
   DEFAULT_ORGANIZATION_TAB,
@@ -101,19 +102,24 @@ export const OrganizationTabsList = ({
   }, [tab])
 
   return (
-    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" ref={listRef} {...props}>
-      <OrganizationTabTrigger value="overview">{t('overview')}</OrganizationTabTrigger>
-      <OrganizationTabTrigger value="members">{t('members')}</OrganizationTabTrigger>
-      <OrganizationTabTrigger count={invitationCount} value="invitations">
-        {tInvitations('tab')}
-      </OrganizationTabTrigger>
-      <OrganizationTabTrigger count={joinRequestCount} value="requests">
-        {t('joinRequests')}
-      </OrganizationTabTrigger>
-      <OrganizationTabTrigger value="certificates">{t('certificates')}</OrganizationTabTrigger>
-      <OrganizationTabTrigger value="insights">{t('insights')}</OrganizationTabTrigger>
-      <OrganizationTabTrigger value="activity">{t('activity')}</OrganizationTabTrigger>
-      {isOrgAdmin && <OrganizationTabTrigger value="settings">{t('settings')}</OrganizationTabTrigger>}
-    </TabsList>
+    <OrganizationInviteHost isOrgAdmin={isOrgAdmin}>
+      <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-3">
+        <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" ref={listRef} {...props}>
+          <OrganizationTabTrigger value="overview">{t('overview')}</OrganizationTabTrigger>
+          <OrganizationTabTrigger value="members">{t('members')}</OrganizationTabTrigger>
+          <OrganizationTabTrigger count={invitationCount} value="invitations">
+            {tInvitations('tab')}
+          </OrganizationTabTrigger>
+          <OrganizationTabTrigger count={joinRequestCount} value="requests">
+            {t('joinRequests')}
+          </OrganizationTabTrigger>
+          <OrganizationTabTrigger value="certificates">{t('certificates')}</OrganizationTabTrigger>
+          <OrganizationTabTrigger value="insights">{t('insights')}</OrganizationTabTrigger>
+          <OrganizationTabTrigger value="activity">{t('activity')}</OrganizationTabTrigger>
+          {isOrgAdmin && <OrganizationTabTrigger value="settings">{t('settings')}</OrganizationTabTrigger>}
+        </TabsList>
+        <OrganizationInviteButton />
+      </div>
+    </OrganizationInviteHost>
   )
 }

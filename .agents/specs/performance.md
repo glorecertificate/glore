@@ -100,6 +100,11 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - Shell decision (owner, 2026-11-18): a full prefetch makes the click wait one round trip for the dynamic part. So Shell ends at the first frame where the clicked sidebar item shows active (`data-active` or `aria-current`). The sidebar item turns active on `pointerdown`, before the round trip. Base and head use the same script. Complete is unchanged: pointer down to the last DOM change before 1 s of quiet.
 - A warm sidebar click must commit no fallback. Measure with a production build: `LoadingFallback` appears only after 300 ms, so a fallback in the DOM is a data wait to fix, not a style choice.
 
+- A provider above the shell never sets state after mount, from an effect, `requestAnimationFrame`, or a timer. Each `useSidebar` consumer re-renders on the change, and on the mobile profile that was one 150 ms task right after hydration (TBT 4x on `/courses`). Flip a DOM attribute from a callback ref instead (`settle` in `ui/sidebar.tsx`).
+- A sidebar link press keeps the phone drawer open, as on `main`. A close on navigation adds a render and the Sheet unmount around the route commit. That costs about 100 ms at 4x CPU, and the mobile navigation cases flag it. Issue #207 tracks a close with no cost.
+- The invitation poll of the menu indicator starts on mount. A deferred start lands a state change inside a later navigation and the router queues the click behind the server action.
+- `settle` in `e2e/perf/vitals.ts` also waits for requests still in flight. A resource entry exists only after the download ends, so a streaming prefetch looked quiet and the click raced it.
+
 - Measure the affected cases before and after each change with `PERF_RUNS=5`, and put both tables in the pull request.
 - A block is done when its cases meet the targets on both profiles. If not, the pull request names the blocker.
 - Never trade a metric for another without a reason in the pull request.
@@ -108,3 +113,16 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - Never add `InstantReveal` to `AppLayoutFallback`. The client renders that fallback during navigations, and React warns about a script that the client renders. The copy in `AppLayoutContent` runs before each reveal, so the fallback does not need one.
 - When a React update fails `instant-reveal.test.ts`, read the new reveal runtime in `react-dom-server` and update the script or remove it.
 - A loading state follows "Loading states" in `ui.md`. Its navigation cases keep `Shift` at 0.
+
+## Navigation freshness
+
+- A prefetched route goes stale 30 s after its fetch (`staleTimes.dynamic` and the 30 s `stale` of `getSessionUser`). `Link` never refetches on a timer, so a click after 30 s on a page fetched the route dynamically behind the route fallback.
+- `PrefetchKeeper` (`components/layout/prefetch-keeper.tsx`, mounted in the dashboard layout) calls `router.prefetch(href, { kind: 'full' })` for the registered links every 2 s. Fresh entries cost no request, so a route refetches within 2 s after it goes stale.
+- Eager refresh runs only on a device with a fine pointer, a viewport of 1024 px or more, and no `saveData`, and only after the `load` event and an idle callback (3 s at most). Any other device refreshes only the hrefs that an intent prefetch (hover, focus, touch start) already fetched, never a new one. A `nav` link that is hidden or not rendered, such as one in a closed drawer, never counts. Without this rule, a phone fetched about 350 KB of routes that its closed drawer hid (measured 36 `_rsc` requests in 6 s on the mobile profile for an admin, against 2 before the keeper).
+- It pauses while the tab is hidden, for 4 s after a press on a link (the navigation holds the network), and after 5 minutes without input. The first input after that refreshes at once.
+- `keepFresh` on the kit `Link` registers a href. A sidebar link registers as `nav`. `keepFresh="list"` registers a list or detail link, and only the 6 on screen nearest the top refresh.
+- The kit `Link` also upgrades to a full prefetch on hover (60 ms), focus, and touch start.
+- Cost: each registered link refetches once per 30 s while the user is active, about 13 requests per 30 s for an admin. Keep the registered set small.
+- A detail page whose `generateMetadata` reads the request (`connection()`, cookies, uncached session) cannot prefetch its head. Read `getSessionUser()` there, as `getAdminOrganizationName` does.
+- A `dynamic()` tab chunk loads on first visit and shows a fallback. Preload it from the list (`preloadAdminOrganizationDetail`).
+- `LoadingFallback` takes `delay={false}` for route fallbacks, so the spinner shows in the first frame instead of after 300 ms.

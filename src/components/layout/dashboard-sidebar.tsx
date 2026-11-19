@@ -32,7 +32,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -44,6 +43,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { HeaderLogo } from '@/components/ui/header'
 import { Image } from '@/components/ui/image'
+import { InfoTip } from '@/components/ui/info-tip'
 import { KbdShortcut } from '@/components/ui/kbd-shortcut'
 import { Link } from '@/components/ui/link'
 import { Logo } from '@/components/ui/logo'
@@ -58,12 +58,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  sidebarMenuButtonVariants,
+  SidebarTrigger,
   useSidebar,
+  useSidebarAction,
+  useSidebarDrawer,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { toast } from '@/components/ui/toast'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
 import { useShortcut } from '@/hooks/use-shortcut'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
@@ -191,9 +192,9 @@ const DashboardSidebarItem = ({
         onPointerLeave={cancelPress}
         tooltip={label}
       >
-        <Link href={route} prefetch={quiet || undefined}>
+        <Link href={route} keepFresh prefetch={quiet || undefined}>
           {icon && <LucideIcon name={icon} />}
-          {label}
+          <span>{label}</span>
           {badge > 0 && <DashboardSidebarBadge count={badge} />}
         </Link>
       </SidebarMenuButton>
@@ -208,9 +209,10 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
   const viewer: NavigationViewer = { canEdit: user.canEdit, isAdmin: user.isAdmin, role: user.role }
   const adminEntries = entriesFor(viewer, 'admin')
   const adminHref = adminSectionHref(viewer)
+  const contentEntries = entriesFor(viewer, 'content')
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="pt-3">
       <SidebarMenu>
         {sidebarEntriesFor(viewer).map(({ href, icon, id }) => (
           <DashboardSidebarItem icon={icon} key={id} label={labels[id]} route={href} />
@@ -234,6 +236,16 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
                 label={labels[id]}
                 route={href}
               />
+            ))}
+          </SidebarMenu>
+        </div>
+      )}
+      {contentEntries.length > 0 && (
+        <div className="mt-6 flex flex-col gap-1">
+          <SidebarGroupLabel>{t('content')}</SidebarGroupLabel>
+          <SidebarMenu>
+            {contentEntries.map(({ href, icon, id }) => (
+              <DashboardSidebarItem exact icon={icon} key={id} label={labels[id]} route={href} />
             ))}
           </SidebarMenu>
         </div>
@@ -283,7 +295,8 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
 
-  const { open, openMobile, setOpenMobile } = useSidebar()
+  const { open, setOpenMobile } = useSidebar()
+  const { openMobile } = useSidebarDrawer()
   const { user } = useSession()
   const collapsed = !open
 
@@ -357,36 +370,26 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                 <span className="flex items-center gap-1 font-semibold text-sidebar-accent-foreground">
                   {user.firstName}
                   {user.isAdmin && (
-                    <Tooltip>
-                      <TooltipTrigger
-                        asChild
-                        className="group-aria-expanded/sidebar-user:pointer-events-none!"
-                        pointerEvents="auto"
-                      >
-                        <span>
-                          <LucideIcon className="size-3" name="shield-user" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={6} size="sm">
-                        <span className="text-xs">{t('adminUser')}</span>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip
+                      className="text-inherit group-aria-expanded/sidebar-user:pointer-events-none! hover:text-inherit data-[state=open]:text-inherit"
+                      icon="shield-user"
+                      iconClassName="size-3"
+                      label={t('adminUser')}
+                      nested
+                    >
+                      {t('adminUser')}
+                    </InfoTip>
                   )}
                   {user.isEditor && (
-                    <Tooltip>
-                      <TooltipTrigger
-                        asChild
-                        className="group-aria-expanded/sidebar-user:pointer-events-none!"
-                        pointerEvents="auto"
-                      >
-                        <span>
-                          <LucideIcon className="size-3" name="pencil" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent sideOffset={6} size="sm">
-                        <span className="text-xs">{t('editorUser')}</span>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip
+                      className="text-inherit group-aria-expanded/sidebar-user:pointer-events-none! hover:text-inherit data-[state=open]:text-inherit"
+                      icon="pencil"
+                      iconClassName="size-3"
+                      label={t('editorUser')}
+                      nested
+                    >
+                      {t('editorUser')}
+                    </InfoTip>
                   )}
                 </span>
                 <span className="truncate text-xs font-normal text-sidebar-muted">{user.email}</span>
@@ -425,7 +428,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DashboardSidebarUserItem href="/help" icon="circle-help" onClick={onLinkClick}>
+              <DashboardSidebarUserItem href="/docs" icon="circle-help" onClick={onLinkClick}>
                 {t('help')}
               </DashboardSidebarUserItem>
               <DashboardSidebarUserItem href="/about" icon="info" onClick={onLinkClick}>
@@ -470,7 +473,6 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 
 const DashboardSidebarSearch = () => {
   const t = useTranslations('Search')
-  const tLayout = useTranslations('Layout')
   const [open, setOpen] = useState(false)
   const [activated, setActivated] = useState(false)
 
@@ -486,7 +488,7 @@ const DashboardSidebarSearch = () => {
 
   return (
     <>
-      <SidebarGroup>
+      <SidebarGroup className="pb-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -503,11 +505,6 @@ const DashboardSidebarSearch = () => {
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <NotificationBell className={cn(sidebarMenuButtonVariants(), 'justify-start font-normal')}>
-              <span>{tLayout('notifications')}</span>
-            </NotificationBell>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>
       {activated && <SearchCommand onOpenChange={setOpen} open={open} />}
@@ -515,23 +512,42 @@ const DashboardSidebarSearch = () => {
   )
 }
 
-const DashboardSidebarBrand = () => {
-  const { user } = useSession()
-  const t = useTranslations('Layout')
+const DashboardSidebarBrand = () => (
+  <div className="flex h-10 items-center justify-between gap-2 px-2.5 group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+    <HeaderLogo className="inline-flex group-data-[collapsible=icon]:hidden" href={APP_ROOT} prefetch={false}>
+      <Logo className="h-7 w-auto" onNavy />
+    </HeaderLogo>
+    <div className="flex items-center gap-1">
+      <NotificationBell className="size-9 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+      <DashboardSidebarClose />
+    </div>
+  </div>
+)
+
+const DashboardSidebarClose = () => {
+  const { toggleSidebar } = useSidebar()
+  const action = useSidebarAction()
 
   return (
-    <div className="flex items-center justify-between gap-2 px-1 group-data-[collapsible=icon]:hidden">
-      <HeaderLogo className="inline-flex rounded-lg logo-chip px-2.5 py-1.5" href={APP_ROOT} prefetch={false}>
-        <Logo className="h-4.5 w-auto" />
-      </HeaderLogo>
-      {user.isAdmin && (
-        <Badge className="bg-sidebar-badge text-sidebar-badge-foreground" variant="ghost">
-          {t('admin')}
-        </Badge>
-      )}
-    </div>
+    <Button
+      className="size-7 text-sidebar-muted group-data-[collapsible=icon]:hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground lg:hidden"
+      data-sidebar="close"
+      onClick={toggleSidebar}
+      size="icon"
+      variant="ghost"
+    >
+      <LucideIcon className="size-4" name="x" />
+      <span className="sr-only">{action}</span>
+    </Button>
   )
 }
+
+const DashboardSidebarExpand = () => (
+  <SidebarTrigger
+    className="hidden size-8 self-center text-sidebar-muted group-data-[collapsible=icon]:flex hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+    data-sidebar="expand"
+  />
+)
 
 export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
   const { organization, user } = useSession()
@@ -548,7 +564,8 @@ export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="gap-4 p-4 pb-2">
+      <SidebarHeader className="gap-4 p-4 pb-2 group-data-[collapsible=icon]:p-2">
+        <DashboardSidebarExpand />
         <DashboardSidebarBrand />
         {showsOrganizationSwitcher(user) && <OrganizationSwitcher />}
       </SidebarHeader>

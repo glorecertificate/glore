@@ -9,6 +9,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Invitations never create memberships or accounts for an existing person. Accepting one does (`src/db/mutations/invitation.ts`).
 - Never call `signUpEmail` or insert a membership for an invitee outside that mutation.
 - A person who already holds a membership (for example through an invite link sent after the invitation) is upgraded when the invited role outranks the current one (`learner`, `volunteer`, `tutor`, `representative`, `admin`). A lower or equal invited role keeps the current role.
+- In bulk mode the invite dialog reads a CSV file (up to 256 KB) with `extractCsvEmails` (`lib/csv.ts`): any cell that holds an address counts, headers and bad cells are skipped, and the addresses join the text box. The box then follows the paste rules, including `maxBulkInvites`, and sending still creates invitations only.
 - Inviting issues a token and records its hash, a role, an optional message, and an expiry of `invitationExpiryDays` (7), and mails `/invite/[token]?proof=...`.
   - The daily cron sends a reminder on `invitationReminderDay` (5). `pruneExpiredRecords` deletes expired or revoked rows after `invitationRetentionDays` (30).
   - `org_invitations_open_email_key` allows one open invitation per organization and `lower(email)`.
@@ -59,7 +60,10 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 ## Members and ownership
 
 - `/organization?tab=members` is a `DataTable` named "Members" with search, role and status filters, sorting, and pagination.
-- "Details" opens a drawer with the profile, learning progress, and the member's non-draft certificates in this org (`getOrganizationMemberDetail`, managers only).
+- The invite dialog lives in `OrganizationInviteHost` (`invite-host.tsx`), which wraps the band and the tabs. The one `OrganizationInviteButton` sits in the band, and tab bodies have no heading or invite button of their own.
+- The member name opens the details drawer, and the row menu holds View details, Change role, and Remove. The owner's own row has no menu. The Status column shows on `/organization` only.
+- The Invitations filter groups are Open (pending), Expired, and Accepted, with counts. Resend and Revoke sit in the row menu.
+- The details drawer with the profile, learning progress, and the member's non-draft certificates in this org (`getOrganizationMemberDetail`, managers only).
 - Role changes, removals, leaving, and ownership transfers live in `db/mutations/organization.ts` and return `memberError` codes.
 - Only the owner changes roles, and never to or from `admin`. The owner role moves through an ownership transfer.
 - Managers remove members. A representative removes only learners, tutors, and volunteers.
@@ -81,7 +85,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 
 - `OrganizationSettings` serves `/organization?tab=settings` and `/admin/organizations/[id]?tab=settings`.
 - Only the owner (or a platform admin through `organizationId`) edits.
-- Sections: branding, details, per-locale description, legal identity (`legalName`, `registryId`), certificate signatory, contact, danger zone.
+- Sections: branding, details, per-locale description, legal identity (`legalName`, `registryId`), certificate signatory, contact, danger zone. A `SectionNav` jumps between them and `StickySaveBar` saves the form. Transfer ownership and Delete sit in the danger zone of `/organization` only.
 - The description form sends only the locales the user edited.
 - `mergeDescription` merges them into the stored record under a row lock, so an edit in one language never overwrites another. A blank value removes that locale.
 - The signatory is `organization_profiles.legalRepresentative` (printed after "Represented by") plus an optional PNG or JPG `signatureUrl`.
@@ -144,4 +148,5 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Rejecting is a mutation (`rejectOrganizationApplication`) that keeps the organization, marks the request rejected, and records `organization.application_decided` with `approved: false`.
 - The `organization/application-decision` template (own subject, intro, and buttons) mails approved and declined decisions.
 - `/admin/organizations/[id]` reuses the organization components with `organizationId`.
+- The band holds the status, one meta line, the `OrganizationInviteButton`, and a menu. A 320 px right rail (`AdminOrganizationRail`) shows About and the danger zone with Delete, which stays disabled while the organization has certificates.
 - It shows the same members, invitations (without invite links), settings, and activity tabs, plus an application tab for organizations that applied.

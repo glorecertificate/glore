@@ -138,12 +138,18 @@ export interface AdminUserRow {
   username: string | null
 }
 
-export interface AdminPage<T> {
+interface AdminPage<T> {
   page: number
   pageCount: number
   pageSize: number
   rows: T[]
   total: number
+}
+
+export type FacetCounts = Record<string, Record<string, number>>
+
+export interface FacetedPage<T> extends AdminPage<T> {
+  facets: FacetCounts
 }
 
 export const toPage = <T>(rows: T[], { page, pageSize, total }: { page: number; pageSize: number; total: number }) => ({

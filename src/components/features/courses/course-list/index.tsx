@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { CourseListCard } from '@/components/features/courses/course-list/card'
+import { LearnerCourseCard } from '@/components/features/courses/course-list/learner-card'
 import {
   useCourseListFilters,
   useCourseListLanguages,
@@ -20,11 +21,17 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { TabsContent } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 
+const PREFETCHED_CARDS = 2
+
 const CourseListSortableGrid = dynamic(
   async () => (await import('@/components/features/courses/course-list/sortable-grid')).CourseListSortableGrid
 )
 
-export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<typeof TabsContent>, 'value'>) => {
+export const CourseList = ({
+  className,
+  limit,
+  ...props
+}: Omit<React.ComponentProps<typeof TabsContent>, 'value'> & { limit: number }) => {
   const t = useTranslations('CourseList')
   const tCommon = useTranslations('Common')
   const { resetFilters } = useCourseListFilters()
@@ -93,11 +100,19 @@ export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<ty
   }
 
   const grid = (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2">
       <AnimatedList>
-        {displayCourses.map(course => (
+        {displayCourses.slice(0, user.canEdit ? undefined : limit).map((course, index) => (
           <AnimatedListItem className="group/sortable-item relative h-full" key={course.slug}>
-            <CourseListCard activeLanguages={activeLanguages} className="h-full" course={course} />
+            {user.canEdit ? (
+              <CourseListCard activeLanguages={activeLanguages} className="h-full" course={course} />
+            ) : (
+              <LearnerCourseCard
+                activeLanguages={activeLanguages}
+                course={course}
+                prefetch={index < PREFETCHED_CARDS}
+              />
+            )}
           </AnimatedListItem>
         ))}
       </AnimatedList>

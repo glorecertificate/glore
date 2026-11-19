@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button'
 import { type Certificate } from '@/db/queries/certificate'
 
 import { type InsightsScope, createInsightsCache } from './insights-cache'
-import { TabHeader } from './tab-header'
 
 interface LoadedCertificates {
   certificates: Certificate[]
@@ -65,7 +64,6 @@ const CertificatesContent = ({
   const scope = { organizationId, userId: viewerId ?? '' }
   const [loaded, setLoaded] = useState<LoadedCertificates | null>(() => certificatesCache.read(scope))
   const [failed, setFailed] = useState(false)
-  const header = <TabHeader description={t('certificatesDescription')} title={t('certificates')} />
 
   useEffect(() => {
     if (loaded) return
@@ -92,7 +90,6 @@ const CertificatesContent = ({
   if (failed) {
     return (
       <div className="flex flex-col gap-6">
-        {header}
         <Banner className="items-center justify-between" role="alert" variant="destructive">
           {t('certificatesError')}
           <Button onClick={onRetry} size="sm" type="button" variant="outline">
@@ -105,7 +102,6 @@ const CertificatesContent = ({
 
   return (
     <div className="flex flex-col gap-6">
-      {header}
       {loaded ? (
         <OrganizationCertificates
           certificates={loaded.certificates}

@@ -127,7 +127,7 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
 
   const sensors = useSensors(
     useSensor(MouseSensor),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -430,7 +430,7 @@ export const SortableItemHandle = (
       {...(isDisabled ? {} : itemContext.attributes)}
       {...(isDisabled ? {} : itemContext.listeners)}
       className={cn(
-        'select-none disabled:cursor-not-allowed',
+        'touch-hit select-none disabled:cursor-not-allowed',
         context.flatCursor ? 'cursor-default' : 'cursor-grab data-dragging:cursor-grabbing',
         className
       )}

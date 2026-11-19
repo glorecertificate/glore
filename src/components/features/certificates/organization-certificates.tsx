@@ -168,16 +168,23 @@ export const OrganizationCertificates = ({
         loading={loading}
         skeleton
         filters={
-          <FilterBar active={filtered} onClear={clear}>
-            <SearchInput
-              aria-label={t('search')}
-              className="w-64"
-              hotkey={SHORTCUTS.filter.key}
-              onValueChange={setQuery}
-              placeholder={t('search')}
-              size="sm"
-              value={query}
-            />
+          <FilterBar
+            active={filtered}
+            onClear={clear}
+            count={Number(status !== ALL) + Number(reviewer !== ALL)}
+            size="sm"
+            search={
+              <SearchInput
+                aria-label={t('search')}
+                className="w-64"
+                hotkey={SHORTCUTS.filter.key}
+                onValueChange={setQuery}
+                placeholder={t('search')}
+                size="sm"
+                value={query}
+              />
+            }
+          >
             <Select onValueChange={setStatus} value={status}>
               <SelectTrigger aria-label={t('status')} className="w-44" size="sm">
                 <SelectValue />

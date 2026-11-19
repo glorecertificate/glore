@@ -4,6 +4,7 @@ import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 import { type VariantProps } from 'class-variance-authority'
 
 import { type Button, buttonVariants } from '@/components/ui/button'
+import { dialogFooterClassName, dialogSheetClassName } from '@/components/ui/dialog'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
@@ -25,7 +26,7 @@ export const AlertDialogOverlay = ({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) => (
   <AlertDialogPrimitive.Overlay
     className={cn(
-      'fixed inset-0 z-51 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
+      'fixed inset-0 z-51 bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none',
       className
     )}
     data-slot="alert-dialog-overlay"
@@ -46,6 +47,7 @@ export const AlertDialogContent = ({
       <AlertDialogPrimitive.Content
         className={cn(
           'fixed top-[50%] left-[50%] z-51 grid max-h-dialog w-full max-w-[calc(100%-2rem)] translate-[-50%] gap-4 overflow-y-auto rounded-xl border bg-background p-6 shadow-lg duration-200 ease-out data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg',
+          dialogSheetClassName,
           className
         )}
         data-slot="alert-dialog-content"
@@ -60,19 +62,11 @@ export const AlertDialogContent = ({
 }
 
 export const AlertDialogHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div
-    className={cn('flex flex-col gap-2 text-center sm:text-left', className)}
-    data-slot="alert-dialog-header"
-    {...props}
-  />
+  <div className={cn('flex flex-col gap-2 text-left', className)} data-slot="alert-dialog-header" {...props} />
 )
 
 export const AlertDialogFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div
-    className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
-    data-slot="alert-dialog-footer"
-    {...props}
-  />
+  <div className={cn(dialogFooterClassName, className)} data-slot="alert-dialog-footer" {...props} />
 )
 
 export const AlertDialogTitle = ({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Title>) => (

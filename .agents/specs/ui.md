@@ -28,12 +28,12 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 
 The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `DESIGN.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
 
-- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a teal gradient active item (`bg-gradient-nav`, `shadow-glow-nav`), a white `logo-chip`, and a green `sidebar-badge` count. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
+- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a `bg-sidebar-active` item (white at 12%, `sidebar-ring` icon), and `Logo onNavy` with no chip (`/icon-on-navy.png`). The bell sits in the logo row. `SidebarCount` shows a plain number, or a white badge when `floating`. The `logo-chip` utility stays for auth pages. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
 - Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1826`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
-- `DashboardHeader` renders `PageBand`: gradient `bg-band`, inline SVG globe, `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it. With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
+- `DashboardHeader` renders `PageBand`: gradient `bg-band` (four stops from the sidebar navy to teal and green, no globe), `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it. With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
 - `Button` `primary` and `brand` are the teal gradient with white text. `band` (green, navy text) and `band-secondary` (scrim) sit on the band. Press scales to `.98` in 80 ms.
-- `StatCard` takes `accent` (`teal`, `navy`, `green`, `amber`) and `icon`: a 4px gradient strip and a 32px gradient tile. `stat-accent-*` classes set the `--stat-*` variables for any element that needs them.
-- `Badge` is a pill. `success` is green with navy text, `info` is navy with white text, `muted` is the draft grey. `highlight` (`bg-highlight`) is the navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
+- `StatCard` takes `accent` (`teal`, `navy`, `green`, `amber`) and `icon`: a flat 32px tile with accent-colored icon. `stat-accent-*` classes set the `--stat-*` variables for any element that needs them.
+- `Badge` status variants (`success`, `warning`, `destructive`, `info`, `muted`, and the certificate ones such as `approved`) render an 8px dot and a neutral label, never a filled pill. `outline` is for neutral labels such as a role. `highlight` (`bg-highlight`) is the navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
 - Text on a gradient passes 4.5:1 on its darkest stop in each theme. `check:theme` enforces every pair, and the table lives in `PALETTE_PAIRS` in `scripts/theme/tokens.ts`.
 
 ## Migrate a page to the band
@@ -56,7 +56,9 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
 - `StatCard` composes `NumberTicker`. Formatting follows next-intl, and the ticker respects reduced motion.
 - `Banner` supplies semantic status variants.
-- `StatusBadge` takes a `tone` (`neutral`, `info`, `success`, `warning`, `danger`) and an optional icon.
+- `StatusBadge` takes a `tone`: `neutral`, `info`, `success`, `warning`, `danger`, or a certificate tone (`draft`, `submitted`, `review`, `changes`, `approved`, `rejected`, `withdrawn`, `revoked`). It takes no icon. `Progress` has one neutral track and a fill that matches the status color.
+- `FilterRail` (`filter-rail.tsx`) is passed to `DataTable` as `rail` (groups with live counts, `extra`, `search`, `onReset`). From `lg` it is a panel with active chips. Below `lg` it is a search field and a Filters sheet with the active count. Counts come from the server (`FacetedPage.facets`) or from the rows.
+- `SectionNav` is the left section nav of a settings page (vertical from `md`, a scroller below). `StickySaveBar` sticks to the bottom of the column when a form is dirty. Use `useStickySaveBar(form)` with react-hook-form: it gives `count`, `discard`, and `saving`.
 - A domain status has one `StatusMeta` map (icon, label key, tone) in its feature folder. `CERTIFICATE_STATUS` lives in `features/certificates/status.ts`.
 - Render a certificate status with `CertificateStatusBadge`, and read a status label from `CERTIFICATE_STATUS`. Never add a second map.
 - `Kbd` and `KbdGroup` render key hints. `useModifierKey()` returns `⌘` on Apple systems and `Ctrl` elsewhere. Never hard-code `⌘`.
@@ -66,6 +68,7 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - A `DescriptionItem` holds only its term and details. Put an action such as `CopyButton` inside `DescriptionDetails`.
 - `EmptyDescription` renders a `p`, so pass phrasing content only.
 - `FilterBar` holds the controls of a filter row. Pass `active` and `onClear` to show "Clear filters" (`Common.clearFilters`).
+- Pass `count` (active filters, search excluded) and `search` (the inline search field) to collapse the bar below `sm`: the search stays inline, and a Filters button shows the count and opens a bottom `Sheet` with the other controls. The sheet applies changes live and has Reset and Done. From `sm` the bar is unchanged. `size` matches the button to the controls (`md` or `sm`). Bars without `count` never collapse.
 - After a clear, `FilterBar` moves focus to its first control, so focus never drops to the page.
 - Import `toast` from `@/components/ui/toast`. Errors stay 8s, warnings 6s, info 4s, and success 2.5s. A caller can still set `duration`.
 - `ShareButton` opens the native share sheet. Without one, it copies the URL and shows a toast. Use `CopyButton` when the action only copies.
@@ -131,44 +134,8 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 - `--ring` is `action` in light and `brand` in dark. The base outline is full strength in both themes.
 - `--radius` is `0.625rem` with `sm`, `md`, `lg`, and `xl` derivatives.
 - `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
-- The mobile breakpoint is 768px, sourced from `config/theme.json`.
+- The mobile breakpoint is 768px and the tablet breakpoint is 1024px, both sourced from `config/theme.json`.
 - Email templates take their colors from `EMAIL_COLORS` and `EMAIL_COLORS_DARK`. Detail: `.agents/references/ui-components.md`, "Email colors".
-
-## Controls
-
-- Buttons, fields, and selects share one height scale: `2xs` 24px, `xs` 28px, `sm` 32px, `md` 36px (the default), and `lg` 44px.
-- Icon buttons use the square sizes `icon-2xs`, `icon-xs`, `icon-sm`, `icon`, and `icon-lg` on the same scale.
-- Set the `size` prop. Never override a control height with an `h-*` or `size-*` class.
-- Fields keep 16px text below the `md` breakpoint, so iOS does not zoom on focus.
-- Every focus indicator is `focus-visible:focus-ring`, a 2px `--ring` outline 2px outside the control.
-- Fields and items in a clipped container use `focus-ring-inset`. Never build a focus indicator from `ring-*` or `border-ring`.
-- A composite field such as `InputGroup` draws the ring on the group and passes `ring={false}` to its control.
-- Inputs, textareas, selects, checkboxes, and radios use `border-border-strong` on `bg-field`. Outline buttons, badges, and toolbars use `border-border`.
-- A checkbox is a rounded square (`rounded-sm`) and a radio is a circle. `checked="indeterminate"` shows a minus.
-- `Switch` is a 36x20 track (`size="sm"`: 28x16) with a 2px inset, a thumb of track height minus 4px, and `action` when on. Both states move over 150ms with `--ease-out`.
-- `PageIntro` takes `description`, `actions`, and children: a description row with an actions slot, then the page content, in one `gap-6` column.
-- `CopyButton` takes `iconOnly`: a ghost icon button (`icon-sm`) whose `label` is its accessible name and tooltip, and "Copied" after a copy.
-- `SHORTCUTS` also holds `submit` (Mod+Enter), `next` (j), and `previous` (k). `KbdShortcut` shows Enter as the return symbol.
-- `MultiSelectTrigger` is 32px (the `FilterBar` control size) and shrinks with its container.
-- `Badge` takes `count` (and `max`, default 99) for a counter: a pill with `tabular-nums` and a `min-w` equal to its height, capped as `99+`. Pass `count`, never `size-*` or `p-0`. Children render after the number, for a screen-reader label.
-- `Progress` clamps its value to 0..100, animates the fill with a transform, and takes `color` `action`, `brand`, `brand-secondary`, `brand-tertiary`, `success`, `warning`, or `default`.
-- A radio dot and its checked border use `action`. Tabs and segmented items darken their text on hover.
-- Floating surfaces (dropdown, context menu, select, popover, hover card) share `shadow-md`. Dialog and alert dialog are `rounded-xl`, scroll within `100dvh - 2rem`, and close with a 32px icon button. Tooltips wait 200ms.
-- An SVG gradient or pattern takes its id from `useId()`, so two copies on one page keep their fills.
-
-## Elevation and motion
-
-- The Tailwind shadow scale (`shadow-2xs` to `shadow-lg`) is overridden with layered shadows tinted by `--shadow-ink` and per-theme alpha tokens, so components keep standard classes.
-- `--ease-out` and `--ease-in-out` replace the weak Tailwind defaults.
-- JS animation uses `EASE_OUT`, `SPRING`, and `TRANSITION` from `src/lib/motion.ts`.
-- `MotionProvider` sets `MotionConfig reducedMotion="user"` app-wide.
-- Enter and exit animations come from `tw-animate-css`.
-- Never use `transition-all`. List the animated properties.
-- Theme switching uses the next-themes class strategy (`system`, `light`, `dark`) with the View Transitions API and respects `prefers-reduced-motion`.
-- Route view transitions use React `<ViewTransition>` with no Next.js flag.
-- `globals.css` suppresses the default root transition, so only a named `<ViewTransition>` with a transition type animates (for example `course-created` on course create).
-- `AnimatedList` and `AnimatedListItem` (`src/components/ui/animated-list.tsx`) wrap `AnimatePresence mode="popLayout"`, with `variant` set to `card` or `row`.
-- For dnd-kit sortable lists, add `asChild` and `exitOnly` and pair them with `animateLayoutChangesAlways` and `measureAlways` from `src/components/ui/sortable.tsx`.
 
 ## Loading states
 
@@ -180,6 +147,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 ## Moved detail
 
+- Controls (height scale, focus rings, fields, switches, floating surfaces) and Elevation and motion (shadows, easing, view transitions, animated lists): `.agents/references/ui-kit.md`.
 - `Markdown`, `MarkdownLazy`, `DialogContent`, and `InlineInput` rules: `.agents/references/ui-components.md`, "Controls detail".
 
 ## Design briefs

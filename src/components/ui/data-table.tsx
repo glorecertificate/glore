@@ -18,6 +18,7 @@ import {
   toggleSort,
 } from '@/components/ui/data-table-sort'
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
+import { FilterRailChips, FilterRailPanel, type FilterRailProps, FilterRailToolbar } from '@/components/ui/filter-rail'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
@@ -77,12 +78,14 @@ export const DataTable = <T,>({
   pageSize = 10,
   pageResetKey,
   pagination,
+  rail,
   rowActions,
   rowLabel,
   rows,
   selectable = false,
   selectedIds,
   skeleton = false,
+  toolbar,
   ...props
 }: Omit<React.ComponentProps<'div'>, 'children'> & {
   bulkActions?: (ids: DataTableRowId[]) => React.ReactNode
@@ -97,8 +100,10 @@ export const DataTable = <T,>({
   pageResetKey?: string
   pageSize?: number
   pagination?: DataTablePagination
+  rail?: FilterRailProps
   rowActions?: (row: T) => React.ReactNode
   rows: T[]
+  toolbar?: React.ReactNode
   selectedIds?: DataTableRowId[]
   skeleton?: boolean
 } & ({ rowLabel: (row: T) => string; selectable: true } | { rowLabel?: (row: T) => string; selectable?: false })) => {
@@ -178,241 +183,252 @@ export const DataTable = <T,>({
   return (
     <div
       aria-busy={loading}
-      className={cn('flex min-w-0 flex-col gap-4 rounded-xl bg-card p-4 shadow-card', className)}
+      className={cn(
+        'flex min-w-0 rounded-xl bg-card shadow-card',
+        rail ? 'overflow-hidden max-lg:flex-col lg:flex-row' : 'flex-col gap-4 p-4',
+        className
+      )}
       data-slot="data-table"
       onKeyDown={selectable ? onKeyDown : undefined}
       role={selectable ? 'group' : undefined}
       aria-label={selectable ? label : undefined}
       {...props}
     >
-      <div className="flex min-h-8 flex-wrap items-center justify-between gap-3">
-        {filters}
-        <span aria-live="polite" className="sr-only" role="status">
-          {hasSelection ? t('selected', { count: selection.length }) : !loading && t('count', { count: total })}
-        </span>
-        {hasSelection ? (
-          <div
-            aria-label={t('bulkActions')}
-            className="flex flex-wrap items-center gap-2"
-            data-slot="data-table-selection"
-            role="toolbar"
-          >
-            <span className="text-sm font-medium">{t('selected', { count: selection.length })}</span>
-            {bulkActions?.(selection)}
-            <Button onClick={() => select([])} size="sm" type="button" variant="ghost">
-              {t('clearSelection')}
+      {rail && <FilterRailPanel {...rail} className="max-lg:hidden" />}
+      <div className={cn('flex min-w-0 flex-1 flex-col gap-4', rail && 'p-4')}>
+        <div className="flex min-h-8 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          {rail ? <FilterRailToolbar {...rail} /> : filters}
+          <span aria-live="polite" className="sr-only" role="status">
+            {hasSelection ? t('selected', { count: selection.length }) : !loading && t('count', { count: total })}
+          </span>
+          {hasSelection ? (
+            <div
+              aria-label={t('bulkActions')}
+              className="flex flex-wrap items-center gap-2"
+              data-slot="data-table-selection"
+              role="toolbar"
+            >
+              <span className="text-sm font-medium">{t('selected', { count: selection.length })}</span>
+              {bulkActions?.(selection)}
+              <Button onClick={() => select([])} size="sm" type="button" variant="ghost">
+                {t('clearSelection')}
+              </Button>
+            </div>
+          ) : (
+            <span aria-hidden className={cn('text-sm text-muted-foreground max-sm:order-last', rail && 'lg:ml-auto')}>
+              {!loading && t('count', { count: total })}
+            </span>
+          )}
+          {toolbar}
+        </div>
+        {selectable && (
+          <label className="flex items-center gap-2 text-sm sm:hidden">
+            <Checkbox
+              checked={pageChecked}
+              disabled={loading || visible.length === 0}
+              onCheckedChange={checked => togglePage(checked === true)}
+            />
+            {t('selectAll')}
+          </label>
+        )}
+        {sortable.length > 0 && (
+          <div className="flex items-center gap-2 sm:hidden" data-slot="data-table-sort">
+            <Select onValueChange={onSelectSort} value={sort?.id ?? ''}>
+              <SelectTrigger aria-label={t('sortBy')} className="min-w-0 flex-1" size="sm">
+                <SelectValue placeholder={t('sortBy')} />
+              </SelectTrigger>
+              <SelectContent>
+                {sortable.map(item => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.header}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              aria-label={t(sortActionKey(sort))}
+              disabled={!sort}
+              onClick={onFlipSort}
+              size="icon"
+              type="button"
+              variant="outline"
+            >
+              <LucideIcon name={sort?.descending ? 'arrow-down' : 'arrow-up'} />
             </Button>
           </div>
-        ) : (
-          <span aria-hidden className="text-sm text-muted-foreground">
-            {!loading && t('count', { count: total })}
-          </span>
         )}
-      </div>
-      {selectable && (
-        <label className="flex items-center gap-2 text-sm sm:hidden">
-          <Checkbox
-            checked={pageChecked}
-            disabled={loading || visible.length === 0}
-            onCheckedChange={checked => togglePage(checked === true)}
-          />
-          {t('selectAll')}
-        </label>
-      )}
-      {sortable.length > 0 && (
-        <div className="flex items-center gap-2 sm:hidden" data-slot="data-table-sort">
-          <Select onValueChange={onSelectSort} value={sort?.id ?? ''}>
-            <SelectTrigger aria-label={t('sortBy')} className="min-w-0 flex-1" size="sm">
-              <SelectValue placeholder={t('sortBy')} />
-            </SelectTrigger>
-            <SelectContent>
-              {sortable.map(item => (
-                <SelectItem key={item.id} value={item.id}>
-                  {item.header}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            aria-label={t(sortActionKey(sort))}
-            disabled={!sort}
-            onClick={onFlipSort}
-            size="icon"
-            type="button"
-            variant="outline"
-          >
-            <LucideIcon name={sort?.descending ? 'arrow-down' : 'arrow-up'} />
-          </Button>
-        </div>
-      )}
-      <div className="overflow-hidden rounded-lg border">
-        <Table aria-label={label} className={MOBILE_TABLE}>
-          {(!loading || showSkeleton) && (
-            <TableHeader className={MOBILE_HEAD}>
-              <TableRow>
-                {selectable && (
-                  <TableHead className="w-10 max-sm:hidden" scope="col">
-                    <Checkbox
-                      aria-label={t('selectAll')}
-                      checked={pageChecked}
-                      disabled={loading || visible.length === 0}
-                      onCheckedChange={checked => togglePage(checked === true)}
-                    />
-                  </TableHead>
-                )}
-                {columns.map(item => (
-                  <TableHead
-                    aria-sort={
-                      item.sortValue
-                        ? sort?.id === item.id
-                          ? sort.descending
-                            ? 'descending'
-                            : 'ascending'
-                          : 'none'
-                        : undefined
-                    }
-                    className={item.className}
-                    key={item.id}
-                    scope="col"
-                  >
-                    {item.sortValue ? (
-                      <Button
-                        className="-ml-2 text-muted-foreground hover:text-foreground"
-                        disabled={loading}
-                        onClick={() => onToggleSort(item.id)}
-                        size="sm"
-                        type="button"
-                        variant="ghost"
-                      >
-                        {item.header}
-                        <LucideIcon
-                          name={sort?.id === item.id ? (sort.descending ? 'arrow-down' : 'arrow-up') : 'arrow-up-down'}
-                        />
-                      </Button>
-                    ) : (
-                      item.header
-                    )}
-                  </TableHead>
-                ))}
-                {rowActions && (
-                  <TableHead scope="col">
-                    <span className="sr-only">{t('actions')}</span>
-                  </TableHead>
-                )}
-              </TableRow>
-            </TableHeader>
-          )}
-          <TableBody className={cn(MOBILE_BODY, reveal && 'animate-reveal')}>
-            {showSkeleton ? (
-              Array.from({ length: limit }, (_, index) => (
-                <TableRow aria-hidden className={MOBILE_ROW} key={index}>
+        {rail && <FilterRailChips groups={rail.groups} />}
+        <div className="overflow-hidden rounded-lg border">
+          <Table aria-label={label} className={MOBILE_TABLE}>
+            {(!loading || showSkeleton) && (
+              <TableHeader className={MOBILE_HEAD}>
+                <TableRow>
                   {selectable && (
-                    <TableCell className={MOBILE_SELECT}>
-                      <Skeleton className="size-4" />
-                    </TableCell>
-                  )}
-                  {columns.map((item, position) => (
-                    <TableCell
-                      className={cn(
-                        MOBILE_CELL,
-                        position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
-                        item.className
-                      )}
-                      data-label={item.header}
-                      key={item.id}
-                    >
-                      <Skeleton className={cn('h-5', SKELETON_WIDTHS[(index + position) % SKELETON_WIDTHS.length])} />
-                    </TableCell>
-                  ))}
-                  {rowActions && (
-                    <TableCell className={cn(MOBILE_CELL, MOBILE_ACTIONS)}>
-                      <Skeleton className="ml-auto h-5 w-8 max-sm:ml-0" />
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))
-            ) : loading ? (
-              <TableRow className="max-sm:block">
-                <TableCell className="max-sm:block" colSpan={columnCount}>
-                  <Empty className="cursor-wait">
-                    <Spinner aria-hidden size="lg" variant="colored" />
-                  </Empty>
-                </TableCell>
-              </TableRow>
-            ) : visible.length > 0 ? (
-              visible.map(row => (
-                <TableRow
-                  className={MOBILE_ROW}
-                  data-state={selectable && selection.includes(getRowId(row)) ? 'selected' : undefined}
-                  key={getRowId(row)}
-                >
-                  {selectable && (
-                    <TableCell className={MOBILE_SELECT}>
+                    <TableHead className="w-10 max-sm:hidden" scope="col">
                       <Checkbox
-                        aria-label={rowLabel?.(row) ?? t('selectRow')}
-                        checked={selection.includes(getRowId(row))}
-                        onCheckedChange={checked => toggleRow(getRowId(row), checked === true)}
+                        aria-label={t('selectAll')}
+                        checked={pageChecked}
+                        disabled={loading || visible.length === 0}
+                        onCheckedChange={checked => togglePage(checked === true)}
                       />
-                    </TableCell>
+                    </TableHead>
                   )}
-                  {columns.map((item, position) => (
-                    <TableCell
-                      className={cn(
-                        MOBILE_CELL,
-                        position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
-                        item.className
-                      )}
-                      data-label={item.header}
+                  {columns.map(item => (
+                    <TableHead
+                      aria-sort={
+                        item.sortValue
+                          ? sort?.id === item.id
+                            ? sort.descending
+                              ? 'descending'
+                              : 'ascending'
+                            : 'none'
+                          : undefined
+                      }
+                      className={item.className}
                       key={item.id}
+                      scope="col"
                     >
-                      {item.cell(row)}
-                    </TableCell>
+                      {item.sortValue ? (
+                        <Button
+                          className="-ml-2 text-muted-foreground hover:text-foreground"
+                          disabled={loading}
+                          onClick={() => onToggleSort(item.id)}
+                          size="sm"
+                          type="button"
+                          variant="ghost"
+                        >
+                          {item.header}
+                          <LucideIcon
+                            name={
+                              sort?.id === item.id ? (sort.descending ? 'arrow-down' : 'arrow-up') : 'arrow-up-down'
+                            }
+                          />
+                        </Button>
+                      ) : (
+                        item.header
+                      )}
+                    </TableHead>
                   ))}
                   {rowActions && (
-                    <TableCell className={cn(MOBILE_CELL, 'text-right', MOBILE_ACTIONS)}>{rowActions(row)}</TableCell>
+                    <TableHead scope="col">
+                      <span className="sr-only">{t('actions')}</span>
+                    </TableHead>
                   )}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow className="max-sm:block">
-                <TableCell className="max-sm:block" colSpan={columnCount}>
-                  <Empty>
-                    <EmptyHeader>
-                      <EmptyTitle>{emptyTitle}</EmptyTitle>
-                      <EmptyDescription>{emptyDescription}</EmptyDescription>
-                    </EmptyHeader>
-                  </Empty>
-                </TableCell>
-              </TableRow>
+              </TableHeader>
             )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p aria-live="polite" className="text-sm text-muted-foreground" role="status">
-          {loading ? t('loading') : t('page', { page: number(currentPage + 1), total: number(pageCount) })}
-        </p>
-        <div className="flex gap-2">
-          <Button
-            disabled={loading || currentPage === 0}
-            onClick={() => goToPage(currentPage - 1)}
-            size="sm"
-            type="button"
-            variant="outline"
-          >
-            <LucideIcon name="chevron-left" />
-            {t('previous')}
-          </Button>
-          <Button
-            disabled={loading || currentPage >= pageCount - 1}
-            onClick={() => goToPage(currentPage + 1)}
-            size="sm"
-            type="button"
-            variant="outline"
-          >
-            {t('next')}
-            <LucideIcon name="chevron-right" />
-          </Button>
+            <TableBody className={cn(MOBILE_BODY, reveal && 'animate-reveal')}>
+              {showSkeleton ? (
+                Array.from({ length: limit }, (_, index) => (
+                  <TableRow aria-hidden className={MOBILE_ROW} key={index}>
+                    {selectable && (
+                      <TableCell className={MOBILE_SELECT}>
+                        <Skeleton className="size-4" />
+                      </TableCell>
+                    )}
+                    {columns.map((item, position) => (
+                      <TableCell
+                        className={cn(
+                          MOBILE_CELL,
+                          position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
+                          item.className
+                        )}
+                        data-label={item.header}
+                        key={item.id}
+                      >
+                        <Skeleton className={cn('h-5', SKELETON_WIDTHS[(index + position) % SKELETON_WIDTHS.length])} />
+                      </TableCell>
+                    ))}
+                    {rowActions && (
+                      <TableCell className={cn(MOBILE_CELL, MOBILE_ACTIONS)}>
+                        <Skeleton className="ml-auto h-5 w-8 max-sm:ml-0" />
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              ) : loading ? (
+                <TableRow className="max-sm:block">
+                  <TableCell className="max-sm:block" colSpan={columnCount}>
+                    <Empty className="cursor-wait">
+                      <Spinner aria-hidden size="lg" variant="colored" />
+                    </Empty>
+                  </TableCell>
+                </TableRow>
+              ) : visible.length > 0 ? (
+                visible.map(row => (
+                  <TableRow
+                    className={MOBILE_ROW}
+                    data-state={selectable && selection.includes(getRowId(row)) ? 'selected' : undefined}
+                    key={getRowId(row)}
+                  >
+                    {selectable && (
+                      <TableCell className={MOBILE_SELECT}>
+                        <Checkbox
+                          aria-label={rowLabel?.(row) ?? t('selectRow')}
+                          checked={selection.includes(getRowId(row))}
+                          onCheckedChange={checked => toggleRow(getRowId(row), checked === true)}
+                        />
+                      </TableCell>
+                    )}
+                    {columns.map((item, position) => (
+                      <TableCell
+                        className={cn(
+                          MOBILE_CELL,
+                          position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
+                          item.className
+                        )}
+                        data-label={item.header}
+                        key={item.id}
+                      >
+                        {item.cell(row)}
+                      </TableCell>
+                    ))}
+                    {rowActions && (
+                      <TableCell className={cn(MOBILE_CELL, 'text-right', MOBILE_ACTIONS)}>{rowActions(row)}</TableCell>
+                    )}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow className="max-sm:block">
+                  <TableCell className="max-sm:block" colSpan={columnCount}>
+                    <Empty>
+                      <EmptyHeader>
+                        <EmptyTitle>{emptyTitle}</EmptyTitle>
+                        <EmptyDescription>{emptyDescription}</EmptyDescription>
+                      </EmptyHeader>
+                    </Empty>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p aria-live="polite" className="text-sm text-muted-foreground" role="status">
+            {loading ? t('loading') : t('page', { page: number(currentPage + 1), total: number(pageCount) })}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              disabled={loading || currentPage === 0}
+              onClick={() => goToPage(currentPage - 1)}
+              size="sm"
+              type="button"
+              variant="outline"
+            >
+              <LucideIcon name="chevron-left" />
+              {t('previous')}
+            </Button>
+            <Button
+              disabled={loading || currentPage >= pageCount - 1}
+              onClick={() => goToPage(currentPage + 1)}
+              size="sm"
+              type="button"
+              variant="outline"
+            >
+              {t('next')}
+              <LucideIcon name="chevron-right" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

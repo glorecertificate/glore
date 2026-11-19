@@ -3,7 +3,15 @@
 import { Badge } from '@/components/ui/badge'
 import { useSidebar } from '@/components/ui/sidebar'
 
-export const SidebarCount = ({ count, label }: { count: number; label: string }) => {
+export const SidebarCount = ({
+  count,
+  floating = false,
+  label,
+}: {
+  count: number
+  floating?: boolean
+  label: string
+}) => {
   const { isMobile, open } = useSidebar()
 
   if (!open && !isMobile) {
@@ -14,9 +22,23 @@ export const SidebarCount = ({ count, label }: { count: number; label: string })
     )
   }
 
+  if (floating) {
+    return (
+      <Badge
+        className="absolute -top-0.5 -right-0.5 bg-sidebar-accent-foreground text-sidebar"
+        count={count}
+        size="sm"
+        variant="ghost"
+      >
+        <span className="sr-only">{label}</span>
+      </Badge>
+    )
+  }
+
   return (
-    <Badge className="ml-auto bg-sidebar-badge text-sidebar-badge-foreground" count={count} size="sm" variant="ghost">
+    <span className="ml-auto text-xs font-medium text-sidebar-muted tabular-nums">
+      <span aria-hidden>{count > 99 ? '99+' : count}</span>
       <span className="sr-only">{label}</span>
-    </Badge>
+    </span>
   )
 }

@@ -15,7 +15,7 @@ export const AgeBadge = ({ className, days, tone }: { className?: string; days: 
   const t = useTranslations('CertificateQueue')
 
   return (
-    <StatusBadge className={className} icon={tone === 'overdue' ? 'alarm-clock' : 'clock'} tone={AGE_TONES[tone]}>
+    <StatusBadge className={className} tone={AGE_TONES[tone]}>
       {days === 0 ? t('ageToday') : t('ageDays', { days })}
     </StatusBadge>
   )

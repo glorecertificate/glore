@@ -38,8 +38,8 @@ interface SidebarContext {
   activePath: string
   isDraggingRail: boolean
   isMobile: boolean
+  isTablet: boolean
   open: boolean
-  openMobile: boolean
   setActivePath: (path: Route) => void
   setIsDraggingRail: (isDraggingRail: boolean) => void
   setOpen: (open: boolean) => void
@@ -50,7 +50,26 @@ interface SidebarContext {
   width: string
 }
 
+interface SidebarDrawerContext {
+  action: string
+  openMobile: boolean
+}
+
 const SidebarContext = createContext<SidebarContext | null>(null)
+
+const SidebarDrawerContext = createContext<SidebarDrawerContext | null>(null)
+
+export const useSidebarDrawer = () => {
+  const context = use(SidebarDrawerContext)
+  if (!context) throw new Error('useSidebarDrawer must be used within a SidebarProvider')
+  return context
+}
+
+export const useSidebarAction = () => {
+  const { action, isMobile } = useSidebar()
+  const drawer = useSidebarDrawer()
+  return isMobile ? drawer.action : action
+}
 
 export const useSidebar = () => {
   const context = use(SidebarContext)
@@ -73,7 +92,7 @@ export const SidebarProvider = ({
   onOpenChange?: (open: boolean) => void
   open?: boolean
 }) => {
-  const { isMobile } = useDevice()
+  const { isMobile, isTablet } = useDevice()
   const pathname = usePathname()
   const t = useTranslations('Components.Sidebar')
 
@@ -83,7 +102,8 @@ export const SidebarProvider = ({
   const [activePath, setActivePath] = useState(pathname)
 
   const [isOpen, setIsOpen] = useState(defaultOpen)
-  const open = openProp ?? isOpen
+  const [overlayOpen, setOverlayOpen] = useState(false)
+  const open = isTablet ? overlayOpen : (openProp ?? isOpen)
 
   const openRef = useRef(open)
   const setOpenPropRef = useRef(setOpenProp)
@@ -91,6 +111,10 @@ export const SidebarProvider = ({
 
   const state = open ? 'expanded' : 'collapsed'
   const action = open ? t('close') : t('open')
+  const drawerValue: SidebarDrawerContext = {
+    action: openMobile ? t('close') : t('open'),
+    openMobile,
+  }
 
   useEffect(() => {
     openRef.current = open
@@ -104,6 +128,10 @@ export const SidebarProvider = ({
 
   const setOpen = (value: boolean | ((value: boolean) => boolean)) => {
     const openState = typeof value === 'function' ? value(openRef.current) : value
+    if (isTablet) {
+      setOverlayOpen(openState)
+      return
+    }
     const openAction = setOpenPropRef.current ?? setIsOpen
     openAction(openState)
     setSidebarCookie('sidebarOpen', String(openState))
@@ -130,16 +158,31 @@ export const SidebarProvider = ({
 
   useEffect(() => {
     setActivePath(pathname)
+    setOverlayOpen(false)
     window.scrollTo(0, 0)
   }, [pathname])
+
+  useEffect(() => {
+    if (!overlayOpen) return
+    const close = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOverlayOpen(false)
+    }
+    document.addEventListener('keydown', close)
+    return () => document.removeEventListener('keydown', close)
+  }, [overlayOpen])
+
+  useEffect(() => {
+    if (!isTablet) setOverlayOpen(false)
+    if (!isMobile) setOpenMobile(false)
+  }, [isMobile, isTablet])
 
   const contextValue: SidebarContext = {
     action,
     activePath,
     isDraggingRail,
     isMobile,
+    isTablet,
     open,
-    openMobile,
     setActivePath,
     setIsDraggingRail,
     setOpen,
@@ -153,24 +196,32 @@ export const SidebarProvider = ({
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <TooltipProvider delayDuration={0}>
-        <div
-          className={cn('group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar', className)}
-          ref={wrapperRef}
-          style={
-            {
-              '--sidebar-width': width,
-              '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
-              ...style,
-            } as React.CSSProperties
-          }
-          {...props}
-        >
-          {children}
-        </div>
-      </TooltipProvider>
+      <SidebarDrawerContext.Provider value={drawerValue}>
+        <TooltipProvider delayDuration={0}>
+          <div
+            className={cn('group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar', className)}
+            ref={wrapperRef}
+            style={
+              {
+                '--sidebar-width': width,
+                '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+                ...style,
+              } as React.CSSProperties
+            }
+            {...props}
+          >
+            {children}
+          </div>
+        </TooltipProvider>
+      </SidebarDrawerContext.Provider>
     </SidebarContext.Provider>
   )
+}
+
+const settle = (node: HTMLDivElement | null) => {
+  if (!node) return undefined
+  const frame = requestAnimationFrame(() => node.removeAttribute('data-settling'))
+  return () => cancelAnimationFrame(frame)
 }
 
 export const Sidebar = ({
@@ -186,7 +237,8 @@ export const Sidebar = ({
   variant?: 'sidebar' | 'floating' | 'inset'
   collapsible?: 'offcanvas' | 'icon' | 'none'
 }) => {
-  const { isMobile, state, openMobile, setOpenMobile, isDraggingRail } = useSidebar()
+  const { isMobile, isTablet, isDraggingRail, open, setOpen, setOpenMobile, state } = useSidebar()
+  const { openMobile } = useSidebarDrawer()
 
   if (collapsible === 'none') {
     return (
@@ -203,7 +255,7 @@ export const Sidebar = ({
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetContent
-          className="dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 text-sidebar-foreground sidebar-scope [&>button]:hidden"
+          className="dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 pt-safe pb-safe text-sidebar-foreground sidebar-scope [&>button]:hidden"
           data-mobile="true"
           data-sidebar="sidebar"
           side={side}
@@ -225,31 +277,44 @@ export const Sidebar = ({
       className="group dark peer hidden text-sidebar-foreground sidebar-scope md:block"
       data-collapsible={state === 'collapsed' ? collapsible : ''}
       data-dragging={isDraggingRail}
+      data-settling
+      ref={settle}
       data-side={side}
       data-state={state}
+      data-tablet={isTablet}
       data-variant={variant}
     >
+      {isTablet && open && (
+        <div
+          aria-hidden
+          className="fixed inset-0 z-9 bg-black/40 motion-safe:animate-in motion-safe:duration-200 motion-safe:fade-in-0"
+          data-slot="sidebar-backdrop"
+          onClick={() => setOpen(false)}
+        />
+      )}
       <div
         className={cn(
-          'relative h-svh w-(--sidebar-width) bg-transparent transition-[width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)]',
+          'relative h-svh w-(--sidebar-width) bg-transparent transition-[width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
+          'md:max-lg:w-(--sidebar-width-icon)',
           'group-data-[collapsible=offcanvas]:w-0',
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
-          'group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!'
+          'group-data-settling:duration-0! group-data-settling:*:duration-0! group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!'
         )}
       />
       <div
         className={cn(
-          'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] md:flex',
+          'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none md:flex',
+          'group-data-[tablet=true]:group-data-[state=expanded]:shadow-2xl',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:-left-(--sidebar-width)'
             : 'right-0 group-data-[collapsible=offcanvas]:-right-(--sidebar-width)',
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
-          'group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!',
+          'group-data-settling:duration-0! group-data-settling:*:duration-0! group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!',
           className
         )}
         {...props}
@@ -265,8 +330,15 @@ export const Sidebar = ({
   )
 }
 
-export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) => {
-  const { action, toggleSidebar } = useSidebar()
+export const SidebarTrigger = ({
+  className,
+  indicator,
+  indicatorLabel,
+  onClick,
+  ...props
+}: ButtonProps & { indicator?: boolean; indicatorLabel?: string }) => {
+  const { toggleSidebar } = useSidebar()
+  const action = useSidebarAction()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)
@@ -275,7 +347,7 @@ export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) =>
 
   return (
     <Button
-      className={cn('size-7', className)}
+      className={cn('relative size-7', className)}
       data-sidebar="trigger"
       onClick={handleClick}
       size="icon"
@@ -284,6 +356,14 @@ export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) =>
     >
       <LucideIcon name="panel-left" className="size-4.5! text-current" />
       <span className="sr-only">{action}</span>
+      {indicator && (
+        <span
+          className="absolute top-0.5 right-0.5 size-2 rounded-full bg-sidebar-badge"
+          data-slot="sidebar-trigger-indicator"
+        >
+          {indicatorLabel && <span className="sr-only">{indicatorLabel}</span>}
+        </span>
+      )}
     </Button>
   )
 }
@@ -347,7 +427,7 @@ export const SidebarRail = ({
       type="button"
       aria-label={action}
       className={cn(
-        'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-[left,right,translate] ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-0.75 after:w-0.5 hover:after:bg-sidebar-border sm:flex',
+        'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-[left,right,translate] ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-0.75 after:w-0.5 hover:after:bg-sidebar-border sm:flex pointer-coarse:hidden!',
         'group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full group-data-[collapsible=offcanvas]:hover:bg-sidebar',
         '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
         '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
@@ -394,7 +474,7 @@ export const SidebarSeparator = ({ className, ...props }: React.ComponentProps<t
 export const SidebarContent = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
+      'flex min-h-0 flex-1 flex-col gap-2 overflow-auto overscroll-contain group-data-[collapsible=icon]:overflow-hidden pointer-coarse:-my-1 pointer-coarse:py-1',
       className
     )}
     data-sidebar="content"
@@ -439,7 +519,7 @@ export const SidebarGroupAction = ({
     <Comp
       className={cn(
         'absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:focus-ring-inset [&>svg]:size-4 [&>svg]:shrink-0',
-        'after:absolute after:-inset-2 md:after:hidden',
+        'touch-hit',
         'group-data-[collapsible=icon]:hidden',
         className
       )}
@@ -454,7 +534,14 @@ export const SidebarGroupContent = ({ className, ...props }: React.ComponentProp
 )
 
 export const SidebarMenu = ({ className, ...props }: React.ComponentProps<'ul'>) => (
-  <ul className={cn('flex w-full min-w-0 flex-col gap-1', className)} data-sidebar="menu" {...props} />
+  <ul
+    className={cn(
+      'flex w-full min-w-0 flex-col gap-1 pointer-coarse:gap-2 pointer-coarse:group-data-[collapsible=icon]:gap-3',
+      className
+    )}
+    data-sidebar="menu"
+    {...props}
+  />
 )
 
 export const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>) => (
@@ -509,7 +596,7 @@ export const SidebarMenuButton = ({
 }
 
 export const sidebarMenuButtonVariants = cva(
-  `peer/menu-button flex w-full cursor-pointer items-center gap-2.5 overflow-hidden rounded-lg px-3 py-2 text-left font-medium text-sidebar-foreground outline-hidden transition-[width,height,padding,color,background-color,box-shadow] duration-100 group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:focus-ring-inset disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-gradient-nav data-active:font-semibold data-active:text-nav-foreground! data-active:shadow-glow-nav data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`,
+  `peer/menu-button touch-hit-y flex w-full cursor-pointer items-center gap-2.5 overflow-hidden rounded-lg px-3 py-2 text-left font-medium text-sidebar-foreground outline-hidden transition-[width,height,padding,color,background-color,box-shadow] duration-100 group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:focus-ring-inset disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-sidebar-active data-active:font-semibold data-active:text-sidebar-accent-foreground! data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground pointer-coarse:overflow-visible pointer-coarse:group-data-[collapsible=icon]:after:left-1/2! pointer-coarse:group-data-[collapsible=icon]:after:w-11! pointer-coarse:group-data-[collapsible=icon]:after:-translate-1/2! [&>span:last-child]:truncate pointer-coarse:group-data-[collapsible=icon]:[&>span:not(.absolute,.sr-only)]:hidden [&>svg]:size-4 [&>svg]:shrink-0 data-active:[&>svg]:text-sidebar-ring`,
   {
     defaultVariants: {
       variant: 'default',
@@ -545,7 +632,7 @@ export const SidebarMenuAction = ({
     <Component
       className={cn(
         'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:focus-ring-inset [&>svg]:size-4 [&>svg]:shrink-0',
-        'after:absolute after:-inset-2 md:after:hidden',
+        'touch-hit',
         'peer-data-[size=sm]/menu-button:top-1',
         'peer-data-[size=default]/menu-button:top-1.5',
         'peer-data-[size=lg]/menu-button:top-2.5',

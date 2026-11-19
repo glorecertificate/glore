@@ -122,6 +122,11 @@ const nextConfig: TypedNextConfig = {
       permanent: true,
     },
     {
+      source: '/help',
+      destination: '/docs',
+      permanent: false,
+    },
+    {
       source: '/admin/translations',
       destination: '/translations',
       permanent: false,

@@ -34,29 +34,27 @@ export const Progress = ({
 
 const FILLS = {
   action: 'bg-gradient-action',
+  approved: 'bg-status-approved',
   brand: 'bg-linear-to-r from-chart-teal to-stat-teal-strip-to',
   'brand-secondary': 'bg-brand-secondary-accent',
-  'brand-tertiary': 'bg-linear-to-r from-stat-navy-from to-stat-navy-strip-to dark:from-stat-navy-strip',
+  'brand-tertiary': 'bg-status-submitted',
+  changes: 'bg-status-changes',
   default: 'bg-muted-foreground',
-  success:
-    'bg-linear-to-r from-stat-green-from to-stat-green-to dark:from-stat-green-strip dark:to-stat-green-strip-to',
-  warning:
-    'bg-linear-to-r from-stat-amber-from to-stat-amber-to dark:from-stat-amber-strip dark:to-stat-amber-strip-to',
+  draft: 'bg-status-draft',
+  rejected: 'bg-status-rejected',
+  review: 'bg-status-review',
+  revoked: 'bg-status-revoked',
+  submitted: 'bg-status-submitted',
+  success: 'bg-status-approved',
+  warning: 'bg-status-changes',
+  withdrawn: 'bg-status-withdrawn',
 } as const
 
-const progressVariants = cva('relative h-2 w-full overflow-hidden rounded-full', {
+const progressVariants = cva('relative h-2 w-full overflow-hidden rounded-full bg-status-track', {
   defaultVariants: {
     color: 'default',
   },
   variants: {
-    color: {
-      action: 'bg-action-subtle',
-      brand: 'bg-brand/20',
-      'brand-secondary': 'bg-brand-secondary-accent/20',
-      'brand-tertiary': 'bg-brand-tertiary/20',
-      default: 'bg-muted-foreground/20',
-      success: 'bg-success/20',
-      warning: 'bg-warning/20',
-    },
+    color: Object.fromEntries(Object.keys(FILLS).map(key => [key, ''])) as Record<keyof typeof FILLS, string>,
   },
 })

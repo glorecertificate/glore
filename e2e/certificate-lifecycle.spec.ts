@@ -4,7 +4,6 @@ import {
   type Actor,
   actAs,
   certificateIdFromUrl,
-  completeWizard,
   fillExperience,
   openDialog,
   pickSkills,
@@ -49,7 +48,7 @@ test('volunteer resumes an autosaved draft and submits the request', async () =>
   await expect.poll(() => draftHours(tenant.users.volunteer!.id)).toBe(120)
 
   await page.goto('/certificates')
-  const resume = page.getByRole('link', { name: 'Continue editing' }).first()
+  const resume = page.getByRole('link', { name: 'Continue', exact: true }).first()
   await hydrated(resume)
   await resume.click()
   await expect(page).toHaveURL(/\/certificates\/new\?draft=\d+/u)
@@ -70,7 +69,8 @@ test('volunteer resumes an autosaved draft and submits the request', async () =>
 test('volunteer withdraws the request and submits a new one', async () => {
   const { page } = volunteer
   await page.goto(`/certificates/${certificateId}`)
-  await page.getByRole('button', { name: 'Withdraw' }).click()
+  await page.getByRole('button', { name: 'More actions' }).click()
+  await page.getByRole('menuitem', { name: 'Withdraw' }).click()
   await page.getByRole('alertdialog').getByRole('button', { name: 'Withdraw request' }).click()
   await expect(page.getByText('Request withdrawn.')).toBeVisible()
   await expect.poll(async () => (await certificateRow(certificateId))?.status).toBe('withdrawn')
@@ -80,7 +80,14 @@ test('volunteer withdraws the request and submits a new one', async () => {
   await hydrated(request)
   await request.click()
   await expect(page).toHaveURL(/\/certificates\/new/u)
-  await completeWizard(page)
+  await expect(page.getByLabel('Total hours')).toHaveValue('120')
+  await expect(page.getByLabel('Where did it take place?')).toHaveValue('Milan, Italy')
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByRole('checkbox', { checked: true })).toHaveCount(3)
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await rateOrganization(page)
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await submitFromLastStep(page)
   certificateId = certificateIdFromUrl(page)
   await expect(page.getByText('Waiting for a tutor to start.')).toBeVisible()
 })
@@ -156,12 +163,13 @@ test('tutor previews the PDF and approves, and the volunteer shares the certific
   await volunteerPage.goto(`/certificates/${certificateId}`)
   await expect(volunteerPage.getByText('Approved and issued.')).toBeVisible()
   await expect(volunteerPage.getByRole('button', { name: 'Copy link' })).toBeVisible()
-  const download = volunteerPage.getByRole('link', { name: 'Download PDF' })
+  const download = volunteerPage.getByRole('link', { name: 'Download certificate' })
   await expect(download).toBeVisible()
   const pdf = await volunteerPage.request.get((await download.getAttribute('href')) ?? '')
   expect(pdf.ok()).toBe(true)
   expect(pdf.headers()['content-type']).toContain('pdf')
-  const shareHref = (await volunteerPage.getByRole('link', { name: 'Share on LinkedIn' }).getAttribute('href')) ?? ''
+  const shareHref =
+    (await volunteerPage.getByRole('link', { name: 'LinkedIn', exact: true }).getAttribute('href')) ?? ''
   code = decodeURIComponent(shareHref).match(/[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4}/u)?.[0] ?? ''
   expect(code).not.toBe('')
 

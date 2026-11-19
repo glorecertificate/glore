@@ -14,11 +14,13 @@ const DefaultLabel = () => {
 
 export const LoadingFallback = ({
   className,
+  delay = true,
   label,
   size = 'auto',
   spinner = true,
   ...props
 }: React.ComponentProps<'output'> & {
+  delay?: boolean
   label?: React.ReactNode
   size?: 'auto' | 'full'
   spinner?: boolean | React.ComponentProps<typeof Spinner>
@@ -28,7 +30,8 @@ export const LoadingFallback = ({
   return (
     <output
       className={cn(
-        'flex animate-in cursor-wait items-center justify-center delay-300 duration-500 fill-mode-backwards fade-in',
+        'flex animate-in cursor-wait items-center justify-center duration-500 fill-mode-backwards fade-in',
+        delay && 'delay-300',
         size === 'full' && 'h-full min-h-svh pb-8',
         className
       )}

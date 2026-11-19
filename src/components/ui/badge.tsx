@@ -38,6 +38,9 @@ export const Badge = ({
   )
 }
 
+const DOT =
+  "gap-2 overflow-visible bg-transparent px-0 text-sm font-normal text-foreground before:size-2 before:shrink-0 before:rounded-full before:content-['']"
+
 const badgeVariants = cva(
   `inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-full whitespace-nowrap transition-[color,background-color] select-none focus-visible:focus-ring aria-invalid:border-destructive [&>svg]:pointer-events-none [&>svg]:size-3`,
   {
@@ -63,15 +66,23 @@ const badgeVariants = cva(
       },
       variant: {
         primary: 'bg-gradient-action text-action-foreground shadow-xs',
-        muted: 'bg-pill-draft text-pill-draft-foreground',
+        muted: `${DOT} before:border before:border-status-draft before:bg-transparent`,
         outline: 'border border-border bg-field',
         ghost: 'bg-transparent text-foreground',
         brand: 'bg-brand text-brand-foreground shadow-xs',
-        'brand-soft': 'bg-brand/10 text-brand-text',
-        success: 'bg-pill-approved font-medium text-pill-approved-foreground',
-        warning: 'bg-warning-subtle text-warning-text',
-        destructive: 'bg-danger-subtle text-danger-text',
-        info: 'bg-pill-review font-medium text-pill-review-foreground',
+        'brand-soft': `${DOT} before:bg-status-review`,
+        success: `${DOT} before:bg-status-approved`,
+        warning: `${DOT} before:bg-status-changes`,
+        destructive: `${DOT} before:bg-status-rejected`,
+        info: `${DOT} before:bg-status-review`,
+        draft: `${DOT} before:border before:border-status-draft before:bg-transparent`,
+        submitted: `${DOT} before:bg-status-submitted`,
+        review: `${DOT} before:bg-status-review`,
+        changes: `${DOT} before:bg-status-changes`,
+        approved: `${DOT} before:bg-status-approved`,
+        rejected: `${DOT} before:bg-status-rejected`,
+        withdrawn: `${DOT} before:bg-status-withdrawn`,
+        revoked: `${DOT} before:bg-status-revoked`,
       },
     },
   }

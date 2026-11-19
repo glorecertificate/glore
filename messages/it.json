@@ -2,7 +2,7 @@
   "Metadata": {
     "description": "GloRe è una rete aperta di ONG che certificano le soft skill acquisite con il volontariato. Segui i corsi, richiedi il certificato e chiunque potrà verificarlo online.",
     "keywords": "GloRe, volontariato, rete globale, ONG, certificato, soft skill, corsi, apprendimento, comunità",
-    "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi e gestire i tuoi certificati offline.",
+    "pwaDescription": "Installa GloRe sul tuo dispositivo per aprirlo dalla schermata Home. Senza connessione vedrai una pagina che ti avvisa che sei offline.",
     "title": "GloRe Certificate"
   },
   "Common": {
@@ -14,8 +14,18 @@
     "clearFilters": "Rimuovi filtri",
     "clearSort": "Rimuovi ordinamento",
     "completed": "Completato",
+    "done": "Fatto",
+    "filters": "Filtri",
+    "filtersActive": "Filtri, {count, plural, one {# attivo} other {# attivi}}",
+    "filtersDescription": "Filtra e ordina l'elenco. Le modifiche si applicano subito.",
     "errorMessage": "Riprova. Se il problema continua, <contactUs>contattaci</contactUs>.",
     "loading": "Caricamento…",
+    "discard": "Annulla modifiche",
+    "saveChanges": "Salva modifiche",
+    "sections": "Sezioni",
+    "unsavedChanges": "{count, plural, one {# modifica non salvata} other {# modifiche non salvate}}",
+    "removeFilter": "Rimuovi il filtro {name}",
+    "reset": "Reimposta",
     "uploadFailed": "Caricamento non riuscito. Riprova.",
     "errorTitle": "Qualcosa è andato storto",
     "hours": "Ore",
@@ -70,7 +80,8 @@
     "keyDown": "Freccia giù",
     "requestCertificate": "Richiedi un certificato",
     "inviteMembers": "Invita membri",
-    "skillsFramework": "Quadro delle competenze"
+    "skillsFramework": "Quadro delle competenze",
+    "content": "Contenuti"
   },
   "Intl": {
     "Countries": {
@@ -685,6 +696,9 @@
       "empty": "Non ci sono ancora dati",
       "label": "Categoria"
     },
+    "InfoTip": {
+      "label": "Altre informazioni"
+    },
     "Dialog": {
       "close": "Chiudi"
     }
@@ -724,7 +738,8 @@
     "pendingInvitations": "Inviti in attesa",
     "pendingInvitationsCount": "{count, plural, =1 {# invito in attesa} other {# inviti in attesa}}",
     "invitedAs": "Con il ruolo di {role}",
-    "noOrganization": "Non hai ancora un'organizzazione"
+    "noOrganization": "Non hai ancora un'organizzazione",
+    "content": "Contenuti"
   },
   "Auth": {
     "backToLogin": "Torna all'accesso",
@@ -780,7 +795,9 @@
     "sendLink": "Invia link",
     "sendingLink": "Invio in corso…",
     "savePassword": "Salva password",
-    "savingPassword": "Salvataggio in corso…"
+    "savingPassword": "Salvataggio in corso…",
+    "panelTitle": "Entra nella rete GloRe",
+    "panelMessage": "Dai valore alle tue esperienze di volontariato."
   },
   "CourseCommon": {
     "courseCreationFailed": "Impossibile creare il corso. Riprova.",
@@ -886,7 +903,26 @@
     "visibleLanguages": "{count, plural, =0 {Non visibile ai partecipanti} =1 {Visibile in 1 lingua} other {Visibile in # lingue}}",
     "lessonsCount": "{count, plural, =1 {1 lezione} other {# lezioni}}",
     "lessonsTitle": "Lezioni",
-    "titleLength": "{count}/{max} caratteri"
+    "titleLength": "{count}/{max} caratteri",
+    "moveLessonUp": "Sposta la lezione su",
+    "moveLessonDown": "Sposta la lezione giù",
+    "lessonsSheetDescription": "Scegli, rinomina, riordina o elimina le lezioni di questo corso.",
+    "moreActions": "Altro",
+    "blockMenu": "Blocco",
+    "blockMenuLabel": "Azioni del blocco",
+    "moveBlockUp": "Sposta su",
+    "moveBlockDown": "Sposta giù",
+    "descriptionShowMore": "Mostra tutto",
+    "descriptionShowLess": "Mostra meno",
+    "saveBarLabel": "Salva e pubblica",
+    "publish": "Pubblica",
+    "publishChanges": "Pubblica le modifiche",
+    "saveDraft": "Salva bozza",
+    "saving": "Salvataggio…",
+    "savedJustNow": "Salvato poco fa",
+    "unpublish": "Rimuovi dalla pubblicazione",
+    "noChangesToPublish": "Nessuna modifica da pubblicare",
+    "editingLanguage": "Modifica in {language}"
   },
   "CourseList": {
     "active": "Attivi",
@@ -979,7 +1015,9 @@
     "emptyMessage-published": "Non ci sono corsi pubblicati",
     "archiveAction": "Archivia",
     "moreActions": "Altre azioni",
-    "descriptionLearner": "Corsi brevi su come funziona GloRe e su argomenti pratici. I corsi sulle competenze e i certificati sono per i volontari."
+    "descriptionLearner": "Corsi brevi su come funziona GloRe e su argomenti pratici. I corsi sulle competenze e i certificati sono per i volontari.",
+    "showing": "{shown} di {total, plural, one {# corso} other {# corsi}}",
+    "showMore": "Mostra altri corsi"
   },
   "ContentTranslation": {
     "title": "Traduzione",
@@ -1057,6 +1095,7 @@
     "journey": {
       "title": "Il tuo certificato",
       "position": "Passaggio {current} di {total}",
+      "stepLabel": "{index}. {name}",
       "stages": {
         "learn": "Impara",
         "request": "Richiedi",
@@ -1170,6 +1209,27 @@
         "label": "Motivazione"
       }
     },
+    "volunteer": {
+      "eyebrow": "Il tuo certificato · passo {current} di {total}",
+      "coursesTitle": "Corsi sulle competenze",
+      "coursesProgress": "{count} di {min} obbligatori completati",
+      "completed": "Completato",
+      "notStarted": "Non iniziato",
+      "viewCourses": "Vedi tutti i corsi",
+      "requestTitle": "Richiesta di certificato",
+      "organization": "Organizzazione",
+      "skills": "Competenze",
+      "noSkills": "Ancora nessuna",
+      "experience": "Esperienza",
+      "hours": "{hours, plural, one {# ora} other {# ore}}",
+      "notEntered": "Non ancora inserita",
+      "lastSaved": "Ultimo salvataggio",
+      "upcoming": {
+        "request": "Dopo {min} corsi sulle competenze",
+        "review": "Dopo l'invio",
+        "certificate": "Emesso dopo l'approvazione"
+      }
+    },
     "stats": {
       "enrolled": "Iscritti",
       "inProgress": "In corso",
@@ -1195,7 +1255,8 @@
     },
     "updates": {
       "title": "Ultimi aggiornamenti",
-      "empty": "Ancora nessun aggiornamento. Qui vedrai le decisioni sui certificati e le novità dei corsi."
+      "empty": "Ancora nessun aggiornamento. Qui vedrai le decisioni sui certificati e le novità dei corsi.",
+      "all": "Tutti gli aggiornamenti"
     },
     "tutor": {
       "openQueue": "Apri la coda di revisione",
@@ -1218,14 +1279,21 @@
       "poolDescription": "Chiunque nel team può prenderle in carico",
       "waitingVolunteer": "In attesa dei volontari",
       "waitingVolunteerDescription": "Modifiche richieste",
-      "queueTitle": "Richieste più vecchie",
-      "queueEmptyTitle": "Niente in attesa",
-      "queueEmptyDescription": "Le nuove richieste della tua organizzazione compaiono qui appena i volontari le inviano.",
+      "queueTitle": "Da rivedere",
+      "queueEmptyTitle": "Nessuna richiesta in attesa",
+      "queueEmptyDescription": "{count, plural, =0 {Le nuove richieste compariranno qui appena i volontari le inviano.} one {# richiesta non assegnata è aperta al team.} other {# richieste non assegnate sono aperte al team.}}",
       "volunteer": "Volontario",
       "source": "Coda",
       "sourceAssigned": "Assegnata",
       "sourcePool": "Pool",
-      "waiting": "Attesa"
+      "waiting": "Attesa",
+      "workload": "{assigned} assegnate a te, {pool} non assegnate, {waiting} in attesa dei volontari",
+      "startNext": "Inizia la prossima revisione",
+      "claimNext": "Prendi in carico la prossima richiesta",
+      "startReview": "Inizia la revisione",
+      "view": "Vedi",
+      "reviewBasis": "Tempo medio di revisione {value}, su {count, plural, one {# revisione} other {# revisioni}}",
+      "claimRequest": "Prendi in carico una richiesta"
     },
     "manager": {
       "openOrganization": "Apri l'organizzazione",
@@ -1371,7 +1439,19 @@
       "navigation": "Altro in questa categoria",
       "previous": "Precedente",
       "next": "Successivo",
-      "onThisPage": "In questa pagina"
+      "onThisPage": "In questa pagina",
+      "helpful": "Ti è stato utile?",
+      "yes": "Sì",
+      "no": "No",
+      "thanks": "Grazie per la risposta.",
+      "tellUs": "Dicci cosa manca",
+      "related": "Domande correlate"
+    },
+    "hub": {
+      "searchPlaceholder": "Cerca nella documentazione",
+      "startHere": "Inizia da qui",
+      "forYourRole": "Per il tuo ruolo",
+      "seeAll": "Vedi tutti ({count})"
     }
   },
   "About": {
@@ -1860,7 +1940,14 @@
     "revokeConfirm": "Revoca il certificato",
     "revoking": "Revoca in corso…",
     "revoked": "Certificato revocato",
-    "revokeError": "Impossibile revocare il certificato. Riprova."
+    "revokeError": "Impossibile revocare il certificato. Riprova.",
+    "viewFull": "Vedi il certificato completo",
+    "details": "Dettagli",
+    "organization": "Organizzazione",
+    "issued": "Emesso",
+    "code": "Codice",
+    "moreActions": "Altre azioni",
+    "requestNew": "Richiedi un nuovo certificato"
   },
   "CertificateEligibility": {
     "title": "Non puoi ancora richiedere un certificato",
@@ -1893,8 +1980,6 @@
     "notFound": "Certificato non trovato",
     "notFoundMessage": "Il certificato che stai cercando non esiste o è stato spostato",
     "requestCertificate": "Richiedi certificato",
-    "requestCertificateMessage": "Crea il tuo certificato e attendi che un membro della tua organizzazione lo approvi.",
-    "requestCertificateTitle": "Ora puoi richiedere il tuo certificato GloRe",
     "noCertificates": "Non hai ancora nessun certificato",
     "noCertificatesMessage": "Quando richiederai un certificato, comparirà qui.",
     "noFilteredCertificates": "Nessun certificato corrispondente",
@@ -1904,11 +1989,18 @@
     "title": "Il tuo certificato",
     "preview": "Anteprima del certificato",
     "filterAll": "Tutti",
-    "sortNewest": "Più recenti",
-    "sortOldest": "Meno recenti",
-    "filterStatus": "Filtra i certificati per stato",
     "nationality": "Nazionalità",
-    "birthPlace": "Luogo di nascita"
+    "birthPlace": "Luogo di nascita",
+    "itemTitle": "Certificato di soft skill",
+    "draftStep": "Passo {current} di {total}: {name}",
+    "revokedOn": "Revocato il {date}",
+    "rowContinue": "Continua",
+    "rowOpen": "Apri",
+    "columnCertificate": "Certificato",
+    "columnStatus": "Stato",
+    "columnCode": "Codice",
+    "tableLabel": "I tuoi certificati",
+    "search": "Organizzazione o codice"
   },
   "CertificateOrg": {
     "title": "Certificati",
@@ -1962,7 +2054,6 @@
     "volunteer": "Volontario",
     "unknownVolunteer": "Volontario sconosciuto",
     "ageColumn": "Attesa",
-    "submitted": "Inviato",
     "waitingVolunteer": "In attesa del volontario",
     "notApplicable": "Chiuso",
     "claim": "Prendi in carico",
@@ -1989,7 +2080,9 @@
     "emptyFiltered": {
       "title": "Nessun risultato",
       "description": "Nessun certificato corrisponde ai filtri. Rimuovili per vedere tutto l'elenco."
-    }
+    },
+    "queue": "Coda",
+    "startNext": "Inizia la prossima revisione"
   },
   "CertificateReview": {
     "previousFeedback": "Il tuo commento precedente",
@@ -2015,7 +2108,6 @@
     "sectionSkills": "Competenze",
     "sectionTasks": "Attività",
     "experienceTitle": "Esperienza e attività",
-    "personalTitle": "Dati personali",
     "sectionComment": "Nota per il volontario",
     "sectionCommentPlaceholder": "Facoltativo. Spiega cosa correggere in questa sezione.",
     "evaluationTitle": "Punteggi",
@@ -2062,33 +2154,26 @@
     "errorRateLimited": "Troppi tentativi. Attendi un momento e riprova.",
     "errorGeneric": "Non è stato possibile completare l'azione. Riprova.",
     "descriptionsMissing": "Questo corso sulle competenze non ha ancora tutte le descrizioni dei livelli. Chiedi a un editor di aggiungerle.",
-    "volunteerChoice": "Scelta dal volontario"
+    "volunteerChoice": "Scelta dal volontario",
+    "previewLabel": "Anteprima del certificato di {organization}",
+    "openPdf": "Apri PDF",
+    "panelTitle": "La tua revisione",
+    "notesTitle": "Aggiungi note per il volontario",
+    "edit": "Modifica",
+    "doneEditing": "Fatto",
+    "submittedAgo": "Inviato {when}"
   },
   "CertificateShare": {
     "title": "Condividi il tuo certificato",
-    "description": "Chiunque abbia il link può verificarlo. La pagina mostra il certificato, mai la tua email.",
     "qrLabel": "Codice QR che apre la pagina di verifica",
     "copyLink": "Copia il link",
     "linkCopied": "Copiato",
-    "copyName": "Copia nome",
-    "copyOrganization": "Copia organizzazione emittente",
-    "copyIssued": "Copia data di emissione",
-    "copyUrl": "Copia URL della credenziale",
-    "copyId": "Copia ID della credenziale",
-    "downloadPdf": "Scarica il PDF",
     "share": "Condividi",
     "shareFailed": "Impossibile copiare il link.",
-    "shareLinkedin": "Condividi su LinkedIn",
-    "shareFacebook": "Condividi su Facebook",
-    "linkedinTitle": "Aggiungilo al tuo profilo LinkedIn",
-    "linkedinHint": "Apre LinkedIn con il modulo precompilato. Se un campo resta vuoto, copialo da qui.",
-    "linkedinAdd": "Aggiungi al profilo",
+    "linkedinTitle": "Aggiungi al profilo LinkedIn",
     "credentialName": "Certificato di soft skill",
-    "fieldName": "Nome",
-    "fieldOrganization": "Organizzazione emittente",
-    "fieldIssued": "Data di emissione",
-    "fieldUrl": "URL della credenziale",
-    "fieldId": "ID della credenziale"
+    "shareLinkedinShort": "LinkedIn",
+    "shareFacebookShort": "Facebook"
   },
   "CertificateStatus": {
     "statusApproved": "Approvato",
@@ -2112,7 +2197,6 @@
     "unknownMessage": "Nessun certificato corrisponde a questo codice. Controlla il codice e riprova.",
     "valid": "Certificato valido",
     "revoked": "Certificato revocato",
-    "validMessage": "GloRe ha emesso questo certificato il {date}.",
     "revokedOn": "Questo certificato è stato revocato in data {date} e non è più valido.",
     "revokedMessage": "Questo certificato è stato revocato e non è più valido.",
     "holderLeft": "Il titolare non ha più un account GloRe. Questo non modifica il registro del certificato.",
@@ -2130,7 +2214,10 @@
     "signatory": "Firmato da",
     "qrLabel": "Codice QR di questa pagina di verifica",
     "credentialName": "Certificato GloRe di {name}",
-    "ogDescription": "Certificato di {name} per il volontariato con {org}. Controlla il certificato su GloRe."
+    "ogDescription": "Certificato di {name} per il volontariato con {org}. Controlla il certificato su GloRe.",
+    "validDetail": "Emesso il {date} e verificato da GloRe",
+    "volunteerAt": "Volontario presso {organization}",
+    "lookupAgain": "Verifica un altro codice"
   },
   "CertificateWizard": {
     "reviewerNote": "Nota del tuo tutor",
@@ -2214,7 +2301,13 @@
     "chosenDescription": "La tua scelta",
     "chosenDescriptionHint": "Hai fatto questa scelta alla fine del corso. È definitiva e il tutor la verifica.",
     "draftLimit": "Hai troppe bozze. Continua o elimina una bozza dai tuoi certificati per salvare questa.",
-    "stepInvalid": "Alcuni campi richiedono la tua attenzione. Correggi i campi evidenziati per continuare."
+    "saveAndExit": "Salva ed esci",
+    "stepOf": "Passo {current} di {total}",
+    "moreActions": "Altre azioni",
+    "change": "Modifica",
+    "changeSection": "Modifica {section}",
+    "summaryPeriod": "Periodo",
+    "newRequest": "Nuova richiesta"
   },
   "CertificatePdf": {
     "title": "Certificato di soft skill",
@@ -2530,6 +2623,29 @@
     "tabLoadError": "Impossibile caricare questa scheda. Riprova.",
     "activityEmptyTitle": "Ancora nessuna attività"
   },
+  "OrganizationAttention": {
+    "title": "Richiede la tua attenzione",
+    "count": "{count, plural, one {# elemento} other {# elementi}}",
+    "empty": "Al momento nulla richiede la tua attenzione.",
+    "requestTitle": "{name} ha chiesto di unirsi a {organization}",
+    "requestContext": "Richiesta di adesione, inviata il {date}",
+    "reviewRequest": "Esamina la richiesta",
+    "changesTitle": "{holder} deve aggiornare una richiesta di certificato",
+    "changesContext": "Modifiche richieste da {tutor}, {date}",
+    "changesContextUnnamed": "Modifiche richieste, {date}",
+    "openCertificate": "Apri il certificato",
+    "expiredTitle": "L'invito per {email} è scaduto",
+    "expiredContext": "Scaduto il {date}",
+    "resend": "Reinvia"
+  },
+  "OrganizationRail": {
+    "certificates": "Certificati",
+    "requests": "{count, plural, one {# richiesta} other {# richieste}}",
+    "certificatesEmpty": "Ancora nessuna richiesta di certificato.",
+    "openCertificates": "Apri i certificati",
+    "members": "Membri",
+    "manage": "Gestisci i membri"
+  },
   "Users": {
     "admin": "Utente admin",
     "contact": "Contatta {user}",
@@ -2595,18 +2711,11 @@
     "usernamePlaceholder": "Scegli un nome utente",
     "email": "Email",
     "profilePicture": "Foto profilo",
-    "profilePictureDescription": "Carica una foto per personalizzare il tuo profilo.",
     "removeAvatar": "Rimuovi",
-    "personalInfoDescription": "Il tuo nome, biografia e altri dati personali.",
     "personalDetails": "Dettagli personali",
-    "personalDetailsDescription": "Data di nascita, sesso, pronomi e informazioni di contatto.",
-    "locationDescription": "La tua città e il tuo paese di residenza.",
     "spokenLanguages": "Lingue parlate",
-    "spokenLanguagesDescription": "Seleziona le lingue che parli.",
     "selectLanguages": "Seleziona le lingue",
-    "preferencesDescription": "Scegli la lingua che usi in GloRe.",
     "account": "Account",
-    "accountDescription": "Il tuo indirizzo email e nome utente.",
     "accountUpdated": "Account aggiornato",
     "accountUpdateError": "Non è stato possibile aggiornare l'account. Riprova.",
     "emailChangeRequested": "Controlla {email} e apri il link per confermare il nuovo indirizzo.",
@@ -2650,18 +2759,15 @@
     "sessionRevokeError": "Non è stato possibile chiudere la sessione. Riprova.",
     "sessionsRevokeOthers": "Esci da tutti gli altri dispositivi",
     "publicProfile": "Profilo pubblico",
-    "publicProfileDescription": "Decidi se gli altri possono trovare i tuoi certificati tramite l'indirizzo del tuo profilo.",
     "publicProfileLabel": "Rendi pubblico il mio profilo",
     "publicProfileOn": "Chiunque abbia il link del tuo profilo può vedere il tuo certificato in evidenza.",
     "publicProfileOff": "Il tuo profilo è privato. I certificati restano verificabili con il loro codice e il loro link.",
     "privacyError": "Non è stato possibile salvare le impostazioni di privacy. Riprova.",
     "privacySaved": "Impostazioni di privacy salvate",
     "featuredCertificate": "Certificato in evidenza",
-    "featuredCertificateDescription": "Il certificato mostrato per primo sul tuo profilo pubblico.",
     "featuredCertificateEmpty": "Non hai ancora un certificato approvato.",
     "featuredCertificateIssued": "Emesso in data {date}",
     "notificationsEmail": "Notifiche via email",
-    "notificationsDescription": "Scegli quali email facoltative ricevere. Le notifiche nell'app restano sempre attive.",
     "notificationsCategory_learning": "Avanzamento dell'apprendimento",
     "notificationsCategory_learning_description": "Un avviso quando puoi richiedere il tuo certificato.",
     "notificationsCategory_organization": "Novità dell'organizzazione",
@@ -2681,13 +2787,14 @@
     "deleteAccountTransferTitle": "Trasferisci prima la proprietà",
     "deleteAccountTransferDescription": "Sei l'unico amministratore di {organizations}. Trasferisci la proprietà a un rappresentante dalle impostazioni dell'organizzazione, in \"Zona di pericolo\", prima di eliminare il tuo account.",
     "deleteAccountTransferLink": "Apri le impostazioni dell'organizzazione",
-    "settingsDescription": "Gestisci il tuo profilo, il tuo account, la privacy e i tuoi dati.",
+    "settingsDescription": "Il tuo profilo, account, privacy e dati.",
     "firstNameRequired": "Inserisci il tuo nome",
     "tooLong": "Usa al massimo {max} caratteri",
     "emailInvalid": "Inserisci un indirizzo email valido",
     "sessionsShowAll": "Mostra tutte le {count} sessioni",
     "sessionsShowLess": "Mostra meno sessioni",
-    "bioCount": "{count} di {max}"
+    "bioCount": "{count} di {max}",
+    "settingsSections": "Sezioni delle impostazioni"
   },
   "Register": {
     "metaTitle": "Candidati a GloRe",
@@ -2763,7 +2870,9 @@
     "error_number": "Inserisci un numero intero maggiore di zero.",
     "error_charter": "Devi accettare la Carta della Qualità per candidarti.",
     "termsAccept": "Accetto i <terms>Termini d'uso</terms> a nome dell'organizzazione.",
-    "error_terms": "Devi accettare i termini d'uso per candidarti."
+    "error_terms": "Devi accettare i termini d'uso per candidarti.",
+    "panelTitle": "Registra la tua organizzazione",
+    "panelMessage": "Raccontaci la tua organizzazione. Esaminiamo ogni richiesta prima di aprire un account."
   },
   "Admin": {
     "team": {
@@ -2849,6 +2958,7 @@
       "filter_all": "Tutte",
       "filter_pending": "In attesa",
       "filter_rejected": "Rifiutate",
+      "filterStatus": "Stato",
       "filterCountry": "Paese",
       "inviteCity": "Città",
       "inviteCityPlaceholder": "Roma",
@@ -2923,7 +3033,26 @@
       "tableLabel": "Organizzazioni",
       "openOrg": "Apri organizzazione",
       "commentLabelOptional": "Commento (facoltativo)",
-      "statusActive": "Attiva"
+      "statusActive": "Attiva",
+      "review": "Esamina",
+      "moreOptions": "Altre opzioni",
+      "selectOrg": "Seleziona {name}",
+      "commentLabelRequired": "Motivo (obbligatorio)",
+      "bulkApproveSuccess": "{count, plural, one {# organizzazione approvata} other {# organizzazioni approvate}}",
+      "bulkRejectSuccess": "{count, plural, one {# organizzazione rifiutata} other {# organizzazioni rifiutate}}",
+      "bulkError": "Impossibile aggiornare {failed} su {total}. Riprova.",
+      "bulkRejectTitle": "Rifiuta {count} organizzazioni",
+      "bulkRejectDescription": "Rifiutare le richieste di registrazione selezionate? Ogni rappresentante riceve il motivo via email.",
+      "bulkSelectionLabel": "{count, plural, one {# organizzazione} other {# organizzazioni}}",
+      "about": "Informazioni",
+      "aboutStatus": "Stato",
+      "aboutOwner": "Titolare",
+      "aboutLocation": "Sede",
+      "aboutEmail": "Email",
+      "aboutWebsite": "Sito web",
+      "aboutRegistered": "Registrata",
+      "aboutNone": "Non indicato",
+      "emailOrg": "Scrivi all'organizzazione"
     },
     "users": {
       "title": "Utenti",
@@ -3069,6 +3198,7 @@
       "unknownPerson": "Un account rimosso",
       "unknownTarget": "un elemento sconosciuto",
       "filters": {
+        "dates": "Date",
         "allCategories": "Tutte le categorie",
         "category": "Categoria",
         "from": "Dalla data",
@@ -3119,7 +3249,11 @@
       "noResultsDescription": "Prova con un'altra ricerca o rimuovi i filtri.",
       "noEvents": "Ancora nessun evento",
       "noEventsDescription": "Qui compariranno sospensioni, cambi di ruolo, visualizzazioni come utente, certificati revocati e decisioni sulle candidature.",
-      "description": "Ogni decisione di moderazione, accesso, contenuti e impostazioni, dalla più recente."
+      "description": "Ogni decisione di moderazione, accesso, contenuti e impostazioni, dalla più recente.",
+      "export": "Esporta CSV",
+      "exportError": "Impossibile esportare il registro di audit. Riprova.",
+      "exportSuccess": "{count, plural, one {# evento esportato} other {# eventi esportati}}",
+      "exportTruncated": "L'esportazione contiene gli ultimi {count} eventi. Restringi i filtri per esportare il resto."
     },
     "settings": {
       "title": "Impostazioni",
@@ -3169,7 +3303,7 @@
       "growthDescription": "Nuovi utenti e organizzazioni registrate negli ultimi 12 mesi",
       "seriesUsers": "Nuovi utenti",
       "seriesOrganizations": "Organizzazioni registrate",
-      "certificatesChartTitle": "Certificati",
+      "certificatesChartTitle": "Certificati al mese",
       "certificatesChartDescription": "Richieste inviate e certificati approvati negli ultimi 12 mesi",
       "seriesSubmitted": "Inviate",
       "seriesApproved": "Approvati",
@@ -3191,8 +3325,26 @@
       "shortcutCertificatesHint": "Cerca e revoca i certificati",
       "shortcutAudit": "Registro di audit",
       "shortcutAuditHint": "Azioni sensibili e chi le ha eseguite",
-      "description": "Stato della piattaforma, code di revisione e scorciatoie per il team di amministrazione.",
-      "reviewAction": "Rivedi le richieste"
+      "description": "Stato della piattaforma e cosa richiede una decisione",
+      "reviewAction": "Rivedi le richieste",
+      "reviewNext": "Esamina la prossima candidatura",
+      "decisionsTitle": "In attesa di una tua decisione",
+      "decisionsCount": "{count, plural, one {# coda} other {# code}}",
+      "decisionsEmpty": "Niente in attesa.",
+      "decisionApplications": "{count, plural, one {# candidatura di organizzazione è in attesa} other {# candidature di organizzazioni sono in attesa}}",
+      "decisionApplicationsHint": "La più vecchia attende dal {date}",
+      "decisionCertificates": "{count, plural, one {# richiesta di certificato attende} other {# richieste di certificato attendono}} da più di {days} giorni",
+      "decisionCertificatesHint": "Nessun tutor ha ancora deciso",
+      "decisionTeam": "{count, plural, one {# invito al team non è ancora accettato} other {# inviti al team non sono ancora accettati}}",
+      "decisionTeamHint": "Admin ed editor che non hanno completato il profilo",
+      "decisionReview": "Esamina",
+      "decisionOpenTeam": "Vedi",
+      "statCourses": "Corsi",
+      "captionUsers": "{admins, plural, one {# admin} other {# admin}}, {banned} sospesi",
+      "captionOrganizations": "{active} attive, {pending} in attesa",
+      "captionDrafts": "{drafts, plural, one {# bozza} other {# bozze}} non inviate",
+      "captionReview": "Revisione media: {duration}",
+      "captionCourses": "{published} pubblicati del tutto"
     }
   },
   "Join": {
@@ -3254,7 +3406,9 @@
     "next_organization": "Configura la tua organizzazione",
     "goToDashboard": "Vai alla dashboard",
     "termsAccept": "Accetto i <terms>Termini d'uso</terms> e ho letto l''<privacy>Informativa sulla privacy</privacy>.",
-    "termsRequired": "Devi accettare i termini d'uso per continuare."
+    "termsRequired": "Devi accettare i termini d'uso per continuare.",
+    "panelTitle": "Benvenuto su GloRe",
+    "panelMessage": "Conferma alcuni dati per completare il tuo account."
   },
   "Email": {
     "auth/invite": {
@@ -3573,7 +3727,9 @@
     "sendProofAgain": "Invia di nuovo il link",
     "proofSent": "Abbiamo inviato un link di conferma a {email}. Aprilo dalla tua casella di posta per continuare.",
     "status_member_title": "Sei già un membro",
-    "status_member_description": "Fai già parte di {organization}. Apri la dashboard per continuare."
+    "status_member_description": "Fai già parte di {organization}. Apri la dashboard per continuare.",
+    "panelTitle": "Sei stato invitato",
+    "panelMessage": "Unisciti alla tua organizzazione su GloRe e inizia a raccogliere certificati."
   },
   "JoinLink": {
     "metaTitle": "Unisciti a un'organizzazione",
@@ -3601,7 +3757,9 @@
     "requestedTitle": "Richiesta inviata",
     "requestedDescription": "Il team di {organization} la esaminerà. Ti avviseremo via email della decisione.",
     "goToDashboard": "Vai alla dashboard",
-    "goToLogin": "Vai all'accesso"
+    "goToLogin": "Vai all'accesso",
+    "panelTitle": "Sei stato invitato",
+    "panelMessage": "Unisciti alla tua organizzazione su GloRe e inizia a raccogliere certificati."
   },
   "Invitations": {
     "tab": "Inviti",
@@ -3673,6 +3831,9 @@
     "modeSingle": "Una persona",
     "modeBulk": "Più persone",
     "emailLabel": "Indirizzo email",
+    "emailRequired": "Inserisci un indirizzo email.",
+    "emailInvalid": "Inserisci un indirizzo email completo, come nome@esempio.org.",
+    "bulkInvalid": "{email} non è un indirizzo email valido.",
     "bulkLabel": "Indirizzi email",
     "bulkPlaceholder": "nome@esempio.com, altro@esempio.com",
     "bulkHint": "{count, plural, =0 {Incolla fino a {max} indirizzi, separati da virgole, spazi o a capo.} one {# indirizzo pronto (massimo {max}).} other {# indirizzi pronti (massimo {max}).}}",
@@ -3715,7 +3876,16 @@
     "error_ROLE_TAKEN": "Questo ruolo è già occupato nell'organizzazione.",
     "error_TOO_SOON": "Attendi un minuto prima di reinviare questo invito.",
     "error_generic": "Qualcosa è andato storto. Riprova.",
-    "error_PROOF_REQUIRED": "Apri il link dell'email di invito oppure chiedici di inviarti un nuovo link di conferma."
+    "error_PROOF_REQUIRED": "Apri il link dell'email di invito oppure chiedici di inviarti un nuovo link di conferma.",
+    "filterExpired": "Scadute",
+    "filterAccepted": "Accettate",
+    "rowActions": "Azioni per {email}",
+    "searchPlaceholder": "Cerca inviti",
+    "bulkUpload": "Carica file CSV",
+    "bulkUploadHint": "Gli indirizzi possono stare in qualsiasi colonna.",
+    "bulkUploadTooLarge": "Il file supera i 256 KB.",
+    "bulkUploadEmpty": "Nessun indirizzo email trovato nel file.",
+    "bulkUploadRead": "{count, plural, one {# indirizzo aggiunto dal file} other {# indirizzi aggiunti dal file}}"
   },
   "Learning": {
     "overview": {
@@ -3753,7 +3923,9 @@
         "selfAssessment": "Autovalutazione",
         "finalAssessment": "Valutazione finale"
       },
-      "viewCompletion": "Vedi riepilogo"
+      "viewCompletion": "Vedi riepilogo",
+      "factDuration": "Durata",
+      "factLessons": "Lezioni"
     },
     "player": {
       "lessons": "Lezioni",
@@ -3870,7 +4042,12 @@
       "assignError": "Non è stato possibile spostare il corso.",
       "openCourse": "Apri corso",
       "cancel": "Annulla",
-      "edit": "Modifica"
+      "edit": "Modifica",
+      "groupActions": "Azioni del gruppo",
+      "moveToGroup": "Sposta in un gruppo",
+      "skillSummary": "{count, plural, one {# competenza} other {# competenze}}, {published} pubblicate, {drafts, plural, one {# bozza} other {# bozze}}",
+      "toggleGroup": "Mostra o nascondi le competenze di {group}",
+      "ungroupedEmpty": "Ogni corso di competenza ha un gruppo."
     },
     "catalog": {
       "rating": "{rating} ({count})",
@@ -3888,7 +4065,8 @@
         "recommendedTitle": "Consigliati per te",
         "save": "Salva bussola",
         "saved": "Bussola delle competenze salvata",
-        "saveError": "Non è stato possibile salvare la bussola. Riprova."
+        "saveError": "Non è stato possibile salvare la bussola. Riprova.",
+        "summary": "{strengths, plural, one {# punto di forza} other {# punti di forza}} e {goals, plural, one {# obiettivo} other {# obiettivi}} impostati"
       }
     }
   },
@@ -4083,9 +4261,6 @@
       "terms": "Termini d'uso",
       "qualityCharter": "Carta della Qualità"
     },
-    "current": "Versione attuale",
-    "currentDescription": "La versione che i visitatori leggono nella pagina pubblica.",
-    "noVersion": "Nessuna versione è ancora pubblicata.",
     "version": "Versione {version}",
     "versionStatus": "Versione {version}, {status}",
     "effective": "In vigore dal {date}",
@@ -4121,8 +4296,6 @@
     "publishConfirm": "Pubblica",
     "publishing": "Pubblicazione…",
     "published": "Versione {version} pubblicata",
-    "history": "Cronologia",
-    "historyDescription": "Ogni versione pubblicata resta disponibile e non si può modificare.",
     "historyEmpty": "Nessuna versione è stata ancora pubblicata.",
     "publishedBy": "Pubblicata da {name}",
     "view": "Apri",
@@ -4140,7 +4313,18 @@
       "RATE_LIMITED": "Troppi tentativi. Riprova tra un po'.",
       "UNAUTHORIZED": "La tua sessione è terminata. Accedi di nuovo.",
       "UNKNOWN": "Qualcosa è andato storto. Riprova."
-    }
+    },
+    "versions": "Versioni",
+    "versionsDescription": "Ogni versione pubblicata resta disponibile e non si può modificare.",
+    "viewPublic": "Vedi la pagina pubblica",
+    "columnVersion": "Versione",
+    "columnStatus": "Stato",
+    "columnEffective": "In vigore",
+    "columnLanguages": "Lingue",
+    "columnChanged": "Modifica",
+    "columnActions": "Azioni",
+    "editDraft": "Modifica la bozza",
+    "notSet": "Non impostata"
   },
   "LegalAccept": {
     "title": "Abbiamo aggiornato i termini d'uso",
@@ -4166,6 +4350,9 @@
     "category_reminders": "Promemoria",
     "subject": "Oggetto: {subject}",
     "frameTitle": "Anteprima di {template}",
+    "device": "Dimensione dell'anteprima",
+    "devicePhone": "Telefono",
+    "deviceDesktop": "Desktop",
     "renderError": "Non è stato possibile generare questo modello. Controlla i log del server per i dettagli."
   },
   "Translations": {

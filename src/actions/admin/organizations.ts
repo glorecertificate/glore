@@ -15,6 +15,7 @@ import { loadOrganizations } from '@/actions/admin/organizations-core'
 import { notify } from '@/actions/notifications/notify'
 import { listOrganizationActivity } from '@/actions/organizations/activity-core'
 import { memberUserColumns, reviewerColumns } from '@/actions/organizations/helpers'
+import { getSessionUser } from '@/actions/session'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { adminError } from '@/db/mutations/moderation'
@@ -203,9 +204,9 @@ const fetchAdminOrganization = async (organizationId: number) => {
 }
 
 export const getAdminOrganizationName = async (organizationId: number) => {
-  const admin = await adminAction(requireAdmin)
+  const session = await getSessionUser()
   const id = organizationIdSchema.safeParse(organizationId)
-  if (admin.error || !id.success) return null
+  if (session?.role !== 'admin' || session.banned || !id.success) return null
 
   return await fetchAdminOrganizationName(id.data)
 }

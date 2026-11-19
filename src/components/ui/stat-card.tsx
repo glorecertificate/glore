@@ -36,18 +36,13 @@ export const StatCard = ({
   loading?: boolean
   value: number
 }) => (
-  <Card
-    className={cn('relative justify-between border-transparent pt-6 shadow-stat', STAT_ACCENTS[accent], className)}
-    data-slot="stat-card"
-    {...props}
-  >
-    <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-stat-strip" />
+  <Card className={cn('relative justify-between', STAT_ACCENTS[accent], className)} data-slot="stat-card" {...props}>
     <CardHeader className="gap-2">
       <div className="flex items-center gap-2.5">
         {icon && (
           <span
             aria-hidden
-            className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-stat-tile text-stat-foreground"
+            className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-muted text-stat-text"
           >
             <LucideIcon className="size-4" name={icon} />
           </span>

@@ -111,49 +111,51 @@ export const AdminOrganizationDetail = ({
   }
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-      <div className="min-w-0">
-        {hasApplication && (
-          <TabsContent value="application">
-            <ApplicationSummary organization={initialData} request={request} />
+    <div className="@container/detail">
+      <div className="grid items-start gap-6 @5xl/detail:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="min-w-0">
+          {hasApplication && (
+            <TabsContent value="application">
+              <ApplicationSummary organization={initialData} request={request} />
+            </TabsContent>
+          )}
+          <TabsContent value="members">
+            <OrganizationMembers
+              currentUserId={initialData.currentUserId}
+              isOrgAdmin
+              members={initialData.memberships}
+              onRefresh={refresh}
+              organizationId={initialData.id}
+              organizationName={initialData.name}
+            />
           </TabsContent>
-        )}
-        <TabsContent value="members">
-          <OrganizationMembers
-            currentUserId={initialData.currentUserId}
-            isOrgAdmin
-            members={initialData.memberships}
-            onRefresh={refresh}
-            organizationId={initialData.id}
-            organizationName={initialData.name}
-          />
-        </TabsContent>
-        <TabsContent value="invitations">
-          <OrganizationInvitations
-            currentUserId={initialData.currentUserId}
-            invitations={initialData.invitations}
-            isOrgAdmin
-            onRefresh={refresh}
-            organizationId={initialData.id}
-          />
-        </TabsContent>
-        <TabsContent value="certificates">
-          <OrganizationCertificatesPanel organizationId={initialData.id} />
-        </TabsContent>
-        <TabsContent value="activity">
-          <OrganizationActivity initial={initialData.activity} organizationId={initialData.id} />
-        </TabsContent>
-        <TabsContent value="settings">
-          <OrganizationSettings
-            key={initialData.updatedAt}
-            members={initialData.memberships}
-            onRefresh={refresh}
-            organization={{ ...initialData, role: null }}
-            organizationId={initialData.id}
-          />
-        </TabsContent>
+          <TabsContent value="invitations">
+            <OrganizationInvitations
+              currentUserId={initialData.currentUserId}
+              invitations={initialData.invitations}
+              isOrgAdmin
+              onRefresh={refresh}
+              organizationId={initialData.id}
+            />
+          </TabsContent>
+          <TabsContent value="certificates">
+            <OrganizationCertificatesPanel organizationId={initialData.id} />
+          </TabsContent>
+          <TabsContent value="activity">
+            <OrganizationActivity initial={initialData.activity} organizationId={initialData.id} />
+          </TabsContent>
+          <TabsContent value="settings">
+            <OrganizationSettings
+              key={initialData.updatedAt}
+              members={initialData.memberships}
+              onRefresh={refresh}
+              organization={{ ...initialData, role: null }}
+              organizationId={initialData.id}
+            />
+          </TabsContent>
+        </div>
+        <AdminOrganizationRail data={initialData} status={status} />
       </div>
-      <AdminOrganizationRail data={initialData} status={status} />
     </div>
   )
 }

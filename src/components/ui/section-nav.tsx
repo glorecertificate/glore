@@ -23,7 +23,7 @@ interface SectionNavProps extends Omit<React.ComponentProps<'nav'>, 'onChange'> 
 }
 
 const ITEM =
-  'inline-flex h-9 shrink-0 cursor-pointer items-center gap-2.5 rounded-lg px-3 text-left text-sm font-medium whitespace-nowrap text-fg-2 transition-colors duration-100 outline-none hover:bg-surface-hover hover:text-fg-1 focus-visible:focus-ring-inset aria-[current=true]:bg-action-subtle aria-[current=true]:font-semibold aria-[current=true]:text-fg-title md:w-full'
+  'inline-flex h-9 shrink-0 cursor-pointer items-center gap-2.5 rounded-lg px-3 text-left text-sm font-medium whitespace-nowrap text-fg-2 transition-colors duration-100 outline-none hover:bg-surface-hover hover:text-fg-1 focus-visible:focus-ring-inset aria-[current=true]:bg-action-subtle aria-[current=true]:font-semibold aria-[current=true]:text-fg-title'
 
 export const SectionNav = ({ className, items, onValueChange, value, ...props }: SectionNavProps) => {
   const t = useTranslations('Common')

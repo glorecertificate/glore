@@ -18,7 +18,7 @@ export const SettingsSkeleton = () => {
       </SettingsSection>
       <Separator />
       <SettingsSection description={t('settingsDescription')} title={t('settingsTitle')}>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 @xl/fields:grid-cols-2">
           <FieldSkeleton />
           <FieldSkeleton />
           <FieldSkeleton />
@@ -31,7 +31,7 @@ export const SettingsSkeleton = () => {
       </SettingsSection>
       <Separator />
       <SettingsSection description={t('legalDescription')} title={t('legalTitle')}>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 @xl/fields:grid-cols-2">
           <FieldSkeleton />
           <FieldSkeleton />
         </div>

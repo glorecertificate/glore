@@ -1860,6 +1860,7 @@
     "journey": "Certificate progress",
     "featuredTitle": "Featured certificate",
     "featuredBadge": "Featured",
+    "featuredHint": "This is the certificate that your public profile shows.",
     "cancel": "Cancel",
     "stages": {
       "draft": "Draft",
@@ -1908,8 +1909,8 @@
       "approved": "Approved by {actor}",
       "revoked": "Revoked by {actor}"
     },
-    "makeFeatured": "Make featured",
-    "featured": "This is now your featured certificate.",
+    "makeFeatured": "Feature on public profile",
+    "featured": "This is now your featured certificate, the one your public profile shows.",
     "featureError": "Could not feature this certificate. Try again.",
     "withdraw": "Withdraw",
     "withdrawTitle": "Withdraw this request?",
@@ -2751,6 +2752,7 @@
     "privacyError": "Could not save your privacy settings. Try again.",
     "privacySaved": "Privacy settings saved",
     "featuredCertificate": "Featured certificate",
+    "featuredCertificateDescription": "Choose the certificate that your public profile shows. People see it only when your public profile is on.",
     "featuredCertificateEmpty": "You do not have an approved certificate yet.",
     "featuredCertificateIssued": "Issued on {date}",
     "notificationsEmail": "Email notifications",

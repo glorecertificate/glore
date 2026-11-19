@@ -1860,6 +1860,7 @@
     "journey": "Progreso del certificado",
     "featuredTitle": "Certificado destacado",
     "featuredBadge": "Destacado",
+    "featuredHint": "Es el certificado que muestra tu perfil público.",
     "cancel": "Cancelar",
     "stages": {
       "draft": "Borrador",
@@ -1908,8 +1909,8 @@
       "approved": "Aprobado por {actor}",
       "revoked": "Revocado por {actor}"
     },
-    "makeFeatured": "Destacar",
-    "featured": "Este es ahora tu certificado destacado.",
+    "makeFeatured": "Destacar en el perfil público",
+    "featured": "Este es ahora tu certificado destacado, el que muestra tu perfil público.",
     "featureError": "No se pudo destacar este certificado. Inténtalo de nuevo.",
     "withdraw": "Retirar",
     "withdrawTitle": "¿Retirar esta solicitud?",
@@ -2751,6 +2752,7 @@
     "privacyError": "No se pudieron guardar tus ajustes de privacidad. Inténtalo de nuevo.",
     "privacySaved": "Ajustes de privacidad guardados",
     "featuredCertificate": "Certificado destacado",
+    "featuredCertificateDescription": "Elige el certificado que muestra tu perfil público. Las personas solo lo ven cuando tu perfil público está activado.",
     "featuredCertificateEmpty": "Todavía no tienes ningún certificado aprobado.",
     "featuredCertificateIssued": "Emitido el {date}",
     "notificationsEmail": "Notificaciones por correo",

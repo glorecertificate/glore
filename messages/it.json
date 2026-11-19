@@ -1860,6 +1860,7 @@
     "journey": "Avanzamento del certificato",
     "featuredTitle": "Certificato in evidenza",
     "featuredBadge": "In evidenza",
+    "featuredHint": "È il certificato che mostra il tuo profilo pubblico.",
     "cancel": "Annulla",
     "stages": {
       "draft": "Bozza",
@@ -1908,8 +1909,8 @@
       "approved": "Approvato da {actor}",
       "revoked": "Revocato da {actor}"
     },
-    "makeFeatured": "Metti in evidenza",
-    "featured": "Questo è ora il tuo certificato in evidenza.",
+    "makeFeatured": "Metti in evidenza sul profilo pubblico",
+    "featured": "Questo è ora il tuo certificato in evidenza, quello che mostra il tuo profilo pubblico.",
     "featureError": "Impossibile mettere in evidenza questo certificato. Riprova.",
     "withdraw": "Ritira",
     "withdrawTitle": "Ritirare questa richiesta?",
@@ -2751,6 +2752,7 @@
     "privacyError": "Non è stato possibile salvare le impostazioni di privacy. Riprova.",
     "privacySaved": "Impostazioni di privacy salvate",
     "featuredCertificate": "Certificato in evidenza",
+    "featuredCertificateDescription": "Scegli il certificato che mostra il tuo profilo pubblico. Le persone lo vedono solo quando il profilo pubblico è attivo.",
     "featuredCertificateEmpty": "Non hai ancora un certificato approvato.",
     "featuredCertificateIssued": "Emesso in data {date}",
     "notificationsEmail": "Notifiche via email",

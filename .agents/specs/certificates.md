@@ -99,7 +99,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ### Detail
 
 - Route: `/certificates/[id]`.
-- The band shows the status dot, the organization, and one primary action by status and role. Withdraw, make featured, and revoke sit in a More actions menu. A revoked, rejected, or withdrawn request offers Request a new certificate.
+- The band shows the status dot, the organization, and one primary action by status and role. Withdraw, Feature on public profile, and revoke sit in a More actions menu. The holder's featured certificate says in the band that the public profile shows it. A revoked, rejected, or withdrawn request offers Request a new certificate.
 - Main column: `CertificateJourney` with the date of each reached stage (`journeyDates`), `CertificateFeedback` (revocation reasons use a neutral card), the preview (none when revoked), skills, tasks, and the timeline from `findCertificateActivity`.
 - A 320 px right rail holds Details, `CertificateShare` (owner and approved only), and the reviewer row. On phones the rail stacks after the preview.
 - `CertificateShare`: verify link with one Copy button, QR, LinkedIn "Add to profile" link, LinkedIn and Facebook share, and native share.

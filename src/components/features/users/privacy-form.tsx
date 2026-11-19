@@ -79,7 +79,7 @@ export const PrivacyForm = () => {
 
       <Separator className="my-10" />
 
-      <SettingsSection title={t('featuredCertificate')}>
+      <SettingsSection description={t('featuredCertificateDescription')} title={t('featuredCertificate')}>
         {!data && <LoadingFallback className="h-16" />}
         {data && certificates.length === 0 && (
           <p className="text-sm text-muted-foreground">{t('featuredCertificateEmpty')}</p>

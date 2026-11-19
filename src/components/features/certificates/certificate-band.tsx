@@ -39,7 +39,10 @@ export const CertificateBand = async ({ id }: { id: number }) => {
               <StatusBadge tone="info">{t('featuredBadge')}</StatusBadge>
             )}
           </span>
-          <span>{t(`statusMessage.${certificate.status}`)}</span>
+          <span className="flex flex-col gap-1">
+            <span>{t(`statusMessage.${certificate.status}`)}</span>
+            {isOwner && certificate.isApproved && certificate.isDefault && <span>{t('featuredHint')}</span>}
+          </span>
         </span>
       }
       parent="certificates"

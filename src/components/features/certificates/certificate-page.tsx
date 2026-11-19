@@ -204,7 +204,7 @@ const ICON_BOX: React.CSSProperties = {
 }
 
 const SkillIcon = ({ icon }: { icon: string | null }) => {
-  if (!icon) return <span style={{ ...ICON_BOX, backgroundColor: GRAY }} />
+  if (!icon) return null
   return (
     <span style={ICON_BOX}>
       <LucideIcon
@@ -515,7 +515,7 @@ export const CertificatePage = ({
                     fontWeight: 900,
                     lineHeight: ROBOTO_LINE_HEIGHT,
                     margin: 0,
-                    marginLeft: unit(SKILL_NAME.marginLeft),
+                    marginLeft: skill.icon ? unit(SKILL_NAME.marginLeft) : 0,
                     textTransform: 'uppercase',
                     whiteSpace: 'nowrap',
                   }}

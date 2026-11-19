@@ -226,7 +226,12 @@ export const SIGNATURE_BOX = { height: 28, left: 112, top: 646, width: 100 }
 export const DATE_TOP = 708.3
 export const DATE_SIZE = 10.0464
 export const QR_BOX = { left: 46.1, size: 52, top: 735 }
-export const VERIFY_BOX = { left: 106, top: 742, width: 130 }
+export const VERIFY_BOX = { left: 106, top: 742, width: 280 }
+const VERIFY_ADVANCE = 0.65
+const VERIFY_SIZE = 8
+
+export const verifySize = (value: string) =>
+  Math.min(VERIFY_SIZE, Math.floor((VERIFY_BOX.width * 100) / (Math.max(value.length, 1) * VERIFY_ADVANCE)) / 100)
 
 export const HEADING_RIGHT = { left: 264.8, lineHeight: 1.2, size: 11, top: 187, width: 290 }
 

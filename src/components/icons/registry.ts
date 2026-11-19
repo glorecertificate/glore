@@ -533,6 +533,7 @@ export const iconNodeOf = (name: string) => {
   if (!isIconName(name)) return null
   const element: unknown = Reflect.get(ICONS[name], 'render')?.({}, null)
   const props: unknown = element && typeof element === 'object' ? Reflect.get(element, 'props') : null
-  const node: unknown = props && typeof props === 'object' ? Reflect.get(props, 'iconNode') : null
+  const icon: unknown = props && typeof props === 'object' ? Reflect.get(props, 'icon') : null
+  const node: unknown = icon && typeof icon === 'object' ? Reflect.get(icon, 'node') : null
   return Array.isArray(node) ? (node as [string, Record<string, string>][]) : null
 }

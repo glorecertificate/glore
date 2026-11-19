@@ -99,6 +99,7 @@ import {
   taskPlan,
   textShift,
   titleSize,
+  verifySize,
 } from '@/components/features/certificates/certificate-layout'
 import { LOGO_PATHS } from '@/components/features/certificates/pdf-assets'
 
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
   date: { fontWeight: 900, left: HEADING_LEFT, position: 'absolute', textTransform: 'uppercase' },
   qr: { left: QR_BOX.left, position: 'absolute', top: QR_BOX.top },
   verify: { fontSize: 7.5, ...VERIFY_BOX, position: 'absolute' },
-  verifyCode: { fontSize: 8, fontWeight: 900, marginTop: 2 },
+  verifyCode: { fontWeight: 900, marginTop: 2 },
   headingRight: {
     fontWeight: 700,
     left: HEADING_RIGHT.left,
@@ -257,15 +258,8 @@ const IconShape = ({ attrs, tag }: { attrs: Record<string, string>; tag: string 
   return null
 }
 
-const ICON_PLACEHOLDER = {
-  backgroundColor: GRAY,
-  height: SKILL_ICON.height,
-  marginTop: SKILL_ICON.offset,
-  width: SKILL_ICON.width,
-}
-
 const SkillIcon = ({ iconNode }: { iconNode?: IconNode | null }) => {
-  if (!iconNode) return <View style={ICON_PLACEHOLDER} />
+  if (!iconNode) return null
   return (
     <Svg
       height={SKILL_ICON.height}
@@ -431,7 +425,7 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         {data.verifyUrl ? (
           <View style={styles.verify}>
             <Text>{labels.verify}</Text>
-            <Text style={styles.verifyCode}>{data.verifyUrl}</Text>
+            <Text style={[styles.verifyCode, { fontSize: verifySize(data.verifyUrl) }]}>{data.verifyUrl}</Text>
           </View>
         ) : null}
 
@@ -453,7 +447,14 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
                 ]}
               >
                 <SkillIcon iconNode={skill.iconNode} />
-                <Text style={[styles.skillName, { fontSize: skillNameSize(skill.name) }]}>{skill.name}</Text>
+                <Text
+                  style={[
+                    styles.skillName,
+                    { fontSize: skillNameSize(skill.name), marginLeft: skill.iconNode ? SKILL_NAME.marginLeft : 0 },
+                  ]}
+                >
+                  {skill.name}
+                </Text>
               </View>
               {skill.description ? (
                 <Text

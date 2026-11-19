@@ -31,6 +31,12 @@ jobs:
         ports:
           - 587:1025
           - 8025:8025
+      s3:
+        image: adobe/s3mock:4.7.0
+        env:
+          COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: glore-e2e
+        ports:
+          - 9000:9090
     env:
       NEXT_TELEMETRY_DISABLED: 1
       APP_URL: http://localhost:3000
@@ -69,17 +75,6 @@ jobs:
           key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: Start MinIO
-        run: |
-          docker run -d --name minio -p 9000:9000 \
-            -e MINIO_ROOT_USER="$R2_ACCESS_KEY_ID" \
-            -e MINIO_ROOT_PASSWORD="$R2_SECRET_ACCESS_KEY" \
-            minio/minio:RELEASE.2025-09-07T16-13-09Z server /data
-          for attempt in $(seq 1 30); do
-            curl -sf http://localhost:9000/minio/health/live && break
-            sleep 1
-          done
-          pnpm run e2e:bucket
       - name: Migrate, import, and seed the database
         run: |
           pnpm run db migrate

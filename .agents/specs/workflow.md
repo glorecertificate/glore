@@ -14,7 +14,6 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 | `pnpm run check`          | Run every `check:*` script in parallel                                           |
 | `pnpm run test`           | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                   |
 | `pnpm run test:e2e`       | Playwright e2e against the running dev server, logged in as seeded users         |
-| `pnpm run e2e:bucket`     | Create the public e2e bucket on the S3 server at `R2_ENDPOINT` (CI MinIO)        |
 | `pnpm run test:perf`      | Playwright perf cases against `E2E_BASE_URL` (`performance.md`)                  |
 | `pnpm run qa:atlas`       | Screenshots and axe results per route, role, and theme in `.playwright/atlas/`   |
 | `pnpm run qa:perf`        | Perf report against the targets and an optional `--baseline <dir>`               |

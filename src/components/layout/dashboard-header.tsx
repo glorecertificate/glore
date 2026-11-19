@@ -42,7 +42,7 @@ export const DashboardHeader = ({
         <Logo className="h-5 w-auto" onNavy />
       </HeaderLogo>
     </div>
-    <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-4 sm:mt-14">
+    <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <div className="flex min-w-0 grow flex-col gap-2">
         {(heading ?? title) && (
           <h1 className="type-band text-band-foreground">{heading ?? <Suspense>{title}</Suspense>}</h1>

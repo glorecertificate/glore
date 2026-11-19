@@ -2038,7 +2038,7 @@
     "age_due": "In scadenza o in ritardo",
     "age_overdue": "Solo in ritardo",
     "ageToday": "Oggi",
-    "ageDays": "{days, plural, one {# giorno} other {# giorni}}",
+    "ageDays": "{days, plural, =1 {Ieri} other {# giorni fa}}",
     "volunteer": "Volontario",
     "unknownVolunteer": "Volontario sconosciuto",
     "ageColumn": "Attesa",

@@ -2038,7 +2038,7 @@
     "age_due": "Due or overdue",
     "age_overdue": "Overdue only",
     "ageToday": "Today",
-    "ageDays": "{days, plural, one {# day} other {# days}}",
+    "ageDays": "{days, plural, =1 {Yesterday} other {# days ago}}",
     "volunteer": "Volunteer",
     "unknownVolunteer": "Unknown volunteer",
     "ageColumn": "Waiting",

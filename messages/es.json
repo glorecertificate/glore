@@ -2038,7 +2038,7 @@
     "age_due": "Pendientes o vencidos",
     "age_overdue": "Solo vencidos",
     "ageToday": "Hoy",
-    "ageDays": "{days, plural, one {# día} other {# días}}",
+    "ageDays": "{days, plural, =1 {Ayer} other {hace # días}}",
     "volunteer": "Persona voluntaria",
     "unknownVolunteer": "Persona voluntaria desconocida",
     "ageColumn": "Espera",

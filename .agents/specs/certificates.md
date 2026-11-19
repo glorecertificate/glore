@@ -112,7 +112,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Search and the status and waiting-time filters are nuqs params (`tab`, `q`, `status`, `age`) in a `FilterBar` with Clear filters. `/` focuses the search.
 - A filtered empty table shows its own "No matches" state.
 - Claim is optimistic: the row leaves the unassigned tab at once and returns with an error toast if the claim fails. The unassigned tab uses `DataTable` row selection: selected rows show a count and a "Claim N reviews" bulk action, and the table announces the count. The organization table shows a skeleton while it loads.
-- The age badge (`StatusBadge`: neutral, then warning at 3 days, danger at 7, `reviewReminderDays`) counts days since `submittedAt`.
+- The age badge (`StatusBadge`: neutral, then warning at 3 days, danger at 7, `reviewReminderDays`) counts days since `submittedAt`. The tutor dashboard rows use the same badge.
 - `changes_requested` rows show "waiting for volunteer".
 
 ### Review workspace

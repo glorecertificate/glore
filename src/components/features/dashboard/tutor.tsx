@@ -5,6 +5,7 @@ import { type Route } from 'next'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type TutorQueueItem, type TutorSummary } from '@/actions/dashboard/core'
+import { AgeBadge } from '@/components/features/certificates/age-badge'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
@@ -127,9 +128,13 @@ export const TutorDashboard = ({
                     </Link>
                     <div className="flex items-center gap-3">
                       <CertificateStatusBadge status={item.status} />
-                      <span className="type-caption text-fg-2">
-                        {item.days === 0 ? tQueue('ageToday') : tQueue('ageDays', { days: item.days })}
-                      </span>
+                      {item.status === 'changes_requested' ? (
+                        <span className="type-caption text-fg-2">
+                          {item.days === 0 ? tQueue('ageToday') : tQueue('ageDays', { days: item.days })}
+                        </span>
+                      ) : (
+                        <AgeBadge days={item.days} tone={item.tone} />
+                      )}
                     </div>
                   </div>
                   <Button asChild className="max-sm:w-full" size="sm" variant="outline">

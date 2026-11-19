@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useOptimistic, useRef, useTransition } from 'react'
+import { useEffect, useOptimistic, useRef, useState, useTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { useQueryState } from 'nuqs'
@@ -21,11 +21,7 @@ import { OrganizationTabTrigger } from './tab-trigger'
 
 export type { OrganizationTab } from './tab-context'
 
-export const OrganizationTabs = ({
-  organizationId,
-  userId,
-  ...props
-}: React.ComponentProps<typeof Tabs> & InsightsScope) => {
+export const OrganizationTabs = (props: React.ComponentProps<typeof Tabs>) => {
   const [pending, startTransition] = useTransition()
   const [tab, setQueryTab] = useQueryState(ORGANIZATION_TAB_PARAM, {
     ...organizationTabParser,
@@ -35,7 +31,7 @@ export const OrganizationTabs = ({
   const [shown, setShown] = useOptimistic(tab)
   const latest = useRef(0)
   const committed = useRef(tab)
-  const scope = { organizationId, userId }
+  const [scope, setScope] = useState<InsightsScope | null>(null)
 
   useEffect(() => {
     committed.current = tab
@@ -48,14 +44,14 @@ export const OrganizationTabs = ({
     const from = window.location.search
     startTransition(async () => {
       setShown(next)
-      await preloadWithin(next, scope)
+      if (scope) await preloadWithin(next, scope)
       if (request !== latest.current || next === committed.current || window.location.search !== from) return
       await setQueryTab(next)
     })
   }
 
   return (
-    <OrganizationTabContext value={{ pending, scope, setTab, shown, tab }}>
+    <OrganizationTabContext value={{ pending, scope, setScope, setTab, shown, tab }}>
       <Tabs
         className="gap-0"
         defaultValue={DEFAULT_ORGANIZATION_TAB}
@@ -65,6 +61,16 @@ export const OrganizationTabs = ({
       />
     </OrganizationTabContext>
   )
+}
+
+export const OrganizationScope = ({ organizationId, userId }: InsightsScope) => {
+  const { setScope } = useOrganizationTab()
+
+  useEffect(() => {
+    setScope({ organizationId, userId })
+  }, [organizationId, setScope, userId])
+
+  return null
 }
 
 export const OrganizationTabsList = ({

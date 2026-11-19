@@ -10,7 +10,9 @@ export const OrganizationTabTrigger = ({
   ...props
 }: React.ComponentProps<typeof TabsTrigger> & { value: string }) => {
   const { scope } = useOrganizationTab()
-  const warm = () => void preloadOrganizationTab(value, scope)
+  const warm = () => {
+    if (scope) void preloadOrganizationTab(value, scope)
+  }
 
   return <TabsTrigger onFocus={warm} onPointerDown={warm} onPointerEnter={warm} value={value} {...props} />
 }

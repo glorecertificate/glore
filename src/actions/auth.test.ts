@@ -117,9 +117,9 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     expect(sent.map(mail => mail.template.name)).toEqual(['auth/recovery'])
   })
 
-  it('does not defer anything for an unknown user', async () => {
+  it('reports an unknown user and sends nothing', async () => {
     const requested = await actions.resetPassword(`nobody-${fixture.suffix}@admin-lane.test`)
-    expect(requested.error).toBeNull()
+    expect(requested.error?.code).toBe('NOT_FOUND')
     expect(deferred).toHaveLength(0)
     expect(sent).toHaveLength(0)
   })

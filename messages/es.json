@@ -784,6 +784,7 @@
     "userRequired": "Introduce un correo o un nombre de usuario válido",
     "userTooShort": "El nombre de usuario es demasiado corto",
     "userInvalid": "Correo o nombre de usuario no válido",
+    "userNotFound": "Ninguna cuenta coincide con este correo o nombre de usuario",
     "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
     "emailResent": "Te hemos enviado otro correo.",
     "sendLink": "Enviar enlace",

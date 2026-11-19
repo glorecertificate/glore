@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -59,6 +59,11 @@ export const PasswordRequestForm = ({
       toast.error(t('tooManyAttempts'))
       return
     }
+    if (error?.code === 'NOT_FOUND') {
+      setErrored(true)
+      form.setError('username', { message: t('userNotFound'), type: 'validate' }, { shouldFocus: true })
+      return
+    }
     if (error) {
       toast.error(t('networkError'))
       return
@@ -69,17 +74,14 @@ export const PasswordRequestForm = ({
     cookies.set('loginUser', inputUsername)
   }
 
-  const hasErrors = Object.keys(form.formState.errors).length > 0
-  const prevHasErrors = useRef(hasErrors)
-
-  if (prevHasErrors.current !== hasErrors) {
-    prevHasErrors.current = hasErrors
-    setErrored(hasErrors)
-  }
+  useEffect(() => {
+    const { unsubscribe } = form.watch(() => setErrored(false))
+    return () => unsubscribe()
+  }, [form, setErrored])
 
   return (
     <Form {...form}>
-      <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit, () => setErrored(true))}>
         <FormField
           control={form.control}
           name="username"

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -48,12 +48,11 @@ export const PasswordResetForm = ({
   })
 
   const errored = useFormErrored(form.control)
-  const prevErrored = useRef(errored)
 
-  if (prevErrored.current !== errored) {
-    prevErrored.current = errored
-    setErrored(errored)
-  }
+  useEffect(() => {
+    const { unsubscribe } = form.watch(() => setErrored(false))
+    return () => unsubscribe()
+  }, [form, setErrored])
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     if (!resetToken) {
@@ -81,7 +80,7 @@ export const PasswordResetForm = ({
 
   return (
     <Form {...form}>
-      <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit, () => setErrored(true))}>
         <FormField
           control={form.control}
           name="password"

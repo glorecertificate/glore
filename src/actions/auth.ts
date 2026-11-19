@@ -130,7 +130,7 @@ export const resetPassword = async (username: string) => {
   }
 
   const email = await findLoginEmail(username)
-  if (!email) return { data: {}, error: null }
+  if (!email) return { data: null, error: { code: 'NOT_FOUND', message: 'No account found' } }
 
   try {
     await auth.api.requestPasswordReset({ body: { email, redirectTo: `${process.env.APP_URL}${AUTH_ROOT}` } })

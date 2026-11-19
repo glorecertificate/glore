@@ -784,6 +784,7 @@
     "userRequired": "Enter a valid email or username",
     "userTooShort": "Username is too short",
     "userInvalid": "Invalid email or username",
+    "userNotFound": "No account matches this email or username",
     "sessionExpired": "Your session has expired. Log in again.",
     "emailResent": "We sent you another email.",
     "sendLink": "Send link",

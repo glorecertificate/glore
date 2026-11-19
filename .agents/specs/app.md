@@ -170,6 +170,7 @@ Three domain facts shape recurring decisions:
   - `doc_articles.audiences` lists the help roles of an article (`volunteer`, `learner`, `tutor`, `manager`, `team`). An empty list means everyone.
   - Lists, search, and previous and next links show a user only the articles for their help role (`useHelpRole`). The team sees all articles, with audience badges.
   - A direct link to an article for another role still opens.
+  - The "Still need help?" card shows only to users who cannot edit the docs. Editors and admins do not see it.
 
 ### Settings
 

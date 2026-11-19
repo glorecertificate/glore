@@ -212,23 +212,25 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
         </>
       )}
 
-      <Card className="gap-4 bg-surface-sunken p-6 shadow-none sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="type-heading text-fg-title">{tHelp('contact.title')}</h2>
-        <div className="flex shrink-0 flex-wrap gap-2">
-          <Button asChild variant="brand">
-            <a href={`mailto:${email}`}>
-              <LucideIcon name="mail" />
-              {tHelp('contact.emailLabel')}
-            </a>
-          </Button>
-          <Button asChild variant="outline">
-            <a href={website} rel="noopener noreferrer" target="_blank">
-              {tHelp('contact.websiteLabel')}
-              <LucideIcon name="arrow-up-right" />
-            </a>
-          </Button>
-        </div>
-      </Card>
+      {!canEdit && (
+        <Card className="gap-4 bg-surface-sunken p-6 shadow-none sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="type-heading text-fg-title">{tHelp('contact.title')}</h2>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Button asChild variant="brand">
+              <a href={`mailto:${email}`}>
+                <LucideIcon name="mail" />
+                {tHelp('contact.emailLabel')}
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href={website} rel="noopener noreferrer" target="_blank">
+                {tHelp('contact.websiteLabel')}
+                <LucideIcon name="arrow-up-right" />
+              </a>
+            </Button>
+          </div>
+        </Card>
+      )}
     </div>
   )
 }

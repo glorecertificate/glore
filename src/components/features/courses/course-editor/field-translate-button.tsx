@@ -41,7 +41,7 @@ export const FieldTranslateButton = ({ className, fieldKey, ...props }: FieldTra
   }
 
   return (
-    <span className="-my-1 inline-flex shrink-0 self-center opacity-0 transition-opacity group-focus-within/field:opacity-100 focus-within:opacity-100 has-[:disabled]:opacity-100 has-[[data-state=open]]:opacity-100">
+    <span className="-my-1 inline-flex shrink-0 self-center opacity-0 transition-opacity group-focus-within/field:opacity-100 focus-within:opacity-100 has-[:disabled]:opacity-100 has-[[aria-expanded=true]]:opacity-100">
       <DropdownMenu>
         <Tooltip>
           <TooltipTrigger asChild>

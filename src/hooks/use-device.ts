@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import theme from '~/config/theme.json'
 
 /**
- * Returns the current device type (mobile or desktop), whether the viewport is in the tablet range, and whether the device supports touch input.
+ * Returns the current device type (mobile or desktop) and whether the device supports touch input.
  */
 export const useDevice = (breakpoint = theme.mobileBreakpoint, tabletBreakpoint = theme.tabletBreakpoint) => {
   const detectType = () => {

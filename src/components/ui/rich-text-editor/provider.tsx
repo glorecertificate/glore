@@ -2,12 +2,14 @@
 
 import { useEffect, useId, useRef } from 'react'
 
+import { AIChatPlugin, AIPlugin } from '@platejs/ai/react'
 import { useTranslations } from 'next-intl'
 import { type AnyPluginConfig, KEYS, type Value } from 'platejs'
 import {
   BlockPlaceholderPlugin,
   type CreatePlateEditorOptions,
   Plate,
+  type PlateEditor,
   type PlateProps,
   usePlateEditor,
 } from 'platejs/react'
@@ -34,6 +36,7 @@ import { SlashKit } from '@/components/ui/rich-text-editor/plugins/slash'
 import { TableKit } from '@/components/ui/rich-text-editor/plugins/table'
 import { ToggleKit } from '@/components/ui/rich-text-editor/plugins/toggle'
 import { TrailingBlockKit } from '@/components/ui/rich-text-editor/plugins/trailing-block'
+import { hasPendingAi, shouldHoldAiChange } from '@/components/ui/rich-text-editor/utils'
 import { omit } from '@/lib/utils'
 
 const PLUGINS = {
@@ -70,6 +73,13 @@ interface RichTextEditorProviderProps extends React.PropsWithChildren<Omit<Creat
 }
 
 const EMPTY_EXCLUDE: RichTextEditorPlugin[] = []
+
+const healPendingAi = (editor: PlateEditor) => {
+  editor.tf.withoutSaving(() => {
+    editor.getTransforms(AIPlugin).ai.removeMarks()
+    editor.getTransforms(AIChatPlugin).aiChat.removeAnchor()
+  })
+}
 
 export const RichTextEditorProvider = ({
   children,
@@ -121,8 +131,26 @@ export const RichTextEditorProvider = ({
     }
   }, [editor, props.value, version])
 
+  useEffect(() => {
+    if (hasPendingAi(editor.children)) healPendingAi(editor)
+  }, [editor])
+
+  const handleChange: PlateProps['onChange'] = change => {
+    if (!editor.operations.some(operation => operation.type !== 'set_selection')) {
+      onChange?.(change)
+      return
+    }
+    const pending = hasPendingAi(change.value)
+    if (shouldHoldAiChange({ open: !!editor.getOption(AIChatPlugin, 'open'), pending })) return
+    if (pending) {
+      healPendingAi(editor)
+      return
+    }
+    onChange?.(change)
+  }
+
   return (
-    <Plate editor={editor} onChange={onChange}>
+    <Plate editor={editor} onChange={handleChange}>
       {children}
     </Plate>
   )

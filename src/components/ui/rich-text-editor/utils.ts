@@ -115,3 +115,11 @@ export const isHotkey = isPlateHotkey as <T extends React.KeyboardEvent>(
   hotkey: string | readonly string[],
   options?: HotkeysOptions
 ) => (event: T) => boolean
+
+export const hasPendingAi = (nodes: readonly unknown[]): boolean =>
+  nodes.some(node => {
+    const { ai, children, type } = node as { ai?: boolean; children?: unknown[]; type?: string }
+    return !!ai || type === KEYS.aiChat || (Array.isArray(children) && hasPendingAi(children))
+  })
+
+export const shouldHoldAiChange = ({ open, pending }: { open: boolean; pending: boolean }) => open && pending

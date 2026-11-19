@@ -3,6 +3,7 @@ import 'server-only'
 import { type GoogleLanguageModelOptions, createGoogle } from '@ai-sdk/google'
 import {
   type LanguageModel,
+  Output,
   type StreamTextTransform,
   type ToolSet,
   createUIMessageStream,
@@ -10,6 +11,7 @@ import {
   generateText,
   streamText,
 } from 'ai'
+import { z } from 'zod'
 
 import config from '~/config/app.json'
 
@@ -119,4 +121,55 @@ export const generateTextWithFallback = async ({
     }
   }
   throw failure instanceof Error ? failure : new Error(AI_ERROR.unavailable)
+}
+
+const elementSchema = z.object({ id: z.string(), text: z.string() })
+
+const translationProviderOptions = {
+  google: { thinkingConfig: { thinkingLevel: 'minimal' } } satisfies GoogleLanguageModelOptions,
+}
+
+export async function* streamElementsWithFallback({
+  firstTokenTimeoutMs = config.aiFirstTokenMs,
+  models,
+  ...options
+}: GenerateOptions) {
+  for (const [index, model] of models.entries()) {
+    const attempt = attemptSignal(index === models.length - 1, firstTokenTimeoutMs, options.abortSignal)
+    const result = streamText({
+      ...options,
+      abortSignal: attempt.signal,
+      maxRetries: 0,
+      model,
+      onError: () => undefined,
+      output: Output.array({ element: elementSchema }),
+      providerOptions: translationProviderOptions,
+    })
+    void (async () => {
+      try {
+        for await (const part of result.stream) {
+          if (part.type !== 'text-delta') continue
+          attempt.clear()
+          return
+        }
+      } catch {
+        attempt.clear()
+      }
+    })()
+    let started = false
+    try {
+      for await (const element of result.elementStream) {
+        started = true
+        yield element
+      }
+      if (started) return
+    } catch {
+      if (options.abortSignal?.aborted) return
+      if (started) return
+    } finally {
+      attempt.clear()
+    }
+    if (options.abortSignal?.aborted) return
+  }
+  throw new Error(AI_ERROR.unavailable)
 }

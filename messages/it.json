@@ -4474,5 +4474,43 @@
       "RATE_LIMITED": "Troppi suggerimenti. Riprova tra un po'.",
       "UNKNOWN": "Qualcosa è andato storto. Riprova."
     }
+  },
+  "CourseTranslate": {
+    "open": "Traduci",
+    "title": "Traduci il corso",
+    "description": "Traduci con l'IA. Il testo arriva nella tua bozza come modifiche non salvate.",
+    "source": "Traduci da",
+    "targets": "Traduci in",
+    "noFilled": "Nessuna lingua ha ancora del testo.",
+    "nothingToDo": "Non c'è nulla da tradurre.",
+    "run": "Traduci",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "retry": "Riprova",
+    "progress": "{done} di {total} campi",
+    "progressLanguage": "{language}: {done} di {total}",
+    "failed": "{count, plural, one {Impossibile tradurre # campo} other {Impossibile tradurre # campi}}.",
+    "done": "Controlla le modifiche, poi salva la bozza in ogni lingua.",
+    "errors": {
+      "forbidden": "Non puoi tradurre questo corso.",
+      "rateLimited": "Troppe traduzioni. Riprova più tardi.",
+      "notConfigured": "La traduzione con l'IA non è configurata.",
+      "unavailable": "Il servizio di traduzione non è disponibile. Riprova.",
+      "generic": "Traduzione non riuscita. Riprova."
+    },
+    "field": {
+      "done": "Tradotto. Controlla il testo, poi salva la bozza.",
+      "failed": "Impossibile tradurre questo campo. Riprova.",
+      "lessonContent": "Traduci contenuto",
+      "trigger": "Traduci con l'IA",
+      "from": "Traduci da {language}"
+    },
+    "summaryFill": "Compila {fill, plural, one {# campo vuoto} other {# campi vuoti}} e mantiene {keep, plural, one {# testo esistente} other {# testi esistenti}}.",
+    "summaryReplace": "Compila {fill, plural, one {# campo vuoto} other {# campi vuoti}} e sostituisce {replace, plural, one {# testo esistente} other {# testi esistenti}}.",
+    "mode": "Testo esistente",
+    "modeFill": "Compila solo i campi vuoti",
+    "modeReplace": "Sostituisci il testo esistente",
+    "replaceWarning": "Il testo esistente nelle lingue scelte verrà sostituito dalla traduzione.",
+    "cancelled": "Annullato. {count, plural, one {È stato tradotto # campo} other {Sono stati tradotti # campi}}."
   }
 }

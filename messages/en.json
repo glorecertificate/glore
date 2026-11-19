@@ -4474,5 +4474,43 @@
       "RATE_LIMITED": "Too many suggestions. Try again in a while.",
       "UNKNOWN": "Something went wrong. Try again."
     }
+  },
+  "CourseTranslate": {
+    "open": "Translate",
+    "title": "Translate course",
+    "description": "Translate with AI. The text lands in your draft as unsaved changes.",
+    "source": "Translate from",
+    "targets": "Translate into",
+    "noFilled": "No language has text yet.",
+    "nothingToDo": "Nothing to translate.",
+    "run": "Translate",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "progress": "{done} of {total} fields",
+    "progressLanguage": "{language}: {done} of {total}",
+    "failed": "{count, plural, one {# field could not be translated} other {# fields could not be translated}}.",
+    "done": "Review the changes, then save the draft in each language.",
+    "errors": {
+      "forbidden": "You cannot translate this course.",
+      "rateLimited": "Too many translations. Try again later.",
+      "notConfigured": "AI translation is not set up.",
+      "unavailable": "The translation service is not available. Try again.",
+      "generic": "Translation failed. Try again."
+    },
+    "field": {
+      "done": "Translated. Review the text, then save the draft.",
+      "failed": "Could not translate this field. Try again.",
+      "lessonContent": "Translate content",
+      "trigger": "Translate with AI",
+      "from": "Translate from {language}"
+    },
+    "summaryFill": "Fills {fill, plural, one {# empty field} other {# empty fields}}, keeps {keep, plural, one {# existing text} other {# existing texts}}.",
+    "summaryReplace": "Fills {fill, plural, one {# empty field} other {# empty fields}}, replaces {replace, plural, one {# existing text} other {# existing texts}}.",
+    "mode": "Existing text",
+    "modeFill": "Fill only empty fields",
+    "modeReplace": "Replace existing text",
+    "replaceWarning": "Existing text in the selected languages will be replaced by the translation.",
+    "cancelled": "Cancelled. {count, plural, one {# field was} other {# fields were}} translated."
   }
 }

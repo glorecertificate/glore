@@ -2,15 +2,18 @@
 
 import { useEffect, useRef } from 'react'
 
+import { useTranslations } from 'next-intl'
 import { type Value } from 'platejs'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { FieldTranslateButton } from '@/components/features/courses/course-editor/field-translate-button'
 import { LessonActivities } from '@/components/features/courses/course-editor/lesson-activities'
 import { type PendingChange, commitPending } from '@/components/features/courses/course-editor/pending-change'
 import { resolvedDynamic } from '@/components/features/courses/course-editor/resolved-dynamic'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { useSession } from '@/components/providers/session'
 import { type IntlRecord } from '@/lib/i18n'
+import { isTempId } from '@/lib/utils'
 
 const EditorFallback = () => <LoadingFallback className="min-h-96 rounded-lg border" />
 
@@ -82,8 +85,9 @@ export const RichContentEditor = ({
 }
 
 export const CourseContent = () => {
-  const { contentFlushRef, course, currentLesson, language, lessonKeys, setLesson } = useCourse()
+  const { contentFlushRef, contentVersions, course, currentLesson, language, lessonKeys, setLesson } = useCourse()
   const { user } = useSession()
+  const t = useTranslations('CourseTranslate')
 
   const canEdit = user.canEdit && !course.archivedAt
   const courseStateRef = useRef(course)
@@ -102,10 +106,17 @@ export const CourseContent = () => {
   }
 
   const initialContent = currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }]
-  const editorVersion = `${lessonKeys[currentLesson.id!] ?? currentLesson.id}-${language}`
+  const editorVersion = `${lessonKeys[currentLesson.id!] ?? currentLesson.id}-${language}-${contentVersions[currentLesson.id!] ?? 0}`
 
   return (
     <>
+      {canEdit && !isTempId(lessonId) && (
+        <div className="mb-2 flex items-center justify-end gap-1">
+          <FieldTranslateButton fieldKey={`lessons:${lessonId}:content`} size="xs" variant="ghost">
+            {t('field.lessonContent')}
+          </FieldTranslateButton>
+        </div>
+      )}
       <RichContentEditor
         key={editorVersion}
         flushRef={contentFlushRef}

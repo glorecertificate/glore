@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { FieldTranslateButton } from '@/components/features/courses/course-editor/field-translate-button'
 import { TitleField } from '@/components/features/courses/course-editor/title-field'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
@@ -136,7 +137,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
     ))
 
   const titleNode = (
-    <span className="flex min-w-0 items-start gap-3">
+    <span className="inline-flex max-w-full min-w-0 items-start gap-3">
       {canEdit ? (
         <TitleField
           aria-label={t('renameCourse')}
@@ -149,6 +150,12 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
         />
       ) : (
         title
+      )}
+      {canEdit && (
+        <FieldTranslateButton
+          className="shrink-0 text-band-foreground hover:bg-band-scrim"
+          fieldKey={`courses:${course.id}:title`}
+        />
       )}
       {course.archivedAt && <StatusBadge tone="neutral">{tList('archived')}</StatusBadge>}
     </span>
@@ -182,12 +189,19 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
         className={cn(
           'block',
           !descriptionExpanded && 'max-md:max-h-13 max-md:overflow-hidden',
-          !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2'
+          !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2',
+          canEdit && 'flex items-start gap-1'
         )}
         onFocusCapture={() => setDescriptionExpanded(true)}
         ref={descriptionWrapperRef}
       >
         {descriptionField}
+        {canEdit && (
+          <FieldTranslateButton
+            className="shrink-0 text-band-foreground hover:bg-band-scrim"
+            fieldKey={`courses:${course.id}:description`}
+          />
+        )}
       </span>
       {(descriptionOverflowing || descriptionExpanded) && (
         <button

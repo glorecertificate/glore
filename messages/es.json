@@ -4474,5 +4474,43 @@
       "RATE_LIMITED": "Demasiadas sugerencias. Inténtalo de nuevo en un rato.",
       "UNKNOWN": "Algo ha salido mal. Inténtalo de nuevo."
     }
+  },
+  "CourseTranslate": {
+    "open": "Traducir",
+    "title": "Traducir curso",
+    "description": "Traduce con IA. El texto llega a tu borrador como cambios sin guardar.",
+    "source": "Traducir desde",
+    "targets": "Traducir a",
+    "noFilled": "Ningún idioma tiene texto todavía.",
+    "nothingToDo": "No hay nada que traducir.",
+    "run": "Traducir",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "retry": "Reintentar",
+    "progress": "{done} de {total} campos",
+    "progressLanguage": "{language}: {done} de {total}",
+    "failed": "{count, plural, one {No se pudo traducir # campo} other {No se pudieron traducir # campos}}.",
+    "done": "Revisa los cambios y guarda el borrador en cada idioma.",
+    "errors": {
+      "forbidden": "No puedes traducir este curso.",
+      "rateLimited": "Demasiadas traducciones. Inténtalo más tarde.",
+      "notConfigured": "La traducción con IA no está configurada.",
+      "unavailable": "El servicio de traducción no está disponible. Inténtalo de nuevo.",
+      "generic": "La traducción ha fallado. Inténtalo de nuevo."
+    },
+    "field": {
+      "done": "Traducido. Revisa el texto y guarda el borrador.",
+      "failed": "No se pudo traducir este campo. Inténtalo de nuevo.",
+      "lessonContent": "Traducir contenido",
+      "trigger": "Traducir con IA",
+      "from": "Traducir desde {language}"
+    },
+    "summaryFill": "Rellena {fill, plural, one {# campo vacío} other {# campos vacíos}} y conserva {keep, plural, one {# texto existente} other {# textos existentes}}.",
+    "summaryReplace": "Rellena {fill, plural, one {# campo vacío} other {# campos vacíos}} y reemplaza {replace, plural, one {# texto existente} other {# textos existentes}}.",
+    "mode": "Texto existente",
+    "modeFill": "Rellenar solo los campos vacíos",
+    "modeReplace": "Reemplazar el texto existente",
+    "replaceWarning": "El texto existente en los idiomas elegidos se reemplazará por la traducción.",
+    "cancelled": "Cancelado. {count, plural, one {Se tradujo # campo} other {Se tradujeron # campos}}."
   }
 }

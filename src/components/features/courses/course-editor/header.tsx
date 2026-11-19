@@ -205,55 +205,6 @@ export const CourseHeader = () => {
       <CourseHeading>
         {({ counter, description, icon, title }) => (
           <DashboardHeader
-            actions={
-              <div className="contents max-md:hidden">
-                <span aria-live="polite" className="text-sm text-band-text">
-                  {stateText && <StatusBadge tone={stateText.tone}>{stateText.text}</StatusBadge>}
-                </span>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button asChild variant="band-secondary">
-                      <Link href={previewHref}>
-                        <LucideIcon name="eye" />
-                        {tEditor('previewAsLearner')}
-                      </Link>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-72 text-center">{tEditor('previewHint')}</TooltipContent>
-                </Tooltip>
-                <CourseMenu
-                  onAnalytics={() => setAnalyticsOpen(true)}
-                  onSettings={() => setSettingsOpen(true)}
-                  onUnpublish={isPublished ? onUnpublish : null}
-                />
-                {!isPublished && (
-                  <Button
-                    disabled={draftDisabled || saving !== null}
-                    loading={saving === 'draft'}
-                    onClick={onSaveDraft}
-                    variant="band-secondary"
-                  >
-                    {t('saveDraft')}
-                  </Button>
-                )}
-                {primaryDisabled ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span>
-                        <Button disabled variant="band">
-                          {t('publishChanges')}
-                        </Button>
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>{t('noChangesToPublish')}</TooltipContent>
-                  </Tooltip>
-                ) : (
-                  <Button disabled={saving !== null} loading={saving === 'publish'} onClick={onPrimary} variant="band">
-                    {isPublished ? t('publishChanges') : t('publish')}
-                  </Button>
-                )}
-              </div>
-            }
             breadcrumb={
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-band-text">
@@ -264,6 +215,57 @@ export const CourseHeader = () => {
                   <span>{t('visibleLanguages', { count: publishedLanguageCount })}</span>
                   <span className="max-md:hidden">{t('lessonsCount', { count: course.lessons.length })}</span>
                   {counter}
+                  <div className="ml-auto flex items-center gap-2 max-md:hidden">
+                    <span aria-live="polite" className="text-sm text-band-text">
+                      {stateText && <StatusBadge tone={stateText.tone}>{stateText.text}</StatusBadge>}
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button aria-label={tEditor('previewAsLearner')} asChild size="icon" variant="band-secondary">
+                          <Link href={previewHref}>
+                            <LucideIcon name="eye" />
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{tEditor('previewAsLearner')}</TooltipContent>
+                    </Tooltip>
+                    <CourseMenu
+                      onAnalytics={() => setAnalyticsOpen(true)}
+                      onSettings={() => setSettingsOpen(true)}
+                      onUnpublish={isPublished ? onUnpublish : null}
+                    />
+                    {!isPublished && (
+                      <Button
+                        disabled={draftDisabled || saving !== null}
+                        loading={saving === 'draft'}
+                        onClick={onSaveDraft}
+                        variant="band-secondary"
+                      >
+                        {t('saveDraft')}
+                      </Button>
+                    )}
+                    {primaryDisabled ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Button disabled variant="band">
+                              {t('publishChanges')}
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>{t('noChangesToPublish')}</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Button
+                        disabled={saving !== null}
+                        loading={saving === 'publish'}
+                        onClick={onPrimary}
+                        variant="band"
+                      >
+                        {isPublished ? t('publishChanges') : t('publish')}
+                      </Button>
+                    )}
+                  </div>
                   <div className="ml-auto md:hidden">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

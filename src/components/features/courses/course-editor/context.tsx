@@ -22,11 +22,20 @@ import {
 } from '@/actions/courses/management'
 import { markTranslationsEdited } from '@/actions/translations/states'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
+import {
+  fillKey,
+  listEditorFields,
+  readLocale,
+  sameValue,
+  writeLocale,
+} from '@/components/features/courses/course-editor/translation-fields'
+import { type TranslatedField } from '@/components/features/translations/use-translate'
 import { type Course } from '@/db/queries/course'
 import { Lesson, parseLesson } from '@/db/queries/lesson'
 import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
+import { hasText as hasTranslatableText } from '@/lib/translate'
 import { isTempId, tempId } from '@/lib/utils'
 import { messages } from '~/config/i18n.json'
 
@@ -202,8 +211,25 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   courseSnapshotRef.current = course
   const contentFlushRef = useRef<(() => unknown) | null>(null)
   const [lessonKeys, setLessonKeys] = useState<Record<number, number>>({})
+  const [contentVersions, setContentVersions] = useState<Record<number, number>>({})
 
   const step = Math.min(Math.max(rawStep, 1), course.lessons.length)
+
+  const applyTranslated = (event: TranslatedField, seen: ReadonlyMap<string, unknown>) => {
+    const latest = courseSnapshotRef.current
+    const field = listEditorFields(latest).find(item => item.key === event.key)
+    if (!field) return
+    const current = readLocale(field, latest, event.locale)
+    if (hasTranslatableText(current) && !sameValue(current, seen.get(fillKey(event.locale, event.key)))) return
+    setCourse(prev => {
+      const target = listEditorFields(prev).find(item => item.key === event.key)
+      return target ? writeLocale(target, prev, event.locale, event.value) : prev
+    })
+    if (field.key.endsWith(':content') && field.lessonId !== null) {
+      const lessonId = field.lessonId
+      setContentVersions(previous => ({ ...previous, [lessonId]: (previous[lessonId] ?? 0) + 1 }))
+    }
+  }
 
   useEffect(() => {
     if (step === rawStep) return
@@ -827,7 +853,9 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
   return {
     addLesson,
+    applyTranslated,
     contentFlushRef,
+    contentVersions,
     course,
     courseRef,
     lessonKeys,

@@ -124,6 +124,9 @@ Three domain facts shape recurring decisions:
 - `translateEntity` (`actions/translations/ai.ts`) translates one entity per call, and the client loops over a course and its lessons. Human text needs `overwrite`.
 - AI translation is limited to 150 an hour per editor (`content-translate:<id>`, `RATE_LIMITED`). Every translation write expires `CacheTag.ContentTranslations` (`expireTranslationCaches`).
 - It validates keys, placeholders, link URLs, and length before saving as `machine`. `src/lib/translate.ts` skips code blocks, inline code, and text without letters.
+- The course editor translates with AI from any language that has text. The Translate dialog (`translate-dialog.tsx`) picks a source, targets, and one mode: fill only empty fields (default) or replace existing text. Per-field icons (course title and description, lesson title in the sidebar, lesson content) open a menu "Translate from <language>" listing the other languages with text.
+- Both call `POST /api/v1/ai/translate` (NDJSON stream, 2 runs per user, 3000 units an hour). The result lands in the draft as unsaved changes and is the current text. A result is dropped if the field changed after the run started. The normal save path applies (`markTranslationsEdited`). There is no per-field origin and no review step in the course editor.
+- Doc article and skill group dialogs still use `translateEntity` and `panel.tsx`. Moving them needs an editor field list for those entities and a dialog host.
 - `doc_articles.languages` publishes a doc per locale next to the `published` master switch, and unpublished locales are blanked for non-editors.
 - Changing `courses.languages` or `doc_articles.languages` records `course.locale_published` or `doc.locale_published`.
 - The editor dashboard shows reviewed and translated counts per locale (`actions/translations/coverage.ts`).

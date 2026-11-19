@@ -22,9 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { EmailText } from '@/components/ui/email-text'
-import { FilterBar } from '@/components/ui/filter-bar'
 import { SearchInput } from '@/components/ui/search'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { type OrganizationMembershipRole, canManageMemberRole, timestampMillis } from '@/db/queries/organization'
 import { type User } from '@/db/queries/user'
@@ -92,17 +90,17 @@ export const OrganizationMembers = ({
   const candidates = members.filter(member => member.isRepresentative && !member.isPending)
 
   const needle = search.trim().toLowerCase()
-  const rows = members.filter(member => {
-    if (roleFilter !== 'all' && member.role !== roleFilter) return false
-    if (statusFilter === 'pending' && !member.isPending) return false
-    if (statusFilter === 'active' && member.isPending) return false
+  const memberMatches = (member: Member, { role = true, status = true }: { role?: boolean; status?: boolean } = {}) => {
+    if (role && roleFilter !== 'all' && member.role !== roleFilter) return false
+    if (status && statusFilter === 'pending' && !member.isPending) return false
+    if (status && statusFilter === 'active' && member.isPending) return false
     if (!needle) return true
     return [getDisplayName(member.user), member.user.email, member.user.username ?? ''].some(value =>
       value.toLowerCase().includes(needle)
     )
-  })
+  }
 
-  const filtersActive = roleFilter !== 'all' || statusFilter !== 'all' || search.length > 0
+  const rows = members.filter(member => memberMatches(member))
 
   const clearFilters = () => {
     setSearch('')
@@ -228,50 +226,54 @@ export const OrganizationMembers = ({
           ]}
           emptyDescription={members.length === 0 ? t('noMembersDescription') : t('noMembersFilteredDescription')}
           emptyTitle={members.length === 0 ? t('noMembers') : t('noMembersFiltered')}
-          filters={
-            <FilterBar
-              active={filtersActive}
-              onClear={clearFilters}
-              count={Number(roleFilter !== 'all') + Number(statusFilter !== 'all')}
-              size="sm"
-              search={
-                <div className="grid w-full sm:w-64">
-                  <SearchInput
-                    aria-label={t('searchMembers')}
-                    className="w-full"
-                    size="sm"
-                    onValueChange={setSearch}
-                    placeholder={t('searchMembers')}
-                    value={search}
-                  />
-                </div>
-              }
-            >
-              <Select onValueChange={value => setRoleFilter(value as typeof roleFilter)} value={roleFilter}>
-                <SelectTrigger aria-label={t('filterRole')} className="w-auto gap-1.5" size="sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('allRoles')}</SelectItem>
-                  {ROLE_FILTERS.map(role => (
-                    <SelectItem key={role} value={role}>
-                      {formatRoleLabel(role, t)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select onValueChange={value => setStatusFilter(value as typeof statusFilter)} value={statusFilter}>
-                <SelectTrigger aria-label={t('filterStatus')} className="w-auto gap-1.5" size="sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('allStatuses')}</SelectItem>
-                  <SelectItem value="active">{t('statusJoined')}</SelectItem>
-                  <SelectItem value="pending">{t('statusPending')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </FilterBar>
-          }
+          rail={{
+            groups: [
+              {
+                id: 'role',
+                label: t('filterRole'),
+                onChange: value => setRoleFilter((value as OrganizationMembershipRole | null) ?? 'all'),
+                options: ROLE_FILTERS.map(role => ({
+                  count: members.filter(m => m.role === role && memberMatches(m, { role: false })).length,
+                  label: formatRoleLabel(role, t),
+                  value: role,
+                })),
+                value: roleFilter === 'all' ? null : roleFilter,
+              },
+              {
+                id: 'status',
+                label: t('filterStatus'),
+                onChange: value => setStatusFilter((value as 'active' | 'pending' | null) ?? 'all'),
+                options: [
+                  {
+                    count: members.filter(m => !m.isPending && memberMatches(m, { status: false })).length,
+                    label: t('statusJoined'),
+                    tone: 'success',
+                    value: 'active',
+                  },
+                  {
+                    count: members.filter(m => m.isPending && memberMatches(m, { status: false })).length,
+                    label: t('statusPending'),
+                    tone: 'warning',
+                    value: 'pending',
+                  },
+                ],
+                value: statusFilter === 'all' ? null : statusFilter,
+              },
+            ],
+            onReset: clearFilters,
+            search: placement => (
+              <SearchInput
+                aria-label={t('searchMembers')}
+                className="w-full"
+                hotkey={placement === 'panel' ? '/' : undefined}
+                onValueChange={setSearch}
+                placeholder={t('searchMembers')}
+                size="sm"
+                value={search}
+              />
+            ),
+            searchActive: search.length > 0,
+          }}
           getRowId={member => member.id}
           label={t('membersTitle')}
           rowActions={member => {

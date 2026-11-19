@@ -138,7 +138,7 @@ export interface AdminUserRow {
   username: string | null
 }
 
-export interface AdminPage<T> {
+interface AdminPage<T> {
   page: number
   pageCount: number
   pageSize: number

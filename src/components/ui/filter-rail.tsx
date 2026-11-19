@@ -38,7 +38,7 @@ export interface FilterRailProps {
   extra?: React.ReactNode
   groups: FilterRailGroup[]
   onReset: () => void
-  search: (placement: 'panel' | 'toolbar') => React.ReactNode
+  search?: (placement: 'panel' | 'toolbar') => React.ReactNode
   searchActive?: boolean
 }
 
@@ -103,7 +103,7 @@ export const FilterRailPanel = ({
           </Button>
         )}
       </div>
-      {search('panel')}
+      {search?.('panel')}
       <FilterRailGroups extra={extra} groups={groups} />
     </aside>
   )
@@ -116,7 +116,7 @@ export const FilterRailToolbar = ({ extra, groups, onReset, search, searchActive
 
   return (
     <div className="flex min-w-0 flex-1 items-center gap-2 lg:hidden" data-slot="filter-rail-toolbar">
-      <div className="min-w-0 flex-1 *:w-full [&_input]:w-full">{search('toolbar')}</div>
+      <div className="min-w-0 flex-1 *:w-full [&_input]:w-full">{search?.('toolbar')}</div>
       <Sheet>
         <SheetTrigger asChild>
           <Button

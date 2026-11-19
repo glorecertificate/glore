@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils'
 
 const START_SLUGS = ['what-is-glore', 'how-certification-works', 'roles', 'getting-started']
 const BROWSABLE = ['intro', 'tutorials', 'faq']
+const TUTORIALS = 'tutorials'
 const COLUMN_PREVIEW = 5
 
 interface DocsListProps {
@@ -108,7 +109,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
   const tutorialSlug = useRoleTutorial()
 
   const listed = listedCategories(categories, role)
-  const columns = listed.filter(category => canEdit || category.articles.length > 0)
+  const columns = listed.filter(category => canEdit || category.articles.length > (category.slug === TUTORIALS ? 1 : 0))
   const docs = useDocsSearch(listed)
   const term = query.trim()
   const results = term ? docs.search(term, 500) : []
@@ -203,7 +204,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
             </Link>
           )}
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className={cn('grid grid-cols-1 gap-4', columns.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3')}>
             {columns.map(category => (
               <TopicColumn canEdit={canEdit} category={category} key={category.id} />
             ))}

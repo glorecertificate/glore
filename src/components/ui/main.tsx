@@ -8,10 +8,10 @@ const mainWidthVariants = cva('flex w-full flex-1 flex-col', {
   },
   variants: {
     width: {
-      content: 'max-w-4xl',
+      content: 'mx-auto max-w-4xl',
       full: '',
-      prose: 'max-w-3xl',
-      wide: 'max-w-6xl',
+      prose: 'mx-auto max-w-3xl',
+      wide: 'mx-auto max-w-6xl',
     },
   },
 })

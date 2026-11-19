@@ -6,8 +6,7 @@ import { type Locale } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
-import { AuthCaption } from '@/components/features/auth/auth-caption'
-import { AuthFrame } from '@/components/features/auth/auth-frame'
+import { AuthMain } from '@/components/features/auth/auth-frame'
 import { OnboardingForm } from '@/components/features/onboarding'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
@@ -37,14 +36,14 @@ const OnboardingContent = async () => {
 
   return (
     <I18nProvider locale={locale} messages={clientMessages(messages)}>
-      <AuthFrame language={false} panel={<AuthCaption messageKey="panelOnboarding" />} size="md">
+      <AuthMain language={false} size="md">
         <OnboardingForm
           email={user.email}
           firstName={profile?.firstName ?? ''}
           lastName={profile?.lastName ?? ''}
           locale={locale}
         />
-      </AuthFrame>
+      </AuthMain>
     </I18nProvider>
   )
 }

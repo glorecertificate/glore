@@ -8,7 +8,7 @@ import { Values, useQueryStates } from 'nuqs'
 
 import { AuthAlternatives } from '@/components/features/auth/auth-alternatives'
 import { AuthBackLink } from '@/components/features/auth/auth-back-link'
-import { useSetAuthGlobe } from '@/components/features/auth/auth-globe'
+import { AUTH_GLOBE_IDLE, useSetAuthGlobe } from '@/components/features/auth/auth-globe'
 import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
@@ -209,6 +209,8 @@ export const AuthFlow = ({
   useEffect(() => {
     setGlobe({ errored, view })
   }, [errored, setGlobe, view])
+
+  useEffect(() => () => setGlobe(AUTH_GLOBE_IDLE), [setGlobe])
 
   if (height !== undefined && !animate) {
     setAnimate(true)

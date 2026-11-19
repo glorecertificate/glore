@@ -5,7 +5,7 @@ import { createContext, use, useState } from 'react'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { useTheme } from '@/hooks/use-theme'
 import { AuthView, type Enum } from '@/lib/types'
-import { cn, hexToRgb } from '@/lib/utils'
+import { hexToRgb } from '@/lib/utils'
 import theme from '~/config/theme.json'
 
 interface AuthGlobeState {
@@ -20,8 +20,10 @@ interface AuthGlobeContext {
 
 const AuthGlobeContext = createContext<AuthGlobeContext | null>(null)
 
+export const AUTH_GLOBE_IDLE: AuthGlobeState = { errored: false, view: 'login' }
+
 export const AuthGlobeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, setState] = useState<AuthGlobeState>({ errored: false, view: 'login' })
+  const [state, setState] = useState<AuthGlobeState>(AUTH_GLOBE_IDLE)
   return <AuthGlobeContext value={{ setState, state }}>{children}</AuthGlobeContext>
 }
 
@@ -60,7 +62,7 @@ const useGlobeOptions = ({ errored, view }: AuthGlobeState) => {
 
 export const AuthGlobe = ({ className }: { className?: string }) => {
   const context = use(AuthGlobeContext)
-  const options = useGlobeOptions(context?.state ?? { errored: false, view: 'login' })
+  const options = useGlobeOptions(context?.state ?? AUTH_GLOBE_IDLE)
 
-  return <Globe className={cn('mx-auto', className)} transitionDuration={600} {...options} />
+  return <Globe className={className} devicePixelRatio={1.5} transitionDuration={600} {...options} />
 }

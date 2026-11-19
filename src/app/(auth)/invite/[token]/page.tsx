@@ -2,8 +2,7 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInvitationPreview } from '@/actions/organizations/previews'
-import { AuthCaption } from '@/components/features/auth/auth-caption'
-import { AuthFrame } from '@/components/features/auth/auth-frame'
+import { AuthMain } from '@/components/features/auth/auth-frame'
 import { InvitationCard } from '@/components/features/organization/invite/invitation-card'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { maskEmail } from '@/components/features/organization/utils'
@@ -67,11 +66,11 @@ const InviteContent = async ({
 }
 
 const InvitePage = ({ params, searchParams }: PageProps<'/invite/[token]'>) => (
-  <AuthFrame panel={<AuthCaption messageKey="panelInvite" />} size="md">
+  <AuthMain size="md">
     <Suspense fallback={<LoadingFallback />}>
       <InviteContent params={params} searchParams={searchParams} />
     </Suspense>
-  </AuthFrame>
+  </AuthMain>
 )
 
 export default InvitePage

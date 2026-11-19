@@ -4,7 +4,7 @@ Route groups, route gates, API routes, and the proxy lifecycle. Authentication d
 
 ## Route groups
 
-- `(auth)` holds unauthenticated pages and has no shared layout beyond the root.
+- `(auth)` holds unauthenticated pages. Its layout renders `AuthFrame` (aside, globe, legal links, theme switch), so the globe survives client navigation between auth screens. Pages render `AuthMain`. `/onboarding/error` lives outside the group because it uses `BrandShell`. `/legal/accept` wraps its own `AuthFrame`.
 - `(dashboard)` holds authenticated pages with the sidebar, wrapped in `SidebarProvider > SessionProvider`.
 - The `dashboard/` and `courses/` layouts add `CoursesProvider`. Its context holds `CourseSummary` records only (`summarizeCourse` in `db/queries/course.ts`), never lesson trees. Editor, learn, and complete load their one full course on the server.
 - `/` permanently redirects to `/dashboard` in `next.config.ts`.

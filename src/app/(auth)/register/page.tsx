@@ -1,4 +1,4 @@
-import { AuthFrame } from '@/components/features/auth/auth-frame'
+import { AuthMain } from '@/components/features/auth/auth-frame'
 import { ApplicationProvider } from '@/components/features/organization/application/application-context'
 import { ApplicationForm } from '@/components/features/organization/application/application-form'
 import { ApplicationSteps } from '@/components/features/organization/application/application-steps'
@@ -12,12 +12,12 @@ export const generateMetadata = generateIntlMetadata({
 
 const RegisterPage = () => (
   <ApplicationProvider>
-    <AuthFrame panel={<ApplicationSteps />} size="lg">
+    <AuthMain header={<ApplicationSteps />} size="lg">
       <h1 className="sr-only">
         <PageTitle namespace="Register" name="metaTitle" />
       </h1>
       <ApplicationForm />
-    </AuthFrame>
+    </AuthMain>
   </ApplicationProvider>
 )
 

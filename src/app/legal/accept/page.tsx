@@ -5,8 +5,7 @@ import { Suspense } from 'react'
 import { getFormatter, getLocale, getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
-import { AuthCaption } from '@/components/features/auth/auth-caption'
-import { AuthFrame } from '@/components/features/auth/auth-frame'
+import { AuthFrame, AuthMain } from '@/components/features/auth/auth-frame'
 import { LegalAcceptForm } from '@/components/features/legal/legal-accept-form'
 import { LegalMarkdown } from '@/components/features/legal/legal-markdown'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -71,10 +70,12 @@ const LegalAcceptContent = async () => {
 }
 
 const LegalAcceptPage = () => (
-  <AuthFrame language={false} panel={<AuthCaption messageKey="panelLegal" />} size="lg">
-    <Suspense fallback={<LoadingFallback />}>
-      <LegalAcceptContent />
-    </Suspense>
+  <AuthFrame>
+    <AuthMain language={false} size="lg">
+      <Suspense fallback={<LoadingFallback />}>
+        <LegalAcceptContent />
+      </Suspense>
+    </AuthMain>
   </AuthFrame>
 )
 

@@ -794,8 +794,6 @@
     "savingPassword": "Salvataggio in corso…",
     "applyTitle": "Candida la tua organizzazione",
     "close": "Chiudi",
-    "heroMessage": "Certifica le soft skill che acquisisci facendo volontariato.",
-    "heroTitle": "Entra nella rete GloRe",
     "noAccountTitle": "Non hai un account?",
     "newPasswordLabel": "Nuova password",
     "passwordLabel": "Password",
@@ -803,9 +801,8 @@
     "signupDialogRegister": "Registra la tua organizzazione",
     "signupDialogTitle": "Come registrarti su GloRe",
     "verifyTitle": "Verifica un certificato",
-    "panelInvite": "Hai ricevuto un invito",
-    "panelLegal": "Aggiornamento dei termini",
-    "panelOnboarding": "Configura il tuo profilo"
+    "asideMessage": "Unisciti alla tua organizzazione, segui i corsi e ottieni un certificato che chiunque può verificare.",
+    "asideTitle": "Certifica le soft skill che acquisisci con il volontariato"
   },
   "CourseCommon": {
     "courseCreationFailed": "Impossibile creare il corso. Riprova.",

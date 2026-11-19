@@ -794,8 +794,6 @@
     "savingPassword": "Saving…",
     "applyTitle": "Apply as an organization",
     "close": "Close",
-    "heroMessage": "Certify the soft skills you gain through volunteering.",
-    "heroTitle": "Join the GloRe Network",
     "noAccountTitle": "Don't have an account?",
     "newPasswordLabel": "New password",
     "passwordLabel": "Password",
@@ -803,9 +801,8 @@
     "signupDialogRegister": "Register your organization",
     "signupDialogTitle": "How to sign up for GloRe",
     "verifyTitle": "Verify a certificate",
-    "panelInvite": "You were invited",
-    "panelLegal": "Terms update",
-    "panelOnboarding": "Set up your profile"
+    "asideMessage": "Join your organization, take the courses, and earn a certificate that anyone can verify.",
+    "asideTitle": "Certify the soft skills you gain through volunteering"
   },
   "CourseCommon": {
     "courseCreationFailed": "Could not create the course. Try again.",

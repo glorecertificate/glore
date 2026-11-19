@@ -794,8 +794,6 @@
     "savingPassword": "Guardando…",
     "applyTitle": "Solicita el alta como organización",
     "close": "Cerrar",
-    "heroMessage": "Certifica las habilidades personales que desarrollas con el voluntariado.",
-    "heroTitle": "Únete a la red GloRe",
     "noAccountTitle": "¿No tienes una cuenta?",
     "newPasswordLabel": "Nueva contraseña",
     "passwordLabel": "Contraseña",
@@ -803,9 +801,8 @@
     "signupDialogRegister": "Registra tu organización",
     "signupDialogTitle": "Cómo registrarte en GloRe",
     "verifyTitle": "Verifica un certificado",
-    "panelInvite": "Te han invitado",
-    "panelLegal": "Actualización de términos",
-    "panelOnboarding": "Configura tu perfil"
+    "asideMessage": "Únete a tu organización, realiza los cursos y obtén un certificado que cualquiera puede verificar.",
+    "asideTitle": "Certifica las habilidades blandas que ganas con el voluntariado"
   },
   "CourseCommon": {
     "courseCreationFailed": "No se pudo crear el curso. Inténtalo de nuevo.",

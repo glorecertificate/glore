@@ -4,8 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { createSearchParamsCache } from 'nuqs/server'
 
 import { AuthFlow } from '@/components/features/auth/auth-flow'
-import { AuthFrame } from '@/components/features/auth/auth-frame'
-import { AuthHero } from '@/components/features/auth/auth-hero'
+import { AuthMain } from '@/components/features/auth/auth-frame'
 import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
 import { authParsers } from '@/components/features/auth/params'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -27,11 +26,11 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
 }
 
 const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
-  <AuthFrame panel={<AuthHero />} variant="hero">
+  <AuthMain>
     <Suspense fallback={<LoadingFallback />}>
       <LoginContent searchParams={searchParams} />
     </Suspense>
-  </AuthFrame>
+  </AuthMain>
 )
 
 export default LoginPage

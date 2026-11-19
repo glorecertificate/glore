@@ -368,6 +368,24 @@
   );
 }
 
+@utility bg-auth-aside {
+  background-image: linear-gradient(
+    165deg,
+    var(--band-from) 0%,
+    var(--band-via) 40%,
+    var(--band-via-2) 72%,
+    var(--band-to) 100%
+  );
+}
+
+@utility auth-globe {
+  top: max(25.3125rem, calc(100% - 30.9375rem));
+  left: -17.6875rem;
+  width: 59.375rem;
+  height: 59.375rem;
+  mask-image: linear-gradient(to bottom, black 0%, black 28%, color-mix(in srgb, black 30%, transparent) 53%);
+}
+
 @utility bg-gradient-action {
   background-image: linear-gradient(90deg, var(--action-from), var(--action-to));
 }
@@ -563,34 +581,17 @@
     animation: grid-enter 280ms cubic-bezier(0.23, 1, 0.32, 1) both;
   }
   ::view-transition-group(.auth-surface),
-  ::view-transition-image-pair(.auth-surface),
-  ::view-transition-group(.auth-fixed),
-  ::view-transition-old(.auth-fixed),
-  ::view-transition-new(.auth-fixed) {
+  ::view-transition-image-pair(.auth-surface) {
     animation-duration: 300ms;
     animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
   }
   ::view-transition-group(.auth-surface) {
     overflow: clip;
   }
-  ::view-transition-group(auth-panel) {
-    background-color: var(--color-sidebar);
-  }
-  ::view-transition-group(auth-pane) {
-    background-color: var(--color-background);
-  }
-  .dark::view-transition-group(auth-pane) {
-    background-color: var(--color-canvas);
-  }
-  ::view-transition-old(.auth-surface),
-  ::view-transition-new(.auth-surface),
-  ::view-transition-old(.auth-fixed),
-  ::view-transition-new(.auth-fixed) {
-    block-size: 100%;
-    object-fit: none;
-  }
   ::view-transition-old(.auth-surface),
   ::view-transition-new(.auth-surface) {
+    block-size: 100%;
+    object-fit: none;
     object-position: top;
   }
   ::view-transition-old(.auth-surface) {
@@ -742,10 +743,7 @@
   }
   ::view-transition-group(.auth-surface),
   ::view-transition-old(.auth-surface),
-  ::view-transition-new(.auth-surface),
-  ::view-transition-group(.auth-fixed),
-  ::view-transition-old(.auth-fixed),
-  ::view-transition-new(.auth-fixed) {
+  ::view-transition-new(.auth-surface) {
     animation: none;
   }
 

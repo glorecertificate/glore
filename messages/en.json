@@ -80,7 +80,8 @@
     "keyDown": "Down arrow",
     "requestCertificate": "Request a certificate",
     "inviteMembers": "Invite members",
-    "skillsFramework": "Skills framework"
+    "skillsFramework": "Skills framework",
+    "content": "Content"
   },
   "Intl": {
     "Countries": {
@@ -737,7 +738,8 @@
     "pendingInvitations": "Pending invitations",
     "pendingInvitationsCount": "{count, plural, =1 {# pending invitation} other {# pending invitations}}",
     "invitedAs": "Invited as {role}",
-    "noOrganization": "No organization yet"
+    "noOrganization": "No organization yet",
+    "content": "Content"
   },
   "Auth": {
     "backToLogin": "Go to login",
@@ -4120,9 +4122,6 @@
       "terms": "Terms of use",
       "qualityCharter": "Quality Charter"
     },
-    "current": "Current version",
-    "currentDescription": "The version that visitors read on the public page.",
-    "noVersion": "No version is published yet.",
     "version": "Version {version}",
     "versionStatus": "Version {version}, {status}",
     "effective": "Effective {date}",
@@ -4158,8 +4157,6 @@
     "publishConfirm": "Publish",
     "publishing": "Publishing…",
     "published": "Version {version} published",
-    "history": "History",
-    "historyDescription": "Every published version stays available and cannot be edited.",
     "historyEmpty": "No version has been published yet.",
     "publishedBy": "Published by {name}",
     "view": "View",
@@ -4177,7 +4174,18 @@
       "RATE_LIMITED": "Too many attempts. Try again in a while.",
       "UNAUTHORIZED": "Your session ended. Log in again.",
       "UNKNOWN": "Something went wrong. Try again."
-    }
+    },
+    "versions": "Versions",
+    "versionsDescription": "Every published version stays available and cannot be edited.",
+    "viewPublic": "View public page",
+    "columnVersion": "Version",
+    "columnStatus": "Status",
+    "columnEffective": "Effective",
+    "columnLanguages": "Languages",
+    "columnChanged": "Changed",
+    "columnActions": "Actions",
+    "editDraft": "Edit draft",
+    "notSet": "Not set"
   },
   "LegalAccept": {
     "title": "We updated our terms of use",

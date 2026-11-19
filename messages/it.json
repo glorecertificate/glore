@@ -80,7 +80,8 @@
     "keyDown": "Freccia giù",
     "requestCertificate": "Richiedi un certificato",
     "inviteMembers": "Invita membri",
-    "skillsFramework": "Quadro delle competenze"
+    "skillsFramework": "Quadro delle competenze",
+    "content": "Contenuti"
   },
   "Intl": {
     "Countries": {
@@ -737,7 +738,8 @@
     "pendingInvitations": "Inviti in attesa",
     "pendingInvitationsCount": "{count, plural, =1 {# invito in attesa} other {# inviti in attesa}}",
     "invitedAs": "Con il ruolo di {role}",
-    "noOrganization": "Non hai ancora un'organizzazione"
+    "noOrganization": "Non hai ancora un'organizzazione",
+    "content": "Contenuti"
   },
   "Auth": {
     "backToLogin": "Torna all'accesso",
@@ -4120,9 +4122,6 @@
       "terms": "Termini d'uso",
       "qualityCharter": "Carta della Qualità"
     },
-    "current": "Versione attuale",
-    "currentDescription": "La versione che i visitatori leggono nella pagina pubblica.",
-    "noVersion": "Nessuna versione è ancora pubblicata.",
     "version": "Versione {version}",
     "versionStatus": "Versione {version}, {status}",
     "effective": "In vigore dal {date}",
@@ -4158,8 +4157,6 @@
     "publishConfirm": "Pubblica",
     "publishing": "Pubblicazione…",
     "published": "Versione {version} pubblicata",
-    "history": "Cronologia",
-    "historyDescription": "Ogni versione pubblicata resta disponibile e non si può modificare.",
     "historyEmpty": "Nessuna versione è stata ancora pubblicata.",
     "publishedBy": "Pubblicata da {name}",
     "view": "Apri",
@@ -4177,7 +4174,18 @@
       "RATE_LIMITED": "Troppi tentativi. Riprova tra un po'.",
       "UNAUTHORIZED": "La tua sessione è terminata. Accedi di nuovo.",
       "UNKNOWN": "Qualcosa è andato storto. Riprova."
-    }
+    },
+    "versions": "Versioni",
+    "versionsDescription": "Ogni versione pubblicata resta disponibile e non si può modificare.",
+    "viewPublic": "Vedi la pagina pubblica",
+    "columnVersion": "Versione",
+    "columnStatus": "Stato",
+    "columnEffective": "In vigore",
+    "columnLanguages": "Lingue",
+    "columnChanged": "Modifica",
+    "columnActions": "Azioni",
+    "editDraft": "Modifica la bozza",
+    "notSet": "Non impostata"
   },
   "LegalAccept": {
     "title": "Abbiamo aggiornato i termini d'uso",

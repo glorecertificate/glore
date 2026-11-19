@@ -9,7 +9,7 @@ export interface NavigationViewer {
   role: OrganizationMembershipRole | null
 }
 
-export type NavigationGroup = 'actions' | 'admin' | 'organization' | 'pages' | 'settings'
+export type NavigationGroup = 'actions' | 'admin' | 'content' | 'organization' | 'pages' | 'settings'
 
 export type NavigationId =
   | 'admin-audit'
@@ -203,14 +203,14 @@ const NAVIGATION: NavigationEntry[] = [
   { group: 'admin', href: '/admin/audit', icon: 'clipboard-list', id: 'admin-audit', visible: isAdmin },
   { group: 'admin', href: '/admin/settings', icon: 'settings-2', id: 'admin-settings', visible: isAdmin },
   {
-    group: 'admin',
+    group: 'content',
     href: '/translations' as Route,
     icon: 'languages',
     id: 'admin-translations',
     visible: isTeam,
   },
-  { group: 'admin', href: '/emails' as Route, icon: 'mail', id: 'admin-emails', visible: isTeam },
-  { group: 'admin', href: '/legal' as Route, icon: 'scale', id: 'admin-legal', visible: isTeam },
+  { group: 'content', href: '/emails' as Route, icon: 'mail', id: 'admin-emails', visible: isTeam },
+  { group: 'content', href: '/legal' as Route, icon: 'scale', id: 'admin-legal', visible: isTeam },
   {
     group: 'actions',
     href: '/certificates/new',

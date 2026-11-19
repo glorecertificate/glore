@@ -80,7 +80,8 @@
     "keyDown": "Flecha abajo",
     "requestCertificate": "Solicitar un certificado",
     "inviteMembers": "Invitar miembros",
-    "skillsFramework": "Marco de habilidades"
+    "skillsFramework": "Marco de habilidades",
+    "content": "Contenido"
   },
   "Intl": {
     "Countries": {
@@ -737,7 +738,8 @@
     "pendingInvitations": "Invitaciones pendientes",
     "pendingInvitationsCount": "{count, plural, =1 {# invitación pendiente} other {# invitaciones pendientes}}",
     "invitedAs": "Invitación como {role}",
-    "noOrganization": "Todavía no tienes organización"
+    "noOrganization": "Todavía no tienes organización",
+    "content": "Contenido"
   },
   "Auth": {
     "backToLogin": "Volver al inicio de sesión",
@@ -4120,9 +4122,6 @@
       "terms": "Condiciones de uso",
       "qualityCharter": "Carta de Calidad"
     },
-    "current": "Versión actual",
-    "currentDescription": "La versión que leen los visitantes en la página pública.",
-    "noVersion": "Todavía no hay ninguna versión publicada.",
     "version": "Versión {version}",
     "versionStatus": "Versión {version}, {status}",
     "effective": "En vigor desde {date}",
@@ -4158,8 +4157,6 @@
     "publishConfirm": "Publicar",
     "publishing": "Publicando…",
     "published": "Versión {version} publicada",
-    "history": "Historial",
-    "historyDescription": "Todas las versiones publicadas siguen disponibles y no se pueden editar.",
     "historyEmpty": "Todavía no se ha publicado ninguna versión.",
     "publishedBy": "Publicada por {name}",
     "view": "Ver",
@@ -4177,7 +4174,18 @@
       "RATE_LIMITED": "Demasiados intentos. Inténtalo de nuevo más tarde.",
       "UNAUTHORIZED": "Tu sesión ha terminado. Inicia sesión de nuevo.",
       "UNKNOWN": "Algo ha salido mal. Inténtalo de nuevo."
-    }
+    },
+    "versions": "Versiones",
+    "versionsDescription": "Cada versión publicada sigue disponible y no se puede editar.",
+    "viewPublic": "Ver la página pública",
+    "columnVersion": "Versión",
+    "columnStatus": "Estado",
+    "columnEffective": "Vigencia",
+    "columnLanguages": "Idiomas",
+    "columnChanged": "Cambio",
+    "columnActions": "Acciones",
+    "editDraft": "Editar el borrador",
+    "notSet": "Sin fecha"
   },
   "LegalAccept": {
     "title": "Hemos actualizado nuestras condiciones de uso",

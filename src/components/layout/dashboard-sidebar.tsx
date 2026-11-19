@@ -207,6 +207,7 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
   const viewer: NavigationViewer = { canEdit: user.canEdit, isAdmin: user.isAdmin, role: user.role }
   const adminEntries = entriesFor(viewer, 'admin')
   const adminHref = adminSectionHref(viewer)
+  const contentEntries = entriesFor(viewer, 'content')
 
   return (
     <SidebarGroup className="pt-3">
@@ -233,6 +234,16 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
                 label={labels[id]}
                 route={href}
               />
+            ))}
+          </SidebarMenu>
+        </div>
+      )}
+      {contentEntries.length > 0 && (
+        <div className="mt-6 flex flex-col gap-1">
+          <SidebarGroupLabel>{t('content')}</SidebarGroupLabel>
+          <SidebarMenu>
+            {contentEntries.map(({ href, icon, id }) => (
+              <DashboardSidebarItem exact icon={icon} key={id} label={labels[id]} route={href} />
             ))}
           </SidebarMenu>
         </div>

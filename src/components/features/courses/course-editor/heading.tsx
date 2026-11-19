@@ -45,6 +45,8 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
   const fallbackTitle = localizeRecord(course.title, DEFAULT_LOCALE)
   const description = course.description ? localizeRecord(course.description, language) : ''
   const [titleLength, setTitleLength] = useState<number | null>(null)
+  const [titleBusy, setTitleBusy] = useState(false)
+  const [descriptionBusy, setDescriptionBusy] = useState(false)
   const [draftDescription, setDraftDescription] = useState(description)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
   const descriptionWrapperRef = useRef<HTMLSpanElement>(null)
@@ -141,11 +143,13 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
       {canEdit ? (
         <TitleField
           aria-label={t('renameCourse')}
-          className="-mx-1.5 -my-0.5 px-1.5 py-0.5 type-band! hover:bg-band-scrim focus-visible:bg-band-scrim"
+          className="-mx-1.5 -my-0.5 px-1.5 py-0.5 type-band! group-has-[[aria-expanded=true]]/field:bg-band-scrim hover:bg-band-scrim focus-visible:bg-band-scrim"
+          aria-busy={titleBusy}
           maxLength={MAX_TITLE_LENGTH}
           onCommit={commitTitle}
           onLengthChange={length => setTitleLength(length === null || length >= TITLE_COUNTER_FROM ? length : 0)}
           placeholder={fallbackTitle}
+          readOnly={titleBusy}
           value={title}
         />
       ) : (
@@ -153,8 +157,9 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
       )}
       {canEdit && (
         <FieldTranslateButton
-          className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim"
+          className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim aria-expanded:bg-band-scrim"
           fieldKey={`courses:${course.id}:title`}
+          onRunningChange={setTitleBusy}
         />
       )}
       {course.archivedAt && <StatusBadge tone="neutral">{tList('archived')}</StatusBadge>}
@@ -171,11 +176,13 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
   const descriptionField = canEdit ? (
     <InlineInput
       aria-label={t('updateDescription')}
-      className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
+      className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text group-has-[[aria-expanded=true]]/field:bg-band-scrim placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
+      aria-busy={descriptionBusy}
       keepFilled={false}
       onBlur={onDescriptionBlur}
       onChange={onDescriptionChange}
       placeholder={t('courseDescriptionPlaceholder', { lang: languageLabel })}
+      readOnly={descriptionBusy}
       ref={descriptionRef}
       value={draftDescription}
     />
@@ -198,8 +205,9 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
         {descriptionField}
         {canEdit && (
           <FieldTranslateButton
-            className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim"
+            className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim aria-expanded:bg-band-scrim"
             fieldKey={`courses:${course.id}:description`}
+            onRunningChange={setDescriptionBusy}
           />
         )}
       </span>

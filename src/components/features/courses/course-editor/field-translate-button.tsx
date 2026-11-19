@@ -17,9 +17,10 @@ import { cn } from '@/lib/utils'
 
 interface FieldTranslateButtonProps extends Omit<React.ComponentProps<typeof Button>, 'onClick'> {
   fieldKey: string
+  onRunningChange?: (running: boolean) => void
 }
 
-export const FieldTranslateButton = ({ className, fieldKey, ...props }: FieldTranslateButtonProps) => {
+export const FieldTranslateButton = ({ className, fieldKey, onRunningChange, ...props }: FieldTranslateButtonProps) => {
   const t = useTranslations('CourseTranslate')
   const { localeItems } = useI18n()
   const { applyTranslated, course, language } = useCourse()
@@ -36,12 +37,17 @@ export const FieldTranslateButton = ({ className, fieldKey, ...props }: FieldTra
     const plan = planTranslation({ course, fieldKeys: [fieldKey], replace: true, source, targets: [language] })
     if (plan.fields.length === 0) return
     seen.current = plan.seen
-    const ok = await translate.run({ fields: plan.fields, replace: true, source, targets: [language] })
-    toast[ok ? 'success' : 'error'](ok ? t('field.done') : t('field.failed'))
+    onRunningChange?.(true)
+    try {
+      const ok = await translate.run({ fields: plan.fields, replace: true, source, targets: [language] })
+      toast[ok ? 'success' : 'error'](ok ? t('field.done') : t('field.failed'))
+    } finally {
+      onRunningChange?.(false)
+    }
   }
 
   return (
-    <span className="-my-1 inline-flex shrink-0 self-center opacity-0 transition-opacity group-focus-within/field:opacity-100 focus-within:opacity-100 has-[:disabled]:opacity-100 has-[[aria-expanded=true]]:opacity-100">
+    <span className="invisible -my-1 inline-flex shrink-0 self-center opacity-0 transition-opacity group-focus-within/field:visible group-focus-within/field:opacity-100 focus-within:visible focus-within:opacity-100 has-[:disabled]:visible has-[:disabled]:opacity-100 has-[[aria-expanded=true]]:visible has-[[aria-expanded=true]]:opacity-100">
       <DropdownMenu>
         <Tooltip>
           <TooltipTrigger asChild>

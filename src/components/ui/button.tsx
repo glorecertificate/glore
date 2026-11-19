@@ -90,6 +90,12 @@ export const buttonVariants = cva(
   }
 )
 
+const STABLE_ICON_PADDING = { '2xs': 'px-1.5', lg: 'px-4', md: 'px-3', sm: 'px-2.5', xs: 'px-2' } as const
+
+const STABLE_GAP = { '2xs': 'gap-1', lg: 'gap-2', md: 'gap-2', sm: 'gap-1.5', xs: 'gap-1.5' } as const
+
+type StableSize = keyof typeof STABLE_GAP
+
 export const Button = ({
   asChild = false,
   children,
@@ -116,10 +122,14 @@ export const Button = ({
   const iconNode = typeof icon === 'string' ? <LucideIcon name={icon} /> : IconComponent && <IconComponent />
 
   if (stable && !asChild) {
+    const stableSize = (size && size in STABLE_GAP ? size : 'md') as StableSize
+    const gap = STABLE_GAP[stableSize]
     return (
       <button
         className={cn(
           buttonVariants({ effect, size, variant }),
+          icon && size && size in STABLE_ICON_PADDING && STABLE_ICON_PADDING[stableSize],
+          icon && !size && STABLE_ICON_PADDING.md,
           loading && 'cursor-wait disabled:cursor-wait',
           className
         )}
@@ -128,8 +138,8 @@ export const Button = ({
         type={type}
         {...props}
       >
-        <span className="grid items-center justify-items-center gap-2">
-          <span className={cn('col-start-1 row-start-1 inline-flex items-center gap-2', loading && 'invisible')}>
+        <span className={cn('grid items-center justify-items-center', gap)}>
+          <span className={cn('col-start-1 row-start-1 inline-flex items-center', gap, loading && 'invisible')}>
             {iconPlacement === 'left' && iconNode}
             {children}
             {iconPlacement === 'right' && iconNode}

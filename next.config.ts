@@ -32,6 +32,7 @@ const envSchema = z.object({
   R2_ACCOUNT_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_ACCESS_KEY_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_SECRET_ACCESS_KEY: z.string().regex(/^[0-9a-f]{64}$/u),
+  R2_ENDPOINT: z.url().optional(),
   R2_BUCKET_NAME: z.string().regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/u),
   R2_PUBLIC_URL: z.url(),
   SMTP_HOST: z.string().min(1),

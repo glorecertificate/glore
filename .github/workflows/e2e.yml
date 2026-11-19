@@ -31,16 +31,23 @@ jobs:
         ports:
           - 587:1025
           - 8025:8025
+      s3:
+        image: adobe/s3mock:4.7.0
+        env:
+          COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: glore-e2e
+        ports:
+          - 9000:9090
     env:
       NEXT_TELEMETRY_DISABLED: 1
       APP_URL: http://localhost:3000
       DATABASE_URL: postgresql://glore:glore@localhost:5433/glore
       E2E_BASE_URL: http://localhost:3000
       R2_ACCOUNT_ID: '00000000000000000000000000000000'
-      R2_ACCESS_KEY_ID: '00000000000000000000000000000000'
-      R2_SECRET_ACCESS_KEY: '0000000000000000000000000000000000000000000000000000000000000000'
+      R2_ACCESS_KEY_ID: 'a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0'
+      R2_SECRET_ACCESS_KEY: 'b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1'
       R2_BUCKET_NAME: glore-e2e
-      R2_PUBLIC_URL: https://r2.glore.test
+      R2_ENDPOINT: http://localhost:9000
+      R2_PUBLIC_URL: http://localhost:9000/glore-e2e
       SMTP_HOST: localhost
       SMTP_PORT: 587
       SMTP_SENDER: GloRe <noreply@glore.test>

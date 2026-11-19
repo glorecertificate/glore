@@ -135,8 +135,8 @@ test('tutor picks another description, requests changes with a comment, and the 
 
 test('tutor previews the PDF and approves, and the volunteer shares the certificate', async ({ browser }) => {
   test.skip(
-    /^0+$/u.test(process.env.R2_ACCOUNT_ID ?? ''),
-    'Approval stores the PDF in R2, and this run has no real bucket'
+    /^0+$/u.test(process.env.R2_ACCOUNT_ID ?? '') && !process.env.R2_ENDPOINT,
+    'Approval stores the PDF in R2, and this run has no bucket'
   )
   const { page } = tutor
   await page.goto(`/certificates/${certificateId}/review`)

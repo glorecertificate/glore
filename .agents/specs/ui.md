@@ -95,7 +95,8 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 - `pnpm run check:theme` fails on a stale generated file or on a contrast pair below its minimum.
 - The generator (`scripts/theme/`) solves text, fill, and ring lightness in OKLCH against the targets in `system.contrast`.
 - Targets are 4.5:1 for text, 6:1 for `fg-2`, 5:1 for colored text, and 3:1 for non-text. Declare a pair in the generator before you use a new combination.
-- Surface roles: `surface-0` to `surface-3`, `surface-sunken` (canvas), `surface-muted`, `surface-hover`, and `surface-selected`.
+- Surface roles: `surface-0` to `surface-3`, `surface-sunken` (canvas), `surface-muted`, `surface-hover`, `surface-highlight`, and `surface-selected`.
+- `surface-hover` is the hover fill of cards and rows. In light it matches the outline button hover. `accent` (menu, select, and ghost highlights) uses `surface-highlight`.
 - Text and border roles: `fg-1` to `fg-3`, `fg-disabled`, `fg-title` (navy), `fg-on-fill`, `fg-on-bright`, `fg-on-danger`, `border-subtle`, `border`, and `border-strong` (3:1).
 - `action` (blue) marks actions only. It has `-hover`, `-subtle`, `-border`, and `-text`.
 - `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current-fill` (navy) marks the current stage, with `current-subtle`. Tailwind reserves `current` for `currentColor`.

@@ -40,7 +40,6 @@ interface SidebarContext {
   isMobile: boolean
   isTablet: boolean
   open: boolean
-  leaveMobile: () => void
   setActivePath: (path: Route) => void
   setIsDraggingRail: (isDraggingRail: boolean) => void
   setOpen: (open: boolean) => void
@@ -53,7 +52,6 @@ interface SidebarContext {
 
 interface SidebarDrawerContext {
   action: string
-  leaving: boolean
   openMobile: boolean
 }
 
@@ -105,13 +103,7 @@ export const SidebarProvider = ({
 
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [overlayOpen, setOverlayOpen] = useState(false)
-  const [leaving, setLeaving] = useState(false)
   const open = isTablet ? overlayOpen : (openProp ?? isOpen)
-
-  const leaveMobile = () => {
-    setLeaving(true)
-    setOpenMobile(false)
-  }
 
   const openRef = useRef(open)
   const setOpenPropRef = useRef(setOpenProp)
@@ -121,7 +113,6 @@ export const SidebarProvider = ({
   const action = open ? t('close') : t('open')
   const drawerValue: SidebarDrawerContext = {
     action: openMobile ? t('close') : t('open'),
-    leaving,
     openMobile,
   }
 
@@ -157,7 +148,6 @@ export const SidebarProvider = ({
   }
 
   const toggle = () => {
-    setLeaving(false)
     const setter = isMobile ? setOpenMobile : setOpen
     setter(prev => !prev)
   }
@@ -168,7 +158,6 @@ export const SidebarProvider = ({
 
   useEffect(() => {
     setActivePath(pathname)
-    setOpenMobile(false)
     setOverlayOpen(false)
     window.scrollTo(0, 0)
   }, [pathname])
@@ -194,7 +183,6 @@ export const SidebarProvider = ({
     isMobile,
     isTablet,
     open,
-    leaveMobile,
     setActivePath,
     setIsDraggingRail,
     setOpen,
@@ -250,7 +238,7 @@ export const Sidebar = ({
   collapsible?: 'offcanvas' | 'icon' | 'none'
 }) => {
   const { isMobile, isTablet, isDraggingRail, open, setOpen, setOpenMobile, state } = useSidebar()
-  const { leaving, openMobile } = useSidebarDrawer()
+  const { openMobile } = useSidebarDrawer()
 
   if (collapsible === 'none') {
     return (
@@ -267,13 +255,9 @@ export const Sidebar = ({
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetContent
-          className={cn(
-            'dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 pt-safe pb-safe text-sidebar-foreground sidebar-scope [&>button]:hidden',
-            leaving && 'data-[state=closed]:animate-none'
-          )}
+          className="dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 pt-safe pb-safe text-sidebar-foreground sidebar-scope [&>button]:hidden"
           data-mobile="true"
           data-sidebar="sidebar"
-          overlayClassName={cn(leaving && 'data-[state=closed]:animate-none')}
           side={side}
           style={
             {

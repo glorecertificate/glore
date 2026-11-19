@@ -13,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { type MessageKey } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-const LANGUAGE_COUNTRIES: Record<string, string> = {
+export const LANGUAGE_COUNTRIES: Record<string, string> = {
   ar: 'SA',
   bn: 'BD',
   ca: 'AD',

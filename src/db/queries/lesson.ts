@@ -12,7 +12,7 @@ import {
   type userAssessments,
   type userEvaluations,
 } from '@/db/schema'
-import { type IntlRecord } from '@/lib/i18n'
+import { type IntlRecord, intlRecordWithFallback } from '@/lib/i18n'
 
 type LessonRow = InferSelectModel<typeof lessons>
 type QuestionRow = InferSelectModel<typeof questions>
@@ -89,10 +89,10 @@ export const parseLesson = (lesson: Partial<LessonWithRelations>) => {
 }
 
 export const DEFAULT_LESSON = {
-  title: {
+  title: intlRecordWithFallback({
     en: 'New lesson',
     es: 'Nueva lección',
     it: 'Nuova lezione',
-  } satisfies IntlRecord,
+  }),
   content: null as IntlRecord | null,
 }

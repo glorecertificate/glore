@@ -7,8 +7,7 @@ import { type OnboardingFormValues } from '@/components/features/onboarding/sche
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { PhoneInput } from '@/components/ui/phone-input'
-
-const DEFAULT_COUNTRIES: Record<Locale, string> = { en: 'gb', es: 'es', it: 'it' }
+import { LANGUAGE_COUNTRIES } from '@/components/ui/spoken-languages-select'
 
 export const ContactStep = ({ disabled, locale }: { disabled: boolean; locale: Locale }) => {
   const t = useTranslations('Onboarding')
@@ -24,7 +23,7 @@ export const ContactStep = ({ disabled, locale }: { disabled: boolean; locale: L
             <FormLabel>{t('phoneLabel')}</FormLabel>
             <FormControl>
               <PhoneInput
-                defaultCountry={DEFAULT_COUNTRIES[locale]}
+                defaultCountry={LANGUAGE_COUNTRIES[locale]?.toLowerCase()}
                 disabled={disabled}
                 onChange={field.onChange}
                 placeholder={t('phonePlaceholder')}

@@ -4,7 +4,6 @@ import {
   type Actor,
   actAs,
   certificateIdFromUrl,
-  completeWizard,
   fillExperience,
   openDialog,
   pickSkills,
@@ -81,7 +80,14 @@ test('volunteer withdraws the request and submits a new one', async () => {
   await hydrated(request)
   await request.click()
   await expect(page).toHaveURL(/\/certificates\/new/u)
-  await completeWizard(page)
+  await expect(page.getByLabel('Total hours')).toHaveValue('120')
+  await expect(page.getByLabel('Where did it take place?')).toHaveValue('Milan, Italy')
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByRole('checkbox', { checked: true })).toHaveCount(3)
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await rateOrganization(page)
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await submitFromLastStep(page)
   certificateId = certificateIdFromUrl(page)
   await expect(page.getByText('Waiting for a tutor to start.')).toBeVisible()
 })

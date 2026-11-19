@@ -83,6 +83,21 @@ export const certificateWizardValues = (certificate: Certificate, base: WizardDr
   tasks: certificate.tasks.length > 0 ? certificate.tasks.map(text => ({ text })) : [{ text: '' }],
 })
 
+export const withdrawnSource = (certificates: Certificate[], organizationId: number | null) => {
+  const latest = certificates
+    .filter(({ isDraft, organization }) => !isDraft && organization.id === organizationId)
+    .toSorted((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
+  return latest?.isWithdrawn ? latest : null
+}
+
+export const prefillValues = (source: Certificate, base: WizardDraft, courseIds: readonly number[]): WizardDraft => {
+  const values = certificateWizardValues(source, base)
+  return {
+    ...values,
+    skills: (values.skills ?? []).filter(skill => courseIds.includes(skill?.courseId ?? -1)) as WizardDraft['skills'],
+  }
+}
+
 export const toEditValues = (values: WizardDraft): CertificateEditValues => {
   const duration = Number(values.activityDuration)
   const rating = values.rating

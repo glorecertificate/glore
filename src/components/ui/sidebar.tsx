@@ -39,8 +39,9 @@ interface SidebarContext {
   isDraggingRail: boolean
   isMobile: boolean
   isTablet: boolean
-  settled: boolean
   open: boolean
+  leaving: boolean
+  leaveMobile: () => void
   openMobile: boolean
   setActivePath: (path: Route) => void
   setIsDraggingRail: (isDraggingRail: boolean) => void
@@ -86,8 +87,13 @@ export const SidebarProvider = ({
 
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [overlayOpen, setOverlayOpen] = useState(false)
-  const [settled, setSettled] = useState(false)
+  const [leaving, setLeaving] = useState(false)
   const open = isTablet ? overlayOpen : (openProp ?? isOpen)
+
+  const leaveMobile = () => {
+    setLeaving(true)
+    setOpenMobile(false)
+  }
 
   const openRef = useRef(open)
   const setOpenPropRef = useRef(setOpenProp)
@@ -128,6 +134,7 @@ export const SidebarProvider = ({
   }
 
   const toggle = () => {
+    setLeaving(false)
     const setter = isMobile ? setOpenMobile : setOpen
     setter(prev => !prev)
   }
@@ -142,11 +149,6 @@ export const SidebarProvider = ({
     setOverlayOpen(false)
     window.scrollTo(0, 0)
   }, [pathname])
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setSettled(true))
-    return () => cancelAnimationFrame(frame)
-  }, [])
 
   useEffect(() => {
     if (!overlayOpen) return
@@ -169,13 +171,14 @@ export const SidebarProvider = ({
     isMobile,
     isTablet,
     open,
+    leaveMobile,
+    leaving,
     openMobile,
     setActivePath,
     setIsDraggingRail,
     setOpen,
     setOpenMobile,
     setWidth: handleSetWidth,
-    settled,
     state,
     // eslint-disable-next-line react-compiler/rules-of-hooks
     toggleSidebar,
@@ -204,6 +207,12 @@ export const SidebarProvider = ({
   )
 }
 
+const settle = (node: HTMLDivElement | null) => {
+  if (!node) return undefined
+  const frame = requestAnimationFrame(() => node.removeAttribute('data-settling'))
+  return () => cancelAnimationFrame(frame)
+}
+
 export const Sidebar = ({
   side = 'left',
   variant = 'sidebar',
@@ -217,7 +226,7 @@ export const Sidebar = ({
   variant?: 'sidebar' | 'floating' | 'inset'
   collapsible?: 'offcanvas' | 'icon' | 'none'
 }) => {
-  const { isMobile, isTablet, isDraggingRail, open, openMobile, setOpen, setOpenMobile, settled, state } = useSidebar()
+  const { isMobile, isTablet, isDraggingRail, leaving, open, openMobile, setOpen, setOpenMobile, state } = useSidebar()
 
   if (collapsible === 'none') {
     return (
@@ -234,9 +243,13 @@ export const Sidebar = ({
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetContent
-          className="dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 pt-safe pb-safe text-sidebar-foreground sidebar-scope [&>button]:hidden"
+          className={cn(
+            'dark w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 pt-safe pb-safe text-sidebar-foreground sidebar-scope [&>button]:hidden',
+            leaving && 'data-[state=closed]:animate-none'
+          )}
           data-mobile="true"
           data-sidebar="sidebar"
+          overlayClassName={cn(leaving && 'data-[state=closed]:animate-none')}
           side={side}
           style={
             {
@@ -255,7 +268,9 @@ export const Sidebar = ({
     <div
       className="group dark peer hidden text-sidebar-foreground sidebar-scope md:block"
       data-collapsible={state === 'collapsed' ? collapsible : ''}
-      data-dragging={isDraggingRail || !settled}
+      data-dragging={isDraggingRail}
+      data-settling
+      ref={settle}
       data-side={side}
       data-state={state}
       data-tablet={isTablet}
@@ -278,7 +293,7 @@ export const Sidebar = ({
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
-          'group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!'
+          'group-data-settling:duration-0! group-data-settling:*:duration-0! group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!'
         )}
       />
       <div
@@ -291,7 +306,7 @@ export const Sidebar = ({
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
-          'group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!',
+          'group-data-settling:duration-0! group-data-settling:*:duration-0! group-data-[dragging=true]:duration-0! group-data-[dragging=true]:*:duration-0!',
           className
         )}
         {...props}

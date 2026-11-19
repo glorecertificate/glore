@@ -148,9 +148,9 @@ const RowLine = ({ spec, value }: { spec: RowLineSpec; value: string }) => (
       borderBottom: `${unit(ROW_LINE_WIDTH)} solid ${NAVY}`,
       boxSizing: 'content-box',
       flex: `${spec.flex} 1 0`,
+      height: unit(spec.lineHeight - ROW_LINE_WIDTH / 2),
       marginLeft: unit(spec.marginLeft),
       marginRight: unit(spec.marginRight),
-      minHeight: unit(spec.lineHeight),
       minWidth: 0,
       paddingLeft: unit(ROW_LINE_PADDING),
     }}

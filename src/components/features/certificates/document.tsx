@@ -300,7 +300,7 @@ const RowLine = ({ spec, value }: { spec: RowLineSpec; value: string }) => (
         flexGrow: spec.flex,
         marginLeft: spec.marginLeft,
         marginRight: spec.marginRight,
-        minHeight: spec.lineHeight,
+        minHeight: spec.lineHeight + ROW_LINE_WIDTH / 2,
       },
     ]}
   >

@@ -36,6 +36,7 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 - The level line offsets are 86.75, 85.75, 85.75, 85.75. The first label raises its name 0.31 pt (`SKILL_LABEL_RAISE`), as the template does.
 - Headings carry +0.712 pt tracking, the banner text about -0.2 pt, and skill labels end 14.8 pt after the name. The level line is one text run, "level: good", with the space tracked at -1.2 pt to match the template.
 - Volunteering labels start at x 45.66 and "to" at 127.57. Row lines (From, to, hours, at, Represented by) land on the template within 0.1 pt, except the Represented line, which starts after its longer label. Row line padding is 1.5 pt so a bold `DD.MM.YYYY` value fits the 53.9 pt From line.
+- react-pdf paints a border inside its box, and the HTML replica paints it below. Each row line box therefore ends half a line width from the line center.
 
 ## Shared layout and preview
 
@@ -106,5 +107,5 @@ The English values match the template text exactly, including "Recognizes". The 
 Last result on 2026-11-19, on the template data with a logo:
 
 - Text spans land within 0.06 pt of the template. The level word sits 0.09 pt high because it shares a baseline with "level:".
-- Glyphs land within 0.16 pt, and 0.22% of pixels differ at 150 dpi.
+- Glyphs and row lines land within 0.16 pt, and 0.15% of pixels differ at 150 dpi.
 - The rest is content: 3 dots, the skill icon, "Represented by" (the template reads "Represent by"), and the banner and logo drawn as paths.

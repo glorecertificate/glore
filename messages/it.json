@@ -939,7 +939,16 @@
     "removeAssessment": "Elimina la valutazione finale",
     "quizMinOptionsHint": "Aggiungi almeno {count} opzioni",
     "activityDescription": "Descrizione",
-    "activityLevels": "Livelli"
+    "activityLevels": "Livelli",
+    "saveFailedShort": "Non salvato",
+    "lessonTitleMissing": "Non ancora tradotto. Scrivi un titolo in {language}.",
+    "removeLessonTitle": "Rimuovere questa lezione?",
+    "removeLessonMessage": "\"{title}\" e il suo quiz e le sue attività vengono rimossi dal corso al salvataggio.",
+    "removeLessonConfirm": "Rimuovi lezione",
+    "addActivityQuestionHint": "Scelta multipla con una risposta corretta",
+    "addActivityEvaluationHint": "Un'affermazione su cui chi impara si valuta",
+    "addActivityAssessmentHint": "Una verifica finale della competenza",
+    "addActivityAssessmentDone": "Già aggiunta a questa lezione"
   },
   "CourseList": {
     "active": "Attivi",

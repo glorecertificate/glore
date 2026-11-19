@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 
 import { useTranslations } from 'next-intl'
 
+import { ActivityMenuItem } from '@/components/features/courses/course-editor/activity-menu-item'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { DescriptionCard } from '@/components/features/courses/course-editor/description-card'
 import { LevelsCard } from '@/components/features/courses/course-editor/levels-card'
@@ -12,7 +13,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import {
   type Assessment,
   type Evaluation,
@@ -380,20 +381,25 @@ export const LessonActivities = ({ className }: { className?: string }) => {
               applyFocus()
             }}
           >
-            <DropdownMenuItem onClick={() => onAddActivity('questions')}>
-              <LucideIcon name="message-circle-question-mark" className="size-4" />
-              {t('addActivityQuestion')}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAddActivity('evaluations')}>
-              <LucideIcon name="clipboard-list" className="size-4" />
-              {t('addActivityEvaluation')}
-            </DropdownMenuItem>
-            {!currentLesson.assessment && (
-              <DropdownMenuItem onClick={() => onAddActivity('assessment')}>
-                <LucideIcon name="star" className="size-4" />
-                {t('addActivityAssessment')}
-              </DropdownMenuItem>
-            )}
+            <ActivityMenuItem
+              hint={t('addActivityQuestionHint')}
+              icon="message-circle-question-mark"
+              onClick={() => onAddActivity('questions')}
+              title={t('addActivityQuestion')}
+            />
+            <ActivityMenuItem
+              hint={t('addActivityEvaluationHint')}
+              icon="clipboard-list"
+              onClick={() => onAddActivity('evaluations')}
+              title={t('addActivityEvaluation')}
+            />
+            <ActivityMenuItem
+              disabled={!!currentLesson.assessment}
+              hint={currentLesson.assessment ? t('addActivityAssessmentDone') : t('addActivityAssessmentHint')}
+              icon="star"
+              onClick={() => onAddActivity('assessment')}
+              title={t('addActivityAssessment')}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

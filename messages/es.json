@@ -939,7 +939,16 @@
     "removeAssessment": "Eliminar la evaluación final",
     "quizMinOptionsHint": "Añade al menos {count} opciones",
     "activityDescription": "Descripción",
-    "activityLevels": "Niveles"
+    "activityLevels": "Niveles",
+    "saveFailedShort": "Sin guardar",
+    "lessonTitleMissing": "Aún sin traducir. Escribe un título en {language}.",
+    "removeLessonTitle": "¿Eliminar esta lección?",
+    "removeLessonMessage": "\"{title}\" y su cuestionario y actividades se eliminan del curso al guardar.",
+    "removeLessonConfirm": "Eliminar lección",
+    "addActivityQuestionHint": "Opción múltiple con una respuesta correcta",
+    "addActivityEvaluationHint": "Una afirmación que el alumnado se valora a sí mismo",
+    "addActivityAssessmentHint": "Una comprobación final de la habilidad",
+    "addActivityAssessmentDone": "Ya añadida a esta lección"
   },
   "CourseList": {
     "active": "Activos",

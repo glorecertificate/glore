@@ -6,6 +6,7 @@ import { type Locale, useTranslations } from 'next-intl'
 
 import { ActivityCard } from '@/components/features/courses/course-editor/activity-card'
 import { OptionRow } from '@/components/features/courses/course-editor/option-row'
+import { QUIZ_ISSUE_EVENT, clearQuizIssue, getQuizIssue } from '@/components/features/courses/course-editor/quiz-issue'
 import { useDraft } from '@/components/features/courses/course-editor/use-draft'
 import { useLanguageName } from '@/components/features/courses/course-editor/use-language-name'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
@@ -59,6 +60,27 @@ export const QuestionCard = ({
   const [touched, setTouched] = useState(false)
   const question = useDraft(description, onDescriptionChange)
   const explanationDraft = useDraft(explanation, onExplanationChange)
+
+  useEffect(() => {
+    const showIssue = () => {
+      const issue = getQuizIssue()
+      if (issue?.questionId !== id) return
+      clearQuizIssue()
+      setTouched(true)
+      const root = rootRef.current
+      const target = {
+        correct: root?.querySelector<HTMLElement>('[aria-pressed]'),
+        option: root?.querySelector<HTMLElement>(focusOption(issue.optionId ?? 0)),
+        options: root?.querySelector<HTMLElement>('[data-add-option]'),
+        question: root?.querySelector<HTMLElement>('[data-question-field]'),
+      }[issue.target]
+      target?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      target?.focus({ preventScroll: true })
+    }
+    showIssue()
+    window.addEventListener(QUIZ_ISSUE_EVENT, showIssue)
+    return () => window.removeEventListener(QUIZ_ISSUE_EVENT, showIssue)
+  }, [id])
 
   useEffect(() => {
     const selector = focusRef.current
@@ -123,6 +145,7 @@ export const QuestionCard = ({
                   onEnter={() => onOptionEnter(index)}
                   onRemove={() => removeOption(index)}
                   onToggle={() => onOptionCorrectToggle(option.id)}
+                  showErrors={touched}
                 />
               </AnimatedListItem>
             ))}

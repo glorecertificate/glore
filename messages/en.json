@@ -939,7 +939,16 @@
     "removeAssessment": "Delete final assessment",
     "quizMinOptionsHint": "Add at least {count} options",
     "activityDescription": "Description",
-    "activityLevels": "Levels"
+    "activityLevels": "Levels",
+    "saveFailedShort": "Not saved",
+    "lessonTitleMissing": "Not translated yet. Type a title in {language}.",
+    "removeLessonTitle": "Remove this lesson?",
+    "removeLessonMessage": "\"{title}\" and its quiz and activities are removed from the course when you save.",
+    "removeLessonConfirm": "Remove lesson",
+    "addActivityQuestionHint": "Multiple choice with one correct answer",
+    "addActivityEvaluationHint": "A statement learners rate themselves on",
+    "addActivityAssessmentHint": "A closing check of the skill",
+    "addActivityAssessmentDone": "Already added to this lesson"
   },
   "CourseList": {
     "active": "Active",

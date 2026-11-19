@@ -20,6 +20,7 @@ interface OptionRowProps {
   onEnter: () => void
   onRemove: () => void
   onToggle: () => void
+  showErrors: boolean
 }
 
 export const OptionRow = ({
@@ -32,10 +33,12 @@ export const OptionRow = ({
   onEnter,
   onRemove,
   onToggle,
+  showErrors,
 }: OptionRowProps) => {
   const t = useTranslations('CourseEditor')
   const { draft, onBlur, onChange: onDraftChange } = useDraft(content, onChange)
   const [touched, setTouched] = useState(false)
+  const invalid = (touched || showErrors) && draft.trim() === ''
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter' || event.nativeEvent.isComposing) return
@@ -62,7 +65,7 @@ export const OptionRow = ({
         </button>
       </InputGroupAddon>
       <InputGroupInput
-        aria-invalid={touched && draft.trim() === ''}
+        aria-invalid={invalid}
         aria-label={t('optionNumber', { number })}
         data-option-id={id}
         onBlur={() => {

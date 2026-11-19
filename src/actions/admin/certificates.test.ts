@@ -276,6 +276,13 @@ describe.skipIf(!isLocalDatabase)('admin certificate lookup', () => {
     expect(page.rows.map(({ id }) => id)).toEqual([revokedId])
   })
 
+  it('counts every status except draft for the facets, ignoring the status filter', async () => {
+    const all = await search({ page: 1, q: tag })
+    expect(all.facets.status).toEqual({ approved: 1, revoked: 1, submitted: 1 })
+    const revoked = await search({ page: 1, q: tag, status: 'revoked' })
+    expect(revoked.facets.status).toEqual(all.facets.status)
+  })
+
   it('returns an empty page when nothing matches', async () => {
     const page = await search({ page: 1, q: `nothing-${tag}-matches` })
     expect(page.rows).toEqual([])

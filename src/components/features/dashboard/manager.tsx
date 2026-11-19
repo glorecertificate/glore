@@ -6,13 +6,10 @@ import { useTranslations } from 'next-intl'
 
 import { type ManagerSummary } from '@/actions/dashboard/core'
 import { DashboardChecklist } from '@/components/features/dashboard/checklist'
-import { DashboardEmpty } from '@/components/features/dashboard/empty'
 import { DashboardHero } from '@/components/features/dashboard/hero'
-import { ActivityList } from '@/components/features/organization/activity-list'
 import { AttentionList } from '@/components/features/organization/attention-list'
+import { OverviewActivity } from '@/components/features/organization/overview-activity'
 import { OrganizationCertificatesCard, OrganizationMembersCard } from '@/components/features/organization/overview-rail'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Link } from '@/components/ui/link'
 
 const CHECKLIST_STEPS = [
   { key: 'profile', tab: 'settings' },
@@ -57,30 +54,10 @@ export const ManagerDashboard = ({
         title={tOrganization('checklistTitle')}
       />
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-6">
           <AttentionList items={attention} organization={organization ?? ''} />
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('manager.activity')}</CardTitle>
-              <CardAction>
-                <Link
-                  className="inline-flex min-h-8 items-center text-sm font-medium"
-                  href="/organization?tab=activity"
-                  variant="primary"
-                >
-                  {t('viewAll')}
-                </Link>
-              </CardAction>
-            </CardHeader>
-            <CardContent>
-              {activity.length === 0 ? (
-                <DashboardEmpty icon="activity" title={tOrganization('activityEmpty')} />
-              ) : (
-                <ActivityList items={activity} label={t('manager.activity')} />
-              )}
-            </CardContent>
-          </Card>
+          <OverviewActivity href="/organization?tab=activity" items={activity} />
         </div>
         <div className="flex min-w-0 flex-col gap-6">
           <OrganizationCertificatesCard pipeline={pipeline} />

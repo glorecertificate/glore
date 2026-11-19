@@ -2531,7 +2531,7 @@
     "activity_certificate_withdrawn": "{target} withdrew a certificate request",
     "activity_certificate_review_reminder": "Reminder sent to {tutor} about {target}'s request",
     "activity_certificate_review_escalated": "The review of {target}'s request is overdue",
-    "activity_invitation_sent": "{actor} invited {target} as {role}",
+    "activity_invitation_sent": "{actor} sent an invitation as {role}",
     "activity_invitation_sent_unnamed": "{actor} sent an invitation as {role}",
     "activity_invitation_accepted": "{target} accepted an invitation",
     "activity_invitation_accepted_unnamed": "An invitation was accepted",

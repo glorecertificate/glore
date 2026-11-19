@@ -2531,7 +2531,7 @@
     "activity_certificate_withdrawn": "{target} retiró una solicitud de certificado",
     "activity_certificate_review_reminder": "Recordatorio enviado a {tutor} sobre la solicitud de {target}",
     "activity_certificate_review_escalated": "La revisión de la solicitud de {target} va con retraso",
-    "activity_invitation_sent": "{actor} invitó a {target} como {role}",
+    "activity_invitation_sent": "{actor} envió una invitación como {role}",
     "activity_invitation_sent_unnamed": "{actor} envió una invitación como {role}",
     "activity_invitation_accepted": "{target} aceptó una invitación",
     "activity_invitation_accepted_unnamed": "Se aceptó una invitación",

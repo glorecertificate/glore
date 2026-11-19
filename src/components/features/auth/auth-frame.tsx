@@ -7,13 +7,13 @@ import { AuthThemeSwitch } from '@/components/features/auth/auth-theme-switch'
 import { LegalLinks } from '@/components/features/legal/legal-links'
 import { cn } from '@/lib/utils'
 
-const WIDTHS = { lg: 'max-w-lg', md: 'max-w-md', sm: 'max-w-sm', xl: 'max-w-xl' } as const
+const WIDTHS = { lg: 'max-w-lg', md: 'max-w-md', sm: 'max-w-sm lg:max-w-md', xl: 'max-w-xl' } as const
 
 export const AuthFrame = ({ children, className, ...props }: React.ComponentProps<'div'>) => (
   <AuthGlobeProvider>
     <div
       className={cn(
-        'relative grid min-h-svh grid-rows-[auto_1fr] bg-background lg:grid-cols-[24rem_1fr] lg:grid-rows-1',
+        'relative grid min-h-svh grid-rows-[auto_1fr] bg-background lg:grid-cols-[32rem_1fr] lg:grid-rows-1',
         className
       )}
       data-slot="auth-frame"
@@ -52,9 +52,12 @@ export const AuthMain = ({
         <AuthLanguageSelect className="max-lg:border-band-border max-lg:bg-band-scrim max-lg:text-band-foreground max-lg:hover:not-disabled:bg-band-scrim/60" />
       </div>
     )}
-    <ViewTransition default="none" name="auth-main" share="auth-surface">
-      <main className="flex flex-1 items-center justify-center px-page py-8 lg:px-10 lg:py-24" data-slot="auth-main">
-        <div className={cn('flex w-full flex-col gap-6', WIDTHS[size])}>
+    <ViewTransition default="none" name="auth-main" share="auth-surface" update="auth-surface">
+      <main
+        className="flex flex-1 items-center justify-center px-page py-8 lg:px-10 lg:pt-28 lg:pb-20"
+        data-slot="auth-main"
+      >
+        <div className={cn('flex auth-scale w-full flex-col gap-6', WIDTHS[size])}>
           {header}
           {children}
         </div>

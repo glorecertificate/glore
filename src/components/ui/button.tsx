@@ -133,6 +133,8 @@ export const Button = ({
           loading && 'cursor-wait disabled:cursor-wait',
           className
         )}
+        data-size={size ?? 'md'}
+        data-slot="button"
         disabled={disabled || loading}
         title={label}
         type={type}
@@ -157,6 +159,8 @@ export const Button = ({
         loading && 'cursor-wait disabled:cursor-wait',
         className
       )}
+      data-size={size ?? 'md'}
+      data-slot="button"
       disabled={disabled || loading}
       title={label}
       type={type}

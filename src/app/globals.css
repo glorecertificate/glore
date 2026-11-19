@@ -380,10 +380,32 @@
 
 @utility auth-globe {
   top: max(25.3125rem, calc(100% - 30.9375rem));
-  left: -17.6875rem;
+  left: -13.6875rem;
   width: 59.375rem;
   height: 59.375rem;
   mask-image: linear-gradient(to bottom, black 0%, black 28%, color-mix(in srgb, black 30%, transparent) 53%);
+}
+
+@utility auth-scale {
+  @media (width >= 64rem) {
+    & h2 {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+    & label {
+      font-size: 0.9375rem;
+      line-height: 1.375rem;
+    }
+    & input[data-size="md"],
+    & [data-slot="select-trigger"],
+    & form button[data-size="md"] {
+      height: 2.75rem;
+      font-size: 1rem;
+    }
+    & textarea {
+      font-size: 1rem;
+    }
+  }
 }
 
 @utility bg-gradient-action {

@@ -89,6 +89,8 @@ export const Input = ({
     return (
       <input
         className={cn(inputVariants({ ring, size, variant }), className)}
+        data-size={size ?? 'md'}
+        data-slot="input"
         disabled={disabled}
         id={id}
         onKeyDown={handleKeyDown}
@@ -103,6 +105,8 @@ export const Input = ({
     <div className={cn('relative', disabled && 'cursor-not-allowed')}>
       <input
         className={cn(inputVariants({ ring, size, variant }), className)}
+        data-size={size ?? 'md'}
+        data-slot="input"
         disabled={disabled}
         id={id}
         onKeyDown={handleKeyDown}

@@ -38,7 +38,7 @@ const rowContent = (icon: IconName, label: string) => (
     >
       <LucideIcon className="size-4" name={icon} />
     </span>
-    <span className="min-w-0 flex-1 text-sm font-medium text-fg-1">{label}</span>
+    <span className="min-w-0 flex-1 text-sm font-medium text-fg-1 lg:text-base">{label}</span>
     <LucideIcon
       aria-hidden
       className="size-4 shrink-0 text-fg-2 transition-transform duration-150 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 motion-reduce:transition-none"

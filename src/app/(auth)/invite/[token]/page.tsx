@@ -7,6 +7,7 @@ import { InvitationCard } from '@/components/features/organization/invite/invita
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { maskEmail } from '@/components/features/organization/utils'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { Card } from '@/components/ui/card'
 import { normalizeEmail } from '@/db/mutations/invitation'
 import { intlMetadata } from '@/lib/metadata'
@@ -67,13 +68,15 @@ const InviteContent = async ({
 }
 
 const InvitePage = ({ params, searchParams }: PageProps<'/invite/[token]'>) => (
-  <BrandShell size="sm">
-    <Card className="gap-6 p-6 sm:p-8">
-      <Suspense fallback={<LoadingFallback />}>
-        <InviteContent params={params} searchParams={searchParams} />
-      </Suspense>
-    </Card>
-  </BrandShell>
+  <MessagesScope scope="invite">
+    <BrandShell size="sm">
+      <Card className="gap-6 p-6 sm:p-8">
+        <Suspense fallback={<LoadingFallback />}>
+          <InviteContent params={params} searchParams={searchParams} />
+        </Suspense>
+      </Card>
+    </BrandShell>
+  </MessagesScope>
 )
 
 export default InvitePage

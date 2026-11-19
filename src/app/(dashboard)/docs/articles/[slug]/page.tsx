@@ -5,6 +5,7 @@ import { ArticleHeader } from '@/components/features/docs/article-header'
 import { ArticleView, loadArticle } from '@/components/features/docs/article-view'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { MessagesScope } from '@/components/providers/messages-scope'
 
 export const generateMetadata = async ({ params }: PageProps<'/docs/articles/[slug]'>) => {
   const { slug } = await params
@@ -26,16 +27,18 @@ const ArticlePageContent = async ({ params }: PageProps<'/docs/articles/[slug]'>
 }
 
 const ArticlePage = (props: PageProps<'/docs/articles/[slug]'>) => (
-  <DashboardPage
-    overlap
-    header={
-      <Suspense fallback={<DashboardHeader parent="docs" />}>
-        <ArticleHeaderLoader params={props.params} />
-      </Suspense>
-    }
-  >
-    <ArticlePageContent {...props} />
-  </DashboardPage>
+  <MessagesScope scope="docs">
+    <DashboardPage
+      overlap
+      header={
+        <Suspense fallback={<DashboardHeader parent="docs" />}>
+          <ArticleHeaderLoader params={props.params} />
+        </Suspense>
+      }
+    >
+      <ArticlePageContent {...props} />
+    </DashboardPage>
+  </MessagesScope>
 )
 
 export default ArticlePage

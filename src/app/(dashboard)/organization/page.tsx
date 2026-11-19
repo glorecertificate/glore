@@ -9,6 +9,7 @@ import { OrganizationTabs, OrganizationTabsList } from '@/components/features/or
 import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -50,7 +51,9 @@ const OrganizationContent = async () => {
 
 const OrganizationPage = () => (
   <Suspense fallback={<DashboardLoading />}>
-    <OrganizationContent />
+    <MessagesScope scope="organization">
+      <OrganizationContent />
+    </MessagesScope>
   </Suspense>
 )
 

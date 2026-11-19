@@ -8,6 +8,7 @@ import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/me
 import { authParsers } from '@/components/features/auth/params'
 import { LegalLinks } from '@/components/features/legal/legal-links'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { cookies } from '@/lib/cookie-store'
 import { appTitle } from '@/lib/metadata'
@@ -37,7 +38,9 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
 const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
   <div className="flex min-h-svh flex-col bg-canvas">
     <Suspense fallback={<LoadingFallback size="full" />}>
-      <LoginContent searchParams={searchParams} />
+      <MessagesScope scope="login">
+        <LoginContent searchParams={searchParams} />
+      </MessagesScope>
     </Suspense>
   </div>
 )

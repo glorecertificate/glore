@@ -181,7 +181,13 @@ The two layers stay separate because UI shapes diverge from table columns.
 
 - Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix.
 - `login` and `signInToAcceptInvitation` call `applyUserLocale` (`lib/cookie-store.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
-- Pass messages to `I18nProvider` through `clientMessages()`, which drops the namespaces listed in `serverNamespaces` (`config/i18n.json`).
+- The root layout passes only `MESSAGE_SCOPES.root` (`lib/message-scopes.ts`) to `I18nProvider`, through `pickMessages()`.
+- A layout or page adds the namespaces of its client components with `<MessagesScope scope="<name>">` (`providers/messages-scope.tsx`).
+- Put a page scope inside the top-level `Suspense` of the page, so the existing fallback covers its message read.
+- Each client navigation into a section sends the scopes of that section again, twice: in the dynamic data and in its runtime prefetch copy.
+- So the `dashboard` scope also holds the certificate namespaces, and `/certificates` has no scope of its own.
+- A scope below the dashboard layout never repeats a namespace of the `dashboard` scope.
+- `src/lib/message-scopes.test.ts` fails when a client component on a route uses a namespace that no scope on that route provides.
 - `loadMessages` layers `en` under the locale, then applies published `message_overrides` rows.
 - An override must pass three checks: the key exists in `en`, its `messageSignature` matches `en`, and `icu-minify/compile` works in builds.
 - Overrides load in an inner `'use cache'` function tagged `messagesTag(locale)`. Publishing calls `updateTag` for it, and an `en` publish for every locale.
@@ -189,6 +195,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 - Protected keys (`PROTECTED_NAMESPACES` and `Email` subjects) need `requireAdmin`, others `requireEditor`.
 - `classifyOverride` returns `orphaned`, `incompatible`, `outdated`, or `redundant`.
 - A client locale switch calls the `getClientMessages` action (`actions/i18n.ts`), which returns the target locale without the server-only namespaces.
+- After a switch, `ScopedMessagesProvider` keeps that full client catalog and ignores its scope.
 - `pnpm run check:i18n` fails when a server-only namespace is used from a module reachable from a `'use client'` file, or when a namespace used only on the server is missing from the list.
 - Write copy in sentence case (never CSS `capitalize`) with `…`.
 - Use US English in `en`, Peninsular informal "tú" in `es`, and informal "tu" in `it`.
@@ -197,7 +204,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 - Namespaces match feature domains.
 - Certificate copy lives in `Certificate<Area>` namespaces: `Credential`, `Detail`, `Eligibility`, `Errors`, `List`, `Org`, `Public`, `Queue`, `Review`, `Share`, `Status`, `Verify`, and `Wizard`.
 - Course copy lives in `CourseCommon` (settings dialog and strings both screens use), `CourseEditor`, and `CourseList`. A string the tab bar builds from a value (`t(value)`) stays in `CourseList`.
-- Catalogs stay one file per locale. Per-namespace files would not shrink what the client receives, because `clientMessages()` and `getClientMessages` already filter by namespace.
+- Catalogs stay one file per locale. Per-namespace files would not shrink what the client receives, because message scopes and `getClientMessages` already filter by namespace.
 - When a new namespace is used only in server code (route handlers, emails, metadata, server pages), add it to `serverNamespaces`.
 - `Components.<Name>` serves `src/components/ui/`, `Intl.*` serves country and language data, and `Email.*` serves templates.
 

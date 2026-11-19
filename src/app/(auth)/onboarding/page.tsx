@@ -10,6 +10,7 @@ import { BrandShell } from '@/components/features/auth/brand-shell'
 import { OnboardingForm } from '@/components/features/onboarding'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { Card } from '@/components/ui/card'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
@@ -53,7 +54,9 @@ const OnboardingContent = async () => {
 
 const OnboardingPage = () => (
   <Suspense fallback={<LoadingFallback size="full" />}>
-    <OnboardingContent />
+    <MessagesScope scope="onboarding">
+      <OnboardingContent />
+    </MessagesScope>
   </Suspense>
 )
 

@@ -66,7 +66,7 @@
 
 ## Legal documents
 
-- `/legal` (`canEdit`, outside the admin layout) manages `privacy`, `terms`, and `quality-charter` through `actions/legal/manage.ts`: one draft per document, per-locale edits, history.
+- `/legal` (`canEdit`, outside the admin layout) manages `privacy` and `terms` through `actions/legal/manage.ts`: one draft per document, per-locale edits, history.
 - Editors draft and edit. Only platform admins publish, with an effective date, a change note, and a material flag that counts for `terms` only.
 - Publish needs all three locales with matching headings (`INCOMPLETE`, `HEADINGS_DIFFER`). A published version never changes.
 - Mutations live in `db/mutations/legal.ts`, and they expire the `legalTag(slug)` cache and record the audit events.

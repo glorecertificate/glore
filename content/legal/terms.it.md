@@ -59,4 +59,4 @@ Possiamo aggiornare questi termini. La data in cima alla pagina indica l'ultimo 
 
 ## Contatti
 
-Domande su questi termini: info@glorecertificate.net. Consulta anche l'[Informativa sulla privacy](/privacy) e la [Carta della qualità](/quality-charter).
+Domande su questi termini: info@glorecertificate.net. Consulta anche l'[Informativa sulla privacy](/privacy).

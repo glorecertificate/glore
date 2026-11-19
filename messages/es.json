@@ -1446,11 +1446,11 @@
       },
       "values": {
         "title": "Nuestros valores",
-        "description": "La certificación es gratuita para las personas voluntarias y las organizaciones miembro. La red está abierta a las organizaciones que siguen la Carta de Calidad. Un tutor revisa cada certificado."
+        "description": "La certificación es gratuita para las personas voluntarias y las organizaciones miembro. Un tutor revisa cada certificado."
       },
       "network": {
         "title": "Nuestra red",
-        "description": "Una red abierta de organizaciones de voluntariado en Europa, América Latina y más allá, que trabajan con estándares de calidad uniformes bajo una carta común."
+        "description": "Una red abierta de organizaciones de voluntariado en Europa, América Latina y más allá, que trabajan con estándares de calidad uniformes."
       }
     },
     "skills": {
@@ -1824,7 +1824,6 @@
     "verifiedCredential": "Credencial verificada",
     "credentialStatement": "ha desarrollado y demostrado las siguientes habilidades blandas durante el voluntariado con {organization}.",
     "sealTitle": "GloRe Certificate",
-    "sealSubtitle": "Emitido según la Carta de Calidad",
     "period": "Periodo",
     "location": "Lugar",
     "hours": "Horas"
@@ -2777,15 +2776,15 @@
     "step_organization": "Organización",
     "step_representative": "Representante",
     "step_motivation": "Motivación",
-    "step_charter": "Revisión y carta",
+    "step_review": "Revisión",
     "title_organization": "Cuéntanos sobre tu organización",
     "description_organization": "Estos datos identifican a tu organización en los certificados.",
     "title_representative": "¿Quién representa a la organización?",
     "description_representative": "El representante legal firma los certificados y será la primera persona administradora.",
     "title_motivation": "¿Por qué quieres unirte?",
     "description_motivation": "Ayúdanos a entender el voluntariado que ofreces y qué esperas de GloRe.",
-    "title_charter": "Revisa y acepta la carta",
-    "description_charter": "Revisa tus respuestas y acepta la Carta de Calidad para enviar la solicitud.",
+    "title_review": "Revisa tu solicitud",
+    "description_review": "Revisa tus respuestas y acepta las condiciones de uso para enviar la solicitud.",
     "name": "Nombre de la organización",
     "namePlaceholder": "El nombre con el que la gente conoce a tu organización",
     "legalName": "Denominación legal",
@@ -2823,9 +2822,6 @@
     "motivationHelp": "Al menos {min} caracteres.",
     "reviewEmpty": "No indicado",
     "edit": "Editar",
-    "charterAccept": "Acepto la Carta de Calidad",
-    "charterHelp": "La carta fija los estándares de las actividades y los certificados emitidos a través de GloRe.",
-    "charterLink": "Leer la Carta de Calidad",
     "back": "Atrás",
     "next": "Continuar",
     "submit": "Enviar solicitud",
@@ -2843,7 +2839,6 @@
     "error_email": "Introduce un correo electrónico válido.",
     "error_url": "Introduce una dirección web válida que empiece por http o https.",
     "error_number": "Introduce un número entero mayor que cero.",
-    "error_charter": "Debes aceptar la Carta de Calidad para enviar la solicitud.",
     "termsAccept": "Acepto las <terms>Condiciones de uso</terms> en nombre de la organización.",
     "error_terms": "Debes aceptar las condiciones de uso para enviar la solicitud."
   },
@@ -2987,9 +2982,6 @@
       "app_contactEmail": "Correo de contacto",
       "app_review": "Solicitud",
       "app_motivation": "Motivación",
-      "app_charter": "Carta de Calidad",
-      "app_charterAccepted": "Aceptada el {date}",
-      "app_charterMissing": "No aceptada",
       "app_submitted": "Enviada",
       "app_decision": "Decisión",
       "app_decisionAccepted": "Aprobada el {date}",
@@ -4213,7 +4205,6 @@
   "Legal": {
     "privacy": "Política de privacidad",
     "terms": "Condiciones de uso",
-    "qualityCharter": "Carta de Calidad",
     "navigation": "Documentos legales",
     "home": "Ir a GloRe",
     "updated": "Última actualización: {date}",
@@ -4222,11 +4213,10 @@
   },
   "LegalAdmin": {
     "title": "Documentos legales",
-    "description": "Edita, traduce y publica la política de privacidad, las condiciones de uso y la Carta de Calidad.",
+    "description": "Edita, traduce y publica la política de privacidad y las condiciones de uso.",
     "documents": {
       "privacy": "Política de privacidad",
-      "terms": "Condiciones de uso",
-      "qualityCharter": "Carta de Calidad"
+      "terms": "Condiciones de uso"
     },
     "version": "Versión {version}",
     "versionStatus": "Versión {version}, {status}",

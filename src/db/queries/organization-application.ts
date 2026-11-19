@@ -5,16 +5,7 @@ import { isHttpUrl } from '@/lib/url'
 
 export const APPLICATION_MOTIVATION_MIN = 20
 
-export const APPLICATION_ERROR_CODES = [
-  'charter',
-  'email',
-  'number',
-  'required',
-  'terms',
-  'tooLong',
-  'tooShort',
-  'url',
-] as const
+export const APPLICATION_ERROR_CODES = ['email', 'number', 'required', 'terms', 'tooLong', 'tooShort', 'url'] as const
 
 export type ApplicationErrorCode = (typeof APPLICATION_ERROR_CODES)[number]
 
@@ -31,7 +22,6 @@ const optional = (max: number) =>
 const email = z.string().trim().toLowerCase().min(1, 'required').pipe(z.email('email').max(254, 'tooLong'))
 
 export const applicationSchema = z.object({
-  charterAccepted: z.boolean().refine(value => value, 'charter'),
   city: required(100),
   contactEmail: z
     .string()
@@ -71,15 +61,15 @@ export const applicationSchema = z.object({
 export type ApplicationInput = z.input<typeof applicationSchema>
 export type ApplicationValues = z.output<typeof applicationSchema>
 
-export const APPLICATION_STEPS = ['organization', 'representative', 'motivation', 'charter'] as const
+export const APPLICATION_STEPS = ['organization', 'representative', 'motivation', 'review'] as const
 
 export type ApplicationStep = (typeof APPLICATION_STEPS)[number]
 
 export const APPLICATION_STEP_FIELDS = {
-  charter: ['charterAccepted', 'termsAccepted'],
   motivation: ['motivation'],
   organization: ['name', 'legalName', 'registryId', 'country', 'city', 'email', 'url', 'volunteersPerYear'],
   representative: ['firstName', 'lastName', 'registrantEmail', 'contactName', 'contactEmail'],
+  review: ['termsAccepted'],
 } as const satisfies Record<ApplicationStep, (keyof ApplicationInput)[]>
 
 export const applicationHandle = (name: string) =>

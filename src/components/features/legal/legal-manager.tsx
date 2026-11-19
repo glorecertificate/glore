@@ -8,9 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { type LegalDocument, type LegalDocumentRow } from '@/db/queries/legal'
 import { LEGAL_DOCUMENTS } from '@/lib/constants'
 
-const KEYS = { privacy: 'privacy', 'quality-charter': 'qualityCharter', terms: 'terms' } as const
+const KEYS = { privacy: 'privacy', terms: 'terms' } as const
 
-const ORDER: LegalDocument[] = ['terms', 'privacy', 'quality-charter']
+const ORDER: LegalDocument[] = ['terms', 'privacy']
 
 const documentParser = parseAsStringEnum([...LEGAL_DOCUMENTS]).withDefault('terms')
 

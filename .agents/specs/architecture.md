@@ -47,7 +47,7 @@ src/
 │   ├── api/            # API routes (auth catch-all + v1/)
 │   ├── offline/        # Offline fallback page
 │   ├── legal/accept/   # Re-accept gate (outside the dashboard group)
-│   ├── privacy/, terms/, quality-charter/   # Public legal pages
+│   ├── privacy/, terms/   # Public legal pages
 │   └── verify/         # Public certificate verification (page, [code])
 ├── components/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,

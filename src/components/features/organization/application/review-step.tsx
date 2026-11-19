@@ -21,7 +21,7 @@ const Row = ({ label, value }: { label: string; value: string }) => (
   </DescriptionItem>
 )
 
-export const CharterStep = ({ form, onEdit }: { form: ApplicationForm; onEdit: (step: ApplicationStep) => void }) => {
+export const ReviewStep = ({ form, onEdit }: { form: ApplicationForm; onEdit: (step: ApplicationStep) => void }) => {
   const { number } = useFormatter()
   const t = useTranslations('Register')
   const tCountries = useTranslations('Intl.Countries')
@@ -82,40 +82,6 @@ export const CharterStep = ({ form, onEdit }: { form: ApplicationForm; onEdit: (
           </section>
         ))}
       </div>
-
-      <FormField
-        control={form.control}
-        name="charterAccepted"
-        render={({ field }) => (
-          <FormItem className="rounded-lg border p-4">
-            <div className="flex items-start gap-3">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  className="mt-0.5"
-                  onBlur={field.onBlur}
-                  onCheckedChange={checked => field.onChange(checked === true)}
-                />
-              </FormControl>
-              <div className="space-y-1">
-                <FormLabel className="leading-5">{t('charterAccept')}</FormLabel>
-                <p className="text-sm text-muted-foreground">
-                  {t('charterHelp')}{' '}
-                  <Link
-                    className="font-medium text-link underline underline-offset-4"
-                    href="/quality-charter"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {t('charterLink')}
-                  </Link>
-                </p>
-              </div>
-            </div>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       <FormField
         control={form.control}

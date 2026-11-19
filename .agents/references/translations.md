@@ -45,7 +45,7 @@ Nothing an editor saves can break a page.
 
 ### Legal
 
-- `legal_documents`: `slug` (`privacy`, `terms`, `quality-charter`), `requires_acceptance`, `current_version_id`.
+- `legal_documents`: `slug` (`privacy`, `terms`), `requires_acceptance`, `current_version_id`.
 - `legal_versions`:
   - `id`, `document_slug`, `version`, `status` (`draft`, `published`, `superseded`)
   - `material`, `change_note`, `effective_at`, `published_at`, `published_by_id`

@@ -18,12 +18,11 @@ interface OrganizationStateInput {
   invitations: { state: string }[]
   memberships: unknown[]
   motivation: string | null
-  charterAcceptedAt: unknown
 }
 
 export const organizationState = (organization: OrganizationStateInput) => {
   const request = organization.joinRequests.find(item => item.role === 'admin')
-  const hasApplication = Boolean(request || organization.motivation || organization.charterAcceptedAt)
+  const hasApplication = Boolean(request || organization.motivation)
   const isApproved = Boolean(organization.approvedAt)
   const isRejected = !isApproved && organization.joinRequests.some(item => item.role === 'admin' && item.isRejected)
 

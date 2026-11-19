@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { LEGAL_ROOTS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-const KEYS = { '/privacy': 'privacy', '/quality-charter': 'qualityCharter', '/terms': 'terms' } as const
+const KEYS = { '/privacy': 'privacy', '/terms': 'terms' } as const
 
 export const LegalLinks = async ({ className }: { className?: string }) => {
   const t = await getTranslations('Legal')

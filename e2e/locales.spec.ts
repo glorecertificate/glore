@@ -130,7 +130,7 @@ for (const locale of SMOKE_LOCALES) {
     })
 
     test('renders the legal pages with a translated title', async ({ page }) => {
-      for (const doc of ['privacy', 'terms', 'quality-charter']) {
+      for (const doc of ['privacy', 'terms']) {
         const problems = collectProblems(page)
         await page.goto(`/${doc}`)
         await expect(page.locator('html')).toHaveAttribute('lang', locale)

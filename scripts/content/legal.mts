@@ -11,7 +11,7 @@ const LEGAL_DIR = join(CONTENT_DIR, 'legal')
 
 const SOURCE_LOCALE = 'en'
 
-const LEGAL_SLUGS = ['privacy', 'quality-charter', 'terms'] as const
+const LEGAL_SLUGS = ['privacy', 'terms'] as const
 
 const ACCEPTANCE_SLUGS: readonly string[] = ['terms']
 

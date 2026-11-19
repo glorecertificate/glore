@@ -25,13 +25,12 @@ import {
 import { AUTH_ROOT } from '@/lib/constants'
 
 import { ApplicationSteps } from './application-steps'
-import { CharterStep } from './charter-step'
 import { MotivationStep } from './motivation-step'
 import { OrganizationStep } from './organization-step'
 import { RepresentativeStep } from './representative-step'
+import { ReviewStep } from './review-step'
 
 const DEFAULT_VALUES: ApplicationInput = {
-  charterAccepted: false,
   city: '',
   contactEmail: '',
   contactName: '',
@@ -152,7 +151,7 @@ export const ApplicationForm = () => {
         {step === 'organization' && <OrganizationStep form={form} />}
         {step === 'representative' && <RepresentativeStep form={form} />}
         {step === 'motivation' && <MotivationStep form={form} />}
-        {step === 'charter' && <CharterStep form={form} onEdit={goTo} />}
+        {step === 'review' && <ReviewStep form={form} onEdit={goTo} />}
 
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           {stepIndex > 0 && (

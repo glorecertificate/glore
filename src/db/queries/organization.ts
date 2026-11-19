@@ -88,7 +88,6 @@ const mergeOrganizationProfile = <T extends OrganizationRow & { profile: Organiz
     ...rest,
     address: profile?.address ?? null,
     avatarUrl: profile?.avatarUrl ?? null,
-    charterAcceptedAt: profile?.charterAcceptedAt ?? null,
     contactEmail: profile?.contactEmail ?? null,
     contactName: profile?.contactName ?? null,
     country: profile?.country ?? null,

@@ -76,15 +76,15 @@ export const upsertDemoOrganizations = async ({ client, now, testEmail }: Contex
       `insert into organization_profiles (
          organization_id, country, region, postcode, address, phone, url, description, avatar_url, signature_url,
          legal_name, registry_id, legal_representative, contact_name, contact_email, volunteers_per_year, motivation,
-         charter_accepted_at, created_at, updated_at
-       ) values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, null, null, $9, $10, $11, $12, $13, $14, $15, $16, $16, $16)
+         created_at, updated_at
+       ) values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, null, null, $9, $10, $11, $12, $13, $14, $15, $16, $16)
        on conflict (organization_id) do update set
          country = excluded.country, region = excluded.region, postcode = excluded.postcode, address = excluded.address,
          phone = excluded.phone, url = excluded.url, description = excluded.description, avatar_url = null,
          signature_url = null, legal_name = excluded.legal_name, registry_id = excluded.registry_id,
          legal_representative = excluded.legal_representative, contact_name = excluded.contact_name,
          contact_email = excluded.contact_email, volunteers_per_year = excluded.volunteers_per_year,
-         motivation = excluded.motivation, charter_accepted_at = excluded.charter_accepted_at,
+         motivation = excluded.motivation,
          created_at = excluded.created_at, updated_at = excluded.updated_at`,
       [
         id,

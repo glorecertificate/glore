@@ -12,9 +12,9 @@ export const OPEN_INVITATION_ROOT = '/api/v1/invitations'
 export const JOIN_LINK_ROOT = '/join'
 export const SETTINGS_ROOT = '/settings'
 export const VERIFY_ROOT = '/verify'
-export const LEGAL_ROOTS = ['/privacy', '/quality-charter', '/terms'] as const
+export const LEGAL_ROOTS = ['/privacy', '/terms'] as const
 export const LEGAL_ACCEPT_ROOT = '/legal/accept'
-export const LEGAL_DOCUMENTS = ['privacy', 'quality-charter', 'terms'] as const
+export const LEGAL_DOCUMENTS = ['privacy', 'terms'] as const
 export const DASHBOARD_ROOTS = [
   '/about',
   '/admin',

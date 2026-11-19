@@ -42,7 +42,6 @@ describe.skipIf(!isLocalDatabase)('admin organization decisions', () => {
 
   const submit = async (label: string) => {
     const application = applicationSchema.parse({
-      charterAccepted: true,
       city: 'Milan',
       country: 'it',
       email: `${label}-${suffix}@decisions.test`,

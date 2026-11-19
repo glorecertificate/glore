@@ -1446,11 +1446,11 @@
       },
       "values": {
         "title": "Our values",
-        "description": "Certification is free for volunteers and member organizations. The network is open to organizations that follow the Quality Charter. A tutor reviews every certificate."
+        "description": "Certification is free for volunteers and member organizations. A tutor reviews every certificate."
       },
       "network": {
         "title": "Our network",
-        "description": "An open network of volunteering organizations across Europe, Latin America, and beyond, working to consistent quality standards under a shared charter."
+        "description": "An open network of volunteering organizations across Europe, Latin America, and beyond, working to consistent quality standards."
       }
     },
     "skills": {
@@ -1824,7 +1824,6 @@
     "verifiedCredential": "Verified credential",
     "credentialStatement": "has developed and demonstrated the following soft skills while volunteering with {organization}.",
     "sealTitle": "GloRe Certificate",
-    "sealSubtitle": "Issued under the Quality Charter",
     "period": "Period",
     "location": "Location",
     "hours": "Hours"
@@ -2777,15 +2776,15 @@
     "step_organization": "Organization",
     "step_representative": "Representative",
     "step_motivation": "Motivation",
-    "step_charter": "Review and charter",
+    "step_review": "Review",
     "title_organization": "Tell us about your organization",
     "description_organization": "These details identify your organization on certificates.",
     "title_representative": "Who represents the organization?",
     "description_representative": "The legal representative signs certificates and becomes the first owner.",
     "title_motivation": "Why do you want to join?",
     "description_motivation": "Help us understand the volunteering you offer and what you expect from GloRe.",
-    "title_charter": "Review and accept the charter",
-    "description_charter": "Check your answers, then accept the Quality Charter to send your application.",
+    "title_review": "Review your application",
+    "description_review": "Check your answers, then accept the terms of use to send your application.",
     "name": "Organization name",
     "namePlaceholder": "The name people know your organization by",
     "legalName": "Legal name",
@@ -2823,9 +2822,6 @@
     "motivationHelp": "At least {min} characters.",
     "reviewEmpty": "Not provided",
     "edit": "Edit",
-    "charterAccept": "I accept the Quality Charter",
-    "charterHelp": "The charter sets the standards for the activities and certificates issued through GloRe.",
-    "charterLink": "Read the Quality Charter",
     "back": "Back",
     "next": "Continue",
     "submit": "Send application",
@@ -2843,7 +2839,6 @@
     "error_email": "Enter a valid email address.",
     "error_url": "Enter a valid web address starting with http or https.",
     "error_number": "Enter a whole number greater than zero.",
-    "error_charter": "You need to accept the Quality Charter to apply.",
     "termsAccept": "I accept the <terms>Terms of use</terms> on behalf of the organization.",
     "error_terms": "You need to accept the terms of use to apply."
   },
@@ -2987,9 +2982,6 @@
       "app_contactEmail": "Contact email",
       "app_review": "Application",
       "app_motivation": "Motivation",
-      "app_charter": "Quality Charter",
-      "app_charterAccepted": "Accepted on {date}",
-      "app_charterMissing": "Not accepted",
       "app_submitted": "Submitted",
       "app_decision": "Decision",
       "app_decisionAccepted": "Approved on {date}",
@@ -4213,7 +4205,6 @@
   "Legal": {
     "privacy": "Privacy policy",
     "terms": "Terms of use",
-    "qualityCharter": "Quality Charter",
     "navigation": "Legal documents",
     "home": "Go to GloRe",
     "updated": "Last updated {date}",
@@ -4222,11 +4213,10 @@
   },
   "LegalAdmin": {
     "title": "Legal documents",
-    "description": "Edit, translate, and publish the privacy policy, terms of use, and Quality Charter.",
+    "description": "Edit, translate, and publish the privacy policy and terms of use.",
     "documents": {
       "privacy": "Privacy policy",
-      "terms": "Terms of use",
-      "qualityCharter": "Quality Charter"
+      "terms": "Terms of use"
     },
     "version": "Version {version}",
     "versionStatus": "Version {version}, {status}",

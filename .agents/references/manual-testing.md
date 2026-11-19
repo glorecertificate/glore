@@ -40,7 +40,7 @@ With `TEST_EMAIL=name@example.org`, the key `volunteer` logs in as `name+glore-v
 | `learner`            | Learner (en)                     | Ponte Volunteers (Demo)               | `welcome-to-glore` and `intercultural-learning` completed, `volunteer-wellbeing-and-safety` 1 of 3 lessons done. No certificates.                                                                                                                                                                                             |
 | `multi`              | Volunteer in Ponte, tutor in Red | Both demo organizations               | Active org Ponte (first membership). In Red they review `red-03`'s `submitted` request and have an approved and a revoked certificate in history.                                                                                                                                                                             |
 | `owner-b`            | Org owner, Spanish locale        | Red Solidaria (Demo), Valencia, Spain | One approved certificate (`red-01`), one revoked certificate (`red-02`), one `submitted` request (`red-03`), one pending invitation, three organization ratings.                                                                                                                                                              |
-| `applicant`          | Applicant (no account yet)       | Open Doors Collective (Demo), pending | Application waiting for platform admin review: legal data, volunteers per year, motivation, and charter acceptance filled. Its email is the registrant address.                                                                                                                                                               |
+| `applicant`          | Applicant (no account yet)       | Open Doors Collective (Demo), pending | Application waiting for platform admin review: legal data, volunteers per year, and motivation filled. Its email is the registrant address.                                                                                                                                                                                   |
 
 Background accounts give the organization a history. They log in like any other account but no flow needs them, and most are safe to remove or change:
 
@@ -109,7 +109,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 
 ## Organization application
 
-1. Signed out, open `/register` and apply as `new-org` with every step filled and the Quality Charter accepted.
+1. Signed out, open `/register` and apply as `new-org` with every step filled and the terms accepted.
 2. Expect the receipt email for `new-org` and a notification for `admin`.
 3. As `admin`, approve it in `/admin/organizations`: `new-org` receives an invitation email.
 4. Accept it, complete onboarding, and confirm the dashboard shows the owner checklist.
@@ -117,7 +117,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 ## Platform admin (`admin`)
 
 1. `/admin` shows organizations, members, certificates by month, and average review time with real numbers.
-2. In `/admin/organizations`, open the `applicant` application and read its details and charter acceptance.
+2. In `/admin/organizations`, open the `applicant` application and read its details.
 3. Reject it with a comment: `applicant` receives the decision email, and the organization moves to the Rejected tab.
 4. In `/admin/users`, ban `learner` for 1 day with a reason, confirm `learner` cannot log in, then unban.
 5. Impersonate `volunteer` with a reason: a banner shows; stop impersonating and find both events in `/admin/audit`.

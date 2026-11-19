@@ -8,7 +8,7 @@ Each organization has exactly one owner. You do everything a [representative](/d
 ## Apply for your organization
 
 1. Open the [registration page](/register) and fill in the application: the legal representative, registry ID, contact person, website, how many volunteers you work with each year, and your motivation.
-2. Accept the Quality Charter.
+2. Accept the terms of use.
 3. The GloRe team reviews the application. When it is approved, you receive an invitation by email.
 4. Accept the invitation, finish your profile, and you land on the dashboard as the owner of the organization.
 

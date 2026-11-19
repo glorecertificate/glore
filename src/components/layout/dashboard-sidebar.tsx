@@ -60,6 +60,8 @@ import {
   SidebarRail,
   SidebarTrigger,
   useSidebar,
+  useSidebarAction,
+  useSidebarDrawer,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { toast } from '@/components/ui/toast'
@@ -283,7 +285,8 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
 
-  const { open, openMobile, setOpenMobile } = useSidebar()
+  const { open, setOpenMobile } = useSidebar()
+  const { openMobile } = useSidebarDrawer()
   const { user } = useSession()
   const collapsed = !open
 
@@ -512,7 +515,8 @@ const DashboardSidebarBrand = () => (
 )
 
 const DashboardSidebarClose = () => {
-  const { action, toggleSidebar } = useSidebar()
+  const { toggleSidebar } = useSidebar()
+  const action = useSidebarAction()
 
   return (
     <Button

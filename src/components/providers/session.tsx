@@ -15,7 +15,7 @@ interface SessionContextValue {
   organizationId?: number
 }
 
-export const organizationHref = (id: number) => `${APP_ROOT}?${ORGANIZATION_PARAM}=${id}`
+const organizationHref = (id: number) => `${APP_ROOT}?${ORGANIZATION_PARAM}=${id}`
 
 const useSessionContext = (value: SessionContextValue) => {
   const cookies = useCookies()

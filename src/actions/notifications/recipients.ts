@@ -43,3 +43,8 @@ export const usernameOf = async (userId: string) => {
   const user = await db.query.users.findFirst({ columns: { username: true }, where: eq(users.id, userId) })
   return user?.username ?? ''
 }
+
+export const memberNameOf = async (userId: string) => {
+  const user = await db.query.users.findFirst({ columns: { name: true, username: true }, where: eq(users.id, userId) })
+  return user?.name || user?.username || ''
+}

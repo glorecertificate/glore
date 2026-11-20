@@ -2136,7 +2136,6 @@
     "sectionSkills": "Competenze",
     "sectionTasks": "Attività",
     "experienceTitle": "Esperienza e attività",
-    "sectionComment": "Nota per il volontario",
     "sectionCommentPlaceholder": "Facoltativo. Spiega cosa correggere in questa sezione.",
     "evaluationTitle": "Punteggi",
     "evaluationDescription": "Valuta il volontario da 1 a 5 per ogni criterio.",
@@ -3673,7 +3672,12 @@
       "details_ownership_gained": "Come amministratore gestisci membri, inviti e impostazioni dell'organizzazione.",
       "details_ownership_left": "Non amministri più l'organizzazione. Il tuo account resta attivo.",
       "button": "Apri GloRe",
-      "footer": "Ricevi questa email perché la tua appartenenza a {organizationName} è cambiata."
+      "footer": "Ricevi questa email perché la tua appartenenza a {organizationName} è cambiata.",
+      "subject_member_left": "{memberName} ha lasciato {organizationName}",
+      "preview_member_left": "{memberName} non fa più parte di {organizationName}.",
+      "intro_member_left": "{memberName} ha lasciato {organizationName}.",
+      "details_member_left": "Puoi controllare l'elenco dei membri quando vuoi.",
+      "footer_member_left": "Ricevi questa email perché gestisci {organizationName}."
     },
     "team/role-changed": {
       "subject_set": "Il tuo ruolo nel team GloRe è cambiato",

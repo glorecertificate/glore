@@ -97,10 +97,12 @@ export const AttentionList = ({
 
   return (
     <Card className={cn('gap-0 p-0', className)} data-slot="attention-list">
-      <CardHeader className="p-5">
+      <CardHeader className="items-center p-5">
         <CardTitle>{t('title')}</CardTitle>
         {items.length > 0 && (
-          <CardAction className="type-caption text-fg-2">{t('count', { count: items.length })}</CardAction>
+          <CardAction className="row-span-1 self-center type-caption text-fg-2">
+            {t('count', { count: items.length })}
+          </CardAction>
         )}
       </CardHeader>
       {items.length === 0 && (

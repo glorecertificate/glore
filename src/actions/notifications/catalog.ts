@@ -2,6 +2,7 @@ import 'server-only'
 
 import { type MailCategory, type PlannedMail, type Recipient } from '@/actions/notifications/plan'
 import {
+  memberNameOf,
   organizationMemberIds,
   organizationNameOf,
   platformAdminIds,
@@ -383,6 +384,20 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
   },
   'member.left': {
     inApp: managers,
+    email: {
+      category: 'organization',
+      to: async event => users(...(await managers(event))),
+      template: async (event, mail, link) => ({
+        name: 'organization/membership',
+        props: {
+          kind: 'member_left',
+          memberName: await memberNameOf(event.data.userId),
+          organizationName: await organizationNameOf(event.organizationId),
+          url: fallbackLink(link),
+          userName: mail.name ?? undefined,
+        },
+      }),
+    },
     url: () => '/organization?tab=members',
   },
   'organization.ownership_transferred': {

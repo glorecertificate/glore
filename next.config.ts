@@ -71,7 +71,7 @@ const headers =
             "img-src 'self' data: blob: https:",
             "font-src 'self' data:",
             "media-src 'self' blob: https:",
-            "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://www.dailymotion.com https://player.youku.com https://coub.com",
+            "frame-src 'self' blob: https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://www.dailymotion.com https://player.youku.com https://coub.com",
             "connect-src 'self' https:",
             "frame-ancestors 'none'",
             "base-uri 'self'",

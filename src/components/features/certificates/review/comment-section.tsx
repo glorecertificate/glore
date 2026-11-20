@@ -14,13 +14,6 @@ import { Textarea } from '@/components/ui/textarea'
 
 const SECTIONS = ['experience', 'tasks', 'skills', 'personal'] as const
 
-const SECTION_LABELS = {
-  experience: 'sectionExperience',
-  personal: 'sectionPersonal',
-  skills: 'sectionSkills',
-  tasks: 'sectionTasks',
-} as const
-
 export const CommentSection = () => {
   const t = useTranslations('CertificateReview')
   const { clearErrors, control } = useFormContext<ReviewFormValues>()
@@ -61,12 +54,9 @@ export const CommentSection = () => {
             {t('notesTitle')}
           </Button>
         </CollapsibleTrigger>
-        <CollapsibleContent className="grid gap-4 sm:grid-cols-2">
+        <CollapsibleContent className="flex flex-col gap-5">
           {SECTIONS.map(section => (
-            <div className="flex flex-col gap-1.5" key={section}>
-              <p className="text-sm font-medium">{t(SECTION_LABELS[section])}</p>
-              <SectionComment section={section} />
-            </div>
+            <SectionComment key={section} section={section} />
           ))}
         </CollapsibleContent>
       </Collapsible>

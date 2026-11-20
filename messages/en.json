@@ -2136,7 +2136,6 @@
     "sectionSkills": "Skills",
     "sectionTasks": "Tasks",
     "experienceTitle": "Experience and tasks",
-    "sectionComment": "Note for the volunteer",
     "sectionCommentPlaceholder": "Optional. Explain what to fix in this section.",
     "evaluationTitle": "Scores",
     "evaluationDescription": "Score the volunteer from 1 to 5 on each criterion.",
@@ -3673,7 +3672,12 @@
       "details_ownership_gained": "As the owner you manage members, invitations, and the organization settings.",
       "details_ownership_left": "You are no longer the owner. You keep access to your account.",
       "button": "Open GloRe",
-      "footer": "You receive this email because your membership in {organizationName} changed."
+      "footer": "You receive this email because your membership in {organizationName} changed.",
+      "subject_member_left": "{memberName} left {organizationName}",
+      "preview_member_left": "{memberName} is no longer a member of {organizationName}.",
+      "intro_member_left": "{memberName} left {organizationName}.",
+      "details_member_left": "You can review the member list at any time.",
+      "footer_member_left": "You receive this email because you manage {organizationName}."
     },
     "team/role-changed": {
       "subject_set": "Your role in the GloRe team changed",

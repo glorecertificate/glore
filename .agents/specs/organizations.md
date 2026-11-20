@@ -78,7 +78,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - The last owner can neither leave nor be removed (`LAST_OWNER`).
 - Demoting, removing, or losing a tutor returns their open reviews (`submitted`, `in_review`, `changes_requested`) to the pool through `certificate.unassigned`. Approved certificates keep their reviewer.
 - A removed member keeps their certificates.
-- Role changes record `member.role_changed`. Leaving records `member.left`.
+- Role changes record `member.role_changed`. Leaving records `member.left`, which notifies the owner and representatives in the app and by email (category `organization`).
 - Every org action takes an optional `organizationId`, resolved by `getOrganizationAccess`.
 - Members act on orgs they belong to. Platform admins act as owner on any org, never on ownership transfers.
 

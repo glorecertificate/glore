@@ -43,7 +43,7 @@ export const DecisionBar = ({
       </div>
       <div className="flex flex-col-reverse gap-2 md:flex-row md:items-center md:gap-3">
         <Button
-          className="text-destructive-text"
+          className="text-destructive-text hover:not-disabled:bg-destructive/10"
           disabled={busy !== null}
           onClick={onReject}
           type="button"

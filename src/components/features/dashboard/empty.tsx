@@ -14,7 +14,7 @@ export const DashboardEmpty = ({
   icon: IconName
   title: string
 }) => (
-  <Empty className={cn('gap-3 p-4 md:p-6', className)}>
+  <Empty className={cn('gap-3 bg-card p-4 md:p-6', className)}>
     <EmptyHeader>
       <EmptyMedia variant="icon">
         <LucideIcon name={icon} />

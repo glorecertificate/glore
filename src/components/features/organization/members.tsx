@@ -163,7 +163,7 @@ export const OrganizationMembers = ({
           </Avatar>
           <div className="flex min-w-0 flex-col">
             <button
-              className="cursor-pointer self-start text-left font-medium wrap-anywhere hover:underline focus-visible:focus-ring"
+              className="cursor-pointer self-start text-left font-medium wrap-anywhere focus-visible:focus-ring"
               onClick={() => openDetail(member)}
               type="button"
             >
@@ -305,7 +305,6 @@ export const OrganizationMembers = ({
                       hotkey={placement === 'panel' ? '/' : undefined}
                       onValueChange={setSearch}
                       placeholder={t('searchMembers')}
-                      size="sm"
                       value={search}
                     />
                   ),

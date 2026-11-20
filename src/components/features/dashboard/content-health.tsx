@@ -137,8 +137,8 @@ export const ContentHealth = ({ health }: { health: ContentHealthData }) => {
                 <CourseRow course={course} key={course.id} />
               ))}
             </ul>
-            <div className={cn(GRID, 'hidden border-t pt-2.5 text-sm font-medium tabular-nums')}>
-              <span className="text-xs text-muted-foreground">{t('healthAll', { count: courses.length })}</span>
+            <div className={cn(GRID, 'hidden border-t py-2.5 text-sm font-medium tabular-nums')}>
+              <span className="text-xs text-muted-foreground">{t('healthAll')}</span>
               <ColumnTotal count={columns.assessment} item={t('healthAssessment')} />
               <ColumnTotal count={columns.group} item={t('healthGroup')} />
               {LOCALES.map(locale => (

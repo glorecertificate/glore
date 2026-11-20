@@ -99,7 +99,7 @@ const PlayerLesson = ({
           />
         </header>
         {!saves && (
-          <Banner variant="warning">
+          <Banner variant="info">
             <LucideIcon className="mt-0.5 size-4 shrink-0" name="eye" />
             <p>{t('previewNote')}</p>
           </Banner>

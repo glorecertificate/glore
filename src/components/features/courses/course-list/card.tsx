@@ -304,7 +304,7 @@ export const CourseListCard = ({
                           {course.creator.avatarUrl && (
                             <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
                           )}
-                          <AvatarFallback className="type-caption">{course.creator.initials}</AvatarFallback>
+                          <AvatarFallback className="type-small">{course.creator.initials}</AvatarFallback>
                         </Avatar>
                         {course.creator.shortName}
                       </Button>
@@ -336,7 +336,7 @@ export const CourseListCard = ({
                           {contributor.avatarUrl && (
                             <AvatarImage className="rounded-full" src={contributor.avatarUrl} />
                           )}
-                          <AvatarFallback className="type-caption">{contributor.initials}</AvatarFallback>
+                          <AvatarFallback className="type-small">{contributor.initials}</AvatarFallback>
                         </Avatar>
                       </HoverCardTrigger>
                       <HoverCardContent className="bg-popover" side="top">
@@ -366,7 +366,7 @@ export const CourseListCard = ({
                         {course.archivedBy.avatarUrl && (
                           <AvatarImage className="rounded-full" src={course.archivedBy.avatarUrl} />
                         )}
-                        <AvatarFallback className="type-caption">{course.archivedBy.initials}</AvatarFallback>
+                        <AvatarFallback className="type-small">{course.archivedBy.initials}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </HoverCardTrigger>

@@ -32,6 +32,6 @@ export const PageBand = ({ children, className, ...props }: React.ComponentProps
     data-slot="page-band"
     {...props}
   >
-    <div className="relative mx-auto flex w-full max-w-296 flex-col gap-3 px-page pt-4 pb-24">{children}</div>
+    <div className="relative mx-auto flex w-full max-w-320 flex-col gap-3 px-page pt-4 pb-24">{children}</div>
   </header>
 )

@@ -14,21 +14,15 @@ export const OrganizationStep = ({ form }: { form: ApplicationForm }) => {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <ApplicationField
+        autoFocus
         autoComplete="organization"
         className="sm:col-span-2"
         form={form}
         label={t('name')}
         name="name"
-        placeholder={t('namePlaceholder')}
       />
-      <ApplicationField form={form} label={t('legalName')} name="legalName" placeholder={t('legalNamePlaceholder')} />
-      <ApplicationField
-        form={form}
-        help={t('registryIdHelp')}
-        label={t('registryId')}
-        name="registryId"
-        placeholder={t('registryIdPlaceholder')}
-      />
+      <ApplicationField form={form} label={t('legalName')} name="legalName" />
+      <ApplicationField form={form} help={t('registryIdHelp')} label={t('registryId')} name="registryId" />
       <FormField
         control={form.control}
         name="country"
@@ -42,38 +36,22 @@ export const OrganizationStep = ({ form }: { form: ApplicationForm }) => {
           </FormItem>
         )}
       />
-      <ApplicationField
-        autoComplete="address-level2"
-        form={form}
-        label={t('city')}
-        name="city"
-        placeholder={t('cityPlaceholder')}
-      />
+      <ApplicationField autoComplete="address-level2" form={form} label={t('city')} name="city" />
       <ApplicationField
         autoComplete="email"
         form={form}
         inputMode="email"
         label={t('orgEmail')}
         name="email"
-        placeholder={t('orgEmailPlaceholder')}
         type="email"
       />
-      <ApplicationField
-        form={form}
-        inputMode="url"
-        label={t('url')}
-        name="url"
-        optional
-        placeholder={t('urlPlaceholder')}
-        type="url"
-      />
+      <ApplicationField form={form} inputMode="url" label={t('url')} name="url" optional type="url" />
       <ApplicationField
         form={form}
         help={t('volunteersPerYearHelp')}
         inputMode="numeric"
         label={t('volunteersPerYear')}
         name="volunteersPerYear"
-        placeholder={t('volunteersPerYearPlaceholder')}
       />
     </div>
   )

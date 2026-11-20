@@ -30,12 +30,12 @@ export const DashboardHeader = ({
       <DashboardMenuButton className="text-band-muted hover:bg-band-scrim hover:text-band-foreground" />
       {parent && (
         <>
-          <span aria-hidden className="h-4 w-px bg-band-border" />
-          <Link className="hover:text-band-foreground" href={navigationHref(parent)}>
+          <span aria-hidden className="mr-1.5 h-4 w-px bg-band-border" />
+          <Link className="text-sm hover:text-band-foreground" href={navigationHref(parent)}>
             <NavigationLabel id={parent} />
           </Link>
           <LucideIcon className="size-3.5" name="chevron-right" />
-          <span className="truncate text-band-foreground">{title && <Suspense>{title}</Suspense>}</span>
+          <span className="truncate text-sm text-band-foreground">{title && <Suspense>{title}</Suspense>}</span>
         </>
       )}
       <HeaderLogo className="ml-auto inline-flex md:hidden" href={APP_ROOT} prefetch={false}>

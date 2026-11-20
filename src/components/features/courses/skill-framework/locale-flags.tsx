@@ -8,7 +8,7 @@ export const LocaleFlags = ({ languages }: { languages: string[] }) => {
   if (items.length === 0) return null
 
   return (
-    <ul className="flex items-center gap-1 text-sm leading-none" data-slot="locale-flags">
+    <ul className="flex items-center gap-1 leading-none" data-slot="locale-flags">
       {items.map(item => (
         <li key={item.value}>
           <span aria-hidden>{item.icon}</span>

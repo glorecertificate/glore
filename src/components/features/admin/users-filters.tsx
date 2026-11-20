@@ -97,7 +97,6 @@ export const useUsersRail = ({
         hotkey={placement === 'panel' ? '/' : undefined}
         onValueChange={onSearch}
         placeholder={t('searchPlaceholder')}
-        size="sm"
         value={search}
       />
     ),

@@ -14,7 +14,7 @@ export const SettingsSection = ({
 }) => (
   <section className={cn('flex flex-col gap-4', className)} {...props}>
     <div className="min-w-0">
-      <h2 className="text-sm font-normal text-muted-foreground">{title}</h2>
+      <h2 className="text-sm font-medium text-foreground">{title}</h2>
       {description && <p className="mt-1 text-sm text-pretty text-muted-foreground">{description}</p>}
     </div>
     <div className="@container/fields min-w-0 space-y-4">{children}</div>

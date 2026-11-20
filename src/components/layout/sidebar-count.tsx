@@ -25,7 +25,7 @@ export const SidebarCount = ({
   if (floating) {
     return (
       <Badge
-        className="absolute -top-0.5 -right-0.5 bg-sidebar-accent-foreground text-sidebar"
+        className="absolute -top-0.5 -right-0.5 bg-brand-secondary text-sidebar"
         count={count}
         size="sm"
         variant="ghost"

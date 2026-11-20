@@ -500,7 +500,7 @@ const DashboardSidebarSearch = () => {
 
   return (
     <>
-      <SidebarGroup className="pb-0">
+      <SidebarGroup className="px-3 pb-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -525,7 +525,7 @@ const DashboardSidebarSearch = () => {
 }
 
 const DashboardSidebarBrand = () => (
-  <div className="flex h-10 items-center justify-between gap-2 px-4.5 group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+  <div className="flex h-10 items-center justify-between gap-2 px-3 group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
     <HeaderLogo className="inline-flex group-data-[collapsible=icon]:hidden" href={APP_ROOT} prefetch={false}>
       <Logo className="h-7 w-auto" onNavy />
     </HeaderLogo>
@@ -576,7 +576,7 @@ export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="gap-4 px-2 pt-4 pb-2 group-data-[collapsible=icon]:p-2">
+      <SidebarHeader className="gap-4 px-3 pt-4 pb-2 group-data-[collapsible=icon]:p-2">
         <DashboardSidebarExpand />
         <DashboardSidebarBrand />
         {showsOrganizationSwitcher(user) && <OrganizationSwitcher />}

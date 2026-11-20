@@ -121,7 +121,7 @@ export const TutorDashboard = ({
                   </Avatar>
                   <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
                     <Link
-                      className="min-w-0 truncate text-sm font-medium text-fg-title hover:underline focus-visible:focus-ring"
+                      className="min-w-0 truncate text-sm font-medium text-fg-title focus-visible:focus-ring"
                       href={reviewHref(item)}
                     >
                       {name}

@@ -22,7 +22,7 @@ export const Editor = ({ className, disabled, focused, readOnly, variant, ...pro
 
 const editorVariants = cva(
   cn(
-    `group/editor relative w-full cursor-text overflow-x-hidden rounded-b-lg border wrap-break-word whitespace-pre-wrap ring-offset-background select-text placeholder:text-muted-foreground/80 focus-visible:outline-none **:data-slate-placeholder:top-1/2! **:data-slate-placeholder:-translate-y-1/2 **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100! [&_strong]:font-bold`
+    `group/editor relative w-full cursor-text overflow-x-hidden rounded-b-lg border bg-white/80 wrap-break-word whitespace-pre-wrap ring-offset-background select-text placeholder:text-muted-foreground/80 focus-visible:outline-none **:data-slate-placeholder:top-1/2! **:data-slate-placeholder:-translate-y-1/2 **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100! dark:bg-transparent [&_strong]:font-bold`
   ),
   {
     defaultVariants: {

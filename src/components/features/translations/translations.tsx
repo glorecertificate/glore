@@ -107,7 +107,7 @@ export const Translations = ({
     search: placement => (
       <SearchInput
         aria-label={t('searchPlaceholder')}
-        className="w-full"
+        className="w-full pr-0"
         onValueChange={handleSearch}
         placeholder={t('searchPlaceholder')}
         size={placement === 'panel' ? 'md' : 'sm'}

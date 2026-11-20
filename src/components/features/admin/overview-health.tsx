@@ -37,7 +37,7 @@ export const AdminOverviewHealth = ({ health }: { health: ContentHealth | null }
               className="grid gap-x-4 gap-y-1.5 px-5 py-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1.4fr)_minmax(0,1.4fr)] sm:items-center"
               key={course.slug}
             >
-              <Link className="truncate text-sm font-medium hover:underline" href={`/courses/${course.slug}`}>
+              <Link className="truncate text-sm font-medium" href={`/courses/${course.slug}`}>
                 {course.title}
               </Link>
               <div className="flex flex-wrap gap-1.5">

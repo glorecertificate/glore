@@ -732,7 +732,7 @@
     "pendingInvitations": "Pending invitations",
     "pendingInvitationsCount": "{count, plural, =1 {# pending invitation} other {# pending invitations}}",
     "invitedAs": "Invited as {role}",
-    "noOrganization": "No organization yet",
+    "noOrganization": "No organization",
     "content": "Content"
   },
   "Auth": {
@@ -1181,7 +1181,7 @@
         "heading": "Skill courses",
         "count": "{count} of {min} completed",
         "total": "{count} completed",
-        "missing": "Not yet"
+        "missing": "Missing skill"
       },
       "note": {
         "from": "Note from {name}",
@@ -1249,7 +1249,7 @@
     },
     "updates": {
       "title": "Latest updates",
-      "empty": "No updates yet. Certificate decisions and course news show up here.",
+      "empty": "No updates yet",
       "all": "All updates"
     },
     "tutor": {
@@ -1342,7 +1342,7 @@
       "healthDone": "{item}: done",
       "healthNotNeeded": "{item}: not needed for this course",
       "healthColumnTotal": "{item}: {count, plural, other {# missing}}",
-      "healthAll": "{count, plural, one {All # course} other {All # courses}}",
+      "healthAll": "All courses",
       "healthStatus": {
         "draft": "Draft",
         "partial": "Partial",
@@ -1365,9 +1365,9 @@
         "archived": "Archived",
         "archivedDescription": "Hidden from the catalog"
       },
-      "translationsSubtitle": "What is left to translate, by kind of content",
-      "translationsTranslated": "Parts translated",
-      "translationsMissing": "Parts missing",
+      "translationsSubtitle": "What is left to translate, by kind of content.",
+      "translationsTranslated": "Content translated",
+      "translationsMissing": "Content missing",
       "translationsInTotal": "{count} in total",
       "translationsKind": {
         "course": "Courses",
@@ -1380,7 +1380,7 @@
       "translationsCompleteCell": "{kind}, {language}: nothing missing",
       "healthViewAll": "View all {count} courses",
       "translationsMissingTotal": "{language}: {count, plural, one {# part missing} other {# parts missing}}",
-      "translationsProgressLabel": "{language}, parts translated"
+      "translationsProgressLabel": "{language}, content translated"
     },
     "none": {
       "title": "Welcome, {name}",
@@ -1418,7 +1418,7 @@
       "category": "Category",
       "excerpt": "Excerpt",
       "excerptPlaceholder": "Brief description of the article",
-      "translateEmpty": "No other language has text for this article yet.",
+      "translateEmpty": "No other language has content for this article",
       "cancel": "Cancel",
       "updated": "Article updated",
       "created": "Article created",
@@ -3050,6 +3050,12 @@
       "app_decisionAccepted": "Approved on {date}",
       "app_decisionRejected": "Rejected on {date}",
       "app_decisionComment": "Admin comment",
+      "rejectedTitle": "Application rejected",
+      "rejectedNote": "This organization has no access to the platform. Inviting members and creating invite links is turned off.",
+      "rejectedBy": "Rejected on {date} by {name}",
+      "rejectedOn": "Rejected on {date}",
+      "rejectedReason": "Reason: {reason}",
+      "rejectedMembersEmpty": "This organization was rejected, so it has no members.",
       "description": "Review applications and manage every organization on the platform.",
       "columns": {
         "organization": "Organization",
@@ -3059,12 +3065,6 @@
         "created": "Registered"
       },
       "tableLabel": "Organizations",
-      "rejectedTitle": "Application rejected",
-      "rejectedNote": "This organization has no access to the platform. Inviting members and creating invite links is turned off.",
-      "rejectedBy": "Rejected on {date} by {name}",
-      "rejectedOn": "Rejected on {date}",
-      "rejectedReason": "Reason: {reason}",
-      "rejectedMembersEmpty": "This organization was rejected, so it has no members.",
       "openOrg": "Open organization",
       "commentLabelOptional": "Comment (optional)",
       "statusActive": "Active",
@@ -3092,7 +3092,7 @@
       "title": "Users",
       "actions": "Actions",
       "tableLabel": "Users",
-      "searchPlaceholder": "Search by name, email, or username",
+      "searchPlaceholder": "Search by name or email",
       "filters": {
         "allBans": "Any suspension state",
         "allRoles": "All roles",
@@ -3815,7 +3815,7 @@
     "revokedOn": "Revoked {date}",
     "empty": "No invitations",
     "emptyDescription": "Invitations you send will appear here.",
-    "filterLabel": "Filter invitations",
+    "filterLabel": "Status",
     "filterOpen": "Open",
     "filterAll": "All",
     "copyLink": "Copy link",
@@ -3902,6 +3902,7 @@
     "error_LINK_REVOKED": "This link is no longer active.",
     "error_MISMATCH": "This invitation is for a different account.",
     "error_NOT_FOUND": "We could not find this item.",
+    "error_ORGANIZATION_REJECTED": "This organization is not accepting members, because its application was rejected.",
     "error_RATE_LIMITED": "Too many attempts. Wait a few minutes and try again.",
     "error_REQUEST_DECIDED": "This request was already reviewed.",
     "error_REVOKED": "This invitation was revoked.",
@@ -3911,7 +3912,6 @@
     "error_PROOF_REQUIRED": "Open the link from the invitation email, or ask us to send you a new confirmation link.",
     "filterExpired": "Expired",
     "filterAccepted": "Accepted",
-    "error_ORGANIZATION_REJECTED": "This organization is not accepting members, because its application was rejected.",
     "rowActions": "Actions for {email}",
     "searchPlaceholder": "Search invitations",
     "bulkUpload": "Upload CSV file",
@@ -4085,7 +4085,7 @@
       "statusComplete": "Complete",
       "statusIncomplete": "Incomplete",
       "statusUnsaved": "Unsaved changes",
-      "translateEmpty": "No other language has text for this field yet."
+      "translateEmpty": "No other language has content for this field"
     },
     "catalog": {
       "rating": "{rating} ({count})",
@@ -4516,14 +4516,14 @@
   "CourseTranslate": {
     "open": "Translate",
     "menu": {
-      "empty": "No other language has text for this lesson yet.",
+      "empty": "No other language has content for this lesson",
       "unsaved": "Save the lesson first to translate it."
     },
     "field": {
       "trigger": "Translate with AI",
       "from": "Translate from {language}",
       "done": "Translated. Review the text, then save the draft.",
-      "failed": "Could not translate this field. Try again."
+      "failed": "Could not translate this field, please try again"
     }
   }
 }

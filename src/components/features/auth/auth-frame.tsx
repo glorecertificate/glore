@@ -24,7 +24,7 @@ export const AuthFrame = ({ children, className, ...props }: React.ComponentProp
         {children}
         <div className="flex items-center justify-between gap-4 px-page pb-5 lg:px-10 lg:pb-10">
           <Suspense>
-            <LegalLinks className="[&_a]:rounded-sm [&_a]:transition-colors [&_a]:outline-none hover:[&_a]:text-link [&_a]:focus-visible:focus-ring motion-reduce:[&_a]:transition-none" />
+            <LegalLinks className="[&_a]:rounded-sm [&_a]:outline-none [&_a]:hover:text-foreground [&_a]:focus-visible:focus-ring motion-reduce:[&_a]:transition-none" />
           </Suspense>
           <Suspense>
             <AuthThemeSwitch />

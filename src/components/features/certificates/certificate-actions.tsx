@@ -27,9 +27,10 @@ import { Link } from '@/components/ui/link'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useActionError } from '@/hooks/use-action-error'
+import { cn } from '@/lib/utils'
 
 const TOUCH =
-  'relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5'
+  'relative h-9.5 pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5'
 
 export const CertificateActions = ({ canManage, certificate }: { canManage: boolean; certificate: Certificate }) => {
   const t = useTranslations('CertificateDetail')
@@ -111,7 +112,7 @@ export const CertificateActions = ({ canManage, certificate }: { canManage: bool
           <DropdownMenuTrigger asChild>
             <Button
               aria-label={t('moreActions')}
-              className={TOUCH}
+              className={cn(TOUCH, 'w-9.5')}
               disabled={pending}
               size="icon"
               variant="band-secondary"

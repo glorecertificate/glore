@@ -160,11 +160,6 @@ export const AdminUsers = ({
                         })}
                       </span>
                     )}
-                    {user.banReason && (
-                      <span className="max-w-56 truncate text-xs text-muted-foreground" title={user.banReason}>
-                        {t('bannedReason', { reason: user.banReason })}
-                      </span>
-                    )}
                   </div>
                 )
               }

@@ -25,7 +25,7 @@ export const LoadingFallback = ({
   size?: 'auto' | 'full'
   spinner?: boolean | React.ComponentProps<typeof Spinner>
 }) => {
-  const { variant = 'colored', ...spinnerProps } = typeof spinner === 'boolean' ? emptySpinnerProps : spinner
+  const { variant, ...spinnerProps } = typeof spinner === 'boolean' ? emptySpinnerProps : spinner
 
   return (
     <output

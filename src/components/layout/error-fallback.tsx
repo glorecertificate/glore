@@ -61,10 +61,7 @@ export const ErrorFallback = ({
   })()
 
   return (
-    <div
-      className={cn('flex h-full flex-col items-center justify-start bg-background px-4 py-12 text-center', className)}
-      {...props}
-    >
+    <div className={cn('flex h-full flex-col items-center justify-start px-4 py-12 text-center', className)} {...props}>
       <div className="relative flex w-full grow flex-col items-center justify-center gap-6">
         {type === 'not-found' ? <NotFoundIcon className="mb-8 w-80 sm:w-90" /> : <ErrorIcon className="w-40 sm:w-45" />}
         <div className="text-center">

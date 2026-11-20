@@ -14,7 +14,7 @@ export const Toaster = ({
   hotkey = DEFAULT_HOTKEY,
   mobileOffset = DEFAULT_OFFSET,
   offset = DEFAULT_OFFSET,
-  position = 'top-center',
+  position = 'bottom-right',
   style,
   toastOptions,
   ...props

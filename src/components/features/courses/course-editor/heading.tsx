@@ -157,7 +157,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
       )}
       {canEdit && (
         <FieldTranslateButton
-          className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim aria-expanded:bg-band-scrim"
+          className="shrink-0 self-center text-band-foreground hover:not-disabled:bg-band-scrim aria-expanded:bg-band-scrim"
           fieldKey={`courses:${course.id}:title`}
           onRunningChange={setTitleBusy}
         />

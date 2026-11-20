@@ -28,9 +28,9 @@ const LINKS = [
 ] as const
 
 const ROW_CLASS_NAME =
-  'group touch-hit flex min-h-14 w-full cursor-pointer items-center gap-3 px-3.5 py-3 text-left transition-colors outline-none hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:focus-ring-inset motion-reduce:transition-none'
+  'group touch-hit flex min-h-12 lg:min-h-14 w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left transition-colors outline-none hover:bg-primary/5 focus-visible:bg-primary/5 focus-visible:focus-ring-inset motion-reduce:transition-none'
 
-const rowContent = (icon: IconName, label: string) => (
+const RowContent = ({ arrow = true, icon, label }: { arrow?: boolean; icon: IconName; label: string }) => (
   <>
     <span
       aria-hidden
@@ -39,11 +39,13 @@ const rowContent = (icon: IconName, label: string) => (
       <LucideIcon className="size-4" name={icon} />
     </span>
     <span className="min-w-0 flex-1 text-sm font-medium text-fg-1 lg:text-base">{label}</span>
-    <LucideIcon
-      aria-hidden
-      className="size-4 shrink-0 text-fg-2 transition-transform duration-150 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 motion-reduce:transition-none"
-      name="arrow-right"
-    />
+    {arrow && (
+      <LucideIcon
+        aria-hidden
+        className="size-4 shrink-0 text-fg-2 transition-transform duration-150 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 motion-reduce:transition-none"
+        name="arrow-right"
+      />
+    )}
   </>
 )
 
@@ -58,14 +60,19 @@ export const AuthAlternatives = ({ className, ...props }: React.ComponentProps<'
         {LINKS.map(row => (
           <li key={row.key}>
             <Link className={ROW_CLASS_NAME} href={row.href}>
-              {rowContent(row.icon, t(`${row.key}Title`))}
+              <RowContent icon={row.icon} label={t(`${row.key}Title`)} />
             </Link>
           </li>
         ))}
         <li>
           <Dialog onOpenChange={setSignupOpen} open={signupOpen}>
-            <DialogTrigger className={ROW_CLASS_NAME}>
-              {rowContent('user-round-plus', t('noAccountTitle'))}
+            <DialogTrigger
+              className={cn(
+                ROW_CLASS_NAME,
+                'rounded-b-sm hover:bg-muted/50 focus-visible:bg-muted/5 [&>span:first-child]:bg-muted [&>span:first-child]:text-muted-foreground'
+              )}
+            >
+              <RowContent arrow={false} icon="user-plus" label={t('noAccountTitle')} />
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

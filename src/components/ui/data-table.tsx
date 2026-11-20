@@ -192,7 +192,7 @@ export const DataTable = <T,>({
     <div
       aria-busy={loading || refreshing}
       className={cn(
-        'flex min-w-0 rounded-xl bg-card shadow-card',
+        'flex min-w-0 rounded-xl bg-card shadow-sm',
         rail ? 'overflow-hidden max-lg:flex-col lg:flex-row' : 'flex-col gap-4 p-4',
         className
       )}

@@ -33,7 +33,7 @@ export const TranslationRowItem = ({
     >
       <th className="flex min-w-0 flex-col items-start gap-1.5 text-left font-normal" scope="row">
         <button
-          className="rounded-sm text-left font-mono text-xs break-all underline-offset-2 outline-none after:absolute after:inset-0 hover:underline focus-visible:focus-ring"
+          className="rounded-sm text-left font-mono text-xs break-all underline-offset-2 outline-none after:absolute after:inset-0 after:cursor-pointer focus-visible:focus-ring"
           onClick={() => onOpen(row.key)}
           type="button"
         >

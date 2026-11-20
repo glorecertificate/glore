@@ -326,7 +326,7 @@ export const CertificateWizard = ({
                   type="button"
                   variant="ghost"
                 >
-                  <LucideIcon name="ellipsis" />
+                  <LucideIcon name="ellipsis" className="text-white" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

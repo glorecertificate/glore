@@ -29,7 +29,7 @@ export const buttonVariants = cva(
   [
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-lg text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale,filter] duration-100 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     'focus-visible:focus-ring aria-invalid:border-destructive',
-    'active:not-disabled:scale-98 motion-reduce:active:not-disabled:scale-100',
+    'active:not-disabled:scale-99 motion-reduce:active:not-disabled:scale-100',
     'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
   ],
   {
@@ -57,8 +57,8 @@ export const buttonVariants = cva(
           'border border-band-border bg-band-scrim text-band-foreground hover:not-disabled:bg-band-scrim/60',
         field:
           'rounded-md border border-border bg-field text-foreground hover:not-disabled:bg-accent/60 focus-visible:focus-ring-inset',
-        outline: 'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60',
-        ghost: 'text-foreground hover:not-disabled:bg-accent/80 dark:hover:not-disabled:bg-accent/50',
+        outline: 'border border-border bg-field text-foreground hover:not-disabled:bg-field/80',
+        ghost: 'text-foreground hover:not-disabled:bg-accent/20 dark:hover:not-disabled:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',
         transparent: 'bg-transparent text-current',
       },

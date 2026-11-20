@@ -51,7 +51,7 @@ export const CertificateShare = ({
           />
         </div>
         <QrCode className="self-center" label={t('qrLabel')} size={144} value={shareUrl} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <Button asChild className={TOUCH} icon="external-link" size="sm" variant="outline">
             <a
               href={linkedInProfileUrl({

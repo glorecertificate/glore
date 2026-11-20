@@ -79,8 +79,8 @@ const ratingGroupVariants = cva(
       color: {
         default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
         brand:
-          'peer-data-[state=checked]:border-brand peer-data-[state=checked]:bg-brand peer-data-[state=checked]:text-brand-foreground',
-        'brand-secondary': `peer-data-[state=checked]:border-brand-secondary peer-data-[state=checked]:bg-brand-secondary peer-data-[state=checked]:text-brand-secondary-foreground`,
+          'peer-data-[state=checked]:border-brand peer-data-[state=checked]:bg-brand/90 peer-data-[state=checked]:text-background',
+        'brand-secondary': `peer-data-[state=checked]:border-brand-secondary peer-data-[state=checked]:bg-brand-secondary/50 peer-data-[state=checked]:text-brand-secondary-foreground`,
       },
       disabled: {
         true: 'cursor-default opacity-100',

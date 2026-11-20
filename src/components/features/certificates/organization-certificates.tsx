@@ -176,7 +176,7 @@ export const OrganizationCertificates = ({
             search={
               <SearchInput
                 aria-label={t('search')}
-                className="w-64"
+                className="w-72"
                 hotkey={SHORTCUTS.filter.key}
                 onValueChange={setQuery}
                 placeholder={t('search')}

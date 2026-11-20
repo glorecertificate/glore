@@ -69,10 +69,14 @@ const LevelCell = ({
 
   return (
     <Label
-      className="group/cell flex cursor-pointer items-stretch rounded-lg border border-border-subtle bg-card p-4 text-sm leading-relaxed font-normal shadow-xs transition duration-150 hover:border-border-strong hover:bg-surface-hover has-focus-visible:focus-ring has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 has-data-disabled:hover:border-border-subtle has-data-disabled:hover:bg-card has-data-[state=checked]:border-action has-data-[state=checked]:bg-action-subtle has-data-[state=checked]:ring-1 has-data-[state=checked]:ring-action motion-reduce:transition-none"
+      className="group/cell relative flex cursor-pointer items-stretch rounded-lg border border-border-subtle bg-card p-4 text-sm leading-relaxed font-normal shadow-xs transition duration-150 hover:border-border-strong hover:bg-surface-hover has-focus-visible:focus-ring has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 has-data-disabled:hover:border-border-subtle has-data-disabled:hover:bg-card has-data-[state=checked]:border-action has-data-[state=checked]:bg-action-subtle has-data-[state=checked]:ring-1 has-data-[state=checked]:ring-action motion-reduce:transition-none"
       htmlFor={id}
     >
-      <RadioGroupItem className="peer sr-only" id={id} value={level} />
+      <RadioGroupItem
+        className="absolute inset-0 size-full cursor-pointer rounded-lg opacity-0 disabled:cursor-not-allowed"
+        id={id}
+        value={level}
+      />
       <span className="flex min-w-0 flex-1 flex-col gap-3">
         <span className="flex min-h-5 flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <span className="flex items-center gap-3">

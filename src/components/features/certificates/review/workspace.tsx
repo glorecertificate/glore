@@ -16,13 +16,13 @@ import {
   requestCertificateChanges,
 } from '@/actions/certificates/review'
 import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
-import { FieldError } from '@/components/features/certificates/field-error'
 import { regionName } from '@/components/features/certificates/region-name'
+import { CommentSection } from '@/components/features/certificates/review/comment-section'
+import { DecisionBar } from '@/components/features/certificates/review/decision-bar'
 import { EvaluationSection } from '@/components/features/certificates/review/evaluation-section'
 import { PreviewDialog } from '@/components/features/certificates/review/preview-dialog'
 import { RejectDialog } from '@/components/features/certificates/review/reject-dialog'
 import { RequestPanel } from '@/components/features/certificates/review/request-panel'
-import { SectionComment } from '@/components/features/certificates/review/section-comment'
 import { SkillsSection } from '@/components/features/certificates/review/skills-section'
 import {
   approvalPayload,
@@ -32,23 +32,13 @@ import {
 } from '@/components/features/certificates/review/values'
 import { type ReviewFormValues, reviewFormSchema } from '@/components/features/certificates/schemas'
 import { useI18n } from '@/components/providers/i18n'
-import { Button } from '@/components/ui/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { Textarea } from '@/components/ui/textarea'
+import { Banner } from '@/components/ui/banner'
+import { Card } from '@/components/ui/card'
+import { Form } from '@/components/ui/form'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import appConfig from '~/config/app.json'
-
-const SECTIONS = ['experience', 'tasks', 'skills', 'personal'] as const
-
-const SECTION_LABELS = {
-  experience: 'sectionExperience',
-  personal: 'sectionPersonal',
-  skills: 'sectionSkills',
-  tasks: 'sectionTasks',
-} as const
 
 type Busy = 'approve' | 'changes' | 'preview' | 'reject' | null
 
@@ -85,7 +75,6 @@ export const ReviewWorkspace = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [rejecting, setRejecting] = useState(false)
   const canApprove = certificate.isSubmitted || certificate.isInReview
-  const canRequestChanges = canApprove
 
   const form = useForm<ReviewFormValues>({
     defaultValues: reviewDefaults(certificate, results),
@@ -201,115 +190,31 @@ export const ReviewWorkspace = ({
     return push('/certificates')
   }
 
-  const decisions = (
-    <div className="flex flex-col gap-2 bg-card lg:sticky lg:bottom-0 lg:-mx-6 lg:-mb-6 lg:border-t lg:px-6 lg:py-4">
-      <Button
-        disabled={busy !== null || !canApprove}
-        icon="check"
-        loading={busy === 'preview'}
-        onClick={() => void preview()}
-        type="button"
-        variant="primary"
-      >
-        {t('approve')}
-      </Button>
-      <Button
-        disabled={busy !== null || !canRequestChanges}
-        icon="message-square-warning"
-        loading={busy === 'changes'}
-        onClick={() => void requestChanges()}
-        type="button"
-        variant="outline"
-      >
-        {t('requestChanges')}
-      </Button>
-      <Button
-        className="self-center text-destructive-text"
-        disabled={busy !== null}
-        onClick={() => setRejecting(true)}
-        size="sm"
-        type="button"
-        variant="ghost"
-      >
-        {t('reject')}
-      </Button>
-    </div>
-  )
-
   return (
-    <div className="flex flex-col gap-6 max-lg:pb-20">
+    <div className="flex flex-col gap-6">
       <Form {...form}>
-        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_25rem]">
-          <div className="min-w-0">
-            <RequestPanel certificate={certificate} holder={holder} previous={previous} results={results} />
-          </div>
-
-          <aside
-            aria-labelledby="review-panel-title"
-            className="flex flex-col gap-8 rounded-xl border border-border-subtle bg-card p-4 shadow-card sm:p-6 lg:sticky lg:top-20 lg:max-h-dialog lg:overflow-y-auto"
-          >
-            <h2 className="type-heading" id="review-panel-title">
-              {t('panelTitle')}
-            </h2>
-            {certificate.isChangesRequested ? (
-              <p className="rounded-lg bg-surface-muted p-3 text-sm text-muted-foreground">
-                {t('waitingForVolunteer')}
-              </p>
-            ) : (
-              <>
-                <SkillsSection certificate={certificate} results={results} />
-                <EvaluationSection />
-                <FormField
-                  control={form.control}
-                  name="comment"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('comment')}</FormLabel>
-                      <FormControl>
-                        <Textarea className="min-h-24" placeholder={t('commentPlaceholder')} {...field} />
-                      </FormControl>
-                      <FieldError />
-                    </FormItem>
-                  )}
-                />
-                <Collapsible className="flex flex-col gap-4">
-                  <CollapsibleTrigger asChild>
-                    <Button className="self-start text-action-text" size="text" type="button" variant="link">
-                      {t('notesTitle')}
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="flex flex-col gap-4">
-                    {SECTIONS.map(section => (
-                      <div className="flex flex-col gap-1" key={section}>
-                        <p className="text-sm font-medium">{t(SECTION_LABELS[section])}</p>
-                        <SectionComment section={section} />
-                      </div>
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
-                {decisions}
-              </>
-            )}
-          </aside>
-        </div>
+        <RequestPanel holder={holder} previous={previous} />
+        {certificate.isChangesRequested ? (
+          <Banner>
+            <p>{t('waitingForVolunteer')}</p>
+          </Banner>
+        ) : (
+          <>
+            <SkillsSection certificate={certificate} results={results} />
+            <Card className="gap-8 p-5 sm:p-6 xl:grid xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] xl:gap-12">
+              <EvaluationSection />
+              <CommentSection />
+            </Card>
+            <DecisionBar
+              busy={busy}
+              disabled={!canApprove}
+              onApprove={() => void preview()}
+              onReject={() => setRejecting(true)}
+              onRequestChanges={() => void requestChanges()}
+            />
+          </>
+        )}
       </Form>
-
-      {canApprove && !certificate.isChangesRequested && (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background px-4 pt-3 pb-bar-safe lg:hidden">
-          <Button
-            className="w-full"
-            disabled={busy !== null}
-            icon="check"
-            loading={busy === 'preview'}
-            onClick={() => void preview()}
-            size="lg"
-            type="button"
-            variant="primary"
-          >
-            {t('approve')}
-          </Button>
-        </div>
-      )}
 
       <PreviewDialog
         busy={busy === 'approve'}

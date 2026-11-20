@@ -5,43 +5,38 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useFormContext, useWatch } from 'react-hook-form'
 
-import { type CertificateReviewNotes, type HolderCourseResult, type ReviewHolder } from '@/actions/certificates/queries'
+import { type CertificateReviewNotes, type ReviewHolder } from '@/actions/certificates/queries'
 import { ExperienceFields, TaskFields } from '@/components/features/certificates/experience-fields'
 import { formatActivityPeriod, meetsActivityRule } from '@/components/features/certificates/rules'
 import { type ReviewFormValues } from '@/components/features/certificates/schemas'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
-import { LevelDots } from '@/components/ui/level-dots'
 import { StatusBadge } from '@/components/ui/status-badge'
-import { type Certificate } from '@/db/queries/certificate'
-import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
-import { fullName } from '@/lib/utils'
 
-const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
-  <DescriptionItem>
+const Row = ({ label, stacked, value }: { label: string; stacked?: boolean; value: React.ReactNode }) => (
+  <DescriptionItem
+    className={stacked ? 'group-data-[layout=inline]/dl:flex-col group-data-[layout=inline]/dl:gap-0.5' : undefined}
+  >
     <DescriptionTerm>{label}</DescriptionTerm>
-    <DescriptionDetails>{value}</DescriptionDetails>
+    <DescriptionDetails className={stacked ? 'group-data-[layout=inline]/dl:text-left' : undefined}>
+      {value}
+    </DescriptionDetails>
   </DescriptionItem>
 )
 
 export const RequestPanel = ({
-  certificate,
   holder,
   previous,
-  results,
 }: {
-  certificate: Certificate
   holder: ReviewHolder
   previous: CertificateReviewNotes | null
-  results: Record<number, HolderCourseResult>
 }) => {
   const t = useTranslations('CertificateReview')
   const tDetail = useTranslations('CertificateDetail')
-  const tLevels = useTranslations('Common.skillLevels')
   const tCountries = useTranslations('Intl.Countries')
-  const { locale, localize } = useI18n()
+  const { locale } = useI18n()
 
   const date = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
   const format = (value: string | null) => (value ? date.format(new Date(value)) : '-')
@@ -69,7 +64,7 @@ export const RequestPanel = ({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {previous && (
         <Card className="bg-surface-muted">
           <CardHeader>
@@ -92,45 +87,53 @@ export const RequestPanel = ({
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="type-label">{t('volunteer')}</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="gap-0 p-0 lg:grid lg:grid-cols-[1.1fr_1.1fr_1fr]">
+        <section className="flex min-w-0 flex-col gap-3 p-5 sm:px-6">
+          <h2 className="type-overline text-muted-foreground">{t('volunteer')}</h2>
           <DescriptionList layout="inline">
-            <Row label={t('name')} value={fullName(holder)} />
-            <Row label={t('email')} value={holder.email} />
+            <Row label={t('email')} stacked value={holder.email} />
             <Row label={t('birthday')} value={format(holder.birthday)} />
             <Row label={t('birthPlace')} value={holder.birthPlace ?? '-'} />
             <Row label={t('nationality')} value={nationality} />
           </DescriptionList>
-        </CardContent>
-      </Card>
+        </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="type-label">{t('experienceTitle')}</CardTitle>
-          <CardAction>
-            <Button
-              aria-expanded={editing}
-              className="text-action-text"
-              onClick={() => setEditing(current => !current)}
-              size="sm"
-              type="button"
-              variant="ghost"
-            >
-              {editing ? t('doneEditing') : t('edit')}
-            </Button>
-          </CardAction>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {editing ? (
-            <>
+        {editing ? (
+          <section className="flex min-w-0 flex-col gap-5 border-t border-border-subtle p-5 sm:px-6 lg:col-span-2 lg:border-t-0 lg:border-l">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="type-overline text-muted-foreground">{t('experienceTitle')}</h2>
+              <Button
+                aria-expanded
+                className="text-action-text"
+                onClick={() => setEditing(false)}
+                size="text"
+                type="button"
+                variant="link"
+              >
+                {t('doneEditing')}
+              </Button>
+            </div>
+            <div className="grid gap-6 lg:grid-cols-2">
               <ExperienceFields />
               <TaskFields />
-            </>
-          ) : (
-            <>
+            </div>
+          </section>
+        ) : (
+          <>
+            <section className="flex min-w-0 flex-col gap-3 border-t border-border-subtle p-5 sm:px-6 lg:border-t-0 lg:border-l">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="type-overline text-muted-foreground">{t('experience')}</h2>
+                <Button
+                  aria-expanded={false}
+                  className="text-action-text"
+                  onClick={() => setEditing(true)}
+                  size="text"
+                  type="button"
+                  variant="link"
+                >
+                  {t('edit')}
+                </Button>
+              </div>
               <DescriptionList layout="inline">
                 <Row
                   label={t('period')}
@@ -140,61 +143,17 @@ export const RequestPanel = ({
                 <Row label={t('location')} value={values.activityLocation || '-'} />
               </DescriptionList>
               <StatusBadge tone={rule ? 'success' : 'danger'}>{rule ? t('ruleMet') : t('ruleUnmet')}</StatusBadge>
-              <div className="flex flex-col gap-1.5">
-                <p className="type-label text-muted-foreground">{t('tasks')}</p>
-                <ul className="list-disc space-y-1 pl-5 text-sm">
-                  {tasks.map(task => (
-                    <li key={task}>{task}</li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="type-label">{t('skills')}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-5">
-          {certificate.skills
-            .toSorted((a, b) => a.sortOrder - b.sortOrder)
-            .map(skill => {
-              const result = results[skill.course.id]
-              const chosen = result?.level ?? null
-              const chosenText = chosen ? result?.descriptions[chosen] : null
-              return (
-                <div className="flex flex-col gap-2 border-b pb-4 last:border-b-0 last:pb-0" key={skill.id}>
-                  <p className="text-sm font-medium">
-                    {skill.course.title ? localize(skill.course.title, 'en') : skill.course.slug}
-                  </p>
-                  {chosen ? (
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <span className="text-xs text-muted-foreground">{t('selfLevel')}</span>
-                        <LevelDots
-                          label={tLevels(chosen)}
-                          level={SKILL_LEVELS.indexOf(chosen) + 1}
-                          steps={SKILL_LEVELS.length}
-                        />
-                      </div>
-                      {chosenText && <p className="text-sm text-muted-foreground">{localize(chosenText)}</p>}
-                    </div>
-                  ) : null}
-                  <p className="text-xs text-muted-foreground">
-                    {result?.completedAt ? t('completedOn', { date: format(result.completedAt) }) : t('notCompleted')}
-                  </p>
-                  {skill.evidence && <p className="text-sm whitespace-pre-wrap">{skill.evidence}</p>}
-                  {result?.reflection && result.reflection !== skill.evidence && (
-                    <p className="border-l-2 pl-3 text-sm whitespace-pre-wrap text-muted-foreground">
-                      {result.reflection}
-                    </p>
-                  )}
-                </div>
-              )
-            })}
-        </CardContent>
+            </section>
+            <section className="flex min-w-0 flex-col gap-3 border-t border-border-subtle p-5 sm:px-6 lg:border-t-0 lg:border-l">
+              <h2 className="type-overline text-muted-foreground">{t('tasks')}</h2>
+              <ul className="list-disc space-y-1.5 pl-5 text-sm marker:text-muted-foreground">
+                {tasks.map(task => (
+                  <li key={task}>{task}</li>
+                ))}
+              </ul>
+            </section>
+          </>
+        )}
       </Card>
     </div>
   )

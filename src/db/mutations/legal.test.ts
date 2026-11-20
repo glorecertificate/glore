@@ -96,10 +96,10 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
 
   it('publishes a draft, supersedes the previous version, and records the event', async () => {
     await rolledBack(async (tx, actorId) => {
-      const first = await context.mutations.createLegalDraft(tx, { actorId, slug: 'quality-charter' })
+      const first = await context.mutations.createLegalDraft(tx, { actorId, slug: 'privacy' })
       await fillDraft(tx, actorId, first.id)
       const { event, slug } = await publish(tx, actorId, first.id, { changeNote: 'First' })
-      expect(slug).toBe('quality-charter')
+      expect(slug).toBe('privacy')
       expect(event).toMatchObject({
         actorId,
         data: { effectiveAt: '2026-11-01', material: false, slug, version: first.version, versionId: first.id },
@@ -114,7 +114,7 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
         .where(eq(context.schema.legalTranslations.versionId, first.id))
       expect(translations.map(({ status }) => status)).toEqual(['reviewed', 'reviewed', 'reviewed'])
 
-      const second = await context.mutations.createLegalDraft(tx, { actorId, slug: 'quality-charter' })
+      const second = await context.mutations.createLegalDraft(tx, { actorId, slug: 'privacy' })
       expect(second.version).toBe(first.version + 1)
       const copied = await tx
         .select()
@@ -131,14 +131,14 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
       const [document] = await tx
         .select()
         .from(context.schema.legalDocuments)
-        .where(eq(context.schema.legalDocuments.slug, 'quality-charter'))
+        .where(eq(context.schema.legalDocuments.slug, 'privacy'))
       expect(document?.currentVersionId).toBe(second.id)
     })
   })
 
   it('never changes a version once it is published', async () => {
     await rolledBack(async (tx, actorId) => {
-      const draft = await context.mutations.createLegalDraft(tx, { actorId, slug: 'quality-charter' })
+      const draft = await context.mutations.createLegalDraft(tx, { actorId, slug: 'privacy' })
       await fillDraft(tx, actorId, draft.id)
       await publish(tx, actorId, draft.id)
 
@@ -181,7 +181,7 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
 
   it('refuses to publish a draft that misses a language', async () => {
     await rolledBack(async (tx, actorId) => {
-      const draft = await context.mutations.createLegalDraft(tx, { actorId, slug: 'quality-charter' })
+      const draft = await context.mutations.createLegalDraft(tx, { actorId, slug: 'privacy' })
       await context.mutations.saveLegalTranslation(tx, { actorId, locale: 'en', versionId: draft.id, ...text('en') })
       await context.mutations.saveLegalTranslation(tx, { actorId, locale: 'es', versionId: draft.id, ...text('es') })
       await tx
@@ -201,7 +201,7 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
 
   it('refuses to publish translations whose headings differ from English', async () => {
     await rolledBack(async (tx, actorId) => {
-      const draft = await context.mutations.createLegalDraft(tx, { actorId, slug: 'quality-charter' })
+      const draft = await context.mutations.createLegalDraft(tx, { actorId, slug: 'privacy' })
       await fillDraft(tx, actorId, draft.id)
       await context.mutations.saveLegalTranslation(tx, {
         actorId,
@@ -219,10 +219,10 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
 
   it('keeps the material flag only for documents that need acceptance', async () => {
     await rolledBack(async (tx, actorId) => {
-      const charter = await context.mutations.createLegalDraft(tx, { actorId, slug: 'quality-charter' })
-      await fillDraft(tx, actorId, charter.id)
-      await publish(tx, actorId, charter.id, { material: true })
-      expect((await versionOf(tx, charter.id)).material).toBe(false)
+      const privacyDoc = await context.mutations.createLegalDraft(tx, { actorId, slug: 'privacy' })
+      await fillDraft(tx, actorId, privacyDoc.id)
+      await publish(tx, actorId, privacyDoc.id, { material: true })
+      expect((await versionOf(tx, privacyDoc.id)).material).toBe(false)
 
       const terms = await context.mutations.createLegalDraft(tx, { actorId, slug: 'terms' })
       await fillDraft(tx, actorId, terms.id)

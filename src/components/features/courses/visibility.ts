@@ -1,4 +1,4 @@
-import { type CourseSummary } from '@/db/queries/course'
+import { COURSE_TYPES, type CourseSummary } from '@/db/queries/course'
 
 interface CourseViewer {
   canEdit: boolean
@@ -12,3 +12,6 @@ export const isListedCourse = (course: Pick<CourseSummary, 'publicationStatus' |
   if (user.isLearner && course.type === 'skill') return false
   return !(user.isVolunteer && course.type === 'learner')
 }
+
+export const listedCourseTypes = (user: CourseViewer) =>
+  COURSE_TYPES.filter(type => isListedCourse({ publicationStatus: 'published', type }, user))

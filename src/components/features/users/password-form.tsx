@@ -62,7 +62,7 @@ export const PasswordForm = () => {
 
   return (
     <Form {...form}>
-      <form className="space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-0" method="post" onSubmit={form.handleSubmit(onSubmit)}>
         <SettingsSection description={t('securityDescription')} title={t('changePassword')}>
           <FormField
             control={form.control}

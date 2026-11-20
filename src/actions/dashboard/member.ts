@@ -12,7 +12,6 @@ import {
   type MemberCourseRow,
   type MemberSummary,
   type ReviewSection,
-  type SkillCourseRow,
   type VolunteerSummary,
   learnerChecklist,
   pickCurrentCertificate,
@@ -168,19 +167,6 @@ export const loadVolunteerSummary = async ({
     },
     journey: volunteerJourney({ eligible: result.eligible, resume, sections, status: certificate?.status ?? null }),
     review: certificate?.isOpen ? { comment: notes?.comment ?? certificate.reviewerComment ?? null, tutor } : null,
-    skillCourses: rows.flatMap((row): SkillCourseRow[] =>
-      row.type === 'skill'
-        ? [
-            {
-              completed: completed.has(row.id),
-              icon: row.icon,
-              percent: row.total > 0 ? Math.round((row.done / row.total) * 100) : 0,
-              slug: row.slug,
-              title: row.title,
-            },
-          ]
-        : []
-    ),
     skills: rows.flatMap(row =>
       row.type === 'skill' && completed.has(row.id)
         ? [{ icon: row.icon, id: row.id, slug: row.slug, title: row.title }]

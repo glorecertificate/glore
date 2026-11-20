@@ -15,6 +15,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
   - `org_invitations_open_email_key` allows one open invitation per organization and `lower(email)`.
   - Invitation copy never names a role as the sender: it says "someone from your organization" (U16).
 - The row carries `userId` when an account with that email exists, still without a membership.
+- A rejected organization (unapproved, with a rejected `admin` registration request) cannot invite. `assertOrganizationOpen` in `db/mutations/invitation.ts` runs in `createInvitation`, `resendInvitation`, and `createInviteLink` and throws `ORGANIZATION_REJECTED`. Pending organizations are not blocked by this rule. The admin page then hides the invite button and shows a danger `Banner` with the decision date, reviewer, and comment.
 - Invitation and invite-link tokens are never stored in plaintext. `tokenHash` (SHA-256) serves lookups.
 - `tokenCipher` (AES-256-GCM, key derived from `BETTER_AUTH_SECRET`, `src/lib/secret-token.ts`) lets copy and reminder links be rebuilt.
 - A row without a readable seal (migrated rows, or a rotated secret) gets a fresh token when its link is rebuilt, which ends the old link.
@@ -59,10 +60,10 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 
 ## Members and ownership
 
-- `/organization?tab=members` is a `DataTable` named "Members" with search, role and status filters, sorting, and pagination.
+- `/organization?tab=members` is a `DataTable` named "Members" with search, multi-select role and status filters (URL params `role` and `status`), sorting, and pagination.
 - The invite dialog lives in `OrganizationInviteHost` (`invite-host.tsx`), which wraps the band and the tabs. The one `OrganizationInviteButton` sits in the band, and tab bodies have no heading or invite button of their own.
 - The member name opens the details drawer, and the row menu holds View details, Change role, and Remove. The owner's own row has no menu. The Status column shows on `/organization` only.
-- The Invitations filter groups are Open (pending), Expired, and Accepted, with counts. Resend and Revoke sit in the row menu.
+- The Invitations filter is one multi-select group (URL param `state`): Open (pending), Expired, and Accepted, with counts. Resend and Revoke sit in the row menu.
 - The details drawer with the profile, learning progress, and the member's non-draft certificates in this org (`getOrganizationMemberDetail`, managers only).
 - Role changes, removals, leaving, and ownership transfers live in `db/mutations/organization.ts` and return `memberError` codes.
 - Only the owner changes roles, and never to or from `admin`. The owner role moves through an ownership transfer.
@@ -133,11 +134,10 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - `/register` is a four-step application (`features/organization/application/`): organization, legal representative plus an optional contact person, motivation, and a review.
 - Organization fields: name, legal name, registry ID, country, city, email, website, volunteers per year.
 - Every organization website (application, settings, admin create and invite) accepts only `http` and `https` addresses through `optionalHttpUrl` from `@/lib/url`. Pages render the link only when `isHttpUrl` holds, so an older value with another scheme shows no link.
-- The review step has the required Quality Charter checkbox (link to `/quality-charter` in a new tab).
-- It also has a required terms checkbox. No user exists yet, so the current `terms` version id goes into the event payload as `termsVersionId`.
+- The last step, `review`, summarizes the answers and has a required terms checkbox. No user exists yet, so the current `terms` version id goes into the event payload as `termsVersionId`.
 - The zod schema in `src/db/queries/organization-application.ts` is shared by the form and the server. Its messages are error codes that the form translates.
 - `requestOrganizationRegistration` rate limits by IP and email, then calls `submitOrganizationApplication`.
-- `submitOrganizationApplication` creates the unapproved organization and fills the profile (`legalName`, `registryId`, `legalRepresentative`, contact, `volunteersPerYear`, `motivation`, `charterAcceptedAt`).
+- `submitOrganizationApplication` creates the unapproved organization and fills the profile (`legalName`, `registryId`, `legalRepresentative`, contact, `volunteersPerYear`, `motivation`).
 - It also files the representative's pending `admin` join request and records `organization.application_received`, which mails the applicant a receipt and the platform admins.
 
 ### Review

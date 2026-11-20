@@ -25,4 +25,6 @@ export const ICON_NAMES = new Set(readJson<{ name: string }[]>('config/icons.jso
 
 export const COURSE_TYPES = ['intro', 'learner', 'skill'] as const
 
+export const DOC_AUDIENCES = ['volunteer', 'learner', 'tutor', 'manager', 'team'] as const
+
 export const LOCAL_DATABASE_REGEX = /@(localhost|127\.0\.0\.1)(:|\/)/u

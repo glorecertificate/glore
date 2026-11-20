@@ -86,7 +86,6 @@ interface OverviewLesson {
 
 export interface CourseOverview {
   description: string | null
-  durationMinutes: number | null
   enrollment: { completedAt: string | null; locale: Locale } | null
   icon: string | null
   id: number
@@ -106,7 +105,6 @@ export interface CourseOverview {
 export interface OverviewRow {
   archivedAt: string | null
   description: Partial<Record<Locale, string>> | null
-  durationMinutes: number | null
   icon: string | null
   id: number
   languages: string[] | null
@@ -153,7 +151,6 @@ export const buildOverview = (row: OverviewRow, language: Locale): CourseOvervie
 
   return {
     description: pickLocale(row.description, language),
-    durationMinutes: row.durationMinutes,
     enrollment: enrollment ? { completedAt: enrollment.completedAt, locale: enrollment.locale as Locale } : null,
     icon: row.icon,
     id: row.id,

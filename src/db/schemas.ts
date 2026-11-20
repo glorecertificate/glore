@@ -1,6 +1,7 @@
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
+import { DOC_AUDIENCES } from '@/db/queries/doc'
 import { docArticles, docCategories } from '@/db/schema'
 import { LOCALES } from '@/lib/i18n'
 
@@ -18,6 +19,7 @@ export const docArticleInsertSchema = createInsertSchema(docArticles, {
   title: intlText(200),
   content: intlText(200_000),
   excerpt: intlText(1000).nullish(),
+  audiences: z.array(z.enum(DOC_AUDIENCES)).optional(),
   languages: z.array(z.enum(LOCALES)).optional(),
   slug: schema => schema.min(1).max(100),
 }).omit(timestamps)
@@ -26,6 +28,7 @@ export const docArticleUpdateSchema = createUpdateSchema(docArticles, {
   title: intlText(200).optional(),
   content: intlText(200_000).optional(),
   excerpt: intlText(1000).nullish(),
+  audiences: z.array(z.enum(DOC_AUDIENCES)).optional(),
   languages: z.array(z.enum(LOCALES)).optional(),
   slug: schema => schema.min(1).max(100),
 }).omit(timestamps)

@@ -112,8 +112,6 @@ export const throttle = <F extends AnyFunction>(callback: F, limit: number): F =
   } as F
 }
 
-export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
 /*
   Misc
 */

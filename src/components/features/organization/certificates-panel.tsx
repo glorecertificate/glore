@@ -62,8 +62,9 @@ const CertificatesContent = ({
 }) => {
   const t = useTranslations('Organization')
   const scope = { organizationId, userId: viewerId ?? '' }
-  const [loaded, setLoaded] = useState<LoadedCertificates | null>(() => certificatesCache.read(scope))
+  const [fetched, setFetched] = useState<LoadedCertificates | null>(() => certificatesCache.read(scope))
   const [failed, setFailed] = useState(false)
+  const loaded = fetched ?? certificatesCache.read(scope)
 
   useEffect(() => {
     if (loaded) return
@@ -73,7 +74,7 @@ const CertificatesContent = ({
       const next = certificatesCache.read({ organizationId, userId: viewerId ?? '' })
       if (!active) return
       setFailed(!next)
-      setLoaded(next)
+      setFetched(next)
     }
     load()
     return () => {
@@ -84,7 +85,7 @@ const CertificatesContent = ({
   const reload = async () => {
     certificatesCache.invalidate()
     const next = await fetchCertificates(organizationId, false)
-    if (next) setLoaded(next)
+    if (next) setFetched(next)
   }
 
   if (failed) {

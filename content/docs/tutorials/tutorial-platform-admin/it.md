@@ -12,7 +12,7 @@ Apri Admin nella barra laterale. La panoramica mostra organizzazioni, membri, ce
 ## Organizzazioni
 
 1. Apri Organizzazioni. Le nuove candidature aspettano nella coda.
-2. Apri una candidatura per leggere i dettagli e l'accettazione della Carta della qualità.
+2. Apri una candidatura per leggere i dettagli.
 3. Approvala e chi ha fatto la candidatura riceve un invito via email. Oppure rifiutala con un commento, e chi ha fatto la candidatura riceve la decisione.
 4. Apri un'organizzazione in qualsiasi momento per vedere i suoi membri, inviti, certificati, impostazioni e attività.
 

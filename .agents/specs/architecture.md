@@ -43,11 +43,11 @@ src/
 │   ├── (auth)/         # Unauthenticated: invite/[token], join/[token], login, onboarding, register
 │   ├── (dashboard)/    # Authenticated (sidebar layout, own error and not-found): about, admin, certificates,
 │   │                   #   courses, dashboard, dev/ui, docs, emails, help, legal, notifications, organization, settings
-│   ├── [username]/     # Public profile page (page, opengraph-image, not-found)
+│   ├── u/[username]/   # Internal public profile, served at /@username (page, opengraph-image, not-found, legacy/route)
 │   ├── api/            # API routes (auth catch-all + v1/)
 │   ├── offline/        # Offline fallback page
 │   ├── legal/accept/   # Re-accept gate (outside the dashboard group)
-│   ├── privacy/, terms/, quality-charter/   # Public legal pages
+│   ├── privacy/, terms/   # Public legal pages
 │   └── verify/         # Public certificate verification (page, [code])
 ├── components/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,
@@ -138,6 +138,7 @@ src/
 - Its `ai-chat-editor.tsx` passes the value of `useAIChatEditor` to `StaticEditor`, or the React Compiler freezes the AI preview on its first word. Keep it after a re-pull (`course-editor.spec.ts`).
 - It stays in `ui/` so a CLI re-pull keeps working. Treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them.
 - The app touches it only through the `index.tsx` barrel and `provider.tsx`.
+- `markdownSafe` on the provider serves Markdown editors (`/legal`, docs): no align, callout, font, media, toggle, underline, todo.
 - The AI wiring lives in `use-chat.ts` (`DefaultChatTransport` to `/api/v1/ai/command`, chat registered on `AIChatPlugin` from `plugins/ai.tsx` `useHooks`). Keep it when re-pulling.
 - Learner lessons never load the vendored `provider.tsx`, which keeps the AI SDK out of learner chunks.
 - Instead, `features/courses/course-player/reader-provider.tsx` builds a read-only Plate editor from `reader-plugins.ts`, without the AI, copilot, toolbar, dnd, slash, emoji, or autoformat kits.
@@ -187,7 +188,7 @@ src/
 
 - `sendMail` (`src/lib/email.ts`) takes `template`, `category`, and `unsubscribeUrl`.
 - Every template forwards the `category` and `settings` base props (`EmailBaseProps`) to `EmailLayout`, which prints the reason and the preference link.
-- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the logo and motif header.
+- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. The header is the page band gradient (`EMAIL_COLORS.band*`, solid `bandFrom` fallback) with the white `public/email/logo.png` centered.
 - Mail renders in the RSC layer, which has no `createContext`, so templates never use React context.
 - Optional mail carries `List-Unsubscribe` headers. The POST at `/api/v1/mail-preferences` turns that category off for the user named in a signed token (`src/lib/unsubscribe.ts`).
 - A GET on that route opens `/settings?tab=notifications`.
@@ -205,4 +206,4 @@ src/
 - `organization/{application-decision,invitation (invite and reminder),join-request,join-request-received,membership,registration-request}`.
 - `team/{invite,role-changed}`.
 - Each has `PreviewProps` for `pnpm run email` and `Email.<name>` copy in all catalogs.
-- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. `public/email/header.png` is the logo and motif header.
+- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. The header is the page band gradient (`EMAIL_COLORS.band*`, solid `bandFrom` fallback) with the white `public/email/logo.png` centered.

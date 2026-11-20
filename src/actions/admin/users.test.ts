@@ -246,7 +246,7 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
       expect(await ids({ role: 'editor' })).toEqual([context.ids.editor])
       expect(await ids({ banned: 'yes' })).toEqual([context.ids.banned])
       expect((await search({ banned: 'no' })).data?.total).toBe(KEYS.length + BULK - 1)
-      expect(await ids({ organizationId: context.organizationId })).toEqual([context.ids.member])
+      expect(await ids({ organizationIds: [context.organizationId] })).toEqual([context.ids.member])
       expect((await search({ status: 'pending' })).data?.total).toBe(BULK + 1)
       expect((await search({ status: 'active' })).data?.total).toBe(KEYS.length - 1)
       expect(await ids({ q: `target ${suffix}` })).toEqual([context.ids.target])

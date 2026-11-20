@@ -28,9 +28,9 @@ export const DashboardHeader = ({
   <PageBand>
     <div className="flex h-10 min-w-0 items-center gap-2 text-[13px] text-band-muted">
       <DashboardMenuButton className="text-band-muted hover:bg-band-scrim hover:text-band-foreground" />
-      <span aria-hidden className="h-4 w-px bg-band-border" />
       {parent && (
         <>
+          <span aria-hidden className="h-4 w-px bg-band-border" />
           <Link className="hover:text-band-foreground" href={navigationHref(parent)}>
             <NavigationLabel id={parent} />
           </Link>
@@ -42,7 +42,7 @@ export const DashboardHeader = ({
         <Logo className="h-5 w-auto" onNavy />
       </HeaderLogo>
     </div>
-    <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-4 sm:mt-14">
+    <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <div className="flex min-w-0 grow flex-col gap-2">
         {(heading ?? title) && (
           <h1 className="type-band text-band-foreground">{heading ?? <Suspense>{title}</Suspense>}</h1>

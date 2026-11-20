@@ -6,6 +6,7 @@ import {
   type CookieName,
   type CookieOptions,
   type CookieValue,
+  USER_COOKIES,
   prefixCookieName,
 } from '@/lib/cookies'
 import { LOCALES, LOCALE_COOKIE } from '@/lib/i18n'
@@ -69,6 +70,11 @@ export const setCookie = async <T extends CookieName>(
 export const deleteCookie = async (name: CookieName, options?: CookieOptions) => {
   const { delete: remove } = await cookies()
   remove(name, options)
+}
+
+export const clearUserCookies = async () => {
+  const { delete: remove } = await cookies()
+  for (const name of USER_COOKIES) remove(name)
 }
 
 export const getLocaleCookie = async () => {

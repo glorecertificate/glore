@@ -1,31 +1,34 @@
 'use client'
 
-import { useState } from 'react'
+import { type Route } from 'next'
 
 import { useTranslations } from 'next-intl'
 
 import { ArticleCard } from '@/components/features/docs/article-card'
-import { ArticleEditor } from '@/components/features/docs/article-editor'
+import { isListedArticle } from '@/components/features/docs/visibility'
+import { useHelpRole } from '@/components/features/help/use-help-role'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Link } from '@/components/ui/link'
 import { type DocCategory } from '@/db/queries/doc'
 import { type IntlRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 interface DocsSectionProps {
   category: DocCategory
-  allCategories: DocCategory[]
   canEdit: boolean
   showTitle?: boolean
 }
 
-export const DocsSection = ({ allCategories, canEdit, category, showTitle = true }: DocsSectionProps) => {
+export const DocsSection = ({ canEdit, category, showTitle = true }: DocsSectionProps) => {
   const t = useTranslations('Docs')
   const { localize } = useI18n()
+  const role = useHelpRole()
+  const articles = category.articles.filter(article => isListedArticle(article, role))
 
-  const [editorOpen, setEditorOpen] = useState(false)
+  const newArticleHref = `/docs/new?category=${category.id}` as Route
 
   const title = localize(category.title as IntlRecord)
 
@@ -40,14 +43,16 @@ export const DocsSection = ({ allCategories, canEdit, category, showTitle = true
       >
         {showTitle && <h2 className="type-heading text-fg-title capitalize">{title}</h2>}
         {canEdit && (
-          <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
-            <LucideIcon name="plus" className="size-4" />
-            {t('editor.newArticle')}
+          <Button asChild size="sm" variant="outline">
+            <Link href={newArticleHref}>
+              <LucideIcon name="plus" className="size-4" />
+              {t('editor.newArticle')}
+            </Link>
           </Button>
         )}
       </div>
 
-      {category.articles.length === 0 ? (
+      {articles.length === 0 ? (
         <Empty className="border py-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -57,28 +62,21 @@ export const DocsSection = ({ allCategories, canEdit, category, showTitle = true
           </EmptyHeader>
           {canEdit && (
             <EmptyContent>
-              <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
-                <LucideIcon name="plus" className="size-4" />
-                {t('editor.newArticle')}
+              <Button asChild size="sm" variant="outline">
+                <Link href={newArticleHref}>
+                  <LucideIcon name="plus" className="size-4" />
+                  {t('editor.newArticle')}
+                </Link>
               </Button>
             </EmptyContent>
           )}
         </Empty>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {category.articles.map(article => (
+          {articles.map(article => (
             <ArticleCard key={article.id} article={article} className="h-full" />
           ))}
         </div>
-      )}
-
-      {canEdit && (
-        <ArticleEditor
-          categories={allCategories}
-          defaultCategoryId={category.id}
-          open={editorOpen}
-          onOpenChange={setEditorOpen}
-        />
       )}
     </section>
   )

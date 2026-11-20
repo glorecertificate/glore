@@ -30,7 +30,8 @@ export const LegalLanguageSwitch = ({ locale }: { locale: Locale }) => {
           size="sm"
           className={cn(
             'relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-1.5',
-            value !== locale && 'border border-transparent'
+            value !== locale &&
+              'border border-transparent hover:not-disabled:bg-band-scrim/60 dark:hover:not-disabled:bg-accent/50'
           )}
           type="button"
           variant={value === locale ? 'band-secondary' : 'ghost'}

@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
+import { Spinner } from '@/components/ui/spinner'
 import { type User } from '@/db/queries/user'
 import { usePoll } from '@/hooks/use-poll'
 import { APP_ROOT, OPEN_INVITATION_ROOT, REGISTER_ROOT } from '@/lib/constants'
@@ -42,7 +43,8 @@ export const OrganizationSwitcher = () => {
   const { isMobile, open, setActivePath, setOpenMobile } = useSidebar()
   const t = useTranslations('Layout')
   const tOrganization = useTranslations('Organization')
-  const { organization, setOrganization, setUser, user } = useSession()
+  const { organization, prefetchOrganizations, setOrganization, setUser, switchOrganization, switching, user } =
+    useSession()
   const [leaveOpen, setLeaveOpen] = useState(false)
   const { data: invitations, refresh } = usePoll(readInvitations, {
     enabled: showsOrganizationSwitcher(user),
@@ -56,11 +58,16 @@ export const OrganizationSwitcher = () => {
 
   const selectOrganization = (id: number) => {
     setActivePath(APP_ROOT)
-    setOrganization(id)
-    push(APP_ROOT)
+    switchOrganization(id)
   }
 
   const closeMobile = () => setOpenMobile(false)
+
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) return
+    prefetchOrganizations()
+    refresh()
+  }
 
   const handleLeft = (next: User) => {
     setUser(next)
@@ -73,10 +80,12 @@ export const OrganizationSwitcher = () => {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu onOpenChange={isOpen => isOpen && refresh()}>
+        <DropdownMenu onOpenChange={handleOpenChange}>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className="overflow-hidden rounded-xl border border-sidebar-border bg-sidebar-field py-7 transition-[background-color,color] duration-100 hover:bg-sidebar-accent data-[state=open]:bg-sidebar-accent"
+              onFocus={prefetchOrganizations}
+              onPointerEnter={prefetchOrganizations}
               size="lg"
               tooltip={organization?.name ?? t('noOrganization')}
               variant="outline"
@@ -120,7 +129,11 @@ export const OrganizationSwitcher = () => {
                 variant="ghost"
               >
                 <span>
-                  <LucideIcon className="size-4 stroke-foreground/64" name="chevrons-up-down" />
+                  {switching ? (
+                    <Spinner className="size-4 text-foreground/64" />
+                  ) : (
+                    <LucideIcon className="size-4 stroke-foreground/64" name="chevrons-up-down" />
+                  )}
                 </span>
               </Button>
             </SidebarMenuButton>

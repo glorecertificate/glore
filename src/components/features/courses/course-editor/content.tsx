@@ -30,14 +30,18 @@ export const preloadLessonEditor = async () => {
 const LessonEditor = lessonEditor.Component
 const RichTextEditorProvider = richTextEditorProvider.Component
 
-const CourseEditor = ({
+export const RichContentEditor = ({
   initialValue,
+  labelledBy,
+  markdownSafe,
   onChange,
   readOnly,
   version,
   flushRef,
 }: {
   initialValue: Value
+  labelledBy?: string
+  markdownSafe?: boolean
   onChange: (value: Value) => void
   readOnly: boolean
   version: string
@@ -75,14 +79,20 @@ const CourseEditor = ({
   }
 
   return (
-    <RichTextEditorProvider onChange={setValue} readOnly={readOnly} value={initialValue} version={version}>
-      <LessonEditor variant="fullWidth" />
+    <RichTextEditorProvider
+      markdownSafe={markdownSafe}
+      onChange={setValue}
+      readOnly={readOnly}
+      value={initialValue}
+      version={version}
+    >
+      <LessonEditor aria-labelledby={labelledBy} variant="fullWidth" />
     </RichTextEditorProvider>
   )
 }
 
 export const CourseContent = () => {
-  const { contentFlushRef, course, currentLesson, language, lessonKeys, setLesson } = useCourse()
+  const { contentFlushRef, contentVersions, course, currentLesson, language, lessonKeys, setLesson } = useCourse()
   const { user } = useSession()
 
   const canEdit = user.canEdit && !course.archivedAt
@@ -102,11 +112,11 @@ export const CourseContent = () => {
   }
 
   const initialContent = currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }]
-  const editorVersion = `${lessonKeys[currentLesson.id!] ?? currentLesson.id}-${language}`
+  const editorVersion = `${lessonKeys[currentLesson.id!] ?? currentLesson.id}-${language}-${contentVersions[currentLesson.id!] ?? 0}`
 
   return (
     <>
-      <CourseEditor
+      <RichContentEditor
         key={editorVersion}
         flushRef={contentFlushRef}
         initialValue={initialContent as Value}

@@ -89,7 +89,6 @@ export const summarizeCourse = (course: Course, { editor = false }: { editor?: b
   description: course.description,
   icon: course.icon,
   languages: course.languages,
-  durationMinutes: course.durationMinutes,
   sortOrder: course.sortOrder,
   createdAt: course.createdAt,
   updatedAt: course.updatedAt,

@@ -40,7 +40,6 @@ export const findCourseOverview = async (slug: string, userId: string) => {
     columns: {
       archivedAt: true,
       description: true,
-      durationMinutes: true,
       icon: true,
       id: true,
       languages: true,

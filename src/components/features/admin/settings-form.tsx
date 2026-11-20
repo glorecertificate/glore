@@ -55,7 +55,7 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(handleSubmit)}>
+      <form className="flex flex-col gap-6" method="post" onSubmit={form.handleSubmit(handleSubmit)}>
         <AdminSettingsSection description={t('contactDescription')} title={t('contactTitle')}>
           <SettingsField
             control={form.control}

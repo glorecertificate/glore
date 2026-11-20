@@ -6,7 +6,6 @@ import { useFormContext } from 'react-hook-form'
 import { FieldError } from '@/components/features/certificates/field-error'
 import { type ReviewFormValues } from '@/components/features/certificates/schemas'
 import { LucideIcon } from '@/components/icons/lucide'
-import { Banner } from '@/components/ui/banner'
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { RatingGroup } from '@/components/ui/rating-group'
 
@@ -29,40 +28,45 @@ export const EvaluationSection = () => {
   }
 
   return (
-    <section className="flex flex-col gap-4" aria-labelledby="evaluation-title">
-      <div className="space-y-1">
-        <h3 className="text-sm font-semibold" id="evaluation-title">
+    <section aria-labelledby="evaluation-title" className="flex min-w-0 flex-col gap-5">
+      <div className="flex flex-col gap-1.5">
+        <h2 className="type-heading text-fg-title" id="evaluation-title">
           {t('evaluationTitle')}
-        </h3>
+        </h2>
         <p className="text-sm text-muted-foreground">{t('evaluationDescription')}</p>
+        <p className="flex items-center gap-2 text-xs text-muted-foreground">
+          <LucideIcon className="size-3.5 shrink-0" name="eye-off" />
+          {t('blindNote')}
+        </p>
       </div>
-      <Banner>
-        <LucideIcon name="eye-off" className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-        <p>{t('blindNote')}</p>
-      </Banner>
-      {SCORES.map(score => (
-        <FormField
-          control={control}
-          key={score}
-          name={`scores.${score}`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{labels[score]}</FormLabel>
-              <p className="text-xs text-muted-foreground">{hints[score]}</p>
-              <FormControl>
-                <RatingGroup
-                  className="max-w-sm"
-                  color="brand"
-                  id={`score-${score}`}
-                  onValueChange={value => field.onChange(Number(value))}
-                  value={field.value ?? ''}
-                />
-              </FormControl>
-              <FieldError />
-            </FormItem>
-          )}
-        />
-      ))}
+      <div className="flex flex-col">
+        {SCORES.map(score => (
+          <FormField
+            control={control}
+            key={score}
+            name={`scores.${score}`}
+            render={({ field }) => (
+              <FormItem className="gap-x-6 gap-y-2 border-t border-border-subtle py-4 first:border-t-0 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                <div className="flex min-w-0 flex-col gap-1">
+                  <FormLabel className="text-sm font-semibold">{labels[score]}</FormLabel>
+                  <p className="text-xs text-muted-foreground">{hints[score]}</p>
+                </div>
+                <FormControl>
+                  <RatingGroup
+                    aria-label={labels[score]}
+                    className="w-full max-w-64 gap-1 sm:w-64"
+                    color="brand"
+                    id={`score-${score}`}
+                    onValueChange={value => field.onChange(Number(value))}
+                    value={field.value ?? ''}
+                  />
+                </FormControl>
+                <FieldError className="sm:col-span-2" />
+              </FormItem>
+            )}
+          />
+        ))}
+      </div>
     </section>
   )
 }

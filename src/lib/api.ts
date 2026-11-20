@@ -22,8 +22,8 @@ export const authorizeEditorRequest = async (request: NextRequest, scope: string
   return { response: null, user }
 }
 
-export const readJsonBody = async (request: NextRequest): Promise<unknown> => {
-  const { bytes } = await readLimitedBody(request.body, MAX_JSON_BODY_LENGTH)
+export const readJsonBody = async (request: NextRequest, maxBytes = MAX_JSON_BODY_LENGTH): Promise<unknown> => {
+  const { bytes } = await readLimitedBody(request.body, maxBytes)
   if (!bytes) return null
   try {
     return JSON.parse(new TextDecoder().decode(bytes))

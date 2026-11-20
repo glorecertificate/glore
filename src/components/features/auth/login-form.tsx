@@ -8,9 +8,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { login } from '@/actions/auth'
-import { SignupDialog } from '@/components/features/auth/signup-dialog'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { toast } from '@/components/ui/toast'
@@ -139,74 +138,61 @@ export const LoginForm = ({
   )
 
   return (
-    <>
-      <Form {...form}>
-        <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid gap-3">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      autoCapitalize="none"
-                      autoComplete="username"
-                      autoCorrect="off"
-                      defaultOpen
-                      disabled={loading}
-                      placeholder={t('userLabel')}
-                      variant="floating"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem className="gap-1.5">
-                  <div className="flex w-full justify-end">
-                    <Button
-                      className={cn('text-foreground/95', loading && 'pointer-events-none')}
-                      disabled={loading}
-                      onClick={setPasswordReset}
-                      size="text"
-                      type="button"
-                      variant="link"
-                    >
-                      {t('forgotPassword')}
-                    </Button>
-                  </div>
-                  <FormControl>
-                    <PasswordInput
-                      autoComplete="current-password"
-                      disabled={loading}
-                      readOnly={passwordReadOnly}
-                      variant="floating"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button
-            className="w-full [&_svg]:size-4"
-            disabled={formDisabled}
-            loading={loading}
-            type="submit"
-            variant="brand"
-          >
-            {loading ? t('loggingIn') : t('login')}
-          </Button>
-        </form>
-      </Form>
-      <SignupDialog loading={loading} />
-    </>
+    <Form {...form}>
+      <form className="grid gap-5" method="post" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('userLabel')}</FormLabel>
+              <FormControl>
+                <Input autoCapitalize="none" autoComplete="username" autoCorrect="off" disabled={loading} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-center justify-between gap-2">
+                <FormLabel>{t('passwordLabel')}</FormLabel>
+                <Button
+                  className={cn('font-medium text-link', loading && 'pointer-events-none')}
+                  disabled={loading}
+                  onClick={setPasswordReset}
+                  size="text"
+                  type="button"
+                  variant="link"
+                >
+                  {t('forgotPassword')}
+                </Button>
+              </div>
+              <FormControl>
+                <PasswordInput
+                  autoComplete="current-password"
+                  disabled={loading}
+                  readOnly={passwordReadOnly}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          className="w-full [&_svg]:size-4"
+          disabled={formDisabled}
+          loading={loading}
+          type="submit"
+          variant="brand"
+        >
+          {loading ? t('loggingIn') : t('login')}
+        </Button>
+      </form>
+    </Form>
   )
 }

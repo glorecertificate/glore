@@ -84,11 +84,69 @@ export const mocks = {
 }
 
 export const createFixture = async () => {
-  const [{ db }, schema, { eq, inArray, or }] = await Promise.all([
+  const [{ db }, schema, { and, eq, inArray, like, lt, or, sql }] = await Promise.all([
     import('@/db/client'),
     import('@/db/schema'),
     import('drizzle-orm'),
   ])
+
+  const sweepStaleFixtures = async () => {
+    const stale = sql`now() - interval '1 hour'`
+    const [staleOrganizations, staleUsers, staleCourses] = await Promise.all([
+      db
+        .select({ id: schema.organizations.id })
+        .from(schema.organizations)
+        .where(and(like(schema.organizations.handle, 'lane-a-%'), lt(schema.organizations.createdAt, stale))),
+      db
+        .select({ id: schema.users.id })
+        .from(schema.users)
+        .where(and(like(schema.users.id, 'lane-a-%'), lt(schema.users.createdAt, stale))),
+      db
+        .select({ id: schema.courses.id })
+        .from(schema.courses)
+        .where(and(like(schema.courses.slug, 'lane-a-%'), lt(schema.courses.createdAt, stale))),
+    ])
+    const orgIds = staleOrganizations.map(({ id }) => id)
+    const userIds = staleUsers.map(({ id }) => id)
+    const staleCourseIds = staleCourses.map(({ id }) => id)
+    if (orgIds.length + userIds.length + staleCourseIds.length === 0) return
+
+    const ownedCertificates = or(
+      inArray(schema.certificates.organizationId, orgIds),
+      inArray(schema.certificates.userId, userIds)
+    )
+    const certificateRows = await db
+      .select({ id: schema.certificates.id })
+      .from(schema.certificates)
+      .where(ownedCertificates)
+    await db.delete(schema.activityEvents).where(
+      or(
+        inArray(schema.activityEvents.organizationId, orgIds),
+        inArray(
+          schema.activityEvents.subjectId,
+          certificateRows.map(({ id }) => String(id))
+        )
+      )
+    )
+    await db.delete(schema.certificates).where(ownedCertificates)
+    await db.delete(schema.userAssessments).where(inArray(schema.userAssessments.userId, userIds))
+    await db.delete(schema.organizations).where(inArray(schema.organizations.id, orgIds))
+    const lessonRows = await db
+      .select({ id: schema.lessons.id })
+      .from(schema.lessons)
+      .where(inArray(schema.lessons.courseId, staleCourseIds))
+    await db.delete(schema.assessments).where(
+      inArray(
+        schema.assessments.lessonId,
+        lessonRows.map(({ id }) => id)
+      )
+    )
+    await db.delete(schema.lessons).where(inArray(schema.lessons.courseId, staleCourseIds))
+    await db.delete(schema.courses).where(inArray(schema.courses.id, staleCourseIds))
+    await db.delete(schema.users).where(inArray(schema.users.id, userIds))
+  }
+
+  await sweepStaleFixtures()
 
   const tag = randomUUID().slice(0, 8)
   const ids = Object.fromEntries(USER_KEYS.map(key => [key, `lane-a-${tag}-${key}`])) as Record<UserKey, string>

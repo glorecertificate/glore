@@ -159,7 +159,7 @@ const loadAdminOrganization = async (organizationId: number) =>
   await safeQuery(async () => {
     const [record, membershipRecords, invitationRecords, pipelineRows, activity] = await Promise.all([
       db.query.organizations.findFirst({
-        with: { joinRequests: true, profile: true },
+        with: { joinRequests: { with: { reviewer: { columns: reviewerColumns } } }, profile: true },
         where: eq(organizations.id, organizationId),
       }),
       db.query.memberships.findMany({

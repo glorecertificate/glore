@@ -29,7 +29,7 @@ import {
   InlineComboboxInput,
   InlineComboboxItem,
 } from '@/components/ui/rich-text-editor/components/inline-combobox'
-import { insertBlock } from '@/components/ui/rich-text-editor/utils'
+import { insertBlock, isBlockAvailable } from '@/components/ui/rich-text-editor/utils'
 
 interface Group {
   group: string
@@ -146,6 +146,11 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
     },
   ]
 
+  const available = groups.map(({ group, items }) => ({
+    group,
+    items: items.filter(item => isBlockAvailable(editor, item.value)),
+  }))
+
   return (
     <PlateElement {...props} as="span">
       <InlineCombobox element={element} trigger="/">
@@ -154,7 +159,7 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
         <InlineComboboxContent>
           <InlineComboboxEmpty>{'No results'}</InlineComboboxEmpty>
 
-          {groups.map(({ group, items }) => (
+          {available.map(({ group, items }) => (
             <InlineComboboxGroup key={group}>
               <InlineComboboxGroupLabel>{group}</InlineComboboxGroupLabel>
 

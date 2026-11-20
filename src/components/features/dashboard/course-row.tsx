@@ -17,7 +17,7 @@ export const CourseRow = ({
   type: React.ComponentProps<typeof CourseIcon>['type']
 }>) => (
   <Link
-    className="group/row flex items-center gap-3 rounded-xl border bg-card p-4 shadow-2xs transition-colors outline-none hover:bg-accent/40 focus-visible:focus-ring"
+    className="group/row flex items-center gap-3 rounded-xl border bg-card p-4 shadow-2xs transition-colors outline-none hover:bg-surface-hover focus-visible:focus-ring"
     href={`/courses/${slug}` as Route}
   >
     <CourseIcon icon={icon} type={type} />

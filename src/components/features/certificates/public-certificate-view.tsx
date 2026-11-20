@@ -43,7 +43,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
   const verificationUrl = certificate.code
     ? `${process.env.APP_URL}${VERIFY_ROOT}/${certificate.code}`
-    : `${process.env.APP_URL}/${username}`
+    : `${process.env.APP_URL}/@${username}`
 
   return (
     <BrandShell

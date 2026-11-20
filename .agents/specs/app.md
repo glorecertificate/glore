@@ -87,6 +87,8 @@ Three domain facts shape recurring decisions:
 - Editors and admins author multilingual content in Plate.js with AI assistance.
 - Ordered lessons hold rich text, multiple-choice questions, evaluations (self-assessment prompts), and one final assessment per lesson (skill courses only, last step).
 - Members see an overview and enroll with an explicit Start, which records the locale. Progress is binary per lesson.
+- Start and the first lesson open one confirmation dialog. Confirming enrolls the member and opens the first lesson.
+- A lesson link of a course that is not started shows a start prompt, not a redirect.
 - Volunteers keep a skill compass (up to 3 strengths, 5 goals) that drives course recommendations.
 - The server grades quizzes and returns the explanation of each answer. There are no streaks or leaderboards (D15).
 - Publication states: archived, draft, partial, published.
@@ -97,7 +99,7 @@ Three domain facts shape recurring decisions:
 - Volunteers certify each skill by a blind choice among three level descriptions in the last lesson of the course. They submit a certificate tied to a volunteering experience: selected skill courses, language, activity dates, duration, location, description, and an organization rating of 1 to 5.
 - Submission auto-assigns a tutor. Approval generates the PDF.
 - `/verify/<code>` is the canonical public page (`certificates.md`, "Public verification").
-- `/{username}` shows the featured certificate for holders who opted in.
+- `/@{username}` shows the featured certificate for holders who opted in.
 - The public page shows a verified badge, volunteer and org, activity metrics, issued date, PDF download, QR code, share meta (Open Graph, Twitter Card), and a join-GloRe CTA.
 
 ### AI writing assistant
@@ -118,13 +120,17 @@ Three domain facts shape recurring decisions:
 - A course covers its title, description, and outcomes. Each lesson is its own target (title, content, questions, options, evaluations, assessment descriptions).
 - A manual save in a non-default locale sets `draft` and keeps the old hash, so a stale locale stays `outdated` until review or re-translation.
 - Mark as reviewed stores the current hash and records `content.translation_reviewed`.
-- Editors see the status in the course header popover, the doc article dialog, and the skill group dialog (`features/translations/panel.tsx`). Doc categories have no editor UI.
+- Doc categories have no editor UI. The skill group dialog shows no review status.
 - `translateEntity` (`actions/translations/ai.ts`) translates one entity per call, and the client loops over a course and its lessons. Human text needs `overwrite`.
 - AI translation is limited to 150 an hour per editor (`content-translate:<id>`, `RATE_LIMITED`). Every translation write expires `CacheTag.ContentTranslations` (`expireTranslationCaches`).
 - It validates keys, placeholders, link URLs, and length before saving as `machine`. `src/lib/translate.ts` skips code blocks, inline code, and text without letters.
+- The course editor translates with AI from any language that has text. The Translate button beside the lesson tabs lists the other languages that have text for the current lesson ("Translate from <language>", or a message when none has). A selection translates the lesson title, body, and activities (questions, options, explanations, evaluations, assessment) into the editing language and replaces the text there without confirmation. It is disabled for an unsaved lesson. There is no whole-course translation. The course title and description have their own field menus (shown while the field is focused) with the same source list.
+- Both menus call `POST /api/v1/ai/translate` (NDJSON stream, 2 runs per user, 3000 units an hour). The result lands in the draft as unsaved changes and is the current text. A result is dropped if the field changed after the run started. The normal save path applies (`markTranslationsEdited`). There is no per-field origin and no review step in the course editor.
+- The doc article editor uses the same flow on the draft (`docs/article-editor/translation.tsx`, `field-translate-button.tsx`): the title and excerpt have focus-revealed field menus, and the Translate menu beside the language tabs translates title, excerpt, and body (as a Plate value, saved back as markdown). It has no status or review step.
+- The skill group dialog (Add and Edit, `skill-framework/group-dialog.tsx`) uses the same flow on its own state. It has the icon picker first, language tabs with a status dot (green when the locale has a name and a description, grey otherwise, plus a warning dot for unsaved edits), one name input and one description textarea. Each label row has an always visible translate button (`group-field-translate.tsx`) with a source menu of the other locales that have text for the field (a disabled message when none). The result lands in the dialog as unsaved text and saves with the dialog. There are no review cards. `translateEntity` and `reviewTranslation` have no UI user left.
 - `doc_articles.languages` publishes a doc per locale next to the `published` master switch, and unpublished locales are blanked for non-editors.
 - Changing `courses.languages` or `doc_articles.languages` records `course.locale_published` or `doc.locale_published`.
-- The editor dashboard shows reviewed and translated counts per locale (`actions/translations/coverage.ts`).
+- The editor dashboard shows Content health (a complete-share bar and a check matrix of all live courses, needing work first, that scrolls on its own, with a `View all N courses` link to `/courses`) beside an informative Translation gaps card (`actions/translations/coverage.ts`). Gaps count, per kind of content and locale, the parts with no text in that locale. From `xl`, the two cards share one row and one height.
 
 ### Skill level descriptions
 
@@ -151,20 +157,24 @@ Three domain facts shape recurring decisions:
 ### Dashboard
 
 - `/dashboard` renders one server-loaded view per role (`loadDashboard` in `actions/dashboard/`, reusing the certificate, course, organization, and notification reads).
-- Volunteer: the welcome card carries the stage eyebrow, greeting, status sentence, one primary action (and preview, download or share by phase), and a four-segment step bar (learn, request, review, certificate). Below it, equal-height cards list the skill courses and the certificate request (organization, skills, hours, last saved, code, reason). The tutor note and flagged steps show in the welcome card.
+- Volunteer: the band greets the volunteer. Below it, the journey rail card (learn, request, review, certificate, with the wizard steps of an open request and the other courses on the path) sits beside one stage card with the phase title, status badge, status sentence, skill seals, and the actions by phase (primary, preview, download or share). The tutor note and flagged steps show in the stage card. Below `lg`, the stage card comes first and the rail stacks under it.
 - Learner: checklist, continue, recommendations.
-- Tutor: the welcome card shows the workload and a Start next review action (average review time only from five reviews). "Needs your review" lists the five oldest requests with a row button and one queue link, then the latest updates.
+- Tutor: the welcome card shows the workload and a Start next review action (average review time only from five reviews). "Needs your review" lists the five oldest requests with the queue age badge, a row button, and one queue link, then the latest updates. A `changes_requested` row shows its age as plain text.
 - Representative and owner: the band holds Invite members. The main column has the setup checklist, the shared `AttentionList` (join requests, changes requested, expired invitations with Resend, built by `buildAttention` in `db/queries/organization-attention.ts` and carried by the organization panel data), and recent activity. The rail shows non-zero certificate statuses and member roles (`features/organization/overview-rail.tsx`). The organization overview tab reuses the same list and rail.
 - Editor: content health, translation gaps, then enrollment charts. The admin overview owns the pending decisions.
-- Users without an organization see an empty state.
+- Users without an organization see one card (`dashboard/no-organization.tsx`): how to join, the help guide link, their pending invitations with Open invitation (`loadViewerInvitations` in `actions/shell/invitations-core.ts`), and Register an organization. `/courses` shows the same card instead of the catalog (`course-list/content.tsx`), because every course would open as not found.
 - Each view owns the page `h1` and the header bar shows no title, on purpose (#151): two `h1` elements would repeat the page name.
-- The learner, tutor, representative and owner, and editor views open with `DashboardHero`, the welcome card (decisions.md, U22): a gradient card with the greeting as `h1`, the subtitle, the organization, one action, and the animated globe at 25 to 30% opacity in the top-right corner. The volunteer hero adds the stage eyebrow and the step bar. `DashboardHero` places its actions under the text.
+- The learner, tutor, representative and owner, and editor views open with `DashboardHero`, the welcome card (decisions.md, U22): a gradient card with the greeting as `h1`, the subtitle, the organization, one action, and the animated globe at 25 to 30% opacity in the top-right corner. `DashboardHero` places its actions under the text.
 - `DashboardHero` is a client island. `Globe` renders its canvas in the server HTML and loads `cobe` after hydration at pixel ratio 0.5 (1.5 at most on phones), because a `next/dynamic` mount added about 100 ms to the dashboard client navigation and the full ratio starved the main thread in software WebGL. The card renders without the globe when WebGL is off.
 - Empty cards use `DashboardEmpty` (icon and title).
 
 ### Documentation
 
 - `/docs` with `/docs/intro`, `/docs/faq`, `/docs/tutorials`: live-editable guides authored by admins and editors.
+  - `doc_articles.audiences` lists the help roles of an article (`volunteer`, `learner`, `tutor`, `manager`, `team`). An empty list means everyone.
+  - Lists, search, and previous and next links show a user only the articles for their help role (`useHelpRole`). The team sees all articles, with audience badges.
+  - A direct link to an article for another role still opens.
+  - The "Still need help?" card shows only to users who cannot edit the docs. Editors and admins do not see it.
 
 ### Settings
 
@@ -199,7 +209,7 @@ Rules not already stated above or in `certificates.md`:
 1. A user without `onboardedAt` cannot reach dashboard routes. The proxy redirects to `/onboarding`, and an onboarded user hitting `/onboarding` goes to `/dashboard`.
 2. Only `isAdmin` users reach `/admin`.
 3. Only `isEditor` or `isAdmin` users edit courses. Everyone else gets viewer mode.
-4. One active organization per session, held in a cookie. Switching org reloads the dashboard context.
+4. One active organization per session, held in a cookie. A switch shows a prefetched `/dashboard?org=<id>`, which the proxy renders with that cookie.
 5. Once `approved`, a certificate is immutable and checkable by its code at `/verify/<code>`. The personal profile page stays opt-in.
 6. All user-facing strings go through next-intl. No hardcoded UI text.
 7. App cookies use the `gl_` prefix (`COOKIE_PREFIX` in `src/lib/cookies.ts`). Better Auth uses `gl` through `advanced.cookiePrefix`. The locale cookie `NEXT_LOCALE` has no prefix.

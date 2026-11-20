@@ -5,9 +5,9 @@ import { useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { ArticleEditor } from '@/components/features/docs/article-editor'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
+import { listedCategories } from '@/components/features/docs/visibility'
 import { useHelpRole } from '@/components/features/help/use-help-role'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
@@ -21,9 +21,11 @@ import { SearchInput } from '@/components/ui/search'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
 import { pickLocale } from '@/db/queries/learning'
 import { SHORTCUTS } from '@/lib/shortcuts'
+import { cn } from '@/lib/utils'
 
 const START_SLUGS = ['what-is-glore', 'how-certification-works', 'roles', 'getting-started']
 const BROWSABLE = ['intro', 'tutorials', 'faq']
+const TUTORIALS = 'tutorials'
 const COLUMN_PREVIEW = 5
 
 interface DocsListProps {
@@ -56,18 +58,9 @@ const ArticleLink = ({ article }: { article: DocArticle }) => {
   )
 }
 
-const TopicColumn = ({
-  allCategories,
-  canEdit,
-  category,
-}: {
-  allCategories: DocCategory[]
-  canEdit: boolean
-  category: DocCategory
-}) => {
+const TopicColumn = ({ canEdit, category }: { canEdit: boolean; category: DocCategory }) => {
   const t = useTranslations('Docs')
   const { localize } = useI18n()
-  const [editorOpen, setEditorOpen] = useState(false)
   const browsable = BROWSABLE.includes(category.slug)
   const shown = browsable ? category.articles.slice(0, COLUMN_PREVIEW) : category.articles
 
@@ -93,18 +86,12 @@ const TopicColumn = ({
         </Link>
       )}
       {canEdit && (
-        <>
-          <Button className="mt-1 w-fit" onClick={() => setEditorOpen(true)} size="sm" variant="outline">
+        <Button asChild className="mt-1 w-fit" size="sm" variant="outline">
+          <Link href={`/docs/new?category=${category.id}` as Route}>
             <LucideIcon className="size-4" name="plus" />
             {t('editor.newArticle')}
-          </Button>
-          <ArticleEditor
-            categories={allCategories}
-            defaultCategoryId={category.id}
-            onOpenChange={setEditorOpen}
-            open={editorOpen}
-          />
-        </>
+          </Link>
+        </Button>
       )}
     </section>
   )
@@ -118,13 +105,16 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
   const t = useTranslations('Docs')
   const { locale } = useI18n()
   const { email, website } = useSettings()
+  const role = useHelpRole()
   const tutorialSlug = useRoleTutorial()
 
-  const docs = useDocsSearch(categories)
+  const listed = listedCategories(categories, role)
+  const columns = listed.filter(category => canEdit || category.articles.length > (category.slug === TUTORIALS ? 1 : 0))
+  const docs = useDocsSearch(listed)
   const term = query.trim()
   const results = term ? docs.search(term, 500) : []
 
-  const articles = categories.flatMap(category => category.articles)
+  const articles = listed.flatMap(category => category.articles)
   const bySlug = (slug: string) => articles.find(article => article.slug === slug)
   const startArticles = START_SLUGS.map(bySlug).filter((article): article is DocArticle => Boolean(article))
   const tutorial = bySlug(tutorialSlug)
@@ -179,7 +169,12 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
           {startArticles.length > 0 && (
             <section className="flex flex-col gap-3">
               <h2 className="type-heading text-fg-title">{t('hub.startHere')}</h2>
-              <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 xl:grid-cols-4">
+              <div
+                className={cn(
+                  'grid grid-cols-1 gap-3 min-[480px]:grid-cols-2',
+                  startArticles.length === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'
+                )}
+              >
                 {startArticles.map(article => (
                   <Link
                     className="rounded-xl focus-visible:focus-ring"
@@ -209,31 +204,33 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
             </Link>
           )}
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {categories.map(category => (
-              <TopicColumn allCategories={categories} canEdit={canEdit} category={category} key={category.id} />
+          <div className={cn('grid grid-cols-1 gap-4', columns.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3')}>
+            {columns.map(category => (
+              <TopicColumn canEdit={canEdit} category={category} key={category.id} />
             ))}
           </div>
         </>
       )}
 
-      <Card className="gap-4 bg-surface-sunken p-6 shadow-none sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="type-heading text-fg-title">{tHelp('contact.title')}</h2>
-        <div className="flex shrink-0 flex-wrap gap-2">
-          <Button asChild variant="brand">
-            <a href={`mailto:${email}`}>
-              <LucideIcon name="mail" />
-              {tHelp('contact.emailLabel')}
-            </a>
-          </Button>
-          <Button asChild variant="outline">
-            <a href={website} rel="noopener noreferrer" target="_blank">
-              {tHelp('contact.websiteLabel')}
-              <LucideIcon name="arrow-up-right" />
-            </a>
-          </Button>
-        </div>
-      </Card>
+      {!canEdit && (
+        <Card className="gap-4 bg-surface-sunken p-6 shadow-none sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="type-heading text-fg-title">{tHelp('contact.title')}</h2>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Button asChild variant="brand">
+              <a href={`mailto:${email}`}>
+                <LucideIcon name="mail" />
+                {tHelp('contact.emailLabel')}
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href={website} rel="noopener noreferrer" target="_blank">
+                {tHelp('contact.websiteLabel')}
+                <LucideIcon name="arrow-up-right" />
+              </a>
+            </Button>
+          </div>
+        </Card>
+      )}
     </div>
   )
 }

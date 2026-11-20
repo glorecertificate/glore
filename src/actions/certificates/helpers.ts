@@ -33,7 +33,7 @@ const certificateWith = {
   },
   skills: {
     with: {
-      course: { columns: { id: true, slug: true, title: true } },
+      course: { columns: { icon: true, id: true, slug: true, title: true } },
     },
   },
 } as const

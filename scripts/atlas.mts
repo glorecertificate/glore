@@ -85,7 +85,7 @@ const EDITING = ['/translations', '/legal', '/emails']
 const STATIC_ROUTES: Record<Role, string[]> = {
   admin: [...SHARED, ...ADMIN, ...EDITING],
   editor: [...SHARED, '/courses/skills', ...EDITING],
-  guest: ['/login', '/register', '/verify', '/privacy', '/terms', '/quality-charter', '/offline', '/nosuchuser'],
+  guest: ['/login', '/register', '/verify', '/privacy', '/terms', '/offline', '/nosuchuser'],
   learner: [...SHARED],
   owner: [...SHARED, '/organization', ...ORGANIZATION_TABS, '/certificates'],
   representative: [...SHARED, '/organization', '/certificates'],

@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import { CourseRowMenu } from '@/components/features/courses/skill-framework/assign-select'
 import { SkillGroupControls } from '@/components/features/courses/skill-framework/group-controls'
 import { type SkillGroupDraft } from '@/components/features/courses/skill-framework/group-dialog'
+import { LocaleFlags } from '@/components/features/courses/skill-framework/locale-flags'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Card } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -109,7 +110,7 @@ export const SkillGroupCard = ({
                   >
                     {row.title}
                   </Link>
-                  <span className="text-xs text-muted-foreground uppercase">{row.languages.join(', ')}</span>
+                  <LocaleFlags languages={row.languages} />
                   <StatusBadge tone={row.status === 'published' ? 'success' : 'neutral'}>
                     {tList(STATUS_LABELS[row.status])}
                   </StatusBadge>

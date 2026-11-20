@@ -1,7 +1,7 @@
 {
   "budgets": { "prefetchKb": { "app": 400, "public": 20 }, "scriptKb": { "app": 300, "public": 150 } },
   "field": { "cls": 0.05, "fcp": 1200, "inp": 100, "lcp": 1800, "ttfb": 400 },
-  "publicPaths": ["/login", "/register", "/verify", "/privacy", "/terms", "/quality-charter"],
+  "publicPaths": ["/login", "/register", "/verify", "/privacy", "/terms"],
   "regression": { "floor": { "cls": 0.005, "kb": 2, "ms": 20 }, "ratio": 0.1 },
   "targets": {
     "interaction": {

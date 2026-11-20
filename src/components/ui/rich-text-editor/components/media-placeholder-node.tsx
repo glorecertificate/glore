@@ -65,13 +65,15 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
     accept: currentContent.accept,
     multiple: true,
     onFilesSelected: (data: { plainFiles?: unknown }) => {
-      const [placeholder, rest] = data.plainFiles as [File, FileList]
+      const [placeholder, ...rest] = (data.plainFiles ?? []) as File[]
+      if (!placeholder) return
 
       replaceCurrentPlaceholder(placeholder)
 
-      if (rest.length > 0) {
-        editor.getTransforms(PlaceholderPlugin).insert.media(rest)
-      }
+      if (rest.length === 0) return
+      const files = new DataTransfer()
+      for (const extra of rest) files.items.add(extra)
+      editor.getTransforms(PlaceholderPlugin).insert.media(files.files)
     },
   })
 

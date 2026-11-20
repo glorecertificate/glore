@@ -8,7 +8,7 @@ Gli editor scrivono i contenuti che vedono studenti e volontari. Non vedi le are
 ## Crea un corso
 
 1. Apri Corsi e premi Nuovo corso.
-2. Compila titolo, descrizione, icona, tipo di corso, durata e obiettivi. Per un corso sulle competenze, scegli il suo gruppo di competenze.
+2. Compila titolo, descrizione, icona, tipo di corso e obiettivi. Per un corso sulle competenze, scegli il suo gruppo di competenze.
 3. Aggiungi le lezioni. L'editor gestisce titoli, elenchi, citazioni e link. Digita / per aprire l'assistente IA, che può generare, migliorare, riassumere e tradurre i testi. Leggi sempre ciò che scrive.
 4. Aggiungi le domande del quiz a una lezione. Ogni domanda ha più opzioni, esattamente una corretta, e una spiegazione che insegna il perché.
 5. Nell'ultima lezione di un corso sulle competenze, aggiungi le affermazioni di autovalutazione e la valutazione finale.

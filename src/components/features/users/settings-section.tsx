@@ -17,6 +17,6 @@ export const SettingsSection = ({
       <h2 className="text-sm font-normal text-muted-foreground">{title}</h2>
       {description && <p className="mt-1 text-sm text-pretty text-muted-foreground">{description}</p>}
     </div>
-    <div className="min-w-0 space-y-4">{children}</div>
+    <div className="@container/fields min-w-0 space-y-4">{children}</div>
   </section>
 )

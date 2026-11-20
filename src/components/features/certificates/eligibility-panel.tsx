@@ -20,11 +20,13 @@ interface Requirement {
 }
 
 export const EligibilityPanel = ({
+  back = false,
   className,
   eligibility,
   openRequestId,
   ...props
 }: Omit<React.ComponentProps<'section'>, 'children'> & {
+  back?: boolean
   eligibility: CertificateEligibility
   openRequestId?: number | null
 }) => {
@@ -97,9 +99,11 @@ export const EligibilityPanel = ({
               <Link href="/courses">{t('goToCourses')}</Link>
             </Button>
           )}
-          <Button asChild variant="outline">
-            <Link href="/certificates">{t('backToCertificates')}</Link>
-          </Button>
+          {back && (
+            <Button asChild variant="outline">
+              <Link href="/certificates">{t('backToCertificates')}</Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>

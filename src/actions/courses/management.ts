@@ -23,7 +23,7 @@ import {
 } from '@/db/mutations/course'
 import { languageChanges } from '@/db/queries/content-translation'
 import { type Course, parseCourse } from '@/db/queries/course'
-import { isCourseTitleValid, isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
+import { isCourseTitleValid, isReservedSlug, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
 import { hasEveryLevelDescription } from '@/db/queries/skill-choice'
 import { SKILL_LEVELS, SKILL_LEVEL_DESCRIPTION_MAX_LENGTH } from '@/db/queries/skill-level-description'
@@ -60,7 +60,6 @@ const resolveCourseUpdate = async (
 
 const sanitizeDetails = <T extends TableUpdate<'courses'>>(values: T): T => ({
   ...values,
-  ...('durationMinutes' in values ? { durationMinutes: sanitizeDuration(values.durationMinutes) } : {}),
   ...('outcomes' in values ? { outcomes: sanitizeOutcomes(values.outcomes) } : {}),
 })
 

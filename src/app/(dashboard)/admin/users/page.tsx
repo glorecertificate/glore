@@ -22,7 +22,7 @@ const AdminUsersContent = async ({ searchParams }: { searchParams: PageProps<'/a
   const [users, organizations] = await Promise.all([
     loadAdminUsers({
       banned: params.banned,
-      organizationId: params.org,
+      organizationIds: params.org,
       page: params.page,
       q: params.q,
       role: params.role,

@@ -79,6 +79,7 @@ export const DataTable = <T,>({
   pageResetKey,
   pagination,
   rail,
+  refreshing = false,
   rowActions,
   rowLabel,
   rows,
@@ -101,6 +102,7 @@ export const DataTable = <T,>({
   pageSize?: number
   pagination?: DataTablePagination
   rail?: FilterRailProps
+  refreshing?: boolean
   rowActions?: (row: T) => React.ReactNode
   rows: T[]
   toolbar?: React.ReactNode
@@ -137,6 +139,12 @@ export const DataTable = <T,>({
   const pageSelected = pageIds.filter(id => selection.includes(id)).length
   const allSelected = pageIds.length > 0 && pageSelected === pageIds.length
   const hasSelection = selectable && selection.length > 0 && !loading
+  const statusText = () => {
+    if (hasSelection) return t('selected', { count: selection.length })
+    if (refreshing) return t('loading')
+    if (loading) return null
+    return t('count', { count: total })
+  }
   const pageChecked = allSelected ? true : pageSelected > 0 ? 'indeterminate' : false
 
   const select = (ids: DataTableRowId[]) => {
@@ -182,7 +190,7 @@ export const DataTable = <T,>({
 
   return (
     <div
-      aria-busy={loading}
+      aria-busy={loading || refreshing}
       className={cn(
         'flex min-w-0 rounded-xl bg-card shadow-card',
         rail ? 'overflow-hidden max-lg:flex-col lg:flex-row' : 'flex-col gap-4 p-4',
@@ -199,7 +207,7 @@ export const DataTable = <T,>({
         <div className="flex min-h-8 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           {rail ? <FilterRailToolbar {...rail} /> : filters}
           <span aria-live="polite" className="sr-only" role="status">
-            {hasSelection ? t('selected', { count: selection.length }) : !loading && t('count', { count: total })}
+            {statusText()}
           </span>
           {hasSelection ? (
             <div
@@ -215,7 +223,14 @@ export const DataTable = <T,>({
               </Button>
             </div>
           ) : (
-            <span aria-hidden className={cn('text-sm text-muted-foreground max-sm:order-last', rail && 'lg:ml-auto')}>
+            <span
+              aria-hidden
+              className={cn(
+                'flex items-center gap-2 text-sm text-muted-foreground max-sm:order-last',
+                rail && 'lg:ml-auto'
+              )}
+            >
+              {refreshing && <Spinner size="sm" />}
               {!loading && t('count', { count: total })}
             </span>
           )}

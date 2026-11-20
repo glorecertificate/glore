@@ -2,11 +2,10 @@ import { Suspense } from 'react'
 
 import { getAuthUser } from '@/actions/auth'
 import { getInviteLinkPreview } from '@/actions/organizations/previews'
-import { AuthSplit } from '@/components/features/auth/auth-split'
+import { AuthMain } from '@/components/features/auth/auth-frame'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { JoinLinkCard } from '@/components/features/organization/invite/join-link-card'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageTitle } from '@/components/layout/page-title'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -42,14 +41,11 @@ const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['par
 }
 
 const JoinPage = ({ params }: PageProps<'/join/[token]'>) => (
-  <AuthSplit
-    message={<PageTitle namespace="JoinLink" name="panelMessage" />}
-    title={<PageTitle namespace="JoinLink" name="panelTitle" />}
-  >
+  <AuthMain size="md">
     <Suspense fallback={<LoadingFallback />}>
       <JoinContent params={params} />
     </Suspense>
-  </AuthSplit>
+  </AuthMain>
 )
 
 export default JoinPage

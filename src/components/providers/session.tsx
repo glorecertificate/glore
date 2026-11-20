@@ -1,9 +1,13 @@
 'use client'
 
-import { createContext, use, useRef, useState } from 'react'
+import { type Route } from 'next'
+import { useRouter } from 'next/navigation'
+import { createContext, use, useRef, useState, useTransition } from 'react'
 
 import { type User } from '@/db/queries/user'
 import { useCookies } from '@/hooks/use-cookies'
+import { APP_ROOT, ORGANIZATION_PARAM } from '@/lib/constants'
+import { prefetchFull } from '@/lib/prefetch'
 
 interface SessionContextValue {
   impersonating?: boolean
@@ -11,10 +15,14 @@ interface SessionContextValue {
   organizationId?: number
 }
 
+const organizationHref = (id: number) => `${APP_ROOT}?${ORGANIZATION_PARAM}=${id}`
+
 const useSessionContext = (value: SessionContextValue) => {
   const cookies = useCookies()
   const cookiesRef = useRef(cookies)
   cookiesRef.current = cookies
+  const router = useRouter()
+  const [switching, startSwitching] = useTransition()
 
   const [userState, setUser] = useState(value.user)
   const [prev, setPrev] = useState(value.user)
@@ -31,6 +39,17 @@ const useSessionContext = (value: SessionContextValue) => {
   const setOrganization = (id: number) => {
     setOrgId(id)
     cookiesRef.current.set('org', id)
+  }
+
+  const prefetchOrganizations = () => {
+    for (const { organization: other } of userState.memberships) {
+      if (other.id !== orgId) prefetchFull(router, organizationHref(other.id))
+    }
+  }
+
+  const switchOrganization = (id: number) => {
+    setOrganization(id)
+    startSwitching(() => router.push(organizationHref(id) as Route))
   }
 
   const updateOrganization = (id: number, patch: Partial<User['organizations'][number]>) => {
@@ -70,7 +89,10 @@ const useSessionContext = (value: SessionContextValue) => {
     user,
     setUser,
     organization,
+    prefetchOrganizations,
     setOrganization,
+    switchOrganization,
+    switching,
     updateOrganization,
   }
 }

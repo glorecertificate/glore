@@ -10,7 +10,6 @@ import { isHttpUrl } from '@/lib/url'
 import { MailLink } from './mail-link'
 
 export interface ApplicationSummaryData {
-  charterAcceptedAt: string | null
   city: string
   contactEmail: string | null
   contactName: string | null
@@ -59,12 +58,6 @@ export const ApplicationSummary = ({
 
   const reviewRows: Pair[] = [
     [t('app_motivation'), organization.motivation ?? none],
-    [
-      t('app_charter'),
-      organization.charterAcceptedAt
-        ? t('app_charterAccepted', { date: formatDate(organization.charterAcceptedAt) })
-        : t('app_charterMissing'),
-    ],
     [t('app_submitted'), formatDate(organization.createdAt)],
   ]
   if (request && request.status !== 'pending' && request.reviewedAt) {

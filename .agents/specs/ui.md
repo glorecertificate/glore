@@ -29,6 +29,7 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `DESIGN.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
 
 - Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a `bg-sidebar-active` item (white at 12%, `sidebar-ring` icon), and `Logo onNavy` with no chip (`/icon-on-navy.png`). The bell sits in the logo row. `SidebarCount` shows a plain number, or a white badge when `floating`. The `logo-chip` utility stays for auth pages. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
+- Auth aside: one 32rem aside for every auth screen (`AuthFrame` in `features/auth/`) with a 165deg gradient of the `band-*` tokens, the white logo, a `type-display` headline and one subline (`Auth.asideTitle`, `Auth.asideMessage`), and 40px padding. The live `AuthGlobe` (about 760px, left -188px, masked toward the bottom) sits behind the text. The text is `pointer-events-none` so a drag reaches the canvas. The globe color follows `AuthGlobeContext` (`errored`, `view`), and `AuthFlow` resets it on unmount. In the pane, the language select is top right and the legal links and theme switch sit at the bottom, all 40px from the edges. The register step list renders above the form (`AuthMain` `header`). Below `lg`, the aside is the logo bar.
 - Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1826`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
 - `DashboardHeader` renders `PageBand`: gradient `bg-band` (four stops from the sidebar navy to teal and green, no globe), `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it. With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
 - `Button` `primary` and `brand` are the teal gradient with white text. `band` (green, navy text) and `band-secondary` (scrim) sit on the band. Press scales to `.98` in 80 ms.
@@ -54,10 +55,16 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - `ArrowsMotif` is decorative vector art from the certificate template, hidden from assistive technology.
 - `LevelDots` takes a level, a number of `steps`, and a localized level label. It renders only after issue or in the tutor workspace.
 - `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
-- `StatCard` composes `NumberTicker`. Formatting follows next-intl, and the ticker respects reduced motion.
+- `StatCard` shows its value at once, with no count-up. Formatting follows next-intl.
+- A `DataTable` that refetches after a filter change keeps its rows as they are and shows a small spinner before the result count (`refreshing`). It never fades or covers the table.
 - `Banner` supplies semantic status variants.
 - `StatusBadge` takes a `tone`: `neutral`, `info`, `success`, `warning`, `danger`, or a certificate tone (`draft`, `submitted`, `review`, `changes`, `approved`, `rejected`, `withdrawn`, `revoked`). It takes no icon. `Progress` has one neutral track and a fill that matches the status color.
 - `FilterRail` (`filter-rail.tsx`) is passed to `DataTable` as `rail` (groups with live counts, `extra`, `search`, `onReset`). From `lg` it is a panel with active chips. Below `lg` it is a search field and a Filters sheet with the active count. Counts come from the server (`FacetedPage.facets`) or from the rows.
+- A `FilterRail` group holds `values: string[]` and `onChange(values)`. A group is multi-select by default and renders checkboxes. Options in a group combine with OR. Groups combine with AND. An empty group means no filter. A group with every option ticked also filters nothing, and its boxes stay ticked. A checkbox always means multi-select.
+- Set `selection: 'single'` only when the state truly holds one value. It renders a radio group with a Clear button. Set `selection: 'required'` for a group that always has one value, such as a queue tab. It has no clear button, no chip, and no count in the Filters badge.
+- Each option count is a facet count: the other groups apply and this option stands alone in its own group.
+- Chips show one chip per selected option. Removing a chip unticks that option. The Filters badge counts groups with a selection. Reset clears every group.
+- Courses Type, Skill group, and Language, the tutor queue Status, Translations State and Namespace, the admin users Role, Status, and Banned, the admin organizations Status and Country, the certificates list Status and Organization, the admin audit Category, and the admin certificates Status are multi-select. A long group sets `searchable: { emptyLabel, placeholder }`: a search field filters the options (case and accent insensitive), the ticked options stay on top, and the list scrolls. The admin users Organization group is first and uses it. Server-side groups read `parseAsArrayOf` params (an old single-value URL still parses), and the query uses OR inside the group. The courses Status tab and the tutor queue Age use `single`.
 - `SectionNav` is the left section nav of a settings page (vertical from `md`, a scroller below). `StickySaveBar` sticks to the bottom of the column when a form is dirty. Use `useStickySaveBar(form)` with react-hook-form: it gives `count`, `discard`, and `saving`.
 - A domain status has one `StatusMeta` map (icon, label key, tone) in its feature folder. `CERTIFICATE_STATUS` lives in `features/certificates/status.ts`.
 - Render a certificate status with `CertificateStatusBadge`, and read a status label from `CERTIFICATE_STATUS`. Never add a second map.
@@ -78,6 +85,7 @@ The owner chose this look on 2026-11-18, with direction E (light blue) as the da
 - `Card` sets neither `h-full` nor `justify-between`, because a percentage height under the flex `Main` stretched cards to the page height and grid-stretched cards spread their rows.
 - Pass `h-full` at call sites that need full height (course cards, `StatLink`, doc article cards). `StatCard` and the course list card keep `justify-between` explicitly.
 - Tab lists use `min-w-0 justify-start`, so an overflowing list does not center and clip its first tabs.
+- A tab switch never shows an empty or spinner-only panel. Pass every tab's data from the server in one payload, keep each panel mounted in `<Activity mode>` (`TabsContent forceMount`), and preload lazy chunks and client caches once on idle (`preloadAdminOrganizationDetail`, `preloadAllOrganizationTabs`, `prefetchCertificates`). A new tab with its own fetch joins that preload.
 - `SegmentedControl` and `SegmentedControlItem` use Radix radio semantics and keyboard navigation.
 - `CopyButton` handles clipboard failures and ignores stale completions after its value changes.
 - `QrCode` imports the QR encoder on demand and provides loading and error states.
@@ -95,13 +103,14 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 - `pnpm run check:theme` fails on a stale generated file or on a contrast pair below its minimum.
 - The generator (`scripts/theme/`) solves text, fill, and ring lightness in OKLCH against the targets in `system.contrast`.
 - Targets are 4.5:1 for text, 6:1 for `fg-2`, 5:1 for colored text, and 3:1 for non-text. Declare a pair in the generator before you use a new combination.
-- Surface roles: `surface-0` to `surface-3`, `surface-sunken` (canvas), `surface-muted`, `surface-hover`, and `surface-selected`.
+- Surface roles: `surface-0` to `surface-3`, `surface-sunken` (canvas), `surface-muted`, `surface-hover`, `surface-highlight`, and `surface-selected`.
+- `surface-hover` is the hover fill of cards and rows. In light it matches the outline button hover. `accent` (menu, select, and ghost highlights) uses `surface-highlight`.
 - Text and border roles: `fg-1` to `fg-3`, `fg-disabled`, `fg-title` (navy), `fg-on-fill`, `fg-on-bright`, `fg-on-danger`, `border-subtle`, `border`, and `border-strong` (3:1).
 - `action` (blue) marks actions only. It has `-hover`, `-subtle`, `-border`, and `-text`.
 - `earned` (olive) marks earned seals, with `-subtle`, `-border`, and `-text`. `current-fill` (navy) marks the current stage, with `current-subtle`. Tailwind reserves `current` for `currentColor`.
 - `success`, `warning`, `danger`, and `info` each have `-fill`, `-fill-hover`, `-subtle`, `-border`, and `-text`.
 - The shadcn names (`background`, `primary`, `muted-foreground`, `destructive`, and the rest) alias these roles. New code uses the roles.
-- Fields sit on `field` (`surface-0` in light, `surface-1` in dark) with a `border-strong` border. `input` stays only for the vendored editor.
+- Fields sit on `field` (`surface-0` in light, `surface-1` in dark) with a `border` border. Checkboxes and radios keep `border-strong`, because a light edge disappears at 16 px. `input` stays only for the vendored editor.
 - Light surfaces are white on a gray `surface-sunken`. Dark surfaces step up in lightness, and dark borders are white at 6% and 9% alpha.
 - `--brand` is the logo light-blue fill with ink text. `--primary` aliases `action`: a deeper blue with white text in light, and `brand` in dark.
 - `danger-fill` keeps white text in both themes. The other dark fills carry ink text.

@@ -108,7 +108,7 @@ export const InviteLinkDialog = ({ onCloseAutoFocus, onCreated, onOpenChange, op
             </DialogFooter>
           </>
         ) : (
-          <form className="grid gap-4" onSubmit={handleSubmit}>
+          <form className="grid gap-4" method="post" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <Label htmlFor="organization-link-role">{t('roleLabel')}</Label>
               <Select disabled={submitting} onValueChange={value => setRole(value as LinkRole)} value={role}>

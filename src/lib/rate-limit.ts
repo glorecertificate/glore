@@ -8,24 +8,24 @@ import { lt, sql } from 'drizzle-orm'
 import { db } from '@/db/client'
 import { rateLimits } from '@/db/schema/rate-limits'
 
-export const checkRateLimit = async (key: string, max: number, windowMs: number) => {
+export const checkRateLimit = async (key: string, max: number, windowMs: number, cost = 1) => {
   await connection()
   const now = Date.now()
   const expired = sql`${rateLimits.lastRequest} <= ${now - windowMs}`
 
   const [entry] = await db
     .insert(rateLimits)
-    .values({ id: crypto.randomUUID(), key: `app:${key}`, count: 1, lastRequest: now })
+    .values({ id: crypto.randomUUID(), key: `app:${key}`, count: cost, lastRequest: now })
     .onConflictDoUpdate({
       target: rateLimits.key,
       set: {
-        count: sql`case when ${expired} then 1 else ${rateLimits.count} + 1 end`,
+        count: sql`case when ${expired} then ${cost} else ${rateLimits.count} + ${cost} end`,
         lastRequest: sql`case when ${expired} then ${now} else ${rateLimits.lastRequest} end`,
       },
     })
     .returning({ count: rateLimits.count })
 
-  const count = entry?.count ?? 1
+  const count = entry?.count ?? cost
   return { limited: count > max, remaining: Math.max(max - count, 0) }
 }
 

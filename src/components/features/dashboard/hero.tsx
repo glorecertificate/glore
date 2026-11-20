@@ -12,20 +12,15 @@ import theme from '~/config/theme.json'
 
 export const DashboardHero = ({
   action,
-  actions,
-  children,
-  eyebrow,
   organization,
   subtitle,
   title,
-}: React.PropsWithChildren<{
+}: {
   action?: { href: Route; label: string }
-  actions?: React.ReactNode
-  eyebrow?: string
   organization?: string | null
   subtitle: React.ReactNode
   title: string
-}>) => {
+}) => {
   const { resolvedTheme } = useTheme()
 
   const colors = hexToRgb(theme.colors[resolvedTheme ?? 'light'])
@@ -47,7 +42,6 @@ export const DashboardHero = ({
       </div>
       <div className="relative z-10 flex flex-col gap-5">
         <div className="flex max-w-prose flex-col gap-2">
-          {eyebrow && <p className="type-label text-muted-foreground uppercase">{eyebrow}</p>}
           <h2 className="type-title text-balance text-foreground">{title}</h2>
           <div className="text-base text-pretty text-muted-foreground">{subtitle}</div>
           {organization && (
@@ -57,17 +51,13 @@ export const DashboardHero = ({
             </p>
           )}
         </div>
-        {(action || actions) && (
+        {action && (
           <div className="flex flex-wrap items-center gap-3 max-sm:*:w-full">
-            {action && (
-              <Button asChild variant="brand">
-                <Link href={action.href}>{action.label}</Link>
-              </Button>
-            )}
-            {actions}
+            <Button asChild variant="brand">
+              <Link href={action.href}>{action.label}</Link>
+            </Button>
           </div>
         )}
-        {children}
       </div>
     </section>
   )

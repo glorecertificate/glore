@@ -76,7 +76,7 @@ export const ActionDialog = ({
     return (
       <AlertDialog onOpenChange={handleOpenChange} open={open}>
         <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
-          <form className="contents" onSubmit={handleSubmit}>
+          <form className="contents" method="post" onSubmit={handleSubmit}>
             <AlertDialogHeader>
               <AlertDialogTitle>{title}</AlertDialogTitle>
               <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -95,7 +95,7 @@ export const ActionDialog = ({
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
       <DialogContent className="sm:max-w-lg" onCloseAutoFocus={onCloseAutoFocus}>
-        <form className="contents" onSubmit={handleSubmit}>
+        <form className="contents" method="post" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>

@@ -12,7 +12,7 @@ Abre Admin en la barra lateral. El resumen muestra organizaciones, miembros, cer
 ## Organizaciones
 
 1. Abre Organizaciones. Las solicitudes nuevas esperan en la cola.
-2. Abre una solicitud para leer los detalles y la aceptación de la Carta de calidad.
+2. Abre una solicitud para leer los detalles.
 3. Apruébala y la persona solicitante recibe una invitación por correo. O recházala con un comentario, y la persona solicitante recibe la decisión.
 4. Abre una organización en cualquier momento para ver sus miembros, invitaciones, certificados, ajustes y actividad.
 

@@ -16,7 +16,9 @@ import {
   useCourseListTabs,
   useCourseListTypes,
 } from '@/components/features/courses/course-list/use-params'
+import { listedCourseTypes } from '@/components/features/courses/visibility'
 import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { type FilterRailProps } from '@/components/ui/filter-rail'
 import { SearchInput } from '@/components/ui/search'
 import { type StatusBadge } from '@/components/ui/status-badge'
@@ -36,20 +38,21 @@ const TAB_TONES: Partial<Record<CourseListTab, StatusTone>> = {
   published: 'success',
 }
 
-const single = <T,>(values: T[], total: number) => (values.length === 1 && total > 1 ? values[0]! : null)
+const chosen = <T,>(values: string[]) => (values.length > 0 ? (values as T[]) : null)
 
 export const useCourseListRail = (): FilterRailProps => {
   const t = useTranslations('CourseList')
   const tCommon = useTranslations('CourseCommon')
   const { localeItems, localize } = useI18n()
+  const { user } = useSession()
   const { skillGroups } = useCourses()
   const { tab, setTab } = useCourseListTab()
   const { tabs } = useCourseListTabs()
   const { courseList } = useCourseList()
   const facets = useCourseListFacets()
-  const { activeTypes, setActiveTypes } = useCourseListTypes()
-  const { activeLanguages, setActiveLanguages } = useCourseListLanguages()
-  const { activeSkillGroups, setActiveSkillGroups } = useCourseListSkillGroups()
+  const { selectedTypes, setActiveTypes } = useCourseListTypes()
+  const { selectedLanguages, setActiveLanguages } = useCourseListLanguages()
+  const { selectedSkillGroups, setActiveSkillGroups } = useCourseListSkillGroups()
   const { resetFilters } = useCourseListFilters()
   const { searching } = useCourseListSearch()
 
@@ -57,6 +60,7 @@ export const useCourseListRail = (): FilterRailProps => {
   const countWith = (patch: Partial<typeof facets>) =>
     current.filter(course => matchesFacets(course, { ...facets, ...patch })).length
 
+  const listedTypes = listedCourseTypes(user)
   const statusTabs = tabs.filter(item => item !== 'all')
 
   const groups: FilterRailProps['groups'] = []
@@ -65,53 +69,54 @@ export const useCourseListRail = (): FilterRailProps => {
     groups.push({
       id: 'status',
       label: t('status'),
-      onChange: value => setTab((value as CourseListTab | null) ?? 'all'),
+      onChange: values => setTab((values[0] as CourseListTab | undefined) ?? 'all'),
       options: statusTabs.map(item => ({
         count: courseList[camelize(item)].filter(course => matchesFacets(course, facets)).length,
         label: t(item),
         tone: TAB_TONES[item],
         value: item,
       })),
-      value: tab === 'all' ? null : tab,
+      selection: 'single',
+      values: tab === 'all' ? [] : [tab],
     })
   }
 
   groups.push({
     id: 'type',
     label: tCommon('courseType'),
-    onChange: value => setActiveTypes(value ? [value as (typeof COURSE_TYPES)[number]] : null),
-    options: COURSE_TYPES.map(type => ({
+    onChange: values => setActiveTypes(chosen<(typeof COURSE_TYPES)[number]>(values)),
+    options: listedTypes.map(type => ({
       count: countWith({ types: [type] }),
       label: tCommon(`courseType-${type}`),
       value: type,
     })),
-    value: single(activeTypes, COURSE_TYPES.length),
+    values: selectedTypes,
   })
 
-  if (skillGroups.length > 0) {
+  if (skillGroups.length > 0 && listedTypes.includes('skill')) {
     groups.push({
       id: 'group',
       label: tCommon('skillGroup'),
-      onChange: value => setActiveSkillGroups(value ? [value] : null),
+      onChange: values => setActiveSkillGroups(chosen<string>(values)),
       options: skillGroups.map(group => ({
         count: countWith({ groups: [group.value] }),
         label: localize(group.name) ?? group.label,
         value: group.value,
       })),
-      value: single(activeSkillGroups, skillGroups.length),
+      values: selectedSkillGroups,
     })
   }
 
   groups.push({
     id: 'language',
     label: t('language'),
-    onChange: value => setActiveLanguages(value ? [value as (typeof LOCALES)[number]] : null),
+    onChange: values => setActiveLanguages(chosen<(typeof LOCALES)[number]>(values)),
     options: localeItems.map(item => ({
       count: countWith({ languages: [item.value] }),
       label: item.label,
       value: item.value,
     })),
-    value: single(activeLanguages, LOCALES.length),
+    values: selectedLanguages,
   })
 
   return {

@@ -41,8 +41,8 @@ const CertificatesNewContent = async ({ searchParams }: Pick<PageProps<'/certifi
   const open = certificates?.find(
     ({ id, isOpen, organization }) => isOpen && organization.id === activeOrgId && id !== certificate?.id
   )
-  if (open) return <EligibilityPanel eligibility={eligibility} openRequestId={open.id} />
-  if (!eligibility.eligible) return <EligibilityPanel eligibility={eligibility} />
+  if (open) return <EligibilityPanel back eligibility={eligibility} openRequestId={open.id} />
+  if (!eligibility.eligible) return <EligibilityPanel back eligibility={eligibility} />
 
   const skills: SkillOption[] = (courses ?? []).flatMap(({ completed, icon, id, slug, title, type }) =>
     type === 'skill' && completed

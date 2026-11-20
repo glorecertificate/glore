@@ -35,6 +35,6 @@ export const StatLink = ({
   href: Route
 }) => (
   <Link className="block min-w-0 rounded-xl outline-none focus-visible:focus-ring" href={href}>
-    <StatCard className={cn('h-full gap-4 p-5 transition-colors hover:bg-accent/40', className)} {...props} />
+    <StatCard className={cn('h-full gap-4 p-5 transition-colors hover:bg-surface-hover', className)} {...props} />
   </Link>
 )

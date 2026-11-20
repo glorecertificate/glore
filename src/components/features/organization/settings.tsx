@@ -195,21 +195,21 @@ export const OrganizationSettings = ({
   return (
     <div
       className={cn(
-        'flex flex-col gap-8',
+        '@container/settings flex flex-col gap-8',
         !platform && 'rounded-xl border border-border-subtle bg-card p-5 shadow-card sm:p-6'
       )}
     >
       {platform && <h2 className="sr-only">{t('settings')}</h2>}
-      <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+      <div className="flex flex-col gap-6 @2xl/settings:flex-row @2xl/settings:gap-8">
         <SectionNav
-          className="md:w-auto md:flex-row md:overflow-x-auto lg:sticky lg:top-4 lg:w-52 lg:flex-col lg:self-start lg:overflow-visible"
+          className="md:w-auto md:flex-row md:overflow-x-auto @2xl/settings:sticky @2xl/settings:top-4 @2xl/settings:w-52 @2xl/settings:flex-col @2xl/settings:self-start @2xl/settings:overflow-visible"
           items={sections}
           onValueChange={goToSection}
           value={section}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-8">
           <Form {...form}>
-            <form className="flex flex-col gap-8" onSubmit={form.handleSubmit(handleSubmit)}>
+            <form className="flex flex-col gap-8" method="post" onSubmit={form.handleSubmit(handleSubmit)}>
               <SettingsSection description={t('brandingDescription')} id="branding" title={t('branding')}>
                 <OrganizationAvatarMenu
                   fallback={sessionOrg?.name?.slice(0, 2).toUpperCase() ?? organization.name.slice(0, 2).toUpperCase()}
@@ -223,7 +223,7 @@ export const OrganizationSettings = ({
               <Separator />
 
               <SettingsSection description={t('settingsDescription')} id="general" title={t('settingsTitle')}>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 @xl/fields:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="name"
@@ -318,7 +318,7 @@ export const OrganizationSettings = ({
               <Separator />
 
               <SettingsSection description={t('legalDescription')} id="legal" title={t('legalTitle')}>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 @xl/fields:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="legalName"
@@ -375,7 +375,7 @@ export const OrganizationSettings = ({
               <Separator />
 
               <SettingsSection description={t('contactDescription')} id="contact" title={t('contactDetails')}>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 @xl/fields:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="address"

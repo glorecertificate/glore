@@ -25,7 +25,7 @@ On your first login GloRe asks for your first and last name, birthday, nationali
 
 ## Take your first course
 
-Open Courses and start Welcome to GloRe, a short introduction that takes about 20 minutes. If you are a volunteer, set up your skill compass next: choose up to 3 strengths and up to 5 goals, and GloRe recommends courses for you.
+Open Courses and start Welcome to GloRe, a short introduction. If you are a volunteer, set up your skill compass next: choose up to 3 strengths and up to 5 goals, and GloRe recommends courses for you.
 
 ## Where to go next
 

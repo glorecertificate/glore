@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { type EventType } from '@/db/queries/activity-event'
-import { type FacetedPage } from '@/db/queries/admin-user'
+import { type FacetedPage, facetValues } from '@/db/queries/admin-user'
 
 export const ADMIN_AUDIT_PAGE_SIZE = 25
 
@@ -35,8 +35,8 @@ export type AuditAction = (typeof AUDIT_ACTIONS)[AuditCategory][number]
 
 export const AUDITED_ACTIONS: AuditAction[] = AUDIT_CATEGORIES.flatMap(category => [...AUDIT_ACTIONS[category]])
 
-export const auditActionsOf = (category: AuditCategory | null | undefined): AuditAction[] =>
-  category ? [...AUDIT_ACTIONS[category]] : AUDITED_ACTIONS
+export const auditActionsOf = (categories: readonly AuditCategory[] | null | undefined): AuditAction[] =>
+  categories && categories.length > 0 ? categories.flatMap(category => [...AUDIT_ACTIONS[category]]) : AUDITED_ACTIONS
 
 export const auditCategoryOf = (action: string) =>
   AUDIT_CATEGORIES.find(category => (AUDIT_ACTIONS[category] as readonly string[]).includes(action)) ?? null
@@ -50,7 +50,7 @@ const dateSchema = z
   .refine(value => !Number.isNaN(Date.parse(`${value}T00:00:00.000Z`)))
 
 export const adminAuditQuerySchema = z.object({
-  category: z.enum(AUDIT_CATEGORIES).nullish(),
+  category: facetValues(AUDIT_CATEGORIES),
   from: dateSchema.nullish(),
   page: z.number().int().min(1).max(10_000).nullish(),
   q: z.string().max(200).nullish(),

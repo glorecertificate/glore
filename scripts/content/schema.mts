@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { COURSE_TYPES, ICON_NAMES, LOCALES } from './config.mts'
+import { COURSE_TYPES, DOC_AUDIENCES, ICON_NAMES, LOCALES } from './config.mts'
 
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u
 
@@ -39,7 +39,6 @@ export const courseSchema = z.strictObject({
   icon,
   title: localized(text),
   description: localized(text),
-  durationMinutes: z.number().int().min(5).max(600),
   outcomes: localized(z.array(text).min(1).max(8)),
   sortOrder,
 })
@@ -90,6 +89,7 @@ export const docCategoriesSchema = z
 export const docSchema = z.strictObject({
   slug: docSlug,
   sortOrder,
+  audiences: z.array(z.enum(DOC_AUDIENCES)).nonempty().optional(),
 })
 
 export const docFrontMatterSchema = z.strictObject({

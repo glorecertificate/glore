@@ -9,6 +9,7 @@ import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { EditorPreload } from '@/components/layout/editor-preload'
 import { LiveRefresh } from '@/components/layout/live-refresh'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { OrganizationContent } from '@/components/layout/organization-content'
 import { PhoneAppBar } from '@/components/layout/phone-app-bar'
 import { PrefetchKeeper } from '@/components/layout/prefetch-keeper'
 import { PwaInstallBanner } from '@/components/layout/pwa-install-prompt'
@@ -39,7 +40,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
         <DashboardSidebar pending={pending} />
         <SidebarInset className={cn(impersonation && 'pt-28 sm:pt-0 sm:pb-24')}>
           <PwaInstallBanner />
-          {children}
+          <OrganizationContent>{children}</OrganizationContent>
         </SidebarInset>
         <PhoneAppBar />
         <LiveRefresh />

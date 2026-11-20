@@ -34,6 +34,19 @@ export const EXPERIENCES: Record<string, DemoExperience> = {
     description: 'Organising the spring collection drive in three local schools.',
     tasks: ['Planned the school calendar', 'Prepared flyers for the parents'],
   },
+  'river-cleanup': {
+    language: 'en',
+    location: 'Milan, Italy',
+    hours: 96,
+    months: 5,
+    description:
+      'Monthly clean-up days along the Lambro river park, with litter surveys shared with the city parks office.',
+    tasks: [
+      'Coordinated groups of up to twenty volunteers',
+      'Recorded the litter surveys and sent them to the parks office',
+      'Briefed new volunteers on the safety rules',
+    ],
+  },
   'after-school': {
     language: 'it',
     location: 'Milano, Italia',

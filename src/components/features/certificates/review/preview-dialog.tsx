@@ -2,7 +2,8 @@
 
 import { useTranslations } from 'next-intl'
 
-import { CertificateThumbnail, type ThumbnailSkill } from '@/components/features/certificates/certificate-thumbnail'
+import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
+import { CertificatePage } from '@/components/features/certificates/certificate-page'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,29 +15,17 @@ import {
 } from '@/components/ui/dialog'
 import { useCoarsePointer } from '@/hooks/use-coarse-pointer'
 
-export interface PreviewCertificate {
-  code?: string | null
-  end: string | null
-  firstName: string
-  hours: number | null
-  lastName?: string | null
-  location: string | null
-  logoUrl?: string | null
-  organization: string
-  skills: ThumbnailSkill[]
-  start: string | null
-  tasks: string[]
-}
-
 export const PreviewDialog = ({
   busy,
   certificate,
+  language,
   onConfirm,
   onOpenChange,
   url,
 }: {
   busy: boolean
-  certificate: PreviewCertificate
+  certificate: CertificateInput
+  language?: string
   onConfirm: () => void
   onOpenChange: (open: boolean) => void
   url: string | null
@@ -53,10 +42,11 @@ export const PreviewDialog = ({
         </DialogHeader>
         {url && coarse && (
           <div className="flex min-h-0 flex-col gap-3 overflow-y-auto">
-            <CertificateThumbnail
-              {...certificate}
+            <CertificatePage
               className="mx-auto max-w-md"
-              label={t('previewLabel', { organization: certificate.organization })}
+              input={certificate}
+              language={language}
+              label={t('previewLabel', { organization: certificate.organization.name })}
             />
             <Button asChild className="self-center" icon="external-link" size="sm" variant="outline">
               <a href={url} rel="noopener noreferrer" target="_blank">

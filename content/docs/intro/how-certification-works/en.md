@@ -8,7 +8,7 @@ The path has six steps. Your organization and a tutor are part of it, so you are
 ## The steps
 
 1. Join through an organization. Someone there invites you, or you open an invite link they shared.
-2. Take skill courses. Each one has four short lessons and takes about 35 to 40 minutes. A quiz checks that you understood, and the last lesson asks you to choose the description that fits you best.
+2. Take skill courses. Each one has four short lessons. A quiz checks that you understood, and the last lesson asks you to choose the description that fits you best.
 3. Reach the minimum. You need at least 3 completed skill courses. Introductory and learner courses do not count toward it.
 4. Describe your volunteering. In the request you add dates, hours, place and up to 4 tasks, pick 3 or 4 of your skills, and rate your experience with the organization. Your activity must add up to at least 100 hours, or last at least 3 months from start to end date.
 5. Wait for the review. A tutor in your organization reads the request and your course results, confirms or changes the description for each skill, and approves it, asks for changes, or rejects it with a reason.

@@ -2,9 +2,10 @@ import { type Route } from 'next'
 
 import { type Locale } from 'next-intl'
 
+import { type PendingInvitation } from '@/actions/shell/invitations-core'
 import { type AgeTone, WIZARD_STEPS, type WizardStep, ageTone } from '@/components/features/certificates/rules'
 import { type Certificate, type CertificateStatus, OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
-import { type LocaleCoverage } from '@/db/queries/content-translation'
+import { type TranslationGaps } from '@/db/queries/content-translation'
 import { type SkillOption } from '@/db/queries/learning'
 import { type Notification } from '@/db/queries/notification'
 import { timestampMillis } from '@/db/queries/organization'
@@ -167,9 +168,9 @@ type JourneyPhase = 'changes' | 'draft' | 'issued' | 'learn' | 'ready' | 'reject
 
 type JourneyStageKey = 'certificate' | 'learn' | 'request' | 'review'
 
-type JourneyStageState = 'current' | 'done' | 'ended' | 'upcoming'
+export type JourneyStageState = 'current' | 'done' | 'ended' | 'upcoming'
 
-type JourneyStepState = 'current' | 'done' | 'flagged' | 'upcoming'
+export type JourneyStepState = 'current' | 'done' | 'flagged' | 'upcoming'
 
 export type ReviewSection = 'experience' | 'personal' | 'skills' | 'tasks'
 
@@ -178,7 +179,7 @@ export interface JourneyStage {
   state: JourneyStageState
 }
 
-interface JourneyWizardStep {
+export interface JourneyWizardStep {
   key: WizardStep
   state: JourneyStepState
 }
@@ -381,14 +382,9 @@ export const learnerChecklist = ({
   { done: completedByType.learner > 0, href: '/courses', key: 'learner' },
 ]
 
-export const nextSkillCourse = ({
-  continuing,
-  recommendations,
-}: Pick<MemberCourseSummary, 'continuing' | 'recommendations'>) => {
+export const nextSkillCourse = ({ continuing }: Pick<MemberCourseSummary, 'continuing'>) => {
   const started = continuing.find(({ type }) => type === 'skill')
-  if (started) return { slug: started.slug, started: true, title: started.title }
-  const suggested = recommendations.find(({ type }) => type === 'skill')
-  return suggested ? { slug: suggested.slug, started: false, title: suggested.title } : null
+  return started ? { slug: started.slug, title: started.title } : null
 }
 
 export interface EditorCourseRow {
@@ -426,9 +422,27 @@ interface AttentionCourse {
   title: string
 }
 
+type HealthStatus = Exclude<PublicationState, 'archived'>
+
+export interface HealthCourse {
+  empty: boolean
+  id: number
+  missing: Locale[]
+  missingAssessment: boolean
+  missingGroup: boolean
+  skill: boolean
+  slug: string
+  status: HealthStatus
+  title: string
+}
+
+type HealthColumns = Record<'assessment' | 'group' | Locale, number>
+
 export interface ContentHealth {
   attention: AttentionCourse[]
-  gaps: Record<Locale, number>
+  columns: HealthColumns
+  complete: number
+  courses: HealthCourse[]
   issues: Record<ContentIssue, number>
   states: Record<PublicationState, number>
   total: number
@@ -452,18 +466,50 @@ export const buildContentHealth = (courses: EditorCourseRow[]): ContentHealth =>
   ) as Record<Locale, number>
   const issues: Record<ContentIssue, number> = { empty: 0, noAssessment: 0, noGroup: 0 }
 
-  const attention = live
-    .flatMap(course => {
+  const entries = live
+    .map(course => {
       const found = courseIssues(course)
       for (const issue of found) issues[issue] += 1
-      const missing = LOCALES.filter(locale => !course.languages?.includes(locale))
-      return found.length > 0 || missing.length > 0
-        ? [{ issues: found, missing, slug: course.slug, title: course.title }]
-        : []
+      return {
+        course: {
+          empty: course.lessonCount === 0,
+          id: course.id,
+          missing: LOCALES.filter(locale => !course.languages?.includes(locale)),
+          missingAssessment: course.type === 'skill' && !course.hasAssessment,
+          missingGroup: course.type === 'skill' && course.skillGroupId === null,
+          skill: course.type === 'skill',
+          slug: course.slug,
+          status: publicationState(course) as HealthStatus,
+          title: course.title,
+        },
+        issues: found,
+      }
     })
-    .toSorted((a, b) => b.issues.length - a.issues.length || b.missing.length - a.missing.length)
+    .toSorted((a, b) => b.issues.length - a.issues.length || b.course.missing.length - a.course.missing.length)
+  const needing = entries.filter(({ course, issues: found }) => found.length > 0 || course.missing.length > 0)
 
-  return { attention: attention.slice(0, ATTENTION_LIMIT), gaps, issues, states, total: live.length }
+  const attention = needing.map(({ course, issues: found }) => ({
+    issues: found,
+    missing: course.missing,
+    slug: course.slug,
+    title: course.title,
+  }))
+  const rows = needing.map(({ course }) => course)
+  const columns = {
+    assessment: rows.filter(course => course.missingAssessment).length,
+    group: rows.filter(course => course.missingGroup).length,
+    ...gaps,
+  }
+
+  return {
+    attention: attention.slice(0, ATTENTION_LIMIT),
+    columns,
+    complete: live.length - rows.length,
+    courses: entries.map(({ course }) => course),
+    issues,
+    states,
+    total: live.length,
+  }
 }
 
 export interface EngagementPoint {
@@ -559,7 +605,7 @@ export interface MemberSummary {
   notifications: Notification[]
 }
 
-interface EarnedSkill {
+export interface EarnedSkill {
   icon: string | null
   id: number
   slug: string
@@ -571,19 +617,10 @@ interface JourneyReview {
   tutor: string | null
 }
 
-export interface SkillCourseRow {
-  completed: boolean
-  icon: string | null
-  percent: number
-  slug: string
-  title: string
-}
-
 export interface VolunteerSummary {
   certificate: Certificate | null
   compassSet: boolean
   courses: MemberCourseSummary
-  skillCourses: SkillCourseRow[]
   eligibility: EligibilityView
   journey: VolunteerJourney
   review: JourneyReview | null
@@ -592,15 +629,15 @@ export interface VolunteerSummary {
 
 export interface EditorSummary {
   engagement: EngagementPoint[]
+  gaps: TranslationGaps
   health: ContentHealth
   pending: { organizations: number; team: number } | null
   stats: EditorStats
   top: TopCourse[]
-  translations: LocaleCoverage[]
 }
 
 export type DashboardData =
-  | (DashboardBase & { view: 'none' })
+  | (DashboardBase & { invitations: PendingInvitation[]; view: 'none' })
   | (DashboardBase & { editor: EditorSummary; view: 'editor' })
   | (DashboardBase & { manager: ManagerSummary; view: 'manager' })
   | (DashboardBase & { member: MemberSummary; view: 'learner' })

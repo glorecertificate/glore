@@ -78,7 +78,7 @@ export const TutorCertificatesContent = ({
     { ignoreAge = false, ignoreStatus = false }: { ignoreAge?: boolean; ignoreStatus?: boolean } = {}
   ) => {
     if (!matchSearch([certificate.user ? fullName(certificate.user) : null, certificate.user?.email])) return false
-    if (!ignoreStatus && tabKey !== 'pool' && status && certificate.status !== status) return false
+    if (!ignoreStatus && tabKey !== 'pool' && status.length > 0 && !status.includes(certificate.status)) return false
     if (ignoreAge || !age) return true
     if (!certificate.isPending) return false
     const tone = ageTone(certificateAge(certificate))
@@ -95,14 +95,14 @@ export const TutorCertificatesContent = ({
     setAge(null)
   }
 
-  const isFiltered = Boolean(searchValue.trim() || status || age)
+  const isFiltered = Boolean(searchValue.trim() || status.length > 0 || age)
 
   const railFor = (tabKey: TutorQueueTab): FilterRailProps => ({
     groups: [
       {
         id: 'queue',
         label: t('queue'),
-        onChange: (value: string | null) => {
+        onChange: ([value]: string[]) => {
           if (!value) return
           setTab(value as TutorQueueTab)
           setSelected([])
@@ -110,14 +110,15 @@ export const TutorCertificatesContent = ({
           setAge(null)
         },
         options: TUTOR_QUEUE_TABS.map(key => ({ count: counts[key], label: t(`tabs.${key}`), value: key })),
-        value: tabKey,
+        selection: 'required' as const,
+        values: [tabKey],
       },
       ...(statusOptions.length > 0
         ? [
             {
               id: 'status',
               label: t('status'),
-              onChange: (value: string | null) => setStatus(value),
+              onChange: (values: string[]) => setStatus(values),
               options: statusOptions.map(option => {
                 const meta = CERTIFICATE_STATUS[option as keyof typeof CERTIFICATE_STATUS]
                 return {
@@ -129,7 +130,7 @@ export const TutorCertificatesContent = ({
                   value: option,
                 }
               }),
-              value: status,
+              values: status,
             },
           ]
         : []),
@@ -139,7 +140,7 @@ export const TutorCertificatesContent = ({
             {
               id: 'age',
               label: t('age'),
-              onChange: (value: string | null) => setAge(value as TutorQueueAge | null),
+              onChange: ([value]: string[]) => setAge((value as TutorQueueAge | undefined) ?? null),
               options: TUTOR_QUEUE_AGES.map(option => ({
                 count: sources[tabKey].filter(
                   certificate => ageMatches(certificate, option) && matches(certificate, tabKey, { ignoreAge: true })
@@ -147,7 +148,8 @@ export const TutorCertificatesContent = ({
                 label: t(`age_${option}`),
                 value: option,
               })),
-              value: age,
+              selection: 'single' as const,
+              values: age ? [age] : [],
             },
           ]),
     ],

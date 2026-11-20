@@ -1,257 +1,75 @@
 'use client'
 
-import { useId } from 'react'
+import { useEffect, useRef } from 'react'
 
-import { type Locale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 
+import { ActivityMenuItem } from '@/components/features/courses/course-editor/activity-menu-item'
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { DescriptionCard } from '@/components/features/courses/course-editor/description-card'
+import { LevelsCard } from '@/components/features/courses/course-editor/levels-card'
+import { QuestionCard } from '@/components/features/courses/course-editor/question-card'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { type Course } from '@/db/queries/course'
-import { type Assessment, type Evaluation, type LessonType, type QuestionOption } from '@/db/queries/lesson'
-import { SKILL_LEVELS, SKILL_LEVEL_DESCRIPTION_MAX_LENGTH, type SkillLevel } from '@/db/queries/skill-level-description'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  type Assessment,
+  type Evaluation,
+  type Lesson,
+  type LessonType,
+  type QuestionOption,
+} from '@/db/queries/lesson'
+import { type SkillLevel } from '@/db/queries/skill-level-description'
 import { INTL_PLACEHOLDER, type IntlRecord } from '@/lib/i18n'
 import { cn, tempId } from '@/lib/utils'
 
-const ActivityItem = ({
-  description,
-  label,
-  language,
-  onDescriptionChange,
-  onRemove,
-}: {
-  description: string
-  label: string
-  language: Locale
-  onDescriptionChange: (value: string) => void
-  onRemove: () => void
-}) => {
-  const tLang = useTranslations('Intl.Languages')
-  const t = useTranslations('CourseEditor')
-  const tCommon = useTranslations('CourseCommon')
-
-  return (
-    <div className="flex items-start gap-2 rounded-xl border bg-card p-4">
-      <div className="flex-1 space-y-1.5">
-        <p className="type-label text-foreground">{label}</p>
-        <Textarea
-          className="min-h-10 resize-none rounded-lg text-sm"
-          onChange={e => onDescriptionChange(e.target.value)}
-          placeholder={t('activityDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
-          value={description}
-        />
-      </div>
-      <Button
-        aria-label={tCommon('delete')}
-        className="shrink-0 text-muted-foreground hover:text-destructive-text"
-        onClick={onRemove}
-        size="icon"
-        type="button"
-        variant="ghost"
-      >
-        <LucideIcon name="trash" />
-      </Button>
-    </div>
-  )
-}
-
-const LevelsItem = ({
-  descriptions,
-  language,
-  onChange,
-  onRemove,
-}: {
-  descriptions: Partial<Record<SkillLevel, string>>
-  language: Locale
-  onChange: (level: SkillLevel, value: string) => void
-  onRemove: () => void
-}) => {
-  const tLang = useTranslations('Intl.Languages')
-  const t = useTranslations('CourseEditor')
-  const tCommon = useTranslations('CourseCommon')
-  const tLevels = useTranslations('Common.skillLevels')
-  const idPrefix = useId()
-
-  return (
-    <div className="flex items-start gap-2 rounded-xl border bg-card p-4">
-      <div className="flex-1 space-y-3">
-        <p className="text-sm text-muted-foreground">{t('levelDescriptionsHint')}</p>
-        {SKILL_LEVELS.map(level => {
-          const value = descriptions[level] ?? ''
-          return (
-            <div className="space-y-1" key={level}>
-              <Label className="type-label" htmlFor={`${idPrefix}-${level}`}>
-                {tLevels(level)}
-              </Label>
-              <Textarea
-                aria-describedby={`${idPrefix}-${level}-count`}
-                className="min-h-10 resize-none rounded-lg text-sm"
-                id={`${idPrefix}-${level}`}
-                maxLength={SKILL_LEVEL_DESCRIPTION_MAX_LENGTH}
-                onChange={e => onChange(level, e.target.value)}
-                placeholder={t('activityDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
-                value={value}
-              />
-              <p
-                className={cn(
-                  'text-right type-caption text-muted-foreground tabular-nums',
-                  value.length >= SKILL_LEVEL_DESCRIPTION_MAX_LENGTH && 'text-warning-text'
-                )}
-                id={`${idPrefix}-${level}-count`}
-              >
-                {t('levelDescriptionCount', { count: value.length, max: SKILL_LEVEL_DESCRIPTION_MAX_LENGTH })}
-              </p>
-            </div>
-          )
-        })}
-      </div>
-      <Button
-        aria-label={tCommon('delete')}
-        className="shrink-0 text-muted-foreground hover:text-destructive-text"
-        onClick={onRemove}
-        size="icon"
-        type="button"
-        variant="ghost"
-      >
-        <LucideIcon name="trash" />
-      </Button>
-    </div>
-  )
-}
-
-const QuestionItem = ({
-  description,
-  explanation,
-  label,
-  language,
-  onAddOption,
-  onDescriptionChange,
-  onExplanationChange,
-  onOptionContentChange,
-  onOptionCorrectToggle,
-  onRemove,
-  onRemoveOption,
-  options,
-}: {
-  description: string
-  explanation: string
-  label: string
-  language: Locale
-  onAddOption: () => void
-  onDescriptionChange: (value: string) => void
-  onExplanationChange: (value: string) => void
-  onOptionContentChange: (optionId: number, value: string) => void
-  onOptionCorrectToggle: (optionId: number) => void
-  onRemove: () => void
-  onRemoveOption: (optionId: number) => void
-  options: QuestionOption[]
-}) => {
-  const tLang = useTranslations('Intl.Languages')
-  const t = useTranslations('CourseEditor')
-  const tCommon = useTranslations('CourseCommon')
-
-  return (
-    <div className="space-y-4 rounded-xl border bg-card p-4">
-      <div className="flex items-start gap-2">
-        <div className="flex-1 space-y-1.5">
-          <p className="type-label text-foreground">{label}</p>
-          <div className="pl-7">
-            <Textarea
-              className="min-h-10 resize-none rounded-lg text-sm"
-              onChange={e => onDescriptionChange(e.target.value)}
-              placeholder={t('activityQuestionPlaceholder', { lang: tLang(language).toLowerCase() })}
-              value={description}
-            />
-          </div>
-        </div>
-        <Button
-          aria-label={tCommon('delete')}
-          className="shrink-0 text-muted-foreground hover:text-destructive-text"
-          onClick={onRemove}
-          size="icon"
-          type="button"
-          variant="ghost"
-        >
-          <LucideIcon name="trash" />
-        </Button>
-      </div>
-
-      <div className="space-y-2">
-        <p className="type-label text-foreground">{t('activityOptions')}</p>
-        <AnimatedList>
-          {options.map(option => (
-            <AnimatedListItem className="flex items-center gap-2" key={option.id} variant="row">
-              <button
-                aria-label={t('activityOptionCorrect')}
-                aria-pressed={option.isCorrect}
-                className={cn(
-                  'touch-hit flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
-                  option.isCorrect
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-border-strong hover:border-primary'
-                )}
-                onClick={() => onOptionCorrectToggle(option.id)}
-                type="button"
-              >
-                {option.isCorrect && <LucideIcon name="check" className="size-3" strokeWidth={3} />}
-              </button>
-              <Input
-                className="flex-1 rounded-lg text-sm"
-                onChange={e => onOptionContentChange(option.id, e.target.value)}
-                placeholder={t('activityOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
-                value={option.content[language] ?? ''}
-              />
-              <Button
-                aria-label={tCommon('delete')}
-                className="shrink-0 text-muted-foreground hover:text-destructive-text"
-                onClick={() => onRemoveOption(option.id)}
-                size="icon"
-                type="button"
-                variant="ghost"
-              >
-                <LucideIcon name="trash" />
-              </Button>
-            </AnimatedListItem>
-          ))}
-        </AnimatedList>
-        <Button className="ml-7" icon="plus" onClick={onAddOption} size="sm" type="button" variant="ghost">
-          {t('addActivityOption')}
-        </Button>
-      </div>
-
-      <div className="space-y-1.5">
-        <p className="type-label text-foreground">{t('activityExplanation')}</p>
-        <div className="pl-7">
-          <Textarea
-            className="min-h-10 resize-none rounded-lg text-sm"
-            onChange={e => onExplanationChange(e.target.value)}
-            placeholder={t('activityExplanationPlaceholder', { lang: tLang(language).toLowerCase() })}
-            value={explanation}
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
+type Question = Lesson['questions'][number]
 
 export const LessonActivities = ({ className }: { className?: string }) => {
   const t = useTranslations('CourseEditor')
 
-  const { course, currentLesson, language, setCourse, step } = useCourse()
+  const { course, currentLesson, language, setCourse } = useCourse()
   const isSkill = course.type === 'skill'
   const { user } = useSession()
+  const rootRef = useRef<HTMLDivElement>(null)
+  const focusRef = useRef<string | null>(null)
+  const keepFocusRef = useRef(false)
 
   const canEdit = user.canEdit && !course.archivedAt
+  const lessonId = currentLesson.id
+
+  const applyFocus = () => {
+    const selector = focusRef.current
+    if (!selector) return
+    focusRef.current = null
+    rootRef.current?.querySelector<HTMLElement>(selector)?.focus()
+  }
+
+  useEffect(() => {
+    if (keepFocusRef.current) return
+    applyFocus()
+  }, [currentLesson.assessment, currentLesson.evaluations, currentLesson.questions])
+
+  const updateLesson = (update: (lesson: Lesson) => Lesson) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map(lesson => (lesson.id === lessonId ? update(lesson) : lesson)),
+    }))
+  }
+
+  const updateQuestion = (questionId: number, update: (question: Question) => Question) => {
+    updateLesson(lesson => ({
+      ...lesson,
+      questions: lesson.questions.map(question => (question.id === questionId ? update(question) : question)),
+    }))
+  }
 
   const addQuestion = () => {
+    const id = tempId()
     const question = {
-      id: tempId(),
+      id,
       description: INTL_PLACEHOLDER,
       explanation: null,
       answered: false,
@@ -261,30 +79,17 @@ export const LessonActivities = ({ className }: { className?: string }) => {
       ] as unknown as QuestionOption[],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      lessonId: currentLesson.id,
-    }
-    setCourse(
-      prev =>
-        ({
-          ...prev,
-          lessons: prev.lessons.map((lesson, i) =>
-            i === step - 1 ? { ...lesson, questions: [...lesson.questions, question] } : lesson
-          ),
-        }) as Course
-    )
+      lessonId,
+    } as unknown as Question
+    focusRef.current = `[data-question-id="${id}"] [data-question-field]`
+    updateLesson(lesson => ({ ...lesson, questions: [...lesson.questions, question] }))
   }
 
   const addEvaluation = () => {
-    const evaluation = {
-      id: tempId(),
-      description: INTL_PLACEHOLDER,
-    } as Evaluation
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1 ? { ...lesson, evaluations: [...lesson.evaluations, evaluation] } : lesson
-      ),
-    }))
+    const id = tempId()
+    const evaluation = { id, description: INTL_PLACEHOLDER } as Evaluation
+    focusRef.current = `[data-activity-id="evaluation-${id}"] [data-activity-field]`
+    updateLesson(lesson => ({ ...lesson, evaluations: [...lesson.evaluations, evaluation] }))
   }
 
   const addAssessment = () => {
@@ -295,237 +100,150 @@ export const LessonActivities = ({ className }: { className?: string }) => {
       userAssessments: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      lessonId: currentLesson.id,
+      lessonId,
     } as Assessment
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) => (i === step - 1 ? { ...lesson, assessment } : lesson)),
-    }))
+    focusRef.current = '[data-activity-id="assessment"] [data-activity-field]'
+    updateLesson(lesson => ({ ...lesson, assessment }))
   }
 
   const updateQuestionDescription = (questionId: number, value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1
-          ? {
-              ...lesson,
-              questions: lesson.questions.map(q =>
-                q.id === questionId ? { ...q, description: { ...q.description, [language]: value } } : q
-              ),
-            }
-          : lesson
-      ),
+    updateQuestion(questionId, question => ({
+      ...question,
+      description: { ...question.description, [language]: value },
     }))
   }
 
   const updateQuestionExplanation = (questionId: number, value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1
-          ? {
-              ...lesson,
-              questions: lesson.questions.map(q =>
-                q.id === questionId
-                  ? {
-                      ...q,
-                      explanation: { ...((q.explanation ?? INTL_PLACEHOLDER) as IntlRecord), [language]: value },
-                    }
-                  : q
-              ),
-            }
-          : lesson
-      ),
+    updateQuestion(questionId, question => ({
+      ...question,
+      explanation: { ...((question.explanation ?? INTL_PLACEHOLDER) as IntlRecord), [language]: value },
     }))
   }
 
-  const addQuestionOption = (questionId: number) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1
-          ? {
-              ...lesson,
-              questions: lesson.questions.map(q => {
-                if (q.id !== questionId) return q
-                const newOption = {
-                  id: tempId(),
-                  content: { [language]: '' },
-                  isCorrect: !q.options.some(o => o.isCorrect),
-                  isUserAnswer: false,
-                } as unknown as QuestionOption
-                return { ...q, options: [...q.options, newOption] }
-              }),
-            }
-          : lesson
-      ),
-    }))
+  const addQuestionOption = (questionId: number, optionId: number) => {
+    updateQuestion(questionId, question => {
+      const option = {
+        id: optionId,
+        content: { [language]: '' },
+        isCorrect: !question.options.some(item => item.isCorrect),
+        isUserAnswer: false,
+      } as unknown as QuestionOption
+      return { ...question, options: [...question.options, option] }
+    })
   }
 
   const updateOptionContent = (questionId: number, optionId: number, value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1
+    updateQuestion(questionId, question => ({
+      ...question,
+      options: question.options.map(option =>
+        option.id === optionId
           ? {
-              ...lesson,
-              questions: lesson.questions.map(q =>
-                q.id === questionId
-                  ? {
-                      ...q,
-                      options: q.options.map(o =>
-                        o.id === optionId
-                          ? {
-                              ...o,
-                              content: {
-                                ...((o.content as unknown as IntlRecord) ?? INTL_PLACEHOLDER),
-                                [language]: value,
-                              },
-                            }
-                          : o
-                      ),
-                    }
-                  : q
-              ),
+              ...option,
+              content: {
+                ...((option.content as unknown as IntlRecord) ?? INTL_PLACEHOLDER),
+                [language]: value,
+              },
             }
-          : lesson
+          : option
       ),
     }))
   }
 
   const toggleOptionCorrect = (questionId: number, optionId: number) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1
-          ? {
-              ...lesson,
-              questions: lesson.questions.map(q =>
-                q.id === questionId
-                  ? {
-                      ...q,
-                      options: q.options.map(o => ({
-                        ...o,
-                        isCorrect: o.id === optionId,
-                      })),
-                    }
-                  : q
-              ),
-            }
-          : lesson
-      ),
+    updateQuestion(questionId, question => ({
+      ...question,
+      options: question.options.map(option => ({ ...option, isCorrect: option.id === optionId })),
     }))
   }
 
   const removeOption = (questionId: number, optionId: number) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1
-          ? {
-              ...lesson,
-              questions: lesson.questions.map(q => {
-                if (q.id !== questionId) return q
-                const options = q.options.filter(o => o.id !== optionId)
-                if (options.length > 0 && !options.some(o => o.isCorrect)) {
-                  options[0] = { ...options[0], isCorrect: true }
-                }
-                return { ...q, options }
-              }),
-            }
-          : lesson
-      ),
-    }))
+    updateQuestion(questionId, question => {
+      const options = question.options.filter(option => option.id !== optionId)
+      if (options.length > 0 && !options.some(option => option.isCorrect)) {
+        options[0] = { ...options[0], isCorrect: true }
+      }
+      return { ...question, options }
+    })
   }
 
   const updateEvaluationDescription = (evaluationId: number, value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1
-          ? {
-              ...lesson,
-              evaluations: lesson.evaluations.map(e =>
-                e.id === evaluationId ? { ...e, description: { ...e.description, [language]: value } } : e
-              ),
-            }
-          : lesson
+    updateLesson(lesson => ({
+      ...lesson,
+      evaluations: lesson.evaluations.map(evaluation =>
+        evaluation.id === evaluationId
+          ? { ...evaluation, description: { ...evaluation.description, [language]: value } }
+          : evaluation
       ),
     }))
   }
 
   const updateAssessmentDescription = (value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1 && lesson.assessment
-          ? {
-              ...lesson,
-              assessment: {
-                ...lesson.assessment,
-                description: { ...lesson.assessment.description, [language]: value } as IntlRecord,
-              },
-            }
-          : lesson
-      ),
-    }))
+    updateLesson(lesson =>
+      lesson.assessment
+        ? {
+            ...lesson,
+            assessment: {
+              ...lesson.assessment,
+              description: { ...lesson.assessment.description, [language]: value } as IntlRecord,
+            },
+          }
+        : lesson
+    )
   }
 
   const updateLevelDescription = (level: SkillLevel, value: string) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) => {
-        if (i !== step - 1 || !lesson.assessment) return lesson
-        const { assessment } = lesson
-        const levels = assessment.levelDescriptions ?? []
-        const existing = levels.find(item => item.level === level)
-        const next = existing
-          ? levels.map(item =>
-              item.level === level ? { ...item, description: { ...item.description, [language]: value } } : item
-            )
-          : [
-              ...levels,
-              {
-                assessmentId: assessment.id,
-                createdAt: new Date().toISOString(),
-                description: { ...INTL_PLACEHOLDER, [language]: value } as IntlRecord,
-                id: tempId(),
-                level,
-                updatedAt: new Date().toISOString(),
-              },
-            ]
-        return { ...lesson, assessment: { ...assessment, levelDescriptions: next } }
-      }),
-    }))
+    updateLesson(lesson => {
+      if (!lesson.assessment) return lesson
+      const { assessment } = lesson
+      const levels = assessment.levelDescriptions ?? []
+      const existing = levels.find(item => item.level === level)
+      const next = existing
+        ? levels.map(item =>
+            item.level === level ? { ...item, description: { ...item.description, [language]: value } } : item
+          )
+        : [
+            ...levels,
+            {
+              assessmentId: assessment.id,
+              createdAt: new Date().toISOString(),
+              description: { ...INTL_PLACEHOLDER, [language]: value } as IntlRecord,
+              id: tempId(),
+              level,
+              updatedAt: new Date().toISOString(),
+            },
+          ]
+      return { ...lesson, assessment: { ...assessment, levelDescriptions: next } }
+    })
   }
 
-  const removeQuestion = (questionId: number) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1 ? { ...lesson, questions: lesson.questions.filter(q => q.id !== questionId) } : lesson
-      ),
-    }))
+  const removeQuestion = (index: number) => {
+    const { questions } = currentLesson
+    const neighbor = questions[index + 1] ?? questions[index - 1]
+    focusRef.current = neighbor ? `[data-question-id="${neighbor.id}"] [data-question-field]` : '[data-add-activity]'
+    const questionId = questions[index].id
+    updateLesson(lesson => ({ ...lesson, questions: lesson.questions.filter(question => question.id !== questionId) }))
   }
 
-  const removeEvaluation = (evaluationId: number) => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1 ? { ...lesson, evaluations: lesson.evaluations.filter(e => e.id !== evaluationId) } : lesson
-      ),
+  const removeEvaluation = (index: number) => {
+    const { evaluations } = currentLesson
+    const neighbor = evaluations[index + 1] ?? evaluations[index - 1]
+    focusRef.current = neighbor
+      ? `[data-activity-id="evaluation-${neighbor.id}"] [data-activity-field]`
+      : '[data-add-activity]'
+    const evaluationId = evaluations[index].id
+    updateLesson(lesson => ({
+      ...lesson,
+      evaluations: lesson.evaluations.filter(evaluation => evaluation.id !== evaluationId),
     }))
   }
 
   const removeAssessment = () => {
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) => (i === step - 1 ? { ...lesson, assessment: undefined } : lesson)),
-    }))
+    focusRef.current = '[data-add-activity]'
+    updateLesson(lesson => ({ ...lesson, assessment: undefined }))
   }
 
   const onAddActivity = (type: LessonType) => {
+    keepFocusRef.current = true
     if (type === 'questions') return addQuestion()
     if (type === 'evaluations') return addEvaluation()
     if (type === 'assessment') return addAssessment()
@@ -534,7 +252,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
   if (!canEdit) return null
 
   return (
-    <div className={cn('space-y-6', className)}>
+    <div className={cn('space-y-6', className)} ref={rootRef}>
       {currentLesson.questions.length > 0 && (
         <div className="space-y-3">
           <h2 className="flex items-center gap-1.5 type-label">
@@ -545,17 +263,19 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             <AnimatedList>
               {currentLesson.questions.map((question, index) => (
                 <AnimatedListItem key={question.id} variant="row">
-                  <QuestionItem
+                  <QuestionCard
                     description={(question.description as IntlRecord)?.[language] ?? ''}
                     explanation={question.explanation?.[language] ?? ''}
+                    id={question.id}
                     label={`${t('activityQuestion')} ${index + 1}`}
                     language={language}
-                    onAddOption={() => addQuestionOption(question.id)}
+                    number={index + 1}
+                    onAddOption={optionId => addQuestionOption(question.id, optionId)}
                     onDescriptionChange={value => updateQuestionDescription(question.id, value)}
                     onExplanationChange={value => updateQuestionExplanation(question.id, value)}
                     onOptionContentChange={(optionId, value) => updateOptionContent(question.id, optionId, value)}
                     onOptionCorrectToggle={optionId => toggleOptionCorrect(question.id, optionId)}
-                    onRemove={() => removeQuestion(question.id)}
+                    onRemove={() => removeQuestion(index)}
                     onRemoveOption={optionId => removeOption(question.id, optionId)}
                     options={question.options}
                   />
@@ -579,12 +299,14 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             <AnimatedList>
               {currentLesson.evaluations.map((evaluation, index) => (
                 <AnimatedListItem className="space-y-3" key={evaluation.id} variant="row">
-                  <ActivityItem
+                  <DescriptionCard
+                    data-activity-id={`evaluation-${evaluation.id}`}
+                    deleteLabel={t('removeEvaluation', { number: index + 1 })}
                     description={(evaluation.description as IntlRecord)?.[language] ?? ''}
                     label={`${t('activityEvaluation')} ${index + 1}`}
                     language={language}
                     onDescriptionChange={value => updateEvaluationDescription(evaluation.id, value)}
-                    onRemove={() => removeEvaluation(evaluation.id)}
+                    onRemove={() => removeEvaluation(index)}
                   />
                   {/* <RatingGroup
                     className="pointer-events-none opacity-50"
@@ -609,21 +331,26 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             {t('skillEvaluationTitle')}
           </h2>
           {isSkill ? (
-            <LevelsItem
+            <LevelsCard
+              data-activity-id="assessment"
+              deleteLabel={t('removeAssessment')}
               descriptions={Object.fromEntries(
                 (currentLesson.assessment.levelDescriptions ?? []).map(item => [
                   item.level,
                   item.description[language] ?? '',
                 ])
               )}
+              label={t('activityLevels')}
               language={language}
               onChange={updateLevelDescription}
               onRemove={removeAssessment}
             />
           ) : (
-            <ActivityItem
+            <DescriptionCard
+              data-activity-id="assessment"
+              deleteLabel={t('removeAssessment')}
               description={(currentLesson.assessment.description as IntlRecord)?.[language] ?? ''}
-              label={t('activityAssessment')}
+              label={t('activityDescription')}
               language={language}
               onDescriptionChange={updateAssessmentDescription}
               onRemove={removeAssessment}
@@ -641,25 +368,38 @@ export const LessonActivities = ({ className }: { className?: string }) => {
       <div className="flex w-full items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button icon="plus" type="button" variant="outline">
+            <Button data-add-activity icon="plus" type="button" variant="outline">
               {t('addActivity')}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onClick={() => onAddActivity('questions')}>
-              <LucideIcon name="message-circle-question-mark" className="size-4" />
-              {t('addActivityQuestion')}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAddActivity('evaluations')}>
-              <LucideIcon name="clipboard-list" className="size-4" />
-              {t('addActivityEvaluation')}
-            </DropdownMenuItem>
-            {!currentLesson.assessment && (
-              <DropdownMenuItem onClick={() => onAddActivity('assessment')}>
-                <LucideIcon name="star" className="size-4" />
-                {t('addActivityAssessment')}
-              </DropdownMenuItem>
-            )}
+          <DropdownMenuContent
+            align="start"
+            onCloseAutoFocus={event => {
+              if (!keepFocusRef.current) return
+              keepFocusRef.current = false
+              event.preventDefault()
+              applyFocus()
+            }}
+          >
+            <ActivityMenuItem
+              hint={t('addActivityQuestionHint')}
+              icon="message-circle-question-mark"
+              onClick={() => onAddActivity('questions')}
+              title={t('addActivityQuestion')}
+            />
+            <ActivityMenuItem
+              hint={t('addActivityEvaluationHint')}
+              icon="clipboard-list"
+              onClick={() => onAddActivity('evaluations')}
+              title={t('addActivityEvaluation')}
+            />
+            <ActivityMenuItem
+              disabled={!!currentLesson.assessment}
+              hint={currentLesson.assessment ? t('addActivityAssessmentDone') : t('addActivityAssessmentHint')}
+              icon="star"
+              onClick={() => onAddActivity('assessment')}
+              title={t('addActivityAssessment')}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

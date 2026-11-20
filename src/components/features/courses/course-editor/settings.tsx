@@ -13,7 +13,7 @@ import { courseIconVariants } from '@/components/features/courses/course-list/ic
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
-import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { IconPicker } from '@/components/ui/icon-picker'
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group'
 import { Label } from '@/components/ui/label'
@@ -22,7 +22,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { queryError } from '@/db/helpers'
 import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course, type CourseSummary } from '@/db/queries/course'
-import { COURSE_DURATION_MAX, OUTCOMES_MAX, parseOutcomesText, sanitizeOutcomes } from '@/db/queries/course-editing'
+import { OUTCOMES_MAX, parseOutcomesText, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { useDebounce } from '@/hooks/use-debounce'
 import { SLUG_REGEX } from '@/lib/constants'
 import { LOCALES } from '@/lib/i18n'
@@ -30,7 +30,6 @@ import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 const courseSettingsSchema = z.object({
-  durationMinutes: z.number().int().min(1).max(COURSE_DURATION_MAX).nullable(),
   icon: z.string().nullable(),
   outcomes: z.record(z.enum(LOCALES), z.string()),
   type: z.enum(COURSE_TYPES),
@@ -49,7 +48,7 @@ const onSlugChange = (onChange: (slug: string) => void) => (e: React.ChangeEvent
 
 export interface CourseSettingsValues extends Pick<
   CourseSummary,
-  'durationMinutes' | 'icon' | 'id' | 'outcomes' | 'skillGroup' | 'slug' | 'type'
+  'icon' | 'id' | 'outcomes' | 'skillGroup' | 'slug' | 'type'
 > {}
 
 export const CourseSettings = ({
@@ -80,7 +79,6 @@ export const CourseSettings = ({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
     defaultValues: {
-      durationMinutes: course?.durationMinutes ?? null,
       icon: course?.icon ?? null,
       outcomes: LOCALES.reduce(
         (outcomes, locale) => ({ ...outcomes, [locale]: (course?.outcomes?.[locale] ?? []).join('\n') }),
@@ -176,7 +174,7 @@ export const CourseSettings = ({
 
   return (
     <Form {...form}>
-      <form className={cn('grid gap-10', className)} onSubmit={form.handleSubmit(onSubmit)} {...props}>
+      <form className={cn('grid gap-10', className)} method="post" onSubmit={form.handleSubmit(onSubmit)} {...props}>
         <div className="space-y-6">
           <FormField
             control={form.control}
@@ -282,38 +280,11 @@ export const CourseSettings = ({
           )}
           <FormField
             control={form.control}
-            name="durationMinutes"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <div className="flex flex-col gap-y-1">
-                  <FormLabel>{tEditor('durationLabel')}</FormLabel>
-                  <FormDescription>{tEditor('durationDescription')}</FormDescription>
-                </div>
-                <InputGroup className="w-48">
-                  <InputGroupInput
-                    inputMode="numeric"
-                    max={COURSE_DURATION_MAX}
-                    min={1}
-                    onBlur={field.onBlur}
-                    onChange={event => field.onChange(event.target.value === '' ? null : Number(event.target.value))}
-                    placeholder={tEditor('durationPlaceholder')}
-                    type="number"
-                    value={field.value ?? ''}
-                  />
-                </InputGroup>
-                <FormMessage>
-                  {form.formState.errors.durationMinutes && tEditor('durationInvalid', { max: COURSE_DURATION_MAX })}
-                </FormMessage>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="slug"
             render={({ field: { onChange, ...field } }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col gap-y-1">
-                  <Label>{t('courseSlug')}</Label>
+                  <Label htmlFor={slugId}>{t('courseSlug')}</Label>
                   <FormDescription>{t('courseSlugDescription')}</FormDescription>
                 </div>
                 <div className="space-y-1.5">
@@ -343,7 +314,7 @@ export const CourseSettings = ({
               </FormItem>
             )}
           />
-          <div className="space-y-1">
+          <div className="space-y-3">
             <div className="flex flex-col gap-y-1">
               <Label>{tEditor('outcomesLabel')}</Label>
               <FormDescription>{tEditor('outcomesDescription', { max: OUTCOMES_MAX })}</FormDescription>
@@ -357,13 +328,15 @@ export const CourseSettings = ({
                   render={({ field }) => (
                     <FormItem className="space-y-1">
                       <FormLabel className="text-xs text-muted-foreground">{label}</FormLabel>
-                      <Textarea
-                        className="min-h-20 text-sm"
-                        onBlur={field.onBlur}
-                        onChange={field.onChange}
-                        placeholder={tEditor('outcomesPlaceholder')}
-                        value={field.value}
-                      />
+                      <FormControl>
+                        <Textarea
+                          className="min-h-20 resize-none"
+                          onBlur={field.onBlur}
+                          onChange={field.onChange}
+                          placeholder={tEditor('outcomesPlaceholder')}
+                          value={field.value}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -371,7 +344,7 @@ export const CourseSettings = ({
             </div>
           </div>
         </div>
-        <div className="sticky bottom-0 -mx-8 -mb-8 flex flex-col gap-2 border-t bg-background px-8 py-4">
+        <div className="sticky -bottom-8 -mx-8 -mb-8 flex flex-col gap-2 border-t bg-background px-8 py-4">
           {(errors.length > 0 || !(isIntro || form.getValues('skillGroupId'))) && (
             <output className="flex flex-col gap-0.5 text-sm text-muted-foreground">
               {errors.length > 0

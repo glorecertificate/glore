@@ -1,28 +1,8 @@
-import { type CertificatePdfLabels } from '@/components/features/certificates/document'
-
-const PDF_LABEL_KEYS = [
-  'at',
-  'date',
-  'dateOfBirth',
-  'from',
-  'headingAfter',
-  'headingBefore',
-  'headingHighlight',
-  'hours',
-  'level',
-  'mainTasks',
-  'nationality',
-  'partnership',
-  'placeOfBirth',
-  'representedBy',
-  'tasksIntro',
-  'title',
-  'to',
-  'verify',
-  'volunteering',
-] as const
-
-type PdfLabelKey = (typeof PDF_LABEL_KEYS)[number]
+import {
+  type CertificatePdfLabels,
+  PDF_LABEL_KEYS,
+  type PdfLabelKey,
+} from '@/components/features/certificates/certificate-layout'
 
 const IMAGE_EXTENSIONS = /\.(png|jpe?g)(\?.*)?$/iu
 

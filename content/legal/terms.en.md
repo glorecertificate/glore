@@ -59,4 +59,4 @@ We may update these terms. The date at the top of the page shows the latest upda
 
 ## Contact
 
-Questions about these terms: info@glorecertificate.net. See also the [Privacy policy](/privacy) and the [Quality Charter](/quality-charter).
+Questions about these terms: info@glorecertificate.net. See also the [Privacy policy](/privacy).

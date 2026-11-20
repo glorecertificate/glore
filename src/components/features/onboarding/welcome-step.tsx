@@ -22,7 +22,7 @@ export const WelcomeStep = ({
 
   return (
     <div className="flex flex-col gap-6" data-testid="onboarding-welcome">
-      <div className="space-y-2 text-center">
+      <div className="space-y-2">
         <h1 className="type-title text-balance">{t('welcomeTitle', { name: firstName })}</h1>
         <p className="text-muted-foreground">{t('welcomeDescription')}</p>
       </div>
@@ -36,7 +36,7 @@ export const WelcomeStep = ({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Button asChild size="lg" variant="brand">
+        <Button asChild variant="brand">
           <Link href={ONBOARDING_NEXT_HREFS[nextStep]}>
             <LucideIcon name="arrow-right" />
             {t(`next_${nextStep}`)}

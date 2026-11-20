@@ -101,7 +101,7 @@ const countCategories = async (query: ParsedQuery) => {
     .from(activityEvents)
     .leftJoin(actor, eq(actor.id, activityEvents.actorId))
     .leftJoin(target, eq(target.id, targetUserId))
-    .where(buildFilters({ ...query, category: null }))
+    .where(buildFilters({ ...query, category: [] }))
     .groupBy(activityEvents.action)
   const totals: Record<string, number> = {}
   for (const row of rows) {

@@ -5,19 +5,16 @@ import { createElement } from 'react'
 import { createTranslator } from 'next-intl'
 
 import {
-  CertificateDocument,
+  type CertificateInput,
   type CertificatePdfData,
   type CertificatePdfLabels,
   type CertificatePdfSkill,
-} from '@/components/features/certificates/document'
+} from '@/components/features/certificates/certificate-layout'
+import { CertificateDocument } from '@/components/features/certificates/document'
 import { pdfImage, pdfLabels } from '@/components/features/certificates/pdf-helpers'
 import { iconNodeOf } from '@/components/icons/registry'
 import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
 import { loadMessages, resolveLocale } from '@/lib/messages'
-
-type PdfInput = Omit<CertificatePdfData, 'qrPath' | 'qrSize' | 'skills' | 'verifyUrl'> & {
-  skills: (Omit<CertificatePdfSkill, 'iconNode'> & { icon: string | null })[]
-}
 
 export const certificatePdfLabels = async (language: string) => {
   const locale = resolveLocale(language)
@@ -56,7 +53,7 @@ const render = async (data: CertificatePdfData, labels: CertificatePdfLabels) =>
 }
 
 export const generateCertificatePdf = async (
-  input: PdfInput,
+  input: CertificateInput,
   language: string,
   frozenLabels?: CertificatePdfLabels
 ) => {

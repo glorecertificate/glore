@@ -8,7 +8,7 @@ Ogni organizzazione ha esattamente un amministratore. Fai tutto ciò che fa un [
 ## Candida la tua organizzazione
 
 1. Apri la [pagina di registrazione](/register) e compila la candidatura: il rappresentante legale, il numero di registro, la persona di contatto, il sito web, con quanti volontari lavorate ogni anno e la vostra motivazione.
-2. Accetta la Carta della qualità.
+2. Accetta i termini d'uso.
 3. Il team di GloRe esamina la candidatura. Quando viene approvata, ricevi un invito via email.
 4. Accetta l'invito, completa il profilo e arrivi alla dashboard come amministratore dell'organizzazione.
 

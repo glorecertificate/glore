@@ -4,11 +4,10 @@ import { getTranslations } from 'next-intl/server'
 import { createSearchParamsCache } from 'nuqs/server'
 
 import { AuthFlow } from '@/components/features/auth/auth-flow'
+import { AuthMain } from '@/components/features/auth/auth-frame'
 import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
 import { authParsers } from '@/components/features/auth/params'
-import { LegalLinks } from '@/components/features/legal/legal-links'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { cookies } from '@/lib/cookie-store'
 import { appTitle } from '@/lib/metadata'
 
@@ -21,28 +20,17 @@ export const generateMetadata = async ({ searchParams }: PageProps<'/login'>) =>
 
 const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'>['searchParams'] }) => {
   const { get } = await cookies()
-  const [username, theme, params] = await Promise.all([get('loginUser'), get('theme'), parse(searchParams)])
+  const [username, params] = await Promise.all([get('loginUser'), parse(searchParams)])
 
-  return (
-    <AuthFlow
-      footer={
-        <div className="flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-6">
-          <LegalLinks />
-          <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
-        </div>
-      }
-      params={params}
-      username={username}
-    />
-  )
+  return <AuthFlow params={params} username={username} />
 }
 
 const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
-  <div className="min-h-svh bg-canvas">
-    <Suspense fallback={<LoadingFallback size="full" />}>
+  <AuthMain>
+    <Suspense fallback={<LoadingFallback />}>
       <LoginContent searchParams={searchParams} />
     </Suspense>
-  </div>
+  </AuthMain>
 )
 
 export default LoginPage

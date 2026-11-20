@@ -1,13 +1,25 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
+import { useDraft } from '@/components/features/courses/course-editor/use-draft'
+import { useLanguageName } from '@/components/features/courses/course-editor/use-language-name'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
@@ -35,8 +47,8 @@ import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
 import { type Lesson } from '@/db/queries/lesson'
-import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
-import { cn, debounce } from '@/lib/utils'
+import { DEFAULT_LOCALE, type IntlRecord, LOCALES, localizeRecord } from '@/lib/i18n'
+import { cn, isTempId } from '@/lib/utils'
 
 const MAX_LESSON_TITLE_LENGTH = 120
 
@@ -73,17 +85,25 @@ const CourseSidebarItem = ({
   const { isCompleted, isCurrent, isReachable } = lessonStatus
 
   const title = lesson.title ? localizeRecord(lesson.title, language) : t('untitledLesson')
-  const fallbackTitle = lesson.title ? localizeRecord(lesson.title, DEFAULT_LOCALE) : t('untitledLesson')
-  const [draftTitle, setDraftTitle] = useState(title)
+  const fallbackTitle = (lesson.title ? localizeRecord(lesson.title, DEFAULT_LOCALE) : '') || t('untitledLesson')
+  const languageName = useLanguageName(language)
+  const isMissing = !title && language !== DEFAULT_LOCALE && fallbackTitle !== t('untitledLesson')
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const lessonRef = useRef(lesson)
   lessonRef.current = lesson
 
-  useEffect(() => {
-    if (document.activeElement !== inputRef.current) {
-      setDraftTitle(title)
-    }
-  }, [title])
+  const commitTitle = (value: string) => {
+    const current = lessonRef.current
+    setLesson({
+      id: current.id,
+      title: {
+        ...current.title,
+        [language]: value,
+      },
+    } as Lesson)
+  }
+
+  const { draft: draftTitle, onBlur: flushTitle, onChange: onDraftTitleChange } = useDraft(title, commitTitle)
 
   const hasUpdates = (() => {
     const initialLesson = initialCourse.lessons.find(l => l.id === lesson.id)
@@ -104,21 +124,13 @@ const CourseSidebarItem = ({
     return JSON.stringify(initialLessonData) !== JSON.stringify(lessonData)
   })()
 
-  const commitTitle = debounce(value => {
-    const current = lessonRef.current
-    setLesson({
-      id: current.id,
-      title: {
-        ...current.title,
-        [language]: value,
-      },
-    } as Lesson)
-  }, 250)
+  const onTitleBlur = () => {
+    if (draftTitle.trim() === '') return
+    flushTitle()
+  }
 
   const onTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value.slice(0, MAX_LESSON_TITLE_LENGTH)
-    setDraftTitle(value)
-    commitTitle(value)
+    onDraftTitleChange(e.target.value.slice(0, MAX_LESSON_TITLE_LENGTH))
   }
 
   const onLessonClick = () => {
@@ -168,9 +180,10 @@ const CourseSidebarItem = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <InlineInput
-                      aria-label={t('renameLesson')}
-                      className="peer -ml-1 max-w-[calc(100%-12px)] cursor-text focus:max-w-full"
+                      aria-label={isMissing ? t('lessonTitleMissing', { language: languageName }) : t('renameLesson')}
+                      className="peer -ml-1 max-w-[calc(100%-12px)] cursor-text placeholder:italic focus:max-w-full"
                       maxLength={MAX_LESSON_TITLE_LENGTH}
+                      onBlur={onTitleBlur}
                       onChange={onTitleChange}
                       onClick={e => e.stopPropagation()}
                       placeholder={fallbackTitle}
@@ -179,7 +192,7 @@ const CourseSidebarItem = ({
                     />
                   </TooltipTrigger>
                   <TooltipContent align="start" sideOffset={6} size="sm">
-                    {t('renameLesson')}
+                    {isMissing ? t('lessonTitleMissing', { language: languageName }) : t('renameLesson')}
                   </TooltipContent>
                 </Tooltip>
                 {!isSingleLesson && (
@@ -259,8 +272,8 @@ const CourseSidebarItem = ({
       <StepperSeparator
         className={cn(
           isLast && 'hidden',
-          'absolute inset-y-0 top-10 left-6 -order-1 m-0 h-[calc(100%-0.5rem)]! -translate-x-1/2',
-          user.isLearner && 'group-data-[state=completed]/step:bg-success'
+          'absolute inset-y-0 top-10 left-6 z-1 -order-1 m-0 h-[calc(100%-1rem)]! -translate-x-1/2',
+          user.isLearner && 'data-[state=completed]:bg-success'
         )}
       />
     </StepperItem>
@@ -276,7 +289,18 @@ export const CourseSidebar = ({
   const tList = useTranslations('CourseList')
   const { user } = useSession()
   const { course, courseRef, language, step, setCourse, setLesson, setStep, addLesson, removeLesson } = useCourse()
+  const tCommon = useTranslations('Common')
   const reducedMotion = useReducedMotion()
+  const [removing, setRemoving] = useState<Lesson | null>(null)
+
+  const requestRemoval = (lessonId: number) => {
+    const lesson = course.lessons.find(item => item.id === lessonId)
+    if (!lesson) return
+    const hasContent = LOCALES.some(locale => !!normalizeContent((lesson.content as IntlRecord)?.[locale]))
+    const hasActivities = lesson.questions.length > 0 || lesson.evaluations.length > 0 || !!lesson.assessment
+    if (isTempId(lesson.id) && !hasContent && !hasActivities) return removeLesson(lessonId)
+    setRemoving(lesson)
+  }
 
   const currentLessonId = course.lessons[step - 1]?.id
   const isStudent = user.isLearner || user.isVolunteer
@@ -387,7 +411,7 @@ export const CourseSidebar = ({
                             lessonStatus={{ isCompleted, isCurrent, isReachable }}
                             onChoose={onChoose}
                             onMove={direction => handleMove(index, direction)}
-                            onRemove={removeLesson}
+                            onRemove={requestRemoval}
                             onSelect={handleSelect}
                             setLesson={setLesson}
                             step={itemStep}
@@ -422,7 +446,7 @@ export const CourseSidebar = ({
                       language={language}
                       lesson={lesson}
                       lessonStatus={{ isCompleted, isCurrent, isReachable }}
-                      onRemove={removeLesson}
+                      onRemove={requestRemoval}
                       onSelect={handleSelect}
                       setLesson={setLesson}
                       step={itemStep}
@@ -441,6 +465,32 @@ export const CourseSidebar = ({
           </div>
         )}
       </div>
+      <AlertDialog onOpenChange={open => !open && setRemoving(null)} open={!!removing}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('removeLessonTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('removeLessonMessage', {
+                title:
+                  (removing?.title &&
+                    (localizeRecord(removing.title, language) || localizeRecord(removing.title, DEFAULT_LOCALE))) ||
+                  t('untitledLesson'),
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel variant="outline">{tCommon('cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (removing?.id) removeLesson(removing.id)
+              }}
+              variant="destructive"
+            >
+              {t('removeLessonConfirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

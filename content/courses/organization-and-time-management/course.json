@@ -13,7 +13,6 @@
     "es": "Decide qué va primero, planifica los pasos con fechas reales y reparte el trabajo de forma justa para que un proyecto termine a tiempo con las personas y los medios que tienes.",
     "it": "Decidi cosa viene prima, pianifica i passaggi con date reali e dividi il lavoro in modo equo, così che un progetto finisca in tempo con le persone e i mezzi che hai."
   },
-  "durationMinutes": 40,
   "outcomes": {
     "en": [
       "Rank tasks by deadline and by what depends on them",

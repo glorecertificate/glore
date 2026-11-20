@@ -16,7 +16,6 @@ import { auth } from '@/lib/auth'
 import { isRateLimited } from '@/lib/rate-limit'
 
 const HOUR = 60 * 60 * 1000
-const SESSION_LIMIT = 20
 
 const storedAt = (value: string) => new Date(value.replace(' ', 'T')).toISOString()
 
@@ -52,18 +51,11 @@ export const listSessions = async () => {
       userAgent: sessions.userAgent,
     }
     const active = and(eq(sessions.userId, user.id), gt(sessions.expiresAt, sql<string>`${new Date()}`))
-    const [recent, current] = await Promise.all([
-      db.select(columns).from(sessions).where(active).orderBy(desc(sessions.updatedAt)).limit(SESSION_LIMIT),
+    const [rows, current] = await Promise.all([
+      db.select(columns).from(sessions).where(active).orderBy(desc(sessions.updatedAt)),
       currentSessionId(),
     ])
-    const pinned =
-      current && !recent.some(row => row.id === current)
-        ? await db
-            .select(columns)
-            .from(sessions)
-            .where(and(active, eq(sessions.id, current)))
-        : []
-    const data: SessionSummary[] = [...pinned, ...recent].map(row => ({
+    const data: SessionSummary[] = rows.map(row => ({
       ...row,
       createdAt: storedAt(row.createdAt),
       current: row.id === current,

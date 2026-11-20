@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
-import { redirect, usePathname, useSearchParams } from 'next/navigation'
+import { unstable_rethrow, usePathname, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { useTranslations } from 'next-intl'
@@ -67,10 +67,10 @@ import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { toast } from '@/components/ui/toast'
 import { type UserOrganization } from '@/db/queries/user'
 import { useShortcut } from '@/hooks/use-shortcut'
-import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { APP_ROOT } from '@/lib/constants'
 import { SHORTCUTS } from '@/lib/shortcuts'
 import { type IconName } from '@/lib/types'
-import { cn, sleep } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 const loadSearchCommand = async () => (await import('@/components/layout/search-command')).SearchCommand
 
@@ -138,7 +138,7 @@ const DashboardSidebarItem = ({
   onClick,
   route,
 }: DashboardSidebarItemProps) => {
-  const { activePath, setActivePath } = useSidebar()
+  const { activePath, setActivePath, setOpenMobile } = useSidebar()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const pressed = useRef(false)
@@ -167,9 +167,14 @@ const DashboardSidebarItem = ({
     setActivePath(pathname as Route)
   }
 
+  const release = () => {
+    pressed.current = false
+  }
+
   const setPath = (e: React.MouseEvent<HTMLButtonElement>) => {
     pressed.current = false
     setActivePath(route)
+    setOpenMobile(false)
     onClick?.(e)
   }
 
@@ -190,6 +195,7 @@ const DashboardSidebarItem = ({
         onPointerCancel={cancelPress}
         onPointerDown={press}
         onPointerLeave={cancelPress}
+        onPointerUp={release}
         tooltip={label}
       >
         <Link href={route} keepFresh prefetch={quiet || undefined}>
@@ -291,6 +297,15 @@ const DashboardSidebarUserItem = ({
   )
 }
 
+const isNavigationError = (error: unknown) => {
+  try {
+    unstable_rethrow(error)
+  } catch {
+    return true
+  }
+  return false
+}
+
 const DashboardSidebarUser = ({ organization }: { organization: UserOrganization | null }) => {
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
@@ -317,21 +332,18 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 
     try {
       await logout({ loggedOut: true })
-    } catch {
+    } catch (error) {
+      if (isNavigationError(error)) return
       toast.error(t('logoutFailed'))
       setLoggingOut(false)
-      return
     }
-
-    await sleep(500)
-    setTimeout(() => setMenuOpen(false), 1000)
-    redirect(`${AUTH_ROOT}?loggedOut=true`)
   }
 
   useEffect(
     () => () => {
       setLoggingOut(false)
       setLogoutDialogOpen(false)
+      setMenuOpen(false)
     },
     []
   )
@@ -513,7 +525,7 @@ const DashboardSidebarSearch = () => {
 }
 
 const DashboardSidebarBrand = () => (
-  <div className="flex h-10 items-center justify-between gap-2 px-2.5 group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+  <div className="flex h-10 items-center justify-between gap-2 px-4.5 group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
     <HeaderLogo className="inline-flex group-data-[collapsible=icon]:hidden" href={APP_ROOT} prefetch={false}>
       <Logo className="h-7 w-auto" onNavy />
     </HeaderLogo>
@@ -564,7 +576,7 @@ export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="gap-4 p-4 pb-2 group-data-[collapsible=icon]:p-2">
+      <SidebarHeader className="gap-4 px-2 pt-4 pb-2 group-data-[collapsible=icon]:p-2">
         <DashboardSidebarExpand />
         <DashboardSidebarBrand />
         {showsOrganizationSwitcher(user) && <OrganizationSwitcher />}

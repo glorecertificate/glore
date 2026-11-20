@@ -462,7 +462,6 @@ export const submitOrganizationApplication = async (
   await tx
     .update(organizationProfiles)
     .set({
-      charterAcceptedAt: new Date().toISOString(),
       contactEmail: application.contactEmail,
       contactName: application.contactName,
       legalName: application.legalName,

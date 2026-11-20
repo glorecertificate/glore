@@ -4,10 +4,10 @@ import { useTranslations } from 'next-intl'
 
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { CERTIFICATE_STATUS } from '@/components/features/certificates/status'
-import { Card, CardAction, CardHeader, CardTitle } from '@/components/ui/card'
-import { Link } from '@/components/ui/link'
 import { PIPELINE_STATUSES, type Pipeline } from '@/db/queries/organization-insights'
 import { cn } from '@/lib/utils'
+
+import { OverviewAction, OverviewCard } from './overview-card'
 
 const FILLS = {
   approved: 'bg-status-approved',
@@ -24,43 +24,45 @@ export const OrganizationCertificatesCard = ({ className, pipeline }: { classNam
   const t = useTranslations('OrganizationRail')
   const rows = PIPELINE_STATUSES.filter(status => pipeline[status] > 0)
   const total = rows.reduce((sum, status) => sum + pipeline[status], 0)
-  const peak = Math.max(1, ...rows.map(status => pipeline[status]))
 
   return (
-    <Card className={className} data-slot="certificates-card">
-      <CardHeader>
-        <CardTitle>{t('certificates')}</CardTitle>
-        <CardAction className="type-caption text-fg-2">{t('requests', { count: total })}</CardAction>
-      </CardHeader>
+    <OverviewCard
+      action={
+        rows.length > 0 && (
+          <OverviewAction href="/organization?tab=certificates">{t('openCertificates')}</OverviewAction>
+        )
+      }
+      className={className}
+      slot="certificates-card"
+      title={t('certificates')}
+    >
       {rows.length === 0 && <p className="text-sm text-muted-foreground">{t('certificatesEmpty')}</p>}
       {rows.length > 0 && (
-        <ul className="flex flex-col gap-3.5">
-          {rows.map(status => (
-            <li className="flex flex-col gap-1.5" key={status}>
-              <div className="flex items-center justify-between gap-3 text-sm">
+        <>
+          <p className="type-title tabular-nums">
+            <span aria-hidden>{total}</span>
+            <span className="sr-only">{t('requests', { count: total })}</span>
+          </p>
+          <span aria-hidden className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-status-track">
+            {rows.map(status => (
+              <span
+                className={cn('h-full', FILLS[CERTIFICATE_STATUS[status].tone])}
+                key={status}
+                style={{ flexGrow: pipeline[status] }}
+              />
+            ))}
+          </span>
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+            {rows.map(status => (
+              <li className="flex items-center justify-between gap-3" key={status}>
                 <CertificateStatusBadge status={status} />
                 <span className="font-medium tabular-nums">{pipeline[status]}</span>
-              </div>
-              <span aria-hidden className="block h-1.5 overflow-hidden rounded-full bg-status-track">
-                <span
-                  className={cn('block h-full rounded-full', FILLS[CERTIFICATE_STATUS[status].tone])}
-                  style={{ width: `${(pipeline[status] / peak) * 100}%` }}
-                />
-              </span>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
-      {rows.length > 0 && (
-        <Link
-          className="inline-flex min-h-8 items-center text-sm font-medium"
-          href="/organization?tab=certificates"
-          variant="primary"
-        >
-          {t('openCertificates')}
-        </Link>
-      )}
-    </Card>
+    </OverviewCard>
   )
 }
 
@@ -89,28 +91,21 @@ export const OrganizationMembersCard = ({
   ].filter(({ count }) => count > 0)
 
   return (
-    <Card className={className} data-slot="members-card">
-      <CardHeader>
-        <CardTitle>{tRail('members')}</CardTitle>
-        <CardAction>
-          <Link
-            className="inline-flex min-h-8 items-center text-sm font-medium"
-            href="/organization?tab=members"
-            variant="primary"
-          >
-            {tRail('manage')}
-          </Link>
-        </CardAction>
-      </CardHeader>
+    <OverviewCard
+      action={<OverviewAction href="/organization?tab=members">{tRail('manage')}</OverviewAction>}
+      className={cn('flex-1', className)}
+      slot="members-card"
+      title={tRail('members')}
+    >
       <p className="type-title tabular-nums">{stats.memberCount}</p>
-      <ul className="flex flex-col divide-y divide-border-subtle text-sm">
+      <ul className="flex flex-1 flex-col justify-between gap-2 text-sm">
         {roles.map(({ count, label }) => (
-          <li className="flex items-center justify-between gap-3 py-2 first:pt-0 last:pb-0" key={label}>
+          <li className="flex items-center justify-between gap-3" key={label}>
             <span className="text-muted-foreground">{label}</span>
             <span className="font-medium tabular-nums">{count}</span>
           </li>
         ))}
       </ul>
-    </Card>
+    </OverviewCard>
   )
 }

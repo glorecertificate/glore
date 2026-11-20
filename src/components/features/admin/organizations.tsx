@@ -31,7 +31,7 @@ import { useAdminDialog } from './dialog-provider'
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, RejectDialog } from './organization-items'
 import { listFocusTarget } from './utils'
 
-type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
+type OrgFilter = 'pending' | 'active' | 'rejected'
 
 const STATUS_MATCHERS = {
   active: (o: AdminOrganization) => o.isApproved,
@@ -53,9 +53,9 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     const id = window.setTimeout(preload, 500)
     return () => window.clearTimeout(id)
   }, [])
-  const [filter, setFilter] = useState<OrgFilter>('all')
+  const [statuses, setStatuses] = useState<OrgFilter[]>([])
   const [search, setSearch] = useState('')
-  const [country, setCountry] = useState('all')
+  const [countries, setCountries] = useState<string[]>([])
   const [approveTarget, setApproveTarget] = useState<AdminOrganization | null>(null)
   const [rejectTarget, setRejectTarget] = useState<AdminOrganization | null>(null)
   const [viewTarget, setViewTarget] = useState<AdminOrganization | null>(null)
@@ -72,11 +72,13 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       .toSorted((a, b) => a.label.localeCompare(b.label, locale))
   })()
 
-  const matching = (status: OrgFilter | null, countryCode: string | null) => {
+  const matching = (statusList: OrgFilter[] | null, countryList: string[] | null) => {
     let list = orgs
 
-    if (status && status !== 'all') list = list.filter(STATUS_MATCHERS[status])
-    if (countryCode && countryCode !== 'all') list = list.filter(o => o.country?.toLowerCase() === countryCode)
+    if (statusList && statusList.length > 0) list = list.filter(o => statusList.some(key => STATUS_MATCHERS[key](o)))
+    if (countryList && countryList.length > 0) {
+      list = list.filter(o => countryList.includes(o.country?.toLowerCase() ?? ''))
+    }
 
     const needle = search.trim().toLowerCase()
     if (needle) {
@@ -86,7 +88,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     return list
   }
 
-  const displayOrgs = matching(filter, country)
+  const displayOrgs = matching(statuses, countries)
 
   const refreshOrgs = async () => {
     const { data } = await getOrganizations({ cache: false })
@@ -95,8 +97,8 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
   const resetFilters = () => {
     setSearch('')
-    setCountry('all')
-    setFilter('all')
+    setCountries([])
+    setStatuses([])
   }
 
   const handleApprove = async (comment?: string) => {
@@ -238,7 +240,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         rowLabel={org => t('selectOrg', { name: org.name })}
         selectable
         tabIndex={-1}
-        pageResetKey={`${search}|${country}|${filter}`}
+        pageResetKey={`${search}|${countries.join(',')}|${statuses.join(',')}`}
         columns={[
           {
             cell: org => (
@@ -310,25 +312,25 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
             {
               id: 'status',
               label: t('filterStatus'),
-              onChange: value => setFilter((value as OrgFilter | null) ?? 'all'),
+              onChange: values => setStatuses(values as OrgFilter[]),
               options: (['pending', 'active', 'rejected'] as const).map(key => ({
-                count: matching(null, country).filter(STATUS_MATCHERS[key]).length,
+                count: matching(null, countries).filter(STATUS_MATCHERS[key]).length,
                 label: t(`filter_${key}`),
                 tone: STATUS_TONES[key],
                 value: key,
               })),
-              value: filter === 'all' ? null : filter,
+              values: statuses,
             },
             {
               id: 'country',
               label: t('filterCountry'),
-              onChange: value => setCountry(value ?? 'all'),
+              onChange: setCountries,
               options: countryOptions.map(({ code, label }) => ({
-                count: matching(filter, null).filter(o => o.country?.toLowerCase() === code).length,
+                count: matching(statuses, null).filter(o => o.country?.toLowerCase() === code).length,
                 label: `${countryCodeToFlag(code)} ${label}`,
                 value: code,
               })),
-              value: country === 'all' ? null : country,
+              values: countries,
             },
           ],
           onReset: resetFilters,

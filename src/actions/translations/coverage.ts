@@ -2,19 +2,19 @@ import 'server-only'
 
 import { cacheLife, cacheTag } from 'next/cache'
 
-import { describeTargets, loadAllTargets } from '@/actions/translations/helpers'
-import { coverageOf } from '@/db/queries/content-translation'
+import { loadAllTargets } from '@/actions/translations/helpers'
+import { gapsOf } from '@/db/queries/content-translation'
 import { CacheTag } from '@/lib/cache'
 
-const queryTranslationCoverage = async () => coverageOf(await describeTargets(await loadAllTargets()))
+const queryTranslationGaps = async () => gapsOf(await loadAllTargets())
 
-const fetchTranslationCoverage = async () => {
+const fetchTranslationGaps = async () => {
   'use cache'
   cacheTag(CacheTag.ContentTranslations, CacheTag.Courses, CacheTag.DocCategories, CacheTag.SkillGroups)
   cacheLife('minutes')
 
-  return await queryTranslationCoverage()
+  return await queryTranslationGaps()
 }
 
-export const loadTranslationCoverage = async ({ cache = true }: { cache?: boolean } = {}) =>
-  cache ? await fetchTranslationCoverage() : await queryTranslationCoverage()
+export const loadTranslationGaps = async ({ cache = true }: { cache?: boolean } = {}) =>
+  cache ? await fetchTranslationGaps() : await queryTranslationGaps()

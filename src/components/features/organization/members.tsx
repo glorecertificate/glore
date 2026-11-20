@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
+import { parseAsArrayOf, parseAsStringEnum, useQueryState } from 'nuqs'
 
 import { type MemberDetail, getOrganizationMemberDetail } from '@/actions/organizations/members'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
@@ -38,6 +39,12 @@ type Member = OrganizationPanelData['members'][number]
 type Dialog = { kind: 'leave' } | { kind: 'remove' | 'role'; member: Member }
 
 const ROLE_FILTERS: OrganizationMembershipRole[] = ['admin', 'representative', 'tutor', 'volunteer', 'learner']
+const STATUS_FILTERS = ['active', 'pending'] as const
+
+type StatusFilter = (typeof STATUS_FILTERS)[number]
+
+const roleParser = parseAsArrayOf(parseAsStringEnum(ROLE_FILTERS))
+const statusParser = parseAsArrayOf(parseAsStringEnum([...STATUS_FILTERS]))
 
 interface OrganizationMembersProps {
   currentUserId: string
@@ -45,12 +52,14 @@ interface OrganizationMembersProps {
   members: OrganizationPanelData['members']
   onRefresh: () => void
   onSyncUser?: (user: User) => void
+  emptyDescription?: string
   organizationId?: number
   organizationName: string
 }
 
 export const OrganizationMembers = ({
   currentUserId,
+  emptyDescription,
   isOrgAdmin,
   members,
   onRefresh,
@@ -65,8 +74,8 @@ export const OrganizationMembers = ({
   const { remember, restore } = useReturnFocus()
 
   const [search, setSearch] = useState('')
-  const [roleFilter, setRoleFilter] = useState<'all' | OrganizationMembershipRole>('all')
-  const [statusFilter, setStatusFilter] = useState<'active' | 'all' | 'pending'>('all')
+  const [roleParam, setRoleParam] = useQueryState('role', { ...roleParser, history: 'push' })
+  const [statusParam, setStatusParam] = useQueryState('status', { ...statusParser, history: 'push' })
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const [drawer, setDrawer] = useState<{
     data: MemberDetail | null
@@ -81,11 +90,17 @@ export const OrganizationMembers = ({
   const managerRole = isOrgAdmin ? 'admin' : 'representative'
   const self = members.find(member => member.user.id === currentUserId)
 
+  const selectedRoles = roleParam ?? []
+  const selectedStatuses = statusParam ?? []
+  const activeRoles = selectedRoles.length === ROLE_FILTERS.length ? [] : selectedRoles
+  const activeStatuses = selectedStatuses.length === STATUS_FILTERS.length ? [] : selectedStatuses
+  const hasRoleFilter = selectedRoles.length > 0
+
   const needle = search.trim().toLowerCase()
   const memberMatches = (member: Member, { role = true, status = true }: { role?: boolean; status?: boolean } = {}) => {
-    if (role && roleFilter !== 'all' && member.role !== roleFilter) return false
-    if (status && statusFilter === 'pending' && !member.isPending) return false
-    if (status && statusFilter === 'active' && member.isPending) return false
+    if (role && activeRoles.length > 0 && !activeRoles.includes(member.role)) return false
+    const memberStatus = member.isPending ? 'pending' : 'active'
+    if (status && activeStatuses.length > 0 && !activeStatuses.includes(memberStatus)) return false
     if (!needle) return true
     return [getDisplayName(member.user), member.user.email, member.user.username ?? ''].some(value =>
       value.toLowerCase().includes(needle)
@@ -96,8 +111,8 @@ export const OrganizationMembers = ({
 
   const clearFilters = () => {
     setSearch('')
-    setRoleFilter('all')
-    setStatusFilter('all')
+    setRoleParam(null)
+    setStatusParam(null)
   }
 
   const openDetail = async (member: Member) => {
@@ -199,8 +214,8 @@ export const OrganizationMembers = ({
 
   const platformFilters = (
     <FilterBar
-      active={roleFilter !== 'all' || search.length > 0}
-      count={Number(roleFilter !== 'all')}
+      active={hasRoleFilter || search.length > 0}
+      count={Number(hasRoleFilter)}
       onClear={clearFilters}
       search={
         <SearchInput
@@ -215,7 +230,10 @@ export const OrganizationMembers = ({
       }
       size="sm"
     >
-      <Select onValueChange={value => setRoleFilter(value as typeof roleFilter)} value={roleFilter}>
+      <Select
+        onValueChange={value => setRoleParam(value === 'all' ? null : [value as OrganizationMembershipRole])}
+        value={selectedRoles.length === 1 ? selectedRoles[0] : 'all'}
+      >
         <SelectTrigger aria-label={t('filterRole')} className="w-auto gap-1.5" size="sm">
           <SelectValue />
         </SelectTrigger>
@@ -236,7 +254,9 @@ export const OrganizationMembers = ({
       <div className="flex flex-col gap-6 outline-none" ref={containerRef} tabIndex={-1}>
         <DataTable
           columns={columns}
-          emptyDescription={members.length === 0 ? t('noMembersDescription') : t('noMembersFilteredDescription')}
+          emptyDescription={
+            members.length === 0 ? (emptyDescription ?? t('noMembersDescription')) : t('noMembersFilteredDescription')
+          }
           emptyTitle={members.length === 0 ? t('noMembers') : t('noMembersFiltered')}
           filters={platform ? platformFilters : undefined}
           rail={
@@ -247,18 +267,19 @@ export const OrganizationMembers = ({
                     {
                       id: 'role',
                       label: t('filterRole'),
-                      onChange: value => setRoleFilter((value as OrganizationMembershipRole | null) ?? 'all'),
+                      onChange: values =>
+                        setRoleParam(values.length > 0 ? (values as OrganizationMembershipRole[]) : null),
                       options: ROLE_FILTERS.map(role => ({
                         count: members.filter(m => m.role === role && memberMatches(m, { role: false })).length,
                         label: formatRoleLabel(role, t),
                         value: role,
                       })),
-                      value: roleFilter === 'all' ? null : roleFilter,
+                      values: selectedRoles,
                     },
                     {
                       id: 'status',
                       label: t('filterStatus'),
-                      onChange: value => setStatusFilter((value as 'active' | 'pending' | null) ?? 'all'),
+                      onChange: values => setStatusParam(values.length > 0 ? (values as StatusFilter[]) : null),
                       options: [
                         {
                           count: members.filter(m => !m.isPending && memberMatches(m, { status: false })).length,
@@ -273,7 +294,7 @@ export const OrganizationMembers = ({
                           value: 'pending',
                         },
                       ],
-                      value: statusFilter === 'all' ? null : statusFilter,
+                      values: selectedStatuses,
                     },
                   ],
                   onReset: clearFilters,

@@ -25,7 +25,7 @@ En tu primer inicio de sesión, GloRe te pide nombre y apellidos, fecha de nacim
 
 ## Haz tu primer curso
 
-Abre Cursos y empieza Bienvenida a GloRe, una introducción breve de unos 20 minutos. Si eres voluntario o voluntaria, configura después tu brújula de habilidades: elige hasta 3 puntos fuertes y hasta 5 objetivos, y GloRe te recomienda cursos.
+Abre Cursos y empieza Bienvenida a GloRe, una introducción breve. Si eres voluntario o voluntaria, configura después tu brújula de habilidades: elige hasta 3 puntos fuertes y hasta 5 objetivos, y GloRe te recomienda cursos.
 
 ## Siguientes pasos
 

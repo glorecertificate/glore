@@ -1,12 +1,12 @@
-import { parseAsInteger, parseAsString, parseAsStringEnum } from 'nuqs/server'
+import { parseAsArrayOf, parseAsInteger, parseAsString, parseAsStringEnum } from 'nuqs/server'
 
 import { BAN_FILTERS, PLATFORM_ROLES, USER_STATUSES } from '@/db/queries/admin-user'
 
 export const adminUsersParsers = {
-  banned: parseAsStringEnum([...BAN_FILTERS]),
-  org: parseAsInteger,
+  banned: parseAsArrayOf(parseAsStringEnum([...BAN_FILTERS])).withDefault([]),
+  org: parseAsArrayOf(parseAsInteger).withDefault([]),
   page: parseAsInteger.withDefault(1),
   q: parseAsString.withDefault(''),
-  role: parseAsStringEnum([...PLATFORM_ROLES]),
-  status: parseAsStringEnum([...USER_STATUSES]),
+  role: parseAsArrayOf(parseAsStringEnum([...PLATFORM_ROLES])).withDefault([]),
+  status: parseAsArrayOf(parseAsStringEnum([...USER_STATUSES])).withDefault([]),
 }

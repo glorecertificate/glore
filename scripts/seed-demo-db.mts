@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto'
 
 import { type PoolClient } from 'pg'
 
+import { createStats, deleteLessons } from './content/sync.mts'
 import { type MembershipRole } from './seed-data.ts'
 import { APPLICATION_MOTIVATION, ORGANIZATION_DESCRIPTIONS } from './seed-demo-copy.ts'
 import { APPLICANT, DAY_MS, DEMO_ORGANIZATIONS, DEMO_USERS, ago, demoEmail } from './seed-demo-data.ts'
@@ -76,15 +77,15 @@ export const upsertDemoOrganizations = async ({ client, now, testEmail }: Contex
       `insert into organization_profiles (
          organization_id, country, region, postcode, address, phone, url, description, avatar_url, signature_url,
          legal_name, registry_id, legal_representative, contact_name, contact_email, volunteers_per_year, motivation,
-         charter_accepted_at, created_at, updated_at
-       ) values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, null, null, $9, $10, $11, $12, $13, $14, $15, $16, $16, $16)
+         created_at, updated_at
+       ) values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, null, null, $9, $10, $11, $12, $13, $14, $15, $16, $16)
        on conflict (organization_id) do update set
          country = excluded.country, region = excluded.region, postcode = excluded.postcode, address = excluded.address,
          phone = excluded.phone, url = excluded.url, description = excluded.description, avatar_url = null,
          signature_url = null, legal_name = excluded.legal_name, registry_id = excluded.registry_id,
          legal_representative = excluded.legal_representative, contact_name = excluded.contact_name,
          contact_email = excluded.contact_email, volunteers_per_year = excluded.volunteers_per_year,
-         motivation = excluded.motivation, charter_accepted_at = excluded.charter_accepted_at,
+         motivation = excluded.motivation,
          created_at = excluded.created_at, updated_at = excluded.updated_at`,
       [
         id,
@@ -169,8 +170,8 @@ export const upsertEditorCourses = async ({ client, now }: Context, ids: DemoIds
     if (!groupId) throw new Error(`Skill group ${course.group} is missing. Run pnpm run content:import first.`)
     const createdAt = ago(now, course.createdDaysAgo)
     const { rows } = await client.query<{ id: number }>(
-      `insert into courses (slug, type, title, icon, languages, duration_minutes, skill_group_id, creator_id, sort_order, archived_at, created_at, updated_at)
-       values ($1, 'skill', $2::jsonb, $3, $4::text[], 20, $5, $6, $7, null, $8, $8)
+      `insert into courses (slug, type, title, icon, languages, skill_group_id, creator_id, sort_order, archived_at, created_at, updated_at)
+       values ($1, 'skill', $2::jsonb, $3, $4::text[], $5, $6, $7, null, $8, $8)
        on conflict (slug) do update set
          title = excluded.title, icon = excluded.icon, languages = excluded.languages, skill_group_id = excluded.skill_group_id,
          creator_id = excluded.creator_id, sort_order = excluded.sort_order, archived_at = null,
@@ -188,7 +189,11 @@ export const upsertEditorCourses = async ({ client, now }: Context, ids: DemoIds
       ]
     )
     const [{ id }] = rows
-    await client.query('delete from lessons where course_id = $1', [id])
+    const { rows: lessons } = await client.query<{ id: number }>('select id from lessons where course_id = $1', [id])
+    await deleteLessons(
+      { client, stats: createStats() },
+      lessons.map(lesson => lesson.id)
+    )
     for (const [position, title] of course.lessons.entries()) {
       await client.query(
         'insert into lessons (course_id, title, sort_order, created_at, updated_at) values ($1, $2::jsonb, $3, $4, $4)',

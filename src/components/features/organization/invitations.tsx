@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
+import { parseAsArrayOf, parseAsStringEnum, useQueryState } from 'nuqs'
 
 import {
   copyOrganizationInvitationLink,
@@ -59,11 +60,14 @@ const STATE_RANK: Record<Invitation['state'], number> = {
   revoked: 4,
 }
 
-type InvitationFilter = 'accepted' | 'all' | 'expired' | 'open'
+const INVITATION_FILTERS = ['open', 'expired', 'accepted'] as const
+
+type InvitationFilter = (typeof INVITATION_FILTERS)[number]
+
+const filterParser = parseAsArrayOf(parseAsStringEnum([...INVITATION_FILTERS]))
 
 const FILTERS: Record<InvitationFilter, (invitation: Invitation) => boolean> = {
   accepted: ({ state }) => state === 'accepted',
-  all: () => true,
   expired: ({ state }) => state === 'expired',
   open: isOpen,
 }
@@ -93,7 +97,7 @@ export const OrganizationInvitations = ({
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<InvitationFilter>('all')
+  const [filterParam, setFilterParam] = useQueryState('state', { ...filterParser, history: 'push' })
   const [activeId, setActiveId] = useState<number | null>(null)
   const [revokeTarget, setRevokeTarget] = useState<Invitation | null>(null)
 
@@ -101,7 +105,11 @@ export const OrganizationInvitations = ({
   const formatDate = (value: string) => dateFormatter.format(new Date(timestampMillis(value)))
   const needle = search.trim().toLowerCase()
   const searched = invitations.filter(({ email }) => !needle || email.toLowerCase().includes(needle))
-  const rows = searched.filter(FILTERS[filter]).toSorted((a, b) => STATE_RANK[a.state] - STATE_RANK[b.state])
+  const selectedFilters = filterParam ?? []
+  const activeFilters = selectedFilters.length === INVITATION_FILTERS.length ? [] : selectedFilters
+  const rows = searched
+    .filter(invitation => activeFilters.length === 0 || activeFilters.some(key => FILTERS[key](invitation)))
+    .toSorted((a, b) => STATE_RANK[a.state] - STATE_RANK[b.state])
 
   const canManage = (invitation: Invitation) =>
     canManageInvitation(isOrgAdmin ? 'admin' : 'representative', invitation, currentUserId)
@@ -110,10 +118,10 @@ export const OrganizationInvitations = ({
 
   const platformFilters = (
     <FilterBar
-      active={filter !== 'all' || search.trim() !== ''}
-      count={Number(filter !== 'all')}
+      active={selectedFilters.length > 0 || search.trim() !== ''}
+      count={Number(selectedFilters.length > 0)}
       onClear={() => {
-        setFilter('all')
+        setFilterParam(null)
         setSearch('')
       }}
       search={
@@ -128,7 +136,10 @@ export const OrganizationInvitations = ({
       }
       size="sm"
     >
-      <Select onValueChange={value => setFilter(value as InvitationFilter)} value={filter}>
+      <Select
+        onValueChange={value => setFilterParam(value === 'all' ? null : [value as InvitationFilter])}
+        value={selectedFilters.length === 1 ? selectedFilters[0] : 'all'}
+      >
         <SelectTrigger aria-label={t('filterLabel')} className="w-auto gap-1.5" size="sm">
           <SelectValue />
         </SelectTrigger>
@@ -242,17 +253,17 @@ export const OrganizationInvitations = ({
                       {
                         id: 'status',
                         label: t('filterLabel'),
-                        onChange: value => setFilter((value as InvitationFilter | null) ?? 'all'),
-                        options: (['open', 'expired', 'accepted'] as const).map(key => ({
+                        onChange: values => setFilterParam(values.length > 0 ? (values as InvitationFilter[]) : null),
+                        options: INVITATION_FILTERS.map(key => ({
                           count: searched.filter(FILTERS[key]).length,
                           label: t(FILTER_LABELS[key]),
                           value: key,
                         })),
-                        value: filter === 'all' ? null : filter,
+                        values: selectedFilters,
                       },
                     ],
                     onReset: () => {
-                      setFilter('all')
+                      setFilterParam(null)
                       setSearch('')
                     },
                     search: () => (

@@ -6,10 +6,9 @@ import { type Locale } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
-import { AuthSplit } from '@/components/features/auth/auth-split'
+import { AuthMain } from '@/components/features/auth/auth-frame'
 import { OnboardingForm } from '@/components/features/onboarding'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageTitle } from '@/components/layout/page-title'
 import { I18nProvider } from '@/components/providers/i18n'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
@@ -37,18 +36,14 @@ const OnboardingContent = async () => {
 
   return (
     <I18nProvider locale={locale} messages={clientMessages(messages)}>
-      <AuthSplit
-        message={<PageTitle namespace="Onboarding" name="panelMessage" />}
-        size="md"
-        title={<PageTitle namespace="Onboarding" name="panelTitle" />}
-      >
+      <AuthMain language={false} size="md">
         <OnboardingForm
           email={user.email}
           firstName={profile?.firstName ?? ''}
           lastName={profile?.lastName ?? ''}
           locale={locale}
         />
-      </AuthSplit>
+      </AuthMain>
     </I18nProvider>
   )
 }

@@ -2,12 +2,14 @@
 
 import { useEffect, useId, useRef } from 'react'
 
+import { AIChatPlugin, AIPlugin } from '@platejs/ai/react'
 import { useTranslations } from 'next-intl'
 import { type AnyPluginConfig, KEYS, type Value } from 'platejs'
 import {
   BlockPlaceholderPlugin,
   type CreatePlateEditorOptions,
   Plate,
+  type PlateEditor,
   type PlateProps,
   usePlateEditor,
 } from 'platejs/react'
@@ -21,7 +23,6 @@ import { BlockMenuKit } from '@/components/ui/rich-text-editor/plugins/block-men
 import { CalloutKit } from '@/components/ui/rich-text-editor/plugins/callout'
 import { CursorOverlayKit } from '@/components/ui/rich-text-editor/plugins/cursor-overlay'
 import { DndKit } from '@/components/ui/rich-text-editor/plugins/dnd'
-import { EmojiKit } from '@/components/ui/rich-text-editor/plugins/emoji'
 import { ExitBreakKit } from '@/components/ui/rich-text-editor/plugins/exit-break'
 import { FixedToolbarKit } from '@/components/ui/rich-text-editor/plugins/fixed-toolbar'
 import { FloatingToolbarKit } from '@/components/ui/rich-text-editor/plugins/floating-toolbar'
@@ -29,11 +30,13 @@ import { FontKit } from '@/components/ui/rich-text-editor/plugins/font'
 import { LinkKit } from '@/components/ui/rich-text-editor/plugins/link'
 import { ListKit } from '@/components/ui/rich-text-editor/plugins/list'
 import { MarkdownKit } from '@/components/ui/rich-text-editor/plugins/markdown'
+import { MarkdownSafeKit } from '@/components/ui/rich-text-editor/plugins/markdown-safe'
 import { MediaKit } from '@/components/ui/rich-text-editor/plugins/media'
 import { SlashKit } from '@/components/ui/rich-text-editor/plugins/slash'
 import { TableKit } from '@/components/ui/rich-text-editor/plugins/table'
 import { ToggleKit } from '@/components/ui/rich-text-editor/plugins/toggle'
 import { TrailingBlockKit } from '@/components/ui/rich-text-editor/plugins/trailing-block'
+import { hasPendingAi, shouldHoldAiChange } from '@/components/ui/rich-text-editor/utils'
 import { omit } from '@/lib/utils'
 
 const PLUGINS = {
@@ -46,7 +49,6 @@ const PLUGINS = {
   callout: CalloutKit,
   cursorOverlay: CursorOverlayKit,
   dnd: DndKit,
-  emoji: EmojiKit,
   exitBreak: ExitBreakKit,
   fixedToolbar: FixedToolbarKit,
   floatingToolbar: FloatingToolbarKit,
@@ -65,16 +67,27 @@ type RichTextEditorPlugin = keyof typeof PLUGINS
 
 interface RichTextEditorProviderProps extends React.PropsWithChildren<Omit<CreatePlateEditorOptions, 'plugins'>> {
   exclude?: RichTextEditorPlugin | RichTextEditorPlugin[]
+  markdownSafe?: boolean
   onChange?: PlateProps['onChange']
   version?: string
 }
 
 const EMPTY_EXCLUDE: RichTextEditorPlugin[] = []
+const MARKDOWN_SAFE_EXCLUDE: RichTextEditorPlugin[] = ['align', 'callout', 'font', 'media', 'toggle']
+const MARKDOWN_SAFE_KEYS: string[] = [KEYS.underline]
+
+const healPendingAi = (editor: PlateEditor) => {
+  editor.tf.withoutSaving(() => {
+    editor.getTransforms(AIPlugin).ai.removeMarks()
+    editor.getTransforms(AIChatPlugin).aiChat.removeAnchor()
+  })
+}
 
 export const RichTextEditorProvider = ({
   children,
   exclude = EMPTY_EXCLUDE,
   id,
+  markdownSafe,
   onChange,
   version,
   ...props
@@ -82,8 +95,13 @@ export const RichTextEditorProvider = ({
   const randomId = useId()
   const t = useTranslations('Components.RichTextEditor.placeholders')
 
+  const excluded = markdownSafe ? [exclude, MARKDOWN_SAFE_EXCLUDE].flat() : exclude
+
   const plugins = [
-    ...Object.values(omit(PLUGINS, exclude)),
+    ...Object.values(omit(PLUGINS, excluded))
+      .flat()
+      .filter(plugin => !markdownSafe || !MARKDOWN_SAFE_KEYS.includes((plugin as { key: string }).key)),
+    ...(markdownSafe ? MarkdownSafeKit : []),
     BlockPlaceholderPlugin.configure({
       options: {
         className:
@@ -91,12 +109,13 @@ export const RichTextEditorProvider = ({
         placeholders: {
           [KEYS.p]: t('block'),
         },
-        query: ({ path }: { path: number[] }) => path.length === 1,
+        query: ({ editor, path }: { editor: PlateEditor; path: number[] }) =>
+          path.length === 1 && !(editor.children.length === 1 && editor.api.isEmpty(editor.children[0])),
       },
     }),
   ].flat() as AnyPluginConfig[]
 
-  const excludeKey = Array.isArray(exclude) ? exclude.join(',') : exclude
+  const excludeKey = `${Array.isArray(exclude) ? exclude.join(',') : exclude}:${markdownSafe}`
 
   const editor = usePlateEditor(
     {
@@ -121,8 +140,26 @@ export const RichTextEditorProvider = ({
     }
   }, [editor, props.value, version])
 
+  useEffect(() => {
+    if (hasPendingAi(editor.children)) healPendingAi(editor)
+  }, [editor])
+
+  const handleChange: PlateProps['onChange'] = change => {
+    if (!editor.operations.some(operation => operation.type !== 'set_selection')) {
+      onChange?.(change)
+      return
+    }
+    const pending = hasPendingAi(change.value)
+    if (shouldHoldAiChange({ open: !!editor.getOption(AIChatPlugin, 'open'), pending })) return
+    if (pending) {
+      healPendingAi(editor)
+      return
+    }
+    onChange?.(change)
+  }
+
   return (
-    <Plate editor={editor} onChange={onChange}>
+    <Plate editor={editor} onChange={handleChange}>
       {children}
     </Plate>
   )

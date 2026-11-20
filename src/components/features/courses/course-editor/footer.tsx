@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
-import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -18,13 +17,18 @@ export const CourseFooter = () => {
   return (
     <div className={cn('mt-6 flex', isFirst ? 'justify-end' : 'justify-between')}>
       {!isFirst && (
-        <Button className="gap-1" onClick={previous} variant="outline">
-          <LucideIcon name="arrow-left" className="size-4" />
+        <Button icon="arrow-left" onClick={previous} variant="outline">
           {t('previous')}
         </Button>
       )}
       {!isLast && (
-        <Button className="gap-1" onClick={next} title={t('proceedToNextLesson')} variant="outline">
+        <Button
+          icon="arrow-right"
+          iconPlacement="right"
+          onClick={next}
+          title={t('proceedToNextLesson')}
+          variant="outline"
+        >
           {t('next')}
         </Button>
       )}

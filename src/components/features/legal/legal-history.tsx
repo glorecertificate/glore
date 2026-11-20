@@ -20,7 +20,7 @@ const TONES = { draft: 'draft', published: 'success', superseded: 'neutral' } as
   StatusTone
 >
 
-const PUBLIC_PAGES = { 'quality-charter': '/quality-charter', privacy: '/privacy', terms: '/terms' } as const
+const PUBLIC_PAGES = { privacy: '/privacy', terms: '/terms' } as const
 
 const LanguageDots = ({ version }: { version: LegalVersionRow }) => (
   <ul className="flex items-center gap-2.5">

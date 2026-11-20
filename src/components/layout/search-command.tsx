@@ -2,7 +2,7 @@
 
 import { type Route } from 'next'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { type default as Fuse } from 'fuse.js'
 import { useTranslations } from 'next-intl'
@@ -39,7 +39,6 @@ import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { Spinner } from '@/components/ui/spinner'
 import { type Course } from '@/db/queries/course'
 import { useDebounce } from '@/hooks/use-debounce'
-import { APP_ROOT } from '@/lib/constants'
 
 const IDLE_GROUPS: NavigationGroup[] = ['pages', 'actions', 'content', 'admin']
 const GROUPS: NavigationGroup[] = ['pages', 'actions', 'settings', 'organization', 'content', 'admin']
@@ -55,7 +54,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
   const tCertificates = useTranslations('CertificateStatus')
   const { push } = useRouter()
   const { localize } = useI18n()
-  const { organization: active, setOrganization, user } = useSession()
+  const { organization: active, prefetchOrganizations, switchOrganization, user } = useSession()
   const docs = useDocsSearch()
   const [courses, setCourses] = useState<Course[]>([])
   const [fuse, setFuse] = useState<typeof Fuse | null>(null)
@@ -83,6 +82,12 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
 
     void load()
   }, [docs, open])
+
+  const prefetch = useEffectEvent(prefetchOrganizations)
+
+  useEffect(() => {
+    if (open) prefetch()
+  }, [open])
 
   useEffect(() => {
     if (!searching) return undefined
@@ -118,8 +123,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
 
   const selectOrganization = (id: number) => {
     handleOpenChange(false)
-    setOrganization(id)
-    push(APP_ROOT)
+    switchOrganization(id)
   }
 
   const labels = useNavigationLabels()

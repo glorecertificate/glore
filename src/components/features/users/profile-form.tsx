@@ -189,7 +189,7 @@ export const ProfileForm = () => {
 
   return (
     <Form {...form}>
-      <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="mx-auto w-full space-y-0" method="post" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="pb-8" ref={avatarRef}>
           <ImageCropper
             disabled={form.formState.isSubmitting}
@@ -214,7 +214,7 @@ export const ProfileForm = () => {
         <div className="flex flex-col gap-8">
           {/* Personal information */}
           <SettingsSection title={t('personalInfo')}>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 @xl/fields:grid-cols-2">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -276,7 +276,7 @@ export const ProfileForm = () => {
           </SettingsSection>
           {/* Personal details */}
           <SettingsSection title={t('personalDetails')}>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 @xl/fields:grid-cols-2">
               <FormField
                 control={form.control}
                 name="birthday"
@@ -317,7 +317,7 @@ export const ProfileForm = () => {
                 )}
               />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 @xl/fields:grid-cols-2">
               <FormField
                 control={form.control}
                 name="pronouns"
@@ -364,7 +364,7 @@ export const ProfileForm = () => {
           </SettingsSection>
           {/* Location */}
           <SettingsSection title={t('location')}>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 @xl/fields:grid-cols-2">
               <FormField
                 control={form.control}
                 name="city"

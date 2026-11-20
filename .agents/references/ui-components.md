@@ -69,7 +69,7 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 
 ## Brand shell: pages without the sidebar
 
-- `features/auth/brand-shell.tsx` (`BrandShell`) is the frame for the register, onboarding, invitation, join, legal document, legal acceptance, verify, public certificate, error, not-found and offline pages. The login page keeps its own layout with the globe.
+- `features/auth/brand-shell.tsx` (`BrandShell`) is the frame for the legal document, legal acceptance, verify, public certificate, error, not-found and offline pages. `AuthFlow` (login) and `AuthFrame` (register, onboarding, invitation, join) are the centered auth frames.
 - It renders the band with the globe, the logo chip and optional `actions`, then the content in one centered column. `size` sets the column width: `xs`, `sm`, `md` (default) or `lg`.
 - `title` and `description` go in the band. The content column overlaps the band by 4rem, so its first block must be an opaque card.
 - Pages with the sidebar use `DashboardPage` instead.

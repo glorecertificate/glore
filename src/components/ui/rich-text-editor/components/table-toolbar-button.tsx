@@ -30,6 +30,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { isMarkdownSafe } from '@/components/ui/rich-text-editor/utils'
 import { ToolbarButton } from '@/components/ui/toolbar'
 import { cn } from '@/lib/utils'
 
@@ -61,39 +62,41 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
             </DropdownMenuSubContent>
           </DropdownMenuSub>
 
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              className="gap-2 data-disabled:pointer-events-none data-disabled:opacity-50"
-              disabled={!tableSelected}
-            >
-              <div className="size-4" />
-              <span>{t('tableCell')}</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              <DropdownMenuItem
-                className="min-w-45"
-                disabled={!mergeState.canMerge}
-                onSelect={() => {
-                  tf.table.merge()
-                  editor.tf.focus()
-                }}
+          {!isMarkdownSafe(editor) && (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger
+                className="gap-2 data-disabled:pointer-events-none data-disabled:opacity-50"
+                disabled={!tableSelected}
               >
-                <CombineIcon />
-                {t('tableMerge')}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="min-w-45"
-                disabled={!mergeState.canSplit}
-                onSelect={() => {
-                  tf.table.split()
-                  editor.tf.focus()
-                }}
-              >
-                <UngroupIcon />
-                {t('tableSplit')}
-              </DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+                <div className="size-4" />
+                <span>{t('tableCell')}</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem
+                  className="min-w-45"
+                  disabled={!mergeState.canMerge}
+                  onSelect={() => {
+                    tf.table.merge()
+                    editor.tf.focus()
+                  }}
+                >
+                  <CombineIcon />
+                  {t('tableMerge')}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="min-w-45"
+                  disabled={!mergeState.canSplit}
+                  onSelect={() => {
+                    tf.table.split()
+                    editor.tf.focus()
+                  }}
+                >
+                  <UngroupIcon />
+                  {t('tableSplit')}
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          )}
 
           <DropdownMenuSub>
             <DropdownMenuSubTrigger

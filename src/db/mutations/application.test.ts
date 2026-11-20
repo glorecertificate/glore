@@ -11,7 +11,6 @@ vi.mock('@/actions/notifications/notify', () => ({ notify: vi.fn() }))
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')
 
 const valid = {
-  charterAccepted: true,
   city: 'Milan',
   country: 'it',
   email: 'INFO@Example.org',
@@ -37,11 +36,6 @@ describe('applicationSchema', () => {
       url: null,
       volunteersPerYear: 40,
     })
-  })
-
-  it('requires the Quality Charter', () => {
-    const parsed = applicationSchema.safeParse({ ...valid, charterAccepted: false })
-    expect(parsed.error?.issues[0]?.message).toBe('charter')
   })
 
   it('reports field level codes', () => {
@@ -135,7 +129,6 @@ describe.skipIf(!isLocalDatabase)('organization applications', () => {
       registryId: 'IT-123',
       volunteersPerYear: 40,
     })
-    expect(profile?.charterAcceptedAt).not.toBeNull()
     const request = await db.query.organizationJoinRequests.findFirst({
       where: and(
         eq(organizationJoinRequests.organizationId, organization.id),

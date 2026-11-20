@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent, useState } from 'react'
 
-import { AIChatPlugin, AIPlugin, useEditorChat, useLastAssistantMessage } from '@platejs/ai/react'
+import { AIChatPlugin, AIPlugin, insertBelowGenerate, useEditorChat, useLastAssistantMessage } from '@platejs/ai/react'
 import { BlockSelectionPlugin, useIsSelecting } from '@platejs/selection/react'
 import { Command as CommandPrimitive } from 'cmdk'
 import {
@@ -91,6 +91,7 @@ const useAIChatItems = () => {
       label: t('ai.discard'),
       onSelect: ({ editor }) => {
         editor.getTransforms(AIPlugin).ai.undo()
+        editor.getTransforms(AIPlugin).ai.removeNodes()
         editor.getApi(AIChatPlugin).aiChat.hide()
       },
       shortcut: 'Escape',
@@ -141,7 +142,7 @@ const useAIChatItems = () => {
       icon: <ListEndIcon />,
       label: t('ai.insertBelow'),
       onSelect: ({ aiEditor, editor }) => {
-        void editor.getTransforms(AIChatPlugin).aiChat.insertBelow(aiEditor)
+        insertBelowGenerate(editor, aiEditor)
       },
       value: 'insertBelow',
     },
@@ -295,6 +296,7 @@ export const AIMenu = () => {
     },
     onOpenChange: isOpen => {
       if (!isOpen) {
+        chat.clearError?.()
         setAnchorElement(null)
         setInput('')
       }

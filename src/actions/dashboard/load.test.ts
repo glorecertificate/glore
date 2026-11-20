@@ -21,7 +21,7 @@ describe.skipIf(!isLocalDatabase)('dashboard readers', () => {
     const summary = await loadEditorSummary('en', { cache: false })
     expect(summary.engagement).toHaveLength(6)
     expect(summary.health.total).toBeGreaterThanOrEqual(0)
-    expect(Object.keys(summary.health.gaps).toSorted()).toEqual(['en', 'es', 'it'])
+    expect(Object.keys(summary.gaps.missing).toSorted()).toEqual(['en', 'es', 'it'])
     expect(summary.stats.enrollments).toBeGreaterThanOrEqual(0)
   })
 

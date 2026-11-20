@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl'
 
+import { StartCourseDialog } from '@/components/features/courses/course-overview/start-dialog'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Link } from '@/components/ui/link'
 import { StatusBadge } from '@/components/ui/status-badge'
@@ -16,8 +17,9 @@ export const CourseOutline = ({
 }: React.ComponentProps<'section'> & { access: CourseAccess; overview: CourseOverview }) => {
   const t = useTranslations('Learning.overview')
   const tPlayer = useTranslations('Learning.player')
-  const { language, lessons, slug } = overview
+  const { id, language, lessons, slug, title } = overview
   const showStatus = access === 'learner' && !!overview.enrollment
+  const startsCourse = access === 'learner' && !overview.enrollment
   const frontier = lessons.findIndex(lesson => lesson.status !== 'completed')
 
   return (
@@ -64,6 +66,29 @@ export const CourseOutline = ({
                 )}
               </>
             )
+            if (startsCourse && !locked) {
+              return (
+                <li key={lesson.id}>
+                  <StartCourseDialog
+                    courseId={id}
+                    language={language}
+                    lessonCount={lessons.length}
+                    lessonId={lesson.id}
+                    title={title}
+                  >
+                    <button
+                      className={cn(
+                        row,
+                        'w-full cursor-pointer text-left transition-colors hover:bg-surface-hover focus-visible:focus-ring-inset'
+                      )}
+                      type="button"
+                    >
+                      {body}
+                    </button>
+                  </StartCourseDialog>
+                </li>
+              )
+            }
             return (
               <li key={lesson.id}>
                 {locked ? (

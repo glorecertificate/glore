@@ -77,3 +77,12 @@ export const holdPrefetch = (ms: number) => {
 }
 
 export const isPrefetchHeld = () => Date.now() < holdUntil
+
+export const whenIdle = (callback: () => void, timeout = 2000) => {
+  if (typeof window.requestIdleCallback !== 'function') {
+    const timer = window.setTimeout(callback, 200)
+    return () => window.clearTimeout(timer)
+  }
+  const handle = window.requestIdleCallback(callback, { timeout })
+  return () => window.cancelIdleCallback(handle)
+}

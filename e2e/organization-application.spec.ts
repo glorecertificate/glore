@@ -36,10 +36,6 @@ test('takes an application from the register form to onboarding', async ({ brows
 
   await expect(page.getByText(organizationName).first()).toBeVisible()
   await page.getByRole('button', { name: 'Send application' }).click()
-  await expect(page.getByText('You need to accept the Quality Charter to apply.')).toBeVisible()
-
-  await page.getByRole('checkbox', { name: 'I accept the Quality Charter' }).check()
-  await page.getByRole('button', { name: 'Send application' }).click()
   await expect(page.getByText('You need to accept the terms of use to apply.')).toBeVisible()
 
   await page.getByRole('checkbox', { name: /I accept the Terms of use/u }).check()

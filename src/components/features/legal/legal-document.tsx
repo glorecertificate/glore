@@ -15,7 +15,7 @@ import { Card } from '@/components/ui/card'
 import { type LegalDocument } from '@/db/queries/legal'
 import { loadLegalDocument } from '@/lib/legal'
 
-const KEYS = { privacy: 'privacy', 'quality-charter': 'qualityCharter', terms: 'terms' } as const
+const KEYS = { privacy: 'privacy', terms: 'terms' } as const
 
 const LegalDocumentContent = async ({ document }: { document: LegalDocument }) => {
   const [locale, t, format] = await Promise.all([getLocale(), getTranslations('Legal'), getFormatter()])

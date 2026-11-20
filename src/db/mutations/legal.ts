@@ -15,6 +15,7 @@ import {
   pendingAcceptance,
 } from '@/db/queries/legal'
 import { legalAcceptances, legalDocuments, legalTranslations, legalVersions } from '@/db/schema'
+import { LEGAL_DOCUMENTS } from '@/lib/constants'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 
 const LEGAL_ERROR_MESSAGES = {
@@ -228,7 +229,7 @@ export const acceptCurrentLegal = async (tx: Transaction, { locale, userId }: { 
     })
     .from(legalDocuments)
     .innerJoin(legalVersions, eq(legalVersions.id, legalDocuments.currentVersionId))
-    .where(eq(legalDocuments.requiresAcceptance, true))
+    .where(and(eq(legalDocuments.requiresAcceptance, true), inArray(legalDocuments.slug, [...LEGAL_DOCUMENTS])))
 
   const events: AppEvent<'legal.accepted'>[] = []
   for (const { slug, version, versionId } of documents) {
@@ -259,7 +260,7 @@ export const queryPendingLegal = async (userId: string, executor: typeof db = db
     })
     .from(legalDocuments)
     .innerJoin(legalVersions, eq(legalVersions.id, legalDocuments.currentVersionId))
-    .where(eq(legalDocuments.requiresAcceptance, true))
+    .where(and(eq(legalDocuments.requiresAcceptance, true), inArray(legalDocuments.slug, [...LEGAL_DOCUMENTS])))
   if (documents.length === 0) return null
 
   const slugs = documents.map(({ slug }) => slug)

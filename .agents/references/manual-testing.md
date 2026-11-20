@@ -31,16 +31,16 @@ With `TEST_EMAIL=name@example.org`, the key `volunteer` logs in as `name+glore-v
 | `editor`             | Editor (en)                      | none                                  | Owns two draft courses with missing translations: `demo-active-listening-in-teams` (English title only) and `demo-giving-and-receiving-feedback` (no Italian).                                                                                                                                                                |
 | `owner`              | Org owner (en)                   | Ponte Volunteers (Demo), Milan, Italy | Profile, legal name, registry ID, and legal representative complete; no signature or logo. Two pending invitations, one active invite link with approval (1 of 20 uses), one pending join request, two unread notifications.                                                                                                  |
 | `rep`                | Representative (it)              | Ponte Volunteers (Demo)               | Default member; sees the same unread join request and escalation.                                                                                                                                                                                                                                                             |
-| `tutor`              | Tutor (en)                       | Ponte Volunteers (Demo)               | `volunteer-review` `submitted`, `member-01` `in_review` (9 days old, flagged), `volunteer-changes` in `changes_requested`; past decisions: `volunteer` approved, `member-04` rejected; one withdrawn request. Two unread notifications.                                                                                       |
+| `tutor`              | Tutor (en)                       | Ponte Volunteers (Demo)               | `volunteer-review` `submitted`, `member-01` `in_review` (9 days old, flagged), `volunteer-changes` in `changes_requested`; past decisions: `volunteer` approved twice, `member-04` rejected; one withdrawn request. Two unread notifications.                                                                                 |
 | `tutor2`             | Tutor (it)                       | Ponte Volunteers (Demo)               | `member-02` `submitted`, assigned to `tutor2`, for reassignment; five approved and one revoked certificate in history; two unread notifications.                                                                                                                                                                              |
-| `volunteer`          | Volunteer (en)                   | Ponte Volunteers (Demo)               | Eligible (four skill courses done), one approved certificate (food bank, featured, no stored PDF), one draft with three skills, public profile on, skill compass set.                                                                                                                                                         |
+| `volunteer`          | Volunteer (en)                   | Ponte Volunteers (Demo)               | Eligible (four skill courses done), two approved certificates (food bank, featured, no stored PDF, and river clean-up, older), one draft with three skills, public profile on, skill compass set.                                                                                                                             |
 | `volunteer-progress` | Volunteer (it)                   | Ponte Volunteers (Demo)               | `team-work` and `self-awareness` done, `problem-solving` half done (2 of 4 lessons, one question solved, one wrong attempt). No birth place or nationality, so the wizard asks for them once the third course is done (the wizard opens only after three skill courses). Private profile, skill compass set. No certificates. |
 | `volunteer-review`   | Volunteer (it)                   | Ponte Volunteers (Demo)               | Request `submitted` 2 days ago, assigned to `tutor`.                                                                                                                                                                                                                                                                          |
 | `volunteer-changes`  | Volunteer (it)                   | Ponte Volunteers (Demo)               | Request in `changes_requested` with a comment and section comments on tasks and experience; one unread notification.                                                                                                                                                                                                          |
 | `learner`            | Learner (en)                     | Ponte Volunteers (Demo)               | `welcome-to-glore` and `intercultural-learning` completed, `volunteer-wellbeing-and-safety` 1 of 3 lessons done. No certificates.                                                                                                                                                                                             |
 | `multi`              | Volunteer in Ponte, tutor in Red | Both demo organizations               | Active org Ponte (first membership). In Red they review `red-03`'s `submitted` request and have an approved and a revoked certificate in history.                                                                                                                                                                             |
 | `owner-b`            | Org owner, Spanish locale        | Red Solidaria (Demo), Valencia, Spain | One approved certificate (`red-01`), one revoked certificate (`red-02`), one `submitted` request (`red-03`), one pending invitation, three organization ratings.                                                                                                                                                              |
-| `applicant`          | Applicant (no account yet)       | Open Doors Collective (Demo), pending | Application waiting for platform admin review: legal data, volunteers per year, motivation, and charter acceptance filled. Its email is the registrant address.                                                                                                                                                               |
+| `applicant`          | Applicant (no account yet)       | Open Doors Collective (Demo), pending | Application waiting for platform admin review: legal data, volunteers per year, and motivation filled. Its email is the registrant address.                                                                                                                                                                                   |
 
 Background accounts give the organization a history. They log in like any other account but no flow needs them, and most are safe to remove or change:
 
@@ -77,17 +77,18 @@ Red has three ratings, which is the minimum for its aggregate to show.
 
 Codes are derived from the certificate handle, so they are the same on every database.
 
-| Key            | Status                   | Code             |
-| -------------- | ------------------------ | ---------------- |
-| `volunteer`    | approved                 | `B1JA-7MDX-CS44` |
-| `member-03`    | approved                 | `KJRY-HGDA-BPRZ` |
-| `member-06`    | approved                 | `YE5A-4W4N-MSN8` |
-| `member-07`    | approved                 | `5HTR-H07V-DRPY` |
-| `member-08`    | approved                 | `T65E-2TFE-060V` |
-| `member-10`    | revoked (Ponte)          | `MDTD-PBWR-PCSW` |
-| `red-01`       | approved (Red)           | `5REG-P4QQ-1G6N` |
-| `red-02`       | revoked (Red)            | `B8YR-MG6F-WY26` |
-| deleted holder | approved, holder deleted | `ANGN-EWXR-GZB9` |
+| Key            | Status                    | Code             |
+| -------------- | ------------------------- | ---------------- |
+| `volunteer`    | approved, featured        | `B1JA-7MDX-CS44` |
+| `volunteer`    | approved (river clean-up) | `BPKN-8G45-J4T1` |
+| `member-03`    | approved                  | `KJRY-HGDA-BPRZ` |
+| `member-06`    | approved                  | `YE5A-4W4N-MSN8` |
+| `member-07`    | approved                  | `5HTR-H07V-DRPY` |
+| `member-08`    | approved                  | `T65E-2TFE-060V` |
+| `member-10`    | revoked (Ponte)           | `MDTD-PBWR-PCSW` |
+| `red-01`       | approved (Red)            | `5REG-P4QQ-1G6N` |
+| `red-02`       | revoked (Red)             | `B8YR-MG6F-WY26` |
+| deleted holder | approved, holder deleted  | `ANGN-EWXR-GZB9` |
 
 Other requests also carry codes from submission; `pnpm run db:seed:demo` prints all of them.
 
@@ -109,7 +110,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 
 ## Organization application
 
-1. Signed out, open `/register` and apply as `new-org` with every step filled and the Quality Charter accepted.
+1. Signed out, open `/register` and apply as `new-org` with every step filled and the terms accepted.
 2. Expect the receipt email for `new-org` and a notification for `admin`.
 3. As `admin`, approve it in `/admin/organizations`: `new-org` receives an invitation email.
 4. Accept it, complete onboarding, and confirm the dashboard shows the owner checklist.
@@ -117,7 +118,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 ## Platform admin (`admin`)
 
 1. `/admin` shows organizations, members, certificates by month, and average review time with real numbers.
-2. In `/admin/organizations`, open the `applicant` application and read its details and charter acceptance.
+2. In `/admin/organizations`, open the `applicant` application and read its details.
 3. Reject it with a comment: `applicant` receives the decision email, and the organization moves to the Rejected tab.
 4. In `/admin/users`, ban `learner` for 1 day with a reason, confirm `learner` cannot log in, then unban.
 5. Impersonate `volunteer` with a reason: a banner shows; stop impersonating and find both events in `/admin/audit`.
@@ -128,7 +129,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 ## Editor (`editor`)
 
 1. Create a skill course, add four lessons, a quiz with explanations, evaluations, and a final assessment.
-2. Fill duration and outcomes, translate to es and it (AI assistant allowed), and publish each language.
+2. Fill outcomes, translate to es and it (AI assistant allowed), and publish each language.
 3. Open `/courses/skills`, edit a skill group description, and reorder the groups.
 4. Preview the course as a learner, then open its analytics sheet.
 5. Confirm there is no Organization or Certificates item in the sidebar.
@@ -159,8 +160,8 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 
 ## Tutor (`tutor`)
 
-1. Dashboard and `/certificates` show the queue with ages; the request older than 7 days is flagged.
-2. Open the `volunteer-review` request and click "Start review": it moves to "In review" and the volunteer gets a notification.
+1. Dashboard and `/certificates` show the queue with age badges. A request 7 days old or more has a red badge, and one 3 to 6 days old has an amber badge.
+2. Open the `volunteer-review` request and click "Start review": it moves to "In review". The volunteer gets an in-app notification. This step sends no email.
 3. Pick another level description for one skill, fill the blind evaluation, and request changes with a comment on tasks.
 4. As `volunteer-changes` (another browser), resubmit; back as `tutor`, approve after previewing the PDF.
 5. Reject the `member-01` request with a reason and check the volunteer's email.
@@ -181,7 +182,7 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 4. Resume the draft from `/certificates`, complete personal details, submit, then withdraw and submit again.
 5. As `volunteer`, open the approved certificate: download the PDF and compare it with the template.
 6. Use the share panel: copy the link, open "Add to LinkedIn", and scan the QR code with a phone.
-7. In Settings, Privacy, set the featured certificate, then open the public profile.
+7. In Settings, Privacy, set the featured certificate, then open the public profile at `/@<username>`.
 8. After each step, open `/dashboard`: the rail stage, the stage title, and the primary action follow the request. At 390px, open "Request steps".
 
 ## Learner (`learner`)

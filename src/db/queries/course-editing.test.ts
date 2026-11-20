@@ -6,7 +6,6 @@ import {
   computeTranslationCoverage,
   isReservedSlug,
   parseOutcomesText,
-  sanitizeDuration,
   sanitizeOutcomes,
   skillGroupSchema,
   slugifyName,
@@ -15,11 +14,6 @@ import {
 const text = (en: string, es = '', ita = '') => ({ en, es, it: ita })
 
 describe('course details', () => {
-  it('keeps whole minutes in range and drops everything else', () => {
-    expect(sanitizeDuration(45)).toBe(45)
-    expect([0, -5, 2.5, 6001, '30', null, undefined].map(sanitizeDuration)).toEqual(Array(7).fill(null))
-  })
-
   it('splits outcomes by line, trims them, and caps the list', () => {
     expect(parseOutcomesText('  First \n\n Second\n')).toEqual(['First', 'Second'])
     expect(parseOutcomesText(Array.from({ length: 12 }, (_, i) => `Item ${i}`).join('\n'))).toHaveLength(8)

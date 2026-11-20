@@ -112,25 +112,25 @@ export const OnboardingForm = ({
   const stepName = STEP_NAMES[step]!
 
   return (
-    <>
-      <div className="flex flex-col items-center gap-6">
-        <div className="space-y-2 text-center">
-          <h1 className="type-title text-balance">{t(`step_${stepName}_title`)}</h1>
-          <p className="text-pretty text-muted-foreground">{t(`step_${stepName}_description`)}</p>
-        </div>
-        <div className="w-full space-y-2">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
+        <div className="space-y-2">
+          <p className="type-caption text-muted-foreground">
+            {t('progress', { current: step + 1, total: STEP_NAMES.length })}
+          </p>
           <Progress
             aria-label={t('progress', { current: step + 1, total: STEP_NAMES.length })}
             value={((step + 1) / STEP_NAMES.length) * 100}
           />
-          <p className="text-center type-caption text-muted-foreground">
-            {t('progress', { current: step + 1, total: STEP_NAMES.length })}
-          </p>
+        </div>
+        <div className="space-y-2">
+          <h1 className="type-title text-balance">{t(`step_${stepName}_title`)}</h1>
+          <p className="text-pretty text-muted-foreground">{t(`step_${stepName}_description`)}</p>
         </div>
       </div>
 
       <Form {...form}>
-        <form className="space-y-6" noValidate onSubmit={handleSubmit}>
+        <form className="space-y-6" method="post" noValidate onSubmit={handleSubmit}>
           {step === 0 && (
             <>
               <div className="space-y-2">
@@ -162,6 +162,6 @@ export const OnboardingForm = ({
           </div>
         </form>
       </Form>
-    </>
+    </div>
   )
 }

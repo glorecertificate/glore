@@ -9,37 +9,16 @@ import { cn } from '@/lib/utils'
 
 const INPUT_NAVIGATION_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ']
 
-const adjustSize = (
-  element: HTMLTextAreaElement,
-  {
-    autoWidth,
-    defaultValue,
-    value,
-  }: Pick<React.ComponentProps<'textarea'>, 'defaultValue' | 'value'> & { autoWidth?: boolean }
-) => {
+const supportsFieldSizing = () => typeof CSS !== 'undefined' && CSS.supports('field-sizing', 'content')
+
+const adjustSize = (element: HTMLTextAreaElement) => {
+  if (supportsFieldSizing()) return
   element.style.height = 'auto'
-
-  if (autoWidth) {
-    element.style.width = 'auto'
-    const computed = window.getComputedStyle(element)
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-
-    if (context) {
-      context.font = computed.font
-      const text = (value as string) || element.value || (typeof defaultValue === 'string' ? defaultValue : '') || ''
-      const metrics = context.measureText(text)
-      const paddingX = Number.parseFloat(computed.paddingLeft) + Number.parseFloat(computed.paddingRight)
-      const borderX = Number.parseFloat(computed.borderLeftWidth) + Number.parseFloat(computed.borderRightWidth)
-      element.style.width = `${Math.ceil(metrics.width + paddingX + borderX)}px`
-    }
-  }
-
   element.style.height = `${element.scrollHeight}px`
 }
 
 const inlineInputVariants = cva(
-  `-mx-0.5 w-full min-w-0 resize-none overflow-hidden rounded-sm border border-transparent bg-transparent px-0.5 align-top transition-colors duration-150 outline-none placeholder:text-muted-foreground hover:bg-muted/40 focus-visible:border focus-visible:bg-muted/70 disabled:pointer-events-none disabled:opacity-50`,
+  `-mx-0.5 field-sizing-content w-full min-w-0 resize-none overflow-hidden rounded-sm border border-transparent bg-transparent px-0.5 align-top transition-colors duration-150 outline-none placeholder:text-muted-foreground hover:bg-muted/40 focus-visible:border focus-visible:bg-muted/70 disabled:pointer-events-none disabled:opacity-50`,
   {
     defaultVariants: {
       size: 'default',
@@ -56,7 +35,6 @@ const inlineInputVariants = cva(
 )
 
 export const InlineInput = ({
-  autoWidth,
   className,
   defaultValue,
   keepFilled = true,
@@ -70,10 +48,6 @@ export const InlineInput = ({
 }: Omit<React.ComponentProps<'textarea'>, 'rows' | 'size'> &
   VariantProps<typeof inlineInputVariants> & {
     /**
-     * When true, the input width adapts to the content.
-     */
-    autoWidth?: boolean
-    /**
      * When true, resets the value to `defaultValue` on blur.
      * @default true
      */
@@ -85,9 +59,9 @@ export const InlineInput = ({
 
   useLayoutEffect(() => {
     if (ref.current) {
-      adjustSize(ref.current, { autoWidth, defaultValue, value })
+      adjustSize(ref.current)
     }
-  }, [autoWidth, defaultValue, value])
+  }, [value])
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     const empty = !e.target.value.trim()
@@ -102,7 +76,7 @@ export const InlineInput = ({
       onBlur?.(e)
       requestAnimationFrame(() => {
         if (ref.current) {
-          adjustSize(ref.current, { autoWidth, defaultValue, value })
+          adjustSize(ref.current)
         }
       })
       return
@@ -125,8 +99,6 @@ export const InlineInput = ({
     onChange?.(e)
   }
 
-  const inputStyle = autoWidth ? { width: 'auto', ...props.style } : props.style
-
   return (
     <textarea
       autoComplete="off"
@@ -137,7 +109,6 @@ export const InlineInput = ({
       ref={composedRefs}
       rows={1}
       spellCheck={false}
-      style={inputStyle}
       value={value}
       {...props}
     />

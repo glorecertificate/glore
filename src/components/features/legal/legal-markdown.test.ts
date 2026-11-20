@@ -18,11 +18,11 @@ describe('LegalMarkdown', () => {
   })
 
   it('opens external links safely and keeps internal ones in place', () => {
-    const html = render('[site](https://example.com) and [charter](/quality-charter)')
+    const html = render('[site](https://example.com) and [terms](/terms)')
     expect(html).toContain('rel="noopener noreferrer"')
     expect(html).toContain('target="_blank"')
-    expect(html).toContain('href="/quality-charter"')
-    expect(html).not.toMatch(/href="\/quality-charter"[^>]*target=/u)
+    expect(html).toContain('href="/terms"')
+    expect(html).not.toMatch(/href="\/terms"[^>]*target=/u)
   })
 
   it('does not render raw HTML', () => {

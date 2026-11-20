@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -10,7 +10,7 @@ import { z } from 'zod'
 
 import { logout, updatePassword } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useFormErrored } from '@/hooks/use-form-disabled'
 import { PASSWORD_REGEX } from '@/lib/constants'
@@ -48,12 +48,11 @@ export const PasswordResetForm = ({
   })
 
   const errored = useFormErrored(form.control)
-  const prevErrored = useRef(errored)
 
-  if (prevErrored.current !== errored) {
-    prevErrored.current = errored
-    setErrored(errored)
-  }
+  useEffect(() => {
+    const { unsubscribe } = form.watch(() => setErrored(false))
+    return () => unsubscribe()
+  }, [form, setErrored])
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     if (!resetToken) {
@@ -80,49 +79,34 @@ export const PasswordResetForm = ({
   }
 
   return (
-    <>
-      <Form {...form}>
-        <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid gap-6">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <PasswordInput autoComplete="new-password" autoFocus open variant="floating" {...field} />
-                  </FormControl>
-                  {form.formState.errors.password?.message !== t('passwordRequirements') && (
-                    <FormDescription>{t('passwordRequirements')}</FormDescription>
-                  )}
-                  <FormMessage />
-                </FormItem>
+    <Form {...form}>
+      <form className="grid gap-6" method="post" onSubmit={form.handleSubmit(onSubmit, () => setErrored(true))}>
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('newPasswordLabel')}</FormLabel>
+              <FormControl>
+                <PasswordInput autoComplete="new-password" autoFocus {...field} />
+              </FormControl>
+              {form.formState.errors.password?.message !== t('passwordRequirements') && (
+                <FormDescription>{t('passwordRequirements')}</FormDescription>
               )}
-            />
-          </div>
-          <Button
-            className="w-full [&_svg]:size-4"
-            disabled={errored}
-            loading={form.formState.isSubmitting}
-            type="submit"
-            variant="brand"
-          >
-            {form.formState.isSubmitting ? t('savingPassword') : t('savePassword')}
-          </Button>
-        </form>
-      </Form>
-      <div className="mt-2 flex w-full justify-end">
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
-          onClick={() => {
-            setToken(null)
-            setView('login')
-          }}
-          size="text"
-          variant="link"
+          className="w-full [&_svg]:size-4"
+          disabled={errored}
+          loading={form.formState.isSubmitting}
+          type="submit"
+          variant="brand"
         >
-          {t('skipAndLogin')}
+          {form.formState.isSubmitting ? t('savingPassword') : t('savePassword')}
         </Button>
-      </div>
-    </>
+      </form>
+    </Form>
   )
 }

@@ -13,6 +13,7 @@ Decisions with IDs from the v0.7 release. Specs and issues cite them by ID (for 
 - U9: The activity rule is 3 months or 100 hours.
 - U10: The Erasmus+ emblem stays on every certificate for now.
 - U11: v0.7 ships temporary privacy, terms, and Quality Charter texts. The GloRe team supplies the final texts later.
+  - Changed on 2026-11-19: the owner removed the Quality Charter. v0.7 ships temporary privacy and terms texts only. `organizations.charterAcceptedAt` stays in the schema until the next migration and nothing writes it.
 - U12: Changed on 2026-10-22 (D24, U11): legal pages drop the "Temporary text" banner, the `temporary` front matter flag, and the "temporary text" intro sentence before launch.
 - U18: Decided on 2026-10-23: the database owns all team-edited copy. UI strings use overrides on top of the bundled catalogs, edited in the app. Crowdin is removed (`translations.md`).
 - U19: Editors draft and publish UI strings and content translations. Admins own the protected namespaces (certificate PDF, public certificate, legal, metadata, email subjects), legal publishing, and settings.
@@ -63,7 +64,7 @@ glorecertificate.net claims 25 skills, and all 8 of its skill pages (`/soft-skil
   - Runner-up: One certificate per user and org.
 - D5: Public `code`: Crockford base32 `XXXX-XXXX-XXXX` (60 random bits), unique. `/verify/[code]` is canonical. Legacy `/{username}?v={handle}` redirects.
   - Runner-up: `XXXX-XXXX-XXXX-XXXX`.
-- D6: `/verify/[code]` shows the holder's full name, is `noindex`, and is rate limited. `/{username}` profiles are opt-in, off by default (GDPR article 25). Runner-up: Youthpass name check, if GloRe's DPO asks.
+- D6: `/verify/[code]` shows the holder's full name, is `noindex`, and is rate limited. `/@{username}` profiles are opt-in, off by default (GDPR article 25). Runner-up: Youthpass name check, if GloRe's DPO asks.
 - D9: Method elements return: required reflection at each self-assessment, blind choice of a level description per skill, tutor-confirmed description, blind tutor evaluation, anonymous org rating shown only as an aggregate of 3 or more.
 
 ### Certificate PDF
@@ -81,6 +82,7 @@ glorecertificate.net claims 25 skills, and all 8 of its skill pages (`/soft-skil
   - Removal keeps certificates.
   - Runner-up: 14-day expiry, if volunteers accept slowly.
 - D12: `/register` becomes an application (legal representative, registry ID, contact, website, volunteers per year, motivation, Quality Charter). Approval sends an invitation instead of linking an account.
+  - Changed on 2026-11-19: the owner removed the Quality Charter, so the application has no charter checkbox and its last step is a plain review. `organizations.charterAcceptedAt` stays in the schema until the next migration and nothing writes it.
 - D16: Login accepts email or username. Onboarding completion and the welcome email show the username.
 - D25: Team members (platform admins, editors) never see the org member interface: the Organization nav item hides for them.
 

@@ -58,7 +58,7 @@ export const LessonQuiz = ({
                   <Label
                     className={cn(
                       'flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-sm leading-snug font-normal transition-colors has-data-[state=checked]:border-primary has-data-[state=checked]:bg-surface-selected',
-                      right && 'border-success bg-success-subtle',
+                      right && 'border-success-border bg-success-subtle',
                       tried && 'cursor-not-allowed text-muted-foreground line-through opacity-70',
                       state.solved && !right && 'cursor-default opacity-70'
                     )}
@@ -93,7 +93,10 @@ export const LessonQuiz = ({
             {state.feedback && (
               <Banner variant={state.feedback === 'correct' ? 'success' : 'warning'}>
                 <LucideIcon
-                  className="mt-0.5 size-4 shrink-0"
+                  className={cn(
+                    'mt-0.5 size-4 shrink-0',
+                    state.feedback === 'correct' ? 'text-success-text' : 'text-warning-text'
+                  )}
                   name={state.feedback === 'correct' ? 'circle-check' : 'rotate-ccw'}
                 />
                 <div className="flex flex-col gap-1">

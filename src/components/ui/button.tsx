@@ -22,6 +22,7 @@ export interface ButtonProps
   loadingText?: string
   loadingTitle?: string
   spinner?: string
+  stable?: boolean
 }
 
 export const buttonVariants = cva(
@@ -41,7 +42,7 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'bg-gradient-action text-action-foreground shadow-glow hover:not-disabled:brightness-90 active:not-disabled:brightness-80',
-        secondary: 'border border-border-strong bg-field text-foreground hover:not-disabled:bg-accent/60',
+        secondary: 'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60',
         destructive: 'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent',
         warning: 'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent',
         success: 'bg-success text-success-foreground hover:not-disabled:bg-success-accent',
@@ -54,6 +55,8 @@ export const buttonVariants = cva(
         band: 'bg-band-action font-semibold text-band-action-foreground shadow-glow-green hover:not-disabled:bg-band-action-hover',
         'band-secondary':
           'border border-band-border bg-band-scrim text-band-foreground hover:not-disabled:bg-band-scrim/60',
+        field:
+          'rounded-md border border-border bg-field text-foreground hover:not-disabled:bg-accent/60 focus-visible:focus-ring-inset',
         outline: 'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60',
         ghost: 'text-foreground hover:not-disabled:bg-accent/80 dark:hover:not-disabled:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',
@@ -87,6 +90,12 @@ export const buttonVariants = cva(
   }
 )
 
+const STABLE_ICON_PADDING = { '2xs': 'px-1.5', lg: 'px-4', md: 'px-3', sm: 'px-2.5', xs: 'px-2' } as const
+
+const STABLE_GAP = { '2xs': 'gap-1', lg: 'gap-2', md: 'gap-2', sm: 'gap-1.5', xs: 'gap-1.5' } as const
+
+type StableSize = keyof typeof STABLE_GAP
+
 export const Button = ({
   asChild = false,
   children,
@@ -101,6 +110,7 @@ export const Button = ({
   loadingTitle,
   size,
   spinner,
+  stable = false,
   title,
   type,
   variant,
@@ -111,6 +121,37 @@ export const Button = ({
   const IconComponent = typeof icon === 'function' ? icon : null
   const iconNode = typeof icon === 'string' ? <LucideIcon name={icon} /> : IconComponent && <IconComponent />
 
+  if (stable && !asChild) {
+    const stableSize = (size && size in STABLE_GAP ? size : 'md') as StableSize
+    const gap = STABLE_GAP[stableSize]
+    return (
+      <button
+        className={cn(
+          buttonVariants({ effect, size, variant }),
+          icon && size && size in STABLE_ICON_PADDING && STABLE_ICON_PADDING[stableSize],
+          icon && !size && STABLE_ICON_PADDING.md,
+          loading && 'cursor-wait disabled:cursor-wait',
+          className
+        )}
+        data-size={size ?? 'md'}
+        data-slot="button"
+        disabled={disabled || loading}
+        title={label}
+        type={type}
+        {...props}
+      >
+        <span className={cn('grid items-center justify-items-center', gap)}>
+          <span className={cn('col-start-1 row-start-1 inline-flex items-center', gap, loading && 'invisible')}>
+            {iconPlacement === 'left' && iconNode}
+            {children}
+            {iconPlacement === 'right' && iconNode}
+          </span>
+          {loading && <Spinner className={cn('col-start-1 row-start-1', spinner)} />}
+        </span>
+      </button>
+    )
+  }
+
   return (
     <Component
       className={cn(
@@ -118,6 +159,8 @@ export const Button = ({
         loading && 'cursor-wait disabled:cursor-wait',
         className
       )}
+      data-size={size ?? 'md'}
+      data-slot="button"
       disabled={disabled || loading}
       title={label}
       type={type}

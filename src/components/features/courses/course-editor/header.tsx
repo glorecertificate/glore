@@ -11,6 +11,7 @@ import { CourseAnalyticsSheet } from '@/components/features/courses/course-edito
 import { CourseBarTitle } from '@/components/features/courses/course-editor/bar-title'
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
 import { CourseHeading } from '@/components/features/courses/course-editor/heading'
+import { type QuizIssue, raiseQuizIssue } from '@/components/features/courses/course-editor/quiz-issue'
 import { LucideIcon } from '@/components/icons/lucide'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { useI18n } from '@/components/providers/i18n'
@@ -81,10 +82,11 @@ export const CourseHeader = () => {
   const t = useTranslations('CourseEditor')
   const tCourseCommon = useTranslations('CourseCommon')
   const tEditor = useTranslations('Learning.editor')
-  const { course, language, languageStatus, status, step, saveCourse } = useCourse()
+  const { course, language, languageStatus, saveCourse, setStep, status, step } = useCourse()
   const [incompleteAlertOpen, setIncompleteAlertOpen] = useState(false)
   const [saving, setSaving] = useState<'draft' | 'publish' | null>(null)
   const [justSaved, setJustSaved] = useState(false)
+  const [failed, setFailed] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const mounted = useMounted()
   const [analyticsOpen, setAnalyticsOpen] = useState(false)
@@ -110,33 +112,48 @@ export const CourseHeader = () => {
   const draftDisabled = !languageStatus.hasUpdates
 
   const stateText = (() => {
-    if (saving) return t('saving')
-    if (languageStatus.hasUpdates) return t('unsavedChanges')
-    if (justSaved) return t('savedJustNow')
+    if (saving) return { text: t('saving'), tone: 'neutral' } as const
+    if (failed) return { text: t('saveFailedShort'), tone: 'danger' } as const
+    if (languageStatus.hasUpdates) return { text: t('unsavedChanges'), tone: 'warning' } as const
+    if (justSaved) return { text: t('savedJustNow'), tone: 'success' } as const
     return null
   })()
 
-  const validateQuiz = () => {
+  const validateQuiz = (): { issue: QuizIssue; lessonIndex: number; message: string } | null => {
     for (const [lessonIndex, lesson] of course.lessons.entries()) {
       const position = lessonIndex + 1
       const title = lesson.title?.[language] || t('untitledLesson')
       for (const [index, question] of (lesson.questions ?? []).entries()) {
         const values = { number: index + 1, position, title }
-        if (!((question.description as IntlRecord)?.[language] ?? '').trim()) return t('quizQuestionEmpty', values)
-        if (question.options.length < 2) return t('quizMinOptions', values)
-        if (question.options.some(option => !((option.content as IntlRecord)?.[language] ?? '').trim())) {
-          return t('quizOptionEmpty', values)
+        const questionId = question.id
+        if (!((question.description as IntlRecord)?.[language] ?? '').trim()) {
+          return { issue: { questionId, target: 'question' }, lessonIndex, message: t('quizQuestionEmpty', values) }
         }
-        if (!question.options.some(option => option.isCorrect)) return t('quizNoCorrect', values)
+        if (question.options.length < 2) {
+          return { issue: { questionId, target: 'options' }, lessonIndex, message: t('quizMinOptions', values) }
+        }
+        const empty = question.options.find(option => !((option.content as IntlRecord)?.[language] ?? '').trim())
+        if (empty) {
+          return {
+            issue: { optionId: empty.id, questionId, target: 'option' },
+            lessonIndex,
+            message: t('quizOptionEmpty', values),
+          }
+        }
+        if (!question.options.some(option => option.isCorrect)) {
+          return { issue: { questionId, target: 'correct' }, lessonIndex, message: t('quizNoCorrect', values) }
+        }
       }
     }
     return null
   }
 
   const handleSave = async (publish: boolean | null) => {
-    const quizError = validateQuiz()
-    if (quizError) {
-      toast.error(quizError)
+    const quiz = validateQuiz()
+    if (quiz) {
+      toast.error(quiz.message)
+      if (quiz.lessonIndex !== step - 1) setStep(quiz.lessonIndex + 1)
+      raiseQuizIssue(quiz.issue)
       return
     }
     if (publish === true && !languageStatus.hasContent) {
@@ -149,6 +166,7 @@ export const CourseHeader = () => {
     try {
       setSaving(publish === null && !isPublished ? 'draft' : 'publish')
       setJustSaved(false)
+      setFailed(false)
       await saveCourse({ locale: language, publish })
       setJustSaved(true)
       toast.success(t('saveSuccess'))
@@ -159,6 +177,7 @@ export const CourseHeader = () => {
         if (code === 'TITLE_TOO_LONG') return t('titleTooLong', { max: COURSE_TITLE_MAX_LENGTH })
         return t('saveError')
       }
+      setFailed(true)
       toast.error(errorMessage())
     } finally {
       setSaving(null)
@@ -186,57 +205,6 @@ export const CourseHeader = () => {
       <CourseHeading>
         {({ counter, description, icon, title }) => (
           <DashboardHeader
-            actions={
-              <div className="contents max-md:hidden">
-                {stateText && (
-                  <span aria-live="polite" className="text-sm text-band-text">
-                    {stateText}
-                  </span>
-                )}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button asChild variant="band-secondary">
-                      <Link href={previewHref}>
-                        <LucideIcon name="eye" />
-                        {tEditor('previewAsLearner')}
-                      </Link>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-72 text-center">{tEditor('previewHint')}</TooltipContent>
-                </Tooltip>
-                <CourseMenu
-                  onAnalytics={() => setAnalyticsOpen(true)}
-                  onSettings={() => setSettingsOpen(true)}
-                  onUnpublish={isPublished ? onUnpublish : null}
-                />
-                {!isPublished && (
-                  <Button
-                    disabled={draftDisabled || saving !== null}
-                    loading={saving === 'draft'}
-                    onClick={onSaveDraft}
-                    variant="band-secondary"
-                  >
-                    {t('saveDraft')}
-                  </Button>
-                )}
-                {primaryDisabled ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span>
-                        <Button disabled variant="band">
-                          {t('publishChanges')}
-                        </Button>
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>{t('noChangesToPublish')}</TooltipContent>
-                  </Tooltip>
-                ) : (
-                  <Button disabled={saving !== null} loading={saving === 'publish'} onClick={onPrimary} variant="band">
-                    {isPublished ? t('publishChanges') : t('publish')}
-                  </Button>
-                )}
-              </div>
-            }
             breadcrumb={
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-band-text">
@@ -247,6 +215,59 @@ export const CourseHeader = () => {
                   <span>{t('visibleLanguages', { count: publishedLanguageCount })}</span>
                   <span className="max-md:hidden">{t('lessonsCount', { count: course.lessons.length })}</span>
                   {counter}
+                  <div className="ml-auto flex items-center gap-2 max-md:hidden">
+                    <span aria-live="polite" className="text-sm text-band-text">
+                      {stateText && <StatusBadge tone={stateText.tone}>{stateText.text}</StatusBadge>}
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button aria-label={tEditor('previewAsLearner')} asChild size="icon" variant="band-secondary">
+                          <Link href={previewHref}>
+                            <LucideIcon name="eye" />
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{tEditor('previewAsLearner')}</TooltipContent>
+                    </Tooltip>
+                    <CourseMenu
+                      onAnalytics={() => setAnalyticsOpen(true)}
+                      onSettings={() => setSettingsOpen(true)}
+                      onUnpublish={isPublished ? onUnpublish : null}
+                    />
+                    {!isPublished && (
+                      <Button
+                        disabled={draftDisabled || saving !== null}
+                        loading={saving === 'draft'}
+                        stable
+                        onClick={onSaveDraft}
+                        variant="band-secondary"
+                      >
+                        {t('saveDraft')}
+                      </Button>
+                    )}
+                    {primaryDisabled ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Button disabled variant="band">
+                              {t('publishChanges')}
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>{t('noChangesToPublish')}</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Button
+                        disabled={saving !== null}
+                        loading={saving === 'publish'}
+                        stable
+                        onClick={onPrimary}
+                        variant="band"
+                      >
+                        {isPublished ? t('publishChanges') : t('publish')}
+                      </Button>
+                    )}
+                  </div>
                   <div className="ml-auto md:hidden">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -307,13 +328,14 @@ export const CourseHeader = () => {
           >
             <div className="flex items-center justify-between gap-3">
               <span aria-live="polite" className="min-w-0 truncate text-sm text-muted-foreground">
-                {stateText}
+                {stateText && <StatusBadge tone={stateText.tone}>{stateText.text}</StatusBadge>}
               </span>
               <div className="flex shrink-0 items-center gap-2">
                 {!isPublished && (
                   <Button
                     disabled={draftDisabled || saving !== null}
                     loading={saving === 'draft'}
+                    stable
                     onClick={onSaveDraft}
                     variant="outline"
                   >
@@ -323,6 +345,7 @@ export const CourseHeader = () => {
                 <Button
                   disabled={primaryDisabled || saving !== null}
                   loading={saving === 'publish'}
+                  stable
                   onClick={onPrimary}
                   variant="brand"
                 >

@@ -359,7 +359,7 @@ export const CertificateWizard = ({
 
         <Form {...form}>
           {!resubmit && <Autosave control={form.control} onChange={autosave} />}
-          <form className="flex flex-col gap-6" noValidate onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="flex flex-col gap-6" method="post" noValidate onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-1">
               <h2 className="type-heading outline-none" ref={heading} tabIndex={-1}>
                 {stepTitles[WIZARD_STEPS[step]!]}

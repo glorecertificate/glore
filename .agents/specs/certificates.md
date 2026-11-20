@@ -42,6 +42,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - An `in_review` request goes back to `submitted` when its tutor changes. `changes_requested` keeps its status.
 - Tutors self-assign unassigned `submitted` requests of their org.
 - The tutor queue is scoped to the active org. Drafts are visible to their owner only.
+- The pre-issue preview data (`findCertificatePreview`) uses the same gate as the detail page and the PDF route (`findCertificate`).
 - ONLY tutors review. Admins and representatives manage assignment but never review directly.
 - Demoting, removing, or losing a tutor returns open reviews to the pool (`certificate.unassigned`).
 
@@ -78,7 +79,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Skills: 3 to 4 completed skill courses. The chosen description is shown read-only (the choice in the course is final), with no level name, and the reflection is prefilled as evidence.
 - Your organization: anonymous rating, shown to the org only as an aggregate of 3 or more.
   - Fields: `experience`, `support`, `certificationSupport` (1 to 5), `wouldRecommend`, and a `comment` of up to 400 characters.
-- Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
+- Review: language from the UI locale, missing personal data inline, live `CertificatePage`, a scaled copy of the PDF page.
 - One column in a centered card. A toolbar above it holds the stepper (phones: "Step N of 4" and a progress bar), the save status, Save and exit, and an overflow menu with Discard draft. Review is a check-your-answers list with a Change button per row, then the live thumbnail, language, and missing personal data. The footer hides Back on step 1, and sticks to the bottom on phones.
 - Drafts autosave through `saveCertificateDraft` only after the volunteer edits a field, so opening the wizard never creates a draft. Hitting the 5 draft cap shows a dedicated message. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
 - A new request after a withdrawal starts prefilled from the withdrawn request of the active organization (`withdrawnSource`, `prefillValues`). Skills that are no longer completed are dropped, and the blind description step stays as it is. Nothing is saved until the volunteer edits a field.
@@ -98,11 +99,13 @@ draft -> submitted -> in_review -> approved -> revoked
 ### Detail
 
 - Route: `/certificates/[id]`.
-- The band shows the status dot, the organization, and one primary action by status and role. Withdraw, make featured, and revoke sit in a More actions menu. A revoked, rejected, or withdrawn request offers Request a new certificate.
+- The band shows the status dot, the organization, and one primary action by status and role. Withdraw, Feature on public profile, and revoke sit in a More actions menu. The holder's featured certificate says in the band that the public profile shows it. A revoked, rejected, or withdrawn request offers Request a new certificate.
 - Main column: `CertificateJourney` with the date of each reached stage (`journeyDates`), `CertificateFeedback` (revocation reasons use a neutral card), the preview (none when revoked), skills, tasks, and the timeline from `findCertificateActivity`.
 - A 320 px right rail holds Details, `CertificateShare` (owner and approved only), and the reviewer row. On phones the rail stacks after the preview.
-- `CertificateShare`: verify link with one Copy button, QR, LinkedIn "Add to profile" link, LinkedIn and Facebook share, and native share.
-- The owner also gets a one-time confetti per certificate (`localStorage` flag).
+- `CertificateShare`: link with one Copy button, QR, LinkedIn "Add to profile" link, LinkedIn and Facebook share, and native share.
+  - The page builds `shareUrl` on the server: `/@<username>` when the certificate is featured (`isDefault`) and the holder's profile is public, else `/verify/<code>`.
+  - Copy, QR, share, and native share use `shareUrl`. "Add to profile" always uses the verify URL with its `certId`.
+- The certificate page shows no confetti or other celebration effect.
 
 ### Tutor queue
 
@@ -111,17 +114,17 @@ draft -> submitted -> in_review -> approved -> revoked
 - Search and the status and waiting-time filters are nuqs params (`tab`, `q`, `status`, `age`) in a `FilterBar` with Clear filters. `/` focuses the search.
 - A filtered empty table shows its own "No matches" state.
 - Claim is optimistic: the row leaves the unassigned tab at once and returns with an error toast if the claim fails. The unassigned tab uses `DataTable` row selection: selected rows show a count and a "Claim N reviews" bulk action, and the table announces the count. The organization table shows a skeleton while it loads.
-- The age badge (`StatusBadge`: neutral, then warning at 3 days, danger at 7, `reviewReminderDays`) counts days since `submittedAt`.
+- The age badge (`StatusBadge`: neutral, then warning at 3 days, danger at 7, `reviewReminderDays`) counts days since `submittedAt`. The tutor dashboard rows use the same badge.
 - `changes_requested` rows show "waiting for volunteer".
 
 ### Review workspace
 
 - Route: `/certificates/[id]/review`, for the assigned tutor only.
-- Left side: the previous feedback (neutral card), the volunteer, experience and tasks (read-only, with an Edit button that opens the fields in place), and skills with the chosen description, evidence, and the reflection (`findReviewContext`, reviewer only).
+- Sections: previous feedback, a summary card (volunteer, experience with in-place Edit, tasks), the skills matrix, four blind scores, comment, decision bar.
 - The band shows the status and "Submitted N days ago" as text, and Start review for a `submitted` request.
-- Right side, a sticky 400 px "Your review" panel (wider than the 320 px rail because it holds inputs): per-skill include and a radio group of the three descriptions with their level names (the volunteer's choice is marked; picking another changes the level; no statement), four blind scores, a general comment, collapsible notes per section, then Approve, Request changes, and Reject. A `changes_requested` request replaces the panel with a waiting note.
-- Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`. On coarse pointers the dialog shows the HTML `CertificateThumbnail` built from the form values, plus an Open PDF link to the blob, because iOS Safari renders `<object>` PDFs poorly (`useCoarsePointer`). Desktop keeps the `<object>` embed.
-- Below `lg`, the panel follows the evidence, and a fixed bottom bar holds Approve.
+- The matrix has a row per skill and a radio card per level, with the volunteer's choice tagged. Evidence and reflection fold under each row.
+- Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`. On coarse pointers the dialog shows the HTML `CertificatePage` built from the form values and the signatory of `findCertificatePreview`, plus an Open PDF link to the blob, because iOS Safari renders `<object>` PDFs poorly (`useCoarsePointer`). Desktop keeps the `<object>` embed.
+- The bar shows progress, Reject, Request changes, and Approve, and sticks from `md`. A `changes_requested` request shows a waiting note instead.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
 - `Start review` (`StartReviewButton` in the band) claims a `submitted` request.
 
@@ -157,7 +160,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with their level and description, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD (always serialized with `serializeJsonLd`, which escapes `<` so a holder name cannot close the script element).
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.
-- `findPublicCertificate` (the `/{username}` page, its metadata, and its image) is limited to 60 reads a minute per IP under `profile:<ip>`, deduped per request. The image answers 429 and the page answers not found.
+- `findPublicCertificate` (the `/@{username}` page, its metadata, and its image) is limited to 60 reads a minute per IP under `profile:<ip>`, deduped per request. The image answers 429 and the page answers not found.
 - `lookupLegacyCertificateCode` applies the 30 lookups a minute limiter to the `?v=` redirect.
 - An approved certificate reads `valid`. Every other status is `unknown`.
 - A revoked certificate reads `revoked` with its date and shows only the holder, organization, code, and issue date.
@@ -165,9 +168,9 @@ draft -> submitted -> in_review -> approved -> revoked
 - The page reads the issued `snapshot`, so later profile edits never change it.
 - Approval freezes the `CertificatePdf` labels in `snapshot.labels`, so later message overrides never change an issued PDF.
 - A snapshot without `labels` renders with the current messages.
-- `/{username}` is opt-in (`users.publicProfile`, default off) and shows the featured certificate.
+- `/@{username}` is opt-in (`users.publicProfile`, default off) and shows the featured certificate.
 - A private profile renders the not-found page. It streams with status 200 and `noindex`, so it looks like an unknown user.
-- The legacy `/{username}?v={handle}` permanently redirects to `/verify/<code>`.
+- The legacy `/{username}?v={handle}` (proxy rewrite to `u/[username]/legacy`) permanently redirects to `/verify/<code>`.
 
 ## Account deletion
 

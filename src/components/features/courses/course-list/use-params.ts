@@ -19,7 +19,7 @@ import {
   type CourseListSortType,
   type CourseListTab,
 } from '@/components/features/courses/course-list/params'
-import { isListedCourse } from '@/components/features/courses/visibility'
+import { isListedCourse, listedCourseTypes } from '@/components/features/courses/visibility'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
 import { COURSE_TYPES, type CourseSummary } from '@/db/queries/course'
@@ -31,8 +31,8 @@ import { CamelCase, type Enum } from '@/lib/types'
 import { camelize, pluck } from '@/lib/utils'
 
 const tabParser = parseAsStringEnum(COURSE_LIST_TABS).withDefault('all')
-const typesParser = parseAsArrayOf(parseAsStringEnum(COURSE_TYPES)).withDefault([...COURSE_TYPES])
-const languagesParser = parseAsArrayOf(parseAsStringEnum(LOCALES)).withDefault(LOCALES)
+const typesParser = parseAsArrayOf(parseAsStringEnum(COURSE_TYPES))
+const languagesParser = parseAsArrayOf(parseAsStringEnum(LOCALES))
 const skillGroupsParser = parseAsArrayOf(parseAsString)
 const sortParser = parseAsStringEnum(COURSE_LIST_SORTS)
 const sortDirectionParser = parseAsStringEnum<CourseListSortDirection>(['asc', 'desc']).withDefault('asc')
@@ -46,24 +46,32 @@ export const useCourseListTab = () => {
 }
 
 export const useCourseListTypes = () => {
-  const [activeTypes, setTypesRaw] = useQueryState(COURSE_LIST_PARAMS.TYPES, {
+  const { user } = useSession()
+  const [rawTypes, setTypesRaw] = useQueryState(COURSE_LIST_PARAMS.TYPES, {
     ...typesParser,
     ...paramsOptions,
   })
+  const listedTypes = listedCourseTypes(user)
+  const selectedTypes = (rawTypes ?? []).filter(type => listedTypes.includes(type))
+  const activeTypes =
+    selectedTypes.length === 0 || selectedTypes.length === listedTypes.length ? [...COURSE_TYPES] : selectedTypes
   const setActiveTypes = (types: EnumType<'course_type'>[] | null) => setTypesRaw(types)
-  return { activeTypes, setActiveTypes }
+  return { activeTypes, selectedTypes, setActiveTypes }
 }
 
 export const useCourseListLanguages = () => {
-  const [activeLanguages, setLanguagesRaw] = useQueryState(COURSE_LIST_PARAMS.LANGUAGES, {
+  const [rawLanguages, setLanguagesRaw] = useQueryState(COURSE_LIST_PARAMS.LANGUAGES, {
     ...languagesParser,
     ...paramsOptions,
   })
+  const selectedLanguages = rawLanguages ?? []
+  const activeLanguages = selectedLanguages.length > 0 ? selectedLanguages : [...LOCALES]
   const setActiveLanguages = (languages: Locale[] | null) => setLanguagesRaw(languages)
-  return { activeLanguages, setActiveLanguages }
+  return { activeLanguages, selectedLanguages, setActiveLanguages }
 }
 
 export const useCourseListSkillGroups = () => {
+  const { user } = useSession()
   const { skillGroups } = useCourses()
 
   const [rawSkillGroups, setSkillGroupsRaw] = useQueryState(COURSE_LIST_PARAMS.SKILL_GROUPS, {
@@ -72,11 +80,13 @@ export const useCourseListSkillGroups = () => {
   })
 
   const defaultSkillGroups = pluck(skillGroups, 'value')
-  const activeSkillGroups = rawSkillGroups ?? defaultSkillGroups
+  const listsSkills = listedCourseTypes(user).includes('skill')
+  const selectedSkillGroups = listsSkills ? (rawSkillGroups ?? []) : []
+  const activeSkillGroups = selectedSkillGroups.length > 0 ? selectedSkillGroups : defaultSkillGroups
 
   const setActiveSkillGroups = (groups: string[] | null) => setSkillGroupsRaw(groups)
 
-  return { activeSkillGroups, setActiveSkillGroups, defaultSkillGroups }
+  return { activeSkillGroups, selectedSkillGroups, setActiveSkillGroups, defaultSkillGroups }
 }
 
 export const useCourseListSearch = () => useSearch({ urlKey: COURSE_LIST_PARAMS.SEARCH })

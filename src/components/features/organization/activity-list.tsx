@@ -8,7 +8,15 @@ import { timestampMillis } from '@/db/queries/organization'
 import { type ActivityItem, activityMessageKey } from '@/db/queries/organization-insights'
 import { type MessageKey } from '@/lib/i18n'
 
-export const ActivityList = ({ items, label }: { items: ActivityItem[]; label: string }) => {
+export const ActivityList = ({
+  className,
+  items,
+  label,
+}: {
+  className?: string
+  items: ActivityItem[]
+  label: string
+}) => {
   const { dateTime } = useFormatter()
   const t = useTranslations('Organization')
 
@@ -28,7 +36,7 @@ export const ActivityList = ({ items, label }: { items: ActivityItem[]; label: s
   }
 
   return (
-    <Timeline aria-label={label}>
+    <Timeline aria-label={label} className={className}>
       {items.map(item => {
         const date = new Date(timestampMillis(item.createdAt))
         return (

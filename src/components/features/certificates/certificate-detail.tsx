@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl'
 
 import { type CertificateActivityEvent, type CertificateReviewNotes } from '@/actions/certificates/queries'
-import { CertificateCelebration } from '@/components/features/certificates/certificate-celebration'
 import { CertificateFeedback } from '@/components/features/certificates/certificate-feedback'
 import { CertificateJourney } from '@/components/features/certificates/certificate-journey'
 import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
@@ -25,6 +24,7 @@ export const CertificateDetail = ({
   certificate,
   events,
   notes,
+  shareUrl,
   tutors,
   verifyUrl,
 }: {
@@ -32,6 +32,7 @@ export const CertificateDetail = ({
   certificate: Certificate
   events: CertificateActivityEvent[]
   notes: CertificateReviewNotes | null
+  shareUrl: string | null
   tutors?: OrgTutor[]
   verifyUrl: string | null
 }) => {
@@ -42,8 +43,6 @@ export const CertificateDetail = ({
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-      {isOwner && certificate.isApproved && <CertificateCelebration id={certificate.id} />}
-
       <div className="flex min-w-0 flex-col gap-6 lg:col-start-1 lg:row-start-1">
         <Card>
           <CardContent className="py-6">
@@ -69,7 +68,9 @@ export const CertificateDetail = ({
 
       <div className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-20 lg:col-start-2 lg:row-span-2 lg:row-start-1">
         <CertificateDetails certificate={certificate} />
-        {isOwner && verifyUrl && <CertificateShare certificate={certificate} url={verifyUrl} />}
+        {isOwner && verifyUrl && (
+          <CertificateShare certificate={certificate} shareUrl={shareUrl ?? verifyUrl} verifyUrl={verifyUrl} />
+        )}
         {!certificate.isDraft && (certificate.reviewerId || (certificate.isOpen && canManage)) && (
           <CertificateReviewer certificate={certificate} tutors={tutors} />
         )}

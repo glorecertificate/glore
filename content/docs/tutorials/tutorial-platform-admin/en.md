@@ -12,7 +12,7 @@ Open Admin in the sidebar. The overview shows organizations, members, certificat
 ## Organizations
 
 1. Open Organizations. New applications wait in the queue.
-2. Open an application to read the details and the Quality Charter acceptance.
+2. Open an application to read the details.
 3. Approve it, and the applicant receives an invitation by email. Or reject it with a comment, and the applicant receives the decision.
 4. Open an organization at any time to see its members, invitations, certificates, settings and activity.
 

@@ -101,7 +101,7 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - A warm sidebar click must commit no fallback. Measure with a production build: `LoadingFallback` appears only after 300 ms, so a fallback in the DOM is a data wait to fix, not a style choice.
 
 - A provider above the shell never sets state after mount, from an effect, `requestAnimationFrame`, or a timer. Each `useSidebar` consumer re-renders on the change, and on the mobile profile that was one 150 ms task right after hydration (TBT 4x on `/courses`). Flip a DOM attribute from a callback ref instead (`settle` in `ui/sidebar.tsx`).
-- A sidebar link press keeps the phone drawer open, as on `main`. A close on navigation adds a render and the Sheet unmount around the route commit. That costs about 100 ms at 4x CPU, and the mobile navigation cases flag it. Issue #207 tracks a close with no cost.
+- A sidebar link press closes the phone drawer, which costs about 20 ms of Shell and 40 ms of Complete at 4x CPU. The owner accepted this cost on 2026-11-19, so the mobile navigation cases flag it. Issue #207 tracks a close with no cost.
 - The invitation poll of the menu indicator starts on mount. A deferred start lands a state change inside a later navigation and the router queues the click behind the server action.
 - `settle` in `e2e/perf/vitals.ts` also waits for requests still in flight. A resource entry exists only after the download ends, so a streaming prefetch looked quiet and the click raced it.
 
@@ -124,5 +124,5 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - The kit `Link` also upgrades to a full prefetch on hover (60 ms), focus, and touch start.
 - Cost: each registered link refetches once per 30 s while the user is active, about 13 requests per 30 s for an admin. Keep the registered set small.
 - A detail page whose `generateMetadata` reads the request (`connection()`, cookies, uncached session) cannot prefetch its head. Read `getSessionUser()` there, as `getAdminOrganizationName` does.
-- A `dynamic()` tab chunk loads on first visit and shows a fallback. Preload it from the list (`preloadAdminOrganizationDetail`).
+- A `dynamic()` tab chunk loads on first visit and shows a fallback. Preload it from the list (`preloadAdminOrganizationDetail`), and on mount of the detail and `/organization` pages once on idle, so a tab switch never waits for a chunk. The `/organization` page loads its tabs one per idle slot, because loading them together evaluates every chunk in one long frame and adds to mobile TBT.
 - `LoadingFallback` takes `delay={false}` for route fallbacks, so the spinner shows in the first frame instead of after 300 ms.

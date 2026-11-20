@@ -176,7 +176,7 @@ export const InviteMemberDialog = ({
           </>
         ) : (
           <Form {...form}>
-            <form className="grid gap-4" noValidate onSubmit={form.handleSubmit(handleSubmit)}>
+            <form className="grid gap-4" method="post" noValidate onSubmit={form.handleSubmit(handleSubmit)}>
               <SegmentedControl
                 aria-label={t('modeLabel')}
                 disabled={submitting}

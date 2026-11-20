@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { isMarkdownSafe } from '@/components/ui/rich-text-editor/utils'
 import {
   ToolbarButton,
   ToolbarSplitButton,
@@ -32,6 +33,18 @@ export const BulletedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
     ed => someList(ed, [ListStyleType.Disc, ListStyleType.Circle, ListStyleType.Square]),
     []
   )
+
+  if (isMarkdownSafe(editor)) {
+    return (
+      <ToolbarButton
+        onClick={() => toggleList(editor, { listStyleType: ListStyleType.Disc })}
+        pressed={pressed}
+        tooltip={tooltip}
+      >
+        <ListIcon className="size-4" />
+      </ToolbarButton>
+    )
+  }
 
   return (
     <ToolbarSplitButton pressed={open}>
@@ -114,6 +127,18 @@ export const NumberedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
       ]),
     []
   )
+
+  if (isMarkdownSafe(editor)) {
+    return (
+      <ToolbarButton
+        onClick={() => toggleList(editor, { listStyleType: ListStyleType.Decimal })}
+        pressed={pressed}
+        tooltip={tooltip}
+      >
+        <ListOrderedIcon className="size-4" />
+      </ToolbarButton>
+    )
+  }
 
   return (
     <ToolbarSplitButton pressed={open}>

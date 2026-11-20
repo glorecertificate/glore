@@ -96,7 +96,7 @@ export const SpokenLanguagesSelect = ({
             role="combobox"
             aria-expanded={open}
             disabled={disabled}
-            variant="outline"
+            variant="field"
           >
             {value.length > 0 ? t('languagesSelected', { count: value.length }) : t('selectLanguages')}
             <LucideIcon name="plus" className="ml-2 size-4 shrink-0 opacity-50" />

@@ -1,33 +1,30 @@
 import { type VolunteerSummary, nextSkillCourse } from '@/actions/dashboard/core'
-import { VolunteerCourses } from '@/components/features/dashboard/volunteer-courses'
-import { VolunteerHero } from '@/components/features/dashboard/volunteer-hero'
-import { VolunteerRequest } from '@/components/features/dashboard/volunteer-request'
+import { JourneyCourses } from '@/components/features/dashboard/journey-courses'
+import { JourneyRail } from '@/components/features/dashboard/journey-rail'
+import { JourneyStage } from '@/components/features/dashboard/journey-stage'
 
-export const VolunteerDashboard = ({
-  firstName,
-  organization,
-  volunteer,
-}: {
-  firstName: string
-  organization: string | null
-  volunteer: VolunteerSummary
-}) => {
-  const learning = volunteer.journey.phase === 'learn'
-  const next = learning ? nextSkillCourse(volunteer.courses) : null
-  const compass = learning && !volunteer.compassSet
+const SKILL_PHASES = new Set(['draft', 'learn', 'ready'])
+
+export const VolunteerDashboard = ({ volunteer }: { volunteer: VolunteerSummary }) => {
+  const { compassSet, courses, eligibility, journey, skills } = volunteer
+  const learning = journey.phase === 'learn'
+  const next = learning ? nextSkillCourse(courses) : null
 
   return (
-    <div className="flex flex-col gap-6" data-slot="volunteer-dashboard">
-      <VolunteerHero firstName={firstName} next={next} volunteer={volunteer} />
-      <div className="grid items-stretch gap-6 lg:grid-cols-2">
-        <VolunteerCourses
-          compass={compass}
-          completed={volunteer.eligibility.completedSkillCount}
-          courses={volunteer.skillCourses}
-          min={volunteer.eligibility.minSkills}
+    <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_22.5rem]" data-slot="volunteer-dashboard">
+      <div className="flex min-w-0 flex-col gap-5">
+        <JourneyStage next={next} volunteer={volunteer} />
+        <JourneyCourses
+          compass={learning && !compassSet}
+          completed={eligibility.completedSkillCount}
+          courses={courses.continuing}
+          exclude={next?.slug}
+          min={eligibility.minSkills}
+          showSkills={SKILL_PHASES.has(journey.phase)}
+          skills={skills}
         />
-        <VolunteerRequest organization={organization} volunteer={volunteer} />
       </div>
+      <JourneyRail volunteer={volunteer} />
     </div>
   )
 }

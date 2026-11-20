@@ -1,1 +1,1 @@
-{ "slug": "faq-tutors", "sortOrder": 11 }
+{ "slug": "faq-tutors", "sortOrder": 11, "audiences": ["volunteer", "tutor", "manager"] }

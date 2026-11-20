@@ -19,7 +19,6 @@ test.describe('course editor', () => {
 
     const dialog = page.getByRole('dialog')
     await dialog.locator('input.font-mono').fill(slug)
-    await dialog.getByRole('spinbutton').fill('30')
     await dialog.getByPlaceholder('Recognize active listening techniques').first().fill('Plan a team meeting')
     await dialog.getByRole('button', { name: 'Create course' }).click()
     await expect(page).toHaveURL(new RegExp(`/courses/${slug}`, 'u'))

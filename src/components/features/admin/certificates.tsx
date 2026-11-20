@@ -19,7 +19,7 @@ import {
   type AdminCertificateStatus,
 } from '@/db/queries/admin-certificate'
 import { timestampMillis } from '@/db/queries/organization'
-import { cn, fullName } from '@/lib/utils'
+import { fullName } from '@/lib/utils'
 
 import { AdminCertificateActions } from './certificate-actions'
 import { adminCertificatesParsers } from './certificates-params'
@@ -45,7 +45,7 @@ export const AdminCertificates = ({
   })
   const [search, setSearch] = useState(params.q)
   const scoped = params.org !== null
-  const filtersActive = Boolean(params.q || params.status)
+  const filtersActive = Boolean(params.q || params.status.length > 0)
 
   const handleSearch = (value: string) => {
     setSearch(value)
@@ -88,8 +88,8 @@ export const AdminCertificates = ({
   return (
     <DataTable
       tabIndex={-1}
-      aria-busy={pending}
-      className={cn('outline-none', pending && 'opacity-60 transition-opacity')}
+      className="outline-none"
+      refreshing={pending}
       columns={[
         {
           cell: certificate =>
@@ -165,14 +165,14 @@ export const AdminCertificates = ({
           {
             id: 'status',
             label: t('filters.status'),
-            onChange: value => setParams({ page: 1, status: value as AdminCertificateStatus | null }),
+            onChange: values => setParams({ page: 1, status: values as AdminCertificateStatus[] }),
             options: ADMIN_CERTIFICATE_STATUSES.map(status => ({
               count: page?.facets.status?.[status] ?? 0,
               label: tCertificates(CERTIFICATE_STATUS[status].labelKey),
               tone: CERTIFICATE_STATUS[status].tone,
               value: status,
             })),
-            value: params.status,
+            values: params.status,
           },
         ],
         onReset: handleClear,

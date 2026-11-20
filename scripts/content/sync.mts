@@ -97,7 +97,7 @@ const deleteAssessments = async (ctx: Context, assessmentIds: number[]) => {
   stats.assessments.deleted += assessmentIds.length
 }
 
-const deleteLessons = async (ctx: Context, lessonIds: number[]) => {
+export const deleteLessons = async (ctx: Context, lessonIds: number[]) => {
   const { client, stats } = ctx
   if (lessonIds.length === 0) return
   const questions = await run(client, 'select id from questions where lesson_id = any($1::int[])', [lessonIds])
@@ -158,7 +158,7 @@ const syncCourse = async (
 ) => {
   const { rows } = await run(
     client,
-    'select id, type, title, description, icon, languages, duration_minutes, outcomes, skill_group_id, sort_order from courses where slug = $1',
+    'select id, type, title, description, icon, languages, outcomes, skill_group_id, sort_order from courses where slug = $1',
     [course.slug]
   )
   const [existing] = rows
@@ -168,7 +168,6 @@ const syncCourse = async (
     json(course.description),
     course.icon,
     drafts ? ((existing?.languages as string[] | undefined) ?? []) : LOCALES,
-    course.durationMinutes,
     json(course.outcomes),
     groupId,
     course.sortOrder,
@@ -177,8 +176,8 @@ const syncCourse = async (
   if (!existing) {
     const created = await run(
       client,
-      `insert into courses (type, title, description, icon, languages, duration_minutes, outcomes, skill_group_id, sort_order, slug)
-       values ($1::course_type, $2::jsonb, $3::jsonb, $4, $5::text[], $6, $7::jsonb, $8, $9, $10) returning id`,
+      `insert into courses (type, title, description, icon, languages, outcomes, skill_group_id, sort_order, slug)
+       values ($1::course_type, $2::jsonb, $3::jsonb, $4, $5::text[], $6::jsonb, $7, $8, $9) returning id`,
       [...values, course.slug]
     )
     stats.courses.created++
@@ -191,7 +190,6 @@ const syncCourse = async (
     same(existing.description, course.description) &&
     existing.icon === course.icon &&
     same(existing.languages, values[4]) &&
-    existing.duration_minutes === course.durationMinutes &&
     same(existing.outcomes, course.outcomes) &&
     existing.skill_group_id === groupId &&
     existing.sort_order === course.sortOrder
@@ -201,7 +199,7 @@ const syncCourse = async (
   }
   await client.query(
     `update courses set type = $1::course_type, title = $2::jsonb, description = $3::jsonb, icon = $4, languages = $5::text[],
-       duration_minutes = $6, outcomes = $7::jsonb, skill_group_id = $8, sort_order = $9, updated_at = now() where id = $10`,
+       outcomes = $6::jsonb, skill_group_id = $7, sort_order = $8, updated_at = now() where id = $9`,
     [...values, existing.id]
   )
   stats.courses.updated++

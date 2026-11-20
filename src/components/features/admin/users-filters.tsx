@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl'
 
 import { type FilterRailProps } from '@/components/ui/filter-rail'
 import { SearchInput } from '@/components/ui/search'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   BAN_FILTERS,
   type BanFilter,
@@ -15,13 +14,11 @@ import {
   type UserStatus,
 } from '@/db/queries/admin-user'
 
-const ALL = 'all'
-
 export interface UsersFilterValues {
-  banned: BanFilter | null
-  org: number | null
-  role: PlatformRole | null
-  status: UserStatus | null
+  banned: BanFilter[]
+  org: number[]
+  role: PlatformRole[]
+  status: UserStatus[]
 }
 
 export const useUsersRail = ({
@@ -44,61 +41,52 @@ export const useUsersRail = ({
   const t = useTranslations('Admin.users')
 
   return {
-    extra: (
-      <div className="flex min-w-0 flex-col gap-2">
-        <span className="type-label text-fg-title">{t('filters.organization')}</span>
-        <Select
-          onValueChange={value => onFilter({ org: value === ALL ? null : Number(value) })}
-          value={values.org === null ? ALL : String(values.org)}
-        >
-          <SelectTrigger aria-label={t('filters.organization')} className="w-full" size="sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL}>{t('filters.allOrganizations')}</SelectItem>
-            {organizations.map(organization => (
-              <SelectItem key={organization.id} value={String(organization.id)}>
-                {organization.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    ),
     groups: [
+      {
+        id: 'organization',
+        label: t('filters.organization'),
+        onChange: next => onFilter({ org: next.map(Number) }),
+        options: organizations.map(organization => ({
+          count: facets.organization?.[organization.id] ?? 0,
+          label: organization.name,
+          value: String(organization.id),
+        })),
+        searchable: { emptyLabel: t('filters.organizationEmpty'), placeholder: t('filters.organizationSearch') },
+        values: values.org.map(String),
+      },
       {
         id: 'role',
         label: t('filters.role'),
-        onChange: value => onFilter({ role: value as PlatformRole | null }),
+        onChange: next => onFilter({ role: next as PlatformRole[] }),
         options: PLATFORM_ROLES.map(role => ({
           count: facets.role?.[role] ?? 0,
           label: t(`role_${role}`),
           value: role,
         })),
-        value: values.role,
+        values: values.role,
       },
       {
         id: 'status',
         label: t('filters.status'),
-        onChange: value => onFilter({ status: value as UserStatus | null }),
+        onChange: next => onFilter({ status: next as UserStatus[] }),
         options: USER_STATUSES.map(status => ({
           count: facets.status?.[status] ?? 0,
           label: t(`status_${status}`),
           tone: status === 'active' ? 'success' : 'warning',
           value: status,
         })),
-        value: values.status,
+        values: values.status,
       },
       {
         id: 'banned',
         label: t('filters.banned'),
-        onChange: value => onFilter({ banned: value as BanFilter | null }),
+        onChange: next => onFilter({ banned: next as BanFilter[] }),
         options: BAN_FILTERS.map(filter => ({
           count: facets.banned?.[filter] ?? 0,
           label: filter === 'yes' ? t('filters.bannedYes') : t('filters.bannedNo'),
           value: filter,
         })),
-        value: values.banned,
+        values: values.banned,
       },
     ],
     onReset: onClear,
@@ -113,6 +101,6 @@ export const useUsersRail = ({
         value={search}
       />
     ),
-    searchActive: search.length > 0 || values.org !== null,
+    searchActive: search.length > 0,
   }
 }

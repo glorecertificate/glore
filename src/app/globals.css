@@ -6,6 +6,30 @@
 
 @plugin "tailwind-scrollbar-hide";
 
+@font-face {
+  font-family: "Certificate Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Certificate Roboto";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/roboto/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Certificate Roboto";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/roboto/Roboto-Black.ttf") format("truetype");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -247,6 +271,7 @@
 
 @theme {
   --spacing-page: --spacing(4);
+  --spacing-connector: 1.5px;
 }
 
 @utility type-display {
@@ -341,6 +366,46 @@
     var(--band-via-2) 75%,
     var(--band-to) 100%
   );
+}
+
+@utility bg-auth-aside {
+  background-image: linear-gradient(
+    165deg,
+    var(--band-from) 0%,
+    var(--band-via) 40%,
+    var(--band-via-2) 72%,
+    var(--band-to) 100%
+  );
+}
+
+@utility auth-globe {
+  top: max(25.3125rem, calc(100% - 30.9375rem));
+  left: -13.6875rem;
+  width: 59.375rem;
+  height: 59.375rem;
+  mask-image: linear-gradient(to bottom, black 0%, black 28%, color-mix(in srgb, black 30%, transparent) 53%);
+}
+
+@utility auth-scale {
+  @media (width >= 64rem) {
+    & h2 {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+    & label {
+      font-size: 0.9375rem;
+      line-height: 1.375rem;
+    }
+    & input[data-size="md"],
+    & [data-slot="select-trigger"],
+    & form button[data-size="md"] {
+      height: 2.75rem;
+      font-size: 1rem;
+    }
+    & textarea {
+      font-size: 1rem;
+    }
+  }
 }
 
 @utility bg-gradient-action {
@@ -537,6 +602,26 @@
   ::view-transition-new(.grid-enter) {
     animation: grid-enter 280ms cubic-bezier(0.23, 1, 0.32, 1) both;
   }
+  ::view-transition-group(.auth-surface),
+  ::view-transition-image-pair(.auth-surface) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  ::view-transition-group(.auth-surface) {
+    overflow: clip;
+  }
+  ::view-transition-old(.auth-surface),
+  ::view-transition-new(.auth-surface) {
+    block-size: 100%;
+    object-fit: none;
+    object-position: top;
+  }
+  ::view-transition-old(.auth-surface) {
+    animation: auth-fade-out 120ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+  ::view-transition-new(.auth-surface) {
+    animation: auth-fade-in 220ms cubic-bezier(0.23, 1, 0.32, 1) 80ms both;
+  }
   ::selection {
     @apply bg-brand/20;
   }
@@ -651,6 +736,18 @@
   }
 }
 
+@keyframes auth-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes auth-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes grid-enter {
   from {
     opacity: 0;
@@ -664,6 +761,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(.grid-enter) {
+    animation: none;
+  }
+  ::view-transition-group(.auth-surface),
+  ::view-transition-old(.auth-surface),
+  ::view-transition-new(.auth-surface) {
     animation: none;
   }
 

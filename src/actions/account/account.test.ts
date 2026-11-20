@@ -227,7 +227,7 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
     expect(left.map(({ id }) => id).toSorted()).toEqual([`s2-${suffix}`, `s3-${suffix}`])
   })
 
-  it('lists at most 20 unexpired sessions, newest first, with the time Better Auth wrote', async () => {
+  it('lists every unexpired session, newest first, with the time Better Auth wrote', async () => {
     authUser.current = { id: ids.admin }
     const { client, schema, sessions } = context
     const written = (date: Date) => date as unknown as string
@@ -255,7 +255,7 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
       },
     ])
     const listed = await sessions.listSessions()
-    expect(listed.data).toHaveLength(20)
+    expect(listed.data).toHaveLength(25)
     expect(listed.data?.[0]?.id).toBe(`bulk-0-${suffix}`)
     expect(listed.data?.map(({ id }) => id)).not.toContain(`old-${suffix}`)
     expect(Math.abs(Date.parse(listed.data![0]!.updatedAt) - Date.now())).toBeLessThan(5000)

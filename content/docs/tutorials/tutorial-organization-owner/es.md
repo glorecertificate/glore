@@ -8,7 +8,7 @@ Cada organización tiene exactamente una persona administradora. Haces todo lo q
 ## Solicita el alta de tu organización
 
 1. Abre la [página de registro](/register) y rellena la solicitud: el representante legal, el número de registro, la persona de contacto, el sitio web, con cuántos voluntarios trabajáis cada año y vuestra motivación.
-2. Acepta la Carta de calidad.
+2. Acepta las condiciones de uso.
 3. El equipo de GloRe revisa la solicitud. Cuando se aprueba, recibes una invitación por correo.
 4. Acepta la invitación, completa tu perfil y llegas al dashboard como persona administradora de la organización.
 

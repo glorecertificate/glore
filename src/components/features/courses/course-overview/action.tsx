@@ -1,14 +1,10 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-
 import { useTranslations } from 'next-intl'
 
-import { startCourse } from '@/actions/courses/progress'
+import { StartCourseDialog } from '@/components/features/courses/course-overview/start-dialog'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { toast } from '@/components/ui/toast'
 import { type CourseAccess, type CourseOverview } from '@/db/queries/learning'
 import { cn } from '@/lib/utils'
 
@@ -19,24 +15,11 @@ export const CourseOverviewActions = ({
   ...props
 }: React.ComponentProps<'div'> & { access: CourseAccess; overview: CourseOverview }) => {
   const t = useTranslations('Learning.overview')
-  const { push } = useRouter()
-  const [starting, setStarting] = useState(false)
 
-  const { enrollment, id, language, lessons, progress, resumeLessonId, slug } = overview
+  const { enrollment, id, language, lessons, progress, resumeLessonId, slug, title } = overview
   const completed = !!enrollment?.completedAt || (progress.total > 0 && progress.completed === progress.total)
   const learnHref = (lessonId: number | null) =>
     `/courses/${slug}/learn?lang=${language}&lesson=${lessonId ?? ''}` as const
-
-  const onStart = async () => {
-    setStarting(true)
-    const result = await startCourse(id, language)
-    if ('error' in result) {
-      toast.error(t('startError'))
-      setStarting(false)
-      return
-    }
-    push(learnHref(lessons[0]?.id ?? null))
-  }
 
   if (lessons.length === 0) return null
 
@@ -53,9 +36,15 @@ export const CourseOverviewActions = ({
   if (!enrollment) {
     return (
       <div className={cn('contents', className)} {...props}>
-        <Button loading={starting} onClick={onStart} variant="band">
-          {t('start')}
-        </Button>
+        <StartCourseDialog
+          courseId={id}
+          language={language}
+          lessonCount={lessons.length}
+          lessonId={lessons[0]?.id ?? null}
+          title={title}
+        >
+          <Button variant="band">{t('start')}</Button>
+        </StartCourseDialog>
       </div>
     )
   }

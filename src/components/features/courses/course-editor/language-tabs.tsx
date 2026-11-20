@@ -28,10 +28,10 @@ export const CourseLanguageTabs = ({ className, ...props }: React.ComponentProps
                 <span className="flex items-center gap-2">
                   <span
                     aria-hidden
-                    className={cn('size-1.5 shrink-0 rounded-full', published ? 'bg-success' : 'bg-border-strong')}
+                    className={cn('size-2 shrink-0 rounded-full', published ? 'bg-success' : 'bg-border-strong')}
                   />
                   {label}
-                  {hasUpdates && <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-warning" />}
+                  {hasUpdates && <span aria-hidden className="size-2 shrink-0 rounded-full bg-warning" />}
                   <span
                     aria-hidden
                     className="hidden text-xs max-sm:group-data-[state=inactive]/tab:hidden pointer-coarse:inline"

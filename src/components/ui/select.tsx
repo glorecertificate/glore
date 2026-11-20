@@ -22,7 +22,7 @@ export type SelectTriggerProps = SelectPrimitive.SelectTriggerProps
 
 export const selectTriggerVariants = cva(
   [
-    'touch-hit flex items-center justify-between gap-1 rounded-md border border-border-strong bg-field text-sm transition-[color,background-color,border-color] outline-none not-disabled:cursor-pointer',
+    'touch-hit flex items-center justify-between gap-1 rounded-md border border-border bg-field text-sm transition-[color,background-color,border-color] outline-none not-disabled:cursor-pointer',
     'hover:not-disabled:bg-accent/50 focus-visible:not-disabled:focus-ring-inset',
     "disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive data-placeholder:text-muted-foreground *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&>span]:line-clamp-1",
   ],

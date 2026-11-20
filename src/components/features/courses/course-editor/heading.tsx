@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { FieldTranslateButton } from '@/components/features/courses/course-editor/field-translate-button'
+import { TitleField } from '@/components/features/courses/course-editor/title-field'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
@@ -42,15 +44,15 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
   const title = localizeRecord(course.title, language)
   const fallbackTitle = localizeRecord(course.title, DEFAULT_LOCALE)
   const description = course.description ? localizeRecord(course.description, language) : ''
-  const [editingTitle, setEditingTitle] = useState<string | null>(null)
+  const [titleLength, setTitleLength] = useState<number | null>(null)
+  const [titleBusy, setTitleBusy] = useState(false)
+  const [descriptionBusy, setDescriptionBusy] = useState(false)
   const [draftDescription, setDraftDescription] = useState(description)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
   const descriptionWrapperRef = useRef<HTMLSpanElement>(null)
   const [descriptionExpanded, setDescriptionExpanded] = useState(false)
   const [descriptionOverflowing, setDescriptionOverflowing] = useState(false)
   const canEdit = user.canEdit && !course.archivedAt
-
-  const draftTitle = editingTitle ?? title
 
   useEffect(() => {
     if (document.activeElement !== descriptionRef.current) {
@@ -71,14 +73,12 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
   const languageRef = useRef(language)
   languageRef.current = language
 
-  const [commitTitle] = useState(() =>
-    debounce((value: string) => {
-      setCourse(prev => ({
-        ...prev,
-        title: { ...prev.title, [languageRef.current]: value } as IntlRecord,
-      }))
-    }, DEBOUNCE_DELAY)
-  )
+  const commitTitle = (value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      title: { ...prev.title, [languageRef.current]: value } as IntlRecord,
+    }))
+  }
 
   const [commitDescription] = useState(() =>
     debounce((value: string) => {
@@ -91,30 +91,10 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
 
   useEffect(
     () => () => {
-      commitTitle.cancel()
       commitDescription.cancel()
     },
-    [commitDescription, commitTitle]
+    [commitDescription]
   )
-
-  const onTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEditingTitle(e.target.value)
-    commitTitle(e.target.value)
-  }
-
-  const onTitleFocus = () => setEditingTitle(title)
-
-  const onTitleBlur = () => {
-    commitTitle.cancel()
-    const value = editingTitle ?? title
-    setEditingTitle(null)
-    const trimmed = value.trim()
-    if (trimmed === '' || trimmed === title) return
-    setCourse(prev => ({
-      ...prev,
-      title: { ...prev.title, [language]: value } as IntlRecord,
-    }))
-  }
 
   const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDraftDescription(e.target.value)
@@ -159,39 +139,50 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
     ))
 
   const titleNode = (
-    <span className="flex min-w-0 items-start gap-3">
+    <span className="group/field inline-flex max-w-full min-w-0 items-start gap-3">
       {canEdit ? (
-        <InlineInput
+        <TitleField
           aria-label={t('renameCourse')}
-          className="-mx-1.5 -my-0.5 px-1.5 py-0.5 type-band! hover:bg-band-scrim focus-visible:bg-band-scrim"
+          className="-mx-1.5 -my-0.5 px-1.5 py-0.5 type-band! group-has-[[aria-expanded=true]]/field:bg-band-scrim hover:bg-band-scrim focus-visible:bg-band-scrim"
+          aria-busy={titleBusy}
           maxLength={MAX_TITLE_LENGTH}
-          onBlur={onTitleBlur}
+          onCommit={commitTitle}
+          onLengthChange={length => setTitleLength(length === null || length >= TITLE_COUNTER_FROM ? length : 0)}
           placeholder={fallbackTitle}
-          onChange={onTitleChange}
-          onFocus={onTitleFocus}
-          value={draftTitle}
+          readOnly={titleBusy}
+          value={title}
         />
       ) : (
         title
+      )}
+      {canEdit && (
+        <FieldTranslateButton
+          className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim aria-expanded:bg-band-scrim"
+          fieldKey={`courses:${course.id}:title`}
+          onRunningChange={setTitleBusy}
+        />
       )}
       {course.archivedAt && <StatusBadge tone="neutral">{tList('archived')}</StatusBadge>}
     </span>
   )
 
-  const counter = canEdit && draftTitle.length >= TITLE_COUNTER_FROM && (
+  const counterLength = titleLength ?? title.length
+  const counter = canEdit && counterLength >= TITLE_COUNTER_FROM && (
     <output aria-live="polite" className="type-caption text-band-muted">
-      {t('titleLength', { count: draftTitle.length, max: MAX_TITLE_LENGTH })}
+      {t('titleLength', { count: counterLength, max: MAX_TITLE_LENGTH })}
     </output>
   )
 
   const descriptionField = canEdit ? (
     <InlineInput
       aria-label={t('updateDescription')}
-      className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
+      className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text group-has-[[aria-expanded=true]]/field:bg-band-scrim placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
+      aria-busy={descriptionBusy}
       keepFilled={false}
       onBlur={onDescriptionBlur}
       onChange={onDescriptionChange}
       placeholder={t('courseDescriptionPlaceholder', { lang: languageLabel })}
+      readOnly={descriptionBusy}
       ref={descriptionRef}
       value={draftDescription}
     />
@@ -205,12 +196,20 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
         className={cn(
           'block',
           !descriptionExpanded && 'max-md:max-h-13 max-md:overflow-hidden',
-          !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2'
+          !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2',
+          canEdit && 'group/field flex items-center gap-3'
         )}
         onFocusCapture={() => setDescriptionExpanded(true)}
         ref={descriptionWrapperRef}
       >
         {descriptionField}
+        {canEdit && (
+          <FieldTranslateButton
+            className="shrink-0 text-band-foreground hover:not-disabled:bg-band-scrim aria-expanded:bg-band-scrim"
+            fieldKey={`courses:${course.id}:description`}
+            onRunningChange={setDescriptionBusy}
+          />
+        )}
       </span>
       {(descriptionOverflowing || descriptionExpanded) && (
         <button

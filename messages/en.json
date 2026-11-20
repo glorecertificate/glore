@@ -10,6 +10,7 @@
     "backToHome": "Back to homepage",
     "backToPrevious": "Go back",
     "cancel": "Cancel",
+    "clear": "Clear",
     "clearSearch": "Clear search",
     "clearFilters": "Clear filters",
     "clearSort": "Clear sort",
@@ -460,7 +461,6 @@
         "codeBlock": "Code block",
         "column": "Column",
         "comment": "Comment",
-        "emoji": "Emoji",
         "file": "File",
         "heading1": "Heading 1",
         "heading2": "Heading 2",
@@ -597,12 +597,6 @@
       },
       "common": {
         "url": "URL"
-      },
-      "emoji": {
-        "clear": "Clear",
-        "searchNoResultsSubtitle": "Try searching for a different emoji",
-        "searchNoResultsTitle": "No results found",
-        "searchResult": "Search results"
       },
       "media": {
         "actionCancel": "Cancel",
@@ -742,8 +736,7 @@
     "content": "Content"
   },
   "Auth": {
-    "backToLogin": "Go to login",
-    "close": "Close",
+    "backToLogin": "Back to login",
     "emailSentMessage": "We sent a password reset link to <email></email>. If it does not arrive, check your spam folder or request a new one.",
     "emailSentMetaTitle": "Check your email",
     "emailSentTitle": "Check your email",
@@ -781,23 +774,28 @@
     "passwordUpdatedTitle": "Your password has been updated",
     "resendEmail": "Send another email",
     "resendTimer": "Send another email in {seconds}s",
-    "signupDialogMessage": "<p>You can sign up only with an invitation from your organization.</p><p>If your organization is already on GloRe, ask someone there to invite you.</p><p>If it is not, send a registration request below.</p><p>For more information, <link>visit our website</link>.</p>",
-    "signupDialogRegister": "Register your organization",
-    "signupDialogTitle": "How to sign up",
-    "signupMessage": "Do not have an account? See <link>how to sign up</link>",
-    "skipAndLogin": "Skip and go to login",
     "userLabel": "Email or username",
     "userRequired": "Enter a valid email or username",
     "userTooShort": "Username is too short",
     "userInvalid": "Invalid email or username",
+    "userNotFound": "No account matches this email or username",
     "sessionExpired": "Your session has expired. Log in again.",
     "emailResent": "We sent you another email.",
     "sendLink": "Send link",
     "sendingLink": "Sending…",
     "savePassword": "Save password",
     "savingPassword": "Saving…",
-    "panelTitle": "Join the GloRe Network",
-    "panelMessage": "Give value to your volunteering experiences."
+    "applyTitle": "Apply as an organization",
+    "close": "Close",
+    "noAccountTitle": "Don't have an account?",
+    "newPasswordLabel": "New password",
+    "passwordLabel": "Password",
+    "signupDialogMessage": "<p>You can sign up only with an invitation from your organization.</p><p>If your organization is already on GloRe, ask someone there to invite you.</p><p>If it is not, send a registration request below.</p><p>For more information, <link>visit our website</link>.</p>",
+    "signupDialogRegister": "Register your organization",
+    "signupDialogTitle": "How to sign up for GloRe",
+    "verifyTitle": "Verify a certificate",
+    "asideMessage": "Join your organization, take the courses, and earn a certificate that anyone can verify.",
+    "asideTitle": "Certify the soft skills you gain through volunteering"
   },
   "CourseCommon": {
     "courseCreationFailed": "Could not create the course. Try again.",
@@ -922,7 +920,24 @@
     "savedJustNow": "Saved just now",
     "unpublish": "Unpublish",
     "noChangesToPublish": "No changes to publish",
-    "editingLanguage": "Editing {language}"
+    "markOptionCorrect": "Mark option {number} as correct",
+    "optionNumber": "Option {number}",
+    "removeOption": "Delete option {number}",
+    "removeQuestion": "Delete question {number}",
+    "removeEvaluation": "Delete self-assessment {number}",
+    "removeAssessment": "Delete final assessment",
+    "quizMinOptionsHint": "Add at least {count} options",
+    "activityDescription": "Description",
+    "activityLevels": "Levels",
+    "saveFailedShort": "Not saved",
+    "lessonTitleMissing": "Not translated yet. Type a title in {language}.",
+    "removeLessonTitle": "Remove this lesson?",
+    "removeLessonMessage": "\"{title}\" and its quiz and activities are removed from the course when you save.",
+    "removeLessonConfirm": "Remove lesson",
+    "addActivityQuestionHint": "Multiple choice with one correct answer",
+    "addActivityEvaluationHint": "A statement learners rate themselves on",
+    "addActivityAssessmentHint": "A closing check of the skill",
+    "addActivityAssessmentDone": "Already added to this lesson"
   },
   "CourseList": {
     "active": "Active",
@@ -1095,7 +1110,6 @@
     "journey": {
       "title": "Your certificate",
       "position": "Step {current} of {total}",
-      "stepLabel": "{index}. {name}",
       "stages": {
         "learn": "Learn",
         "request": "Request",
@@ -1118,7 +1132,6 @@
         "revoked": "Revoked"
       },
       "stepsLabel": "Request steps",
-      "stepsToggle": "Request steps",
       "stepState": {
         "done": "Done",
         "flagged": "Needs changes"
@@ -1165,7 +1178,9 @@
       },
       "seals": {
         "label": "Completed skill courses",
-        "title": "Skill courses: {count} of {min}",
+        "heading": "Skill courses",
+        "count": "{count} of {min} completed",
+        "total": "{count} completed",
         "missing": "Not yet"
       },
       "note": {
@@ -1182,7 +1197,8 @@
       "path": {
         "title": "Also on your path",
         "compass": "Set your skill compass",
-        "percent": "{percent}%"
+        "percent": "{percent}%",
+        "continue": "Continue"
       },
       "preview": {
         "title": "Certificate preview",
@@ -1190,7 +1206,6 @@
       },
       "actions": {
         "continueCourse": "Continue {course}",
-        "startCourse": "Start {course}",
         "browseCourses": "Go to courses",
         "start": "Start request",
         "continueDraft": "Continue draft",
@@ -1207,27 +1222,6 @@
       },
       "reason": {
         "label": "Reason"
-      }
-    },
-    "volunteer": {
-      "eyebrow": "Your certificate · step {current} of {total}",
-      "coursesTitle": "Skill courses",
-      "coursesProgress": "{count} of {min} required completed",
-      "completed": "Completed",
-      "notStarted": "Not started",
-      "viewCourses": "View all courses",
-      "requestTitle": "Certificate request",
-      "organization": "Organization",
-      "skills": "Skills",
-      "noSkills": "None yet",
-      "experience": "Experience",
-      "hours": "{hours, plural, one {# hour} other {# hours}}",
-      "notEntered": "Not entered yet",
-      "lastSaved": "Last saved",
-      "upcoming": {
-        "request": "After {min} skill courses",
-        "review": "After you send it",
-        "certificate": "Issued after approval"
       }
     },
     "stats": {
@@ -1336,12 +1330,24 @@
       "completions": "Completions",
       "topEmpty": "No one has enrolled yet.",
       "translationsTitle": "Translation gaps",
-      "translationsDescription": "Courses fully available in each language",
-      "translationsCount": "{complete} of {total} courses",
-      "translationsReviewed": "Parts of all content: {translated} translated, {reviewed} reviewed, {total} in total",
       "healthTitle": "Content health",
-      "healthDescription": "Courses that need attention first",
       "healthClear": "Every course is complete and translated.",
+      "healthCompleteOf": "of {total, plural, one {# course} other {# courses}} complete",
+      "healthCompleteLabel": "{complete} of {total, plural, one {# course} other {# courses}} complete",
+      "healthNeedWork": "{count, plural, one {# needs work} other {# need work}}",
+      "healthCourse": "Course",
+      "healthAssessment": "Assessment",
+      "healthGroup": "Skill group",
+      "healthMissing": "{item}: missing",
+      "healthDone": "{item}: done",
+      "healthNotNeeded": "{item}: not needed for this course",
+      "healthColumnTotal": "{item}: {count, plural, other {# missing}}",
+      "healthAll": "{count, plural, one {All # course} other {All # courses}}",
+      "healthStatus": {
+        "draft": "Draft",
+        "partial": "Partial",
+        "published": "Published"
+      },
       "issue": {
         "empty": "No lessons",
         "noAssessment": "No final assessment",
@@ -1358,12 +1364,34 @@
         "draftDescription": "Not visible to learners",
         "archived": "Archived",
         "archivedDescription": "Hidden from the catalog"
-      }
+      },
+      "translationsSubtitle": "What is left to translate, by kind of content",
+      "translationsTranslated": "Parts translated",
+      "translationsMissing": "Parts missing",
+      "translationsInTotal": "{count} in total",
+      "translationsKind": {
+        "course": "Courses",
+        "lesson": "Lessons",
+        "doc_article": "Articles",
+        "doc_category": "Categories",
+        "skill_group": "Skill groups"
+      },
+      "translationsMissingCell": "{kind}, {language}: {count, plural, other {# missing}}",
+      "translationsCompleteCell": "{kind}, {language}: nothing missing",
+      "healthViewAll": "View all {count} courses",
+      "translationsMissingTotal": "{language}: {count, plural, one {# part missing} other {# parts missing}}",
+      "translationsProgressLabel": "{language}, parts translated"
     },
     "none": {
       "title": "Welcome, {name}",
-      "description": "You are not part of an organization yet. Ask your organization for an invitation to start learning and requesting certificates.",
-      "help": "Read the help guide"
+      "description": "Organizations invite their volunteers and staff to GloRe by email. Open your invitation to join, and your courses and certificate requests appear here.",
+      "help": "Read the help guide",
+      "dashboardTitle": "Join an organization to get started",
+      "coursesTitle": "Courses open when you join an organization",
+      "noInvitations": "No invitations yet. When your organization invites you, the invitation shows here and in your email.",
+      "invitedAs": "Invited as {role} until {date}",
+      "openInvitation": "Open invitation",
+      "registerHint": "Do you lead an organization that is new to GloRe?"
     }
   },
   "Docs": {
@@ -1372,8 +1400,15 @@
     "empty": "No documentation yet. Check back later.",
     "draft": "Draft",
     "lastUpdated": "Last updated: {date}",
+    "audience": {
+      "label": "Audience",
+      "hint": "Leave all unchecked to show the article to everyone."
+    },
     "editor": {
       "newArticle": "New article",
+      "settings": "Article settings",
+      "preview": "Preview as reader",
+      "publishIncomplete": "Add a title and content in this language before you publish it.",
       "editArticle": "Edit article",
       "title": "Title",
       "titlePlaceholder": "Enter article title",
@@ -1383,14 +1418,8 @@
       "category": "Category",
       "excerpt": "Excerpt",
       "excerptPlaceholder": "Brief description of the article",
-      "content": "Content",
-      "contentPlaceholder": "Write your article content here…",
-      "markdownSupported": "Markdown formatting is supported.",
-      "published": "Published",
+      "translateEmpty": "No other language has text for this article yet.",
       "cancel": "Cancel",
-      "save": "Save changes",
-      "create": "Create article",
-      "saving": "Saving…",
       "updated": "Article updated",
       "created": "Article created",
       "error": "Could not save the article. Try again.",
@@ -1471,11 +1500,11 @@
       },
       "values": {
         "title": "Our values",
-        "description": "Certification is free for volunteers and member organizations. The network is open to organizations that follow the Quality Charter. A tutor reviews every certificate."
+        "description": "Certification is free for volunteers and member organizations. A tutor reviews every certificate."
       },
       "network": {
         "title": "Our network",
-        "description": "An open network of volunteering organizations across Europe, Latin America, and beyond, working to consistent quality standards under a shared charter."
+        "description": "An open network of volunteering organizations across Europe, Latin America, and beyond, working to consistent quality standards."
       }
     },
     "skills": {
@@ -1849,7 +1878,6 @@
     "verifiedCredential": "Verified credential",
     "credentialStatement": "has developed and demonstrated the following soft skills while volunteering with {organization}.",
     "sealTitle": "GloRe Certificate",
-    "sealSubtitle": "Issued under the Quality Charter",
     "period": "Period",
     "location": "Location",
     "hours": "Hours"
@@ -1874,6 +1902,7 @@
     "journey": "Certificate progress",
     "featuredTitle": "Featured certificate",
     "featuredBadge": "Featured",
+    "featuredHint": "This is the certificate that your public profile shows.",
     "cancel": "Cancel",
     "stages": {
       "draft": "Draft",
@@ -1922,8 +1951,8 @@
       "approved": "Approved by {actor}",
       "revoked": "Revoked by {actor}"
     },
-    "makeFeatured": "Make featured",
-    "featured": "This is now your featured certificate.",
+    "makeFeatured": "Feature on public profile",
+    "featured": "This is now your featured certificate, the one your public profile shows.",
     "featureError": "Could not feature this certificate. Try again.",
     "withdraw": "Withdraw",
     "withdrawTitle": "Withdraw this request?",
@@ -2050,7 +2079,7 @@
     "age_due": "Due or overdue",
     "age_overdue": "Overdue only",
     "ageToday": "Today",
-    "ageDays": "{days, plural, one {# day} other {# days}}",
+    "ageDays": "{days, plural, =1 {Yesterday} other {# days ago}}",
     "volunteer": "Volunteer",
     "unknownVolunteer": "Unknown volunteer",
     "ageColumn": "Waiting",
@@ -2100,7 +2129,6 @@
     "ruleUnmet": "Does not meet the activity requirement.",
     "tasks": "Tasks",
     "skills": "Skills",
-    "selfLevel": "Volunteer's choice",
     "completedOn": "Course completed on {date}",
     "notCompleted": "Course not completed",
     "sectionExperience": "Experience",
@@ -2122,8 +2150,7 @@
     "scoreGrowth": "Growth",
     "scoreGrowthHint": "Progress shown between the start and the end.",
     "skillsTitle": "Skills to certify",
-    "skillsDescription": "Select the skills to include. For each one, confirm the description that fits best or pick another. Your choice sets the level.",
-    "confirmedLevel": "Level and description",
+    "skillsDescription": "Pick the description that fits best in each row. Your choice sets the level.",
     "comment": "General comment",
     "commentPlaceholder": "Required when you request changes. Optional when you approve.",
     "startReview": "Start review",
@@ -2157,11 +2184,20 @@
     "volunteerChoice": "Chosen by the volunteer",
     "previewLabel": "Preview of the certificate for {organization}",
     "openPdf": "Open PDF",
-    "panelTitle": "Your review",
     "notesTitle": "Add notes for the volunteer",
     "edit": "Edit",
     "doneEditing": "Done",
-    "submittedAgo": "Submitted {when}"
+    "submittedAgo": "Submitted {when}",
+    "evidenceReflection": "Evidence and reflection",
+    "evidence": "Evidence",
+    "reflection": "Reflection",
+    "noEvidence": "No evidence or reflection added.",
+    "skillExcluded": "Not on the certificate",
+    "decisionProgress": "{levels} of {skills} skills set, {scores} of {total} scores given",
+    "decisionNote": "Approve shows a preview first and issues nothing until you confirm.",
+    "commentTitle": "Comment",
+    "confirmedLevel": "Level and description",
+    "approveIncomplete": "Set a level for each skill and give every score before you approve."
   },
   "CertificateShare": {
     "title": "Share your certificate",
@@ -2467,8 +2503,8 @@
     "noMembersFiltered": "No members match",
     "noMembersFilteredDescription": "Try another search or clear the filters.",
     "searchMembers": "Search members",
-    "filterRole": "Filter by role",
-    "filterStatus": "Filter by status",
+    "filterRole": "Role",
+    "filterStatus": "Status",
     "allRoles": "All roles",
     "allStatuses": "All statuses",
     "viewDetails": "Details",
@@ -2543,7 +2579,7 @@
     "activity_certificate_withdrawn": "{target} withdrew a certificate request",
     "activity_certificate_review_reminder": "Reminder sent to {tutor} about {target}'s request",
     "activity_certificate_review_escalated": "The review of {target}'s request is overdue",
-    "activity_invitation_sent": "{actor} invited {target} as {role}",
+    "activity_invitation_sent": "{actor} sent an invitation as {role}",
     "activity_invitation_sent_unnamed": "{actor} sent an invitation as {role}",
     "activity_invitation_accepted": "{target} accepted an invitation",
     "activity_invitation_accepted_unnamed": "An invitation was accepted",
@@ -2765,6 +2801,7 @@
     "privacyError": "Could not save your privacy settings. Try again.",
     "privacySaved": "Privacy settings saved",
     "featuredCertificate": "Featured certificate",
+    "featuredCertificateDescription": "Choose the certificate that your public profile shows. People see it only when your public profile is on.",
     "featuredCertificateEmpty": "You do not have an approved certificate yet.",
     "featuredCertificateIssued": "Issued on {date}",
     "notificationsEmail": "Email notifications",
@@ -2802,17 +2839,17 @@
     "step_organization": "Organization",
     "step_representative": "Representative",
     "step_motivation": "Motivation",
-    "step_charter": "Review and charter",
+    "step_review": "Review",
     "title_organization": "Tell us about your organization",
     "description_organization": "These details identify your organization on certificates.",
     "title_representative": "Who represents the organization?",
     "description_representative": "The legal representative signs certificates and becomes the first owner.",
     "title_motivation": "Why do you want to join?",
     "description_motivation": "Help us understand the volunteering you offer and what you expect from GloRe.",
-    "title_charter": "Review and accept the charter",
-    "description_charter": "Check your answers, then accept the Quality Charter to send your application.",
+    "title_review": "Review your application",
+    "description_review": "Check your answers, then accept the terms of use to send your application.",
     "name": "Organization name",
-    "namePlaceholder": "The name people know you by",
+    "namePlaceholder": "The name people know your organization by",
     "legalName": "Legal name",
     "legalNamePlaceholder": "Official registered name",
     "registryId": "Registry ID",
@@ -2848,9 +2885,6 @@
     "motivationHelp": "At least {min} characters.",
     "reviewEmpty": "Not provided",
     "edit": "Edit",
-    "charterAccept": "I accept the Quality Charter",
-    "charterHelp": "The charter sets the standards for the activities and certificates issued through GloRe.",
-    "charterLink": "Read the Quality Charter",
     "back": "Back",
     "next": "Continue",
     "submit": "Send application",
@@ -2868,11 +2902,8 @@
     "error_email": "Enter a valid email address.",
     "error_url": "Enter a valid web address starting with http or https.",
     "error_number": "Enter a whole number greater than zero.",
-    "error_charter": "You need to accept the Quality Charter to apply.",
     "termsAccept": "I accept the <terms>Terms of use</terms> on behalf of the organization.",
-    "error_terms": "You need to accept the terms of use to apply.",
-    "panelTitle": "Register your organization",
-    "panelMessage": "Tell us about your organization. We review each request before we open an account."
+    "error_terms": "You need to accept the terms of use to apply."
   },
   "Admin": {
     "team": {
@@ -3014,9 +3045,6 @@
       "app_contactEmail": "Contact email",
       "app_review": "Application",
       "app_motivation": "Motivation",
-      "app_charter": "Quality Charter",
-      "app_charterAccepted": "Accepted on {date}",
-      "app_charterMissing": "Not accepted",
       "app_submitted": "Submitted",
       "app_decision": "Decision",
       "app_decisionAccepted": "Approved on {date}",
@@ -3031,6 +3059,12 @@
         "created": "Registered"
       },
       "tableLabel": "Organizations",
+      "rejectedTitle": "Application rejected",
+      "rejectedNote": "This organization has no access to the platform. Inviting members and creating invite links is turned off.",
+      "rejectedBy": "Rejected on {date} by {name}",
+      "rejectedOn": "Rejected on {date}",
+      "rejectedReason": "Reason: {reason}",
+      "rejectedMembersEmpty": "This organization was rejected, so it has no members.",
       "openOrg": "Open organization",
       "commentLabelOptional": "Comment (optional)",
       "statusActive": "Active",
@@ -3061,13 +3095,14 @@
       "searchPlaceholder": "Search by name, email, or username",
       "filters": {
         "allBans": "Any suspension state",
-        "allOrganizations": "All organizations",
         "allRoles": "All roles",
         "allStatuses": "All statuses",
         "banned": "Suspension",
         "bannedNo": "Not suspended",
         "bannedYes": "Suspended",
         "organization": "Organization",
+        "organizationEmpty": "No organizations match",
+        "organizationSearch": "Search organizations",
         "role": "Role",
         "status": "Status"
       },
@@ -3376,6 +3411,9 @@
     "preferredLanguageLabel": "Preferred language",
     "preferredLanguageDescription": "The language of GloRe and of our emails.",
     "passwordLabel": "Password",
+    "signupDialogMessage": "<p>You can sign up only with an invitation from your organization.</p><p>If your organization is already on GloRe, ask someone there to invite you.</p><p>If it is not, send a registration request below.</p><p>For more information, <link>visit our website</link>.</p>",
+    "signupDialogRegister": "Register your organization",
+    "signupDialogTitle": "How to sign up for GloRe",
     "passwordPlaceholder": "Create a password",
     "confirmPasswordLabel": "Confirm password",
     "confirmPasswordPlaceholder": "Confirm your password",
@@ -3406,9 +3444,7 @@
     "next_organization": "Set up your organization",
     "goToDashboard": "Go to the dashboard",
     "termsAccept": "I accept the <terms>Terms of use</terms> and have read the <privacy>Privacy policy</privacy>.",
-    "termsRequired": "You need to accept the terms of use to continue.",
-    "panelTitle": "Welcome to GloRe",
-    "panelMessage": "Confirm a few details to finish setting up your account."
+    "termsRequired": "You need to accept the terms of use to continue."
   },
   "Email": {
     "auth/invite": {
@@ -3727,9 +3763,7 @@
     "sendProofAgain": "Send the link again",
     "proofSent": "We sent a confirmation link to {email}. Open it from your inbox to continue.",
     "status_member_title": "You are already a member",
-    "status_member_description": "You already belong to {organization}. Open your dashboard to continue.",
-    "panelTitle": "You were invited",
-    "panelMessage": "Join your organization on GloRe and start collecting certificates."
+    "status_member_description": "You already belong to {organization}. Open your dashboard to continue."
   },
   "JoinLink": {
     "metaTitle": "Join an organization",
@@ -3757,9 +3791,7 @@
     "requestedTitle": "Request sent",
     "requestedDescription": "The team at {organization} will review it. We will email you their decision.",
     "goToDashboard": "Go to dashboard",
-    "goToLogin": "Go to login",
-    "panelTitle": "You were invited",
-    "panelMessage": "Join your organization on GloRe and start collecting certificates."
+    "goToLogin": "Go to login"
   },
   "Invitations": {
     "tab": "Invitations",
@@ -3879,6 +3911,7 @@
     "error_PROOF_REQUIRED": "Open the link from the invitation email, or ask us to send you a new confirmation link.",
     "filterExpired": "Expired",
     "filterAccepted": "Accepted",
+    "error_ORGANIZATION_REJECTED": "This organization is not accepting members, because its application was rejected.",
     "rowActions": "Actions for {email}",
     "searchPlaceholder": "Search invitations",
     "bulkUpload": "Upload CSV file",
@@ -3894,9 +3927,15 @@
       "review": "Review course",
       "preview": "Preview course",
       "startError": "Could not start the course. Try again.",
-      "minutes": "{minutes} min",
-      "hours": "{hours} h",
-      "hoursMinutes": "{hours} h {minutes} min",
+      "startDialog": {
+        "title": "Start this course?",
+        "description": "{title} has {count, plural, one {# lesson} other {# lessons}}. Your progress is saved after each lesson, so you can stop and come back at any time."
+      },
+      "startPrompt": {
+        "title": "You have not started this course yet",
+        "description": "Start the course to open its lessons.",
+        "back": "Back to the course"
+      },
       "lessonsCount": "{count, plural, one {# lesson} other {# lessons}}",
       "rating": "{rating} out of 5 ({count, plural, one {# rating} other {# ratings}})",
       "languageLabel": "Course language",
@@ -3924,7 +3963,6 @@
         "finalAssessment": "Final assessment"
       },
       "viewCompletion": "View summary",
-      "factDuration": "Duration",
       "factLessons": "Lessons"
     },
     "player": {
@@ -3998,10 +4036,6 @@
       "previewAsLearner": "Preview as learner",
       "previewHint": "Opens the saved version of the course as members see it. Nothing you do there is stored.",
       "coverage": "{language}: {done} of {total} items translated",
-      "durationLabel": "Duration",
-      "durationDescription": "Estimated time to complete the course, in minutes.",
-      "durationPlaceholder": "For example 45",
-      "durationInvalid": "Enter a whole number of minutes between 1 and {max}.",
       "outcomesLabel": "What learners will gain",
       "outcomesDescription": "One outcome per line, up to {max}. They appear on the course overview.",
       "outcomesPlaceholder": "Recognize active listening techniques",
@@ -4015,8 +4049,8 @@
       "description": "The skill groups and the skill course for each skill.",
       "addGroup": "Add group",
       "editGroup": "Edit group",
-      "nameLabel": "Name in {language}",
-      "descriptionLabel": "Description in {language}",
+      "nameLabel": "Name",
+      "descriptionLabel": "Description",
       "iconLabel": "Icon",
       "iconChoose": "Choose an icon",
       "slugLabel": "Identifier",
@@ -4047,7 +4081,11 @@
       "moveToGroup": "Move to group",
       "skillSummary": "{count, plural, one {# skill} other {# skills}}, {published} published, {drafts, plural, one {# draft} other {# drafts}}",
       "toggleGroup": "Show or hide the skills of {group}",
-      "ungroupedEmpty": "Every skill course has a group."
+      "ungroupedEmpty": "Every skill course has a group.",
+      "statusComplete": "Complete",
+      "statusIncomplete": "Incomplete",
+      "statusUnsaved": "Unsaved changes",
+      "translateEmpty": "No other language has text for this field yet."
     },
     "catalog": {
       "rating": "{rating} ({count})",
@@ -4246,7 +4284,6 @@
   "Legal": {
     "privacy": "Privacy policy",
     "terms": "Terms of use",
-    "qualityCharter": "Quality Charter",
     "navigation": "Legal documents",
     "home": "Go to GloRe",
     "updated": "Last updated {date}",
@@ -4255,11 +4292,10 @@
   },
   "LegalAdmin": {
     "title": "Legal documents",
-    "description": "Edit, translate, and publish the privacy policy, terms of use, and Quality Charter.",
+    "description": "Edit, translate, and publish the privacy policy and terms of use.",
     "documents": {
       "privacy": "Privacy policy",
-      "terms": "Terms of use",
-      "qualityCharter": "Quality Charter"
+      "terms": "Terms of use"
     },
     "version": "Version {version}",
     "versionStatus": "Version {version}, {status}",
@@ -4273,7 +4309,7 @@
     "status_published": "Published",
     "status_superseded": "Replaced",
     "titleLabel": "Title",
-    "bodyLabel": "Text (Markdown)",
+    "bodyLabel": "Text",
     "outdated": "The English text changed after this translation was saved. Check that it still matches.",
     "save": "Save {language}",
     "saved": "Saved",
@@ -4324,7 +4360,8 @@
     "columnChanged": "Changed",
     "columnActions": "Actions",
     "editDraft": "Edit draft",
-    "notSet": "Not set"
+    "notSet": "Not set",
+    "translateEmpty": "No other language has content for this document"
   },
   "LegalAccept": {
     "title": "We updated our terms of use",
@@ -4474,6 +4511,19 @@
       "ORPHANED": "This message no longer exists in the app.",
       "RATE_LIMITED": "Too many suggestions. Try again in a while.",
       "UNKNOWN": "Something went wrong. Try again."
+    }
+  },
+  "CourseTranslate": {
+    "open": "Translate",
+    "menu": {
+      "empty": "No other language has text for this lesson yet.",
+      "unsaved": "Save the lesson first to translate it."
+    },
+    "field": {
+      "trigger": "Translate with AI",
+      "from": "Translate from {language}",
+      "done": "Translated. Review the text, then save the draft.",
+      "failed": "Could not translate this field. Try again."
     }
   }
 }

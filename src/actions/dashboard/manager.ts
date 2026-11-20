@@ -4,7 +4,7 @@ import { loadUnassignedCertificates } from '@/actions/certificates/lists'
 import { type ManagerSummary, summarizeWaiting } from '@/actions/dashboard/core'
 import { loadOrganizationPanel } from '@/actions/organizations/panel-data'
 
-const ACTIVITY_PREVIEW = 5
+const ACTIVITY_PREVIEW = 6
 const AVATAR_PREVIEW = 5
 
 export const loadManagerSummary = async (now: number): Promise<ManagerSummary | null> => {

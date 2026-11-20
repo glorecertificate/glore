@@ -96,7 +96,6 @@ These quotes are on https://international.glorecertificate.net. The local site s
 
 - No source gives counts of certificates issued, volunteers certified, or hours. Never invent them.
 - No press, award, or independent study is cited.
-- The Quality Charter text is not public on the sites. The v0.7 text in the app is temporary.
 
 ## Product Principles
 

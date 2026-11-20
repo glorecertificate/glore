@@ -31,5 +31,7 @@ export type CookieOptions<T = {}> = T & {
   prefix?: string | false
 }
 
+export const USER_COOKIES = ['courseListLanguages', 'courseListParams', 'org'] as const satisfies CookieName[]
+
 export const prefixCookieName = (name: CookieName, prefix: string | false = COOKIE_PREFIX) =>
   prefix === false ? name : `${prefix}${name}`

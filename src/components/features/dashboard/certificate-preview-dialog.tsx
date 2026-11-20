@@ -20,7 +20,7 @@ export const CertificatePreviewDialog = ({ certificate }: { certificate: Certifi
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button icon="eye" variant="outline">
+        <Button icon="eye" size="lg" variant="outline">
           {t('actions.preview')}
         </Button>
       </DialogTrigger>

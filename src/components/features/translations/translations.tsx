@@ -19,7 +19,6 @@ import { type RawCatalog } from '@/lib/message-validation'
 import {
   type OverrideEntry,
   TRANSLATION_STATES,
-  type TranslationFilter,
   type TranslationState,
   buildRows,
   countStates,
@@ -48,14 +47,13 @@ export const Translations = ({
   const [params, setParams] = useQueryStates(translationsParsers, { clearOnDefault: true })
   const [search, setSearch] = useState(params.q)
   const query = useDeferredValue(search)
-  const filter: TranslationFilter = params.filter ?? 'all'
 
   const rows = buildRows({ catalogs, defaultLocale: DEFAULT_LOCALE, locales: LOCALES, overrides })
-  const filtered = filterRows(rows, { filter, namespace: params.namespace, query })
+  const filtered = filterRows(rows, { namespaces: params.namespace, query, states: params.filter })
   const counts = countStates(rows)
   const namespaces = namespacesOf(rows)
   const selected = rows.find(row => row.key === params.key) ?? null
-  const filtersActive = Boolean(search || params.filter || params.namespace)
+  const filtersActive = Boolean(search || params.filter.length > 0 || params.namespace.length > 0)
   const locales = localeItems.map(({ label, value }) => ({ label, value }))
 
   const handleSearch = (value: string) => {
@@ -85,24 +83,24 @@ export const Translations = ({
       {
         id: 'state',
         label: t('filters.state'),
-        onChange: value => setParams({ filter: value as TranslationState | null }),
+        onChange: values => setParams({ filter: values as TranslationState[] }),
         options: TRANSLATION_STATES.map(state => ({
           count: counts[state],
           label: t(`states.${state}`),
           value: state,
         })),
-        value: params.filter,
+        values: params.filter,
       },
       {
         id: 'namespace',
         label: t('filters.namespace'),
-        onChange: value => setParams({ namespace: value }),
+        onChange: values => setParams({ namespace: values }),
         options: namespaces.map(namespace => ({
           count: namespaceCounts[namespace],
           label: namespace,
           value: namespace,
         })),
-        value: params.namespace,
+        values: params.namespace,
       },
     ],
     onReset: handleClear,
@@ -149,7 +147,7 @@ export const Translations = ({
           </Empty>
         ) : (
           <TranslationList
-            key={`${filter}:${params.namespace ?? ''}:${query}`}
+            key={`${params.filter.join(',')}:${params.namespace.join(',')}:${query}`}
             locales={locales}
             onOpen={handleOpen}
             rows={filtered}

@@ -79,6 +79,7 @@ import {
   BorderRightIcon,
   BorderTopIcon,
 } from '@/components/ui/rich-text-editor/components/table-icons'
+import { isMarkdownSafe } from '@/components/ui/rich-text-editor/utils'
 import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarMenuGroup } from '@/components/ui/toolbar'
 import { cn } from '@/lib/utils'
 
@@ -123,7 +124,7 @@ export const TableElement = withHOC(TableProvider, ({ children, ...props }: Plat
 })
 
 const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeof PopoverContent>) => {
-  const { tf } = useEditorPlugin(TablePlugin)
+  const { editor, tf } = useEditorPlugin(TablePlugin)
   const selected = useSelected()
   const element = useElement<TTableElement>()
   const { props: buttonProps } = useRemoveNodeButton({ element })
@@ -131,9 +132,10 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
   const t = useTranslations('Components.RichTextEditor.blocks')
 
   const { canMerge, canSplit } = useTableMergeState()
+  const cellStyling = !isMarkdownSafe(editor)
 
   return (
-    <Popover modal={false} open={canMerge || canSplit || collapsedInside}>
+    <Popover modal={false} open={(cellStyling && (canMerge || canSplit)) || collapsedInside}>
       <PopoverAnchor asChild>{children}</PopoverAnchor>
       <PopoverContent asChild contentEditable={false} onOpenAutoFocus={e => e.preventDefault()} {...props}>
         <Toolbar
@@ -141,39 +143,43 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
           contentEditable={false}
         >
           <ToolbarGroup>
-            <ColorDropdownMenu tooltip={t('tableBackgroundColor')}>
-              <PaintBucketIcon />
-            </ColorDropdownMenu>
-            {canMerge && (
-              <ToolbarButton
-                onClick={() => tf.table.merge()}
-                onMouseDown={e => e.preventDefault()}
-                tooltip={t('tableMerge')}
-              >
-                <CombineIcon />
-              </ToolbarButton>
-            )}
-            {canSplit && (
-              <ToolbarButton
-                onClick={() => tf.table.split()}
-                onMouseDown={e => e.preventDefault()}
-                tooltip={t('tableSplit')}
-              >
-                <SquareSplitHorizontalIcon />
-              </ToolbarButton>
-            )}
+            {cellStyling && (
+              <>
+                <ColorDropdownMenu tooltip={t('tableBackgroundColor')}>
+                  <PaintBucketIcon />
+                </ColorDropdownMenu>
+                {canMerge && (
+                  <ToolbarButton
+                    onClick={() => tf.table.merge()}
+                    onMouseDown={e => e.preventDefault()}
+                    tooltip={t('tableMerge')}
+                  >
+                    <CombineIcon />
+                  </ToolbarButton>
+                )}
+                {canSplit && (
+                  <ToolbarButton
+                    onClick={() => tf.table.split()}
+                    onMouseDown={e => e.preventDefault()}
+                    tooltip={t('tableSplit')}
+                  >
+                    <SquareSplitHorizontalIcon />
+                  </ToolbarButton>
+                )}
 
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <ToolbarButton tooltip={t('tableCellBorders')}>
-                  <Grid2X2Icon />
-                </ToolbarButton>
-              </DropdownMenuTrigger>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <ToolbarButton tooltip={t('tableCellBorders')}>
+                      <Grid2X2Icon />
+                    </ToolbarButton>
+                  </DropdownMenuTrigger>
 
-              <DropdownMenuPortal>
-                <TableBordersDropdownMenuContent />
-              </DropdownMenuPortal>
-            </DropdownMenu>
+                  <DropdownMenuPortal>
+                    <TableBordersDropdownMenuContent />
+                  </DropdownMenuPortal>
+                </DropdownMenu>
+              </>
+            )}
 
             {collapsedInside && (
               <ToolbarGroup>

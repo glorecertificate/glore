@@ -19,7 +19,7 @@ import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag, userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
-import { applyUserLocale } from '@/lib/cookie-store'
+import { applyUserLocale, clearUserCookies } from '@/lib/cookie-store'
 import { sendMail } from '@/lib/email'
 import { safeNextPath } from '@/lib/next-path'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
@@ -113,6 +113,7 @@ export const login = async ({
 export const logout = async ({ loggedOut = false }: { loggedOut?: boolean } = {}) => {
   const user = await getAuthUser()
   await auth.api.signOut({ headers: await headers() })
+  await clearUserCookies()
   updateTag(user ? userTag(user.id) : CacheTag.User)
   if (loggedOut) redirect(`${AUTH_ROOT}?loggedOut=true`)
 }
@@ -130,7 +131,7 @@ export const resetPassword = async (username: string) => {
   }
 
   const email = await findLoginEmail(username)
-  if (!email) return { data: {}, error: null }
+  if (!email) return { data: null, error: { code: 'NOT_FOUND', message: 'No account found' } }
 
   try {
     await auth.api.requestPasswordReset({ body: { email, redirectTo: `${process.env.APP_URL}${AUTH_ROOT}` } })

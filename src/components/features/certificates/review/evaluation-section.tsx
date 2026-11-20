@@ -48,7 +48,7 @@ export const EvaluationSection = () => {
             render={({ field }) => (
               <FormItem className="gap-x-6 gap-y-2 border-t border-border-subtle py-4 first:border-t-0 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
                 <div className="flex min-w-0 flex-col gap-1">
-                  <FormLabel className="text-[0.9375rem] font-semibold">{labels[score]}</FormLabel>
+                  <FormLabel className="text-sm font-semibold">{labels[score]}</FormLabel>
                   <p className="text-xs text-muted-foreground">{hints[score]}</p>
                 </div>
                 <FormControl>

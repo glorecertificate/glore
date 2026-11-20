@@ -69,7 +69,7 @@ const LevelCell = ({
 
   return (
     <Label
-      className="group/cell flex cursor-pointer items-stretch rounded-lg border border-border-subtle bg-card p-4 text-sm leading-relaxed font-normal shadow-xs transition-[background-color,border-color,box-shadow] duration-150 hover:border-border-strong hover:bg-surface-hover has-focus-visible:focus-ring has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 has-data-disabled:hover:border-border-subtle has-data-disabled:hover:bg-card has-data-[state=checked]:border-action has-data-[state=checked]:bg-action-subtle has-data-[state=checked]:shadow-[0_0_0_1px_var(--action)] motion-reduce:transition-none"
+      className="group/cell flex cursor-pointer items-stretch rounded-lg border border-border-subtle bg-card p-4 text-sm leading-relaxed font-normal shadow-xs transition duration-150 hover:border-border-strong hover:bg-surface-hover has-focus-visible:focus-ring has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 has-data-disabled:hover:border-border-subtle has-data-disabled:hover:bg-card has-data-[state=checked]:border-action has-data-[state=checked]:bg-action-subtle has-data-[state=checked]:ring-1 has-data-[state=checked]:ring-action motion-reduce:transition-none"
       htmlFor={id}
     >
       <RadioGroupItem className="peer sr-only" id={id} value={level} />
@@ -194,10 +194,7 @@ export const SkillsSection = ({
                             />
                           </FormControl>
                           <FormLabel
-                            className={cn(
-                              'flex-1 text-[0.9375rem] font-semibold',
-                              !field.value && 'text-muted-foreground'
-                            )}
+                            className={cn('flex-1 text-sm font-semibold', !field.value && 'text-muted-foreground')}
                           >
                             {title}
                           </FormLabel>

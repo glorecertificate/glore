@@ -154,7 +154,8 @@ test('tutor previews the PDF and approves, and the volunteer shares the certific
   await page.getByRole('button', { name: 'Approve', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Certificate preview' })
   await expect(dialog).toBeVisible()
-  await expect(dialog.locator('object[type="application/pdf"]')).toHaveAttribute('data', /^blob:/u)
+  await expect(dialog.locator('[data-slot="certificate-page"]')).toBeVisible()
+  await expect(dialog.getByRole('link', { name: 'Open PDF' })).toHaveAttribute('href', /^blob:/u)
   await dialog.getByRole('button', { name: 'Approve and issue' }).click()
   await expect(page.getByText('Certificate approved and issued.')).toBeVisible()
 

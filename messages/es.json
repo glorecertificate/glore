@@ -2169,7 +2169,7 @@
     "rejectHint": "Al menos {min} caracteres.",
     "cancel": "Cancelar",
     "previewTitle": "Vista previa del certificado",
-    "previewDescription": "Este es el PDF que recibirá la persona voluntaria. No se emite nada hasta que confirmes.",
+    "previewDescription": "Este es el certificado que recibirá la persona voluntaria. No se emite nada hasta que confirmes.",
     "backToEditing": "Volver a editar",
     "confirmApprove": "Aprobar y emitir",
     "errorActivityTooShort": "La actividad debe durar al menos {hours} horas o {months} meses.",

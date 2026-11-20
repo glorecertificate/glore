@@ -230,6 +230,17 @@ export const DATE_SIZE = 10.0464
 const SIGNED_FOOTER_SHIFT = 6
 export const footerShift = (signed: boolean) => (signed ? SIGNED_FOOTER_SHIFT : 0)
 export const QR_BOX = { left: 46.1, size: 52, top: 735 }
+export const certificateQr = async (url: string) => {
+  const { create } = await import('qrcode')
+  const { modules } = create(url, { errorCorrectionLevel: 'M' })
+  const segments: string[] = []
+  for (let row = 0; row < modules.size; row++) {
+    for (let column = 0; column < modules.size; column++) {
+      if (modules.get(row, column)) segments.push(`M${column} ${row}h1v1h-1z`)
+    }
+  }
+  return { qrPath: segments.join(''), qrSize: modules.size }
+}
 export const VERIFY_BOX = { left: 106, top: 742, width: 280 }
 const VERIFY_ADVANCE = 0.65
 const VERIFY_SIZE = 8

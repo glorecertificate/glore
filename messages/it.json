@@ -2169,7 +2169,7 @@
     "rejectHint": "Almeno {min} caratteri.",
     "cancel": "Annulla",
     "previewTitle": "Anteprima del certificato",
-    "previewDescription": "Questo è il PDF che riceverà il volontario. Nulla viene emesso finché non confermi.",
+    "previewDescription": "Questo è il certificato che riceverà il volontario. Nulla viene emesso finché non confermi.",
     "backToEditing": "Torna alla modifica",
     "confirmApprove": "Approva ed emetti",
     "errorActivityTooShort": "L'attività deve durare almeno {hours} ore o {months} mesi.",

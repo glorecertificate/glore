@@ -45,6 +45,7 @@ import {
   PERIOD_ROW,
   PERIOD_TO,
   PERSONAL,
+  QR_BOX,
   REPRESENTED_ROW,
   ROBOTO_LINE_HEIGHT,
   ROW_LEFT,
@@ -69,11 +70,13 @@ import {
   TASK_LINE_HEIGHT,
   TASK_TOP,
   TASK_WIDTH,
+  VERIFY_BOX,
   VOLUNTEERING,
   VOLUNTEERING_LEFT,
   WHITE,
   baselineTop,
   dateTop,
+  footerShift,
   formatDate,
   hasPersonalData,
   nameSize,
@@ -85,9 +88,11 @@ import {
   softHyphenate,
   taskPlan,
   titleSize,
+  verifySize,
 } from '@/components/features/certificates/certificate-layout'
 import { LOGO_PATHS } from '@/components/features/certificates/pdf-assets'
 import { pdfLabels } from '@/components/features/certificates/pdf-helpers'
+import { useCertificateVerification } from '@/components/features/certificates/use-certificate-verification'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Image } from '@/components/ui/image'
 import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
@@ -95,6 +100,8 @@ import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 const unit = (points: number) => `${(points / PAGE_WIDTH) * 100}cqw`
+
+const VERIFY_LABEL_SIZE = 7.5
 
 const spot = (left: number, top: number, extra?: React.CSSProperties): React.CSSProperties => ({
   left: unit(left),
@@ -268,6 +275,8 @@ export const CertificatePage = ({
   const bannerSize = titleSize(labels.title)
   const partnerSpan = partnerWidth(organization.logoUrl)
   const partnerSize = partnerFontSize(organization.name, partnerSpan)
+  const footer = footerShift(Boolean(organization.signatureUrl))
+  const verification = useCertificateVerification(input.issuedAt ? input.code : null)
 
   return (
     <figure
@@ -475,6 +484,34 @@ export const CertificatePage = ({
         >
           {`${labels.date} ${formatDate(input.issuedAt)}`}
         </p>
+
+        {/* Verification */}
+        {verification && (
+          <svg
+            style={spot(QR_BOX.left, QR_BOX.top + footer, { height: unit(QR_BOX.size), width: unit(QR_BOX.size) })}
+            viewBox={`0 0 ${verification.qrSize} ${verification.qrSize}`}
+          >
+            <path d={verification.qrPath} fill={NAVY} />
+          </svg>
+        )}
+        {verification && (
+          <div style={spot(VERIFY_BOX.left, VERIFY_BOX.top + footer, { width: unit(VERIFY_BOX.width) })}>
+            <p style={{ fontSize: unit(VERIFY_LABEL_SIZE), lineHeight: ROBOTO_LINE_HEIGHT, margin: 0 }}>
+              {labels.verify}
+            </p>
+            <p
+              style={{
+                fontSize: unit(verifySize(verification.url)),
+                fontWeight: 900,
+                lineHeight: ROBOTO_LINE_HEIGHT,
+                margin: 0,
+                marginTop: unit(2),
+              }}
+            >
+              {verification.url}
+            </p>
+          </div>
+        )}
 
         <p
           style={textAt(HEADING_RIGHT.left, HEADING_RIGHT.top, HEADING_RIGHT.size, HEADING_RIGHT.lineHeight, {

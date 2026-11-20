@@ -2169,7 +2169,7 @@
     "rejectHint": "At least {min} characters.",
     "cancel": "Cancel",
     "previewTitle": "Certificate preview",
-    "previewDescription": "This is the PDF the volunteer will receive. Nothing is issued until you confirm.",
+    "previewDescription": "This is the certificate the volunteer will receive. Nothing is issued until you confirm.",
     "backToEditing": "Back to editing",
     "confirmApprove": "Approve and issue",
     "errorActivityTooShort": "The activity must last at least {hours} hours or {months} months.",

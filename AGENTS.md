@@ -34,7 +34,7 @@ Read only the specs whose rows apply (`.agents/specs/`).
 | Commands, seeds, i18n, git, skills, MCP, lanes, tests, QA   | `workflow.md`      |
 | Performance targets, measurement, perf CI                   | `performance.md`   |
 
-Work lives in GitHub issues. No plan stays on `main`: a draft PR or a parent issue holds it (`github.md`).
+Work lives in GitHub issues. Plan files in `.agents/plans/` are gitignored: a draft PR body or a parent issue holds the shared plan (`github.md`).
 
 References in `.agents/references/`: product decisions, certificate PDF, translations, manual test flows, release runbook.
 

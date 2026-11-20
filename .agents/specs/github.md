@@ -8,8 +8,9 @@ Issues, pull requests, labels, the project, workflows, Claude, and deploys. `AGE
 - Agents never merge, and never close issues by hand.
 - Start an issue with `gh issue develop <number> --checkout`, so that the branch links to the issue.
 - The maintainer can change an issue at any time. Read it again with `gh issue view <number> --comments` before each commit and each push.
-- One-PR effort: open a draft PR early with the plan file as its first commit. Delete the plan in the last commit, then mark the PR ready.
-- Multi-PR effort: the parent issue body holds the plan, and one sub-issue tracks each PR. No plan file stays on `main`.
+- Plan files live in `.agents/plans/`, which Git ignores, so a plan file never reaches a commit.
+- One-PR effort: open a draft PR early and put the plan in its body. Mark the PR ready when the plan is done.
+- Multi-PR effort: the parent issue body holds the plan, and one sub-issue tracks each PR.
 - Before you delete a plan, move each open item to a sub-issue of its parent issue. Never leave open work only in chat.
 - Durable decisions go into the specs or `.agents/references/decisions.md` before the plan goes away.
 

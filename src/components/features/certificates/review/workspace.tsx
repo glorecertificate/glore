@@ -151,6 +151,14 @@ export const ReviewWorkspace = ({
     }
   }
 
+  const showFirstError = () => {
+    toast.error(t('approveIncomplete'))
+    requestAnimationFrame(() => {
+      const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+      document.querySelector('[data-slot="form-message"]')?.scrollIntoView({ behavior, block: 'center' })
+    })
+  }
+
   const preview = form.handleSubmit(async values => {
     const [{ data, error }, source] = await run('preview', () =>
       Promise.all([
@@ -161,7 +169,7 @@ export const ReviewWorkspace = ({
     if (error || !data) return toast.error(failure(error?.code ?? ''))
     setPreviewData(previewCertificate(values, source.data?.organization ?? null))
     return setPreviewUrl(decodePdf(data.pdf))
-  })
+  }, showFirstError)
 
   const approve = async () => {
     const { error } = await run('approve', () => approveCertificate(certificate.id, approvalPayload(form.getValues())))
@@ -222,7 +230,7 @@ export const ReviewWorkspace = ({
         language={certificate.language}
         onConfirm={() => void approve()}
         onOpenChange={open => {
-          if (!open) closePreview()
+          if (!open && busy !== 'approve') closePreview()
         }}
         url={previewUrl}
       />

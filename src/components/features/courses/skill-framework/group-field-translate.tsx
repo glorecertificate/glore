@@ -8,6 +8,7 @@ import { useTranslate } from '@/components/features/translations/use-translate'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { toast } from '@/components/ui/toast'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
 import { hasText } from '@/lib/translate'
 
@@ -49,12 +50,13 @@ export const GroupFieldTranslate = ({
     seen.current = values[language] ?? ''
     onRunningChange(true)
     try {
-      await translate.run({
+      const ok = await translate.run({
         fields: [{ existing: { [language]: hasText(values[language]) }, key: fieldKey(field), text: values[source] }],
         replace: true,
         source,
         targets: [language],
       })
+      toast[ok ? 'success' : 'error'](ok ? t('field.done') : t('field.failed'))
     } finally {
       onRunningChange(false)
     }

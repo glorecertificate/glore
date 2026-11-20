@@ -8,6 +8,7 @@ const RESERVED_USERNAMES: ReadonlySet<string> = new Set([
   segment(AUTH_ROOT),
   segment(ONBOARDING_ROOT),
   'api',
+  'dev',
   'favicon',
   'glore',
   'invite',

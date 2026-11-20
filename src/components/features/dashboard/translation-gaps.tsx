@@ -16,7 +16,8 @@ export const TranslationGaps = ({ gaps }: { gaps: TranslationGapsData }) => {
   const { number } = useFormatter()
   const { kinds, missing, total } = gaps
   const share = (locale: (typeof LOCALES)[number]) => (total > 0 ? (total - missing[locale]) / total : 1)
-  const shown = (locale: (typeof LOCALES)[number]) => Math.floor(share(locale) * 100) / 100
+  const shown = (locale: (typeof LOCALES)[number]) =>
+    total > 0 ? Math.floor(((total - missing[locale]) * 100) / total) / 100 : 1
 
   return (
     <Card>

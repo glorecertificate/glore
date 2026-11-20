@@ -43,5 +43,5 @@ export const TitleField = ({ onCommit, onLengthChange, value, ...props }: TitleF
     onCommit(draft)
   }
 
-  return <InlineInput {...props} onBlur={onBlur} onChange={onChange} onFocus={() => setEditing(value)} value={draft} />
+  return <InlineInput {...props} onBlur={onBlur} onChange={onChange} value={draft} />
 }

@@ -48,7 +48,7 @@ export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ 
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [language, setLanguage] = useState<Locale>(DEFAULT_LOCALE)
-  const [translating, setTranslating] = useState<GroupField | null>(null)
+  const [translating, setTranslating] = useState<Record<GroupField, boolean>>({ description: false, name: false })
   const [name, setName] = useState<IntlRecord>(group?.name ?? emptyRecord())
   const [description, setDescription] = useState<IntlRecord>(group?.description ?? emptyRecord())
   const [icon, setIcon] = useState<string | null>(group?.icon ?? null)
@@ -129,16 +129,16 @@ export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ 
                     field="name"
                     language={language}
                     onApply={applyTranslated}
-                    onRunningChange={running => setTranslating(running ? 'name' : null)}
+                    onRunningChange={running => setTranslating(current => ({ ...current, name: running }))}
                     values={name}
                   />
                 </div>
                 <Input
-                  aria-busy={translating === 'name'}
+                  aria-busy={translating.name}
                   id="group-name"
                   maxLength={80}
                   onChange={event => setName(prev => ({ ...prev, [language]: event.target.value }))}
-                  readOnly={translating === 'name'}
+                  readOnly={translating.name}
                   required
                   value={name[language] ?? ''}
                 />
@@ -150,16 +150,16 @@ export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ 
                     field="description"
                     language={language}
                     onApply={applyTranslated}
-                    onRunningChange={running => setTranslating(running ? 'description' : null)}
+                    onRunningChange={running => setTranslating(current => ({ ...current, description: running }))}
                     values={description}
                   />
                 </div>
                 <Textarea
-                  aria-busy={translating === 'description'}
+                  aria-busy={translating.description}
                   id="group-description"
                   maxLength={300}
                   onChange={event => setDescription(prev => ({ ...prev, [language]: event.target.value }))}
-                  readOnly={translating === 'description'}
+                  readOnly={translating.description}
                   value={description[language] ?? ''}
                 />
               </div>

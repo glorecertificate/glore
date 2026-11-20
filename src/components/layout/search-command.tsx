@@ -2,7 +2,7 @@
 
 import { type Route } from 'next'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { type default as Fuse } from 'fuse.js'
 import { useTranslations } from 'next-intl'
@@ -83,9 +83,11 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
     void load()
   }, [docs, open])
 
+  const prefetch = useEffectEvent(prefetchOrganizations)
+
   useEffect(() => {
-    if (open) prefetchOrganizations()
-  }, [open, prefetchOrganizations])
+    if (open) prefetch()
+  }, [open])
 
   useEffect(() => {
     if (!searching) return undefined

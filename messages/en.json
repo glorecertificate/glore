@@ -2196,7 +2196,8 @@
     "decisionProgress": "{levels} of {skills} skills set, {scores} of {total} scores given",
     "decisionNote": "Approve shows a preview first and issues nothing until you confirm.",
     "commentTitle": "Comment",
-    "confirmedLevel": "Level and description"
+    "confirmedLevel": "Level and description",
+    "approveIncomplete": "Set a level for each skill and give every score before you approve."
   },
   "CertificateShare": {
     "title": "Share your certificate",

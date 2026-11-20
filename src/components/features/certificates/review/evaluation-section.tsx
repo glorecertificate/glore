@@ -53,6 +53,7 @@ export const EvaluationSection = () => {
                 </div>
                 <FormControl>
                   <RatingGroup
+                    aria-label={labels[score]}
                     className="w-full max-w-64 gap-1 sm:w-64"
                     color="brand"
                     id={`score-${score}`}

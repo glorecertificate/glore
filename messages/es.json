@@ -2196,7 +2196,8 @@
     "decisionProgress": "{levels} de {skills} competencias con nivel, {scores} de {total} puntuaciones",
     "decisionNote": "Al aprobar verás primero una vista previa. No se emite nada hasta que confirmes.",
     "commentTitle": "Comentario",
-    "confirmedLevel": "Nivel y descripción"
+    "confirmedLevel": "Nivel y descripción",
+    "approveIncomplete": "Indica un nivel para cada habilidad y todas las puntuaciones antes de aprobar."
   },
   "CertificateShare": {
     "title": "Comparte tu certificado",

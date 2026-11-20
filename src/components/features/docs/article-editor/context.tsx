@@ -162,10 +162,11 @@ const useArticleProvider = (options: ArticleProviderOptions) => {
     const payload = buildArticlePayload(current, locale, publish)
     const { data, error } = article ? await updateDocArticle(article.id, payload) : await createDocArticle(payload)
     if (error || !data) throw new ArticleSaveError('SAVE_FAILED')
-    const next = { ...current, languages: payload.languages, slug: payload.slug }
+    const sent = { ...current, languages: payload.languages, slug: payload.slug }
+    const next = { ...draftRef.current, languages: payload.languages, slug: payload.slug }
     draftRef.current = next
     setDraftState(next)
-    setSaved(next)
+    setSaved(sent)
     setSaveVersion(version => version + 1)
     setArticle(data)
     if (data.slug !== saved.slug) {

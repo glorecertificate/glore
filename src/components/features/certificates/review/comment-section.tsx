@@ -23,7 +23,7 @@ const SECTION_LABELS = {
 
 export const CommentSection = () => {
   const t = useTranslations('CertificateReview')
-  const { control } = useFormContext<ReviewFormValues>()
+  const { clearErrors, control } = useFormContext<ReviewFormValues>()
 
   return (
     <section aria-labelledby="comment-title" className="flex min-w-0 flex-col gap-5">
@@ -37,7 +37,15 @@ export const CommentSection = () => {
           <FormItem>
             <FormLabel>{t('comment')}</FormLabel>
             <FormControl>
-              <Textarea className="min-h-32" placeholder={t('commentPlaceholder')} {...field} />
+              <Textarea
+                {...field}
+                className="min-h-32"
+                onChange={event => {
+                  field.onChange(event)
+                  clearErrors('comment')
+                }}
+                placeholder={t('commentPlaceholder')}
+              />
             </FormControl>
             <FieldError />
           </FormItem>

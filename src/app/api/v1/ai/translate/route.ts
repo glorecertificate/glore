@@ -104,9 +104,13 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }
   if (cost > 0) {
-    const { limited } = await checkRateLimit(`ai-translate-fields:${user.id}`, MAX_UNITS_PER_HOUR, HOUR, cost)
+    let limited = true
+    try {
+      ;({ limited } = await checkRateLimit(`ai-translate-fields:${user.id}`, MAX_UNITS_PER_HOUR, HOUR, cost))
+    } finally {
+      if (limited) release()
+    }
     if (limited) {
-      release()
       return NextResponse.json({ error: 'RATE_LIMITED' }, { status: 429 })
     }
   }

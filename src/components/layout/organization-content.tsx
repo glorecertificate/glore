@@ -1,24 +1,29 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 
 import { useSession } from '@/components/providers/session'
 import { APP_ROOT, ORGANIZATION_PARAM } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 export const OrganizationContent = ({ children }: React.PropsWithChildren) => {
-  const { switching } = useSession()
+  const { organization, setOrganization, switching, user } = useSession()
   const { refresh } = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const switched = pathname === APP_ROOT && searchParams.has(ORGANIZATION_PARAM)
+  const param = pathname === APP_ROOT ? searchParams.get(ORGANIZATION_PARAM) : null
 
-  useEffect(() => {
-    if (!switched) return
+  const settle = useEffectEvent((id: number) => {
+    if (id !== organization?.id && user.organizations.some(org => org.id === id)) setOrganization(id)
     window.history.replaceState(null, '', APP_ROOT)
     refresh()
-  }, [refresh, switched])
+  })
+
+  useEffect(() => {
+    if (param === null) return
+    settle(Number(param))
+  }, [param])
 
   return (
     <div

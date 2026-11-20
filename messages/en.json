@@ -2152,8 +2152,6 @@
     "skillsDescription": "Pick the description that fits best in each row. Your choice sets the level.",
     "comment": "General comment",
     "commentPlaceholder": "Required when you request changes. Optional when you approve.",
-    "startReview": "Start review",
-    "claimed": "Review started.",
     "waitingForVolunteer": "Waiting for the volunteer to resubmit. You can still read the request.",
     "approve": "Approve",
     "approving": "Approving…",

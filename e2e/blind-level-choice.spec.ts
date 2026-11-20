@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { type Actor, actAs, certificateIdFromUrl, fillExperience, rateOrganization, submitFromLastStep } from './actors'
-import { type Tenant, certificateSkillLevels, createTenant, removeTenant, withDb } from './tenant'
+import { type Tenant, certificateRow, certificateSkillLevels, createTenant, removeTenant, withDb } from './tenant'
 
 test.describe.configure({ mode: 'serial', timeout: 180_000 })
 
@@ -96,8 +96,7 @@ test('the wizard shows the chosen description read-only and a tutor can change i
 
   const reviewPage = tutor.page
   await reviewPage.goto(`/certificates/${certificateId}/review`)
-  await reviewPage.getByRole('button', { name: 'Start review' }).click()
-  await expect(reviewPage.getByText('Review started.')).toBeVisible()
+  await expect.poll(async () => (await certificateRow(certificateId))?.status).toBe('in_review')
   const groups = reviewPage.getByRole('radiogroup', { name: 'Level and description' })
   await expect(groups).toHaveCount(4)
   const target = chosenLevel === 'advanced' ? /Intermediate/u : /Advanced/u

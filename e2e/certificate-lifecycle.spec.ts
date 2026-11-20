@@ -103,8 +103,8 @@ test('tutor sees the request in the queue and starts the review', async () => {
   await hydrated(review)
   await review.click()
   await expect(page).toHaveURL(new RegExp(`/certificates/${certificateId}/review$`, 'u'))
-  await page.getByRole('button', { name: 'Start review' }).click()
-  await expect(page.getByText('Review started.')).toBeVisible()
+  await expect.poll(async () => (await certificateRow(certificateId))?.status).toBe('in_review')
+  await expect(page.getByText('In review', { exact: true }).first()).toBeVisible()
 })
 
 test('tutor picks another description, requests changes with a comment, and the volunteer resubmits', async () => {
@@ -147,8 +147,7 @@ test('tutor previews the PDF and approves, and the volunteer shares the certific
   )
   const { page } = tutor
   await page.goto(`/certificates/${certificateId}/review`)
-  await page.getByRole('button', { name: 'Start review' }).click()
-  await expect(page.getByText('Review started.')).toBeVisible()
+  await expect.poll(async () => (await certificateRow(certificateId))?.status).toBe('in_review')
   for (const score of ['engagement', 'evidence', 'reflection', 'growth']) {
     await page.locator(`label[for="score-${score}-4"]`).click()
   }

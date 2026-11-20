@@ -2152,8 +2152,6 @@
     "skillsDescription": "Elige en cada fila la descripción que mejor encaje. Tu elección fija el nivel.",
     "comment": "Comentario general",
     "commentPlaceholder": "Obligatorio al pedir cambios. Opcional al aprobar.",
-    "startReview": "Empezar revisión",
-    "claimed": "Revisión iniciada.",
     "waitingForVolunteer": "Esperando a que la persona voluntaria vuelva a enviarlo. Aún puedes leer la solicitud.",
     "approve": "Aprobar",
     "approving": "Aprobando…",

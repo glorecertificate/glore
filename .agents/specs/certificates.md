@@ -121,12 +121,12 @@ draft -> submitted -> in_review -> approved -> revoked
 
 - Route: `/certificates/[id]/review`, for the assigned tutor only.
 - Sections: previous feedback, a summary card (volunteer, experience with in-place Edit, tasks), the skills matrix, four blind scores, comment, decision bar.
-- The band shows the status and "Submitted N days ago" as text, and Start review for a `submitted` request.
+- The band shows the status and "Submitted N days ago" as text.
 - The matrix has a row per skill and a radio card per level, with the volunteer's choice tagged. Evidence and reflection fold under each row.
 - Approve first renders the real PDF with `previewCertificatePdf` (persists nothing) in a dialog, then calls `approveCertificate`. On coarse pointers the dialog shows the HTML `CertificatePage` built from the form values and the signatory of `findCertificatePreview`, plus an Open PDF link to the blob, because iOS Safari renders `<object>` PDFs poorly (`useCoarsePointer`). Desktop keeps the `<object>` embed.
 - The bar shows progress, Reject, Request changes, and Approve, and sticks from `md`. A `changes_requested` request shows a waiting note instead.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
-- `Start review` (`StartReviewButton` in the band) claims a `submitted` request.
+- The review starts when the assigned tutor opens a `submitted` request: `StartReviewOnOpen` calls `claimCertificateReview` once from a client effect, never on render or prefetch, then refreshes. There is no Start review button.
 
 ### Organization pipeline
 

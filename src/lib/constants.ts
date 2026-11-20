@@ -1,6 +1,7 @@
 /* Routes */
 export const AUTH_ROOT = '/login'
 export const APP_ROOT = '/dashboard'
+export const ORGANIZATION_PARAM = 'org'
 export const JOIN_ROOT = '/api/v1/join'
 export const SESSION_ROOT = '/api/v1/session'
 export const ONBOARDING_ROOT = '/onboarding'

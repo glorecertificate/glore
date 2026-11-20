@@ -54,7 +54,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
   const tCertificates = useTranslations('CertificateStatus')
   const { push } = useRouter()
   const { localize } = useI18n()
-  const { organization: active, switchOrganization, user } = useSession()
+  const { organization: active, prefetchOrganizations, switchOrganization, user } = useSession()
   const docs = useDocsSearch()
   const [courses, setCourses] = useState<Course[]>([])
   const [fuse, setFuse] = useState<typeof Fuse | null>(null)
@@ -82,6 +82,10 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
 
     void load()
   }, [docs, open])
+
+  useEffect(() => {
+    if (open) prefetchOrganizations()
+  }, [open, prefetchOrganizations])
 
   useEffect(() => {
     if (!searching) return undefined

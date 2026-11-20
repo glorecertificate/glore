@@ -12,6 +12,7 @@ import {
   JOIN_ROOT,
   LEGAL_ROOTS,
   ONBOARDING_ROOT,
+  ORGANIZATION_PARAM,
   REGISTER_ROOT,
   SESSION_ROOT,
   VERIFY_ROOT,
@@ -26,6 +27,7 @@ export const config: ProxyConfig = {
   ],
 }
 
+const ORGANIZATION_ID = /^\d+$/u
 const PROFILE_PATH = /^\/@([a-zA-Z0-9.]+)(\/opengraph-image[\w-]*)?$/u
 const PROFILE_INTERNAL_PATH = /^\/u\/([a-zA-Z0-9.]+)$/u
 const PROFILE_IMAGE_PATH = /^\/u\/[a-zA-Z0-9.]+\/opengraph-image[\w-]*$/u
@@ -92,11 +94,18 @@ const restoreCourseListParams = (request: NextRequest) => {
   return NextResponse.redirect(target)
 }
 
+const applyOrganizationParam = ({ cookies, method, nextUrl }: NextRequest) => {
+  const id = nextUrl.searchParams.get(ORGANIZATION_PARAM)
+  if (method !== 'GET' || nextUrl.pathname !== APP_ROOT || !id || !ORGANIZATION_ID.test(id)) return
+  cookies.set(prefixCookieName('org'), id)
+}
+
 export const proxy: NextProxy = async request => {
   const { headers, nextUrl } = request
   const profile = profileResponse(request)
   if (profile) return profile
 
+  applyOrganizationParam(request)
   const response = NextResponse.next({ request: { headers } })
   const isPublic = isPublicPath(nextUrl.pathname)
   const isOnboarding = nextUrl.pathname.startsWith(ONBOARDING_ROOT)

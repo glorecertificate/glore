@@ -209,7 +209,7 @@ Rules not already stated above or in `certificates.md`:
 1. A user without `onboardedAt` cannot reach dashboard routes. The proxy redirects to `/onboarding`, and an onboarded user hitting `/onboarding` goes to `/dashboard`.
 2. Only `isAdmin` users reach `/admin`.
 3. Only `isEditor` or `isAdmin` users edit courses. Everyone else gets viewer mode.
-4. One active organization per session, held in a cookie. Switching org reloads the dashboard context.
+4. One active organization per session, held in a cookie. A switch shows a prefetched `/dashboard?org=<id>`, which the proxy renders with that cookie.
 5. Once `approved`, a certificate is immutable and checkable by its code at `/verify/<code>`. The personal profile page stays opt-in.
 6. All user-facing strings go through next-intl. No hardcoded UI text.
 7. App cookies use the `gl_` prefix (`COOKIE_PREFIX` in `src/lib/cookies.ts`). Better Auth uses `gl` through `advanced.cookiePrefix`. The locale cookie `NEXT_LOCALE` has no prefix.

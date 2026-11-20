@@ -43,7 +43,8 @@ export const OrganizationSwitcher = () => {
   const { isMobile, open, setActivePath, setOpenMobile } = useSidebar()
   const t = useTranslations('Layout')
   const tOrganization = useTranslations('Organization')
-  const { organization, setOrganization, setUser, switchOrganization, switching, user } = useSession()
+  const { organization, prefetchOrganizations, setOrganization, setUser, switchOrganization, switching, user } =
+    useSession()
   const [leaveOpen, setLeaveOpen] = useState(false)
   const { data: invitations, refresh } = usePoll(readInvitations, {
     enabled: showsOrganizationSwitcher(user),
@@ -62,6 +63,12 @@ export const OrganizationSwitcher = () => {
 
   const closeMobile = () => setOpenMobile(false)
 
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) return
+    prefetchOrganizations()
+    refresh()
+  }
+
   const handleLeft = (next: User) => {
     setUser(next)
     const nextOrganization = next.organizations[0]
@@ -73,10 +80,12 @@ export const OrganizationSwitcher = () => {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu onOpenChange={isOpen => isOpen && refresh()}>
+        <DropdownMenu onOpenChange={handleOpenChange}>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className="overflow-hidden rounded-xl border border-sidebar-border bg-sidebar-field py-7 transition-[background-color,color] duration-100 hover:bg-sidebar-accent data-[state=open]:bg-sidebar-accent"
+              onFocus={prefetchOrganizations}
+              onPointerEnter={prefetchOrganizations}
               size="lg"
               tooltip={organization?.name ?? t('noOrganization')}
               variant="outline"

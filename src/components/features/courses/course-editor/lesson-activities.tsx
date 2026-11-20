@@ -365,7 +365,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
         </div>
       )}
 
-      <div className="flex w-full items-center gap-4">
+      <div className="flex w-full items-center justify-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button data-add-activity icon="plus" type="button" variant="outline">

@@ -41,7 +41,7 @@ export const NoOrganization = ({
         </div>
       </div>
       <section aria-labelledby="no-organization-invitations" className="border-t border-border-subtle">
-        <h3 className="px-6 pt-4 type-caption text-fg-2" id="no-organization-invitations">
+        <h3 className="px-6 pt-4 text-sm text-foreground" id="no-organization-invitations">
           {tLayout('pendingInvitations')}
         </h3>
         {invitations.length === 0 && (
@@ -79,11 +79,9 @@ export const NoOrganization = ({
           </ul>
         )}
       </section>
-      <div className="flex flex-col gap-3 border-t border-border-subtle px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-2 border-t border-border-subtle px-6 py-4 sm:flex-row sm:items-center">
         <p className="text-sm text-pretty text-muted-foreground">{t('registerHint')}</p>
-        <Button asChild className="max-sm:w-full" size="sm" variant="outline">
-          <Link href={REGISTER_ROOT}>{tLayout('registerOrganization')}</Link>
-        </Button>
+        <Link href={REGISTER_ROOT}>{tLayout('registerOrganization')}</Link>
       </div>
     </Card>
   )

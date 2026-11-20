@@ -66,7 +66,7 @@ export const CertificateDetail = ({
         )}
       </div>
 
-      <div className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-20 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+      <div className="flex min-w-0 flex-col gap-5 lg:sticky lg:top-20 lg:col-start-2 lg:row-span-2 lg:row-start-1">
         <CertificateDetails certificate={certificate} />
         {isOwner && verifyUrl && (
           <CertificateShare certificate={certificate} shareUrl={shareUrl ?? verifyUrl} verifyUrl={verifyUrl} />

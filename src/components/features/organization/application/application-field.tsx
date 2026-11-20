@@ -24,6 +24,7 @@ type TextFieldName =
 
 export const ApplicationField = ({
   autoComplete,
+  autoFocus,
   className,
   form,
   help,
@@ -34,6 +35,7 @@ export const ApplicationField = ({
   placeholder,
   type,
 }: {
+  autoFocus?: boolean
   form: ApplicationForm
   label: string
   name: TextFieldName
@@ -59,6 +61,7 @@ export const ApplicationField = ({
           </FormLabel>
           <FormControl>
             <Input
+              autoFocus={autoFocus}
               autoComplete={autoComplete}
               inputMode={inputMode}
               placeholder={placeholder}

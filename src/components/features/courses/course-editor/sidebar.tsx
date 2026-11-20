@@ -458,7 +458,7 @@ export const CourseSidebar = ({
           </Stepper>
         </Sortable>
         {user.canEdit && (
-          <div className={cn('pt-3 pr-2 pl-3', isSheet && 'sticky bottom-0 bg-background pb-3')}>
+          <div className={cn('pt-3 pr-2', isSheet && 'sticky bottom-0 bg-background pb-3')}>
             <Button className="w-full" icon="plus" onClick={() => addLesson()} variant="outline">
               {t('addLesson')}
             </Button>

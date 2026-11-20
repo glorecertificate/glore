@@ -205,8 +205,8 @@ export const OrganizationSwitcher = () => {
             </DropdownMenuItem>
             {canLeave && organization && (
               <DropdownMenuItem className="gap-2 p-2" onSelect={() => setLeaveOpen(true)} variant="destructive">
-                <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                  <LucideIcon className="size-4" name="log-out" />
+                <div className="flex size-6 items-center justify-center rounded-md border border-destructive/20 bg-destructive/20">
+                  <LucideIcon className="size-3.5 text-destructive" name="log-out" />
                 </div>
                 <div className="font-normal">{t('leaveOrganizationItem', { name: organization.name })}</div>
               </DropdownMenuItem>

@@ -20,9 +20,9 @@ export const OverviewCard = ({
   title: string
 }) => (
   <Card className={className} data-slot={slot}>
-    <CardHeader>
+    <CardHeader className="items-center">
       <CardTitle>{title}</CardTitle>
-      {action && <CardAction className="self-center">{action}</CardAction>}
+      {action && <CardAction className="row-span-1 self-center">{action}</CardAction>}
     </CardHeader>
     {children}
   </Card>

@@ -15,7 +15,7 @@ const SettingsPage = () => (
     title={<PageTitle name="settings" namespace="Layout" />}
     width="full"
   >
-    <div className="grid gap-4 lg:grid-cols-[13rem_minmax(0,42.5rem)] lg:gap-12">
+    <div className="grid gap-4 lg:grid-cols-[13rem_1fr] lg:gap-12">
       <UserSettingsNav />
       <div className="min-w-0 rounded-xl border border-border-subtle bg-card p-5 shadow-card sm:p-8">
         <UserSettings />

@@ -35,7 +35,10 @@ export const StepList = ({
         <span
           className={cn(
             'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium',
-            item.state === 'done' && 'border-primary bg-primary text-primary-foreground',
+            item.state === 'done' &&
+              (index === items.length - 1
+                ? 'border-success-accent bg-success-fill text-success-foreground'
+                : 'border-primary bg-primary text-primary-foreground'),
             item.state === 'current' && 'border-primary text-brand-text ring-4 ring-primary/15',
             item.state === 'failed' && 'border-destructive bg-destructive text-destructive-foreground',
             item.state === 'upcoming' && 'text-muted-foreground'

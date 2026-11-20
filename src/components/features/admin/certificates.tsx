@@ -183,7 +183,6 @@ export const AdminCertificates = ({
             hotkey={placement === 'panel' ? '/' : undefined}
             onValueChange={handleSearch}
             placeholder={t('searchPlaceholder')}
-            size="sm"
             value={search}
           />
         ),

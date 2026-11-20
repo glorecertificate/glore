@@ -83,29 +83,41 @@ export const OrganizationMembersCard = ({
   const t = useTranslations('Organization')
   const tRail = useTranslations('OrganizationRail')
   const roles = [
-    { count: stats.adminCount, label: t('admins') },
-    { count: stats.representativeCount, label: t('representatives') },
-    { count: stats.tutorCount, label: t('tutors') },
-    { count: stats.volunteerCount, label: t('volunteers') },
-    { count: stats.learnerCount, label: t('learners') },
+    { count: stats.adminCount, fill: 'bg-chart-1', label: t('admins') },
+    { count: stats.representativeCount, fill: 'bg-chart-2', label: t('representatives') },
+    { count: stats.tutorCount, fill: 'bg-chart-3', label: t('tutors') },
+    { count: stats.volunteerCount, fill: 'bg-chart-4', label: t('volunteers') },
+    { count: stats.learnerCount, fill: 'bg-chart-5', label: t('learners') },
   ].filter(({ count }) => count > 0)
 
   return (
     <OverviewCard
       action={<OverviewAction href="/organization?tab=members">{tRail('manage')}</OverviewAction>}
-      className={cn('flex-1', className)}
+      className={className}
       slot="members-card"
       title={tRail('members')}
     >
       <p className="type-title tabular-nums">{stats.memberCount}</p>
-      <ul className="flex flex-1 flex-col justify-between gap-2 text-sm">
-        {roles.map(({ count, label }) => (
-          <li className="flex items-center justify-between gap-3" key={label}>
-            <span className="text-muted-foreground">{label}</span>
-            <span className="font-medium tabular-nums">{count}</span>
-          </li>
-        ))}
-      </ul>
+      {roles.length > 0 && (
+        <>
+          <span aria-hidden className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-status-track">
+            {roles.map(({ count, fill, label }) => (
+              <span className={cn('h-full', fill)} key={label} style={{ flexGrow: count }} />
+            ))}
+          </span>
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+            {roles.map(({ count, fill, label }) => (
+              <li className="flex items-center justify-between gap-3" key={label}>
+                <span className="flex min-w-0 items-center gap-2 text-muted-foreground">
+                  <span aria-hidden className={cn('size-2 shrink-0 rounded-full', fill)} />
+                  <span className="truncate">{label}</span>
+                </span>
+                <span className="font-medium tabular-nums">{count}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </OverviewCard>
   )
 }

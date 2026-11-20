@@ -81,7 +81,7 @@ const tabsTriggerVariants = cva(
   [
     'group/tabs-trigger touch-hit-y inline-flex h-full flex-1 items-center justify-center rounded-md border border-transparent leading-0 whitespace-nowrap text-muted-foreground/90 transition-[color,background-color,box-shadow] duration-150 select-none hover:text-foreground disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-none',
     'focus-visible:focus-ring-inset',
-    'data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground! data-[state=active]:shadow-sm dark:text-muted-foreground dark:data-[state=active]:border-border dark:data-[state=active]:bg-surface-selected dark:data-[state=active]:text-foreground',
+    'data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground! data-[state=active]:shadow-sm data-[state=active]:transition-none dark:text-muted-foreground dark:data-[state=active]:border-border dark:data-[state=active]:bg-surface-selected dark:data-[state=active]:text-foreground',
     '[&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
   ],
   {

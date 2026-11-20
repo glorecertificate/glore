@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
 import { NotificationPopover } from '@/components/features/notifications/notification-popover'
+import { loadNotificationPage, watchNotificationPage } from '@/components/features/notifications/use-notification-page'
 import { useUnreadCount } from '@/components/features/notifications/use-unread-count'
 import { LucideIcon } from '@/components/icons/lucide'
 import { SidebarCount } from '@/components/layout/sidebar-count'
@@ -12,15 +13,27 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
+const prefetch = () => void loadNotificationPage()
+
 export const NotificationBell = ({ children, className, ...props }: React.ComponentProps<typeof Button>) => {
   const t = useTranslations('Notifications')
   const [open, setOpen] = useState(false)
   const unread = useUnreadCount()
 
+  useEffect(() => watchNotificationPage(), [])
+
   return (
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
-        <Button className={cn('relative', className)} size={children ? 'md' : 'icon'} variant="ghost" {...props}>
+        <Button
+          className={cn('relative', className)}
+          onFocus={prefetch}
+          onPointerDown={prefetch}
+          onPointerEnter={prefetch}
+          size={children ? 'md' : 'icon'}
+          variant="ghost"
+          {...props}
+        >
           <LucideIcon className="size-4" name="bell" />
           {children}
           {!children && <span className="sr-only">{t('bell')}</span>}

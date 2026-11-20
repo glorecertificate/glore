@@ -113,7 +113,7 @@ export const RequestPanel = ({
                 {t('doneEditing')}
               </Button>
             </div>
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="flex flex-col gap-6">
               <ExperienceFields />
               <TaskFields />
             </div>

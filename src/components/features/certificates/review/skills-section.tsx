@@ -95,7 +95,7 @@ const LevelCell = ({
             <span className="sr-only max-xl:hidden">{tLevels(level)}</span>
           </span>
           {volunteer && (
-            <span className="inline-flex items-center rounded-full bg-info-subtle px-2 py-0.5 text-xs font-medium text-info-text">
+            <span className="inline-flex items-center rounded-full border border-success-border bg-success-subtle px-2 py-0.5 text-xs font-medium text-success-text">
               {t('volunteerChoice')}
             </span>
           )}

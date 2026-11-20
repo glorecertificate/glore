@@ -732,7 +732,7 @@
     "pendingInvitations": "Inviti in attesa",
     "pendingInvitationsCount": "{count, plural, =1 {# invito in attesa} other {# inviti in attesa}}",
     "invitedAs": "Con il ruolo di {role}",
-    "noOrganization": "Non hai ancora un'organizzazione",
+    "noOrganization": "Nessuna organizzazione",
     "content": "Contenuti"
   },
   "Auth": {
@@ -949,7 +949,7 @@
     "atTheMoment": "{message} al momento",
     "backTo": "Vedi tutti i corsi",
     "cardDescriptionMore": "(altro)",
-    "completed": "Completati",
+    "completed": "Completato",
     "confirmArchiveMessage": "Non sarà più nell'elenco dei corsi attivi. Potrai ripristinarlo dalla sezione degli archiviati.",
     "confirmArchiveTitle": "Archiviare questo corso?",
     "confirmDeleteMessage": "L'eliminazione di questo corso è permanente e non può essere annullata. Tutti i dati associati andranno persi.",
@@ -997,7 +997,7 @@
     "enrolledStudents": "{count, plural, one {# persona iscritta} other {# persone iscritte}}",
     "notFound": "Corso non trovato",
     "notFoundMessage": "Il corso che stai cercando non esiste o è stato spostato",
-    "notStarted": "Non iniziati",
+    "notStarted": "Non iniziato",
     "partial": "Parziali",
     "preview": "Anteprima",
     "previewIn": "Anteprima in {lang}",
@@ -1181,7 +1181,7 @@
         "heading": "Corsi sulle competenze",
         "count": "{count} di {min} completati",
         "total": "{count} completati",
-        "missing": "Non ancora"
+        "missing": "Mancante"
       },
       "note": {
         "from": "Nota di {name}",
@@ -1342,7 +1342,7 @@
       "healthDone": "{item}: fatto",
       "healthNotNeeded": "{item}: non serve per questo corso",
       "healthColumnTotal": "{item}: {count, plural, one {manca #} other {mancano #}}",
-      "healthAll": "{count, plural, one {# corso in totale} other {# corsi in totale}}",
+      "healthAll": "Tutti i corsi",
       "healthStatus": {
         "draft": "Bozza",
         "partial": "Parziale",
@@ -1365,9 +1365,9 @@
         "archived": "Archiviati",
         "archivedDescription": "Nascosti dal catalogo"
       },
-      "translationsSubtitle": "Cosa resta da tradurre, per tipo di contenuto",
-      "translationsTranslated": "Parti tradotte",
-      "translationsMissing": "Parti mancanti",
+      "translationsSubtitle": "Cosa resta da tradurre, per tipo di contenuto.",
+      "translationsTranslated": "Contenuti tradotti",
+      "translationsMissing": "Contenuti mancanti",
       "translationsInTotal": "{count} in totale",
       "translationsKind": {
         "course": "Corsi",
@@ -1379,7 +1379,7 @@
       "translationsMissingCell": "{kind}, {language}: {count, plural, one {ne manca #} other {ne mancano #}}",
       "translationsCompleteCell": "{kind}, {language}: non manca nulla",
       "healthViewAll": "Vedi tutti i {count} corsi",
-      "translationsMissingTotal": "{language}: {count, plural, one {manca # parte} other {mancano # contenuti}}",
+      "translationsMissingTotal": "{language}: {count, plural, one {manca # contenuto} other {mancano # contenuti}}",
       "translationsProgressLabel": "{language}, contenuti tradotti"
     },
     "none": {
@@ -1418,7 +1418,7 @@
       "category": "Categoria",
       "excerpt": "Sintesi",
       "excerptPlaceholder": "Breve descrizione dell'articolo",
-      "translateEmpty": "Nessun'altra lingua ha ancora testo per questo articolo.",
+      "translateEmpty": "Nessun'altra lingua ha una traduzione per questo articolo",
       "cancel": "Annulla",
       "updated": "Articolo aggiornato",
       "created": "Articolo creato",
@@ -1918,7 +1918,7 @@
     },
     "statusMessage": {
       "draft": "Solo tu vedi questa bozza finché non la invii.",
-      "submitted": "In attesa che un tutor inizi.",
+      "submitted": "In attesa che un tutor inizi la revisione.",
       "in_review": "Un tutor sta controllando questa richiesta.",
       "changes_requested": "Il tutor ha chiesto modifiche prima di approvare.",
       "approved": "Approvato ed emesso.",
@@ -2136,7 +2136,6 @@
     "sectionSkills": "Competenze",
     "sectionTasks": "Attività",
     "experienceTitle": "Esperienza e attività",
-    "sectionComment": "Nota per il volontario",
     "sectionCommentPlaceholder": "Facoltativo. Spiega cosa correggere in questa sezione.",
     "evaluationTitle": "Punteggi",
     "evaluationDescription": "Valuta il volontario da 1 a 5 per ogni criterio.",
@@ -2266,7 +2265,7 @@
     "activityRuleMet": "Questo periodo soddisfa il requisito di attività.",
     "activityRuleUnmet": "Un certificato richiede almeno {hours} ore o {months} mesi di volontariato. Controlla date e ore.",
     "tasksTitle": "Attività principali",
-    "tasksDescription": "Elenca fino a {max} cose che hai fatto. Ognuna compare nel certificato, quindi sii breve.",
+    "tasksDescription": "Elenca fino a {max} cose che hai fatto. Ognuna compare nel certificato e dev'essere breve e chiara.",
     "taskLabel": "Attività {number}",
     "taskPlaceholder": "es. Ho accolto e guidato i nuovi partecipanti",
     "removeTask": "Rimuovi l'attività {number}",
@@ -3050,6 +3049,12 @@
       "app_decisionAccepted": "Approvata in data {date}",
       "app_decisionRejected": "Rifiutata in data {date}",
       "app_decisionComment": "Commento dell'admin",
+      "rejectedTitle": "Richiesta rifiutata",
+      "rejectedNote": "Questa organizzazione non ha accesso alla piattaforma. Invitare membri e creare link di invito è disattivato.",
+      "rejectedBy": "Rifiutata in data {date} da {name}",
+      "rejectedOn": "Rifiutata in data {date}",
+      "rejectedReason": "Motivo: {reason}",
+      "rejectedMembersEmpty": "Questa organizzazione è stata rifiutata e non ha membri.",
       "description": "Esamina le candidature e gestisci tutte le organizzazioni della piattaforma.",
       "columns": {
         "organization": "Organizzazione",
@@ -3059,12 +3064,6 @@
         "created": "Registrata"
       },
       "tableLabel": "Organizzazioni",
-      "rejectedTitle": "Richiesta rifiutata",
-      "rejectedNote": "Questa organizzazione non ha accesso alla piattaforma. Invitare membri e creare link di invito è disattivato.",
-      "rejectedBy": "Rifiutata in data {date} da {name}",
-      "rejectedOn": "Rifiutata in data {date}",
-      "rejectedReason": "Motivo: {reason}",
-      "rejectedMembersEmpty": "Questa organizzazione è stata rifiutata, quindi non ha membri.",
       "openOrg": "Apri organizzazione",
       "commentLabelOptional": "Commento (facoltativo)",
       "statusActive": "Attiva",
@@ -3092,7 +3091,7 @@
       "title": "Utenti",
       "actions": "Azioni",
       "tableLabel": "Utenti",
-      "searchPlaceholder": "Cerca per nome, email o nome utente",
+      "searchPlaceholder": "Cerca per nome o email",
       "filters": {
         "allBans": "Qualsiasi sospensione",
         "allRoles": "Tutti i ruoli",
@@ -3227,9 +3226,9 @@
       "actions": "Azioni"
     },
     "audit": {
-      "title": "Registro di audit",
+      "title": "Registro attività",
       "searchPlaceholder": "Cerca per persona o organizzazione",
-      "tableLabel": "Registro di audit delle azioni amministrative",
+      "tableLabel": "Registro delle azioni amministrative",
       "unknownPerson": "Un account rimosso",
       "unknownTarget": "un elemento sconosciuto",
       "filters": {
@@ -3358,7 +3357,7 @@
       "shortcutOrganizationsHint": "Esamina le candidature",
       "shortcutCertificates": "Certificati",
       "shortcutCertificatesHint": "Cerca e revoca i certificati",
-      "shortcutAudit": "Registro di audit",
+      "shortcutAudit": "Registro attività",
       "shortcutAuditHint": "Azioni sensibili e chi le ha eseguite",
       "description": "Stato della piattaforma e cosa richiede una decisione",
       "reviewAction": "Rivedi le richieste",
@@ -3568,7 +3567,7 @@
       "greeting": "Ciao,",
       "greetingUser": "Ciao {user},",
       "homepage": "Home",
-      "reasonMandatory": "Questa è un'email di servizio sul tuo account GloRe, quindi la ricevi a prescindere dalle tue impostazioni email.",
+      "reasonMandatory": "Questa è un'email di servizio sul tuo account GloRe e l'iscrizione non può essere annullata.",
       "reasonOptional": "Ricevi questa email perché sul tuo account sono attive le email di tipo \"{topic}\".",
       "managePreferences": "Cambia le preferenze email",
       "topic_learning": "apprendimento",
@@ -3587,7 +3586,7 @@
       "preview_revoked": "Il tuo certificato GloRe è stato revocato.",
       "intro_rejected": "Il tuo tutor non ha approvato la tua richiesta di certificato.",
       "intro_revoked": "Il tuo certificato è stato revocato.",
-      "details_rejected": "Il motivo è qui sotto. Dopo averlo risolto, puoi inviare una nuova richiesta.",
+      "details_rejected": "Puoi inviare una nuova richiesta dopo aver apportato le modifiche richieste.",
       "details_revoked": "Resta tra i tuoi certificati, contrassegnato come revocato, e la sua pagina di verifica ora mostra la revoca.",
       "reasonLabel": "Motivo",
       "button": "Vedi i dettagli",
@@ -3657,7 +3656,7 @@
     },
     "organization/membership": {
       "subject_role_changed": "Il tuo ruolo in {organizationName} è cambiato",
-      "subject_removed": "Il tuo accesso a {organizationName} è stato rimosso",
+      "subject_removed": "Il tuo accesso a {organizationName} è stato revocato",
       "subject_ownership_gained": "Ora amministri {organizationName}",
       "subject_ownership_left": "Hai ceduto la proprietà di {organizationName}",
       "preview_role_changed": "Il tuo ruolo in {organizationName} ora è {role}.",
@@ -3665,7 +3664,7 @@
       "preview_ownership_gained": "La proprietà di {organizationName} è passata a te.",
       "preview_ownership_left": "La proprietà di {organizationName} è passata a un altro membro.",
       "intro_role_changed": "Il tuo ruolo in {organizationName} ora è {role}.",
-      "intro_removed": "Il tuo accesso a {organizationName} è stato rimosso.",
+      "intro_removed": "Il tuo accesso a {organizationName} è stato revocato.",
       "intro_ownership_gained": "La proprietà di {organizationName} è passata a te.",
       "intro_ownership_left": "La proprietà di {organizationName} è passata a un altro membro.",
       "details_role_changed": "Il tuo ruolo decide cosa puoi vedere e fare nell'organizzazione.",
@@ -3673,11 +3672,16 @@
       "details_ownership_gained": "Come amministratore gestisci membri, inviti e impostazioni dell'organizzazione.",
       "details_ownership_left": "Non amministri più l'organizzazione. Il tuo account resta attivo.",
       "button": "Apri GloRe",
-      "footer": "Ricevi questa email perché la tua appartenenza a {organizationName} è cambiata."
+      "footer": "Ricevi questa email perché la tua appartenenza a {organizationName} è cambiata.",
+      "subject_member_left": "{memberName} ha lasciato {organizationName}",
+      "preview_member_left": "{memberName} non fa più parte di {organizationName}.",
+      "intro_member_left": "{memberName} ha lasciato {organizationName}.",
+      "details_member_left": "Puoi controllare l'elenco dei membri quando vuoi.",
+      "footer_member_left": "Ricevi questa email perché gestisci {organizationName}."
     },
     "team/role-changed": {
       "subject_set": "Il tuo ruolo nel team GloRe è cambiato",
-      "subject_removed": "Il tuo accesso al team GloRe è stato rimosso",
+      "subject_removed": "Il tuo accesso al team GloRe è stato revocato",
       "preview_set": "Il tuo ruolo nel team GloRe ora è {role}.",
       "preview_removed": "Non hai più un ruolo nel team GloRe.",
       "intro_set": "Il tuo ruolo nel team GloRe ora è {role}.",
@@ -3815,7 +3819,7 @@
     "revokedOn": "Revocato in data {date}",
     "empty": "Nessun invito",
     "emptyDescription": "Gli inviti che invii compariranno qui.",
-    "filterLabel": "Filtra gli inviti",
+    "filterLabel": "Stato",
     "filterOpen": "Aperti",
     "filterAll": "Tutti",
     "copyLink": "Copia link",
@@ -3902,6 +3906,7 @@
     "error_LINK_REVOKED": "Questo link non è più attivo.",
     "error_MISMATCH": "Questo invito è per un altro account.",
     "error_NOT_FOUND": "Non abbiamo trovato questo elemento.",
+    "error_ORGANIZATION_REJECTED": "Questa organizzazione non accetta membri perché la sua richiesta è stata rifiutata.",
     "error_RATE_LIMITED": "Troppi tentativi. Attendi qualche minuto e riprova.",
     "error_REQUEST_DECIDED": "Questa richiesta è già stata esaminata.",
     "error_REVOKED": "Questo invito è stato revocato.",
@@ -3911,7 +3916,6 @@
     "error_PROOF_REQUIRED": "Apri il link dell'email di invito oppure chiedici di inviarti un nuovo link di conferma.",
     "filterExpired": "Scadute",
     "filterAccepted": "Accettate",
-    "error_ORGANIZATION_REJECTED": "Questa organizzazione non accetta membri perché la sua richiesta è stata rifiutata.",
     "rowActions": "Azioni per {email}",
     "searchPlaceholder": "Cerca inviti",
     "bulkUpload": "Carica file CSV",
@@ -4085,7 +4089,7 @@
       "statusComplete": "Completo",
       "statusIncomplete": "Incompleto",
       "statusUnsaved": "Modifiche non salvate",
-      "translateEmpty": "Nessun'altra lingua ha ancora testo per questo campo."
+      "translateEmpty": "Nessun'altra lingua ha una traduzione per questo campo"
     },
     "catalog": {
       "rating": "{rating} ({count})",
@@ -4272,7 +4276,7 @@
         "body": "Il tuo nuovo ruolo è {role}."
       },
       "team_role_changed_removed": {
-        "title": "Il tuo accesso al team è stato rimosso",
+        "title": "Il tuo accesso al team è stato revocato",
         "body": "Non hai più un ruolo nel team."
       },
       "messages_stale": {
@@ -4395,7 +4399,7 @@
   "Translations": {
     "title": "Traduzioni",
     "description": "Rivedi e modifica i testi dell'interfaccia in tutte le lingue. Le bozze restano private finché non le pubblichi.",
-    "searchPlaceholder": "Cerca per chiave, testo o sezione",
+    "searchPlaceholder": "Cerca per testo o sezione",
     "tableLabel": "Messaggi dell'interfaccia in tutte le lingue",
     "count": "{count, plural, one {# messaggio} other {# messaggi}}",
     "filters": {
@@ -4451,8 +4455,8 @@
       },
       "stale": {
         "outdated": "Il testo predefinito è cambiato dopo questa modifica. Controlla che sia ancora adatta.",
-        "incompatible": "I segnaposto non corrispondono più al testo inglese, quindi questa modifica viene ignorata. Aggiornala o ripristinala.",
-        "orphaned": "Questo messaggio non esiste più nell'app, quindi questa modifica viene ignorata.",
+        "incompatible": "I segnaposto non corrispondono più al testo inglese e questa modifica viene ignorata. Aggiornala o ripristinala.",
+        "orphaned": "Questo messaggio non esiste più nell'app, questa modifica viene ignorata.",
         "redundant": "Questa modifica è uguale al testo predefinito. Puoi ripristinarla."
       },
       "save": "Salva bozza",
@@ -4496,8 +4500,8 @@
     },
     "errors": {
       "AI_EMPTY": "Il servizio IA non ha restituito alcun testo.",
-      "AI_INCOMPATIBLE": "Il suggerimento ha cambiato i segnaposto, quindi non è stato salvato.",
-      "AI_INVALID": "Il suggerimento non era valido, quindi non è stato salvato.",
+      "AI_INCOMPATIBLE": "Il suggerimento ha cambiato i segnaposto e non è stato salvato.",
+      "AI_INVALID": "Il suggerimento non era valido e non è stato salvato.",
       "AI_NOT_CONFIGURED": "I suggerimenti IA non sono configurati su questo server.",
       "AI_ORPHANED": "Questo messaggio non esiste più nell'app.",
       "AI_UNAVAILABLE": "Il servizio IA non è disponibile. Riprova tra un minuto.",
@@ -4516,7 +4520,7 @@
   "CourseTranslate": {
     "open": "Traduci",
     "menu": {
-      "empty": "Nessun'altra lingua ha ancora testo per questa lezione.",
+      "empty": "Nessun'altra lingua ha una traduzione di questo corso",
       "unsaved": "Salva prima la lezione per tradurla."
     },
     "field": {

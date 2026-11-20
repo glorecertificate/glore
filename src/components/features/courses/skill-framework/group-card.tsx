@@ -105,13 +105,13 @@ export const SkillGroupCard = ({
                   key={row.id}
                 >
                   <Link
-                    className="min-w-0 basis-full font-medium wrap-break-word hover:underline sm:flex-1 sm:basis-0 sm:truncate"
+                    className="min-w-0 basis-full font-medium wrap-break-word sm:flex-1 sm:basis-0 sm:truncate"
                     href={`/courses/${row.slug}`}
                   >
                     {row.title}
                   </Link>
                   <LocaleFlags languages={row.languages} />
-                  <StatusBadge tone={row.status === 'published' ? 'success' : 'neutral'}>
+                  <StatusBadge className="ml-1" tone={row.status === 'published' ? 'success' : 'neutral'}>
                     {tList(STATUS_LABELS[row.status])}
                   </StatusBadge>
                   <CourseRowMenu courseId={row.id} courseTitle={row.title} groupId={groupId} groups={groups} />

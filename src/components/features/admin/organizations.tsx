@@ -250,11 +250,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
                   <AvatarFallback className="rounded-lg">{org.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex max-w-32 min-w-0 flex-col">
-                  <Link
-                    className="truncate font-medium hover:underline"
-                    href={`/admin/organizations/${org.id}`}
-                    keepFresh="list"
-                  >
+                  <Link className="truncate font-medium" href={`/admin/organizations/${org.id}`} keepFresh="list">
                     <SearchHighlight query={search} value={org.name} />
                   </Link>
                   <span className="truncate text-xs text-muted-foreground">{org.email}</span>
@@ -341,7 +337,6 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
               hotkey={placement === 'panel' ? SHORTCUTS.filter.key : undefined}
               onValueChange={setSearch}
               placeholder={t('searchPlaceholder')}
-              size="sm"
               value={search}
             />
           ),

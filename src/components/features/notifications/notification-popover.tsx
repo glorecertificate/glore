@@ -1,20 +1,40 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
+import { markAllNotificationsRead } from '@/actions/notifications/inbox'
 import { announceNotificationsChanged } from '@/components/features/notifications/events'
 import { NotificationList } from '@/components/features/notifications/notification-list'
+import { loadNotificationPage, useNotificationPage } from '@/components/features/notifications/use-notification-page'
 import { LucideIcon } from '@/components/icons/lucide'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
-import { usePoll } from '@/hooks/use-poll'
 
-const POPOVER_LIMIT = 10
+const POLL_INTERVAL = 30_000
+
+const NotificationSkeleton = ({ label }: { label: string }) => (
+  <output className="block">
+    <span className="sr-only">{label}</span>
+    <ul aria-hidden className="space-y-0.5">
+      {Array.from({ length: 4 }, (_, index) => (
+        <li className="flex items-start gap-3 px-3 py-2.5" key={index}>
+          <Skeleton className="mt-0.5 size-8 shrink-0 rounded-full" />
+          <div className="min-w-0 flex-1 space-y-1.5">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3 w-1/4" />
+          </div>
+        </li>
+      ))}
+    </ul>
+  </output>
+)
+
+const refresh = () => void loadNotificationPage({ force: true })
 
 interface NotificationPopoverProps {
   onNavigate: () => void
@@ -23,25 +43,21 @@ interface NotificationPopoverProps {
 
 export const NotificationPopover = ({ onNavigate, unread }: NotificationPopoverProps) => {
   const t = useTranslations('Notifications')
-  const [failed, setFailed] = useState(false)
+  const tCommon = useTranslations('Common')
+  const { data, failed } = useNotificationPage()
 
-  const latest = useRef(0)
-
-  const readLatest = async () => {
-    latest.current += 1
-    const request = latest.current
-    try {
-      const { data: page, error } = await listNotifications({ limit: POPOVER_LIMIT })
-      if (error) throw new Error(error.message)
-      if (request === latest.current) setFailed(false)
-      return page
-    } catch (error) {
-      if (request === latest.current) setFailed(true)
-      throw error
+  useEffect(() => {
+    void loadNotificationPage()
+    const tick = () => {
+      if (document.visibilityState === 'visible') void loadNotificationPage({ force: true })
     }
-  }
-
-  const { data, refresh } = usePoll(readLatest, { interval: 30_000 })
+    const timer = setInterval(tick, POLL_INTERVAL)
+    document.addEventListener('visibilitychange', tick)
+    return () => {
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', tick)
+    }
+  }, [])
 
   const markAll = async () => {
     try {
@@ -66,8 +82,8 @@ export const NotificationPopover = ({ onNavigate, unread }: NotificationPopoverP
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
-        {data === null && !failed && <LoadingFallback className="py-10" />}
-        {failed && (
+        {data === null && !failed && <NotificationSkeleton label={tCommon('loading')} />}
+        {data === null && failed && (
           <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
             <LucideIcon className="size-6 text-muted-foreground" name="triangle-alert" />
             <p className="type-label">{t('errorTitle')}</p>
@@ -76,14 +92,14 @@ export const NotificationPopover = ({ onNavigate, unread }: NotificationPopoverP
             </Button>
           </div>
         )}
-        {data && !failed && data.items.length === 0 && (
+        {data && data.items.length === 0 && (
           <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
             <LucideIcon className="size-6 text-muted-foreground" name="bell-off" />
             <p className="type-label">{t('emptyTitle')}</p>
             <p className="text-[13px] text-muted-foreground">{t('emptyDescription')}</p>
           </div>
         )}
-        {data && !failed && data.items.length > 0 && (
+        {data && data.items.length > 0 && (
           <NotificationList
             className="animate-reveal"
             notifications={data.items}

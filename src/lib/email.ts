@@ -82,8 +82,8 @@ const TEMPLATES = {
     OrganizationJoinRequestReceivedEmail,
     (t, { organizationName, requesterName }) => t('subject', { organizationName, requesterName })
   ),
-  'organization/membership': define(OrganizationMembershipEmail, (t, { kind, organizationName }) =>
-    t(`subject_${kind}`, { organizationName })
+  'organization/membership': define(OrganizationMembershipEmail, (t, { kind, memberName, organizationName }) =>
+    t(`subject_${kind}`, { memberName: memberName ?? '', organizationName })
   ),
   'organization/registration-request': define(OrganizationRegistrationRequestEmail, (t, { organizationName }) =>
     t('subject', { organizationName })

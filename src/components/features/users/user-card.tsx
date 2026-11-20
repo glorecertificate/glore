@@ -7,15 +7,13 @@ import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type PublicUser } from '@/db/queries/user'
 import { useCountryName } from '@/hooks/use-country-name'
-import { type Any, type HttpUrl } from '@/lib/types'
+import { type Any } from '@/lib/types'
 import { cn, fullName } from '@/lib/utils'
-import app from '~/config/app.json'
 
 const DEFAULT_HIDE: (keyof PublicUser)[] = []
 
 export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUser)[]; user: PublicUser }) => {
   const { locale } = useI18n()
-  const tCommon = useTranslations('Common')
   const t = useTranslations('Users')
   const tLanguages = useTranslations('Intl.Languages')
   const format = useFormatter()
@@ -36,12 +34,6 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
     const countryLabel = resolveCountryLabel(user.country)
     if (countryLabel) locations.push(countryLabel)
     return locations.filter(Boolean).join(', ')
-  })()
-
-  const locationUrl = (() => {
-    if (!location) return
-    const searchQuery = location.replace(/[^a-zA-Z0-9]+/gu, '+').replace(/\++/gu, '+')
-    return `${app.mapsUrl}/${searchQuery}` as HttpUrl
   })()
 
   const languages = (() => {
@@ -101,13 +93,7 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
           {(isVisible('country') || isVisible('city')) && location && (
             <div className="flex items-center gap-1.5">
               <LucideIcon name="map-pin" className="size-3.5" />
-              {locationUrl ? (
-                <Link className="text-xs" href={locationUrl} target="_blank" title={tCommon('showOnMaps')}>
-                  {location}
-                </Link>
-              ) : (
-                <span className="max-w-44 wrap-break-word">{location}</span>
-              )}
+              <span className="max-w-44 wrap-break-word">{location}</span>
             </div>
           )}
           {isVisible('languages') && languages && (

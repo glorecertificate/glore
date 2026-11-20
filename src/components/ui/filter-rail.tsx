@@ -77,7 +77,7 @@ const SingleGroup = ({ group }: { group: FilterRailGroup }) => {
 
   return (
     <fieldset className="flex min-w-0 flex-col gap-1" data-slot="filter-rail-group">
-      <legend className="mb-1 flex min-h-6 w-full items-center justify-between gap-2 type-label text-fg-title">
+      <legend className="mb-1 flex min-h-7 w-full items-center justify-between gap-2 type-label text-fg-title">
         {group.label}
         {clearable && (
           <Button
@@ -140,7 +140,12 @@ const MultipleGroup = ({ group }: { group: FilterRailGroup }) => {
           value={query}
         />
       )}
-      <div className={cn('flex min-w-0 flex-col gap-1', searchable && 'mt-1 max-h-60 overflow-y-auto')}>
+      <div
+        className={cn(
+          'flex min-w-0 flex-col gap-1',
+          searchable && 'mt-1 max-h-60 scrollbar-thin overflow-y-auto rounded border px-2'
+        )}
+      >
         {options.map(option => (
           <label className={OPTION_CLASS} htmlFor={`${prefix}${option.value}`} key={option.value}>
             <Checkbox
@@ -187,12 +192,12 @@ export const FilterRailPanel = ({
     <aside
       aria-label={t('filters')}
       className={cn(
-        'flex w-62 shrink-0 flex-col gap-5 border-r border-border-subtle bg-surface-muted/40 p-5',
+        'flex w-68 shrink-0 flex-col gap-4 border-r border-border-subtle bg-surface-muted/40 p-5',
         className
       )}
       data-slot="filter-rail"
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex min-h-7 items-center justify-between gap-2">
         <h2 className="type-heading text-fg-title">{t('filters')}</h2>
         {active && (
           <Button className="-mr-2 text-action-text" onClick={onReset} size="xs" type="button" variant="ghost">

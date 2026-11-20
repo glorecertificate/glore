@@ -39,7 +39,7 @@ export const CertificateReviewer = ({ certificate, tutors }: { certificate: Cert
     })
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-2.5">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-2.5 shadow-card">
       <div className="flex items-center gap-2 text-sm">
         <LucideIcon name="user-check" className="size-4 shrink-0 text-muted-foreground" />
         <span className="text-muted-foreground">

@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE, seedEmail } from '~/scripts/seed-data'
 
-const sendMail = vi.hoisted(() => vi.fn(async () => {}))
+const sendMail = vi.hoisted(() => vi.fn(async (_mail: { to: string }) => {}))
 
 vi.mock('next/cache', () => ({ revalidateTag: vi.fn() }))
 vi.mock('@/lib/email', () => ({ sendMail }))
@@ -172,6 +172,32 @@ describe.skipIf(!isLocalDatabase)('notify', () => {
     expect(rows.map(({ userId }) => userId).toSorted()).toEqual([ids.owner, ids.representative].toSorted())
     expect(rows.every(({ url }) => url === '/certificates/-1')).toBe(true)
     expect(rows.every(({ data }) => !('email' in data))).toBe(true)
+  })
+
+  it('mails the owner and representatives when a member leaves, never the member', async () => {
+    const { client, ids, notify, organizationId, schema } = context
+    const [before] = await client.db.select({ id: max(schema.notifications.id) }).from(schema.notifications)
+    await notify.notify({
+      actorId: ids.volunteer,
+      data: { userId: ids.volunteer },
+      organizationId,
+      type: 'member.left',
+    })
+    const where = and(eq(schema.notifications.type, 'member.left'), gt(schema.notifications.id, before?.id ?? 0))
+    const rows = await client.db.query.notifications.findMany({ where })
+    await client.db.delete(schema.notifications).where(where)
+
+    const mailed = sendMail.mock.calls.map(([mail]) => mail.to).toSorted()
+    expect(rows.map(({ userId }) => userId).toSorted()).toEqual([ids.owner, ids.representative].toSorted())
+    expect(mailed).toEqual([seedEmail('owner'), seedEmail('representative')].toSorted())
+    expect(sendMail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        template: expect.objectContaining({
+          name: 'organization/membership',
+          props: expect.objectContaining({ kind: 'member_left' }),
+        }),
+      })
+    )
   })
 
   it('gives the previous and the new owner their own ownership copy', async () => {

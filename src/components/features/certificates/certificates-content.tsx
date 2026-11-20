@@ -93,7 +93,7 @@ export const CertificatesContent = ({ certificates, draftSteps, eligibility }: C
           cell: certificate => (
             <div className="flex min-w-0 flex-col gap-0.5">
               <Link
-                className="flex items-center gap-1.5 font-medium text-foreground hover:underline"
+                className="flex items-center gap-1.5 font-medium text-foreground"
                 href={`/certificates/${certificate.id}`}
                 keepFresh="list"
               >

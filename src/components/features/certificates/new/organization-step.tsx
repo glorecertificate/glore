@@ -86,7 +86,7 @@ export const OrganizationStep = ({ organization }: { organization: string }) => 
         name="rating.comment"
         render={({ field }) => (
           <FormItem>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex min-h-7 items-center justify-between gap-2">
               <FormLabel>{t('ratingComment')}</FormLabel>
               <CommentLength />
             </div>

@@ -44,7 +44,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
         {serializeJsonLd(structuredData(verification, url, t('credentialName', { name: holderName })))}
       </Script>
 
-      <article className="flex flex-col overflow-hidden rounded-xl border border-border-subtle bg-card text-card-foreground shadow-card">
+      <article className="flex flex-col overflow-hidden rounded-xl border border-border-subtle bg-card text-card-foreground shadow-card md:mt-4">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b px-6 py-4">
           <div className="flex min-w-0 flex-col gap-1">
             <StatusBadge className="self-start text-base font-semibold" tone={revoked ? 'danger' : 'success'}>

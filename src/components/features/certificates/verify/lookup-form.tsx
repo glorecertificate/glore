@@ -17,7 +17,7 @@ export const LookupForm = ({ defaultValue, label }: { defaultValue?: string; lab
       <Input
         autoCapitalize="characters"
         autoComplete="off"
-        className="font-mono tracking-wider uppercase"
+        className="font-mono placeholder:font-sans"
         defaultValue={defaultValue}
         id="verify-code"
         maxLength={24}

@@ -271,7 +271,7 @@ export const StepperIndicator = ({ children, className, ...props }: React.Compon
   return (
     <div
       className={cn(
-        'relative flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-background text-xs text-fg-2 inset-ring inset-ring-border-strong/70 transition-colors data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:inset-ring-0 data-[state=completed]:bg-primary data-[state=completed]:text-primary-foreground data-[state=completed]:inset-ring-0 motion-reduce:transition-none',
+        'relative flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-background text-xs text-fg-2 inset-ring inset-ring-border-strong/30 transition-colors data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:inset-ring-0 data-[state=completed]:bg-primary data-[state=completed]:text-primary-foreground data-[state=completed]:inset-ring-0 motion-reduce:transition-none',
         className
       )}
       data-slot="stepper-indicator"
@@ -301,7 +301,7 @@ export const StepperSeparator = ({ className, ...props }: React.ComponentProps<'
   return (
     <div
       className={cn(
-        'm-0.5 rounded-full bg-border-strong/50 transition-colors group-data-[orientation=horizontal]/stepper-nav:h-0.5 group-data-[orientation=horizontal]/stepper-nav:flex-1 group-data-[orientation=vertical]/stepper-nav:h-12 group-data-[orientation=vertical]/stepper-nav:w-0.5 data-[state=completed]:bg-primary motion-reduce:transition-none',
+        'm-0.5 rounded-full bg-border-strong/30 transition-colors group-data-[orientation=horizontal]/stepper-nav:h-0.5 group-data-[orientation=horizontal]/stepper-nav:flex-1 group-data-[orientation=vertical]/stepper-nav:h-12 group-data-[orientation=vertical]/stepper-nav:w-connector data-[state=completed]:bg-primary motion-reduce:transition-none',
         className
       )}
       data-slot="stepper-separator"

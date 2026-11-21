@@ -40,6 +40,7 @@ describe.skipIf(!isLocalDatabase)('legal mutations', () => {
           name: 'Legal Admin',
           onboardedAt: new Date().toISOString(),
         })
+        await tx.delete(schema.legalVersions).where(eq(schema.legalVersions.status, 'draft'))
         await work(tx, actorId)
         throw new Rollback()
       })

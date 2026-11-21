@@ -35,7 +35,7 @@
   "js/ts.tsdk.path": "./node_modules/typescript",
   "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
   "knip.deferSession": true,
-  "oxc.configPath": "oxlint.editor.config.mts",
+  "oxc.configPath": "scripts/lint/editor.oxlintrc.mts",
   "oxc.fixKind": "safe_fix_or_suggestion",
   "oxc.typeAware": false,
   "search.exclude": {

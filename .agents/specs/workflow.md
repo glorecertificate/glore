@@ -199,8 +199,10 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 ### Editor lint and save chain
 
 - CLI runs (`pnpm run check:lint`, git hooks, CI) use `.oxlintrc.json` with `typeAware: true` for `no-floating-promises` and `no-misused-promises`.
-- `.vscode/settings.json` sets `oxc.typeAware: false` and `oxc.configPath` to `oxlint.editor.config.mts`.
+- `.vscode/settings.json` sets `oxc.typeAware: false` and `oxc.configPath` to `scripts/lint/editor.oxlintrc.mts`.
 - That editor config drops the React Compiler rules except `rules-of-hooks` and `exhaustive-deps` (110 of 185 ms per keystroke).
+- oxlint resolves globs from the config's folder, and `ignorePatterns` cannot reach files outside it. So the editor config prefixes each override glob with `**/`, and turns the base ignores into an override that turns off every listed rule and plugin.
+- Never name a config in a subfolder `oxlint.config.ts`, `oxlint.config.mts`, or `.oxlintrc.json`: the CLI loads those as nested configs.
 - `knip.deferSession: true` keeps the knip extension idle.
 - Change one side of the editor and CLI lint pair only by deliberately changing the other.
 - `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. Never re-add `source.organizeImports` or `source.removeUnusedImports`.

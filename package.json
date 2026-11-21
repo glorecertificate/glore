@@ -55,6 +55,7 @@
     "mail:up": "docker compose up -d mailpit",
     "email": "portless email.glore dotenv -- email dev --dir src/emails --port 45674",
     "release": "dotenv -- release-it --config release.config.ts",
+    "release:tag": "node scripts/release-tag.mts",
     "analyze": "next experimental-analyze",
     "bump": "corepack use pnpm@latest && pnpm update -Li",
     "skills": "skills experimental_install --yes"

@@ -76,7 +76,7 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 ## Workflows
 
 - `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then `deploy.yml` deploys a preview on a push to `main`, and on a PR only when it has the `preview` label.
-- Temporary until launch: a push to `main` runs the `deploy` job with `migrate: true`, which migrates and deploys staging. Then the `production` job needs `deploy`, and migrates and deploys production. A PR deploy never migrates. After launch, remove the `production` job and the `migrate` input from `ci.yml`, so production goes back to tags only.
+- A push to `main` runs the `deploy` job with `migrate: true`, which migrates and deploys staging. A PR deploy never migrates. Only a `v*` tag reaches production, through `release.yml`.
 - On a push, `ci.yml` never cancels a run in progress, so a newer push cannot stop a migration.
 - `preview.yml` deploys a PR preview when the PR gets the `preview` label. Later pushes to that PR deploy again through `ci.yml`.
 - Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
@@ -93,7 +93,9 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 
 - `deploy.yml` takes a `migrate` input, false by default. When true, it runs `pnpm exec dotenv -e .vercel/.env.<target>.local -- pnpm exec drizzle-kit migrate` after `vercel pull` and before `vercel build`. The build prerenders against the migrated database.
 - Migrations read `DATABASE_URL` from the pulled env file. `drizzle.config.ts` reads no unpooled variable. The workflow never prints or uploads the env file.
-- Until launch, a push to `main` migrates and deploys staging, then production. Production deploys run one at a time and never cancel. After launch, production deploys only on a `v*` tag.
+- A push to `main` migrates and deploys staging. Production deploys only on a `v*` tag, one at a time, and never cancels.
+- A release goes through a PR, because nothing pushes to `main` directly. On a `release/<version>` branch from `main`, `pnpm run release <version>` runs check and build, bumps the version, writes `CHANGELOG.md`, commits `chore(release): v<version>`, and pushes the branch.
+- After the queue merges the release PR, `pnpm run release:tag` checks that the last commit on `main` is that release, tags it, pushes the tag, and creates the GitHub release from the `CHANGELOG.md` section.
 - Only CI deploys. `vercel.json` sets `git.deploymentEnabled: false`, so Vercel makes no Git builds and no `Vercel` check.
 - Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails.
 - The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, and CodeQL.

@@ -11,12 +11,12 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 
 ## Deploy model
 
-- This pipeline is temporary. Until launch, a push to `main` migrates and deploys staging and production. After launch, production goes back to tags only.
-- A push to `main` runs `ci.yml`: check and e2e, then `deploy.yml` migrates staging and deploys `main` with the Vercel Preview env vars to the preview domain. Then `deploy.yml` migrates production and deploys it.
+- Since v0.7.0, a push to `main` migrates and deploys staging only. Production deploys only from a `v*` tag.
+- A push to `main` runs `ci.yml`: check and e2e, then `deploy.yml` migrates staging and deploys `main` with the Vercel Preview env vars to the preview domain.
 - A PR gets a preview deploy only with the `preview` label (`github.md`, "Workflows"). The Neon Vercel integration is disconnected, so every preview uses the unscoped Preview `DATABASE_URL` (Neon `staging`). Never add a branch-scoped `DATABASE_URL`.
 - The `Default branch` ruleset and its required checks are in `github.md`, "Deploys". Admins can bypass it.
 - A PR deploy never migrates, so a PR never changes staging.
-- A `v*` tag runs `release.yml`, which migrates and deploys production with `vercel deploy --target=production`. After launch, a push to `main` no longer reaches production.
+- A `v*` tag runs `release.yml`, which migrates and deploys production with `vercel deploy --target=production`.
 - The production build prerenders against the production database, so `deploy.yml` migrates it before `vercel build` (`migrate: true`).
 - `deploy.yml` builds on the runner from `vercel pull`, which cannot read Secret variables. Every variable the build validates must use the Config type.
 
@@ -60,10 +60,12 @@ The schema is `envSchema` in `next.config.ts`. Production builds always send mai
 4. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --bootstrap --dry-run`.
 5. Run the same command without `--dry-run`. Production always imports courses as drafts.
 6. Insert the level description drafts: `DATABASE_URL='<production url>' pnpm run content:levels --target production --dry-run`, then the same command without `--dry-run`. It never overwrites edited text.
-7. Run `pnpm run release` on `main` and release `0.7.0`. It runs check and build, bumps the version, updates `CHANGELOG.md`, and pushes `main` with the `v0.7.0` tag.
-8. The tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
+7. Create `release/v0.7.0` from `main` and run `pnpm run release 0.7.0`. It runs check and build, bumps the version, updates `CHANGELOG.md`, commits `chore(release): v0.7.0`, and pushes the branch.
+8. Open a PR with that title and merge it through the queue. The merge deploys staging only.
+9. Run `pnpm run release:tag`. It tags the squash commit on `main` as `v0.7.0`, pushes the tag, and creates the GitHub release.
+10. The tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
 
-Run steps 2 and 7 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes. 0035 drops `certificate_skills.statement`, so certificate pages also fail on the old build.
+Run steps 2 and 9 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes. 0035 drops `certificate_skills.statement`, so certificate pages also fail on the old build.
 
 The import refuses production once any course or doc exists, so steps 4 and 5 pass `--bootstrap`. After this release the team edits content in the app, and nobody passes the flag again.
 

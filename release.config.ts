@@ -72,23 +72,19 @@ export default {
   git: {
     commitMessage: 'chore(release): v${version}',
     push: true,
-    pushArgs: ['--follow-tags', '--no-verify'],
-    requireBranch: 'main',
+    pushArgs: [],
+    requireBranch: 'release/*',
     requireCleanWorkingDir: true,
-    requireUpstream: true,
+    requireUpstream: false,
+    tag: false,
     tagName: 'v${version}',
-  },
-  github: {
-    release: true,
-    releaseName: 'v${version}',
-    releaseNotes: context => context.changelog.split('\n').slice(1).join('\n'),
   },
   npm: {
     publish: false,
   },
   hooks: {
     'before:init': ['pnpm run check', 'pnpm run build'],
-    'before:release': ['pnpm run format', 'git add .'],
+    'before:release': ['pnpm exec oxfmt', 'git add .'],
   },
   plugins: {
     '@release-it/bumper': {

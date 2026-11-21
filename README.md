@@ -117,7 +117,8 @@ The application can also be deployed manually:
 ```sh
 pnpm run deploy:preview     # deploy a preview
 pnpm run deploy:production  # deploy to production without a release
-pnpm run release            # check, build, bump the version, update CHANGELOG.md, tag and push from main
+pnpm run release            # on a release/<version> branch: check, build, bump the version, update CHANGELOG.md, commit and push
+pnpm run release:tag        # after the release PR merges: tag main, push the tag, and create the GitHub release
 ```
 
 Pushing the release tag triggers the production deployment.

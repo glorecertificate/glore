@@ -41,15 +41,3 @@ jobs:
     secrets: inherit
     with:
       migrate: ${{ github.event_name == 'push' }}
-  production:
-    name: Production
-    needs: deploy
-    if: github.event_name == 'push'
-    permissions:
-      contents: read
-      deployments: write
-    uses: ./.github/workflows/deploy.yml
-    secrets: inherit
-    with:
-      environment: production
-      migrate: true

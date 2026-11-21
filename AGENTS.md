@@ -36,7 +36,7 @@ Read only the specs whose rows apply (`.agents/specs/`).
 
 Work lives in GitHub issues. Plan files in `.agents/plans/` are gitignored: a draft PR body or a parent issue holds the shared plan (`github.md`).
 
-References in `.agents/references/`: product decisions, certificate PDF, translations, manual test flows, release runbook.
+References in `.agents/references/`: product decisions, product record, visual rules, certificate PDF, translations, manual test flows, release runbook.
 
 ## Commands and commits
 

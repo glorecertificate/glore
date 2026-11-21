@@ -103,13 +103,11 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - After a run, review the `.agents/skills/` and `skills-lock.json` diff as a code change, then `git restore` and `git clean` any skill you did not mean to update.
 - `web-design-guidelines` fetches its rules at runtime from `vercel-labs/web-interface-guidelines` on `main`, so it can change with no lockfile change.
 - `agent-browser`, `sync-i18n`, `sync-docs`, and `sync-agents` are machine-wide skills invoked by name, not vendored here.
-- `impeccable` is the design skill: product and design context (`PRODUCT.md`, `DESIGN.md`), critique, audit, and polish. `PRODUCT.md` at the root is the product record: users, purpose, evidence, and the WCAG 2.2 AA standard. On first use, its launcher downloads an engine binary to a user cache and checks it against `scripts/engine-checksums.txt` in the skill. The CI Claude workflows cannot run it.
 
 | Working on                       | Read / run                                                           |
 | -------------------------------- | -------------------------------------------------------------------- |
 | Any React or Next.js code        | `vercel-react-best-practices` (apply CRITICAL > HIGH > MEDIUM > LOW) |
 | Next.js APIs and config          | `node_modules/next/dist/docs/` (version-exact, see `reference.md`)   |
-| UI design, critique, and polish  | `impeccable`                                                         |
 | UI and visual review             | `vercel-react-best-practices` + `web-design-guidelines`              |
 | Driving or verifying the real UI | `agent-browser`                                                      |
 | shadcn/ui components             | `shadcn`                                                             |
@@ -201,8 +199,10 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 ### Editor lint and save chain
 
 - CLI runs (`pnpm run check:lint`, git hooks, CI) use `.oxlintrc.json` with `typeAware: true` for `no-floating-promises` and `no-misused-promises`.
-- `.vscode/settings.json` sets `oxc.typeAware: false` and `oxc.configPath` to `oxlint.editor.config.mts`.
+- `.vscode/settings.json` sets `oxc.typeAware: false` and `oxc.configPath` to `scripts/lint/editor.oxlintrc.mts`.
 - That editor config drops the React Compiler rules except `rules-of-hooks` and `exhaustive-deps` (110 of 185 ms per keystroke).
+- oxlint resolves globs from the config's folder, and `ignorePatterns` cannot reach files outside it. So the editor config prefixes each override glob with `**/`, and turns the base ignores into an override that turns off every listed rule and plugin.
+- Never name a config in a subfolder `oxlint.config.ts`, `oxlint.config.mts`, or `.oxlintrc.json`: the CLI loads those as nested configs.
 - `knip.deferSession: true` keeps the knip extension idle.
 - Change one side of the editor and CLI lint pair only by deliberately changing the other.
 - `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. Never re-add `source.organizeImports` or `source.removeUnusedImports`.

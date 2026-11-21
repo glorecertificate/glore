@@ -1,10 +1,16 @@
 {
   "$schema": "./node_modules/knip/schema.json",
-  "entry": ["src/i18n.ts", "src/app/**/page.dev.tsx"],
-  "project": ["src/**/*", "scripts/**/*"],
+  "entry": [
+    "src/i18n.ts",
+    "src/app/**/page.dev.tsx",
+    "e2e/auth.setup.ts",
+    "e2e/perf/*.perf.ts",
+    "scripts/lint/editor.oxlintrc.mts"
+  ],
+  "project": ["src/**/*", "scripts/**/*", "e2e/**/*"],
   "tags": ["-lintignore"],
   "ignoreIssues": {
     "src/components/ui/**": ["exports"]
   },
-  "ignoreDependencies": ["@release-it/bumper", "@release-it/conventional-changelog", "react-doctor", "server-only"]
+  "ignoreDependencies": ["@release-it/bumper", "@release-it/conventional-changelog", "server-only"]
 }

@@ -1,10 +1,6 @@
-# Product
+# Product record
 
-<!-- impeccable:product-schema 1 -->
-
-## Platform
-
-web
+Users, purpose, evidence for copy, principles, and the accessibility standard.
 
 ## Users
 
@@ -24,7 +20,7 @@ web
 
 ## Positioning
 
-- An open network of NGOs issues each certificate under one shared Quality Charter.
+- An open network of NGOs issues each certificate under shared quality standards.
 - A tutor of the host organization reviews each certificate. An approved certificate is immutable.
 - A public page and a QR code on the PDF let anyone verify a certificate.
 - Certification is free for volunteers and member organizations at present.
@@ -32,7 +28,7 @@ web
 ## Operating Context
 
 - The flow for a volunteer: join an organization, take the intro courses, complete 3 to 4 skill courses, and request a certificate.
-- A tutor reviews the request and approves it with a level from 2 (Basic) to 5 (Advanced) for each skill.
+- A tutor reviews the request and approves it with a level for each skill: Intermediate, Good, or Advanced (D2).
 - The activity rule is 3 months or 100 hours with the host organization.
 - The skill framework has 25 soft skills in 4 groups: communication, personal, work, and social.
 - The PDF follows `.agents/references/certificate-template.pdf`. It holds 1 to 4 tasks and 3 to 4 skills.

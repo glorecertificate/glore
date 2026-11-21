@@ -26,9 +26,9 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 
 ## Direction B: brand-forward
 
-The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `DESIGN.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
+The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `.agents/references/design.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
 
-- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a `bg-sidebar-active` item (white at 12%, `sidebar-ring` icon), and `Logo onNavy` with no chip (`/icon-on-navy.png`). The bell sits in the logo row. `SidebarCount` shows a plain number, or a white badge when `floating`. The `logo-chip` utility stays for auth pages. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
+- Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a `bg-sidebar-active` item (white at 12%, `sidebar-ring` icon), and `Logo onNavy` with no chip (`/icon-on-navy.png`). The bell sits in the logo row. `SidebarCount` shows a plain number, or a white badge when `floating`. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
 - Auth aside: one 32rem aside for every auth screen (`AuthFrame` in `features/auth/`) with a 165deg gradient of the `band-*` tokens, the white logo, a `type-display` headline and one subline (`Auth.asideTitle`, `Auth.asideMessage`), and 40px padding. The live `AuthGlobe` (about 760px, left -188px, masked toward the bottom) sits behind the text. The text is `pointer-events-none` so a drag reaches the canvas. The globe color follows `AuthGlobeContext` (`errored`, `view`), and `AuthFlow` resets it on unmount. In the pane, the language select is top right and the legal links and theme switch sit at the bottom, all 40px from the edges. The register step list renders above the form (`AuthMain` `header`). Below `lg`, the aside is the logo bar.
 - Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1826`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
 - `DashboardHeader` renders `PageBand`: gradient `bg-band` (four stops from the sidebar navy to teal and green, no globe), `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`). The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it. With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
@@ -99,7 +99,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 ## Color and typography
 
-- `config/theme.json` (`system`) is the palette source. `pnpm run theme` writes `src/styles/tokens.generated.css` and `src/emails/colors.generated.ts`. Never edit them by hand.
+- `config/theme.json` (`system`) is the palette source. `pnpm run theme` writes `src/app/tokens.generated.css` and `src/emails/colors.generated.ts`. Never edit them by hand.
 - `pnpm run check:theme` fails on a stale generated file or on a contrast pair below its minimum.
 - The generator (`scripts/theme/`) solves text, fill, and ring lightness in OKLCH against the targets in `system.contrast`.
 - Targets are 4.5:1 for text, 6:1 for `fg-2`, 5:1 for colored text, and 3:1 for non-text. Declare a pair in the generator before you use a new combination.
@@ -128,7 +128,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 - The Tailwind numeric text scale is unchanged, because the vendored editor and the mobile textarea need `text-base` at 16px.
 - Body text is `text-sm` (14px).
-- Bricolage roles: `type-display` (36/40), `type-band` (28/34, 34/40 from `sm`, the band title), `type-stat` (34/38), `type-title` (28/34), `type-heading` (17/24), and `type-stage` (32/38, 44/48 from `lg`) for the one stage title of a page. Geist roles: `type-label` (13/20, 500), `type-caption` (12/16), and `type-overline` (11/16, uppercase).
+- Bricolage roles: `type-display` (36/40), `type-band` (28/34, 34/40 from `sm`, the band title), `type-stat` (34/38), `type-title` (28/34), and `type-heading` (17/24). Geist roles: `type-label` (13/20, 500), `type-caption` (12/16), and `type-overline` (11/16, uppercase).
 - Name a type role `type-*`, never `text-*`. `cn()` reads an unknown `text-*` class as a color and drops it next to another color.
 
 ### Brand roles and fonts
@@ -161,5 +161,4 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 ## Design briefs
 
-- Impeccable surface briefs live in `.impeccable/surfaces/`, one per surface, and stay untracked.
-- The volunteer dashboard brief records the Journey rail direction chosen in #84.
+- The volunteer dashboard uses the Journey rail direction chosen in #84 (`features/dashboard/journey-*.tsx`).

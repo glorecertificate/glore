@@ -7,12 +7,6 @@
       "skillPath": "skills/cloudflare/SKILL.md",
       "computedHash": "3db237b77d15da8ee3ee87b73f2d4b2bce1c43e4f066613fb3c7ea2ad626390c"
     },
-    "impeccable": {
-      "source": "pbakaus/impeccable",
-      "sourceType": "github",
-      "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "computedHash": "4d695d4e391f4de9b3c9f14c2916fb44a3c1597492511ba618ea2addc461c19e"
-    },
     "neon-drizzle": {
       "source": "neondatabase/ai-rules",
       "sourceType": "github",

@@ -185,7 +185,6 @@
     "oxlint-tsgolint": "7.0.2007",
     "portless": "^0.17.0",
     "postcss": "^8.5.32",
-    "react-doctor": "^0.9.22",
     "release-it": "^21.1.2",
     "skills": "^1.8.1",
     "tailwind-scrollbar-hide": "^4.0.0",

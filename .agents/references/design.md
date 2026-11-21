@@ -1,4 +1,4 @@
-# Design system: brand-forward
+# Visual rules: brand-forward
 
 GloRe looks like a confident, friendly product built around its brand: a navy shell, a teal and navy gradient band on every page, white cards on a pale blue canvas, and green for achievement. The owner chose this direction on 2026-11-18. Rules: `.agents/specs/ui.md`. Values: `config/theme.json`.
 

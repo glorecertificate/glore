@@ -180,61 +180,6 @@ export const tenantLogin = async (page: Page, user: TenantUser) => {
   await expect(page).toHaveURL(/\/dashboard/u)
 }
 
-interface SeedRequest {
-  author: TenantUser
-  code?: string
-  daysAgo?: number
-  reviewer?: TenantUser
-  status: 'approved' | 'changes_requested' | 'draft' | 'in_review' | 'rejected' | 'revoked' | 'submitted' | 'withdrawn'
-  tenant: Tenant
-}
-
-export const seedRequest = async ({ author, code, daysAgo = 0, reviewer, status, tenant }: SeedRequest) =>
-  await withDb(async pool => {
-    const handle = `g2-${randomUUID()}`
-    const issued = status === 'approved' || status === 'revoked'
-    const certificate = await pool.query<{ id: number }>(
-      `insert into certificates
-        (handle, code, user_id, organization_id, language, activity_start_date, activity_end_date, activity_duration,
-         activity_location, activity_description, tasks, reviewer_id, status, submitted_at, issued_at, is_default,
-         revoked_at, revoked_reason, reviewer_comment)
-       values ($1, $2, $3, $4, 'en', '2026-01-10', '2026-06-30', 120, 'Milan', 'G2 experience',
-         array['Welcomed new volunteers'], $5, $6::certificate_status, $7, $8, $9, $10, $11, $12)
-       returning id`,
-      [
-        handle,
-        status === 'draft'
-          ? null
-          : (code ??
-            `G2${Math.random().toString(36).slice(2, 4)}-${Math.random().toString(36).slice(2, 6)}-${Math.random().toString(36).slice(2, 6)}`.toUpperCase()),
-        author.id,
-        tenant.id,
-        reviewer?.id ?? null,
-        status,
-        status === 'draft' ? null : new Date(Date.now() - daysAgo * 86_400_000).toISOString(),
-        issued ? new Date().toISOString() : null,
-        status === 'approved',
-        status === 'revoked' ? new Date().toISOString() : null,
-        status === 'revoked' ? 'G2 revoked' : null,
-        status === 'changes_requested' ? 'Please add more detail to the tasks.' : null,
-      ]
-    )
-    const id = certificate.rows[0]?.id
-    if (!id) throw new Error('Certificate insert failed')
-    const courses = await pool.query<{ course_id: number }>(
-      'select course_id from user_courses where user_id = $1 and completed_at is not null order by course_id limit 3',
-      [author.id]
-    )
-    for (const [index, course] of courses.rows.entries()) {
-      await pool.query(
-        `insert into certificate_skills (certificate_id, course_id, level, self_level, sort_order, evidence)
-         values ($1, $2, 'intermediate', 'intermediate', $3, 'G2 evidence')`,
-        [id, course.course_id, index]
-      )
-    }
-    return { handle, id }
-  })
-
 export const certificateRow = async (id: number) =>
   await withDb(async pool => {
     const result = await pool.query<{

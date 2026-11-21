@@ -16,7 +16,7 @@ export const actAs = async (browser: Browser, user: TenantUser, locale?: string)
   return { close: async () => await context.close(), context, page }
 }
 
-export const pickDay = async (page: Page, field: 'End date' | 'Start date', day: string) => {
+const pickDay = async (page: Page, field: 'End date' | 'Start date', day: string) => {
   await page.getByRole('button', { name: field }).click()
   await page.locator(`td[data-day$="-${day}"]:not([data-outside=true]) button`).click()
   await expect(page.locator('[data-slot=calendar]')).toHaveCount(0)

@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { type SystemConfig, buildTheme, failingPairs, renderCss, renderEmail } from './tokens.ts'
 
 const OUTPUTS = {
-  css: join('src', 'styles', 'tokens.generated.css'),
+  css: join('src', 'app', 'tokens.generated.css'),
   email: join('src', 'emails', 'colors.generated.ts'),
 }
 

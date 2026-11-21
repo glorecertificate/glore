@@ -110,8 +110,6 @@
     --earned-from: oklch(0.77 0.165 122.4);
     --earned-via: oklch(0.679 0.12 224.4);
     --earned-to: oklch(0.306 0.065 254.1);
-    --earned-title-from: oklch(0.306 0.065 254.1);
-    --earned-title-to: oklch(0.508 0.098 229.5);
     --stat-teal-from: oklch(0.642 0.117 227.4);
     --stat-teal-to: oklch(0.555 0.106 228.9);
     --stat-teal-strip: oklch(0.679 0.12 224.4);
@@ -153,8 +151,6 @@
     --elevation-glow-nav: 0 4px 12px -4px rgb(36 167 207 / 60%);
     --elevation-glow-green: 0 6px 16px -6px rgb(162 196 57 / 80%);
     --elevation-deep: 0 30px 60px -18px rgb(0 0 0 / 55%);
-    --logo-chip: oklch(1 0 0);
-    --logo-ink: oklch(0.306 0.065 254.1);
     --action-foreground: oklch(1 0 0);
     --nav-from: oklch(0.555 0.106 228.9);
     --nav-to: oklch(0.508 0.098 229.5);

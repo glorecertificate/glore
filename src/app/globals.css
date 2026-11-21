@@ -167,8 +167,6 @@
   --color-info-subtle: var(--info-subtle);
   --color-info-border: var(--info-border);
   --color-canvas: var(--canvas);
-  --color-logo-chip: var(--logo-chip);
-  --color-logo-ink: var(--logo-ink);
   --color-sidebar-muted: var(--sidebar-muted);
   --color-sidebar-field: var(--sidebar-field);
   --color-action-from: var(--action-from);
@@ -199,8 +197,6 @@
   --color-earned-from: var(--earned-from);
   --color-earned-via: var(--earned-via);
   --color-earned-to: var(--earned-to);
-  --color-earned-title-from: var(--earned-title-from);
-  --color-earned-title-to: var(--earned-title-to);
   --color-stat-teal-from: var(--stat-teal-from);
   --color-stat-teal-to: var(--stat-teal-to);
   --color-stat-teal-strip: var(--stat-teal-strip);
@@ -280,21 +276,6 @@
   font-weight: 700;
   line-height: 2.5rem;
   letter-spacing: -0.025em;
-}
-
-@utility type-stage {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 2.375rem;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-
-  @media (width >= 64rem) {
-    font-size: 2.75rem;
-    line-height: 3rem;
-    letter-spacing: -0.03em;
-  }
 }
 
 @utility type-title {
@@ -423,10 +404,6 @@
   opacity: var(--band-globe-opacity);
 }
 
-@utility bg-gradient-nav {
-  background-image: linear-gradient(90deg, var(--nav-from), var(--nav-to));
-}
-
 @utility bg-highlight {
   background-image: linear-gradient(150deg, var(--highlight-from), var(--highlight-to));
 }
@@ -443,23 +420,12 @@
   background-image: linear-gradient(135deg, var(--stat-from), var(--stat-to));
 }
 
-@utility bg-stat-strip {
-  background-image: linear-gradient(90deg, var(--stat-strip), var(--stat-strip-to));
-}
-
 @utility text-stat {
   color: var(--stat-text);
 }
 
 @utility text-stat-foreground {
   color: var(--stat-foreground);
-}
-
-@utility text-earned-title {
-  background-image: linear-gradient(100deg, var(--earned-title-from), var(--earned-title-to));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
 @utility press {
@@ -475,8 +441,6 @@
 @utility stat-accent-teal {
   --stat-from: var(--stat-teal-from);
   --stat-to: var(--stat-teal-to);
-  --stat-strip: var(--stat-teal-strip);
-  --stat-strip-to: var(--stat-teal-strip-to);
   --stat-foreground: var(--stat-teal-foreground);
   --stat-text: var(--stat-teal-text);
 }
@@ -484,8 +448,6 @@
 @utility stat-accent-navy {
   --stat-from: var(--stat-navy-from);
   --stat-to: var(--stat-navy-to);
-  --stat-strip: var(--stat-navy-strip);
-  --stat-strip-to: var(--stat-navy-strip-to);
   --stat-foreground: var(--stat-navy-foreground);
   --stat-text: var(--stat-navy-text);
 }
@@ -493,8 +455,6 @@
 @utility stat-accent-green {
   --stat-from: var(--stat-green-from);
   --stat-to: var(--stat-green-to);
-  --stat-strip: var(--stat-green-strip);
-  --stat-strip-to: var(--stat-green-strip-to);
   --stat-foreground: var(--stat-green-foreground);
   --stat-text: var(--stat-green-text);
 }
@@ -502,8 +462,6 @@
 @utility stat-accent-amber {
   --stat-from: var(--stat-amber-from);
   --stat-to: var(--stat-amber-to);
-  --stat-strip: var(--stat-amber-strip);
-  --stat-strip-to: var(--stat-amber-strip-to);
   --stat-foreground: var(--stat-amber-foreground);
   --stat-text: var(--stat-amber-text);
 }
@@ -524,11 +482,6 @@
   --border: var(--band-border);
   --input: var(--band-border);
   --ring: var(--band-foreground);
-}
-
-@utility logo-chip {
-  background-color: var(--logo-chip);
-  --foreground: var(--logo-ink);
 }
 
 @utility band-tabs {

@@ -1034,46 +1034,6 @@
     "showing": "Mostrando {shown} de {total, plural, one {# curso} other {# cursos}}",
     "showMore": "Mostrar más cursos"
   },
-  "ContentTranslation": {
-    "title": "Traducción",
-    "state": {
-      "missing": "Falta",
-      "machine": "Traducción automática",
-      "draft": "Pendiente de revisión",
-      "reviewed": "Revisada",
-      "outdated": "Desactualizada"
-    },
-    "hints": {
-      "missing": "{language} todavía no tiene contenido.",
-      "machine": "La traducción con IA de {language} espera la revisión de una persona.",
-      "draft": "{language} se escribió a mano y nadie la ha revisado todavía.",
-      "reviewed": "Una persona revisó {language} con el texto actual en inglés.",
-      "outdated": "El texto en inglés cambió después de traducir {language}. Vuelve a traducir o revísala."
-    },
-    "counts": "{reviewed} de {total} partes revisadas",
-    "translate": "Traducir con IA",
-    "translating": "Traduciendo {done} de {total}…",
-    "markReviewed": "Marcar como revisada",
-    "saveFirst": "Guarda tus cambios primero.",
-    "translated": "{language} traducida con IA. Revísala antes de publicar.",
-    "reviewed": "{language} marcada como revisada.",
-    "replaceTitle": "¿Reemplazar la traducción existente?",
-    "replaceMessage": "{language} ya tiene contenido. La traducción con IA lo reemplaza por una nueva traducción automática.",
-    "replace": "Reemplazar",
-    "cancel": "Cancelar",
-    "publishLocale": "Publicado en {language}",
-    "localeTitle": "Traducción a {language}",
-    "errors": {
-      "generic": "La traducción falló. Inténtalo de nuevo.",
-      "aiNotConfigured": "La traducción con IA no está configurada en este entorno.",
-      "aiUnavailable": "El servicio de IA no está disponible ahora. Inténtalo de nuevo en un minuto.",
-      "aiInvalid": "La respuesta de la IA no era utilizable. No se guardó nada. Inténtalo de nuevo.",
-      "rateLimited": "Demasiadas traducciones. Inténtalo más tarde.",
-      "forbidden": "No puedes traducir contenido.",
-      "exists": "Este idioma ya tiene contenido.",
-      "empty": "Todavía no hay nada que revisar en este idioma."
-    }
-  },
   "Dashboard": {
     "greeting": "Hola de nuevo, {name}",
     "subtitle": {

@@ -1034,46 +1034,6 @@
     "showing": "Showing {shown} of {total, plural, one {# course} other {# courses}}",
     "showMore": "Show more courses"
   },
-  "ContentTranslation": {
-    "title": "Translation",
-    "state": {
-      "missing": "Missing",
-      "machine": "Machine translated",
-      "draft": "Needs review",
-      "reviewed": "Reviewed",
-      "outdated": "Outdated"
-    },
-    "hints": {
-      "missing": "{language} has no content yet.",
-      "machine": "The AI translation for {language} waits for a person to review it.",
-      "draft": "{language} was written by hand and nobody has reviewed it yet.",
-      "reviewed": "A person reviewed {language} against the current English text.",
-      "outdated": "The English text changed after {language} was translated. Translate again or review it."
-    },
-    "counts": "{reviewed} of {total} parts reviewed",
-    "translate": "Translate with AI",
-    "translating": "Translating {done} of {total}…",
-    "markReviewed": "Mark as reviewed",
-    "saveFirst": "Save your changes first.",
-    "translated": "{language} translated with AI. Review it before you publish.",
-    "reviewed": "{language} marked as reviewed.",
-    "replaceTitle": "Replace the existing translation?",
-    "replaceMessage": "{language} already has content. AI translation replaces it with a new machine translation.",
-    "replace": "Replace",
-    "cancel": "Cancel",
-    "publishLocale": "Published in {language}",
-    "localeTitle": "{language} translation",
-    "errors": {
-      "generic": "The translation failed. Try again.",
-      "aiNotConfigured": "AI translation is not set up in this environment.",
-      "aiUnavailable": "The AI service is not available right now. Try again in a minute.",
-      "aiInvalid": "The AI answer was not usable. Nothing was saved. Try again.",
-      "rateLimited": "Too many translations. Try again later.",
-      "forbidden": "You cannot translate content.",
-      "exists": "This language already has content.",
-      "empty": "There is nothing to review in this language yet."
-    }
-  },
   "Dashboard": {
     "greeting": "Welcome back, {name}",
     "subtitle": {

@@ -28,7 +28,7 @@ import {
 } from '@/db/schema'
 import { type Any } from '@/lib/types'
 
-type TranslationMode = 'edited' | 'machine' | 'reviewed'
+type TranslationMode = 'edited' | 'machine'
 
 interface SaveTranslation {
   locale: string
@@ -60,18 +60,17 @@ export const saveTranslation = async (tx: Transaction, { locale, mode, target, u
     entityId: target.entityId,
     entityType: target.entityType,
     locale,
-    reviewedById: mode === 'reviewed' ? userId : null,
+    reviewedById: null,
     sourceHash,
     status: mode === 'edited' ? ('draft' as const) : mode,
     translatedById: userId,
   }
-  const keep = mode === 'reviewed' ? { translatedById: undefined } : {}
   const keepHash = mode === 'edited' ? { sourceHash: undefined } : {}
   await tx
     .insert(contentTranslations)
     .values(base)
     .onConflictDoUpdate({
-      set: { ...base, ...keep, ...keepHash },
+      set: { ...base, ...keepHash },
       target: [contentTranslations.entityType, contentTranslations.entityId, contentTranslations.locale],
     })
 }

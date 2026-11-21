@@ -52,15 +52,13 @@ describe.skipIf(!isLocalDatabase)('content translation actions', () => {
   let context: LearningContext
   let fixture: FixtureCourse
   let translations: typeof import('./ai') & typeof import('./states')
+  let helpers: typeof import('./helpers')
   let groups: typeof import('@/actions/courses/skill-groups')
   let management: typeof import('@/actions/courses/management')
   let groupId = 0
 
-  const states = async (entityType: 'course' | 'lesson' | 'skill_group', entityId: number) => {
-    const result = await translations.listTranslationStates({ entityId, entityType })
-    if (!('data' in result)) throw new Error('Expected states')
-    return result.data
-  }
+  const states = async (entityType: 'course' | 'lesson' | 'skill_group', entityId: number) =>
+    await helpers.describeTargets(await helpers.loadTargets(entityType, entityId))
 
   const stateOf = async (entityType: 'course' | 'lesson' | 'skill_group', entityId: number, locale = 'es') =>
     (await states(entityType, entityId))
@@ -75,15 +73,17 @@ describe.skipIf(!isLocalDatabase)('content translation actions', () => {
   beforeAll(async () => {
     context = await loadContext('editor')
     state.userId = context.userId
-    const [fixtureCourse, ai, review, skillGroups, courseManagement] = await Promise.all([
+    const [fixtureCourse, ai, review, translationHelpers, skillGroups, courseManagement] = await Promise.all([
       createFixtureCourse(context, { descriptions: true }),
       import('./ai'),
       import('./states'),
+      import('./helpers'),
       import('@/actions/courses/skill-groups'),
       import('@/actions/courses/management'),
     ])
     fixture = fixtureCourse
     translations = { ...ai, ...review }
+    helpers = translationHelpers
     groups = skillGroups
     management = courseManagement
     const created = await groups.saveSkillGroup({
@@ -180,17 +180,6 @@ describe.skipIf(!isLocalDatabase)('content translation actions', () => {
     expect(result).toMatchObject({ error: { code: 'ai_not_configured' } })
   })
 
-  it('marks a locale reviewed, records the audit event, and rejects a locale without content', async () => {
-    expect(
-      await translations.reviewTranslation({ entityId: groupId, entityType: 'skill_group', locale: 'es' })
-    ).toEqual({ data: { reviewed: 1 } })
-    expect(await stateOf('skill_group', groupId)).toBe('reviewed')
-    const reviewed = (await events('content.translation_reviewed')).filter(event => event.subjectId === String(groupId))
-    expect(reviewed).toHaveLength(1)
-    expect(reviewed[0]?.metadata).toMatchObject({ entityType: 'skill_group', locale: 'es', slug: expect.any(String) })
-    expect(reviewed[0]?.actorId).toBe(context.userId)
-  })
-
   it('flags the translations as outdated after the English text changes', async () => {
     const result = await groups.saveSkillGroup({
       description: { en: 'How we talk', es: 'ES How we talk', it: 'Come parliamo' },
@@ -204,7 +193,7 @@ describe.skipIf(!isLocalDatabase)('content translation actions', () => {
     expect(updated.at(-1)?.metadata).toMatchObject({ entityType: 'skill_group', locales: ['en'] })
   })
 
-  it('turns a hand edit of a reviewed locale into a draft and keeps it outdated', async () => {
+  it('turns a hand edit of a machine locale into a draft and keeps it outdated', async () => {
     await groups.saveSkillGroup({
       description: { en: 'How we talk', es: 'ES How we talk', it: 'Come parliamo' },
       icon: null,
@@ -220,11 +209,6 @@ describe.skipIf(!isLocalDatabase)('content translation actions', () => {
       ),
     })
     expect(row).toMatchObject({ reviewedById: null, status: 'draft' })
-  })
-
-  it('clears the outdated flag when a person reviews the locale again', async () => {
-    await translations.reviewTranslation({ entityId: groupId, entityType: 'skill_group', locale: 'es' })
-    expect(await stateOf('skill_group', groupId)).toBe('reviewed')
   })
 
   it('translates a lesson with Plate content and keeps its structure', async () => {

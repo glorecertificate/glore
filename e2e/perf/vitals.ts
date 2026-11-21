@@ -7,7 +7,7 @@ import { type AuthRole, authFile } from '~/e2e/helpers'
 
 export type PerfRole = AuthRole | 'guest'
 
-export const PROFILES = {
+const PROFILES = {
   desktop: { cpu: 1, isMobile: false, network: null, viewport: { height: 900, width: 1440 } },
   mobile: {
     cpu: 4,
@@ -329,7 +329,7 @@ export const readNavigation = async (page: Page, path: string) => {
   })
 }
 
-export const median = (values: number[]) => {
+const median = (values: number[]) => {
   const sorted = values.filter(Number.isFinite).toSorted((left, right) => left - right)
   if (!sorted.length) return Number.NaN
   const middle = Math.floor(sorted.length / 2)

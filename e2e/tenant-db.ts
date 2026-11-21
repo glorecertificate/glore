@@ -36,21 +36,6 @@ export const membershipRoleOf = async (tenant: Tenant, userId: string) =>
     return result.rows[0]?.role ?? null
   })
 
-export const organizationExists = async (id: number) =>
-  await withDb(async pool => {
-    const result = await pool.query('select 1 from organizations where id = $1', [id])
-    return result.rowCount === 1
-  })
-
-export const addMembership = async (tenant: Tenant, userId: string, role: MembershipRole) =>
-  await withDb(async pool => {
-    await pool.query('insert into memberships (user_id, organization_id, role) values ($1, $2, $3::role)', [
-      userId,
-      tenant.id,
-      role,
-    ])
-  })
-
 export const invitationRow = async (tenant: Tenant, email: string) =>
   await withDb(async pool => {
     const result = await pool.query<{
@@ -78,12 +63,4 @@ export const invitationToken = async (tenant: Tenant, email: string) =>
       [tenant.id, email, token]
     )
     return result.rowCount ? token : ''
-  })
-
-export const certificateStatuses = async (tenant: Tenant) =>
-  await withDb(async pool => {
-    const result = await pool.query<{ status: string }>('select status from certificates where organization_id = $1', [
-      tenant.id,
-    ])
-    return result.rows.map(row => row.status)
   })

@@ -1,6 +1,4 @@
-import { readFile } from 'node:fs/promises'
-
-import { type BrowserContextOptions, type Locator, type Page, expect } from '@playwright/test'
+import { type Locator, type Page, expect } from '@playwright/test'
 
 import { SEED_PASSWORD, seedEmail } from '~/scripts/seed-data'
 
@@ -13,14 +11,7 @@ export type AuthTarget = 'base' | 'head'
 export const authFile = (role: AuthRole, target: AuthTarget = 'head') =>
   target === 'base' ? `.playwright/.auth/base-${role}.json` : `.playwright/.auth/${role}.json`
 
-type StorageState = Exclude<BrowserContextOptions['storageState'], string | undefined>
-
-export const localAuthState = async (role: AuthRole) => {
-  const state = JSON.parse(await readFile(authFile(role), 'utf8')) as StorageState
-  return { ...state, cookies: state.cookies.map(cookie => ({ ...cookie, domain: 'localhost' })) }
-}
-
-export const loginWithEmail = async (page: Page, email: string) => {
+const loginWithEmail = async (page: Page, email: string) => {
   await page.goto('/login')
   const username = page.locator('input[name="username"]')
   await hydrated(username)
@@ -31,10 +22,6 @@ export const loginWithEmail = async (page: Page, email: string) => {
 }
 
 export const login = async (page: Page, key: string) => await loginWithEmail(page, seedEmail(key))
-
-export const revealed = async (page: Page) => {
-  await expect(page.locator('main [aria-busy="true"]')).toHaveCount(0)
-}
 
 export const hydrated = async (locator: Locator) => {
   await expect

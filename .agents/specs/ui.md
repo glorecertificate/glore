@@ -99,7 +99,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 ## Color and typography
 
-- `config/theme.json` (`system`) is the palette source. `pnpm run theme` writes `src/styles/tokens.generated.css` and `src/emails/colors.generated.ts`. Never edit them by hand.
+- `config/theme.json` (`system`) is the palette source. `pnpm run theme` writes `src/app/tokens.generated.css` and `src/emails/colors.generated.ts`. Never edit them by hand.
 - `pnpm run check:theme` fails on a stale generated file or on a contrast pair below its minimum.
 - The generator (`scripts/theme/`) solves text, fill, and ring lightness in OKLCH against the targets in `system.contrast`.
 - Targets are 4.5:1 for text, 6:1 for `fg-2`, 5:1 for colored text, and 3:1 for non-text. Declare a pair in the generator before you use a new combination.

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../styles/tokens.generated.css";
+@import "./tokens.generated.css";
 
 @source not "../../.agents";
 

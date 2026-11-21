@@ -128,7 +128,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - `CertificatePage` draws the QR and the verify line from `QR_BOX` and `VERIFY_BOX` when the input has an issue date and a code (`useCertificateVerification`). Drafts show neither.
 - The bar shows progress, Reject, Request changes, and Approve, and sticks from `md`. A `changes_requested` request shows a waiting note instead.
 - Request changes needs a general comment or a section note. Reject needs a reason of at least 10 characters.
-- The review starts when the assigned tutor opens a `submitted` request: `StartReviewOnOpen` calls `claimCertificateReview` once from a client effect, never on render or prefetch, then refreshes. There is no Start review button.
+- The review starts when the assigned tutor opens a `submitted` request: `StartReviewOnOpen` calls `claimCertificateReview` once per mount from a client effect, never on render or prefetch, then refreshes. A failed claim shows the `errorGeneric` toast. There is no Start review button.
 
 ### Organization pipeline
 

@@ -1,28 +1,37 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+
+import { useTranslations } from 'next-intl'
 
 import { claimCertificateReview } from '@/actions/certificates/review'
+import { toast } from '@/components/ui/toast'
 
-const started = new Set<number>()
+const claim = async (id: number) => {
+  try {
+    const { error } = await claimCertificateReview(id)
+    return !error
+  } catch {
+    return false
+  }
+}
 
 export const StartReviewOnOpen = ({ id }: { id: number }) => {
+  const t = useTranslations('CertificateReview')
   const { refresh } = useRouter()
+  const claimed = useRef<number | null>(null)
 
   useEffect(() => {
-    if (started.has(id)) return
-    started.add(id)
+    if (claimed.current === id) return
+    claimed.current = id
     const start = async () => {
-      const { error } = await claimCertificateReview(id)
-      if (error) {
-        started.delete(id)
-        return
-      }
-      refresh()
+      if (await claim(id)) return refresh()
+      claimed.current = null
+      toast.error(t('errorGeneric'))
     }
     void start()
-  }, [id, refresh])
+  }, [id, refresh, t])
 
   return null
 }

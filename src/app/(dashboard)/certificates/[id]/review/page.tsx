@@ -4,7 +4,7 @@ import { Suspense } from 'react'
 import { loadCertificate, loadCertificateActivity, loadReviewContext } from '@/actions/certificates/detail-data'
 import { getViewer } from '@/actions/viewer'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
-import { StartReviewButton } from '@/components/features/certificates/review/start-review'
+import { StartReviewOnOpen } from '@/components/features/certificates/review/start-review'
 import { SubmittedAgo } from '@/components/features/certificates/review/submitted-ago'
 import { ReviewWorkspace } from '@/components/features/certificates/review/workspace'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
@@ -31,12 +31,15 @@ const ReviewPageContent = async ({ params }: { params: PageProps<'/certificates/
   if (!context) notFound()
 
   return (
-    <ReviewWorkspace
-      certificate={certificate}
-      holder={context.holder}
-      previous={activity?.review ?? null}
-      results={context.results}
-    />
+    <>
+      {certificate.isSubmitted && <StartReviewOnOpen id={certificate.id} />}
+      <ReviewWorkspace
+        certificate={certificate}
+        holder={context.holder}
+        previous={activity?.review ?? null}
+        results={context.results}
+      />
+    </>
   )
 }
 
@@ -50,12 +53,11 @@ const ReviewBand = async ({ params }: { params: PageProps<'/certificates/[id]/re
 
   return (
     <DashboardHeader
-      actions={certificate.isSubmitted && <StartReviewButton id={certificate.id} />}
       description={
         <span className="flex flex-col gap-3">
           <span>{certificate.organization.name}</span>
           <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            {!certificate.isSubmitted && <CertificateStatusBadge status={certificate.status} />}
+            <CertificateStatusBadge status={certificate.status} />
             <SubmittedAgo submittedAt={submittedAt} />
           </span>
         </span>

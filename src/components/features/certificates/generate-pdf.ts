@@ -9,6 +9,7 @@ import {
   type CertificatePdfData,
   type CertificatePdfLabels,
   type CertificatePdfSkill,
+  certificateQr,
 } from '@/components/features/certificates/certificate-layout'
 import { CertificateDocument } from '@/components/features/certificates/document'
 import { pdfImage, pdfLabels } from '@/components/features/certificates/pdf-helpers'
@@ -29,18 +30,7 @@ export const certificatePdfLabels = async (language: string) => {
 
 const pdfIconNodeOf = (icon: string | null) => (icon ? iconNodeOf(icon) : null) as CertificatePdfSkill['iconNode']
 
-const qrOf = async (url: string | null) => {
-  if (!url) return { qrPath: null, qrSize: 0 }
-  const { create } = await import('qrcode')
-  const { modules } = create(url, { errorCorrectionLevel: 'M' })
-  const segments: string[] = []
-  for (let row = 0; row < modules.size; row++) {
-    for (let column = 0; column < modules.size; column++) {
-      if (modules.get(row, column)) segments.push(`M${column} ${row}h1v1h-1z`)
-    }
-  }
-  return { qrPath: segments.join(''), qrSize: modules.size }
-}
+const qrOf = async (url: string | null) => (url ? await certificateQr(url) : { qrPath: null, qrSize: 0 })
 
 const verifyUrlOf = (code: string | null) =>
   code ? `${(process.env.APP_URL ?? '').replace(/^https?:\/\//u, '')}/verify/${code}` : null

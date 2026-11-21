@@ -103,8 +103,8 @@ test('tutor sees the request in the queue and starts the review', async () => {
   await hydrated(review)
   await review.click()
   await expect(page).toHaveURL(new RegExp(`/certificates/${certificateId}/review$`, 'u'))
-  await page.getByRole('button', { name: 'Start review' }).click()
-  await expect(page.getByText('Review started.')).toBeVisible()
+  await expect.poll(async () => (await certificateRow(certificateId))?.status).toBe('in_review')
+  await expect(page.getByText('In review', { exact: true }).first()).toBeVisible()
 })
 
 test('tutor picks another description, requests changes with a comment, and the volunteer resubmits', async () => {
@@ -147,15 +147,15 @@ test('tutor previews the PDF and approves, and the volunteer shares the certific
   )
   const { page } = tutor
   await page.goto(`/certificates/${certificateId}/review`)
-  await page.getByRole('button', { name: 'Start review' }).click()
-  await expect(page.getByText('Review started.')).toBeVisible()
+  await expect.poll(async () => (await certificateRow(certificateId))?.status).toBe('in_review')
   for (const score of ['engagement', 'evidence', 'reflection', 'growth']) {
     await page.locator(`label[for="score-${score}-4"]`).click()
   }
   await page.getByRole('button', { name: 'Approve', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Certificate preview' })
   await expect(dialog).toBeVisible()
-  await expect(dialog.locator('object[type="application/pdf"]')).toHaveAttribute('data', /^blob:/u)
+  await expect(dialog.locator('[data-slot="certificate-page"]')).toBeVisible()
+  await expect(dialog.getByRole('link', { name: 'Open PDF' })).toHaveAttribute('href', /^blob:/u)
   await dialog.getByRole('button', { name: 'Approve and issue' }).click()
   await expect(page.getByText('Certificate approved and issued.')).toBeVisible()
 

@@ -10,7 +10,7 @@
     "no-arbitrary-value": 2
   },
   "src/components/features/certificates/review": {
-    "no-arbitrary-value": 2
+    "no-arbitrary-value": 1
   },
   "src/components/features/courses": {
     "no-arbitrary-value": 1

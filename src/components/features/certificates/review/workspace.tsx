@@ -16,6 +16,7 @@ import {
   requestCertificateChanges,
 } from '@/actions/certificates/review'
 import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
+import { pdfImage } from '@/components/features/certificates/pdf-helpers'
 import { regionName } from '@/components/features/certificates/region-name'
 import { CommentSection } from '@/components/features/certificates/review/comment-section'
 import { DecisionBar } from '@/components/features/certificates/review/decision-bar'
@@ -31,13 +32,13 @@ import {
   reviewDefaults,
 } from '@/components/features/certificates/review/values'
 import { type ReviewFormValues, reviewFormSchema } from '@/components/features/certificates/schemas'
-import { useI18n } from '@/components/providers/i18n'
 import { Banner } from '@/components/ui/banner'
 import { Card } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
+import { DEFAULT_LOCALE, LOCALES, localizeRecord } from '@/lib/i18n'
 import appConfig from '~/config/app.json'
 
 type Busy = 'approve' | 'changes' | 'preview' | 'reject' | null
@@ -68,7 +69,6 @@ export const ReviewWorkspace = ({
   results: Record<number, HolderCourseResult>
 }) => {
   const t = useTranslations('CertificateReview')
-  const { localize } = useI18n()
   const { push } = useRouter()
   const [previewData, setPreviewData] = useState<CertificateInput | null>(null)
   const [busy, setBusy] = useState<Busy>(null)
@@ -95,6 +95,8 @@ export const ReviewWorkspace = ({
     return t('errorGeneric')
   }
 
+  const locale = LOCALES.find(item => item === certificate.language) ?? DEFAULT_LOCALE
+
   const previewCertificate = (
     values: ReviewFormValues,
     signatory: CertificateInput['organization'] | null
@@ -114,12 +116,12 @@ export const ReviewWorkspace = ({
       lastName: certificate.holder?.lastName ?? null,
       nationality: regionName(holder.nationality, certificate.language),
     },
-    issuedAt: null,
+    issuedAt: new Date().toISOString(),
     organization: {
       legalRepresentative: signatory?.legalRepresentative ?? null,
-      logoUrl: certificate.organization.avatarUrl,
+      logoUrl: pdfImage(certificate.organization.avatarUrl),
       name: certificate.organization.name,
-      signatureUrl: signatory?.signatureUrl ?? null,
+      signatureUrl: pdfImage(signatory?.signatureUrl),
     },
     skills: values.skills.flatMap(({ courseId, include, level }) => {
       const skill = certificate.skills.find(item => item.course.id === courseId)
@@ -127,10 +129,10 @@ export const ReviewWorkspace = ({
       const text = level ? results[courseId]?.descriptions[level] : null
       return [
         {
-          description: text ? localize(text) : null,
+          description: text ? localizeRecord(text, locale, DEFAULT_LOCALE) : null,
           icon: skill.course.icon,
           level: level ? SKILL_LEVELS.indexOf(level) + 1 : 0,
-          name: skill.course.title ? localize(skill.course.title) : skill.course.slug,
+          name: skill.course.title ? localizeRecord(skill.course.title, locale, DEFAULT_LOCALE) : skill.course.slug,
           steps: SKILL_LEVELS.length,
         },
       ]

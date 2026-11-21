@@ -40,34 +40,34 @@ export const PhoneAppBar = () => {
 
   useEffect(() => {
     if (!isMobile) return
-    let intersection: IntersectionObserver | undefined
+    let band: Element | null = null
 
-    const observe = (band: Element) => {
-      intersection = new IntersectionObserver(([entry]) => {
-        if (!entry) return
-        const title = band.querySelector('h1')?.textContent ?? ''
-        setState({ title, visible: !entry.isIntersecting && entry.boundingClientRect.bottom <= 0 })
-      })
-      intersection.observe(band)
-    }
-
-    const band = document.querySelector(BAND_SELECTOR)
-    if (band) {
-      observe(band)
-      return () => intersection?.disconnect()
-    }
-
-    const mutation = new MutationObserver(() => {
-      const found = document.querySelector(BAND_SELECTOR)
-      if (!found) return
-      mutation.disconnect()
-      observe(found)
+    const intersection = new IntersectionObserver(entries => {
+      const entry = entries.findLast(item => item.target.isConnected)
+      if (!entry) return
+      const title = entry.target.querySelector('h1')?.textContent ?? ''
+      setState({ title, visible: !entry.isIntersecting && entry.boundingClientRect.bottom <= 0 })
     })
+
+    const track = () => {
+      const current = document.querySelector(BAND_SELECTOR)
+      if (current === band) return
+      if (band) intersection.unobserve(band)
+      band = current
+      if (!current) {
+        setState({ title: '', visible: false })
+        return
+      }
+      intersection.observe(current)
+    }
+
+    track()
+    const mutation = new MutationObserver(track)
     mutation.observe(document.body, { childList: true, subtree: true })
 
     return () => {
       mutation.disconnect()
-      intersection?.disconnect()
+      intersection.disconnect()
       setState({ title: '', visible: false })
     }
   }, [isMobile, pathname])

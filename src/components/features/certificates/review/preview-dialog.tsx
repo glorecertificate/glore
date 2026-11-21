@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 
-import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
+import { type CertificateInput, PAGE_HEIGHT, PAGE_WIDTH } from '@/components/features/certificates/certificate-layout'
 import { CertificatePage } from '@/components/features/certificates/certificate-page'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,7 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { useCoarsePointer } from '@/hooks/use-coarse-pointer'
+
+const PAGE_FIT = { '--page-fit': `min(100cqw, ${PAGE_WIDTH / PAGE_HEIGHT} * 100cqh)` } as React.CSSProperties
 
 export const PreviewDialog = ({
   busy,
@@ -31,39 +32,33 @@ export const PreviewDialog = ({
   url: string | null
 }) => {
   const t = useTranslations('CertificateReview')
-  const coarse = useCoarsePointer()
 
   return (
     <Dialog onOpenChange={onOpenChange} open={url !== null}>
-      <DialogContent className="flex max-h-[92vh] flex-col sm:max-w-3xl">
+      <DialogContent className="flex h-[92vh] flex-col sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{t('previewTitle')}</DialogTitle>
           <DialogDescription>{t('previewDescription')}</DialogDescription>
         </DialogHeader>
-        {url && coarse && (
-          <div className="flex min-h-0 flex-col gap-3 overflow-y-auto">
-            <CertificatePage
-              className="mx-auto max-w-md"
-              input={certificate}
-              language={language}
-              label={t('previewLabel', { organization: certificate.organization.name })}
-            />
-            <Button asChild className="self-center" icon="external-link" size="sm" variant="outline">
+        {url && (
+          <div className="@container-size flex min-h-0 flex-1 items-center justify-center" style={PAGE_FIT}>
+            <div className="w-(--page-fit)">
+              <CertificatePage
+                input={certificate}
+                language={language}
+                label={t('previewLabel', { organization: certificate.organization.name })}
+              />
+            </div>
+          </div>
+        )}
+        <DialogFooter>
+          {url && (
+            <Button asChild className="sm:mr-auto" icon="external-link" variant="ghost">
               <a href={url} rel="noopener noreferrer" target="_blank">
                 {t('openPdf')}
               </a>
             </Button>
-          </div>
-        )}
-        {url && !coarse && (
-          <object
-            aria-label={t('previewTitle')}
-            className="h-[62vh] min-h-80 w-full rounded-md border bg-muted"
-            data={url}
-            type="application/pdf"
-          />
-        )}
-        <DialogFooter>
+          )}
           <Button disabled={busy} onClick={() => onOpenChange(false)} type="button" variant="outline">
             {t('backToEditing')}
           </Button>

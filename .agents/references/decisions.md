@@ -32,6 +32,8 @@ Decisions with IDs from the v0.7 release. Specs and issues cite them by ID (for 
 - U17: The privacy policy says that, to solve support requests, GloRe staff can view the platform as the user and that every such access is logged. Reviewed in en, es, and it.
 - U21: The owner requires the animated cobe globe on every auth view, with its per-view colors: brand trio on login, warning on password request and reset, success on password updated and email sent, destructive on errors and invalid tokens (2026-11-18, restored after #152 removed it). No lane removes it or replaces it with icon tiles.
 - U22: The owner requires the dashboard welcome card with the animated globe at low opacity, the same globe as the login (2026-11-18, restored after #151 replaced it with a plain heading). It shows on the learner, tutor, representative and owner, and editor dashboards. No lane removes it or replaces it with a plain heading.
+- U23: The danger zone heading in settings reads "Danger zone" in Italian too, because Italian users do not say "Zona di pericolo" in this context (owner, 2026-11-20). Reviews and lanes keep it in English.
+- U24: The review starts when the assigned tutor opens a `submitted` request, and there is no Start review button (owner, 2026-11-20). The badge change to In review is the feedback, so no success toast shows. Only the assigned tutor reaches the review page, so opening it never takes a request from another tutor. Leaving the page does not undo the claim.
 
 ## Skill framework (U8)
 

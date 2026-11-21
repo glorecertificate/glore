@@ -26,7 +26,7 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 
 ## Direction B: brand-forward
 
-The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `DESIGN.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
+The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `.agents/references/design.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
 
 - Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a `bg-sidebar-active` item (white at 12%, `sidebar-ring` icon), and `Logo onNavy` with no chip (`/icon-on-navy.png`). The bell sits in the logo row. `SidebarCount` shows a plain number, or a white badge when `floating`. The `logo-chip` utility stays for auth pages. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
 - Auth aside: one 32rem aside for every auth screen (`AuthFrame` in `features/auth/`) with a 165deg gradient of the `band-*` tokens, the white logo, a `type-display` headline and one subline (`Auth.asideTitle`, `Auth.asideMessage`), and 40px padding. The live `AuthGlobe` (about 760px, left -188px, masked toward the bottom) sits behind the text. The text is `pointer-events-none` so a drag reaches the canvas. The globe color follows `AuthGlobeContext` (`errored`, `view`), and `AuthFlow` resets it on unmount. In the pane, the language select is top right and the legal links and theme switch sit at the bottom, all 40px from the edges. The register step list renders above the form (`AuthMain` `header`). Below `lg`, the aside is the logo bar.
@@ -161,5 +161,4 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 ## Design briefs
 
-- Impeccable surface briefs live in `.impeccable/surfaces/`, one per surface, and stay untracked.
-- The volunteer dashboard brief records the Journey rail direction chosen in #84.
+- The volunteer dashboard uses the Journey rail direction chosen in #84 (`features/dashboard/journey-*.tsx`).

@@ -58,6 +58,7 @@ export const CertificateShare = ({
                 code: certificate.code,
                 issuedAt,
                 name: t('credentialName'),
+                organizationId: config.linkedinPageId,
                 organizationName: config.name,
                 url: verifyUrl,
               })}

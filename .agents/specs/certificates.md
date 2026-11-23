@@ -54,6 +54,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Approval commits the status, review row, and event in one transaction, then uploads to R2.
 - An upload failure reverts the whole approval and returns `STORAGE_FAILED`. The certificate caches expire even when the revert fails too.
 - The first approved certificate becomes the default on the public profile.
+- `canHoldCertificates` (`rules.ts`) is true for a volunteer in any organization who is not an editor or admin. Settings show the Privacy tab only then, or while the profile of a non-staff user is public, so a former volunteer can hide it. Its `/@<username>` link shows only with an approved featured certificate.
 - A holder has at most one default, enforced by the partial unique index `certificates_user_id_default_key`.
 - Approval, featuring, and revocation first take the per-holder advisory lock `certificate-default:<userId>`, so racing writes queue instead of failing.
 - Org managers and platform admins revoke an approved certificate with a reason of 10 or more characters.

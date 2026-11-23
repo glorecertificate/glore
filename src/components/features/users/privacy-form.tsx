@@ -61,7 +61,7 @@ export const PrivacyForm = () => {
             <p className="text-sm text-muted-foreground">
               {user.publicProfile ? t('publicProfileOn') : t('publicProfileOff')}
             </p>
-            {user.publicProfile && user.username && (
+            {user.publicProfile && user.username && featured && (
               <a
                 className="text-sm underline underline-offset-4"
                 href={`/@${user.username}`}

@@ -260,3 +260,11 @@ export const linkedInProfileUrl = ({
   })
   return `https://www.linkedin.com/profile/add?${params.toString()}`
 }
+
+interface CertificateHolder {
+  canEdit: boolean
+  organizations: readonly { role: string }[]
+}
+
+export const canHoldCertificates = ({ canEdit, organizations }: CertificateHolder) =>
+  !canEdit && organizations.some(({ role }) => role === 'volunteer')

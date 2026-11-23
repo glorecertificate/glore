@@ -237,12 +237,14 @@ export const linkedInProfileUrl = ({
   code,
   issuedAt,
   name,
+  organizationId,
   organizationName,
   url,
 }: {
   code: string
   issuedAt: string
   name: string
+  organizationId?: string
   organizationName: string
   url: string
 }) => {
@@ -253,7 +255,7 @@ export const linkedInProfileUrl = ({
     issueMonth: String(issued.getUTCMonth() + 1),
     issueYear: String(issued.getUTCFullYear()),
     name,
-    organizationName,
+    ...(organizationId ? { organizationId } : { organizationName }),
     startTask: 'CERTIFICATION_NAME',
   })
   return `https://www.linkedin.com/profile/add?${params.toString()}`

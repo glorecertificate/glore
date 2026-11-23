@@ -243,6 +243,22 @@ describe('linkedInProfileUrl', () => {
     expect(url.searchParams.get('certId')).toBe('ABCD-EFGH-JKMN')
     expect(url.searchParams.has('organizationId')).toBe(false)
   })
+
+  it('names the company page as the issuer when it has an id', () => {
+    const url = new URL(
+      linkedInProfileUrl({
+        code: 'ABCD-EFGH-JKMN',
+        issuedAt: '2026-03-14T10:00:00.000Z',
+        name: 'GloRe Certificate',
+        organizationId: '51688422',
+        organizationName: 'GloRe Certificate',
+        url: 'https://example.test/verify/ABCD-EFGH-JKMN',
+      })
+    )
+    expect(url.searchParams.get('organizationId')).toBe('51688422')
+    expect(url.searchParams.has('organizationName')).toBe(false)
+    expect(url.searchParams.get('certUrl')).toBe('https://example.test/verify/ABCD-EFGH-JKMN')
+  })
 })
 
 describe('normalizeCertificateCode', () => {

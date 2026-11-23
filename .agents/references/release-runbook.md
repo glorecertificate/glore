@@ -22,11 +22,10 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 
 ## State
 
-- Pull request #20 is merged. GitHub refused "Rebase and merge" (`rebaseable: false` without conflicts), so `main` was fast-forwarded to `10f627ed` by a push, which kept the hashes and signatures.
-- The preview domain serves `10f627ed`.
-- Neon `staging` had all 33 migrations at the v0.7 cut. `main` now has 36, so staging needs 0033 to 0035 ("Preview", step 6). Preview `DATABASE_URL` points to it (no branch scope) and Preview `APP_URL` is the preview domain.
-- Production lacks migrations 0013 to 0035, has no database comment, and holds 0 certificates.
-- Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).
+- v0.7.0 is released: PR #214, tag `v0.7.0` on `ced87edb`. Production runs it, and staging runs `main`.
+- On 2026-11-19, production was migrated and imported: 34 courses as drafts, 116 lessons, 33 docs, the legal pages, and 75 level description drafts.
+- Both databases have 38 migrations, through 0037.
+- Staging holds the demo seed, and every staging mail goes to the info inbox.
 
 ## Preview
 
@@ -99,4 +98,4 @@ Run these on the preview domain before the release and on the production domain 
 
 ## Known gaps
 
-Open items are the sub-issues of #31. None is high severity.
+The launch items for mail, file links, and the backup branch are in #216. The other open items are the sub-issues of #52.

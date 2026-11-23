@@ -103,11 +103,12 @@ The first move is from the `r2.dev` URL to `https://cdn.glorecertificate.xyz`. A
 1. Connect the domain to the bucket in the Cloudflare dashboard: R2, the bucket, Settings, Custom Domains. The domain must be a zone in the Cloudflare account of the bucket.
 2. Open a file through the new domain and make sure that it loads.
 3. Dry-run the rewrite: `DATABASE_URL='<production url>' pnpm run files:rehost --from <old URL> --to <new URL>`.
-4. Run the same command with `--apply`, then run the dry run again. It must find 0 rows.
-5. Set `R2_PUBLIC_URL` to the new URL in the production env vars and redeploy. The build reads the `next/image` host from it.
-6. When the old domain serves no traffic, turn off its URL on the bucket.
+4. Set `R2_PUBLIC_URL` to the new URL: `pnpm exec vercel env update R2_PUBLIC_URL --environment production --value <new URL> --yes`.
+5. Rebuild production: rerun the "Deploy production" job of the last Release run with `gh run rerun <run id> --job <job id>`. The build reads the `next/image` host from `R2_PUBLIC_URL`.
+6. When the build is live, run the step 3 command with `--apply`, then run the dry run again. It must find 0 rows.
+7. Turn off the old URL on the bucket: R2, the bucket, Settings, Public Development URL. Emails load their logo from the app, so no sent email uses it.
 
-Run steps 4 and 5 back to back: until the redeploy, signature images on the new URL do not load. Repeat the steps for staging if its bucket also uses an `r2.dev` URL.
+`vercel redeploy` does not apply a new `R2_PUBLIC_URL`. CI deploys a prebuilt output, so a redeploy keeps the old `next/image` host. Run step 6 right after step 5: until then, images that `next/image` loads from stored URLs do not load. For staging, use `--environment preview` and rebuild with the deploy job of the last CI run on `main`, or merge a PR.
 
 ## Known gaps
 

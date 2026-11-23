@@ -109,12 +109,14 @@ for (const role of AUTH_ROLES) {
       await expect(page.getByText('Something went wrong')).toBeHidden()
     })
 
-    test('opens every settings tab', async ({ page }) => {
+    test('opens every settings tab, with Privacy only for certificate holders', async ({ page }) => {
+      const privacy = role === 'volunteer'
+      const nav = page.getByRole('navigation', { name: 'Settings sections' })
       for (const { label, value } of SETTINGS_TABS) {
         await page.goto(`/settings?tab=${value}`)
-        await expect(
-          page.getByRole('navigation', { name: 'Settings sections' }).getByRole('button', { name: label, exact: true })
-        ).toHaveAttribute('aria-current', 'true')
+        const current = privacy || value !== 'privacy' ? label : 'Profile'
+        await expect(nav.getByRole('button', { name: current, exact: true })).toHaveAttribute('aria-current', 'true')
+        await expect(nav.getByRole('button', { name: 'Privacy', exact: true })).toHaveCount(privacy ? 1 : 0)
         await expect(page.getByText('Something went wrong')).toBeHidden()
       }
     })

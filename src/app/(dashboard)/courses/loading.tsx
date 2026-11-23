@@ -1,11 +1,6 @@
-import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { NavigationLabel } from '@/components/layout/navigation-label'
 
-const CoursesLoadingPage = () => (
-  <DashboardPage fallback={null} title={<NavigationLabel id="courses" />}>
-    <LoadingFallback delay={false} />
-  </DashboardPage>
-)
+const CoursesLoadingPage = () => <DashboardLoading title={<NavigationLabel id="courses" />} />
 
 export default CoursesLoadingPage

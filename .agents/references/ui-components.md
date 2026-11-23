@@ -91,6 +91,7 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - Labels, titles, and other static text stay real in a skeleton. Only data becomes `SkeletonText`.
 - A region whose size depends on data, such as a list or a table body, shows `LoadingFallback` inside the exact skeleton.
 - The header bar never waits for data. A layout or page fallback is `DashboardLoading` (the bar and a spinner), never a full-page spinner.
+- `DashboardLoading` grows `Main` to the full height and centers the spinner in it (`LoadingFallback size="page"`). The spinner fades in after 100 ms, so a navigation that reads as instant shows only the header.
 - `LoadingFallback` is an `output` element with a translated label for screen readers. Pass `label={null}` outside the intl provider.
 - A `Spinner` without `size` takes its size from the parent, as in a `Button`. Pass `size` when it stands alone.
 - Put `animate-reveal` on content that replaces a loading state the user saw. It fades in for 150 ms and is off with reduced motion.

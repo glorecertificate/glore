@@ -156,7 +156,7 @@ src/
 - A page that fetches data is a sync page that renders `DashboardPage` and puts an inner async component in it. `DashboardPage` wraps its children in Suspense, so the header bar renders at once.
 - A record title that needs data is an async component passed as `title`. The bar streams it.
 - Keep `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the bar and a spinner, for a segment that still awaits uncached data.
-- `LoadingFallback` fades in after 300 ms (`delay-300`), so a wait under 300 ms shows nothing. A route with its data behind cached loaders never reaches it.
+- `LoadingFallback` fades in after 300 ms (`delay-300`), and after 100 ms with `size="page"`, so a wait that reads as instant shows nothing. A route with its data behind cached loaders never reaches it.
 - `next dev` logs a blocking-route error when a navigation would wait on uncached data.
 
 ### Prefetching and page data

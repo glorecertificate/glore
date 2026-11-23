@@ -95,7 +95,7 @@ Nothing an editor saves can break a page.
   - inline ICU validation and preview, reset to default, publish, history, and "Suggest with AI".
 - Content: the course, doc, and skill group editors show a status per locale (missing, machine, draft, reviewed, outdated).
   - "Translate with AI" translates Plate text leaves, keeps the structure, and saves with status `machine`.
-  - A person marks the translation `reviewed`.
+  - No screen marks a translation `reviewed` (`.agents/specs/content.md`, "Content translation").
 - AI calls go through `generateTextWithFallback` (`src/lib/ai.ts`) behind `requireEditor` and a rate limit. ICU output is re-validated, and the prompt carries the style rules in `patterns.md`.
 
 ### Legal

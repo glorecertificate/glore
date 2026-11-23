@@ -1,59 +1,6 @@
 # Technical reference: runtime and data
 
-Authentication, data fetching, cache, errors, env vars, storage, and daily maintenance. Routes and the proxy: `routes.md`. Dev environment flags: `workflow.md`.
-
-## Authentication
-
-- Better Auth stores users, sessions, and accounts in Neon through the Drizzle adapter.
-- The `auth` instance lives in `src/lib/auth.ts`, server-only, and serves server components, server actions, and the proxy.
-- Import tables there only from `@/db/schema/<table>`, never the schema barrel, because `proxy.ts` calls `auth.api.getSession` on every request.
-- Catch-all route: `src/app/api/auth/[...all]/route.ts`.
-
-### Cookies
-
-- Better Auth keeps session tokens in signed HTTP-only cookies, cached for 5 minutes to cut API calls.
-- All app cookies use the `gl` prefix, and Better Auth uses it through `advanced.cookiePrefix`.
-- `logout` deletes each cookie in `USER_COOKIES` (`src/lib/cookies.ts`): the course list filters, the course languages, and the selected organization. The next account starts from defaults.
-
-### Sign-up guard
-
-- `emailAndPassword.autoSignIn` is `false` and MUST stay `false`.
-- Every `signUpEmail` call creates an account for someone else (team invites), never for the actor.
-- With auto sign-in on, the invitee's session cookie would be written onto the inviter's response.
-- Self-registration does not use `signUpEmail`: it creates a `pending` join request, so `signInEmail` login is unaffected.
-
-### Password rule
-
-- A `hooks.before` middleware in `src/lib/auth.ts` checks `newPassword` against `PASSWORD_REGEX` on `/reset-password`, `/change-password`, and `/admin/set-user-password`, so the server enforces the rule and not only the length.
-
-### Plugins
-
-- `username()`: username and display username.
-- `admin()`: admin role management, user creation, and impersonation. Its endpoints stay closed over HTTP.
-- `impersonationGuard()`: local plugin in `lib/impersonation-guard.ts` (`admin.md`).
-- `nextCookies()`: Next.js cookie integration.
-- `team-invitations`: local plugin that exposes `acceptInvitation`.
-
-### Hardening
-
-- `disabledPaths` closes `/sign-up/email`, `/sign-in/email`, `/sign-in/username`, and `/update-user` over HTTP, so accounts only come from invites through `auth.api` and sign-in only goes through the `login` action, which applies the per-identifier limit (`isAuthRateLimited`).
-- Rate limits share the `rate_limits` table: Better Auth through `rateLimit.storage: 'database'`, app keys through `src/lib/rate-limit.ts`.
-- `rateLimit.customRules` keys are endpoint paths without the `/api/auth` base path (`/request-password-reset`, `/reset-password`, `/change-password`), because Better Auth strips the base path before matching. `src/lib/auth.test.ts` fails when a key stops matching a real endpoint.
-- `emailAndPassword.revokeSessionsOnPasswordReset` is `true`, and `changePassword` passes `revokeOtherSessions: true`, so a password reset or change ends every other session.
-- Actions that send mail for a signed-in user have per-user limits through `isRateLimited`: `org-invite:<id>` (10 batches an hour), `email-change:<id>` (3 an hour), and `change-password:<id>` (10 an hour). They answer `RATE_LIMITED`, and `useActionError` shows `Common.rateLimited`.
-- `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once.
-- `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`).
-- A Better Auth `databaseHooks.user.update.after` hook in `src/lib/auth.ts` expires `userTag(id)` with `revalidateTag(tag, { expire: 0 })`, so changes the library makes itself (the email change link, `setRole`, `banUser`, `unbanUser`) reach `getCurrentUser` at once. `updateTag` would throw in the verify-email route handler.
-- Login and password reset answer unknown users exactly like wrong passwords and real resets, in content and in work: `login` hashes the password for an unknown user, and the recovery mail is sent through `after()` so a real reset does not wait on SMTP.
-- `updatePassword` and `changePassword` map library errors (including `PASSWORD_TOO_WEAK`) to `INVALID_TOKEN`, `INVALID_PASSWORD`, `INVALID_INPUT`, or `AUTH_ERROR` with fixed messages, never the library text.
-- A reset through the emailed link sends the `account/password-changed` mail from `onPasswordReset`, after the response, like `changePassword` does.
-- Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address through `emailVerification.sendVerificationEmail`.
-
-### Stale sessions
-
-- When the cookie cache outlives the user row, `getCurrentUser` redirects to `/api/v1/session`.
-- That route re-reads the session without the cache and clears auth cookies only when the session is invalid, so a forged link cannot sign out a live user.
-- `deleteAccount` signs out and expires `userTag` itself.
+Data fetching, cache, errors, env vars, storage, and daily maintenance. Authentication and sessions: `auth.md`. Routes and the proxy: `routes.md`. Dev environment flags: `workflow.md`.
 
 ## Daily maintenance
 
@@ -63,10 +10,14 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - Reminders: `certificate.review_reminder` goes to the assigned tutor at the `reviewReminderDays` marks of `config/app.json`.
 - `certificate.review_escalated` goes out at the same marks, also for unassigned requests.
 - `invitation.expiring` goes out once per send after `invitationReminderDay`, with a token-only link rebuilt from the sealed token (`revealInvitationToken`).
-- Idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock. `messages.stale` notices are in `admin.md`.
+- Idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock. `messages.stale` notices are in `content.md`.
+
+### Pruning
+
 - Pruning removes `rate_limits` idle for 24h and expired `sessions` and `verifications`.
 - Pruning removes invitations expired, revoked, or declined for `invitationRetentionDays`. Accepted ones stay.
-- Pruning removes R2 avatars and certificate PDFs older than 24h that no row references. A logo or signature URL stored in any certificate `snapshot` counts as referenced. The PDF of a revoked certificate counts as unreferenced, even when its row still holds a `documentUrl`.
+- Pruning removes R2 avatars and certificate PDFs older than 24h that no row references. A logo or signature URL stored in any certificate `snapshot` counts as referenced.
+- The PDF of a revoked certificate counts as unreferenced, even when its row still holds a `documentUrl`.
 - The sweepers delete orphan objects 20 at a time.
 - Deleting a user, organization, or avatar removes the object at once, except an organization logo or signature that a certificate `snapshot` still references.
 
@@ -80,7 +31,8 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - Parsers MUST NOT import `@/db/client`.
 - Factor the real `db.query` into one private executor and reuse it from the cached branch and the `{ cache: false }` branch, never copy the query body.
 - `findUser`, `fetchUser`, and `queryUserById` live in `actions/user-data.ts`. That module is `server-only` and never carries `'use server'`, because they check no caller.
-- `src/actions/server-action-surface.test.ts` enforces the rule: every export of a `'use server'` module (single or double quotes) is a function declared in that file, with no re-export, `export *`, alias, `let`, or default alias. Each one calls a guard or sits on the named public allowlist in the test, with a reason.
+- `src/actions/server-action-surface.test.ts` enforces the rule: every export of a `'use server'` module (single or double quotes) is a function declared in that file, with no re-export, `export *`, alias, `let`, or default alias.
+- Each one calls a guard or sits on the named public allowlist in the test, with a reason.
 
 ```typescript
 const queryUserById = async (id: string) => {
@@ -144,8 +96,14 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - In a server action whose caller must see its own write, use `updateTag(tag)`. `updateTag` throws outside server actions.
 - A read in a later request (a client reload after a mutation, or a live work queue) passes `{ cache: false }`: dev can serve that request the pre-write entry.
 - Elsewhere use `revalidateTag(tag, 'max')`.
-- Render paths read the session with `getSessionUser()` (`'use cache: private'`, `cacheLife({ stale: 30, revalidate: 60, expire: 600 })`). It passes `disableCookieCache` and `disableRefresh` and never calls `connection()`, so each render and prefetch checks the session in the database, and a revoked, banned, or signed-out session stops rendering at once.
-- The 30 s `stale` is the lowest value that stays in prefetches (Next.js drops a private scope below 30 s) and equals `staleTimes.dynamic`. It leaves the scope out of the App Shell (5 minutes needed), so links to pages that read it use `prefetch`. A page already in the client router cache can outlive the session by up to 30 s. `logout` and every cache-tag action clear that cache.
+
+### Session cache
+
+- Render paths read the session with `getSessionUser()` (`'use cache: private'`, `cacheLife({ stale: 30, revalidate: 60, expire: 600 })`).
+- It passes `disableCookieCache` and `disableRefresh` and never calls `connection()`, so each render and prefetch checks the session in the database, and a revoked, banned, or signed-out session stops rendering at once.
+- The 30 s `stale` is the lowest value that stays in prefetches (Next.js drops a private scope below 30 s) and equals `staleTimes.dynamic`.
+- It leaves the scope out of the App Shell (5 minutes needed), so links to pages that read it use `prefetch`. A page already in the client router cache can outlive the session by up to 30 s.
+- `logout` and every cache-tag action clear that cache.
 - Role, ban, and editor checks read `getSessionUser()` plus the tag-invalidated `fetchUser`, never the cookie-cached session. Actions keep `getAuthUser()` and the `requireX` guards.
 - Role and membership writes call `expireUserAccess` (org actions) or `revalidateUserAccess` (admin actions).
 - Progress writes expire `progressUserTag(userId)`.
@@ -156,7 +114,8 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - `safeQuery()` wraps a query in try/catch and returns `{ data, error: null }` or `{ data: null, error: { code, message } }`.
 - `queryError()` normalizes unknown errors into that `{ code, message }` shape.
 - Database errors (`DrizzleQueryError` and raw Postgres errors) are classified by SQLSTATE: `23505` is `CONFLICT`, other `23xxx` is `CONSTRAINT_VIOLATION`, `42501` is `UNAUTHORIZED`, `57014` is `TIMEOUT`, `08xxx`, `53300`, and `57Pxx` are `CONNECTION_ERROR`, the rest is `QUERY_ERROR`.
-- They return a fixed message per code and log the SQLSTATE, constraint, table, driver message, and statement (never the bound values) with `console.error('[db] query failed')`. Errors the app throws itself get the fixed message of their code too, and an unclassified one is logged; only the impersonation lock keeps its message.
+- They return a fixed message per code and log the SQLSTATE, constraint, table, driver message, and statement (never the bound values) with `console.error('[db] query failed')`.
+- Errors the app throws itself get the fixed message of their code too, and an unclassified one is logged; only the impersonation lock keeps its message.
 - Server actions return `{ data, error }` or `{ error }`, and callers MUST check.
 - Mutations that fail throw. Queries that fail return error objects.
 - The global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, and refresh (`ErrorActions`).
@@ -170,7 +129,8 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - Every environment variable the Next.js app uses MUST be declared in the Zod schema in `next.config.ts`.
 - `GITHUB_TOKEN` and `VERCEL_TOKEN` are the only exclusions, since external CLI tools read them and the app never does.
 - Read `envSchema` in `next.config.ts` for the current set and validators.
-- `MAIL_TRANSPORT` replaces SMTP in dev. In production only `mailpit` counts, and only when `APP_URL` is `localhost`, `127.0.0.1`, or `*.localhost`, so the mail specs run against a local `next start`. Values: `mailpit` delivers to the `pnpm run mail:up` inbox (`localhost:1025`), `log` only logs `[mail] <template> to <recipient>`.
+- `MAIL_TRANSPORT` replaces SMTP in dev. In production only `mailpit` counts, and only when `APP_URL` is `localhost`, `127.0.0.1`, or `*.localhost`, so the mail specs run against a local `next start`.
+- Values: `mailpit` delivers to the `pnpm run mail:up` inbox (`localhost:1025`), `log` only logs `[mail] <template> to <recipient>: <subject>`. `smtp` is the default and sends through Nodemailer.
 - `VERCEL_ENV` is set by Vercel. `next.config.ts` builds `/dev/ui` only when it is `preview` (and on the dev server), so production and CI builds exclude the route and its chunks.
 - `TEST_EMAIL` is read only by scripts (`db:seed:demo`), so it stays out of the schema.
 
@@ -191,7 +151,8 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 ## Storage (R2)
 
 - `src/lib/storage.ts` holds the R2 helpers (`r2Put`, `r2Delete`, `r2List`, `r2PresignAvatar`, `r2PresignSignature`, `r2VerifyAvatar`).
-- `R2_ENDPOINT` (optional) points the client at an S3-compatible server and switches to path-style URLs. `e2e.yml` runs the Adobe S3Mock service (`glore-e2e` bucket, port 9000, anonymous reads), so the PDF approval test runs in CI.
+- `R2_ENDPOINT` (optional) points the client at an S3-compatible server and switches to path-style URLs.
+- `e2e.yml` runs the Adobe S3Mock service (`glore-e2e` bucket, port 9000, anonymous reads), so the PDF approval test runs in CI.
 - Avatars upload directly to R2 through a presigned PUT, which avoids the Server Action 1MB and Vercel 4.5MB body limits.
 - The flow: `create*AvatarUploadUrl(contentType)` (the server picks the key and presigns), then the client `fetch(url, { method: 'PUT' })`, then `confirm*Avatar(key)` persists `avatarUrl`.
 - A direct browser PUT requires bucket CORS that allows PUT from the app origin (`https://glore.localhost` in dev, the production domain).

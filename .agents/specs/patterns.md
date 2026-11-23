@@ -1,6 +1,6 @@
 # Component and authoring patterns
 
-Authoring conventions: components, types, utilities, hooks, i18n, forms, emails. Theming and the release UI kit: `ui.md`. Routing: `routes.md`. Auth, data fetching, cache, env vars: `reference.md`.
+Authoring conventions: components, types, utilities, hooks, i18n, forms, emails. Theming and the release UI kit: `ui.md`. Routing: `routes.md`. Auth: `auth.md`. Data fetching, cache, env vars: `reference.md`.
 
 ## Libraries
 
@@ -45,6 +45,7 @@ const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'>
 - Do not accrete boolean or config props.
 - A growing list of `isX` or `showY` booleans signals a restructure into composed subcomponents.
 - A third boolean prop means the API should be composition instead.
+- Reading pages build on `InfoSection` and `InfoCard` (`features/about/`), and long-form text on `ReadingMarkdown`, `ReadingToc`, and `extractHeadings` (`features/docs/`). One component per file.
 
 ### Context and provider hierarchy
 
@@ -168,10 +169,19 @@ The two layers stay separate because UI shapes diverge from table columns.
 - `use-navigation-guard`: blocks navigation on unsaved changes.
 - `use-poll`: visible-tab polling with `refresh`.
 - `use-pwa`: captures `beforeinstallprompt` at module scope so late mounts still see it.
-- `use-return-focus`: `const { remember, restore } = useReturnFocus()`. `remember(element?)` stores the element that opened an overlay in an instance ref: the explicit element, else the open `dropdown-menu-trigger` (`aria-expanded=true`, because Radix prevents focus on pointerdown), else `document.activeElement`. `restore(event, fallback?)` goes in the dialog's `onCloseAutoFocus`: it calls `event.preventDefault()`, consumes the stored element, and focuses it, or the `fallback` (an element or a function returning one) when it is no longer connected, such as a removed row. No timers. Call `remember(container)` before the action that removes the row, and pass a `tabIndex={-1}` container as the fallback.
+
+### Focus and cookie hooks
+
+- `use-return-focus`: `const { remember, restore } = useReturnFocus()`.
+- `remember(element?)` stores the element that opened an overlay in an instance ref: the explicit element, else the open `dropdown-menu-trigger` (`aria-expanded=true`, because Radix prevents focus on pointerdown), else `document.activeElement`.
+- `restore(event, fallback?)` goes in the dialog's `onCloseAutoFocus`: it calls `event.preventDefault()`, consumes the stored element, and focuses it, or the `fallback` (an element or a function returning one) when it is no longer connected, such as a removed row.
+- No timers. Call `remember(container)` before the action that removes the row, and pass a `tabIndex={-1}` container as the fallback.
 - `use-scroll-edges`: overflow state for `TabsList`, which scrolls with a fade edge.
 - `useCookies` writes script-visible cookies (no `HttpOnly`, URI-encoded values).
 - A server `setCookie` for a cookie the client also writes passes `{ httpOnly: false }`, because a script cannot overwrite an `HttpOnly` cookie.
+
+### Provider hooks
+
 - `useI18n` and `useSession` are NOT in `src/hooks/`: each is owned by its provider module in `src/components/providers/`.
 - `useSession` exposes `isOrgAdmin` (owner only, membership role `admin`), `isRepresentative`, `isLearner`, `isTutor`, and `isVolunteer`.
 - Use `membership.role === 'admin'` for owner-exclusive operations.
@@ -182,18 +192,30 @@ The two layers stay separate because UI shapes diverge from table columns.
 - Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix.
 - `login` and `signInToAcceptInvitation` call `applyUserLocale` (`lib/cookie-store.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
 - Pass messages to `I18nProvider` through `clientMessages()`, which drops the namespaces listed in `serverNamespaces` (`config/i18n.json`).
+
+### Overrides
+
 - `loadMessages` layers `en` under the locale, then applies published `message_overrides` rows.
 - An override must pass three checks: the key exists in `en`, its `messageSignature` matches `en`, and `icu-minify/compile` works in builds.
 - Overrides load in an inner `'use cache'` function tagged `messagesTag(locale)`. Publishing calls `updateTag` for it, and an `en` publish for every locale.
 - Raw text for override hashes comes from `messages/*.json` on disk, because builds precompile the bundled catalogs.
 - Protected keys (`PROTECTED_NAMESPACES` and `Email` subjects) need `requireAdmin`, others `requireEditor`.
 - `classifyOverride` returns `orphaned`, `incompatible`, `outdated`, or `redundant`.
+
+### Locale switch and checks
+
 - A client locale switch calls the `getClientMessages` action (`actions/i18n.ts`), which returns the target locale without the server-only namespaces.
 - `pnpm run check:i18n` fails when a server-only namespace is used from a module reachable from a `'use client'` file, or when a namespace used only on the server is missing from the list.
+
+### Copy style
+
 - Write copy in sentence case (never CSS `capitalize`) with `…`.
 - Use US English in `en`, Peninsular informal "tú" in `es`, and informal "tu" in `it`.
 - Use "Log in" and "Log out" (es "Iniciar sesión", "Cerrar sesión"; it "Accedi", "Esci").
 - Show roles through `formatRoleLabel`.
+
+### Namespaces
+
 - Namespaces match feature domains.
 - Certificate copy lives in `Certificate<Area>` namespaces: `Credential`, `Detail`, `Eligibility`, `Errors`, `List`, `Org`, `Public`, `Queue`, `Review`, `Share`, `Status`, `Verify`, and `Wizard`.
 - Course copy lives in `CourseCommon` (settings dialog and strings both screens use), `CourseEditor`, and `CourseList`. A string the tab bar builds from a value (`t(value)`) stays in `CourseList`.
@@ -207,10 +229,9 @@ The two layers stay separate because UI shapes diverge from table columns.
 - Disable the submit button with `useFormDisabled(form.control)`, and read the error state with `useFormErrored(form.control)`. Both opt out of the compiler with `'use no memo'`, because RHF mutates `errors` in place.
 - Never pass `form` to a helper that reads its state in render: the build-only React Compiler memoizes the call and freezes the value.
 - Call the server action from `onSubmit` and surface the result with sonner (`toast.success`, `toast.error`).
-- Give every `<form>` `method="post"`, except a search form that must put its query in the URL. Before hydration the browser sends a form natively, and a GET puts every named field, passwords included, in the URL and the history.
+- Give every `<form>` `method="post"`, except a search form that must put its query in the URL.
+- Before hydration the browser sends a form natively, and a GET puts every named field, passwords included, in the URL and the history.
 
 ## Email templates and notifications
 
-- Templates live in `src/emails/<group>/<name>.tsx` (React Email) and register in `TEMPLATES` in `src/lib/email.ts`. Style them with `EMAIL_CLASSES` from `src/emails/classes.ts` (light and `dark:` token classes), never a hex value.
-- Reading pages build on `InfoSection` and `InfoCard` (`features/about/`), and long-form text on `ReadingMarkdown`, `ReadingToc`, and `extractHeadings` (`features/docs/`). One component per file.
-- Events, `notify`, and the catalog: `architecture.md`, "Events, notifications, and email".
+Templates, events, `notify`, and mail: `notifications.md`.

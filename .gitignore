@@ -1,9 +1,10 @@
 .agents/plans/
+.claude/settings.local.json
+.claude/worktrees/
 .next/
 .playwright/
 .vercel/
 node_modules/
-tmp/
 .env*
 !.env.example
 next-env.d.ts

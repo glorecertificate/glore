@@ -31,6 +31,7 @@
     "check:i18n": "node scripts/i18n/check.mts",
     "check:theme": "node scripts/theme/generate.mts --check",
     "check:ratchet": "node scripts/lint/ratchet.mts",
+    "check:budgets": "node scripts/lint/budgets.mts",
     "i18n:overrides": "dotenv -e .env.local -e .env -- node scripts/i18n/overrides.mts",
     "i18n:pull": "dotenv -e .env.local -e .env -- node scripts/i18n/pull.mts",
     "i18n:rename": "node scripts/i18n/rename-key.mts",

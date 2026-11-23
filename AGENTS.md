@@ -18,21 +18,24 @@ Budget: this file stays under 2,000 estimated tokens and each spec under 4,500. 
 
 Read only the specs whose rows apply (`.agents/specs/`).
 
-| Work                                                        | Spec               |
-| ----------------------------------------------------------- | ------------------ |
-| Product, roles, features, domain rules                      | `app.md`           |
-| Certificate lifecycle, screens, PDF, verification           | `certificates.md`  |
-| Invitations, members, ownership, settings, applications     | `organizations.md` |
-| Admin area, moderation, impersonation                       | `admin.md`         |
-| Routes, gates, API routes, proxy                            | `routes.md`        |
-| Auth, queries, transactions, cache, env vars, storage, cron | `reference.md`     |
-| `src/` tree, naming, layers, server/client, events, email   | `architecture.md`  |
-| Components, types, hooks, utils, i18n, forms                | `patterns.md`      |
-| Release UI kit, shell, theming, motion                      | `ui.md`            |
-| Formatter, imports, lint rules, git hooks, release age      | `code.md`          |
-| Issues, PRs, labels, Claude workflows, CI, deploys          | `github.md`        |
-| Commands, seeds, i18n, git, skills, MCP, lanes, tests, QA   | `workflow.md`      |
-| Performance targets, measurement, perf CI                   | `performance.md`   |
+| Work                                                      | Spec               |
+| --------------------------------------------------------- | ------------------ |
+| Product, roles, features, domain rules                    | `app.md`           |
+| Certificate lifecycle, screens, PDF                       | `certificates.md`  |
+| Invitations, members, ownership, settings, applications   | `organizations.md` |
+| Admin area, moderation, impersonation                     | `admin.md`         |
+| Courses, AI writing, content and interface translation    | `content.md`       |
+| Routes, verification, gates, API routes, proxy            | `routes.md`        |
+| Auth, sessions, cookies, sign-up guard, hardening         | `auth.md`          |
+| Queries, transactions, cache, env vars, storage, cron     | `reference.md`     |
+| `src/` tree, naming, layers, server/client                | `architecture.md`  |
+| Activity events, notify, notifications, email templates   | `notifications.md` |
+| Components, types, hooks, utils, i18n, forms              | `patterns.md`      |
+| Release UI kit, shell, theming, motion                    | `ui.md`            |
+| Formatter, imports, lint rules, git hooks, release age    | `code.md`          |
+| Issues, PRs, labels, Claude workflows, CI, deploys        | `github.md`        |
+| Commands, seeds, i18n, git, skills, MCP, lanes, tests, QA | `workflow.md`      |
+| Performance targets, measurement, perf CI                 | `performance.md`   |
 
 Work lives in GitHub issues. Plan files in `.agents/plans/` are gitignored: a draft PR body or a parent issue holds the shared plan (`github.md`).
 
@@ -82,7 +85,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 ## Gotchas: data and imports
 
 1. Never import `cookies` from `next/headers`, `cnfast`, or `../**` (`code.md`, "Restricted imports").
-2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel (`reference.md`, "Authentication").
+2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel (`auth.md`).
 3. `db/queries/<table>.ts` parsers MUST stay pure and never import `@/db/client` (`architecture.md`).
 4. A cached query is an inner `'use cache'` + `cacheTag` function under an outer `{ cache: boolean }` one (`reference.md`).
    Render-path loaders read the user through `getViewer()` (`actions/viewer.ts`), never `getAuthUser()`, `connection()`, or `Date.now()`, so the data joins the prefetch (`architecture.md`).
@@ -93,7 +96,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 ## Gotchas: runtime and domain
 
 8. The app uses `NextProxy` (`src/proxy.ts`), not `middleware.ts`.
-9. `emailAndPassword.autoSignIn` MUST stay `false` (`reference.md`, "Sign-up guard").
+9. `emailAndPassword.autoSignIn` MUST stay `false` (`auth.md`, "Sign-up guard").
 10. Every env var MUST be in the Zod schema in `next.config.ts`, which MUST never import from `src/` (`code.md`, "Config traps").
 11. Never edit `types/*.generated.d.ts` or `drizzle/`. Regenerate with `pnpm run typegen` or `pnpm run db` (`workflow.md`).
 12. Never add manual `useMemo` or `useCallback`: the React Compiler runs in builds.

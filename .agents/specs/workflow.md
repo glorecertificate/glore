@@ -57,7 +57,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 ## Translations
 
 - `en` is the source: `messages/en.json` and the legal seed fixtures `content/legal/*.en.md`. Code owns keys, message structure, and default copy.
-- The team edits UI text at `/translations` (database overrides on top of the bundled catalogs), legal texts at `/legal`, and courses, docs, and skill groups in their editors (`admin.md`, `routes.md`).
+- The team edits UI text at `/translations` (database overrides on top of the bundled catalogs), legal texts at `/legal`, and courses, docs, and skill groups in their editors (`content.md`, `routes.md`).
 - In feature work, add every new key to all three catalogs with real translations. Never delete a key in one catalog only.
 - Rename a key with `pnpm run i18n:rename <old> <new>`, never in one catalog only. It prints SQL for the key's overrides.
 - A key rename or removal can orphan or disable published overrides; the translations page flags them as stale.
@@ -201,10 +201,14 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 - CLI runs (`pnpm run check:lint`, git hooks, CI) use `.oxlintrc.json` with `typeAware: true` for `no-floating-promises` and `no-misused-promises`.
 - `.vscode/settings.json` sets `oxc.typeAware: false` and `oxc.configPath` to `scripts/lint/editor.oxlintrc.mts`.
 - That editor config drops the React Compiler rules except `rules-of-hooks` and `exhaustive-deps` (110 of 185 ms per keystroke).
-- oxlint resolves globs from the config's folder, and `ignorePatterns` cannot reach files outside it. So the editor config prefixes each override glob with `**/`, and turns the base ignores into an override that turns off every listed rule and plugin.
+- oxlint resolves globs from the config's folder, and `ignorePatterns` cannot reach files outside it.
+- So the editor config prefixes each override glob with `**/`, and turns the base ignores into an override that turns off every listed rule and plugin.
 - Never name a config in a subfolder `oxlint.config.ts`, `oxlint.config.mts`, or `.oxlintrc.json`: the CLI loads those as nested configs.
 - `knip.deferSession: true` keeps the knip extension idle.
 - Change one side of the editor and CLI lint pair only by deliberately changing the other.
+
+### Save actions
+
 - `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. Never re-add `source.organizeImports` or `source.removeUnusedImports`.
 - `source.format.oxc` was removed because `editor.formatOnSave` already runs oxfmt.
 - The TypeScript import actions call the language server on every save, re-print imports with semicolons, and collapse oxfmt's groups, which flashes on save.

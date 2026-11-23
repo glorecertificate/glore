@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { updateNotificationPreferences } from '@/actions/account/preferences'
+import { canHoldCertificates } from '@/components/features/certificates/rules'
 import {
   type NotificationCategory,
   notificationCategoriesFor,
@@ -38,7 +39,10 @@ export const NotificationsForm = () => {
   return (
     <SettingsSection title={t('notificationsEmail')}>
       <ul className="divide-y rounded-lg border px-4">
-        {notificationCategoriesFor(user.organizations.map(({ role }) => role)).map(category => (
+        {notificationCategoriesFor({
+          certificates: canHoldCertificates(user),
+          roles: user.organizations.map(({ role }) => role),
+        }).map(category => (
           <li className="flex items-start justify-between gap-4 py-4" key={category}>
             <div className="space-y-1">
               <Label htmlFor={`notifications-${category}`}>{t(`notificationsCategory_${category}`)}</Label>

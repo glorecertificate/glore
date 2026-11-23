@@ -10,7 +10,7 @@ Activity events, the `notify` pipeline, in-app notifications, mail, and the emai
 - `src/actions/notifications/catalog.ts` holds recipients, mail category, template factory (may be async, receives the absolute deep link), and deep link per type.
 - `notify` writes in-app `notifications` rows, skips the actor unless the type sets `notifyActor`, and mails only when the type has a template.
 - Optional categories (`learning`, `organization`, `reminders`) honor `users.notification_preferences`. `mandatory` mail always goes.
-- Settings show `organization` only to org admins and representatives (`notificationCategoriesFor`).
+- Settings show `organization` only to org admins and representatives, and `learning` only when `canHoldCertificates` is true (`notificationCategoriesFor`).
 - The bell, popover, and `/notifications` render each row from `type` and `data` with `Notifications.events.<type with dots as underscores>` copy in all catalogs.
 - A new in-app event needs that copy (Vitest enforces it). A per-recipient `variant` on the event definition is stored in the notification data.
 - Every event type an organization can record needs activity copy in all catalogs (`activity_*` messages), enforced by a Vitest test.

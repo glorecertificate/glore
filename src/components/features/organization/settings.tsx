@@ -49,6 +49,7 @@ type Values = z.infer<ReturnType<typeof organizationSettingsSchema>>
 type Locale = keyof IntlRecord
 
 interface OrganizationSettingsProps {
+  hasCertificates?: boolean
   members: OrganizationPanelData['members']
   onRefresh: () => void
   onSyncUser?: (user: User) => void
@@ -57,6 +58,7 @@ interface OrganizationSettingsProps {
 }
 
 export const OrganizationSettings = ({
+  hasCertificates = false,
   members,
   onRefresh,
   onSyncUser,
@@ -189,7 +191,7 @@ export const OrganizationSettings = ({
     { id: 'legal', label: t('legalTitle') },
     { id: 'signatory', label: t('signatoryTitle') },
     { id: 'contact', label: t('contactDetails') },
-    ...(platform ? [] : [{ id: 'danger', label: t('dangerZone') }]),
+    { id: 'danger', label: t('dangerZone') },
   ]
 
   return (
@@ -453,70 +455,70 @@ export const OrganizationSettings = ({
             </form>
           </Form>
 
+          <Separator />
+
+          <SettingsSection description={t('dangerDescription')} id="danger" title={t('dangerZone')}>
+            <ImpersonationLockNote />
+            {!platform && (
+              <Card className="border-danger-border bg-danger-subtle">
+                <CardHeader>
+                  <CardTitle className="type-heading text-danger-text">{t('transferTitle')}</CardTitle>
+                  <CardDescription>{t('transferHelp')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    disabled={impersonating}
+                    onClick={() => {
+                      remember()
+                      setTransferOpen(true)
+                    }}
+                    size="sm"
+                    type="button"
+                    variant="destructive"
+                  >
+                    {t('transferOwnership')}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+            <Card className="border-danger-border bg-danger-subtle">
+              <CardHeader>
+                <CardTitle className="type-heading text-danger-text">{t('deleteOrganizationTitle')}</CardTitle>
+                <CardDescription>{t('deleteOrganizationHelp')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  disabled={impersonating || hasCertificates}
+                  onClick={() => {
+                    remember()
+                    setDeleteOpen(true)
+                  }}
+                  size="sm"
+                  type="button"
+                  variant="destructive"
+                >
+                  {t('deleteOrganization')}
+                </Button>
+              </CardContent>
+            </Card>
+          </SettingsSection>
+
+          <DeleteOrganizationDialog
+            onConfirm={handleDelete}
+            onCloseAutoFocus={restore}
+            onOpenChange={setDeleteOpen}
+            open={deleteOpen}
+            organizationName={organization.name}
+          />
           {!platform && (
-            <>
-              <Separator />
-
-              <SettingsSection description={t('dangerDescription')} id="danger" title={t('dangerZone')}>
-                <ImpersonationLockNote />
-                <Card className="border-danger-border bg-danger-subtle">
-                  <CardHeader>
-                    <CardTitle className="type-heading text-danger-text">{t('transferTitle')}</CardTitle>
-                    <CardDescription>{t('transferHelp')}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      disabled={impersonating}
-                      onClick={() => {
-                        remember()
-                        setTransferOpen(true)
-                      }}
-                      size="sm"
-                      type="button"
-                      variant="destructive"
-                    >
-                      {t('transferOwnership')}
-                    </Button>
-                  </CardContent>
-                </Card>
-                <Card className="border-danger-border bg-danger-subtle">
-                  <CardHeader>
-                    <CardTitle className="type-heading text-danger-text">{t('deleteOrganizationTitle')}</CardTitle>
-                    <CardDescription>{t('deleteOrganizationHelp')}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      disabled={impersonating}
-                      onClick={() => {
-                        remember()
-                        setDeleteOpen(true)
-                      }}
-                      size="sm"
-                      type="button"
-                      variant="destructive"
-                    >
-                      {t('deleteOrganization')}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </SettingsSection>
-
-              <DeleteOrganizationDialog
-                onConfirm={handleDelete}
-                onCloseAutoFocus={restore}
-                onOpenChange={setDeleteOpen}
-                open={deleteOpen}
-                organizationName={organization.name}
-              />
-              <TransferOwnershipDialog
-                candidates={candidates}
-                onCloseAutoFocus={restore}
-                onOpenChange={setTransferOpen}
-                onTransferred={handleTransferred}
-                open={transferOpen}
-                organizationName={organization.name}
-              />
-            </>
+            <TransferOwnershipDialog
+              candidates={candidates}
+              onCloseAutoFocus={restore}
+              onOpenChange={setTransferOpen}
+              onTransferred={handleTransferred}
+              open={transferOpen}
+              organizationName={organization.name}
+            />
           )}
         </div>
       </div>

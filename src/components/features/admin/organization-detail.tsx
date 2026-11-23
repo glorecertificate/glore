@@ -187,6 +187,7 @@ export const AdminOrganizationDetail = ({
             <TabSlot
               lazy={settingsTab}
               key={initialData.updatedAt}
+              hasCertificates={Object.values(initialData.pipeline).some(count => count > 0)}
               members={initialData.memberships}
               onRefresh={refresh}
               organization={{ ...initialData, role: null }}

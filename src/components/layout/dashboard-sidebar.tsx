@@ -500,11 +500,11 @@ const DashboardSidebarSearch = () => {
 
   return (
     <>
-      <SidebarGroup className="px-3 pb-0">
+      <SidebarGroup className="px-3 pb-0 group-data-[collapsible=icon]:px-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="border border-sidebar-border bg-sidebar-field text-sidebar-muted"
+              className="border border-sidebar-border bg-sidebar-field text-sidebar-muted group-data-[collapsible=icon]:p-1.75!"
               onClick={openSearch}
               onFocus={preloadSearchCommand}
               onPointerEnter={preloadSearchCommand}

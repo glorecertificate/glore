@@ -1,5 +1,5 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
-import { Button, Link, Section, Text } from 'react-email'
+import { Link, Text } from 'react-email'
 
 import { EMAIL_CLASSES } from '@/emails/classes'
 import { EmailLayout } from '@/emails/layout'
@@ -57,11 +57,6 @@ const AccountPasswordChangedEmail = ({
       </Text>
       <Text className={EMAIL_CLASSES.body}>{t('intro')}</Text>
       <Text className={EMAIL_CLASSES.detail}>{t('details')}</Text>
-      <Section className="mt-6 text-center">
-        <Button className={EMAIL_CLASSES.button} href={`mailto:${settings.email}`}>
-          {common('contactUs')}
-        </Button>
-      </Section>
     </EmailLayout>
   )
 }

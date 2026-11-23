@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   addMonths,
   ageTone,
+  canHoldCertificates,
   chooseTutor,
   daysBetween,
   formatActivityDate,
@@ -221,6 +222,23 @@ describe('formatActivityPeriod', () => {
     expect(formatActivityPeriod({ activityEndDate: '2026-06-30', activityStartDate: '' }, formatter, template)).toBe(
       '-'
     )
+  })
+})
+
+describe('canHoldCertificates', () => {
+  it('allows a volunteer of any organization', () => {
+    expect(canHoldCertificates({ canEdit: false, organizations: [{ role: 'tutor' }, { role: 'volunteer' }] })).toBe(
+      true
+    )
+  })
+
+  it('refuses tutors, learners, managers, editors, and admins', () => {
+    expect(canHoldCertificates({ canEdit: false, organizations: [{ role: 'tutor' }, { role: 'learner' }] })).toBe(false)
+    expect(
+      canHoldCertificates({ canEdit: false, organizations: [{ role: 'admin' }, { role: 'representative' }] })
+    ).toBe(false)
+    expect(canHoldCertificates({ canEdit: true, organizations: [{ role: 'volunteer' }] })).toBe(false)
+    expect(canHoldCertificates({ canEdit: false, organizations: [] })).toBe(false)
   })
 })
 

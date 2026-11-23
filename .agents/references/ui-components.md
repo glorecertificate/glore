@@ -97,12 +97,36 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - A fade from opacity 0 delays LCP by its length, so content of a first render or a server stream paints at once. A component with a `loading` prop fades through `useReveal(loading)`.
 - React holds a streamed boundary up to 300 ms after the first frame. `InstantReveal` in the root layout keeps `$RT` unset, so each boundary paints in the frame after it arrives.
 
+## Layout rules
+
+- `Card` sets neither `h-full` nor `justify-between`, because a percentage height under the flex `Main` stretched cards to the page height and grid-stretched cards spread their rows.
+- Pass `h-full` at call sites that need full height (course cards, `StatLink`, doc article cards). `StatCard` and the course list card keep `justify-between` explicitly.
+- Tab lists use `min-w-0 justify-start`, so an overflowing list does not center and clip its first tabs.
+- `SegmentedControl` and `SegmentedControlItem` use Radix radio semantics and keyboard navigation.
+- `CopyButton` handles clipboard failures and ignores stale completions after its value changes.
+- `QrCode` imports the QR encoder on demand and provides loading and error states.
+- `AvatarStack` lives in `avatar-stack.tsx`, requires stable avatar IDs and labels, and always renders a fallback.
+- Skill groups map to brand tones in `features/courses/skill-group.ts`: Communication `brand`, Personal `brand-quaternary` (AA-checked teal), Social `brand-secondary`, Work `brand-tertiary`.
+- Chart colors use text variants to keep contrast in both themes.
+- The organization roster uses `DataTable`, and its overview uses `StatCard` and `AvatarStack`.
+- Certificate views consume the sharing, timeline, and level primitives.
+
 ## Controls detail
 
 - `InlineInput` takes `size="title"` for the `type-title` role. Its placeholder uses the `placeholder:text-muted-foreground` input token.
 - `Markdown` is a server component with a static `react-markdown` import. Use it from server components, where static content renders on the server.
 - A client component uses `MarkdownLazy` (`markdown-lazy.tsx`), which loads `Markdown` with `next/dynamic` and no loading state, so `react-markdown` stays out of its route bundle. Call `preloadMarkdown()` when the client surface mounts, so the text appears with the content. Never import `Markdown` from a `'use client'` file.
 - `DialogContent` keeps its close button in a sticky corner anchor, so it stays put while a long dialog scrolls. `DialogTitle` reserves space for it. On open, focus goes to an existing autofocus target, else to the first visible field outside the footer, else to the dialog itself. It never scrolls, and never lands on the close button or a link.
+
+## Migrate a page to the band
+
+1. Move the title, the `PageIntro` description, and the header buttons into the `title`, `description`, and `actions` props of `DashboardPage`. Delete the `PageIntro` or `PageHeader` wrapper.
+2. Move section tabs into `breadcrumb`. Filters and toolbars stay in the content.
+3. Add `overlap` only when the first block is an opaque card (`Card`, `StatCard`, `DataTable`, `Banner`, `DashboardHero`). Otherwise omit it, and the band ends with a clean gap.
+4. Never leave loose text, tabs, or filters in the overlap strip.
+5. Inside the band, read `band-*` tokens or rely on `band-scope`. Never add the `dark` class or a color override.
+6. A page with a data-dependent heading passes `header` (see `DashboardBand`). One `h1` per page: the band owns it.
+7. Example: "Band migration example" below.
 
 ## Band migration example
 

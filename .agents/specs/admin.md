@@ -5,21 +5,12 @@
 - Call admin `auth.api.*` only from `actions/admin/*`, after `requireAdmin`.
 - Writes use `requireAdminWithLimit(action, max)` (per admin per hour).
 - `adminAction()` returns `{ data, error: { code, message } }`. The client maps `code` to `Admin.errors` with `useAdminError`.
-- The organization actions in `actions/admin/organizations.ts` (read, approve, reject, create, invite) follow the same rule, never `isAdmin` from `getCurrentUser`. Writes validate `db/queries/admin-organization.ts` schemas (ids, review comment, create and invite input with an `http` or `https` website) and answer `INVALID_INPUT` on a bad value.
+- The organization actions in `actions/admin/organizations.ts` (read, approve, reject, create, invite) follow the same rule, never `isAdmin` from `getCurrentUser`.
+- Writes validate `db/queries/admin-organization.ts` schemas (ids, review comment, create and invite input with an `http` or `https` website) and answer `INVALID_INPUT` on a bad value.
 
 ## Screen anatomy
 
-- Every admin, translations, and emails page renders `PageIntro` (`ui/page-header.tsx`): a visible description and optional actions, then the content. The title stays in the header bar. The server-paged lists (users, certificates, audit) use `LoadingFallback` as the `Suspense` fallback, because the full table skeleton adds about 40 ms to the first paint on a slow phone.
-- Primary actions sit in the page header (`Create organization` as a split button with `Invite organization` in its menu, `Invite member`), never inside a table card.
-- Lists use `DataTable` with a `FilterBar`. `/admin/organizations` and `/admin/team` sort and filter locally with a header sort, and the server-paged lists (users, certificates, audit) sort by recency only.
-- States are `StatusBadge` tones: pending `warning`, active or joined `success`, rejected or banned `danger`. Roles and audit categories stay `Badge`.
-- The organization record header is a `PageHeader` (avatar, `PageHeaderTitle`, status, meta list) with the review actions in `PageHeaderActions`. The application tab links the website and emails.
-- Row actions are one `ellipsis` menu with a destructive item last, and a confirm dialog for every destructive or irreversible action.
-- `/admin/organizations` and `/admin/team` page locally at 10 rows (the `DataTable` default). They were unpaginated before.
-- Every admin confirm dialog (approve, reject, ban, unban, impersonate, remove member, invite, create) is `ActionDialog` (`action-dialog.tsx`): a form (Enter submits), a pending state that blocks closing, and focus return. The `destructive` tone (reject, ban, removal) renders an `AlertDialog`, which gives `role=alertdialog`, focus on Cancel, and no close on outside click. Handlers wrap the action in `try/finally` so a rejected call never traps the dialog, and show the `...Error` toast.
-- Focus return uses `useReturnFocus` (`hooks/use-return-focus.ts`). The owner calls `remember()` when it opens a dialog (from a row menu item or a header button) and passes `restore(event, listFocusTarget)` as `onCloseAutoFocus`. When the row unmounts, focus goes to the list. A client-paged `DataTable` (organizations, team) takes `pageResetKey` built from its filters so paging resets without remounting the filters. The server-paged lists run nuqs updates in `startTransition`, so the current rows stay visible with `aria-busy` and reduced opacity, and the skeleton shows only on first load.
-- Settings sections are cards with a sticky save bar that shows the unsaved state.
-- Audit categories use `StatusBadge` with a per-category icon and tone map (`CATEGORY_META`).
+Layout, lists, dialogs, and focus rules of the admin pages: `.agents/references/screens/admin.md`.
 
 ## Users
 
@@ -43,11 +34,12 @@
 - `resendInvitation` calls `refreshTeamInvitation`, which locks the latest invitation without `acceptedAt`.
 - It refuses a send within 60 seconds of the last one (`TOO_SOON`, measured on `updated_at`).
 - It replaces the token, so the old link stops working, and replaces the expiry, so expired invitations come back to life. It records `team.invited`.
-- Both paths send through `notify(event)` and the `team/invite` template.
+- Both paths send through `notify(event)` and the `team/invite` template (`notifications.md`).
 - Zero delivered emails raise `SEND_FAILED` and keep the refreshed token.
 - Tokens never reach payloads: `url` and `email` are in `PRIVATE_KEYS`, and the actions return only the email and the expiry.
 - Role changes reuse `setPlatformRole`. Removal refuses the acting admin.
-- `deleteTeamMember` accepts only a platform admin or editor (`NOT_FOUND` otherwise) and runs `eraseAccount` with the acting admin: the `SOLE_ORG_ADMIN` guard applies and `account.deleted` is recorded with the admin as actor. The removed person gets no "as you asked" mail.
+- `deleteTeamMember` accepts only a platform admin or editor (`NOT_FOUND` otherwise) and runs `eraseAccount` with the acting admin: the `SOLE_ORG_ADMIN` guard applies and `account.deleted` is recorded with the admin as actor.
+- The removed person gets no "as you asked" mail.
 
 ## Certificates
 
@@ -96,7 +88,8 @@
 
 ### Search and rows
 
-- `exportAdminAudit` (`actions/admin/audit.ts`) returns the CSV of every event that matches the current filters, newest first, capped at 10,000 events (`AUDIT_EXPORT_LIMIT`, with a `truncated` flag). `AdminAuditExport` in the band downloads it. `lib/csv.ts` quotes cells and neutralizes formula starts.
+- `exportAdminAudit` (`actions/admin/audit.ts`) returns the CSV of every event that matches the current filters, newest first, capped at 10,000 events (`AUDIT_EXPORT_LIMIT`, with a `truncated` flag).
+- `AdminAuditExport` in the band downloads it. `lib/csv.ts` quotes cells and neutralizes formula starts.
 - `listAdminAudit` validates `adminAuditQuerySchema`: `category`, `from` and `to` (`YYYY-MM-DD`, whole UTC days), `q`, and `page`.
 - Each search token must match the actor or the affected person (name or email, joined through `metadata.userId` or `holderId`), the organization name, or the applicant name.
 - URL params (`audit-params.ts`): `q`, `category`, `from`, `to`, `page`.
@@ -122,7 +115,8 @@
 
 ### Page
 
-- `AdminOverview` (`features/admin/overview.tsx`, server rendered, `Admin.overview` messages) opens with `AdminOverviewDecisions`: pending organization applications, certificate requests waiting past the last reminder day, and team invitations not accepted. Rows at zero hide.
+- `AdminOverview` (`features/admin/overview.tsx`, server rendered, `Admin.overview` messages) opens with `AdminOverviewDecisions`: pending organization applications, certificate requests waiting past the last reminder day, and team invitations not accepted.
+- Rows at zero hide.
 - A divided figure strip follows (users, organizations, certificate requests with the average review time, courses), then `AdminOverviewPipeline` (status dots with neutral tracks) beside one lazy `Chart` of submitted and approved certificates per month, then `AdminOverviewHealth` (content health from `loadEditorSummary`).
 - The band primary opens the oldest pending application (`decisions.oldestApplication`), or the certificates page when none is pending.
 
@@ -169,10 +163,16 @@
 - It blocks change email, change password, delete user, link and unlink account, set password, and session revocation.
 - `deleteAccount`, `revokeSession`, and `revokeOtherSessions` check `isImpersonating()`.
 - These actions are locked too: `changePassword`, `updateAccount` (a username or email change, locale stays open), `updatePrivacy`, `featureCertificate`, `transferOrganizationOwnership`, `deleteOrganization`, and `revokeCertificate`.
-- They call `impersonationLocked()` (returns the error) or `assertNotImpersonating()` (throws it) from `actions/admin/impersonation-state.ts`. `queryError` turns the thrown error into the `NOT_ALLOWED_WHILE_IMPERSONATING` code (`IMPERSONATION_LOCKED`), and `useActionError` (`hooks/use-action-error.ts`) shows `Common.impersonationLocked`.
-- The UI mirrors every lock. `(dashboard)/layout.tsx` passes `impersonating` (from `getImpersonation()`) to `SessionProvider`, and `useSession().impersonating` disables the triggers: password form, email and username fields, session revoke buttons, privacy switches, featured and revoke certificate buttons, ownership transfer, organization deletion, and account deletion. `ImpersonationLockNote` shows `Common.impersonationLocked` once per surface. The server locks stay the source of truth.
+- They call `impersonationLocked()` (returns the error) or `assertNotImpersonating()` (throws it) from `actions/admin/impersonation-state.ts`.
+- `queryError` turns the thrown error into the `NOT_ALLOWED_WHILE_IMPERSONATING` code (`IMPERSONATION_LOCKED`), and `useActionError` (`hooks/use-action-error.ts`) shows `Common.impersonationLocked`.
+- The UI mirrors every lock.
+- `(dashboard)/layout.tsx` passes `impersonating` (from `getImpersonation()`) to `SessionProvider`, and `useSession().impersonating` disables the triggers: password form, email and username fields, session revoke buttons, privacy switches, featured and revoke certificate buttons, ownership transfer, organization deletion, and account deletion.
+- `ImpersonationLockNote` shows `Common.impersonationLocked` once per surface. The server locks stay the source of truth.
 - A new action that changes credentials, identity, public exposure, ownership, or issued certificates MUST call one of them first.
 - `/admin` answers not found because the target is not an admin.
+
+### Banner
+
 - `ImpersonationBanner` (server, mounted once in `(dashboard)/layout.tsx`) reads `getImpersonation()` from `actions/admin/impersonation-state.ts`.
 - That read returns the session's `impersonatedBy`, the expiry, and the reason from the start event.
 - The banner renders `ImpersonationNotice`: a fixed bottom pill with the name, reason, countdown, a stop button, and the automatic stop.
@@ -180,38 +180,11 @@
 
 ### Limits
 
-- Impersonation is not read-only. Only the locked actions above refuse. Everything else the user can do stays open (profile edits, notification preferences, course progress, certificate drafts and requests, member and invitation management for an org admin), so the support reason in the start event is the control.
+- Impersonation is not read-only. Only the locked actions above refuse.
+- Everything else the user can do stays open (profile edits, notification preferences, course progress, certificate drafts and requests, member and invitation management for an org admin), so the support reason in the start event is the control.
 - The Better Auth cookie cache (5 minutes) keeps serving a session deleted in the database, so a closed impersonation can linger in the browser for up to 5 minutes. The expiry is embedded in the cache and exact.
 - Events written while impersonating name the impersonated user as actor. Only start and stop carry the admin.
 
 ## Translations
 
-- `/translations` (`app/(dashboard)/translations/page.tsx`) edits interface text. It sits outside the admin layout because editors reach it, as `/emails` does.
-- `/admin/translations` redirects to it (`next.config.ts`). The nav entry `admin-translations` (group `content`, `visible: isTeam`) sits before `admin-emails`. The sidebar shows the `content` group (translations, email previews, legal documents) under its own Content label, apart from the Admin group.
-- `loadTranslations` (`actions/translations.ts`) calls `authorizeEditor`, then returns the three bundled catalogs and every override. `maxDuration` is 60.
-- The table (`features/translations/`) is a real `<table>` virtualized with `@tanstack/react-virtual`: one row per `en` key, a cell per locale, and state badges.
-- Below `md` the list scrolls with the page through `useWindowVirtualizer` (`translation-list.tsx`, `'use no memo'` because the React Compiler would cache the visible rows). From `md` it keeps the fixed-height inner scroller with a sticky header. The choice follows `matchMedia`, and the editor sheet is the same on both.
-- URL params (`translations-params.ts`): `filter`, `key` (opens the editor sheet), `namespace`, `q`.
-- Filters (`TRANSLATION_STATES`): missing, overridden, outdated, incompatible, orphaned, unreviewed. Rows, filters, and counts are pure helpers in `lib/translation-table.ts`.
-
-### Editing
-
-- `LocaleEditor` validates as you type with `validateOverride` (`lib/message-validation.ts`, client-safe) and previews ICU through `lib/message-preview.ts`.
-- Save draft, publish, discard, and reset live in `actions/messages.ts`, with shared guards in `actions/message-helpers.ts`. `listMessageHistory` returns 30 revisions.
-- Protected namespaces (`PROTECTED_NAMESPACES`) need `requireAdmin` on the server and show "Admins only" to editors.
-- Deleting an override whose key left the `en` bundle (orphaned) is admin only.
-- `suggestMessage` drafts `es` and `it` text with the AI chain (`lib/message-suggestion.ts`). It needs `GEMINI_API_KEY`, allows 40 calls per hour per user, saves origin `machine`, and never publishes.
-- A suggestion that fails `validateOverride` is dropped with `AI_INCOMPATIBLE`, `AI_INVALID`, or `AI_EMPTY`.
-- All page copy is in the `Translations` namespace.
-
-### Override scripts
-
-- `pnpm run i18n:overrides --target <local|staging|production>` counts overrides per locale and stale state. It reads inside a read-only transaction.
-- `pnpm run i18n:pull --target <env>` writes published overrides in the `current` state into `messages/*.json` (`--include-outdated`, `--dry-run`) for a normal PR. It never touches the database.
-- `scripts/i18n/rename-key.mts <old> <new>` renames a key in every catalog and prints the SQL for `message_overrides` and `message_override_revisions`. It does not run it.
-- The scripts import `classifyOverride` through `#lib/*`, so `lib/message-overrides.ts` and `lib/message-validation.ts` use relative imports.
-
-### Stale override notice
-
-- Daily maintenance runs `notifyStaleOverrides` (`actions/maintenance/stale-overrides.ts`). It counts incompatible and orphaned overrides and records `messages.stale` for platform admins, in-app only.
-- It repeats only when the counts change or after 7 days, and links to `/translations?filter=orphaned` or `incompatible`.
+The `/translations` interface text editor: `content.md`, "Interface translations".

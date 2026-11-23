@@ -154,6 +154,11 @@ node -e "import('oxlint-plugin-react-doctor').then(m => console.log(Object.keys(
 - `src/db/helpers.ts` and `src/db/mutations/**` relax the react-doctor async rules.
 - `src/lib/utils.ts` may import `cnfast`.
 
+## Token budgets
+
+- `pnpm run check:budgets` (`scripts/lint/budgets.mts`) fails when `AGENTS.md` reaches 2,000 estimated tokens or a file in `.agents/specs/` reaches 4,500.
+- The estimate collapses each run of 2 or more spaces into one, then divides the code points by 4, so table padding barely counts.
+
 ## Change order
 
 - Land schema changes in this order: additive changes, then data moves, then drops.

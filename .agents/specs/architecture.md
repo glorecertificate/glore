@@ -1,6 +1,6 @@
 # Architecture reference
 
-Source tree and structural conventions. Provider hierarchy and component authoring: `patterns.md`. Database client and transactions: `reference.md`. Routes and proxy: `routes.md`.
+Source tree and structural conventions. Provider hierarchy and component authoring: `patterns.md`. Database client and transactions: `reference.md`. Routes and proxy: `routes.md`. Auth and fresh session reads: `auth.md`. Events, notifications, and email: `notifications.md`.
 
 ## Source tree
 
@@ -121,6 +121,9 @@ src/
 - `db/queries/<table>.ts` exports `parse*` functions and MUST stay pure: importing `@/db/client` there leaks `server-only` into client bundles through parser chains.
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`).
 - `db/schema/<table>.ts` holds Drizzle table definitions.
+
+### Feature slice files
+
 - `features/docs/use-docs-search.ts` is the docs search hook for the command palette.
 - Articles and legal documents share `features/docs/` `headings.ts`, `reading-*.tsx`, and `toc-links.tsx`. Heading ids map by source line, so the table of contents and the anchors agree.
 - `extractHeadings` reads ATX headings (`#` to `###`, up to 3 spaces of indent), CRLF, fences, and duplicates. It skips setext headings, so write headings with `#`.
@@ -134,6 +137,9 @@ src/
 - Placement test: a component belongs in `ui/` only if you could ship it in a generic component library.
 - When a component knows the GloRe domain (binds to the data model, a feature enum, or a feature i18n namespace), it belongs in `features/<domain>/`.
 - Cross-feature imports are not blocked and a few exist (`admin -> organization`, `dashboard -> courses`). Compose siblings in the route.
+
+### Vendored rich text editor
+
 - `ui/rich-text-editor/` is the vendored Plate.js editor, installed through the shadcn/Plate registry CLI and domain-free.
 - Its `ai-chat-editor.tsx` passes the value of `useAIChatEditor` to `StaticEditor`, or the React Compiler freezes the AI preview on its first word. Keep it after a re-pull (`course-editor.spec.ts`).
 - It stays in `ui/` so a CLI re-pull keeps working. Treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them.
@@ -149,61 +155,28 @@ src/
 - Layout guards (admin, certificates) are server components that call `notFound()`.
 - A page that fetches data is a sync page that renders `DashboardPage` and puts an inner async component in it. `DashboardPage` wraps its children in Suspense, so the header bar renders at once.
 - A record title that needs data is an async component passed as `title`. The bar streams it.
-- Keep `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the bar and a spinner, for a segment that still awaits uncached data. `LoadingFallback` fades in after 300 ms (`delay-300`), so a wait under 300 ms shows nothing. A route with its data behind cached loaders never reaches it.
+- Keep `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the bar and a spinner, for a segment that still awaits uncached data.
+- `LoadingFallback` fades in after 300 ms (`delay-300`), so a wait under 300 ms shows nothing. A route with its data behind cached loaders never reaches it.
 - `next dev` logs a blocking-route error when a navigation would wait on uncached data.
-- Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so a plain `Link` needs no `prefetch`. Pass `prefetch` on the sidebar links and on primary in-page links (course cards, certificate rows) to carry cached data that needs a fresh 30 s stale time or a URL value into the click. `experimental.staleTimes.dynamic` is 30, so a revisit within 30 s skips the request.
-- Page data comes from loaders in `viewer.ts` (`getViewer`, `getViewerContext`: fresh session plus the tagged `fetchUser`), `certificates/lists.ts`, `certificates/detail-data.ts`, `translations-core.ts`, `organizations/panel-data.ts`, `docs-core.ts`, and `dashboard/*`. They take ids as arguments to `'use cache'` functions with `LIVE_LIFE` (60 s stale). A loader never calls `connection()`, `getAuthUser()`, or `Date.now()` outside a cache (use `readClock()`).
-- A tab inside a page never waits on a server action: render its initial data from the server props or warm it on mount (`OrganizationPanel`), and load heavy tab or editor chunks statically or through `EditorPreload`. A `next/dynamic` chunk without a preload shows the fallback for 300 ms.
+
+### Prefetching and page data
+
+- Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so a plain `Link` needs no `prefetch`.
+- Pass `prefetch` on the sidebar links and on primary in-page links (course cards, certificate rows) to carry cached data that needs a fresh 30 s stale time or a URL value into the click.
+- `experimental.staleTimes.dynamic` is 30, so a revisit within 30 s skips the request.
+- Page data comes from loaders in `viewer.ts` (`getViewer`, `getViewerContext`: fresh session plus the tagged `fetchUser`), `certificates/lists.ts`, `certificates/detail-data.ts`, `translations-core.ts`, `organizations/panel-data.ts`, `docs-core.ts`, and `dashboard/*`.
+- They take ids as arguments to `'use cache'` functions with `LIVE_LIFE` (60 s stale). A loader never calls `connection()`, `getAuthUser()`, or `Date.now()` outside a cache (use `readClock()`).
+- A tab inside a page never waits on a server action: render its initial data from the server props or warm it on mount (`OrganizationPanel`), and load heavy tab or editor chunks statically or through `EditorPreload`.
+- A `next/dynamic` chunk without a preload shows the fallback for 300 ms.
 - Content joins the shell only behind `'use cache'` with a stale time of at least 5 minutes or behind `'use cache: private'`. Uncached reads, `params`, and `searchParams` stream in after the click.
-- Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache, 30 s stale time, fresh database check). Links to pages that read it use `prefetch`, since 30 s stays out of the App Shell.
+- Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache, 30 s stale time, fresh database check).
+- Links to pages that read it use `prefetch`, since 30 s stays out of the App Shell.
 
-### Session and caching
+### Server-only modules and URL state
 
-- Actions, guards, and API routes use `getAuthUser()`, which skips the cookie cache (`disableCookieCache`), so a ban or a revoked session blocks writes at once.
-- `getAuthUser()` also passes `disableRefresh`, so a read never rewrites the session cookie. A cookie write in an action makes Next.js re-render the page and drop prefetched routes. The proxy still extends the session on each request.
 - Keep cached render helpers in server-only modules.
 - Every export of a `'use server'` file is a client-callable action, so a cached fetch that takes a `userId` there would serve any user's data.
-- A read that takes an id and checks no caller (`findUser`, `findHolderLevels`) or a raw primitive (cookie get/set/delete) lives in a `server-only` module without `'use server'`. A `Next-Action` POST can call any exported action, so a `'use server'` export must check the caller and validate its arguments.
+- A read that takes an id and checks no caller (`findUser`, `findHolderLevels`) or a raw primitive (cookie get/set/delete) lives in a `server-only` module without `'use server'`.
+- A `Next-Action` POST can call any exported action, so a `'use server'` export must check the caller and validate its arguments.
 - A page that must navigate instantly reads URL state on the client (nuqs) instead of awaiting `searchParams`.
 - The saved course-list filters (`gl_courseListParams`) redirect in `src/proxy.ts` for document requests and through `history.replaceState` in `useCourseListParams` on client navigation.
-- `checkRateLimit`, `getAuthUser()`, `requireAdmin`, `requireEditor`, and the impersonation state await `connection()` before any fresh `auth.api.getSession`. On Neon over HTTP, a database read in a prerender rejects with `HANGING_PROMISE_REJECTION`, which Better Auth logs as `INTERNAL_SERVER_ERROR`.
-- Without it, a clock read after `headers()` logs "unstable value `Date.now()` while prerendering" under partial prefetching.
-
-## Events, notifications, and email
-
-### Events and notify
-
-- Every state transition writes one `activity_events` row with `recordEvent(tx, event)` (`src/db/mutations/activity-event.ts`) inside its transaction.
-- After the commit, the action calls `notify(event)` (`src/actions/notifications/notify.ts`), which never throws.
-- Event types and payloads live in `src/db/queries/activity-event.ts`.
-- `src/actions/notifications/catalog.ts` holds recipients, mail category, template factory (may be async, receives the absolute deep link), and deep link per type.
-- `notify` writes in-app `notifications` rows, skips the actor unless the type sets `notifyActor`, and mails only when the type has a template.
-- Optional categories (`learning`, `organization`, `reminders`) honor `users.notification_preferences`. `mandatory` mail always goes.
-- Settings show `organization` only to org admins and representatives (`notificationCategoriesFor`).
-- The bell, popover, and `/notifications` render each row from `type` and `data` with `Notifications.events.<type with dots as underscores>` copy in all catalogs.
-- A new in-app event needs that copy (Vitest enforces it). A per-recipient `variant` on the event definition is stored in the notification data.
-- Every event type an organization can record needs activity copy in all catalogs (`activity_*` messages), enforced by a Vitest test.
-
-### Mail
-
-- `sendMail` (`src/lib/email.ts`) takes `template`, `category`, and `unsubscribeUrl`.
-- Every template forwards the `category` and `settings` base props (`EmailBaseProps`) to `EmailLayout`, which prints the reason and the preference link.
-- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. The header is the page band gradient (`EMAIL_COLORS.band*`, solid `bandFrom` fallback) with the white `public/email/logo.png` centered.
-- Mail renders in the RSC layer, which has no `createContext`, so templates never use React context.
-- Optional mail carries `List-Unsubscribe` headers. The POST at `/api/v1/mail-preferences` turns that category off for the user named in a signed token (`src/lib/unsubscribe.ts`).
-- A GET on that route opens `/settings?tab=notifications`.
-- `renderEmail({ template, locale, category })` returns `{ html, subject, text }` and `sendMail` calls it.
-- The `/emails` preview (`loadEmailPreview`, `previewTemplate(name)` with `PreviewProps`) cannot drift from what is sent.
-- Copy states real expiries: recovery and verify links last 1 hour (`AUTH_LINK_EXPIRY_SECONDS` in `src/lib/constants.ts`, set on both Better Auth options).
-- Invitations and team invites use `invitationExpiryDays`.
-
-### Templates
-
-- `account/{email-changed,password-changed,status,welcome}`.
-- `auth/{invite (invitation email proof),recovery,verify-email}`.
-- `certificate/{assigned,decision,reminder,review}`.
-- `learning/eligible`.
-- `organization/{application-decision,invitation (invite and reminder),join-request,join-request-received,membership,registration-request}`.
-- `team/{invite,role-changed}`.
-- Each has `PreviewProps` for `pnpm run email` and `Email.<name>` copy in all catalogs.
-- `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body. The header is the page band gradient (`EMAIL_COLORS.band*`, solid `bandFrom` fallback) with the white `public/email/logo.png` centered.

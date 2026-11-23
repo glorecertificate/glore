@@ -44,7 +44,7 @@ The light action gradient starts at `#107ea4`, not the logo teal, because white 
 
 - Shell: navy sidebar with no logo chip (light letters and a recolored mark), a bell in the logo row, a translucent active item, and plain counts. The band starts at the sidebar navy and ends in teal and green, so the two join with no seam.
 - Page band: gradient with no globe, breadcrumb row level with the logo row, title level with the first nav item, description, and actions. The content column is centered at 1184px. With `overlap`, an opaque card overlaps it by 64px. Otherwise the band ends with a clean gap.
-- Stat card: 4px gradient strip, 32px gradient icon tile, large number, short context line.
+- Stat card: flat, with a 32px muted icon tile in the accent text color, a large number, and a short context line.
 - Highlight card: navy gradient with white text, for one key figure per page.
 - Earned certificate: a green to teal to navy panel with the document tilted -2 degrees and a deep shadow.
 - Charts: 3px lines with gradient areas, bars with a 4px radius, teal and green.

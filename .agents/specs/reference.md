@@ -158,6 +158,8 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - A direct browser PUT requires bucket CORS that allows PUT from the app origin (`https://glore.localhost` in dev, the production domain).
 - The R2 API token is object-scoped: it can PUT, GET, and DELETE objects but gets 403 on bucket-admin calls such as `PutBucketCors`. Set CORS in the Cloudflare dashboard or with an admin token.
 - The avatar cap comes from `maxAvatarSize` in `config/app.json` and is enforced on the selected file in the `ImageCropper` dropzone.
+- Rows store full public URLs (`R2_PUBLIC_URL` plus the key), and `next.config.ts` allows only the host of `R2_PUBLIC_URL` for `next/image`.
+- `pnpm run files:rehost --from <old URL> --to <new URL>` (`scripts/files/`) rewrites the stored URLs in every text, JSON, and text array column of `public`. It is a dry run without `--apply`. Steps: `release-runbook.md`, "File links".
 
 ## Legal documents
 

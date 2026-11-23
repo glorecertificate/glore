@@ -48,7 +48,7 @@ The schema is `envSchema` in `next.config.ts`. Production builds always send mai
 - `GEMINI_API_KEY`. Set `GEMINI_MODEL` only to override the default fallback chain.
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SENDER`, `SMTP_USER`, `SMTP_PASSWORD`.
 - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME` for the production bucket.
-- `R2_PUBLIC_URL`: a custom domain on the bucket. It is still an `r2.dev` URL, which Cloudflare rate-limits. Approval mails and `/verify` link to it.
+- `R2_PUBLIC_URL`: a custom domain on the bucket. It is still an `r2.dev` URL, which Cloudflare rate-limits. Approval mails and `/verify` link to it. Move it with the steps in "File links".
 - Vercel project settings: "Node.js Version" reads 24.x (`engines.node` also forces it).
 
 ## Release
@@ -95,6 +95,19 @@ Run these on the preview domain before the release and on the production domain 
 
 1. In Vercel, promote the previous production deployment.
 2. If data must go back, restore the `pre-v0.7-<date>` Neon branch or snapshot. Migrations have no down scripts.
+
+## File links
+
+The first move is from the `r2.dev` URL to `https://cdn.glorecertificate.xyz`. A later move to a `glorecertificate.net` domain uses the same steps.
+
+1. Connect the domain to the bucket in the Cloudflare dashboard: R2, the bucket, Settings, Custom Domains. The domain must be a zone in the Cloudflare account of the bucket.
+2. Open a file through the new domain and make sure that it loads.
+3. Dry-run the rewrite: `DATABASE_URL='<production url>' pnpm run files:rehost --from <old URL> --to <new URL>`.
+4. Run the same command with `--apply`, then run the dry run again. It must find 0 rows.
+5. Set `R2_PUBLIC_URL` to the new URL in the production env vars and redeploy. The build reads the `next/image` host from it.
+6. When the old domain serves no traffic, turn off its URL on the bucket.
+
+Run steps 4 and 5 back to back: until the redeploy, signature images on the new URL do not load. Repeat the steps for staging if its bucket also uses an `r2.dev` URL.
 
 ## Known gaps
 

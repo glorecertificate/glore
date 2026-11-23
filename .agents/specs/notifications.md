@@ -18,6 +18,7 @@ Activity events, the `notify` pipeline, in-app notifications, mail, and the emai
 ## Mail
 
 - `sendMail` (`src/lib/email.ts`) takes `template`, `category`, and `unsubscribeUrl`.
+- `SMTP_SENDER` is the sender. `sendMail` sets `Reply-To` to the contact email of the app settings (`loadSettings`), so replies reach the team inbox.
 - Every template forwards the `category` and `settings` base props (`EmailBaseProps`) to `EmailLayout`, which prints the reason and the preference link.
 - `EmailLayout` is the shell, `EMAIL_CLASSES` (`src/emails/classes.ts`) holds every class string, and `Notice` is the shared body.
 - The header is the page band gradient (`EMAIL_COLORS.band*`, solid `bandFrom` fallback) with the white `public/email/logo.png` centered.

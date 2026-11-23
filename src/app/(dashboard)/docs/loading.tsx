@@ -1,11 +1,6 @@
-import { DashboardPage } from '@/components/layout/dashboard-page'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { DashboardLoading } from '@/components/layout/dashboard-loading'
 import { PageTitle } from '@/components/layout/page-title'
 
-const DocsLoadingPage = () => (
-  <DashboardPage fallback={null} title={<PageTitle name="docs" namespace="Layout" />}>
-    <LoadingFallback delay={false} />
-  </DashboardPage>
-)
+const DocsLoadingPage = () => <DashboardLoading title={<PageTitle name="docs" namespace="Layout" />} />
 
 export default DocsLoadingPage

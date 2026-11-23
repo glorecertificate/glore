@@ -196,10 +196,14 @@ export const sendMail = async ({
   unsubscribeUrl,
 }: SendMailOptions) => {
   const locale = requestedLocale ?? (await recipientLocale(to))
-  const { html, subject, text } = await renderEmail({ category, locale, template })
+  const [{ html, subject, text }, settings] = await Promise.all([
+    renderEmail({ category, locale, template }),
+    loadSettings(),
+  ])
   const recipients = Array.isArray(to) ? to.join(', ') : to
   await transporter.sendMail({
     from: process.env.SMTP_SENDER,
+    replyTo: settings.email,
     to: recipients,
     subject,
     html,

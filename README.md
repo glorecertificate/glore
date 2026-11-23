@@ -123,6 +123,8 @@ pnpm run release:tag        # after the release PR merges: tag main, push the ta
 
 Pushing the release tag triggers the production deployment.
 
+Uploaded files are stored with their full public URL. When the bucket moves to a new domain, `pnpm run files:rehost --from <old URL> --to <new URL>` lists the stored URLs to rewrite, and `--apply` rewrites them. The steps are in the release runbook (`.agents/references/release-runbook.md`, "File links").
+
 ## Contributing
 
 ### Issues

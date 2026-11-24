@@ -17,6 +17,7 @@ Course authoring, the AI writing assistant, content and interface translation, a
 ## AI writing assistant
 
 - The Plate.js editor offers slash commands (`/api/v1/ai/command`: generate, improve, summarize, translate).
+- An editor may send 20 commands a minute (`ai:command:<id>`) and 150 an hour (`ai-command:<id>`). Past a limit the route answers 429.
 - Google Gemini only, through `@ai-sdk/google` and `GEMINI_API_KEY` (free tier).
 - The model chain is `aiModels` in `config/app.json` (`gemini-3.8-flash`, then `gemini-3.5-flash-lite`). `GEMINI_MODEL` is an optional override tried first.
 - `src/lib/ai.ts` moves to the next model when one fails before any text streams (404 retired, 429 quota, 5xx).

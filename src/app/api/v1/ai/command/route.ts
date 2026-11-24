@@ -9,6 +9,7 @@ import { z } from 'zod'
 import { buildCommandPrompt } from '@/app/api/v1/ai/command/prompt'
 import { AI_ERROR, resolveAiModels, streamTextWithFallback } from '@/lib/ai'
 import { authorizeEditorRequest, readJsonBody } from '@/lib/api'
+import { isRateLimited } from '@/lib/rate-limit'
 
 const pointSchema = z.object({
   offset: z.number().int().min(0),
@@ -32,6 +33,9 @@ const bodySchema = z.object({
 })
 
 export const maxDuration = 60
+
+const HOUR = 60 * 60 * 1000
+const COMMANDS_PER_HOUR = 150
 
 const CHUNKING_REGEXPS = {
   line: /\n+/mu,
@@ -127,8 +131,11 @@ const smoothStream = <TOOLS extends ToolSet>({
 }
 
 export const POST = async (request: NextRequest) => {
-  const { response } = await authorizeEditorRequest(request, 'ai:command', 20)
+  const { response, user } = await authorizeEditorRequest(request, 'ai:command', 20)
   if (response) return response
+  if (await isRateLimited(`ai-command:${user.id}`, COMMANDS_PER_HOUR, HOUR)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
 
   const body = bodySchema.safeParse(await readJsonBody(request))
   if (!body.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })

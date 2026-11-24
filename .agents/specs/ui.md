@@ -98,8 +98,8 @@ Steps and an example: `.agents/references/ui-components.md`, "Migrate a page to 
 
 ### Settings and status
 
-- `SectionNav` is the left section nav of a settings page (vertical from `md`, a scroller below). `StickySaveBar` is the last child of the column, sticks to its bottom when a form is dirty, and takes no space when it is not. Outside its form, pass `form`.
-- Use `useStickySaveBar(form)` with react-hook-form: it gives `count`, `dirtyFields`, `discard`, and `saving`. Never read `form.formState` only in a handler: without a read in the render it never updates.
+- `SectionNav` is the left section nav of a settings page (vertical from `md`, a scroller below). `StickySaveBar` ends the column, sticks to its bottom when a form is dirty, and else takes no space. Outside its form, pass `form`.
+- Use `useStickySaveBar(form)` with react-hook-form: it gives `count`, `dirtyFields`, `discard`, and `saving`. A `form.formState` read only in a handler never updates.
 - A domain status has one `StatusMeta` map (icon, label key, tone) in its feature folder. `CERTIFICATE_STATUS` lives in `features/certificates/status.ts`.
 - Render a certificate status with `CertificateStatusBadge`, and read a status label from `CERTIFICATE_STATUS`. Never add a second map.
 

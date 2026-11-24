@@ -53,7 +53,7 @@ export const StickySaveBar = ({
     <div
       aria-hidden={!visible}
       className={cn(
-        'sticky bottom-0 z-10 -mx-4 mt-6 flex items-center gap-3 border-t border-border-subtle bg-surface-1/95 px-4 pt-3 pb-bar-safe backdrop-blur transition-[opacity,display] transition-discrete duration-150 ease-out motion-reduce:transition-none sm:mx-0 sm:rounded-b-xl',
+        'sticky bottom-0 z-10 -mx-4 mt-6 flex items-center gap-3 border-t border-border-subtle bg-surface-1/95 px-4 pt-3 pb-bar-safe backdrop-blur transition transition-discrete duration-150 ease-out motion-reduce:transition-none sm:mx-0 sm:rounded-b-xl',
         visible ? 'opacity-100 starting:opacity-0' : 'pointer-events-none hidden opacity-0',
         className
       )}

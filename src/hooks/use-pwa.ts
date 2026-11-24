@@ -42,8 +42,20 @@ const getDisplayMode = () => {
   if (window.matchMedia('(display-mode: window-controls-overlay)').matches) return 'window-controls-overlay'
 }
 
+const removeServiceWorkers = async () => {
+  const [registrations, keys] = await Promise.all([navigator.serviceWorker.getRegistrations(), caches.keys()])
+  await Promise.all([
+    ...registrations.map(async registration => await registration.unregister()),
+    ...keys.map(async key => await caches.delete(key)),
+  ])
+}
+
 const registerServiceWorker = async () => {
-  if (typeof window === 'undefined' || !('serviceWorker' in navigator) || process.env.NODE_ENV !== 'production') return
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return
+  if (process.env.NODE_ENV !== 'production') {
+    await removeServiceWorkers()
+    return
+  }
   // eslint-disable-next-line no-underscore-dangle
   const buildId = encodeURIComponent(window.__NEXT_DATA__?.buildId ?? 'dev')
   return await navigator.serviceWorker.register(`/sw.js?buildId=${buildId}`)

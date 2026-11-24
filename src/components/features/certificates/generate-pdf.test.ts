@@ -4,7 +4,7 @@ import { type ReactNode, isValidElement } from 'react'
 
 import { Text } from '@react-pdf/renderer'
 import { create } from 'qrcode'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { CertificateDocument, partnerFontSize } from '@/components/features/certificates/document'
 import { certificatePdfLabels, generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
@@ -149,6 +149,10 @@ const input = (skillCount: number) => ({
 })
 
 describe('generateCertificatePdf', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
   it.each([
     ['en', 4],
     ['es', 4],
@@ -168,7 +172,6 @@ describe('generateCertificatePdf', () => {
   it('draws the verification link of the certificate as its QR code', async () => {
     vi.stubEnv('APP_URL', 'https://glore.test')
     const drawn = drawnModules(await generateCertificatePdf(input(4), 'en'))
-    vi.unstubAllEnvs()
     expect(drawn.length).toBeGreaterThan(400)
     expect(drawn).toEqual(encodedModules('https://glore.test/verify/ABCD-EFGH-JKMN'))
     expect(drawn).not.toEqual(encodedModules('https://glore.test/verify/ABCD-EFGH-JKMP'))

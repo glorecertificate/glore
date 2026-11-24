@@ -62,10 +62,8 @@ jobs:
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ inputs.environment }}-${{ github.sha }}
-          restore-keys: |
-            nextjs-${{ runner.os }}-${{ inputs.environment }}-
-            nextjs-${{ runner.os }}-
+          key: nextjs-${{ runner.os }}-e2e-${{ github.sha }}
+          restore-keys: nextjs-${{ runner.os }}-e2e-
       - name: Pull environment
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -86,12 +84,6 @@ jobs:
           . ".vercel/.env.$TARGET.local"
           set +a
           pnpm exec vercel build --target="$TARGET" --token="$VERCEL_TOKEN"
-      - name: Save the build cache
-        if: inputs.ref == ''
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ inputs.environment }}-${{ github.sha }}
       - name: Deploy to Vercel
         id: vercel
         env:

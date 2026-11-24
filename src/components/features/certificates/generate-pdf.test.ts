@@ -3,7 +3,8 @@ import { constants, inflateSync } from 'node:zlib'
 import { type ReactNode, isValidElement } from 'react'
 
 import { Text } from '@react-pdf/renderer'
-import { describe, expect, it } from 'vitest'
+import { create } from 'qrcode'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { CertificateDocument, partnerFontSize } from '@/components/features/certificates/document'
 import { certificatePdfLabels, generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
@@ -18,18 +19,38 @@ const TEMPLATE_BASELINES: Record<number, number[]> = {
   36: [175, 211],
 }
 
+const pageContents = (pdf: Buffer) =>
+  [...pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/gu)].map(([, body]) => {
+    try {
+      return inflateSync(Buffer.from(body ?? '', 'latin1'), { finishFlush: constants.Z_SYNC_FLUSH }).toString('latin1')
+    } catch {
+      return ''
+    }
+  })
+
+const QR_MODULE = /^(\d+) (\d+) m\n(\d+) \2 l$/gmu
+
+const drawnModules = (pdf: Buffer) =>
+  pageContents(pdf)
+    .flatMap(content => [...content.matchAll(QR_MODULE)])
+    .filter(([, left, , right]) => Number(right) === Number(left) + 1)
+    .map(([, left, top]) => `${left},${top}`)
+    .toSorted()
+
+const encodedModules = (url: string) => {
+  const { modules } = create(url, { errorCorrectionLevel: 'M' })
+  return Array.from({ length: modules.size ** 2 }, (_, index) => [
+    index % modules.size,
+    Math.floor(index / modules.size),
+  ])
+    .filter(([left, top]) => modules.get(top ?? 0, left ?? 0))
+    .map(([left, top]) => `${left},${top}`)
+    .toSorted()
+}
+
 const textBaselines = (pdf: Buffer) => {
   const runs: { baseline: number; size: number; x: number }[] = []
-  for (const [, body] of pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/gu)) {
-    const content = (() => {
-      try {
-        return inflateSync(Buffer.from(body ?? '', 'latin1'), { finishFlush: constants.Z_SYNC_FLUSH }).toString(
-          'latin1'
-        )
-      } catch {
-        return ''
-      }
-    })()
+  for (const content of pageContents(pdf)) {
     const stack: [number, number][] = []
     let x = 0
     let y = 0
@@ -128,6 +149,10 @@ const input = (skillCount: number) => ({
 })
 
 describe('generateCertificatePdf', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
   it.each([
     ['en', 4],
     ['es', 4],
@@ -142,6 +167,18 @@ describe('generateCertificatePdf', () => {
     expect((await certificatePdfLabels('it')).title).toBe('Certificato di soft skill')
     expect((await certificatePdfLabels('fr')).title).toBe('Soft skills certificate')
     expect((await certificatePdfLabels('es')).levels).toHaveLength(3)
+  })
+
+  it('draws the verification link of the certificate as its QR code', async () => {
+    vi.stubEnv('APP_URL', 'https://glore.test')
+    const drawn = drawnModules(await generateCertificatePdf(input(4), 'en'))
+    expect(drawn.length).toBeGreaterThan(400)
+    expect(drawn).toEqual(encodedModules('https://glore.test/verify/ABCD-EFGH-JKMN'))
+    expect(drawn).not.toEqual(encodedModules('https://glore.test/verify/ABCD-EFGH-JKMP'))
+  })
+
+  it('draws no QR code without a verification code', async () => {
+    expect(drawnModules(await generateCertificatePdf(templateInput, 'en'))).toEqual([])
   })
 
   it('keeps four long tasks above the representative line', async () => {

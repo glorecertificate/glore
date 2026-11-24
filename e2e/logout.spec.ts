@@ -2,12 +2,12 @@ import { expect, test } from '@playwright/test'
 
 import { seedEmail } from '~/scripts/seed-data'
 
-import { login } from './helpers'
+import { login, openSidebar } from './helpers'
 
 test.use({ storageState: { cookies: [], origins: [] } })
 
 test.describe('logout', () => {
-  test('signs out without an error toast', async ({ page }) => {
+  test('signs out without an error toast', async ({ isMobile, page }) => {
     await login(page, 'volunteer')
 
     await page.evaluate(() => {
@@ -19,6 +19,7 @@ test.describe('logout', () => {
       }).observe(document.body, { characterData: true, childList: true, subtree: true })
     })
 
+    await openSidebar(page, isMobile)
     await page
       .locator('[data-sidebar="menu-button"]')
       .filter({ hasText: seedEmail('volunteer') })

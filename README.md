@@ -140,6 +140,8 @@ pnpm run qa:perf    # perf report against the targets in config/performance.json
 
 The e2e suite needs `pnpm run dev` and a database seeded with `pnpm run db:seed`. The invitation and application specs read their emails from Mailpit, so run `pnpm run mail:up` and set `MAIL_TRANSPORT=mailpit` first. CI runs the same suite against a production build, with Postgres and Mailpit as service containers ([`.github/workflows/e2e.yml`](.github/workflows/e2e.yml)).
 
+The suite runs in Chromium by default. Set `E2E_BROWSERS=webkit,firefox` to run the smoke specs on a 390 px iPhone in WebKit and on desktop Firefox. Install those browsers first with `pnpm exec playwright install webkit firefox`. CI runs them every night ([`.github/workflows/browsers.yml`](.github/workflows/browsers.yml)).
+
 The atlas uses the same dev server and seed. It logs in as each role, captures every page that the role can open, and runs axe on each page. It captures light and dark mode at 1440 and 390 pixels. It writes the screenshots, `report.json`, and an `index.html` contact sheet to `.playwright/atlas/<timestamp>/`. Add `--roles admin,guest` to limit the run.
 
 The perf cases give comparable numbers only against a production server:

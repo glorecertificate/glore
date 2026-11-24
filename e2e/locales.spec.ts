@@ -59,7 +59,7 @@ const ROLE_PAGES = {
   ],
   tutor: [
     { path: '/dashboard', text: m => m.Dashboard.tutor.queueTitle },
-    { partial: true, path: '/certificates', text: m => m.CertificateQueue.tabs.assigned },
+    { path: '/certificates', text: m => m.CertificateQueue.description },
   ],
   volunteer: [
     { path: '/dashboard', text: m => m.Dashboard.journey.title },
@@ -105,7 +105,7 @@ const expectLocalized = async (page: Page, { exact = true, expected, locale, pat
   const problems = collectProblems(page)
   await page.goto(path)
   await expect(page.locator('html')).toHaveAttribute('lang', locale)
-  await expect(page.getByText(expected, { exact }).first()).toBeVisible()
+  await expect(page.getByText(expected, { exact }).filter({ visible: true }).first()).toBeVisible()
   const keyLinks = await page.locator('a[href^="/translations"]').allInnerTexts()
   const body = keyLinks.reduce((text, link) => text.replaceAll(link, ''), await page.locator('body').innerText())
   expect(body, `${path} shows a raw message key`).not.toMatch(RAW_KEY)
@@ -145,6 +145,7 @@ for (const locale of SMOKE_LOCALES) {
       test.use({ storageState: authFile(role) })
 
       test.beforeEach(async ({ context, baseURL }) => {
+        await context.clearCookies({ name: 'NEXT_LOCALE' })
         await context.addCookies([{ name: 'NEXT_LOCALE', url: baseURL ?? 'https://glore.localhost', value: locale }])
       })
 

@@ -1,6 +1,12 @@
 name: E2E
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      browsers:
+        description: Comma-separated Playwright projects to run
+        type: string
+        default: chromium
 
 jobs:
   e2e:
@@ -42,6 +48,7 @@ jobs:
       APP_URL: http://localhost:3000
       DATABASE_URL: postgresql://glore:glore@localhost:5433/glore
       E2E_BASE_URL: http://localhost:3000
+      E2E_BROWSERS: ${{ inputs.browsers }}
       R2_ACCOUNT_ID: '00000000000000000000000000000000'
       R2_ACCESS_KEY_ID: 'a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0'
       R2_SECRET_ACCESS_KEY: 'b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1'
@@ -72,9 +79,9 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - name: Install Chromium
-        run: pnpm exec playwright install --with-deps chromium
+          key: playwright-${{ runner.os }}-${{ inputs.browsers }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install browsers
+        run: pnpm exec playwright install --with-deps ${E2E_BROWSERS//,/ }
       - name: Migrate, import, and seed the database
         run: |
           pnpm run db migrate

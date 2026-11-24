@@ -104,7 +104,7 @@ pnpm run db:seed    # upsert the seed organization and its test users, one per r
 pnpm run db:seed:demo --target local  # full demo dataset on TEST_EMAIL plus-addresses
 ```
 
-The demo seed reads `TEST_EMAIL` from `.env.local` and needs the course catalog. Run `pnpm run content:import --target local` first. `pnpm run content:levels --target <local|staging|production>` adds the missing skill level descriptions from `content/`, and it never overwrites edited text.
+The demo seed reads `TEST_EMAIL` from `.env.local` and needs the course catalog. Run `pnpm run content:import --target local` first. `pnpm run content:levels --target <local|qa|staging|production>` adds the missing skill level descriptions from `content/`, and it never overwrites edited text.
 
 To use Neon in development, comment out the `DATABASE_URL` line in `.env.local` and restart the dev server. Next.js then reads the value from `.env`. When a file defines a variable twice, the last one wins, so keep one active block and comment out the rest.
 
@@ -158,21 +158,21 @@ Each case runs on a desktop profile and a throttled mobile profile. On each pull
 
 The app runs on [Vercel](https://vercel.com). Vercel's own Git deployments are off, so each commit deploys once, from GitHub Actions:
 
-- The [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) deploys a preview on each push to `main`, after the checks and the e2e tests pass. A pull request gets a preview only when it has the `preview` label.
-- The preview of `main` is at [preview.glorecertificate.xyz](https://preview.glorecertificate.xyz). It is the staging environment.
-- The [Release workflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml) deploys to production when a `v*` tag is pushed. Production is at the `url` in [`config/metadata.json`](config/metadata.json).
+- The [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) deploys each push to `main` to `qa`, after the checks and the e2e tests pass. A pull request gets a `qa` deploy only when it has the `preview` label. The deploys skip until the repository variable `VERCEL_QA_PROJECT_ID` is set.
+- The [Promote workflow](https://github.com/glorecertificate/glore/actions/workflows/promote.yml) deploys a tested commit of `main` to [preview.glorecertificate.xyz](https://preview.glorecertificate.xyz). It runs only by hand.
+- The [Release workflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml) deploys to production when a `v*` tag is pushed, if that commit was promoted. Production is at the `url` in [`config/metadata.json`](config/metadata.json).
 
-A release takes two steps:
+A release takes two commands. Between them, promote the release commit and check the preview:
 
 ```sh
 pnpm run release      # on a release/<version> branch: check, build, bump the version, update CHANGELOG.md, commit, and push
-pnpm run release:tag  # after the release PR merges: tag main, push the tag, and create the GitHub release
+pnpm run release:tag  # after the promotion: tag the release commit, push the tag, and create the GitHub release
 ```
 
 The tag push starts the production deployment. You can also deploy by hand:
 
 ```sh
-pnpm run deploy:preview     # deploy a preview
+pnpm run deploy:preview     # deploy to a preview URL of the linked project
 pnpm run deploy:production  # deploy to production without a release
 ```
 

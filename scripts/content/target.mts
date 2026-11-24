@@ -2,7 +2,7 @@ import { parseArgs } from 'node:util'
 
 import { LOCAL_DATABASE_REGEX } from './config.mts'
 
-const TARGETS = ['local', 'staging', 'production'] as const
+const TARGETS = ['local', 'qa', 'staging', 'production'] as const
 
 type Target = (typeof TARGETS)[number]
 
@@ -15,7 +15,7 @@ export interface ImportOptions {
   remove: string[]
 }
 
-export const USAGE = `Usage: pnpm run content:import --target <local|staging|production> [--bootstrap] [--drafts] [--examples] [--dry-run] [--remove <slug>]`
+export const USAGE = `Usage: pnpm run content:import --target <local|qa|staging|production> [--bootstrap] [--drafts] [--examples] [--dry-run] [--remove <slug>]`
 
 export const parseImportArgs = (argv: string[]) => {
   try {

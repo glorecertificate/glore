@@ -251,6 +251,7 @@ pnpm run content:import --target local
 | Flag                  | Effect                                                                                                                                              |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--target local`      | Needs a `DATABASE_URL` on localhost or 127.0.0.1.                                                                                                   |
+| `--target qa`         | Needs a non-local `DATABASE_URL`: the `qa` database.                                                                                                |
 | `--target staging`    | Needs a non-local `DATABASE_URL`. Pass it for the run: `DATABASE_URL=<neon staging url> pnpm run content:import --target staging`.                  |
 | `--target production` | Needs a non-local `DATABASE_URL` and always imports as drafts. Refuses `--examples` and `--remove`, and refuses once any course or doc exists.      |
 | `--bootstrap`         | Production only: import even though courses or docs exist. The team edits production content in the app, so use it only on a release day.           |

@@ -1,0 +1,95 @@
+name: Promote to preview
+
+run-name: Promote ${{ inputs.commit || 'the latest main' }} to preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit SHA on main. Leave it empty for the latest commit.
+        default: ''
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: promote
+  cancel-in-progress: false
+
+jobs:
+  commit:
+    name: Check the commit
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Require a commit of main with passing checks
+        id: commit
+        env:
+          COMMIT: ${{ inputs.commit }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse --verify --quiet --end-of-options "${COMMIT:-origin/main}^{commit}")" || {
+            echo "::error::The commit does not exist."
+            exit 1
+          }
+          git merge-base --is-ancestor "$sha" origin/main || {
+            echo "::error::The commit is not on main."
+            exit 1
+          }
+          runs="repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs"
+          run="$(gh api "$runs?head_sha=$sha&event=push&per_page=1" --jq '.workflow_runs[0].id // ""')"
+          if [ -z "$run" ]; then
+            echo "::error::CI did not run on $sha."
+            exit 1
+          fi
+          for job in 'Check / Check' 'E2E / E2E'; do
+            passed="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run/jobs?per_page=100" |
+              jq --arg job "$job" '[.jobs[] | select(.name == $job and .conclusion == "success")] | length')"
+            if [ "$passed" = 0 ]; then
+              echo "::error::$job did not pass on $sha."
+              exit 1
+            fi
+          done
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Promote \`$sha\`: $(git log -1 --format=%s "$sha" | tr -d '\`')" >> "$GITHUB_STEP_SUMMARY"
+  deploy:
+    name: Deploy
+    needs: commit
+    permissions:
+      contents: read
+      deployments: write
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      domain: preview.glorecertificate.xyz
+      environment: preview
+      migrate: true
+      ref: ${{ needs.commit.outputs.sha }}
+  record:
+    name: Record the version
+    needs: [commit, deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      deployments: write
+    steps:
+      - name: Record the promoted commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ needs.commit.outputs.sha }}
+        run: |
+          set -euo pipefail
+          id="$(jq -n --arg ref "$SHA" '{ref: $ref, environment: "preview-promoted", auto_merge: false, required_contexts: [], production_environment: false}' |
+            gh api --method POST "repos/$GITHUB_REPOSITORY/deployments" --input - --jq .id)"
+          gh api --method POST "repos/$GITHUB_REPOSITORY/deployments/$id/statuses" \
+            -f state=success -f environment_url=https://preview.glorecertificate.xyz --silent

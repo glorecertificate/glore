@@ -8,7 +8,7 @@ import { upsertUser } from './seed-db.mts'
 import {
   DEMO_USAGE,
   DEMO_USERS,
-  STAGING_COMMENT,
+  QA_COMMENT,
   demoEmail,
   demoUsername,
   guardDemoTarget,
@@ -51,8 +51,8 @@ const seedDemo = async () => {
     const { rows } = await client.query<{ value: string | null }>(
       "select shobj_description(oid, 'pg_database') as value from pg_database where datname = current_database()"
     )
-    if (args.target === 'staging' && rows[0]?.value !== STAGING_COMMENT) {
-      return fail(`Refusing to seed: the database comment is not '${STAGING_COMMENT}'.`)
+    if (args.target === 'qa' && rows[0]?.value !== QA_COMMENT) {
+      return fail(`Refusing to seed: the database comment is not '${QA_COMMENT}'.`)
     }
 
     const passwordHash = await hashPassword(SEED_PASSWORD)

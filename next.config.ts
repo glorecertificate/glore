@@ -96,6 +96,7 @@ const headers =
           key: 'X-Content-Type-Options',
           value: 'nosniff',
         },
+        ...(process.env.VERCEL_ENV === 'preview' ? [{ key: 'X-Robots-Tag', value: 'noindex' }] : []),
       ],
     },
     {

@@ -73,7 +73,7 @@ Course authoring, the AI writing assistant, content and interface translation, a
 
 ### Seeding and reads
 
-- `pnpm run content:levels --target <local|staging|production>` reads the `levels:` map of each skill course's last lesson (`content/README.md`) and inserts the missing rows.
+- `pnpm run content:levels --target <local|qa|staging|production>` reads the `levels:` map of each skill course's last lesson (`content/README.md`) and inserts the missing rows.
 - It never updates an existing row and is allowed on production. It marks the lesson as `machine` in `es` and `it`. `db:seed` runs the same insert (`scripts/seed-levels.mts`).
 - Read path for other features: `fetchLevelDescriptions(courseIds)` (`actions/courses/level-descriptions.ts`, cached, tag `courses`) resolves the rows through each course's assessment.
 - It returns `Record<courseId, Partial<Record<SkillLevel, IntlRecord & { id }>>>`, built by the pure `parseSkillLevelDescriptions`.

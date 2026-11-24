@@ -7,32 +7,32 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - Always run `pnpm run <script>`, never bare `pnpm <script>`, so nothing collides with a built-in pnpm command.
 - Exceptions: `pnpm install` and the README's bare shorthand.
 
-| Command                   | Description                                                                      |
-| ------------------------- | -------------------------------------------------------------------------------- |
-| `pnpm run dev`            | Dev server at `https://glore.localhost` (portless, port 45673)                   |
-| `pnpm run dev:clean`      | Wipe `.next`, then start dev (reclaims Turbopack disk)                           |
-| `pnpm run check`          | Run every `check:*` script in parallel                                           |
-| `pnpm run test`           | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                   |
-| `pnpm run test:e2e`       | Playwright e2e against the running dev server, logged in as seeded users         |
-| `pnpm run test:perf`      | Playwright perf cases against `E2E_BASE_URL` (`performance.md`)                  |
-| `pnpm run qa:atlas`       | Screenshots and axe results per route, role, and theme in `.playwright/atlas/`   |
-| `pnpm run qa:perf`        | Perf report against the targets and an optional `--baseline <dir>`               |
-| `pnpm run build`          | Production build                                                                 |
-| `pnpm run i18n:overrides` | Count overrides per locale and stale state (`--target <env>`, read-only)         |
-| `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`)  |
-| `pnpm run content:check`  | Validate `content/` courses, lessons, and docs without touching a database       |
-| `pnpm run content:levels` | Insert missing skill level descriptions (`--target`, `--dry-run`)                |
-| `pnpm run typegen`        | Generate route and public-file types into `types/`                               |
-| `pnpm run theme`          | Generate color tokens and email colors from `config/theme.json` (`ui.md`)        |
-| `pnpm run lint:ratchet`   | Lower the design-system lint counts after a fix (`code.md`)                      |
-| `pnpm run db <command>`   | drizzle-kit (`migrate`, `generate`, `studio`, ...)                               |
-| `pnpm run db:up`          | Local Postgres in Docker on port 5433 (used by `next dev`)                       |
-| `pnpm run db:reset`       | Wipe and recreate the local Postgres volume                                      |
-| `pnpm run db:seed`        | Upsert one test user per role into the local DB (refuses non-local URLs)         |
-| `pnpm run db:seed:demo`   | Full demo dataset on `TEST_EMAIL` plus-addresses (`--target local` or `staging`) |
-| `pnpm run mail:up`        | Local Mailpit inbox: SMTP on 1025, UI and API at `http://localhost:8025`         |
-| `pnpm run email`          | Preview email templates at `https://email.glore.localhost`                       |
-| `pnpm run skills`         | Reinstall agent skills from `skills-lock.json`                                   |
+| Command                   | Description                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `pnpm run dev`            | Dev server at `https://glore.localhost` (portless, port 45673)                  |
+| `pnpm run dev:clean`      | Wipe `.next`, then start dev (reclaims Turbopack disk)                          |
+| `pnpm run check`          | Run every `check:*` script in parallel                                          |
+| `pnpm run test`           | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                  |
+| `pnpm run test:e2e`       | Playwright e2e against the running dev server, logged in as seeded users        |
+| `pnpm run test:perf`      | Playwright perf cases against `E2E_BASE_URL` (`performance.md`)                 |
+| `pnpm run qa:atlas`       | Screenshots and axe results per route, role, and theme in `.playwright/atlas/`  |
+| `pnpm run qa:perf`        | Perf report against the targets and an optional `--baseline <dir>`              |
+| `pnpm run build`          | Production build                                                                |
+| `pnpm run i18n:overrides` | Count overrides per locale and stale state (`--target <env>`, read-only)        |
+| `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`) |
+| `pnpm run content:check`  | Validate `content/` courses, lessons, and docs without touching a database      |
+| `pnpm run content:levels` | Insert missing skill level descriptions (`--target`, `--dry-run`)               |
+| `pnpm run typegen`        | Generate route and public-file types into `types/`                              |
+| `pnpm run theme`          | Generate color tokens and email colors from `config/theme.json` (`ui.md`)       |
+| `pnpm run lint:ratchet`   | Lower the design-system lint counts after a fix (`code.md`)                     |
+| `pnpm run db <command>`   | drizzle-kit (`migrate`, `generate`, `studio`, ...)                              |
+| `pnpm run db:up`          | Local Postgres in Docker on port 5433 (used by `next dev`)                      |
+| `pnpm run db:reset`       | Wipe and recreate the local Postgres volume                                     |
+| `pnpm run db:seed`        | Upsert one test user per role into the local DB (refuses non-local URLs)        |
+| `pnpm run db:seed:demo`   | Full demo dataset on `TEST_EMAIL` plus-addresses (`--target local` or `qa`)     |
+| `pnpm run mail:up`        | Local Mailpit inbox: SMTP on 1025, UI and API at `http://localhost:8025`        |
+| `pnpm run email`          | Preview email templates at `https://email.glore.localhost`                      |
+| `pnpm run skills`         | Reinstall agent skills from `skills-lock.json`                                  |
 
 ## Seeds
 
@@ -48,11 +48,11 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 ### Demo dataset
 
-- `pnpm run db:seed:demo --target <local|staging>` (`scripts/seed-demo.mts`) builds the dataset of `.agents/references/manual-testing.md`.
+- `pnpm run db:seed:demo --target <local|qa>` (`scripts/seed-demo.mts`) builds the dataset of `.agents/references/manual-testing.md`.
 - Accounts sit at `<local>+glore-<key>@<domain>` of `TEST_EMAIL`, with usernames `demo.<key>`.
 - It creates three organizations (two approved in Italy and Spain, one pending) and 28 accounts.
 - It creates 18 certificates in every status plus a deleted holder, learning progress, ratings, invitations, an invite link, join requests, events, and notifications.
-- `.agents/references/manual-testing.md`, "Demo seed behavior", has the reset rules, the source files, and the staging guard.
+- `.agents/references/manual-testing.md`, "Demo seed behavior", has the reset rules, the source files, and the qa guard.
 
 ## Translations
 

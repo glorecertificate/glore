@@ -10,9 +10,11 @@ on:
 jobs:
   deploy:
     name: Deploy
-    if: github.event.label.name == 'preview' && github.event.pull_request.head.repo.full_name == github.repository
+    if: vars.VERCEL_QA_PROJECT_ID != '' && github.event.label.name == 'preview' && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: read
       deployments: write
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
+    with:
+      environment: qa

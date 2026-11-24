@@ -170,6 +170,7 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 
 - `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`). Run `pnpm run db:seed` once before the first run.
 - The e2e specs cover the certificate, invitation, role, auth, and locale flows. `course-editor.spec.ts` is an owner exception, because it catches the AI preview freeze after a Plate re-pull.
+- `accessibility.spec.ts` is the axe gate (`ui.md`).
 - The `setup` project logs in every `AUTH_ROLES` seed user and stores their state in `.playwright/.auth/`. Specs pick one with `test.use({ storageState: authFile(role) })`.
 - Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs. Setup clears local `rate_limits` first.
 - `*.perf.ts` files live in `e2e/perf/` and run only with `e2e/perf/playwright.config.ts` (`pnpm run test:perf`). `performance.md` has the targets and the procedure.

@@ -28,6 +28,7 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 - Match Linear and GitHub on design-system quality: tokens, scale, spacing, components, consistency. Never copy their UI patterns.
 - Every UI PR attaches before and after screenshots of real screens. The reviewer judges the PR on them before merge.
 - "Looks the same" is a failed UI PR. Name the screens that changed and the screens that did not.
+- `accessibility.spec.ts` runs axe (`e2e/axe.ts`) with the WCAG 2.2 AA tags on the main pages of each role, in light and dark. A serious or critical issue fails the test. Add each new page to its `PAGES` list.
 - A lane may change the shared kit in `src/components/ui/` when the bar needs it. It keeps the kit consistent and documents the change here and in `/dev/ui`.
 
 ## Direction B: brand-forward

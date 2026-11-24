@@ -4042,7 +4042,6 @@
       "groupActions": "Azioni del gruppo",
       "moveToGroup": "Sposta in un gruppo",
       "skillSummary": "{count, plural, one {# competenza} other {# competenze}}, {published} pubblicate, {drafts, plural, one {# bozza} other {# bozze}}",
-      "toggleGroup": "Mostra o nascondi le competenze di {group}",
       "ungroupedEmpty": "Ogni corso di competenza ha un gruppo.",
       "statusComplete": "Completo",
       "statusIncomplete": "Incompleto",

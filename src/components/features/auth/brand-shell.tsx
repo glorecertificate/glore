@@ -1,5 +1,7 @@
 import NextLink from 'next/link'
 
+import { useTranslations } from 'next-intl'
+
 import { Logo } from '@/components/ui/logo'
 import { PageBandGlobe } from '@/components/ui/page-band'
 import { cn } from '@/lib/utils'
@@ -19,27 +21,36 @@ export const BrandShell = ({
   description?: React.ReactNode
   size?: keyof typeof WIDTHS
   title?: React.ReactNode
-}) => (
-  <div className={cn('min-h-svh bg-canvas', className)} data-slot="brand-shell" {...props}>
-    <header className="relative isolate overflow-hidden bg-band text-band-foreground band-scope">
-      <PageBandGlobe />
-      <div className={cn('relative mx-auto flex w-full flex-col gap-6 px-page pt-5 pb-24 sm:pt-7', WIDTHS[size])}>
-        <div className="flex min-h-8 items-center justify-between gap-4">
-          <NextLink className="inline-flex rounded-md px-2 py-1" href="/" prefetch={false}>
-            <Logo className="h-7 w-auto" />
-          </NextLink>
-          {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
-        </div>
-        {(title || description) && (
-          <div className="flex flex-col gap-2">
-            {title && <h1 className="type-band text-band-foreground">{title}</h1>}
-            {description && <p className="max-w-prose text-base text-pretty text-band-text">{description}</p>}
+}) => {
+  const t = useTranslations('Common')
+
+  return (
+    <div className={cn('min-h-svh bg-canvas', className)} data-slot="brand-shell" {...props}>
+      <header className="relative isolate overflow-hidden bg-band text-band-foreground band-scope">
+        <PageBandGlobe />
+        <div className={cn('relative mx-auto flex w-full flex-col gap-6 px-page pt-5 pb-24 sm:pt-7', WIDTHS[size])}>
+          <div className="flex min-h-8 items-center justify-between gap-4">
+            <NextLink
+              aria-label={t('backToHome')}
+              className="inline-flex rounded-md px-2 py-1"
+              href="/"
+              prefetch={false}
+            >
+              <Logo className="h-7 w-auto" />
+            </NextLink>
+            {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
           </div>
-        )}
-      </div>
-    </header>
-    <main className={cn('relative mx-auto -mt-16 flex w-full flex-col gap-6 px-page pb-12', WIDTHS[size])}>
-      {children}
-    </main>
-  </div>
-)
+          {(title || description) && (
+            <div className="flex flex-col gap-2">
+              {title && <h1 className="type-band text-band-foreground">{title}</h1>}
+              {description && <p className="max-w-prose text-base text-pretty text-band-text">{description}</p>}
+            </div>
+          )}
+        </div>
+      </header>
+      <main className={cn('relative mx-auto -mt-16 flex w-full flex-col gap-6 px-page pb-12', WIDTHS[size])}>
+        {children}
+      </main>
+    </div>
+  )
+}

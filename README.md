@@ -142,6 +142,8 @@ The e2e suite needs `pnpm run dev` and a database seeded with `pnpm run db:seed`
 
 The atlas uses the same dev server and seed. It logs in as each role, captures every page that the role can open, and runs axe on each page. It captures light and dark mode at 1440 and 390 pixels. It writes the screenshots, `report.json`, and an `index.html` contact sheet to `.playwright/atlas/<timestamp>/`. Add `--roles admin,guest` to limit the run.
 
+The e2e suite also runs axe on the main pages of each role (`e2e/accessibility.spec.ts`). A serious or critical issue fails CI.
+
 The perf cases give comparable numbers only against a production server:
 
 1. Build and start a server on port 3100 with `APP_URL=http://localhost:3100`.

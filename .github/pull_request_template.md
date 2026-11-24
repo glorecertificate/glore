@@ -1,10 +1,10 @@
 ## Summary
 
-<!-- Write one or two sentences in Simplified Technical English: what the PR changes and why. -->
+<!-- Write one or two short sentences in Simplified Technical English: what the PR changes and why. -->
 
 ## Changes
 
-<!-- Write one item for each change. Start each item with a verb in the simple present tense. -->
+<!-- Write one item for each change. Start each item with a verb, such as "Adds" or "Fixes". -->
 
 -
 
@@ -22,9 +22,9 @@
 
 <!-- Check each item, or delete it when it does not apply. The Tasks check fails while an item is open. -->
 
-- [ ] `pnpm run check` passes locally (types, lint, format, unused code, translations)
+- [ ] `pnpm run check` passes locally
 - [ ] `pnpm run test` passes locally
-- [ ] The PR title is a Conventional Commit header, and the branch has no merge commits
-- [ ] No new warnings or errors introduced
-- [ ] Translation keys added or updated in all three `messages/` files (if applicable)
-- [ ] `README.md`, `AGENTS.md`, and the specs in `.agents/specs/` updated if routes, commands, env vars, or structure changed
+- [ ] The PR title is a Conventional Commit header, because it becomes the squash commit header
+- [ ] The branch has no merge commits
+- [ ] Each new or changed translation key is in all three `messages/` files
+- [ ] `README.md`, `AGENTS.md`, and `.agents/specs/` are updated when routes, commands, env vars, or structure change

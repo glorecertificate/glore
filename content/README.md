@@ -2,7 +2,15 @@
 
 Course, skill group, and documentation content for GloRe, written as files and imported into the database.
 
-Authors write Markdown and JSON only. The importer converts lesson Markdown to the Plate values the course editor stores, so imported lessons render and edit like hand-made ones. Docs are stored as the Markdown strings the docs editor uses.
+Authors write Markdown and JSON only. The importer converts lesson Markdown to the Plate values of the course editor. Imported lessons render and edit like lessons made in the app. Docs are stored as the Markdown strings that the docs editor uses.
+
+To change content:
+
+1. Edit or add files under `content/courses/` or `content/docs/`.
+2. Run `pnpm run content:check` and fix each problem that it prints.
+3. Run `pnpm run content:import --target local`, then open the course or the article in the app.
+
+After the import, the team edits production content in the app, not in these files.
 
 ## Layout
 
@@ -79,7 +87,7 @@ Headings `##` to `####` (the lesson title is already the page title, so `#` is a
 
 Not supported, and rejected by the validator: inline code, code blocks, images, raw HTML, task lists, and level 1 headings. The lesson body must not be empty.
 
-The player shows a lesson's quiz, evaluations, or assessment below its body. Keep one kind of activity per lesson unless the player work says otherwise; the example puts the evaluations and the assessment together in the last lesson.
+The player shows a lesson's quiz, evaluations, or assessment below its body. Keep one kind of activity per lesson. The last lesson of a skill course is the exception: it holds the evaluations, the assessment, and the level descriptions.
 
 ## Example course
 
@@ -100,7 +108,7 @@ The player shows a lesson's quiz, evaluations, or assessment below its body. Kee
 }
 ```
 
-`lessons/2.en.md` (a quiz lesson; `2.es.md` and `2.it.md` mirror it):
+`lessons/2.en.md` is a quiz lesson. `2.es.md` and `2.it.md` mirror it:
 
 ```md
 ---
@@ -183,7 +191,7 @@ The parent directory is the category and must be listed in `categories.json`. Un
 
 ### `<locale>.md`
 
-A YAML front matter block with `title` (up to 200 characters) and `excerpt` (up to 1,000 characters; the card shows two lines), then the article body in Markdown. All three locale files are required and the body must not be empty.
+A YAML front matter block with `title` (up to 200 characters) and `excerpt` (up to 1,000 characters, of which the card shows two lines), then the article body in Markdown. All three locale files are required and the body must not be empty.
 
 ```md
 ---
@@ -211,7 +219,7 @@ Rules on top of the lesson rules (no hard wraps, quoting, no em or en dashes):
 - The docs tables have no order column, and the app lists by `created_at`. The importer therefore sets `created_at` from `sortOrder` (a fixed date plus one minute per step), so the order is the same on every environment. Articles an editor adds in the app sort after the imported ones.
 - `audiences` imports to `doc_articles.audiences`. The docs lists show an article only to those roles, and the team sees all articles.
 - Re-running reports every row as unchanged. A changed article gets a new `updated_at`.
-- Docs that disappear from `content/` are not deleted; delete them in the docs UI.
+- Docs that disappear from `content/` are not deleted. Delete them in the docs UI.
 
 ## Validate
 
@@ -273,6 +281,6 @@ Inserts the `levels:` descriptions of the last lessons of the skill courses into
 
 - It inserts only the missing rows (`on conflict do nothing`). A row that exists is never updated, so text an editor wrote or changed in the platform is safe, and a second run reports every row as unchanged.
 - It is allowed on production, unlike the course import. It needs no `--bootstrap` and no empty database, because it never overwrites.
-- When it inserts rows, it marks the last lesson as `machine` in `es` and `it`, so the course translation popover and the coverage show the text as waiting for review.
+- When it inserts rows, it marks the last lesson as `machine` in `es` and `it`. A later AI translation can then replace that text without an overwrite prompt.
 - A course that is not in the database, or has no final assessment yet, is skipped and listed.
 - `pnpm run db:seed` runs the same insert for the courses already imported.

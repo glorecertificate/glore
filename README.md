@@ -7,24 +7,38 @@
 </div>
 <br>
 
-**GloRe** is a multilingual e-learning platform that helps volunteers get their soft skills officially recognized. Visit [glorecertificate.xyz](https://glorecertificate.xyz) to sign up and get the certificate recognizing your skills.
+**GloRe** is a multilingual e-learning platform that certifies the soft skills people gain through volunteering. Volunteers learn with skill courses, request a certificate from their organization, and share it with a link that anyone can verify. Visit [glorecertificate.xyz](https://glorecertificate.xyz) to sign up.
+
+- [About](#about)
+- [Quick start](#quick-start)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [Translations](#translations)
+- [AI and agents](#ai-and-agents)
+- [License](#license)
 
 ## About
 
-GloRe is a project developed by [Associazione Joint](https://associazionejoint.org), a non-profit organization founded in 2003 that supports youth mobility and international volunteering through Erasmus+ and the European Solidarity Corps.
+GloRe is a project of [Associazione Joint](https://associazionejoint.org), a non-profit organization founded in 2003. Joint supports youth mobility and international volunteering through Erasmus+ and the European Solidarity Corps.
 
-## Development
+The app is a Next.js 16 application in TypeScript with React 19. It uses these services and libraries:
 
-This project is a multi-language Next.js 16 application written in TypeScript, using a Postgres database (Neon) with Drizzle and Better Auth, Cloudflare R2 for file storage, Tailwind CSS and shadcn/ui for styling, and other tools for services like email and translations.
+- Postgres on [Neon](https://neon.com), with Drizzle ORM and Better Auth.
+- Cloudflare R2 for uploaded files.
+- Tailwind CSS 4 and shadcn/ui for the interface. The shared components are in `src/components/ui/`.
+- React Email templates, sent through SMTP.
+- Gemini, through the AI SDK, for AI writing and translation.
 
-Shared UI components live in `src/components/ui/`; the kit and its conventions are described in [the UI reference](.agents/specs/ui.md#release-ui-kit).
+The interface is in English, Spanish, and Italian.
 
-### Prerequisites
+## Quick start
 
-- Node.js version specified in [`.node-version`](.node-version) (24.x, the Vercel runtime), and the pnpm version pinned in `package.json` (`corepack enable`)
-- Docker (for the local Postgres and Mailpit used in development)
+You need:
 
-### Setup and run
+- Node.js 24. The exact version is in [`.node-version`](.node-version).
+- pnpm, through Corepack. `package.json` pins the version.
+- Docker, for the local Postgres and Mailpit containers.
 
 ```sh
 git clone https://github.com/glorecertificate/glore.git && cd glore
@@ -33,48 +47,70 @@ echo DATABASE_URL=postgresql://glore:glore@localhost:5433/glore > .env.local
 echo MAIL_TRANSPORT=mailpit >> .env.local  # deliver emails to the local Mailpit inbox
 corepack enable && corepack install
 pnpm install
-pnpm run skills
 pnpm run db:up
 pnpm run mail:up  # Mailpit inbox at http://localhost:8025
 pnpm run db migrate
 pnpm run db:seed  # one test user per role, password in scripts/seed-data.ts
 pnpm run dev      # https://glore.localhost
-pnpm run email    # https://email.glore.localhost
 ```
 
-The app validates its environment on start against the schema in [`next.config.ts`](next.config.ts), which lists every variable the app reads. Only the demo seed reads `TEST_EMAIL`, outside the schema.
+Open `https://glore.localhost` and log in as one of the seeded users.
+
+## Development
+
+### Project layout
+
+| Path              | Contents                                                   |
+| ----------------- | ---------------------------------------------------------- |
+| `src/app/`        | Next.js routes                                             |
+| `src/components/` | The UI kit (`ui/`), the layout, and the feature components |
+| `src/actions/`    | Server actions                                             |
+| `src/db/`         | The Drizzle schema, queries, and mutations                 |
+| `src/emails/`     | Email templates                                            |
+| `messages/`       | Interface text in `en`, `es`, and `it`                     |
+| `content/`        | Courses, skill groups, and help articles as files          |
+| `scripts/`        | Seed, content, translation, QA, and release scripts        |
+| `e2e/`            | Playwright tests                                           |
+| `drizzle/`        | Generated migrations. Do not edit them.                    |
+| `.agents/specs/`  | The product and engineering specs                          |
+
+### Environment
+
+The app checks its environment on start against the schema in [`next.config.ts`](next.config.ts). The schema lists every variable that the app reads. Only the demo seed reads `TEST_EMAIL`, outside the schema.
+
+Next.js loads `.env.local` for every command (`next dev`, `next build`, `next typegen`, `next start`), and it overrides `.env`. Put machine-local values in `.env.local` and values shared by every environment in `.env`. On Vercel, the project variables always win, because Next.js never overwrites a variable that is already in `process.env`.
 
 ### Local database
 
-Development uses a Postgres 17 container managed by [`compose.yaml`](compose.yaml), next to a Mailpit container for outgoing emails. The dev server reads `DATABASE_URL` from `.env.local`, which Next.js loads for every command (`next dev`, `next build`, `next typegen`, `next start`) and which overrides `.env`. Use `.env.local` for machine-local values and `.env` for values shared by every environment; on Vercel the injected project variables always win, since Next never overwrites a variable already present in `process.env`. The driver in [`src/db/client.ts`](src/db/client.ts) selects `pg` for any `localhost` or `127.0.0.1` host and `neon-http` for everything else.
+Development uses a Postgres 17 container from [`compose.yaml`](compose.yaml), next to a Mailpit container for outgoing emails. The dev server reads `DATABASE_URL` from `.env.local`.
 
-**Connection (local):**
+| Field    | Value                                              |
+| -------- | -------------------------------------------------- |
+| Host     | `localhost`                                        |
+| Port     | `5433` (not 5432, to avoid a conflict on the host) |
+| Database | `glore`                                            |
+| User     | `glore`                                            |
+| Password | `glore`                                            |
+| URL      | `postgresql://glore:glore@localhost:5433/glore`    |
 
-| Field    | Value                                            |
-| -------- | ------------------------------------------------ |
-| Host     | `localhost`                                      |
-| Port     | `5433` (5432 is reserved to avoid host conflict) |
-| Database | `glore`                                          |
-| User     | `glore`                                          |
-| Password | `glore`                                          |
-| URL      | `postgresql://glore:glore@localhost:5433/glore`  |
-
-**Container lifecycle:**
+[`src/db/client.ts`](src/db/client.ts) uses the `pg` driver for a `localhost` or `127.0.0.1` host. For any other host it uses Neon: `neon-http` for queries and a `neon-serverless` pool for transactions.
 
 ```sh
 pnpm run db:up      # start (or recreate) the Postgres container
-pnpm run db:down    # stop and remove the containers (volume preserved)
-pnpm run db:logs    # tail Postgres logs
+pnpm run db:down    # stop and remove the containers (the volume stays)
+pnpm run db:logs    # follow the Postgres logs
 pnpm run db:reset   # drop the data volume and restart with an empty database
 pnpm run db:seed    # upsert the seed organization and its test users, one per role (local database only)
 pnpm run db:seed:demo --target local  # full demo dataset on TEST_EMAIL plus-addresses
 ```
 
-The demo seed reads `TEST_EMAIL` from `.env.local` and needs the course catalog, so run `pnpm run content:import --target local` first. `pnpm run content:levels --target <local|staging|production>` adds the missing skill level descriptions from `content/` and never overwrites edited text.
+The demo seed reads `TEST_EMAIL` from `.env.local` and needs the course catalog. Run `pnpm run content:import --target local` first. `pnpm run content:levels --target <local|staging|production>` adds the missing skill level descriptions from `content/`, and it never overwrites edited text.
 
-**Schema:**
+To use Neon in development, comment out the `DATABASE_URL` line in `.env.local` and restart the dev server. Next.js then reads the value from `.env`. When a file defines a variable twice, the last one wins, so keep one active block and comment out the rest.
 
-The `db` script wraps `drizzle-kit` and reads `DATABASE_URL` from `.env.local` to target the local container automatically:
+### Schema and migrations
+
+The `db` script runs `drizzle-kit`. It reads `DATABASE_URL` from `.env.local`, so it targets the local container:
 
 ```sh
 pnpm run db migrate    # apply pending migrations
@@ -82,9 +118,17 @@ pnpm run db generate   # generate a new migration from schema changes
 pnpm run db studio     # open Drizzle Studio
 ```
 
-To run against a different database, prefix the command with an explicit `DATABASE_URL=...`.
+To use a different database, start the command with an explicit `DATABASE_URL=...`.
 
-**Tests:**
+### Emails
+
+Mailpit receives every email that the local app sends, in its inbox at `http://localhost:8025`. `pnpm run email` starts the React Email preview server at `https://email.glore.localhost`. Editors and admins can also preview every template, in each language, at `/emails` in the app.
+
+### Content
+
+Courses, skill groups, and help articles are Markdown and JSON files in `content/`. [`content/README.md`](content/README.md) describes the format, the checks of `pnpm run content:check`, and the import with `pnpm run content:import`.
+
+### Tests
 
 ```sh
 pnpm run test       # Vitest unit tests
@@ -94,86 +138,93 @@ pnpm run qa:atlas   # screenshots and axe results for each route and role
 pnpm run qa:perf    # perf report against the targets in config/performance.json
 ```
 
-The e2e suite needs `pnpm run dev` running and a database seeded with `pnpm run db:seed`. The invitation and application specs read their email from Mailpit, so run `pnpm run mail:up` and set `MAIL_TRANSPORT=mailpit` first. CI runs the same suite against a production build, with Postgres and Mailpit as service containers ([`.github/workflows/e2e.yml`](.github/workflows/e2e.yml)).
+The e2e suite needs `pnpm run dev` and a database seeded with `pnpm run db:seed`. The invitation and application specs read their emails from Mailpit, so run `pnpm run mail:up` and set `MAIL_TRANSPORT=mailpit` first. CI runs the same suite against a production build, with Postgres and Mailpit as service containers ([`.github/workflows/e2e.yml`](.github/workflows/e2e.yml)).
 
-The atlas uses the same dev server and seed. It logs in as each role, captures every reachable page in light and dark at 1440 and 390 pixels, and runs axe on each page. It writes the screenshots, `report.json`, and an `index.html` contact sheet to `.playwright/atlas/<timestamp>/`. Pass `--roles admin,guest` to limit the run.
+The atlas uses the same dev server and seed. It logs in as each role, captures every page that the role can open, and runs axe on each page. It captures light and dark mode at 1440 and 390 pixels. It writes the screenshots, `report.json`, and an `index.html` contact sheet to `.playwright/atlas/<timestamp>/`. Add `--roles admin,guest` to limit the run.
 
-The perf cases give comparable numbers only against a production server, so build and start one on port 3100 with `APP_URL=http://localhost:3100`, then run `E2E_BASE_URL=http://localhost:3100 pnpm run test:perf`. Each case runs on a desktop profile and a throttled mobile profile, and `qa:perf` writes `.playwright/perf/report.md`. CI runs the cases on each pull request against the head and the base commit on the same runner, and compares the two ([`.github/workflows/perf.yml`](.github/workflows/perf.yml)). The targets and the procedure are in [`.agents/specs/performance.md`](.agents/specs/performance.md).
+The perf cases give comparable numbers only against a production server:
 
-**Switching back to Neon in dev:**
+1. Build and start a server on port 3100 with `APP_URL=http://localhost:3100`.
+2. Run `E2E_BASE_URL=http://localhost:3100 pnpm run test:perf`.
+3. Run `pnpm run qa:perf` to write `.playwright/perf/report.md`.
 
-Comment out the `DATABASE_URL` line in `.env.local`. Next.js will then fall through to `.env` on the next dev server restart. When a file defines the same variable twice, the last occurrence wins, so keep one active block and comment out the rest.
+Each case runs on a desktop profile and a throttled mobile profile. On each pull request, CI runs the cases on the head and the base commit on the same runner, and compares them ([`.github/workflows/perf.yml`](.github/workflows/perf.yml)). The targets and the procedure are in [`.agents/specs/performance.md`](.agents/specs/performance.md).
 
-### Deployment
+## Deployment
 
-The app is hosted on [Vercel](https://vercel.com):
+The app runs on [Vercel](https://vercel.com). Vercel's own Git deployments are off, so each commit deploys once, from GitHub Actions:
 
-- The [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) deploys a preview on every push to `main`, once the checks and e2e tests pass. A pull request gets a preview only when it has the `preview` label. Vercel's own Git deployments are disabled, so each commit deploys once
-- The preview of `main` is served at [preview.glorecertificate.xyz](https://preview.glorecertificate.xyz), and production at the `url` in `config/metadata.json`
-- The [Release workflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml) deploys to production when a `v*` tag is pushed
+- The [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) deploys a preview on each push to `main`, after the checks and the e2e tests pass. A pull request gets a preview only when it has the `preview` label.
+- The preview of `main` is at [preview.glorecertificate.xyz](https://preview.glorecertificate.xyz). It is the staging environment.
+- The [Release workflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml) deploys to production when a `v*` tag is pushed. Production is at the `url` in [`config/metadata.json`](config/metadata.json).
 
-The application can also be deployed manually:
+A release takes two steps:
+
+```sh
+pnpm run release      # on a release/<version> branch: check, build, bump the version, update CHANGELOG.md, commit, and push
+pnpm run release:tag  # after the release PR merges: tag main, push the tag, and create the GitHub release
+```
+
+The tag push starts the production deployment. You can also deploy by hand:
 
 ```sh
 pnpm run deploy:preview     # deploy a preview
 pnpm run deploy:production  # deploy to production without a release
-pnpm run release            # on a release/<version> branch: check, build, bump the version, update CHANGELOG.md, commit and push
-pnpm run release:tag        # after the release PR merges: tag main, push the tag, and create the GitHub release
 ```
 
-Pushing the release tag triggers the production deployment.
-
-Uploaded files are stored with their full public URL. When the bucket moves to a new domain, `pnpm run files:rehost --from <old URL> --to <new URL>` lists the stored URLs to rewrite, and `--apply` rewrites them. The steps are in the release runbook (`.agents/references/release-runbook.md`, "File links").
+The database stores each uploaded file with its full public URL. When the bucket moves to a new domain, `pnpm run files:rehost --from <old URL> --to <new URL>` lists the URLs to change, and `--apply` changes them. The release runbook has the steps (`.agents/references/release-runbook.md`, "File links").
 
 ## Contributing
 
 ### Issues
 
-Issues are used for bug reports, feature requests, maintenance tasks, and specs for coding agents. If you want to contribute, please [open an issue](https://github.com/glorecertificate/glore/issues/new/choose) using one of the templates and describe the problem or feature you want to implement.
+The issues hold bug reports, feature requests, maintenance tasks, and specs for coding agents. To contribute, [open an issue](https://github.com/glorecertificate/glore/issues/new/choose) with one of the templates, and describe the problem or the feature.
 
 ### Pull requests
 
-All commits must follow the Conventional Commits specification, which is enforced by commitlint on commit and push:
+1. Fork the repository, create a branch, and make your changes.
+2. Keep the branch free of merge commits. When it conflicts with `main`, rebase it. The Git hooks and CI reject merge commits.
+3. Run `pnpm run check` and `pnpm run test`, and make sure that they pass.
+4. [Open a pull request](https://github.com/glorecertificate/glore/compare) with the default template. Fill in each section with short, plain sentences. The maintainers write in [Simplified Technical English](https://www.asd-ste100.org/).
+5. Make sure that all CI checks pass, then wait for a maintainer to review the pull request.
+
+`pnpm run check` covers types, lint, format, unused code, translations, the generated theme files, the design-system lint ratchet, and the size budgets of `AGENTS.md` and the specs. The pre-push hook runs the first four.
+
+Every commit follows [Conventional Commits](https://www.conventionalcommits.org/), and commitlint checks it on commit and on push:
 
 ```
 <type>(<scope>): <description>
 ```
 
-The scope is optional and limited to `release`, `deps`, `deps-dev`, and `security`. The header can be at most 100 characters long.
+The scope is optional, and it can only be `release`, `deps`, `deps-dev`, or `security`. The header has at most 100 characters. A pull request merges as one squash commit, so write its title as a commit header.
 
-To open a pull request:
+## Translations
 
-1. Fork the repository, create a new branch and implement your changes
-2. Keep the branch free of merge commits: when it has a conflict with `main`, rebase it (hooks and CI reject merge commits). The PR merges as one squash commit, so write its title as a Conventional Commit header
-3. Run `pnpm run check` and `pnpm run test` locally and make sure they pass (`check` covers types, lint, format, unused code, translations, the generated theme files, the design-system lint ratchet, and the token budgets of `AGENTS.md` and the specs; the pre-push hook runs the first four)
-4. [Open a pull request](https://github.com/glorecertificate/glore/compare) with the default template, and fill in each section with short, plain sentences (maintainers use [Simplified Technical English](https://www.asd-ste100.org/))
-5. Make sure all CI checks pass and wait for a maintainer to review your PR
+English is the source language. The interface text is in `messages/en.json`, with Spanish and Italian in `messages/es.json` and `messages/it.json`. Every new key needs a real translation in all three files. `pnpm run check:i18n` makes sure that every locale has the same keys, ICU placeholders, and tags as `en`.
 
-### Translations
+Each editor in the app translates its own content: courses, lessons, help articles, skill groups, and legal texts. A Translate menu fills the open language tab with an AI translation from another language that has text. The result is an unsaved change, so the editor can review it before saving. Courses and help articles are published per language. The Translation gaps card on the editor dashboard shows what is missing in each language.
 
-`en` is the source language. UI messages (`messages/en.json`) ship with Spanish and Italian translations, and every new key needs real translations in all three catalogs. `pnpm run check:i18n` verifies that every locale has the same keys, ICU placeholders, and tags as `en`. Legal texts are versioned in the database and edited at `/legal`; `content/legal` only seeds a fresh database.
+The legal texts have versions in the database, and editors change them at `/legal`. `content/legal` only seeds a new database.
 
-Course, lesson, doc, and skill group content is translated in their editors. Each non-default locale shows a status (missing, machine translated, needs review, reviewed, or outdated when the English text changed), and editors can translate with AI and mark a locale as reviewed. Docs can be published per language.
+Editors and admins can change any interface text at `/translations`, with no deploy. The page checks the ICU syntax and placeholders, shows a preview, keeps a history, and suggests `es` and `it` drafts with AI. Nothing goes live until someone publishes it.
 
-Editors and platform admins can override any UI message at `/translations` without a deploy. The page checks ICU syntax and placeholders, previews the result, keeps a history, and suggests `es` and `it` drafts with AI. Nothing goes live until someone publishes it.
-
-Developers keep the catalogs in sync with these edits through three scripts. For `i18n:overrides` and `i18n:pull`, `--target` is `local`, `staging`, or `production`, and the scripts only read the database. `i18n:pull` also takes `--dry-run` and `--include-outdated`. `i18n:rename` edits only the catalogs.
+Three scripts keep the message files in sync with these changes. `i18n:overrides` and `i18n:pull` take `--target local`, `staging`, or `production`, and they only read the database. `i18n:pull` also takes `--dry-run` and `--include-outdated`. `i18n:rename` changes only the message files.
 
 ```sh
-pnpm run i18n:overrides --target staging  # count overrides per locale and stale state
-pnpm run i18n:pull --target staging       # write published overrides into messages/*.json for a pull request
-pnpm run i18n:rename Old.key New.key      # rename a key in every catalog and print the SQL for its overrides
+pnpm run i18n:overrides --target staging  # count the overrides per locale and the stale ones
+pnpm run i18n:pull --target staging       # write the published overrides into messages/*.json for a pull request
+pnpm run i18n:rename Old.key New.key      # rename a key in every message file and print the SQL for its overrides
 ```
 
-Platform admins edit the contact email, phone, website, social links, and legal entity at `/admin/settings`. They appear in emails, the help page, and the about page, and `config/metadata.json` supplies the defaults.
+Admins edit the contact email, phone, website, social links, and legal entity at `/admin/settings`. These values show in emails, on the help page, and on the about page. `config/metadata.json` holds the defaults.
 
 ## AI and agents
 
-All coding conventions and architecture details are documented in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.
+[`AGENTS.md`](AGENTS.md) holds the coding conventions and the architecture rules. Every AI agent must read it before it starts a task. The specs in `.agents/specs/` hold the details.
 
-The project uses the MCP servers configured in [`.mcp.json`](.mcp.json) and different agent skills to provide specific knowledge for database, auth, UI, emails, and more.
+The project uses the MCP servers in [`.mcp.json`](.mcp.json) and agent skills for the database, auth, the interface, emails, and more. Run `pnpm run skills` to install the skills for Claude or another compatible agent.
 
-Use the `pnpm run skills` command to install the skills locally and run them with Claude or any other compatible agent.
+On GitHub, the Claude review check reviews each pull request. To start Claude on a task, mention `@claude` in an issue or pull request comment, or add the `agent` label to an issue.
 
 ## License
 

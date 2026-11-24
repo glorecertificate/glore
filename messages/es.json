@@ -4042,7 +4042,6 @@
       "groupActions": "Acciones del grupo",
       "moveToGroup": "Mover a un grupo",
       "skillSummary": "{count, plural, one {# habilidad} other {# habilidades}}, {published} publicadas, {drafts, plural, one {# borrador} other {# borradores}}",
-      "toggleGroup": "Mostrar u ocultar las habilidades de {group}",
       "ungroupedEmpty": "Todos los cursos de habilidades tienen un grupo.",
       "statusComplete": "Completo",
       "statusIncomplete": "Incompleto",

@@ -4042,7 +4042,6 @@
       "groupActions": "Group actions",
       "moveToGroup": "Move to group",
       "skillSummary": "{count, plural, one {# skill} other {# skills}}, {published} published, {drafts, plural, one {# draft} other {# drafts}}",
-      "toggleGroup": "Show or hide the skills of {group}",
       "ungroupedEmpty": "Every skill course has a group.",
       "statusComplete": "Complete",
       "statusIncomplete": "Incomplete",

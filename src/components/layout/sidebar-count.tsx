@@ -36,7 +36,7 @@ export const SidebarCount = ({
   }
 
   return (
-    <span className="ml-auto text-xs font-medium text-sidebar-muted tabular-nums">
+    <span className="ml-auto text-xs font-medium text-sidebar-muted tabular-nums in-data-active:text-sidebar-accent-foreground">
       <span aria-hidden>{count > 99 ? '99+' : count}</span>
       <span className="sr-only">{label}</span>
     </span>

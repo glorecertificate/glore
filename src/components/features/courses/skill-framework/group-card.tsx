@@ -70,10 +70,7 @@ export const SkillGroupCard = ({
     <Card className={cn('gap-0 p-0', attention && 'border-warning-border')}>
       <Collapsible onOpenChange={onOpenChange} open={open}>
         <header className="flex items-center gap-2 p-3 sm:px-4">
-          <CollapsibleTrigger
-            aria-label={t('toggleGroup', { group: name })}
-            className="flex min-h-11 min-w-0 grow cursor-pointer items-center gap-3 rounded-lg text-left outline-none focus-visible:focus-ring"
-          >
+          <CollapsibleTrigger className="flex min-h-11 min-w-0 grow cursor-pointer items-center gap-3 rounded-lg text-left outline-none focus-visible:focus-ring">
             <LucideIcon
               aria-hidden
               className={cn(

@@ -3,8 +3,10 @@ import { defineConfig, devices } from '@playwright/test'
 const BROWSERS = (process.env.E2E_BROWSERS ?? 'chromium').split(',')
 const SMOKE = /(?:accessibility|locales|logout|smoke|verify)\.spec\.ts/u
 
+const CHROMIUM = { launchOptions: { args: process.env.CI ? ['--disable-webgl', '--disable-3d-apis'] : [] } }
+
 const BROWSER_PROJECTS = [
-  { name: 'chromium', use: { ...devices['Desktop Chrome'] }, dependencies: ['setup'] },
+  { name: 'chromium', use: { ...devices['Desktop Chrome'], ...CHROMIUM }, dependencies: ['setup'] },
   { name: 'webkit', testMatch: SMOKE, use: { ...devices['iPhone 13'] }, dependencies: ['setup'] },
   { name: 'firefox', testMatch: SMOKE, use: { ...devices['Desktop Firefox'] }, dependencies: ['setup'] },
 ]
@@ -20,7 +22,6 @@ const playwrightConfig = defineConfig({
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'https://glore.localhost',
     ignoreHTTPSErrors: true,
-    launchOptions: { args: process.env.CI ? ['--disable-webgl', '--disable-3d-apis'] : [] },
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
   },
   webServer: process.env.CI
@@ -31,7 +32,7 @@ const playwrightConfig = defineConfig({
       }
     : undefined,
   projects: [
-    { name: 'setup', testMatch: /auth\.setup\.ts/u },
+    { name: 'setup', testMatch: /auth\.setup\.ts/u, use: CHROMIUM },
     ...BROWSER_PROJECTS.filter(project => BROWSERS.includes(project.name)),
   ],
 })

@@ -23,6 +23,11 @@ const loginWithEmail = async (page: Page, email: string) => {
 
 export const login = async (page: Page, key: string) => await loginWithEmail(page, seedEmail(key))
 
+export const openSidebar = async (page: Page, isMobile: boolean) => {
+  if (!isMobile) return
+  await page.locator('[data-sidebar="trigger"]').filter({ visible: true }).first().click()
+}
+
 export const hydrated = async (locator: Locator) => {
   await expect
     .poll(() => locator.evaluate(element => Object.keys(element).some(key => key.startsWith('__reactProps'))))

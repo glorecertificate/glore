@@ -52,7 +52,7 @@ test.describe('organization owner', () => {
 
   test('labels the organization role admin as Owner', async ({ page }) => {
     await page.goto('/organization?tab=members')
-    await expect(page.getByText('Owner', { exact: true }).first()).toBeVisible()
+    await expect(page.getByText('Owner', { exact: true }).filter({ visible: true }).first()).toBeVisible()
   })
 })
 
@@ -70,8 +70,9 @@ test.describe('volunteer', () => {
     await expect(page.locator('main')).toBeVisible()
   })
 
-  test('opens the course list with the progress filters', async ({ page }) => {
+  test('opens the course list with the progress filters', async ({ isMobile, page }) => {
     await page.goto('/courses')
+    if (isMobile) await page.getByRole('button', { name: /^Filters/u }).click()
     await expect(page.getByRole('radio', { name: /Not started/u })).toBeVisible()
     await expect(page.getByText('Something went wrong')).toBeHidden()
   })

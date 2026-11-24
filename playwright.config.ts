@@ -1,5 +1,14 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const BROWSERS = (process.env.E2E_BROWSERS ?? 'chromium').split(',')
+const SMOKE = /(?:accessibility|locales|logout|smoke|verify)\.spec\.ts/u
+
+const BROWSER_PROJECTS = [
+  { name: 'chromium', use: { ...devices['Desktop Chrome'] }, dependencies: ['setup'] },
+  { name: 'webkit', testMatch: SMOKE, use: { ...devices['iPhone 13'] }, dependencies: ['setup'] },
+  { name: 'firefox', testMatch: SMOKE, use: { ...devices['Desktop Firefox'] }, dependencies: ['setup'] },
+]
+
 const playwrightConfig = defineConfig({
   testDir: 'e2e',
   outputDir: '.playwright',
@@ -23,11 +32,7 @@ const playwrightConfig = defineConfig({
     : undefined,
   projects: [
     { name: 'setup', testMatch: /auth\.setup\.ts/u },
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
-    },
+    ...BROWSER_PROJECTS.filter(project => BROWSERS.includes(project.name)),
   ],
 })
 

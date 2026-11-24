@@ -1,0 +1,21 @@
+name: Browsers
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: browsers-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: E2E
+    permissions:
+      contents: read
+    uses: ./.github/workflows/e2e.yml
+    with:
+      browsers: webkit,firefox

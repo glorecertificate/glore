@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -98,9 +98,12 @@ export const OrganizationSettings = ({
     },
   })
 
+  const formId = useId()
+  const saveBar = useStickySaveBar(form)
+
   const handleSubmit = async ({ description, ...values }: Values) => {
-    if (!form.formState.isDirty) return
-    const dirty = form.formState.dirtyFields.description ?? {}
+    if (!saveBar.visible) return
+    const dirty = saveBar.dirtyFields.description ?? {}
     const patch: Partial<Record<Locale, string>> = {}
     for (const locale of LOCALES) {
       if (dirty[locale]) patch[locale] = description[locale]
@@ -176,7 +179,6 @@ export const OrganizationSettings = ({
   }
 
   const disabled = useFormDisabled(form.control)
-  const saveBar = useStickySaveBar(form)
   const [section, setSection] = useState('branding')
 
   const goToSection = (id: string) => {
@@ -211,7 +213,7 @@ export const OrganizationSettings = ({
         />
         <div className="flex min-w-0 flex-1 flex-col gap-8">
           <Form {...form}>
-            <form className="flex flex-col gap-8" method="post" onSubmit={form.handleSubmit(handleSubmit)}>
+            <form className="flex flex-col gap-8" id={formId} method="post" onSubmit={form.handleSubmit(handleSubmit)}>
               <SettingsSection description={t('brandingDescription')} id="branding" title={t('branding')}>
                 <OrganizationAvatarMenu
                   fallback={sessionOrg?.name?.slice(0, 2).toUpperCase() ?? organization.name.slice(0, 2).toUpperCase()}
@@ -445,13 +447,6 @@ export const OrganizationSettings = ({
                   />
                 </div>
               </SettingsSection>
-
-              <StickySaveBar
-                count={saveBar.count}
-                onDiscard={saveBar.discard}
-                saving={saveBar.saving || disabled}
-                visible={saveBar.visible}
-              />
             </form>
           </Form>
 
@@ -502,6 +497,14 @@ export const OrganizationSettings = ({
               </CardContent>
             </Card>
           </SettingsSection>
+
+          <StickySaveBar
+            count={saveBar.count}
+            form={formId}
+            onDiscard={saveBar.discard}
+            saving={saveBar.saving || disabled}
+            visible={saveBar.visible}
+          />
 
           <DeleteOrganizationDialog
             onConfirm={handleDelete}

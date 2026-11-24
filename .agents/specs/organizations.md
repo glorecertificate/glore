@@ -86,7 +86,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 
 - `OrganizationSettings` serves `/organization?tab=settings` and `/admin/organizations/[id]?tab=settings`.
 - Only the owner (or a platform admin through `organizationId`) edits.
-- Sections: branding, details, per-locale description, legal identity (`legalName`, `registryId`), certificate signatory, contact, danger zone. A `SectionNav` jumps between them and `StickySaveBar` saves the form. Transfer ownership and Delete sit in the danger zone of `/organization` only.
+- Sections: branding, details, per-locale description, legal identity (`legalName`, `registryId`), certificate signatory, contact, danger zone. A `SectionNav` jumps between them and `StickySaveBar` saves the form. Transfer ownership sits in the danger zone of `/organization` only. Delete sits in both danger zones.
 - The description form sends only the locales the user edited.
 - `mergeDescription` merges them into the stored record under a row lock, so an edit in one language never overwrites another. A blank value removes that locale.
 - The signatory is `organization_profiles.legalRepresentative` (printed after "Represented by") plus an optional PNG or JPG `signatureUrl`.

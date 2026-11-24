@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.7.1](https://github.com/glorecertificate/glore/compare/v0.7.0...v0.7.1) (2026-11-24)
+
+### Features
+
+- Add a reply-to address and a file url rehost script (#218) ([2167777](https://github.com/glorecertificate/glore/commit/21677778ff0e4038a8e9eeb9a674c03cde12a817)), references [#218](https://github.com/glorecertificate/glore/issues/218)
+- Name the glore linkedin page as the certificate issuer (#219) ([300e972](https://github.com/glorecertificate/glore/commit/300e972a92af452cf8b33d1c25c0954b4bb12136)), references [#219](https://github.com/glorecertificate/glore/issues/219)
+
+### Fixes
+
+- Delay and center the page loading spinner (#220) ([9b8ebc1](https://github.com/glorecertificate/glore/commit/9b8ebc10644824147b6197a4ceba7634b309babe)), references [#220](https://github.com/glorecertificate/glore/issues/220)
+- Limit ai commands to 150 an hour per editor (#226) ([ded6c56](https://github.com/glorecertificate/glore/commit/ded6c56970bc20dd870754d09cee9eedef46e535)), references [#226](https://github.com/glorecertificate/glore/issues/226)
+- Make the browsers workflow pass on mobile webkit and firefox (#231) ([7c97127](https://github.com/glorecertificate/glore/commit/7c97127504d0f02e96f10f7b000fbc194402715c)), references [#231](https://github.com/glorecertificate/glore/issues/231)
+- Print the nationality as a demonym and fit long partner names (#224) ([25a62af](https://github.com/glorecertificate/glore/commit/25a62af73a7ac8c8468ec89a6fc5481df338d795)), references [#224](https://github.com/glorecertificate/glore/issues/224)
+- Remove the service worker in development (#234) ([bade983](https://github.com/glorecertificate/glore/commit/bade98393ced9b322add9aaf06718f1dcc472c63)), references [#234](https://github.com/glorecertificate/glore/issues/234)
+- Save the organization settings and close the save bar gap (#232) ([f3c57d6](https://github.com/glorecertificate/glore/commit/f3c57d61abdf73afb9370e6f8e08833729733196)), closes [#232](https://github.com/glorecertificate/glore/issues/232)
+- Settings, admin organization, and password email review items (#222) ([c8aa761](https://github.com/glorecertificate/glore/commit/c8aa761a550ec00afd633d13eee2d6fb20648f64)), references [#222](https://github.com/glorecertificate/glore/issues/222)
+
+### CI
+
+- Check the keyboard focus on the main pages (#229) ([6c4e609](https://github.com/glorecertificate/glore/commit/6c4e609687cc9bbbc893b92195c6bb76d2f79a35)), references [#229](https://github.com/glorecertificate/glore/issues/229)
+- Compare the certificate qr code with its verification link (#233) ([3ef96a7](https://github.com/glorecertificate/glore/commit/3ef96a7f6962257205ef8ae7cee678d3c958b224)), references [#233](https://github.com/glorecertificate/glore/issues/233)
+- Delete the resent invitation user after the invitation tests (#225) ([7350b41](https://github.com/glorecertificate/glore/commit/7350b4146aa7a59c90e08c7a91bb311c4b81f67d)), references [#225](https://github.com/glorecertificate/glore/issues/225)
+- Run axe on the main pages of each role in the e2e suite (#227) ([c10d509](https://github.com/glorecertificate/glore/commit/c10d5095cf60c937a83337477785a345e3d2ca51)), references [#227](https://github.com/glorecertificate/glore/issues/227)
+- Run the smoke specs on mobile webkit and firefox every night (#228) ([30c0992](https://github.com/glorecertificate/glore/commit/30c09920c816a0d9b845796c9b9b32bcf3ffad2f)), references [#228](https://github.com/glorecertificate/glore/issues/228)
+
+### Docs
+
+- Bring every spec under its token budget (#215) ([ceff6d7](https://github.com/glorecertificate/glore/commit/ceff6d77582b2df7807a7f9541f849c5c59130d3)), references [#215](https://github.com/glorecertificate/glore/issues/215)
+- Rebuild through the deploy job when the file url changes (#221) ([afc17b6](https://github.com/glorecertificate/glore/commit/afc17b6897c9a36c22f87caa51eea42312801997)), references [#221](https://github.com/glorecertificate/glore/issues/221)
+- Rewrite the readmes and pr template for new contributors (#223) ([84c6350](https://github.com/glorecertificate/glore/commit/84c6350c520a77b60855d00a541c3bd8b4138718)), references [#223](https://github.com/glorecertificate/glore/issues/223)
+- Update release runbook state after v0.7.0 (#217) ([8c06054](https://github.com/glorecertificate/glore/commit/8c060542384967b5fe5b136e28e8c78b056e6074)), references [#217](https://github.com/glorecertificate/glore/issues/217)
+
 ## [0.7.0](https://github.com/glorecertificate/glore/compare/15b7d6da...v0.7.0) (2026-11-21)
 
 ### Features

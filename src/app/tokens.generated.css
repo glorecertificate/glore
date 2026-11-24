@@ -88,8 +88,8 @@
     --sidebar-ring: oklch(0.814 0.086 218.8);
     --action-from: oklch(0.555 0.106 228.9);
     --action-to: oklch(0.508 0.098 229.5);
-    --sidebar-badge: oklch(0.77 0.165 122.4);
-    --sidebar-badge-foreground: oklch(0.306 0.065 254.1);
+    --sidebar-badge: oklch(0.588 0.199 26.9);
+    --sidebar-badge-foreground: oklch(1 0 0);
     --fg-on-dark: oklch(1 0 0);
     --band-from: oklch(0.306 0.065 254.1);
     --band-via: oklch(0.407 0.084 245.7);
@@ -288,7 +288,6 @@
     --sidebar: oklch(0.246 0.043 248.8);
     --sidebar-foreground: oklch(0.918 0.025 236.8);
     --sidebar-muted: oklch(0.751 0.048 239.5);
-    --sidebar-badge-foreground: oklch(0.262 0.049 249.2);
     --band-from: oklch(0.246 0.043 248.8);
     --band-via: oklch(0.363 0.072 241.2);
     --band-via-2: oklch(0.422 0.078 230);

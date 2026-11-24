@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 import { deleteAccount, getDeletionBlockers } from '@/actions/account/delete'
 import { ImpersonationLockNote } from '@/components/features/admin/impersonation-lock-note'
 import { SettingsSection } from '@/components/features/users/settings-section'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
@@ -62,20 +63,23 @@ export const DeleteAccount = () => {
         <Card className="border-danger-border bg-danger-subtle">
           <CardHeader>
             <CardTitle className="type-heading text-danger-text">{t('deleteAccountTitle')}</CardTitle>
-            <CardDescription>{t('deleteAccountDescription')}</CardDescription>
+            <CardDescription className="text-danger-text">{t('deleteAccountDescription')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <ImpersonationLockNote />
             {blockers.length > 0 && (
-              <Banner data-testid="delete-blocked" role="alert" variant="warning">
+              <Banner data-testid="delete-blocked" className="bg-transparent" role="alert" variant="destructive">
                 <div className="space-y-1">
-                  <p className="font-medium">{t('deleteAccountTransferTitle')}</p>
-                  <p>
+                  <p className="flex items-center gap-1 font-medium text-danger-text">
+                    <LucideIcon className="size-4" name="triangle-alert" />
+                    {t('deleteAccountTransferTitle')}
+                  </p>
+                  <p className="text-danger-text">
                     {t('deleteAccountTransferDescription', {
                       organizations: blockers.map(({ name }) => name).join(', '),
                     })}
                   </p>
-                  <Link className="underline underline-offset-4" href="/organization?tab=settings">
+                  <Link className="text-danger-text underline underline-offset-4" href="/organization?tab=settings">
                     {t('deleteAccountTransferLink')}
                   </Link>
                 </div>

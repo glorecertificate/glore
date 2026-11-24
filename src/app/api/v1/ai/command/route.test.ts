@@ -6,7 +6,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { POST } from '@/app/api/v1/ai/command/route'
 import config from '~/config/app.json'
 
-const state = vi.hoisted(() => ({ denied: null as NextResponse | null, models: new Map<string, unknown>() }))
+const state = vi.hoisted(() => ({
+  denied: null as NextResponse | null,
+  limited: false,
+  models: new Map<string, unknown>(),
+}))
 
 vi.mock('@/lib/api', () => ({
   authorizeEditorRequest: vi.fn(() => Promise.resolve({ response: state.denied, user: { id: 'u1' } })),
@@ -17,6 +21,9 @@ vi.mock('@/lib/api', () => ({
       return null
     }
   },
+}))
+vi.mock('@/lib/rate-limit', () => ({
+  isRateLimited: vi.fn(() => Promise.resolve(state.limited)),
 }))
 vi.mock('@ai-sdk/google', () => ({
   createGoogle: () => (id: string) => state.models.get(id),
@@ -62,6 +69,7 @@ const call = (body: unknown) =>
 describe('POST /api/v1/ai/command', () => {
   beforeEach(() => {
     state.denied = null
+    state.limited = false
     state.models.clear()
     vi.stubEnv('GEMINI_API_KEY', 'test-key')
     vi.stubEnv('GEMINI_MODEL', '')
@@ -78,6 +86,13 @@ describe('POST /api/v1/ai/command', () => {
 
   it('rejects a legacy body with a system prompt only', async () => {
     expect((await call({ messages: [], system: 'x' })).status).toBe(400)
+  })
+
+  it('answers 429 once an editor passes the hourly command limit', async () => {
+    state.limited = true
+    const response = await call(valid)
+    expect(response.status).toBe(429)
+    expect(await response.json()).toEqual({ error: 'Too many requests' })
   })
 
   it('answers 503 with a stable code when the key is missing', async () => {

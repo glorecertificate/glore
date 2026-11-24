@@ -74,7 +74,11 @@ export const TabsList = ({
 }
 
 export const TabsContent = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) => (
-  <TabsPrimitive.Content className={cn('flex-1 outline-none', className)} data-slot="tabs-content" {...props} />
+  <TabsPrimitive.Content
+    className={cn('flex-1 outline-none focus-visible:focus-ring', className)}
+    data-slot="tabs-content"
+    {...props}
+  />
 )
 
 const tabsTriggerVariants = cva(

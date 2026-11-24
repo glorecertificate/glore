@@ -10,7 +10,7 @@ import { findCertificate } from '@/actions/certificates/queries'
 import { fetchLevelDescriptions } from '@/actions/courses/level-descriptions'
 import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
 import { certificatePdfLabels } from '@/components/features/certificates/generate-pdf'
-import { regionName } from '@/components/features/certificates/region-name'
+import { nationalityName } from '@/components/features/certificates/nationality'
 import { CertificateError } from '@/db/mutations/certificate'
 import { plainDescription } from '@/db/queries/skill-level-description'
 import { DEFAULT_LOCALE, LOCALES, localizeRecord } from '@/lib/i18n'
@@ -50,7 +50,7 @@ export const findCertificatePreview = async (id: number) =>
         birthday: personal ? cert.user.birthday : null,
         firstName: cert.user.firstName ?? '',
         lastName: cert.user.lastName,
-        nationality: personal ? regionName(cert.user.nationality, locale) : null,
+        nationality: personal ? nationalityName(cert.user.nationality, locale) : null,
       },
       issuedAt: null,
       organization: {

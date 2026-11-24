@@ -81,6 +81,7 @@ import {
   hasPersonalData,
   nameSize,
   partnerFontSize,
+  partnerMaxLines,
   partnerWidth,
   representedTop,
   skillDots,
@@ -402,8 +403,12 @@ export const CertificatePage = ({
         <p style={textAt(VOLUNTEERING_LEFT, PARTNERSHIP_TOP, 10, 1, { whiteSpace: 'nowrap' })}>{labels.partnership}</p>
         <p
           style={textAt(PARTNER_LEFT, PARTNER_TOP, partnerSize, PARTNER_LINE_HEIGHT, {
+            display: '-webkit-box',
             fontWeight: 900,
+            overflow: 'hidden',
             overflowWrap: 'anywhere',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: partnerMaxLines(partnerSize),
             width: unit(partnerSpan),
           })}
         >

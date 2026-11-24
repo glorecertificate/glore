@@ -5,9 +5,9 @@ import { useFormContext, useWatch } from 'react-hook-form'
 
 import { CertificatePage } from '@/components/features/certificates/certificate-page'
 import { FieldError } from '@/components/features/certificates/field-error'
+import { nationalityName } from '@/components/features/certificates/nationality'
 import { SectionNote } from '@/components/features/certificates/new/section-note'
 import { type SkillOption } from '@/components/features/certificates/new/values'
-import { regionName } from '@/components/features/certificates/region-name'
 import { type PersonalField, formatActivityPeriod } from '@/components/features/certificates/rules'
 import { type WizardValues } from '@/components/features/certificates/schemas'
 import { useI18n } from '@/components/providers/i18n'
@@ -64,7 +64,7 @@ const Thumbnail = ({
           birthday: values.personal?.birthday || null,
           firstName,
           lastName: holderLastName ?? null,
-          nationality: regionName(values.personal?.nationality || null, language),
+          nationality: nationalityName(values.personal?.nationality || null, language),
         },
         issuedAt: null,
         organization: {

@@ -173,6 +173,17 @@ describe('generateCertificatePdf', () => {
     expect(partner.map(run => Math.round(run.baseline))).toEqual([428])
   })
 
+  it.each([
+    'Associazione di Promozione Sociale Giovani Volontari Europei per lo Sviluppo Sostenibile delle Comunita Locali della Lombardia e del Piemonte',
+    'ASSOCIAZIONE DI PROMOZIONE SOCIALE GIOVANI VOLONTARI EUROPEI PER LO SVILUPPO SOSTENIBILE DELLE COMUNITA LOCALI DELLA LOMBARDIA E DEL PIEMONTE',
+  ])('keeps a 150 character organization name inside its section bar: %s', async name => {
+    const organization = { ...templateInput.organization, name: name.padEnd(150, 'x') }
+    const runs = textBaselines(await generateCertificatePdf({ ...templateInput, organization }, 'en'))
+    const partner = runs.filter(run => run.x < 120 && run.baseline > 410 && run.baseline < 500 && run.size < 10.1)
+    expect(partner.length).toBeGreaterThan(4)
+    for (const run of partner) expect(run.baseline + run.size * 0.25).toBeLessThanOrEqual(472.9)
+  })
+
   it.each(['en', 'es', 'it'])('separates the level label from the level word in %s', async language => {
     const labels = await certificatePdfLabels(language)
     const lines = textLines(

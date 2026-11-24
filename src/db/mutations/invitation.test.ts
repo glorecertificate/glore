@@ -111,7 +111,7 @@ describe.skipIf(!isLocalDatabase)('organization invitations', () => {
     await client.db.delete(schema.users).where(inArray(schema.users.id, Object.values(ids)))
     await client.db
       .delete(schema.users)
-      .where(inArray(schema.users.email, [email('copied'), email('fresh'), email('renewed')]))
+      .where(inArray(schema.users.email, [email('copied'), email('fresh'), email('renewed'), email('resent')]))
   })
 
   it('creates a pending invitation that expires after the configured days and records an event', async () => {

@@ -95,18 +95,24 @@ export const AdminOverview = ({
             <CardTitle>{t('certificatesChartTitle')}</CardTitle>
             <CardDescription>{t('certificatesChartDescription')}</CardDescription>
           </CardHeader>
-          <CardContent className="max-sm:overflow-x-auto">
-            <Chart
-              className="max-sm:min-w-lg"
-              data={issuance ? chartData : []}
-              label={t('certificatesChartTitle')}
-              loading={loading}
-              series={[
-                { key: 'certificatesSubmitted', label: t('seriesSubmitted') },
-                { color: 'var(--chart-2)', key: 'certificatesApproved', label: t('seriesApproved') },
-              ]}
-              variant="bar"
-            />
+          <CardContent>
+            <section
+              aria-label={t('certificatesChartTitle')}
+              className="focus-visible:focus-ring-inset max-sm:overflow-x-auto"
+              tabIndex={0}
+            >
+              <Chart
+                className="max-sm:min-w-lg"
+                data={issuance ? chartData : []}
+                label={t('certificatesChartTitle')}
+                loading={loading}
+                series={[
+                  { key: 'certificatesSubmitted', label: t('seriesSubmitted') },
+                  { color: 'var(--chart-2)', key: 'certificatesApproved', label: t('seriesApproved') },
+                ]}
+                variant="bar"
+              />
+            </section>
           </CardContent>
         </Card>
       </div>

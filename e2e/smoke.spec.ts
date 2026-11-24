@@ -47,7 +47,7 @@ test.describe('organization owner', () => {
   test('opens the organization panel', async ({ page }) => {
     await page.goto('/organization')
     await expect(page).toHaveURL(/\/organization/u)
-    await expect(page.getByText('GloRe Seed Organization').first()).toBeVisible()
+    await expect(page.getByText('GloRe Seed Organization').filter({ visible: true }).first()).toBeVisible()
   })
 
   test('labels the organization role admin as Owner', async ({ page }) => {

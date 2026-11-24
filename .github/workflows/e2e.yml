@@ -76,10 +76,13 @@ jobs:
           key: nextjs-${{ runner.os }}-e2e-${{ github.sha }}
           restore-keys: |
             nextjs-${{ runner.os }}-e2e-
+      - name: Build the browser cache key
+        id: browsers
+        run: echo "key=${E2E_BROWSERS//,/-}" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ inputs.browsers }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: playwright-${{ runner.os }}-${{ steps.browsers.outputs.key }}-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install browsers
         run: pnpm exec playwright install --with-deps chromium ${E2E_BROWSERS//,/ }
       - name: Migrate, import, and seed the database

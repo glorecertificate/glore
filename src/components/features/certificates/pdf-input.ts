@@ -1,5 +1,5 @@
 import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
-import { regionName } from '@/components/features/certificates/region-name'
+import { nationalityName } from '@/components/features/certificates/nationality'
 import { renderSnapshotSkill } from '@/components/features/certificates/snapshot'
 import { type CertificateSnapshot } from '@/db/schema'
 import { DEFAULT_LOCALE, LOCALES, localizeRecord } from '@/lib/i18n'
@@ -13,7 +13,7 @@ export const snapshotPdfInput = (snapshot: CertificateSnapshot, code: string | n
   return {
     activity: snapshot.activity,
     code,
-    holder: { ...snapshot.holder, nationality: regionName(snapshot.holder.nationality, locale) },
+    holder: { ...snapshot.holder, nationality: nationalityName(snapshot.holder.nationality, locale) },
     issuedAt: snapshot.issuedAt || null,
     organization: {
       legalRepresentative: organization.legalRepresentative,

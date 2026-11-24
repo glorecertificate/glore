@@ -151,29 +151,117 @@ const PARTNER_FULL_WIDTH = 174.8
 export const PARTNER_LINE_HEIGHT = 1.2
 export const PARTNER_LOGO = { height: 54.6, left: 119.2, top: 418, width: 90.7 }
 
-const PARTNER_CHAR_WIDTH = 0.62
-const PARTNER_FONT_SIZES = [10.0464, 9, 8, 7, 6.5] as const
+const PARTNER_FONT_SIZES = [10.0464, 9, 8, 7, 6.5, 6, 5.5] as const
+const PARTNER_ADVANCE_FALLBACK = 700
+const PARTNER_ADVANCES: Record<string, number> = {
+  ' ': 249,
+  '&': 674,
+  "'": 154,
+  '(': 353,
+  ')': 352,
+  ',': 270,
+  '-': 450,
+  '.': 302,
+  '/': 351,
+  ':': 300,
+  0: 579,
+  1: 579,
+  2: 579,
+  3: 579,
+  4: 579,
+  5: 579,
+  6: 579,
+  7: 579,
+  8: 579,
+  9: 579,
+  A: 681,
+  B: 645,
+  C: 656,
+  D: 646,
+  E: 560,
+  F: 547,
+  G: 682,
+  H: 703,
+  I: 302,
+  J: 562,
+  K: 640,
+  L: 542,
+  M: 876,
+  N: 702,
+  O: 690,
+  P: 651,
+  Q: 690,
+  R: 652,
+  S: 626,
+  T: 630,
+  U: 665,
+  V: 661,
+  W: 869,
+  X: 638,
+  Y: 628,
+  Z: 610,
+  a: 531,
+  b: 563,
+  c: 520,
+  d: 563,
+  e: 544,
+  f: 362,
+  g: 575,
+  h: 564,
+  i: 275,
+  j: 270,
+  k: 547,
+  l: 275,
+  m: 861,
+  n: 564,
+  o: 562,
+  p: 563,
+  q: 562,
+  r: 379,
+  s: 512,
+  t: 343,
+  u: 564,
+  v: 517,
+  w: 726,
+  x: 515,
+  y: 518,
+  z: 515,
+}
 
 export const partnerWidth = (logoUrl: string | null) => (logoUrl ? PARTNER_WIDTH : PARTNER_FULL_WIDTH)
 
+const partnerTextWidth = (text: string, fontSize: number) =>
+  (Array.from(text.normalize('NFD').replaceAll(/\p{M}/gu, '')).reduce(
+    (width, char) => width + (PARTNER_ADVANCES[char] ?? PARTNER_ADVANCE_FALLBACK),
+    0
+  ) *
+    fontSize) /
+  1000
+
 const partnerLines = (name: string, fontSize: number, width: number) => {
-  const perLine = Math.max(1, Math.floor(width / (PARTNER_CHAR_WIDTH * fontSize)))
-  return name.split(/\s+/u).reduce(
-    (state, word) => {
-      const chunks = Math.max(1, Math.ceil(word.length / perLine))
-      if (state.used > 0 && state.used + 1 + word.length <= perLine) {
-        return { lines: state.lines, used: state.used + 1 + word.length }
-      }
-      return { lines: state.lines + chunks, used: word.length - (chunks - 1) * perLine }
-    },
-    { lines: 0, used: 0 }
-  ).lines
+  const space = partnerTextWidth(' ', fontSize)
+  return name
+    .split(/\s+/u)
+    .filter(Boolean)
+    .reduce(
+      (state, word) => {
+        const wordWidth = partnerTextWidth(word, fontSize)
+        if (state.used > 0 && state.used + space + wordWidth <= width) {
+          return { lines: state.lines, used: state.used + space + wordWidth }
+        }
+        const chunks = Math.max(1, Math.ceil(wordWidth / width))
+        return { lines: state.lines + chunks, used: wordWidth - (chunks - 1) * width }
+      },
+      { lines: 0, used: 0 }
+    ).lines
 }
 
+export const partnerMaxLines = (fontSize: number) =>
+  Math.floor((PARTNER_BOTTOM - PARTNER_TOP - textShift(fontSize)) / (fontSize * PARTNER_LINE_HEIGHT))
+
 export const partnerFontSize = (name: string, width = PARTNER_WIDTH) =>
-  PARTNER_FONT_SIZES.find(
-    size => partnerLines(name, size, width) * size * PARTNER_LINE_HEIGHT <= PARTNER_BOTTOM - PARTNER_TOP
-  ) ?? PARTNER_FONT_SIZES.at(-1)!
+  PARTNER_FONT_SIZES.find(size => partnerLines(name, size, width) <= partnerMaxLines(size)) ??
+  PARTNER_FONT_SIZES.at(-1)!
 
 export const TASK_LEFT = 46.3
 export const TASK_TOP = 550.6

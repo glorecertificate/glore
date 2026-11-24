@@ -16,8 +16,8 @@ import {
   requestCertificateChanges,
 } from '@/actions/certificates/review'
 import { type CertificateInput } from '@/components/features/certificates/certificate-layout'
+import { nationalityName } from '@/components/features/certificates/nationality'
 import { pdfImage } from '@/components/features/certificates/pdf-helpers'
-import { regionName } from '@/components/features/certificates/region-name'
 import { CommentSection } from '@/components/features/certificates/review/comment-section'
 import { DecisionBar } from '@/components/features/certificates/review/decision-bar'
 import { EvaluationSection } from '@/components/features/certificates/review/evaluation-section'
@@ -114,7 +114,7 @@ export const ReviewWorkspace = ({
       birthday: holder.birthday,
       firstName: certificate.holder?.firstName ?? '',
       lastName: certificate.holder?.lastName ?? null,
-      nationality: regionName(holder.nationality, certificate.language),
+      nationality: nationalityName(holder.nationality, certificate.language),
     },
     issuedAt: new Date().toISOString(),
     organization: {

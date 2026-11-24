@@ -92,6 +92,7 @@ import {
   hyphenate,
   nameSize,
   partnerFontSize,
+  partnerMaxLines,
   partnerWidth,
   placed,
   representedTop,
@@ -171,6 +172,7 @@ const styles = StyleSheet.create({
     left: PARTNER_LEFT,
     lineHeight: PARTNER_LINE_HEIGHT,
     position: 'absolute',
+    textOverflow: 'ellipsis',
   },
   partnerLogo: { ...PARTNER_LOGO, objectFit: 'contain', objectPosition: 'left center', position: 'absolute' },
   tasksIntro: {
@@ -309,6 +311,8 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
   const plan = taskPlan(activity.tasks, Boolean(organization.signatureUrl))
   const skills = data.skills.slice(0, SKILL_LABEL_TOPS.length)
   const bannerSize = titleSize(labels.title)
+  const partnerSpan = partnerWidth(organization.logoUrl)
+  const partnerSize = partnerFontSize(organization.name, partnerSpan)
 
   return (
     <Document author="GloRe" title={`${labels.title}: ${holder.firstName} ${lastName}`.trim()}>
@@ -385,8 +389,8 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         <Text
           style={[
             styles.partnerName,
-            { width: partnerWidth(organization.logoUrl) },
-            placed(PARTNER_TOP, partnerFontSize(organization.name, partnerWidth(organization.logoUrl))),
+            { maxLines: partnerMaxLines(partnerSize), width: partnerSpan },
+            placed(PARTNER_TOP, partnerSize),
           ]}
         >
           {organization.name}

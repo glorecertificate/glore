@@ -499,7 +499,7 @@ export const SidebarGroupLabel = ({
   return (
     <Comp
       className={cn(
-        'flex h-6 shrink-0 items-center px-3 type-overline text-sidebar-muted outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:focus-ring-inset [&>svg]:size-4 [&>svg]:shrink-0',
+        'flex h-6 shrink-0 cursor-default items-center px-3 type-overline text-sidebar-muted outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:focus-ring-inset [&>svg]:size-4 [&>svg]:shrink-0',
         'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
         className
       )}

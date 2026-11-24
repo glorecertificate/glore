@@ -1,6 +1,6 @@
 ## Summary
 
-<!-- Write one or two short sentences: what the PR changes and why. -->
+<!-- Write one or two short sentences in Simplified Technical English: what the PR changes and why. -->
 
 ## Changes
 

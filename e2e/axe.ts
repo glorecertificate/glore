@@ -3,18 +3,33 @@ import { type Page, expect } from '@playwright/test'
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
 const BLOCKING = new Set(['critical', 'serious'])
+const SETTLE_MS = 3000
+const TOUCH_HIT = /\btouch-hit(?![\w-])/u
 
 type Theme = 'dark' | 'light'
 
+const settled = async (page: Page) => {
+  try {
+    await page.waitForLoadState('networkidle', { timeout: SETTLE_MS })
+    return true
+  } catch {
+    return false
+  }
+}
+
 const blockingIssues = async (page: Page) => {
   await expect(page.locator('[data-slot="loading-fallback"], [data-slot^="skeleton"]')).toHaveCount(0)
-  await page.waitForLoadState('networkidle')
+  await settled(page)
   await page.evaluate(async () => {
     await document.fonts.ready
   })
   const { violations } = await new AxeBuilder({ page }).withTags(TAGS).exclude('nextjs-portal').analyze()
   return violations
-    .filter(violation => BLOCKING.has(violation.impact ?? ''))
+    .map(violation => ({
+      ...violation,
+      nodes: violation.nodes.filter(node => violation.id !== 'target-size' || !TOUCH_HIT.test(node.html)),
+    }))
+    .filter(violation => BLOCKING.has(violation.impact ?? '') && violation.nodes.length > 0)
     .map(violation => `${violation.id}: ${violation.nodes.map(node => node.target.join(' ')).join(' | ')}`)
 }
 

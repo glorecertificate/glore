@@ -210,7 +210,7 @@ One pass of the five journeys with VoiceOver in Safari on macOS. The keyboard-on
 
 ### VoiceOver setup
 
-1. Run `pnpm run db:seed:demo` and log in with Safari. Press Command+F5 to start VoiceOver.
+1. Do the steps of "Setup". Log in with Safari, then press Command+F5 to start VoiceOver.
 2. Move with Control+Option+Right. Open the list of headings, links, and form controls with Control+Option+U.
 3. For each failed step, write the page, the control, and the words that VoiceOver said.
 

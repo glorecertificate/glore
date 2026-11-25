@@ -3,14 +3,22 @@ name: Deploy
 on:
   workflow_call:
     inputs:
+      domain:
+        description: Domain to point at the deployment. An empty value keeps every domain.
+        default: ''
+        type: string
       environment:
-        description: Environment to deploy to, can be preview or production.
-        default: preview
+        description: Environment to deploy to, can be qa, preview, or production.
+        default: qa
         type: string
       migrate:
         description: Run the Drizzle migrations against the target database before the build.
         default: false
         type: boolean
+      ref:
+        description: Commit to deploy. An empty value means the commit of the event.
+        default: ''
+        type: string
     secrets:
       VERCEL_TOKEN:
         required: true
@@ -23,7 +31,7 @@ env:
   NEXT_TELEMETRY_DISABLED: 1
   VERCEL_TELEMETRY_DISABLED: 1
   VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+  VERCEL_PROJECT_ID: ${{ inputs.environment == 'qa' && vars.VERCEL_QA_PROJECT_ID || vars.VERCEL_PROJECT_ID }}
 
 jobs:
   deploy:
@@ -36,33 +44,35 @@ jobs:
     environment:
       name: ${{ inputs.environment }}
       url: ${{ steps.vercel.outputs.url }}
+    env:
+      TARGET: ${{ inputs.environment == 'production' && 'production' || 'preview' }}
     steps:
+      - name: Require a separate qa project
+        if: inputs.environment == 'qa' && (vars.VERCEL_QA_PROJECT_ID == '' || vars.VERCEL_QA_PROJECT_ID == vars.VERCEL_PROJECT_ID)
+        run: |
+          echo "::error::VERCEL_QA_PROJECT_ID must be the id of the qa project."
+          exit 1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
+          ref: ${{ inputs.ref }}
       - uses: ./.github/actions/setup
         with:
           ignore-scripts: true
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ inputs.environment }}-${{ github.sha }}
-          restore-keys: |
-            nextjs-${{ runner.os }}-${{ inputs.environment }}-
-            nextjs-${{ runner.os }}-
       - name: Pull environment
         env:
-          TARGET: ${{ inputs.environment }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: pnpm exec vercel pull --yes --environment="$TARGET" --token="$VERCEL_TOKEN"
+      - name: Require the app URL of the environment
+        if: inputs.environment != 'production'
+        env:
+          EXPECTED: ${{ inputs.environment }}.glorecertificate.xyz
+        run: pnpm exec dotenv -o -e ".vercel/.env.$TARGET.local" -- node -e "if (URL.parse(process.env.APP_URL)?.host !== process.env.EXPECTED) { console.error('::error::APP_URL is not the URL of this environment.'); process.exit(1) }"
       - name: Migrate database
         if: inputs.migrate
-        env:
-          TARGET: ${{ inputs.environment }}
         run: pnpm exec dotenv -e ".vercel/.env.$TARGET.local" -- pnpm exec drizzle-kit migrate
       - name: Build project artifacts
         env:
-          TARGET: ${{ inputs.environment }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -a
@@ -72,6 +82,12 @@ jobs:
       - name: Deploy to Vercel
         id: vercel
         env:
-          TARGET: ${{ inputs.environment }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: echo "url=$(pnpm exec vercel deploy --prebuilt --archive=tgz --target="$TARGET" --token="$VERCEL_TOKEN")" >> "$GITHUB_OUTPUT"
+      - name: Point the domain at the deployment
+        if: inputs.domain != ''
+        env:
+          DOMAIN: ${{ inputs.domain }}
+          URL: ${{ steps.vercel.outputs.url }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: pnpm exec vercel alias set "$URL" "$DOMAIN" --token="$VERCEL_TOKEN"

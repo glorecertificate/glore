@@ -3,13 +3,13 @@ import { parseArgs } from 'node:util'
 import { LOCAL_DATABASE_REGEX, type MembershipRole } from './seed-data.ts'
 import { type DemoLocale } from './seed-demo-copy.ts'
 
-const DEMO_TARGETS = ['local', 'staging'] as const
+const DEMO_TARGETS = ['local', 'qa'] as const
 
 export type DemoTarget = (typeof DEMO_TARGETS)[number]
 
-export const STAGING_COMMENT = 'glore:staging'
+export const QA_COMMENT = 'glore:qa'
 
-export const DEMO_USAGE = 'Usage: pnpm run db:seed:demo --target <local|staging>'
+export const DEMO_USAGE = 'Usage: pnpm run db:seed:demo --target <local|qa>'
 
 export const DAY_MS = 86_400_000
 
@@ -323,6 +323,6 @@ export const guardDemoTarget = (target: DemoTarget, databaseUrl: string | undefi
   if (!testEmail) return 'TEST_EMAIL is not set.'
   const isLocal = LOCAL_DATABASE_REGEX.test(databaseUrl)
   if (target === 'local' && !isLocal) return 'Refusing to seed: --target local needs a DATABASE_URL on localhost.'
-  if (target === 'staging' && isLocal) return 'Refusing to seed: --target staging needs a remote DATABASE_URL.'
+  if (target === 'qa' && isLocal) return 'Refusing to seed: --target qa needs a remote DATABASE_URL.'
   return null
 }

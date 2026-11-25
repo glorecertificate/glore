@@ -13,10 +13,10 @@ They describe the target behavior in the specs in `.agents/specs/`.
 3. Re-run `pnpm run db:seed:demo --target local` at any time to reset everything it owns to the state below.
    - It owns the demo accounts, both approved organizations and the applicant, their invitations, links, requests, certificates, events, notifications, and the learning progress of demo accounts.
    - Accounts created by creation flows (`new-*`) stay, and their memberships in the demo organizations are removed.
-4. Staging: open `https://preview.glorecertificate.xyz`, the preview CI deploys from `main`; email reaches the real `TEST_EMAIL` inbox.
-5. Staging uses the Vercel Preview env vars: `DATABASE_URL` (Neon `staging`) and `APP_URL` (`https://preview.glorecertificate.xyz`).
-6. Seed staging with its `DATABASE_URL` and `TEST_EMAIL` in front of `pnpm run content:import --target staging` and then `pnpm run db:seed:demo --target staging`.
-   - The demo script refuses any database whose comment is not `glore:staging`. Both are user-approved steps.
+4. `qa`: open `https://qa.glorecertificate.xyz`, which CI deploys from `main`. Email reaches the real `TEST_EMAIL` inbox.
+5. `qa` uses the Preview env vars of the `qa` Vercel project: its own `DATABASE_URL`, bucket, and `APP_URL` (`https://qa.glorecertificate.xyz`).
+6. Seed `qa` with its `DATABASE_URL` and `TEST_EMAIL` in front of `pnpm run content:import --target qa` and then `pnpm run db:seed:demo --target qa`.
+   - The demo script refuses any database whose comment is not `glore:qa`. Both are user-approved steps. Never seed the preview.
 7. Dates in the seed are relative to the run (for example "9 days ago"), so re-seed before a test day if you need ages, invitation expiry, or unread notifications to match this page.
 
 ## Accounts
@@ -214,5 +214,5 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 - Data and planning live in `scripts/seed-demo-data.ts` (organizations, accounts) and `seed-demo-story.ts` (certificates, progress, flows, events, notifications; pure).
 - Localized text lives in `seed-demo-copy.ts`, SQL in `seed-demo-db.mts`, and shared upserts in `scripts/seed-db.mts`.
 - `local` needs a localhost `DATABASE_URL`.
-- `staging` needs a remote one whose database comment is `glore:staging` (`COMMENT ON DATABASE`, set on the Neon `staging` branch only, since Neon forbids custom database settings).
-- Production never has the comment, so it is never seeded.
+- `qa` needs a remote one whose database comment is `glore:qa` (`COMMENT ON DATABASE`, set on the `qa` database only, since Neon forbids custom database settings).
+- The preview and production never have the comment, so they are never seeded.

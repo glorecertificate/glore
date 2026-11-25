@@ -21,17 +21,32 @@ await git('fetch', 'origin', 'main', '--tags')
 
 const { version } = JSON.parse(await git('show', 'origin/main:package.json')) as { version: string }
 const tag = `v${version}`
-const subject = await git('log', '-1', '--format=%s', 'origin/main')
+const header = `chore(release): ${tag}`
+const log = await git('log', '--format=%H %s', 'origin/main')
+const commit = log
+  .split('\n')
+  .map(line => ({ sha: line.slice(0, 40), subject: line.slice(41) }))
+  .find(({ subject }) => subject === header || subject.startsWith(`${header} `))?.sha
 
-if (!subject.startsWith(`chore(release): ${tag}`)) {
-  throw new Error(`The last commit on origin/main is "${subject}", not the ${tag} release.`)
-}
+if (!commit) throw new Error(`origin/main has no ${tag} release commit.`)
 
 if (await git('tag', '--list', tag)) throw new Error(`The tag ${tag} already exists.`)
 
-const notes = sectionOf(await git('show', 'origin/main:CHANGELOG.md'), version)
+const promotedSha = async (query: string) =>
+  await run('gh', [
+    'api',
+    `repos/{owner}/{repo}/deployments?environment=preview-promoted&per_page=1${query}`,
+    '--jq',
+    '.[0].sha // ""',
+  ])
 
-await git('tag', '--annotate', tag, '--message', tag, 'origin/main')
+const [promoted, current] = await Promise.all([promotedSha(`&sha=${commit}`), promotedSha('')])
+if (!(promoted && current)) throw new Error(`Promote ${commit} to the preview first.`)
+await git('merge-base', '--is-ancestor', commit, current)
+
+const notes = sectionOf(await git('show', `${commit}:CHANGELOG.md`), version)
+
+await git('tag', '--annotate', tag, '--message', tag, commit)
 await git('push', 'origin', tag)
 await run('gh', ['release', 'create', tag, '--title', tag, '--notes', notes, '--verify-tag'])
 

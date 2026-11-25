@@ -7,22 +7,23 @@ Release steps for v0.7 (#33). Every step that writes to preview or production is
 Pull request #20, then `main` (preview), then validation, then a manual release, then the release workflow deploys production.
 
 - Production is the `url` in `config/metadata.json`, the source of truth for the live domain: Vercel production branch `production`, Neon branch `production` in project `old-base-10661180`.
-- Preview is `https://preview.glorecertificate.xyz`: the Vercel domain of git branch `main`, Neon branch `staging` (comment `glore:staging`).
+- Preview is `https://preview.glorecertificate.xyz`: the Vercel Preview env vars of the main project, Neon branch `staging`.
+- `qa` is `https://qa.glorecertificate.xyz`: the Vercel Preview env vars of the `qa` project, an empty-start Neon database with the comment `glore:qa`, and its own R2 bucket.
 
 ## Deploy model
 
-- Since v0.7.0, a push to `main` migrates and deploys staging only. Production deploys only from a `v*` tag.
-- A push to `main` runs `ci.yml`: check and e2e, then `deploy.yml` migrates staging and deploys `main` with the Vercel Preview env vars to the preview domain.
-- A PR gets a preview deploy only with the `preview` label (`github.md`, "Workflows"). The Neon Vercel integration is disconnected, so every preview uses the unscoped Preview `DATABASE_URL` (Neon `staging`). Never add a branch-scoped `DATABASE_URL`.
+- A push to `main` migrates and deploys `qa` only. The preview changes only through `promote.yml`, and production only from a `v*` tag.
+- To promote, run the `Promote to preview` workflow, or `gh workflow run promote.yml -f commit=<sha>`. An empty commit means the latest `main`.
+- A PR deploys to the `qa` project only with the `preview` label (`github.md`, "Workflows"). The Neon Vercel integration is disconnected, so each project uses its unscoped Preview `DATABASE_URL`. Never add a branch-scoped `DATABASE_URL`.
 - The `Default branch` ruleset and its required checks are in `github.md`, "Deploys". Admins can bypass it.
-- A PR deploy never migrates, so a PR never changes staging.
-- A `v*` tag runs `release.yml`, which migrates and deploys production with `vercel deploy --target=production`.
+- A PR deploy never migrates. No test or seed writes to the preview.
+- A `v*` tag runs `release.yml`, which checks that the preview had that commit, then migrates and deploys production with `vercel deploy --target=production`.
 - The production build prerenders against the production database, so `deploy.yml` migrates it before `vercel build` (`migrate: true`).
 - `deploy.yml` builds on the runner from `vercel pull`, which cannot read Secret variables. Every variable the build validates must use the Config type.
 
 ## State
 
-- v0.7.0 is released: PR #214, tag `v0.7.0` on `ced87edb`. Production runs it, and staging runs `main`.
+- v0.7.0 is released: PR #214, tag `v0.7.0` on `ced87edb`. Production runs it.
 - On 2026-11-19, production was migrated and imported: 34 courses as drafts, 116 lessons, 33 docs, the legal pages, and 75 level description drafts.
 - Both databases have 38 migrations, through 0037.
 - Staging holds the demo seed, and every staging mail goes to the info inbox.
@@ -60,8 +61,8 @@ The schema is `envSchema` in `next.config.ts`. Production builds always send mai
 5. Run the same command without `--dry-run`. Production always imports courses as drafts.
 6. Insert the level description drafts: `DATABASE_URL='<production url>' pnpm run content:levels --target production --dry-run`, then the same command without `--dry-run`. It never overwrites edited text.
 7. Create `release/v0.7.0` from `main` and run `pnpm run release 0.7.0`. It runs check and build, bumps the version, updates `CHANGELOG.md`, commits `chore(release): v0.7.0`, and pushes the branch.
-8. Open a PR with that title and merge it through the queue. The merge deploys staging only.
-9. Run `pnpm run release:tag`. It tags the squash commit on `main` as `v0.7.0`, pushes the tag, and creates the GitHub release.
+8. Open a PR with that title and merge it through the queue. The merge deploys `qa`. Then promote the release commit and check the preview.
+9. Run `pnpm run release:tag`. It tags the promoted release commit as `v0.7.0`, pushes the tag, and creates the GitHub release.
 10. The tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
 
 Run steps 2 and 9 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes. 0035 drops `certificate_skills.statement`, so certificate pages also fail on the old build.

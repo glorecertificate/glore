@@ -25,7 +25,7 @@ interface LevelsCourse {
 
 type Field = [table: string, id: number, column: string, value: unknown]
 
-const USAGE = 'Usage: pnpm run content:levels --target <local|staging|production> [--dry-run]'
+const USAGE = 'Usage: pnpm run content:levels --target <local|qa|staging|production> [--dry-run]'
 
 const sourceText = (value: unknown) =>
   value && typeof value === 'object' ? ((value as Record<string, unknown>)[DEFAULT_LOCALE] ?? null) : null
@@ -154,12 +154,13 @@ const importLevels = async () => {
   } catch (e) {
     return fail(`${(e as Error).message}\n${USAGE}`)
   }
-  const target = ['local', 'staging', 'production'].find(name => name === values.target) as
+  const target = ['local', 'qa', 'staging', 'production'].find(name => name === values.target) as
     | 'local'
     | 'production'
+    | 'qa'
     | 'staging'
     | undefined
-  if (!target) return fail(`--target must be one of local, staging, production\n${USAGE}`)
+  if (!target) return fail(`--target must be one of local, qa, staging, production\n${USAGE}`)
 
   const guard = guardTarget(
     { bootstrap: false, drafts: false, dryRun: false, examples: false, remove: [], target },

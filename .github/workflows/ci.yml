@@ -33,11 +33,13 @@ jobs:
   deploy:
     name: Deploy
     needs: [check, e2e]
-    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'preview')
+    if: vars.VERCEL_QA_PROJECT_ID != '' && (github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'preview'))
     permissions:
       contents: read
       deployments: write
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
+      domain: ${{ github.event_name == 'push' && 'qa.glorecertificate.xyz' || '' }}
+      environment: qa
       migrate: ${{ github.event_name == 'push' }}

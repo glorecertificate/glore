@@ -75,17 +75,18 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 
 ## Workflows
 
-- `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then `deploy.yml` deploys a preview on a push to `main`, and on a PR only when it has the `preview` label.
-- A push to `main` runs the `deploy` job with `migrate: true`, which migrates and deploys staging. A PR deploy never migrates. Only a `v*` tag reaches production, through `release.yml`.
+- `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then `deploy.yml` deploys `qa` on a push to `main`, and on a PR only when it has the `preview` label.
+- A push to `main` migrates and deploys `qa`, and points `qa.glorecertificate.xyz` at it. A PR deploy never migrates. Both deploys skip while the repository variable `VERCEL_QA_PROJECT_ID` is empty.
+- `promote.yml` (manual, from `main`) is the only workflow that changes the preview. It takes a commit of `main` whose CI push run passed, migrates, deploys, and records the commit as a `preview-promoted` GitHub deployment.
 - On a push, `ci.yml` never cancels a run in progress, so a newer push cannot stop a migration.
-- `preview.yml` deploys a PR preview when the PR gets the `preview` label. Later pushes to that PR deploy again through `ci.yml`.
+- `preview.yml` deploys a PR to the `qa` project when the PR gets the `preview` label. Later pushes to that PR deploy again through `ci.yml`.
 - Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.
 - `e2e.yml` starts Postgres and Mailpit services and an S3Mock service for R2 (`R2_ENDPOINT`), migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - `e2e.yml` takes a `browsers` input (default `chromium`), which sets `E2E_BROWSERS`. `browsers.yml` runs it with `webkit,firefox` every night at 03:00 UTC on `main`, and on demand. WebKit runs as an iPhone at 390 px, and both run only the smoke specs (`SMOKE` in `playwright.config.ts`).
 - `perf.yml` runs outside the merge queue. Four `Measure` shards use the same setup, build the base commit too, and measure both on one runner with `test:perf --shard`. The final job `Perf` merges the shard results and writes the report once (`performance.md`).
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
 - CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.
-- `release.yml` deploys production after `check.yml` only, with `migrate: true`.
+- `release.yml` deploys production after `check.yml` and the `Version` job, with `migrate: true`. `Version` refuses a tag when its commit is not the release commit, is not on `main`, or is not in the promoted history of the preview.
 - `tasks.yml` fails while the PR body has an open task, or when the PR title fails commitlint. Check each template item, or delete it.
 - `claude-review.yml` and `tasks.yml` skip their jobs in the merge queue, and a skipped required check passes. An empty review result fails, except on a PR that changes a Claude workflow.
 - `labeler.yml` runs on `pull_request_target` with no checkout. It reads `.github/labeler.yml` from `main`, so a new rule works only after merge.
@@ -94,9 +95,12 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 
 - `deploy.yml` takes a `migrate` input, false by default. When true, it runs `pnpm exec dotenv -e .vercel/.env.<target>.local -- pnpm exec drizzle-kit migrate` after `vercel pull` and before `vercel build`. The build prerenders against the migrated database.
 - Migrations read `DATABASE_URL` from the pulled env file. `drizzle.config.ts` reads no unpooled variable. The workflow never prints or uploads the env file.
-- A push to `main` migrates and deploys staging. Production deploys only on a `v*` tag, one at a time, and never cancels.
+- `qa` is a second Vercel project with its own database, bucket, and mail inbox. `deploy.yml` fails when the `qa` project id is the main project id, or when `APP_URL` is not the URL of `qa` or the preview.
+- The preview changes only through `promote.yml`. Production deploys only on a `v*` tag, one at a time, and never cancels. Nobody but the owner takes a manual step.
+- A failed promotion can leave a migrated database with the old code, and a rollback never undoes a migration. Each migration MUST work with the old and the new code.
+- `next.config.ts` sends `X-Robots-Tag: noindex` when `VERCEL_ENV` is `preview`, which covers `qa`, the preview, and PR deploys.
 - A release goes through a PR, because nothing pushes to `main` directly. On a `release/<version>` branch from `main`, `pnpm run release <version>` runs check and build, bumps the version, writes `CHANGELOG.md`, commits `chore(release): v<version>`, and pushes the branch.
-- After the queue merges the release PR, `pnpm run release:tag` checks that the last commit on `main` is that release, tags it, pushes the tag, and creates the GitHub release from the `CHANGELOG.md` section.
+- After the queue merges the release PR, promote that commit and check it. Then `pnpm run release:tag` finds the release commit on `main`, checks that it was promoted, tags it, pushes the tag, and creates the GitHub release from the `CHANGELOG.md` section.
 - Only CI deploys. `vercel.json` sets `git.deploymentEnabled: false`, so Vercel makes no Git builds and no `Vercel` check.
 - Dependabot PRs read Dependabot secrets, so `VERCEL_TOKEN` MUST also be a Dependabot secret, or their preview deploy fails.
 - The `Default branch` ruleset requires `Check / Check`, `E2E / E2E`, `Claude review`, `Tasks`, `Title`, and CodeQL.

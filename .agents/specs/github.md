@@ -77,7 +77,7 @@ Both workflows use `anthropics/claude-code-action` with the Claude GitHub app, s
 
 - `ci.yml` (push, PR, and merge queue for `main`) runs `check.yml` (`check` and `test`) and `e2e.yml`. Then `deploy.yml` deploys `qa` on a push to `main`, and on a PR only when it has the `preview` label.
 - A push to `main` migrates and deploys `qa`, and points `qa.glorecertificate.xyz` at it. A PR deploy never migrates. Both deploys skip while the repository variable `VERCEL_QA_PROJECT_ID` is empty.
-- `promote.yml` (manual, from `main`) is the only workflow that changes the preview. It takes a commit of `main` whose CI push run passed, migrates, deploys, and records the commit as a `preview-promoted` GitHub deployment.
+- `promote.yml` (manual, from `main`) is the only workflow that changes the preview. It takes a commit of `main` whose CI push run passed, migrates, deploys, and records the commit as a GitHub deployment of `preview` with the task `promote`. The automatic record of the job holds the latest `main`, not that commit.
 - On a push, `ci.yml` never cancels a run in progress, so a newer push cannot stop a migration.
 - `preview.yml` deploys a PR to the `qa` project when the PR gets the `preview` label. Later pushes to that PR deploy again through `ci.yml`.
 - Each ref has its own preview deploy group, so one PR never cancels the pending deploy of another PR. Production deploys run one at a time.

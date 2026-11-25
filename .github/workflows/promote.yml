@@ -89,7 +89,7 @@ jobs:
           SHA: ${{ needs.commit.outputs.sha }}
         run: |
           set -euo pipefail
-          id="$(jq -n --arg ref "$SHA" '{ref: $ref, environment: "preview-promoted", auto_merge: false, required_contexts: [], production_environment: false}' |
+          id="$(jq -n --arg ref "$SHA" '{ref: $ref, environment: "preview", task: "promote", auto_merge: false, required_contexts: [], production_environment: false}' |
             gh api --method POST "repos/$GITHUB_REPOSITORY/deployments" --input - --jq .id)"
           gh api --method POST "repos/$GITHUB_REPOSITORY/deployments/$id/statuses" \
             -f state=success -f environment_url=https://preview.glorecertificate.xyz --silent

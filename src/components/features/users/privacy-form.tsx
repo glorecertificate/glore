@@ -90,6 +90,7 @@ export const PrivacyForm = () => {
         )}
         {certificates.length > 0 && (
           <RadioGroup
+            aria-label={t('featuredCertificate')}
             className="animate-reveal gap-2"
             disabled={saving || impersonating}
             onValueChange={handleFeatured}

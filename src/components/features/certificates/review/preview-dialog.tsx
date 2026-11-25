@@ -20,6 +20,7 @@ export const PreviewDialog = ({
   busy,
   certificate,
   language,
+  onCloseAutoFocus,
   onConfirm,
   onOpenChange,
   url,
@@ -27,6 +28,7 @@ export const PreviewDialog = ({
   busy: boolean
   certificate: CertificateInput
   language?: string
+  onCloseAutoFocus?: (event: Event) => void
   onConfirm: () => void
   onOpenChange: (open: boolean) => void
   url: string | null
@@ -35,7 +37,7 @@ export const PreviewDialog = ({
 
   return (
     <Dialog onOpenChange={onOpenChange} open={url !== null}>
-      <DialogContent className="flex h-[92vh] flex-col sm:max-w-2xl">
+      <DialogContent className="flex h-[92vh] flex-col sm:max-w-2xl" onCloseAutoFocus={onCloseAutoFocus}>
         <DialogHeader>
           <DialogTitle>{t('previewTitle')}</DialogTitle>
           <DialogDescription>{t('previewDescription')}</DialogDescription>

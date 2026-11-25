@@ -31,7 +31,12 @@ export const RatingGroup = ({
   }
 
   return (
-    <RadioGroup className={cn('flex justify-between', className)} value={String(value)} {...props}>
+    <RadioGroup
+      className={cn('flex justify-between', className)}
+      disabled={Boolean(disabled)}
+      value={String(value)}
+      {...props}
+    >
       {[1, 2, 3, 4, 5].map(rating => (
         <div className="flex flex-col items-center gap-2" key={rating}>
           <RadioGroupItem className="peer sr-only" id={`${id}-${rating}`} value={rating.toString()} />
@@ -52,7 +57,7 @@ export const RatingGroup = ({
 }
 
 const ratingGroupVariants = cva(
-  'touch-hit flex size-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]',
+  'touch-hit flex size-10 cursor-pointer items-center justify-center rounded-full border-[1.5px] peer-focus-visible:focus-ring',
   {
     compoundVariants: [
       {
@@ -83,7 +88,7 @@ const ratingGroupVariants = cva(
         'brand-secondary': `peer-data-[state=checked]:border-brand-secondary peer-data-[state=checked]:bg-brand-secondary/50 peer-data-[state=checked]:text-brand-secondary-foreground`,
       },
       disabled: {
-        true: 'cursor-default opacity-100',
+        true: 'cursor-default opacity-100 peer-disabled:cursor-default',
         false: 'hover:cursor-pointer',
       },
     },

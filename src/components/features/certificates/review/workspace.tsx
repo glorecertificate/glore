@@ -38,6 +38,7 @@ import { Form } from '@/components/ui/form'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { SKILL_LEVELS } from '@/db/queries/skill-level-description'
+import { useReturnFocus } from '@/hooks/use-return-focus'
 import { DEFAULT_LOCALE, LOCALES, localizeRecord } from '@/lib/i18n'
 import appConfig from '~/config/app.json'
 
@@ -70,6 +71,7 @@ export const ReviewWorkspace = ({
 }) => {
   const t = useTranslations('CertificateReview')
   const { push } = useRouter()
+  const { remember, restore } = useReturnFocus()
   const [previewData, setPreviewData] = useState<CertificateInput | null>(null)
   const [busy, setBusy] = useState<Busy>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -218,7 +220,10 @@ export const ReviewWorkspace = ({
             <DecisionBar
               busy={busy}
               disabled={!canApprove}
-              onApprove={() => void preview()}
+              onApprove={() => {
+                remember()
+                void preview()
+              }}
               onReject={() => setRejecting(true)}
               onRequestChanges={() => void requestChanges()}
             />
@@ -230,6 +235,7 @@ export const ReviewWorkspace = ({
         busy={busy === 'approve'}
         certificate={previewData ?? emptyPreview}
         language={certificate.language}
+        onCloseAutoFocus={restore}
         onConfirm={() => void approve()}
         onOpenChange={open => {
           if (!open && busy !== 'approve') closePreview()

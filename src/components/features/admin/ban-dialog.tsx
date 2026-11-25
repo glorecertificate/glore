@@ -111,6 +111,7 @@ export const BanDialog = ({
       <div className="grid gap-2">
         <Label>{t('banDuration')}</Label>
         <RadioGroup
+          aria-label={t('banDuration')}
           className="grid grid-cols-2 gap-2"
           disabled={busy}
           onValueChange={value => setDuration(value as Duration)}

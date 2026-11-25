@@ -52,6 +52,7 @@ export const OrganizationStep = ({ organization }: { organization: string }) => 
               <FormLabel>{labels[score]}</FormLabel>
               <FormControl>
                 <RatingGroup
+                  aria-label={labels[score]}
                   className="max-w-sm"
                   color="brand"
                   id={`rating-${score}`}

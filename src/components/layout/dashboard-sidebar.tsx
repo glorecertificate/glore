@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
-import { unstable_rethrow, usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 import { useTranslations } from 'next-intl'
@@ -68,6 +68,7 @@ import { toast } from '@/components/ui/toast'
 import { type UserOrganization } from '@/db/queries/user'
 import { useShortcut } from '@/hooks/use-shortcut'
 import { APP_ROOT } from '@/lib/constants'
+import { isNavigationError } from '@/lib/navigation-error'
 import { SHORTCUTS } from '@/lib/shortcuts'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -295,15 +296,6 @@ const DashboardSidebarUserItem = ({
       </Link>
     </Suspense>
   )
-}
-
-const isNavigationError = (error: unknown) => {
-  try {
-    unstable_rethrow(error)
-  } catch {
-    return true
-  }
-  return false
 }
 
 const DashboardSidebarUser = ({ organization }: { organization: UserOrganization | null }) => {

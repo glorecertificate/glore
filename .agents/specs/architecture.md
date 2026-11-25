@@ -94,6 +94,7 @@ src/
 │   ├── messages.ts     # loadMessages, resolveLocale: the one catalog loader (server-only)
 │   ├── settings.ts     # loadSettings: cached reader of app_settings with a defaults fallback
 │   ├── translate.ts    # Plate and plain text translation: walker, chunks, output validation
+│   ├── navigation-error.ts # isNavigationError(): tells a redirect of a server action from a failure in a catch
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata(), appTitle()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
 │   ├── phone.ts        # Phone number helpers

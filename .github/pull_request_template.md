@@ -27,4 +27,4 @@
 - [ ] The PR title is a Conventional Commit header, because it becomes the squash commit header
 - [ ] The branch has no merge commits
 - [ ] Each new or changed translation key is in all three `messages/` files
-- [ ] `README.md`, `AGENTS.md`, and `.agents/specs/` are updated when routes, commands, env vars, or structure change
+- [ ] `README.md`, `CONTRIBUTING.md`, `AGENTS.md`, and `.agents/specs/` are updated when routes, commands, env vars, or structure change

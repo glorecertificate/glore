@@ -149,7 +149,7 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 ## Docs sync
 
 - Docs sync triggers on a change to routes, API endpoints, server actions, hooks, utils, env vars, components, providers, skills, commands, or structure.
-- On a trigger, update `AGENTS.md`, `README.md`, and the matching spec in the same change, without asking.
+- On a trigger, update `AGENTS.md`, `README.md`, `CONTRIBUTING.md`, and the matching spec in the same change, without asking.
 - Edit `AGENTS.md` directly. Never add a `CLAUDE.md`, because Claude Code reads `AGENTS.md` natively.
 - Inventories the code already enumerates (hook lists, env var tables, cache tags) stay in the code with a pointer here, not copied.
 

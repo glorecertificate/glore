@@ -116,4 +116,4 @@ Run the rungs in order and report which ones ran:
 3. Test email flows yourself with Mailpit, never handing them to the user (`workflow.md`).
 4. Verify UI, layout, or animation in a real browser with `agent-browser` at `https://glore.localhost` as a seeded user. A typecheck is not visual verification.
 
-Update `AGENTS.md`, `README.md`, and specs in the same change as any structural change (triggers: `workflow.md`, "Docs sync").
+Update `AGENTS.md`, `README.md`, `CONTRIBUTING.md`, and specs in the same change as any structural change (triggers: `workflow.md`, "Docs sync").

@@ -215,7 +215,7 @@ Rules on top of the lesson rules (no hard wraps, quoting, no em or en dashes):
 
 `content:import` upserts categories and articles by slug in the same transaction as the courses, with the same `--target` guard, `--drafts`, and `--dry-run` flags. `--remove` and `--examples` do not touch docs.
 
-- Without `--drafts` (local and staging) articles are `published`. With `--drafts` (always on production) new articles are drafts and existing ones keep their `published` state, so an import never unpublishes anything. The same rule applies to `doc_articles.languages`: articles import with all three locales, and drafts import with none.
+- Without `--drafts` (local, qa, and staging) articles are `published`. With `--drafts` (always on production) new articles are drafts and existing ones keep their `published` state, so an import never unpublishes anything. The same rule applies to `doc_articles.languages`: articles import with all three locales, and drafts import with none.
 - The docs tables have no order column, and the app lists by `created_at`. The importer therefore sets `created_at` from `sortOrder` (a fixed date plus one minute per step), so the order is the same on every environment. Articles an editor adds in the app sort after the imported ones.
 - `audiences` imports to `doc_articles.audiences`. The docs lists show an article only to those roles, and the team sees all articles.
 - Re-running reports every row as unchanged. A changed article gets a new `updated_at`.
@@ -278,7 +278,7 @@ Courses that disappear from `content/` are not deleted; use `--remove`.
 pnpm run content:levels --target local
 ```
 
-Inserts the `levels:` descriptions of the last lessons of the skill courses into `skill_level_descriptions`, attached to each course's final assessment. It takes `--target <local|staging|production>` with the same database checks as the course import, and `--dry-run`.
+Inserts the `levels:` descriptions of the last lessons of the skill courses into `skill_level_descriptions`, attached to each course's final assessment. It takes `--target <local|qa|staging|production>` with the same database checks as the course import, and `--dry-run`.
 
 - It inserts only the missing rows (`on conflict do nothing`). A row that exists is never updated, so text an editor wrote or changed in the platform is safe, and a second run reports every row as unchanged.
 - It is allowed on production, unlike the course import. It needs no `--bootstrap` and no empty database, because it never overwrites.

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.4](https://github.com/glorecertificate/glore/compare/v0.7.3...v0.7.4) (2026-11-25)
+
+### Fixes
+
+- Make the five journeys work with the keyboard only (#242) ([ad0ca37](https://github.com/glorecertificate/glore/commit/ad0ca3707819eaef071c141e4fea0e8ad3f884ba)), references [#242](https://github.com/glorecertificate/glore/issues/242)
+
+### Docs
+
+- Add a screen reader checklist to the manual tests (#243) ([cd897f7](https://github.com/glorecertificate/glore/commit/cd897f7740c1bb14b85faf8470a3515f0196924f)), references [#243](https://github.com/glorecertificate/glore/issues/243)
+
 ## [0.7.3](https://github.com/glorecertificate/glore/compare/v0.7.2...v0.7.3) (2026-11-25)
 
 ### CI

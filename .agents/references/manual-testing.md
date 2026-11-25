@@ -204,6 +204,36 @@ To exercise the stored PDF and the R2 upload, approve the resubmitted request of
 4. Open the notification center, mark all read, and follow a notification link.
 5. In Settings, export your data, list active sessions, and revoke one.
 
+## Screen reader pass
+
+One pass of the five journeys with VoiceOver in Safari on macOS. The keyboard-only tests run in CI, so this pass checks only what VoiceOver says.
+
+### VoiceOver setup
+
+1. Do the steps of "Setup". Log in with Safari, then press Command+F5 to start VoiceOver.
+2. Move with Control+Option+Right. Open the list of headings, links, and form controls with Control+Option+U.
+3. For each failed step, write the page, the control, and the words that VoiceOver said.
+
+### Each page
+
+1. VoiceOver says the page title after a navigation.
+2. The headings list has one level 1 heading, and no level is missing.
+3. The landmarks list has the sidebar navigation and the main content.
+4. Each icon button has a name. No control is only "button" or "image".
+5. A toast message is read without moving the cursor.
+
+### Journeys
+
+1. Sign up (`new-volunteer`): VoiceOver reads the step ("Step 2 of 4"), the name of each field, and each error after Continue. The date button says its label and its value.
+2. Take a course (`volunteer-progress`): each rating group says its statement, then "1 of 5". The quiz result is read after an answer.
+3. Request a certificate (`volunteer`): the skill checkboxes say the skill name. Each organization rating says its question.
+4. Review a certificate (`tutor`): each level group says the skill name, and each score group says its criterion. The preview dialog says its title, and Escape returns to "Approve".
+5. Verify a certificate (logged out): the field says "Certificate code". The result page says "Valid certificate" or "Revoked certificate" before the details.
+
+### Languages
+
+1. Repeat the verify journey in Italian and Spanish. VoiceOver uses the voice of that language.
+
 ## Demo seed behavior
 
 - Run `pnpm run content:import --target <target>` first: the seed reads the course catalog and stops before writing if it is missing.

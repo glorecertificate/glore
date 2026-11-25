@@ -83,7 +83,10 @@ jobs:
         id: vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: echo "url=$(pnpm exec vercel deploy --prebuilt --archive=tgz --target="$TARGET" --token="$VERCEL_TOKEN")" >> "$GITHUB_OUTPUT"
+        run: |
+          set -euo pipefail
+          url="$(pnpm exec vercel deploy --prebuilt --archive=tgz --target="$TARGET" --token="$VERCEL_TOKEN")"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
       - name: Point the domain at the deployment
         if: inputs.domain != ''
         env:

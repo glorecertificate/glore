@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.3](https://github.com/glorecertificate/glore/compare/v0.7.2...v0.7.3) (2026-11-25)
+
+### CI
+
+- Record promotions in preview environment (#240) ([a528d2d](https://github.com/glorecertificate/glore/commit/a528d2d2478400ba1d196df03d152f3e1a990a32)), references [#240](https://github.com/glorecertificate/glore/issues/240)
+
+### Docs
+
+- Rewrite readme and add contributing and security guides (#239) ([3731ee6](https://github.com/glorecertificate/glore/commit/3731ee6e17fa130b41d16449eb7d014128cb1eee)), references [#239](https://github.com/glorecertificate/glore/issues/239)
+
 ## [0.7.2](https://github.com/glorecertificate/glore/compare/v0.7.1...v0.7.2) (2026-11-25)
 
 ### Fixes

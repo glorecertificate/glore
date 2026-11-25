@@ -35,6 +35,7 @@ import { PasswordInput } from '@/components/ui/password-input'
 import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole, timestampMillis } from '@/db/queries/organization'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { isNavigationError } from '@/lib/navigation-error'
 
 import { OrganizationBadge } from './organization-badge'
 
@@ -111,7 +112,8 @@ export const InvitationCard = ({
     try {
       const result = await acceptOrganizationInvitationAsNewAccount({ proof, token })
       if (result?.error) toast.error(errorMessage(result.error.code))
-    } catch {
+    } catch (error) {
+      if (isNavigationError(error)) return
       toast.error(errorMessage())
     } finally {
       setPending(null)

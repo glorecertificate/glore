@@ -39,8 +39,11 @@ export const LessonSelfAssessment = ({
           </div>
           {evaluations.map(evaluation => (
             <div className="flex flex-col gap-3" key={evaluation.id}>
-              <MarkdownLazy>{evaluation.text}</MarkdownLazy>
+              <div id={`evaluation-${evaluation.id}-label`}>
+                <MarkdownLazy>{evaluation.text}</MarkdownLazy>
+              </div>
               <RatingGroup
+                aria-labelledby={`evaluation-${evaluation.id}-label`}
                 color="brand"
                 disabled={disabled}
                 id={`evaluation-${evaluation.id}`}

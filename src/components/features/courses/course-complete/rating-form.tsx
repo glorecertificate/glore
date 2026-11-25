@@ -51,6 +51,7 @@ export const CourseRatingForm = ({
         <p className="text-sm text-muted-foreground">{t('rateHint')}</p>
       </div>
       <RatingGroup
+        aria-label={t('rateTitle')}
         className="max-w-sm"
         color="brand"
         id={`course-rating-${courseId}`}

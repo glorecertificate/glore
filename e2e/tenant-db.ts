@@ -27,6 +27,21 @@ export const seedInvitation = async ({
     return token
   })
 
+export const userIdOf = async (email: string) =>
+  await withDb(async pool => {
+    const result = await pool.query<{ id: string }>('select id from users where email = $1', [email])
+    return result.rows[0]?.id ?? ''
+  })
+
+export const removeUserByEmail = async (email: string) => {
+  const id = await userIdOf(email)
+  if (!id) return
+  await withDb(async pool => {
+    await pool.query('delete from activity_events where actor_id = $1 or subject_id = $1', [id])
+    await pool.query('delete from users where id = $1', [id])
+  })
+}
+
 export const membershipRoleOf = async (tenant: Tenant, userId: string) =>
   await withDb(async pool => {
     const result = await pool.query<{ role: string }>(

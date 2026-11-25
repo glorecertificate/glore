@@ -33,6 +33,7 @@ export const BirthdayField = ({ disabled }: { disabled: boolean }) => {
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
+                  autoFocus
                   className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
                   disabled={disabled}
                   variant="outline"

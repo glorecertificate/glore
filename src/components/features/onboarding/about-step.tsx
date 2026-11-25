@@ -24,13 +24,7 @@ export const AboutStep = ({ disabled }: { disabled: boolean }) => {
             <FormItem>
               <FormLabel>{t('birthPlaceLabel')}</FormLabel>
               <FormControl>
-                <Input
-                  autoComplete="off"
-                  autoFocus
-                  disabled={disabled}
-                  placeholder={t('birthPlacePlaceholder')}
-                  {...field}
-                />
+                <Input autoComplete="off" disabled={disabled} placeholder={t('birthPlacePlaceholder')} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

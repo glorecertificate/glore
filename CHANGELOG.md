@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.7.2](https://github.com/glorecertificate/glore/compare/v0.7.1...v0.7.2) (2026-11-25)
+
+### Fixes
+
+- Red sidebar dots, danger style for blocked deletion, sign-up text (#236) ([e511e72](https://github.com/glorecertificate/glore/commit/e511e720ac7aff9a041117a6aa3fb18a15e49fe2)), references [#236](https://github.com/glorecertificate/glore/issues/236)
+
+### CI
+
+- Deploy main to qa and promote the preview by hand (#230) ([79454f6](https://github.com/glorecertificate/glore/commit/79454f67a8354630fb7cd38372f65e2c04d2fb14)), references [#230](https://github.com/glorecertificate/glore/issues/230)
+- Fail the deploy job when vercel deploy fails (#237) ([228a0c5](https://github.com/glorecertificate/glore/commit/228a0c5441213152639e7f35b65a56b99cd53487)), references [#237](https://github.com/glorecertificate/glore/issues/237)
+
 ## [0.7.1](https://github.com/glorecertificate/glore/compare/v0.7.0...v0.7.1) (2026-11-24)
 
 ### Features

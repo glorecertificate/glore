@@ -35,7 +35,7 @@ if (await git('tag', '--list', tag)) throw new Error(`The tag ${tag} already exi
 const promotedSha = async (query: string) =>
   await run('gh', [
     'api',
-    `repos/{owner}/{repo}/deployments?environment=preview-promoted&per_page=1${query}`,
+    `repos/{owner}/{repo}/deployments?environment=preview&task=promote&per_page=1${query}`,
     '--jq',
     '.[0].sha // ""',
   ])

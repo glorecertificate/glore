@@ -1,3 +1,4 @@
+import { unstable_doesMiddlewareMatch } from 'next/experimental/testing/server'
 import { NextRequest } from 'next/server'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,7 +8,7 @@ const mocks = vi.hoisted(() => ({ session: { current: null as Record<string, unk
 vi.mock('server-only', () => ({}))
 vi.mock('@/lib/auth', () => ({ auth: { api: { getSession: () => Promise.resolve(mocks.session.current) } } }))
 
-const { proxy } = await import('@/proxy')
+const { config, proxy } = await import('@/proxy')
 
 const request = (path: string) =>
   new NextRequest(`http://app.test${path}`, { headers: { cookie: 'glore.session_token=abc' } })
@@ -80,5 +81,14 @@ describe('proxy locale param', () => {
     const response = await visit('/invite/tok?lang=xx')
     expect(response?.headers.get('set-cookie') ?? '').not.toContain('NEXT_LOCALE')
     expect(response?.headers.get('x-middleware-request-cookie') ?? '').not.toContain('NEXT_LOCALE')
+  })
+})
+
+describe('proxy matcher', () => {
+  it('runs on app pages and skips the Vercel analytics scripts', () => {
+    expect(unstable_doesMiddlewareMatch({ config, url: '/dashboard' })).toBe(true)
+    expect(unstable_doesMiddlewareMatch({ config, url: '/login' })).toBe(true)
+    expect(unstable_doesMiddlewareMatch({ config, url: '/_vercel/insights/script.js' })).toBe(false)
+    expect(unstable_doesMiddlewareMatch({ config, url: '/_vercel/speed-insights/script.js' })).toBe(false)
   })
 })

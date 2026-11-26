@@ -1,6 +1,6 @@
 import { type Metadata, Route, type Viewport } from 'next'
 
-import { LOCALES, type MessageKey, type Namespace } from '@/lib/i18n'
+import { type MessageKey, type Namespace } from '@/lib/i18n'
 import { type HttpUrl } from '@/lib/types'
 import { publicFile } from '@/lib/utils'
 import config from '~/config/metadata.json'
@@ -13,23 +13,11 @@ export const appTitle = (title?: string) => (title ? `${title} ${APP_SEPARATOR} 
 
 export const MANIFEST_URL = '/api/v1/manifest' satisfies Route
 
-const languages = LOCALES.reduce(
-  (langs, locale) => ({
-    ...langs,
-    [locale]: `${APP_URL}?lang=${locale}`,
-  }),
-  {}
-)
-
 export const metadata: Metadata = {
   metadataBase: APP_URL,
   applicationName: config.shortName,
   category: config.category,
   keywords: config.keywords,
-  alternates: {
-    canonical: APP_URL,
-    languages,
-  },
   authors: config.authors,
   creator: config.authors[0].name,
   formatDetection: {

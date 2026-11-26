@@ -55,3 +55,30 @@ describe('proxy session redirects', () => {
     expect(new URL(response?.headers.get('location') ?? '', 'http://app.test').pathname).toBe('/dashboard')
   })
 })
+
+describe('proxy locale param', () => {
+  const visit = (path: string, cookie = '') =>
+    proxy(new NextRequest(`http://app.test${path}`, { headers: { cookie } }), {} as never)
+
+  beforeEach(() => {
+    mocks.session.current = null
+  })
+
+  it('renders an invitation in its language and keeps it when the browser has no locale cookie', async () => {
+    const response = await visit('/invite/tok?lang=it')
+    expect(response?.headers.get('set-cookie')).toContain('NEXT_LOCALE=it')
+    expect(response?.headers.get('x-middleware-request-cookie')).toContain('NEXT_LOCALE=it')
+  })
+
+  it('keeps the locale cookie that the browser already has', async () => {
+    const response = await visit('/invite/tok?lang=it', 'NEXT_LOCALE=es')
+    expect(response?.headers.get('set-cookie') ?? '').not.toContain('NEXT_LOCALE')
+    expect(response?.headers.get('x-middleware-request-cookie') ?? '').not.toContain('NEXT_LOCALE=it')
+  })
+
+  it('ignores a locale that the app does not support', async () => {
+    const response = await visit('/invite/tok?lang=xx')
+    expect(response?.headers.get('set-cookie') ?? '').not.toContain('NEXT_LOCALE')
+    expect(response?.headers.get('x-middleware-request-cookie') ?? '').not.toContain('NEXT_LOCALE')
+  })
+})

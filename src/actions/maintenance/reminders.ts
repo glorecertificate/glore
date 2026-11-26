@@ -143,7 +143,7 @@ export const sendInvitationReminders = async (now = new Date()) => {
         locale: invitation.locale,
         organizationName: invitation.organization.name,
         role: invitation.role,
-        url: invitationUrl(token),
+        url: invitationUrl(token, { locale: invitation.locale }),
         userId: invitation.userId,
       },
       organizationId: invitation.organizationId,

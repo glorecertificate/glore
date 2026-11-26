@@ -94,8 +94,26 @@ Run these on the preview domain before the release and on the production domain 
 
 ## Rollback
 
-1. In Vercel, promote the previous production deployment.
-2. If data must go back, restore the `pre-v0.7-<date>` Neon branch or snapshot. Migrations have no down scripts.
+1. In Vercel, promote the previous production deployment. On the Hobby plan, it is the only rollback target.
+2. If data must go back, restore the Neon `production` branch to a time before the problem. Migrations have no down scripts.
+3. Neon keeps 6 hours of history on the free plan. After 6 hours, a restore is not possible.
+
+## Restore drill
+
+Run the drill before each release that adds a migration.
+
+1. In Neon, create a branch from `production` at a time in the last 6 hours. Give it a read-only compute and an expiry 2 hours later.
+2. Compare the row counts of `users`, `organizations`, `courses`, `certificates`, `team_invitations`, and `drizzle.__drizzle_migrations` with production.
+3. Compare the column, constraint, and index definitions with a local database that `pnpm run db migrate` built from the repository.
+4. For the rehearsal, create a branch with a read-write compute and run `DATABASE_URL='<branch url>' pnpm run db migrate` on it before the release.
+5. Delete each branch.
+
+The drill on 2026-11-26 found these results:
+
+- The branch was ready about 10 seconds after the request.
+- The counts were the same as production: 7 users, 1 organization, 34 courses, 0 certificates, 5 invitations, and 38 migrations.
+- The schema was the same as the repository: 428 columns, 140 constraints, and 143 indexes.
+- The stored hash of `0002_tiresome_tinkerer` is not the hash of its file. The file changed after it ran, before March 2026. Drizzle selects migrations by date, so this has no effect.
 
 ## File links
 

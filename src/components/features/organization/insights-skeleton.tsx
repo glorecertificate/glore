@@ -2,16 +2,17 @@
 
 import { useTranslations } from 'next-intl'
 
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Chart } from '@/components/ui/chart'
-import { Skeleton } from '@/components/ui/skeleton'
 import { StatCard } from '@/components/ui/stat-card'
 
 export const InsightsSkeleton = () => {
   const t = useTranslations('Organization')
 
   return (
-    <div className="flex flex-col gap-6">
+    <div aria-busy className="flex flex-col gap-6">
+      <LoadingFallback className="sr-only" spinner={false} />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[t('insightsStarted'), t('insightsCompleted'), t('insightsReviewTime'), t('insightsApproved')].map(label => (
           <StatCard description="" key={label} label={label} loading value={0} />
@@ -37,7 +38,7 @@ export const InsightsSkeleton = () => {
               <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-5 w-full" />
+              <LoadingFallback className="h-5" label={null} spinner={{ size: 'md' }} />
             </CardContent>
           </Card>
         ))}

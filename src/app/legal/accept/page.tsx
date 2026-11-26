@@ -9,6 +9,7 @@ import { AuthFrame, AuthMain } from '@/components/features/auth/auth-frame'
 import { LegalAcceptForm } from '@/components/features/legal/legal-accept-form'
 import { LegalMarkdown } from '@/components/features/legal/legal-markdown'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { Banner } from '@/components/ui/banner'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { getPendingLegal, loadLegalDocument } from '@/lib/legal'
@@ -73,7 +74,9 @@ const LegalAcceptPage = () => (
   <AuthFrame>
     <AuthMain language={false} size="lg">
       <Suspense fallback={<LoadingFallback />}>
-        <LegalAcceptContent />
+        <MessagesScope scope="legalAccept">
+          <LegalAcceptContent />
+        </MessagesScope>
       </Suspense>
     </AuthMain>
   </AuthFrame>

@@ -7,6 +7,7 @@ import { InvitationCard } from '@/components/features/organization/invite/invita
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { maskEmail } from '@/components/features/organization/utils'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { normalizeEmail } from '@/db/mutations/invitation'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -68,7 +69,9 @@ const InviteContent = async ({
 const InvitePage = ({ params, searchParams }: PageProps<'/invite/[token]'>) => (
   <AuthMain size="md">
     <Suspense fallback={<LoadingFallback />}>
-      <InviteContent params={params} searchParams={searchParams} />
+      <MessagesScope scope="invite">
+        <InviteContent params={params} searchParams={searchParams} />
+      </MessagesScope>
     </Suspense>
   </AuthMain>
 )

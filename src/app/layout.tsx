@@ -18,7 +18,8 @@ import { SettingsProvider } from '@/components/providers/settings'
 import { ThemeProvider } from '@/components/providers/theme'
 import { Toaster } from '@/components/ui/toaster'
 import { getLocaleCookie } from '@/lib/cookie-store'
-import { DEFAULT_LOCALE, clientMessages } from '@/lib/i18n'
+import { DEFAULT_LOCALE, pickMessages } from '@/lib/i18n'
+import { MESSAGE_SCOPES } from '@/lib/message-scopes'
 import { APP_NAME, appTitle, metadata } from '@/lib/metadata'
 import { loadSettings } from '@/lib/settings'
 import { cn, publicFile, serializeJsonLd } from '@/lib/utils'
@@ -75,7 +76,7 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
       <body suppressHydrationWarning>
         <InstantReveal />
         <SearchParamsProvider>
-          <I18nProvider locale={locale} messages={clientMessages(messages)}>
+          <I18nProvider locale={locale} messages={pickMessages(messages, MESSAGE_SCOPES.root)}>
             <SettingsProvider settings={settings}>
               <ThemeProvider>
                 <MotionProvider>

@@ -9,30 +9,12 @@ import { announceNotificationsChanged } from '@/components/features/notification
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import { loadNotificationPage, useNotificationPage } from '@/components/features/notifications/use-notification-page'
 import { LucideIcon } from '@/components/icons/lucide'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from '@/components/ui/toast'
 
 const POLL_INTERVAL = 30_000
-
-const NotificationSkeleton = ({ label }: { label: string }) => (
-  <output className="block">
-    <span className="sr-only">{label}</span>
-    <ul aria-hidden className="space-y-0.5">
-      {Array.from({ length: 4 }, (_, index) => (
-        <li className="flex items-start gap-3 px-3 py-2.5" key={index}>
-          <Skeleton className="mt-0.5 size-8 shrink-0 rounded-full" />
-          <div className="min-w-0 flex-1 space-y-1.5">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-3.5 w-full" />
-            <Skeleton className="h-3 w-1/4" />
-          </div>
-        </li>
-      ))}
-    </ul>
-  </output>
-)
 
 const refresh = () => void loadNotificationPage({ force: true })
 
@@ -43,7 +25,6 @@ interface NotificationPopoverProps {
 
 export const NotificationPopover = ({ onNavigate, unread }: NotificationPopoverProps) => {
   const t = useTranslations('Notifications')
-  const tCommon = useTranslations('Common')
   const { data, failed } = useNotificationPage()
 
   useEffect(() => {
@@ -82,7 +63,7 @@ export const NotificationPopover = ({ onNavigate, unread }: NotificationPopoverP
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
-        {data === null && !failed && <NotificationSkeleton label={tCommon('loading')} />}
+        {data === null && !failed && <LoadingFallback className="py-10" />}
         {data === null && failed && (
           <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
             <LucideIcon className="size-6 text-muted-foreground" name="triangle-alert" />

@@ -732,4 +732,8 @@
   .animate-reveal {
     animation: none;
   }
+
+  [data-slot="loading-fallback"] {
+    animation-duration: 0s;
+  }
 }

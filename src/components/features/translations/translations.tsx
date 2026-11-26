@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useDeferredValue, useState } from 'react'
+import { useDeferredValue, useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { debounce, useQueryStates } from 'nuqs'
@@ -16,6 +16,7 @@ import { FilterRailChips, FilterRailPanel, type FilterRailProps, FilterRailToolb
 import { SearchInput } from '@/components/ui/search'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { type RawCatalog } from '@/lib/message-validation'
+import { whenIdle } from '@/lib/prefetch'
 import {
   type OverrideEntry,
   TRANSLATION_STATES,
@@ -29,7 +30,9 @@ import {
 import { TranslationList } from './translation-list'
 import { translationsParsers } from './translations-params'
 
-const TranslationEditor = dynamic(async () => (await import('./translation-editor')).TranslationEditor)
+const loadTranslationEditor = async () => (await import('./translation-editor')).TranslationEditor
+
+const TranslationEditor = dynamic(loadTranslationEditor)
 
 const SEARCH_DEBOUNCE_MS = 250
 
@@ -43,6 +46,8 @@ export const Translations = ({
   const t = useTranslations('Translations')
   const tCommon = useTranslations('Common')
   const { localeItems } = useI18n()
+
+  useEffect(() => whenIdle(() => void loadTranslationEditor()), [])
   const [overrides, setOverrides] = useState(initialOverrides)
   const [params, setParams] = useQueryStates(translationsParsers, { clearOnDefault: true })
   const [search, setSearch] = useState(params.q)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useEffect, useState } from 'react'
+import { startTransition, useEffect, useId, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -175,6 +175,7 @@ export const CoursePlayer = ({
 }) => {
   const t = useTranslations('Learning.player')
   const { progress } = overview
+  const progressLabelId = useId()
 
   useEffect(() => {
     void preloadMarkdown()
@@ -185,10 +186,14 @@ export const CoursePlayer = ({
       <aside className="flex flex-col gap-4 rounded-xl border border-border-subtle bg-card p-4 shadow-card md:sticky md:top-6">
         {access === 'learner' && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium" id={progressLabelId}>
               {t('progress', { completed: progress.completed, total: progress.total })}
             </span>
-            <Progress color={progress.percent === 100 ? 'success' : 'default'} value={progress.percent} />
+            <Progress
+              aria-labelledby={progressLabelId}
+              color={progress.percent === 100 ? 'success' : 'default'}
+              value={progress.percent}
+            />
           </div>
         )}
         <details className="group/lessons md:hidden">

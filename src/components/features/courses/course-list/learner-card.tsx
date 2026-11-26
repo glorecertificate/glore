@@ -58,7 +58,7 @@ export const LearnerCourseCard = ({
             </StatusBadge>
           )}
         </div>
-        <h3 className="type-heading">
+        <h2 className="type-heading">
           <Link
             className="after:absolute after:inset-0 after:content-['']"
             href={href}
@@ -67,7 +67,7 @@ export const LearnerCourseCard = ({
           >
             <SearchHighlight query={search} value={title} />
           </Link>
-        </h3>
+        </h2>
         {description && (
           <p className="line-clamp-2 text-sm text-muted-foreground">
             <SearchHighlight query={search} value={description} />

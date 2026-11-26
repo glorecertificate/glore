@@ -147,7 +147,7 @@ export const readInvitationUrl = async ({
   if (!invitation) throw invitationError('NOT_FOUND')
   if (!canManageInvitation(managerRole, invitation, userId)) throw invitationError('FORBIDDEN')
   assertPending(invitation)
-  return invitationUrl(await transaction(tx => revealInvitationToken(tx, invitation)))
+  return invitationUrl(await transaction(tx => revealInvitationToken(tx, invitation)), { locale: invitation.locale })
 }
 
 export const readInviteLinkUrl = async ({

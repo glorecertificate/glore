@@ -733,3 +733,19 @@
     animation: none;
   }
 }
+
+[data-sonner-toaster][data-y-position] {
+  transition:
+    transform 400ms ease,
+    translate 200ms var(--ease-out);
+}
+
+body:has([data-slot="sticky-save-bar"][aria-hidden="false"]) [data-sonner-toaster][data-y-position="bottom"] {
+  translate: 0 calc(-1 * (--spacing(16) + env(safe-area-inset-bottom)));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toaster][data-y-position] {
+    transition: transform 400ms ease;
+  }
+}

@@ -23,7 +23,7 @@ import {
   users,
   verifications,
 } from '@/db/schema'
-import { INVITE_ROOT, JOIN_LINK_ROOT } from '@/lib/constants'
+import { INVITE_ROOT, JOIN_LINK_ROOT, LOCALE_PARAM } from '@/lib/constants'
 import { hashToken, issueToken, openToken } from '@/lib/secret-token'
 import { fullName } from '@/lib/utils'
 
@@ -83,8 +83,17 @@ export const assertOrganizationOpen = async (tx: Transaction, organizationId: nu
 export const isInvitationError = (error: unknown): error is Error & { code: InvitationErrorCode } =>
   error instanceof Error && 'code' in error && typeof error.code === 'string' && error.code in ERROR_MESSAGES
 
-export const invitationUrl = (token: string, proof?: string) =>
-  `${process.env.APP_URL}${INVITE_ROOT}/${token}${proof ? `?proof=${proof}` : ''}`
+interface InvitationUrlOptions {
+  locale?: string | null
+  proof?: string
+}
+
+export const invitationUrl = (token: string, { locale, proof }: InvitationUrlOptions = {}) => {
+  const url = new URL(`${INVITE_ROOT}/${token}`, process.env.APP_URL)
+  if (proof) url.searchParams.set('proof', proof)
+  if (locale) url.searchParams.set(LOCALE_PARAM, locale)
+  return url.toString()
+}
 
 export const inviteLinkUrl = (token: string) => `${process.env.APP_URL}${JOIN_LINK_ROOT}/${token}`
 
@@ -279,7 +288,7 @@ export const createInvitation = async (
       message: invitation.message,
       organizationName: organization.name,
       role: invitation.role,
-      url: invitationUrl(token, proof),
+      url: invitationUrl(token, { locale: invitation.locale, proof }),
       userId: account?.id ?? null,
     },
   } satisfies AppEvent<'invitation.sent'>
@@ -337,7 +346,7 @@ export const resendInvitation = async (
       message: invitation.message,
       organizationName: current.organization.name,
       role: invitation.role,
-      url: invitationUrl(token, proof),
+      url: invitationUrl(token, { locale: invitation.locale, proof }),
       userId: invitation.userId,
     },
   } satisfies AppEvent<'invitation.sent'>
@@ -487,7 +496,7 @@ export const renewInvitationProof = async (tx: Transaction, { token }: { token: 
     email: address,
     invitation,
     locale: invitation.locale,
-    url: invitationUrl(token, proof),
+    url: invitationUrl(token, { locale: invitation.locale, proof }),
   }
 }
 

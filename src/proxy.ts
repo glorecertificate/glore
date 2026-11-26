@@ -2,6 +2,8 @@ import 'server-only'
 
 import { type NextProxy, type NextRequest, NextResponse, type ProxyConfig } from 'next/server'
 
+import { type Locale } from 'next-intl'
+
 import { auth } from '@/lib/auth'
 import {
   APP_ROOT,
@@ -11,13 +13,15 @@ import {
   JOIN_LINK_ROOT,
   JOIN_ROOT,
   LEGAL_ROOTS,
+  LOCALE_PARAM,
   ONBOARDING_ROOT,
   ORGANIZATION_PARAM,
   REGISTER_ROOT,
   SESSION_ROOT,
   VERIFY_ROOT,
 } from '@/lib/constants'
-import { prefixCookieName } from '@/lib/cookies'
+import { COOKIE_OPTIONS, prefixCookieName } from '@/lib/cookies'
+import { LOCALES, LOCALE_COOKIE } from '@/lib/i18n'
 import { safeNextPath } from '@/lib/next-path'
 import { isReservedUsername } from '@/lib/username'
 
@@ -100,13 +104,22 @@ const applyOrganizationParam = ({ cookies, method, nextUrl }: NextRequest) => {
   cookies.set(prefixCookieName('org'), id)
 }
 
+const applyLocaleParam = ({ cookies, method, nextUrl }: NextRequest) => {
+  const locale = nextUrl.searchParams.get(LOCALE_PARAM)
+  if (method !== 'GET' || !locale || !LOCALES.includes(locale as Locale) || cookies.has(LOCALE_COOKIE)) return null
+  cookies.set(LOCALE_COOKIE, locale)
+  return locale
+}
+
 export const proxy: NextProxy = async request => {
   const { headers, nextUrl } = request
   const profile = profileResponse(request)
   if (profile) return profile
 
   applyOrganizationParam(request)
+  const locale = applyLocaleParam(request)
   const response = NextResponse.next({ request: { headers } })
+  if (locale) response.cookies.set(LOCALE_COOKIE, locale, COOKIE_OPTIONS)
   const isPublic = isPublicPath(nextUrl.pathname)
   const isOnboarding = nextUrl.pathname.startsWith(ONBOARDING_ROOT)
 

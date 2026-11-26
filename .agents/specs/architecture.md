@@ -56,7 +56,7 @@ src/
 │   ├── layout/         # dashboard-page, dashboard-header, dashboard-loading, dashboard-menu-button, dashboard-sidebar, dynamic-marker,
 │   │                   #   error-actions, error-fallback, instant-reveal, loading-fallback, offline-fallback, organization-switcher, page-title, phone-app-bar, pwa-install-prompt,
 │   │                   #   search-command (palette), sidebar-count (`SidebarCount`: pill count, dot when collapsed), navigation (pure per-role entries), use-menu-indicator, use-navigation-labels
-│   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, settings, theme
+│   ├── providers/      # Flat single-file providers: i18n, messages-scope, motion, search-params, session, settings, theme
 │   └── ui/             # shadcn/ui + release kit (ui.md); vendored rich-text-editor/
 ├── db/
 │   ├── client.ts       # Dual-driver Drizzle client + transaction() + Transaction type
@@ -86,9 +86,10 @@ src/
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail), TEMPLATES, renderEmail
 │   ├── http.ts         # Size-limited body reads, closed Better Auth paths
 │   ├── impersonation-guard.ts # Better Auth plugin: blocks security changes while impersonating, drops the admin cookie on sign out
-│   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), localizeRecord()
+│   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), pickMessages(), mergeMessages(), localizeRecord()
 │   ├── icu.ts          # messageSignature(): ICU arguments, tags, and select cases (scripts import it as #lib/icu.ts)
 │   ├── legal.ts        # Legal reader: loadLegalDocument, getPendingLegal
+│   ├── message-scopes.ts # MESSAGE_SCOPES: client namespaces per route group or page (patterns.md, "Internationalization")
 │   ├── message-overrides.ts # Override merge, stale states; message-validation.ts: client-safe validation, protected keys
 │   ├── message-*.ts    # entries, preview, suggestion (server-only AI); translation-table.ts: rows and filters
 │   ├── messages.ts     # loadMessages, resolveLocale: the one catalog loader (server-only)

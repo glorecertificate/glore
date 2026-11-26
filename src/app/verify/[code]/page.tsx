@@ -10,6 +10,7 @@ import { VerificationView } from '@/components/features/certificates/verify/veri
 import { VerifyShell } from '@/components/features/certificates/verify/verify-shell'
 import { LucideIcon } from '@/components/icons/lucide'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { Banner } from '@/components/ui/banner'
 import { VERIFY_ROOT } from '@/lib/constants'
 import { fullName } from '@/lib/utils'
@@ -65,7 +66,9 @@ const VerifyCodeContent = async ({ params }: Pick<PageProps<'/verify/[code]'>, '
 
 const VerifyCodePage = (props: PageProps<'/verify/[code]'>) => (
   <Suspense fallback={<LoadingFallback size="full" />}>
-    <VerifyCodeContent params={props.params} />
+    <MessagesScope scope="verify">
+      <VerifyCodeContent params={props.params} />
+    </MessagesScope>
   </Suspense>
 )
 

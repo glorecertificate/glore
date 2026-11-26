@@ -13,6 +13,7 @@ import { OrganizationContent } from '@/components/layout/organization-content'
 import { PhoneAppBar } from '@/components/layout/phone-app-bar'
 import { PrefetchKeeper } from '@/components/layout/prefetch-keeper'
 import { PwaInstallBanner } from '@/components/layout/pwa-install-prompt'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { LEGAL_ACCEPT_ROOT } from '@/lib/constants'
@@ -35,20 +36,22 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
   const sidebarWidth = get('sidebarWidth')
 
   return (
-    <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
-      <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
-        <DashboardSidebar pending={pending} />
-        <SidebarInset className={cn(impersonation && 'pt-28 sm:pt-0 sm:pb-24')}>
-          <PwaInstallBanner />
-          <OrganizationContent>{children}</OrganizationContent>
-        </SidebarInset>
-        <PhoneAppBar />
-        <LiveRefresh />
-        <PrefetchKeeper />
-        {user.canEdit && <EditorPreload />}
-        <ImpersonationBanner />
-      </SessionProvider>
-    </SidebarProvider>
+    <MessagesScope scope="dashboard">
+      <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
+        <SessionProvider impersonating={impersonation !== null} organizationId={organizationId} user={user}>
+          <DashboardSidebar pending={pending} />
+          <SidebarInset className={cn(impersonation && 'pt-28 sm:pt-0 sm:pb-24')}>
+            <PwaInstallBanner />
+            <OrganizationContent>{children}</OrganizationContent>
+          </SidebarInset>
+          <PhoneAppBar />
+          <LiveRefresh />
+          <PrefetchKeeper />
+          {user.canEdit && <EditorPreload />}
+          <ImpersonationBanner />
+        </SessionProvider>
+      </SidebarProvider>
+    </MessagesScope>
   )
 }
 

@@ -10,11 +10,13 @@ import { AuthMain } from '@/components/features/auth/auth-frame'
 import { OnboardingForm } from '@/components/features/onboarding'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
 import { getLocaleCookie } from '@/lib/cookie-store'
-import { DEFAULT_LOCALE, clientMessages } from '@/lib/i18n'
+import { DEFAULT_LOCALE, pickMessages } from '@/lib/i18n'
+import { MESSAGE_SCOPES } from '@/lib/message-scopes'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -35,15 +37,17 @@ const OnboardingContent = async () => {
   const messages = await getMessages({ locale })
 
   return (
-    <I18nProvider locale={locale} messages={clientMessages(messages)}>
-      <AuthMain language={false} size="md">
-        <OnboardingForm
-          email={user.email}
-          firstName={profile?.firstName ?? ''}
-          lastName={profile?.lastName ?? ''}
-          locale={locale}
-        />
-      </AuthMain>
+    <I18nProvider locale={locale} messages={pickMessages(messages, [...MESSAGE_SCOPES.root, ...MESSAGE_SCOPES.auth])}>
+      <MessagesScope locale={locale} scope="onboarding">
+        <AuthMain language={false} size="md">
+          <OnboardingForm
+            email={user.email}
+            firstName={profile?.firstName ?? ''}
+            lastName={profile?.lastName ?? ''}
+            locale={locale}
+          />
+        </AuthMain>
+      </MessagesScope>
     </I18nProvider>
   )
 }

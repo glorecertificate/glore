@@ -6,6 +6,7 @@ import { AuthMain } from '@/components/features/auth/auth-frame'
 import { InvitationStatus } from '@/components/features/organization/invite/invitation-status'
 import { JoinLinkCard } from '@/components/features/organization/invite/join-link-card'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { MessagesScope } from '@/components/providers/messages-scope'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -43,7 +44,9 @@ const JoinContent = async ({ params }: { params: PageProps<'/join/[token]'>['par
 const JoinPage = ({ params }: PageProps<'/join/[token]'>) => (
   <AuthMain size="md">
     <Suspense fallback={<LoadingFallback />}>
-      <JoinContent params={params} />
+      <MessagesScope scope="join">
+        <JoinContent params={params} />
+      </MessagesScope>
     </Suspense>
   </AuthMain>
 )

@@ -1,0 +1,48 @@
+name: Uptime
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  production:
+    name: Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: config/metadata.json
+          sparse-checkout-cone-mode: false
+      - name: Check the health route, the login page, and a certificate lookup
+        run: |
+          set -euo pipefail
+          url="$(jq -r .url config/metadata.json)"
+          failed=0
+          check() {
+            local path="$1" text="$2" body
+            if ! body="$(curl --fail --silent --show-error --location --max-time 20 --retry 2 --retry-delay 10 --retry-all-errors "$url$path")"; then
+              echo "::error::$path did not answer with a success status."
+              failed=1
+              return
+            fi
+            if ! grep -qF "$text" <<<"$body"; then
+              echo "::error::$path did not contain \"$text\"."
+              failed=1
+              return
+            fi
+            echo "$path passed."
+          }
+          check /api/v1/health '"status":"ok"'
+          check /login '<title>Log in'
+          check /verify/UPT0-CHEK-0000 'Certificate not found'
+          exit "$failed"

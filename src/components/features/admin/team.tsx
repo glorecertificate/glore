@@ -182,8 +182,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex min-w-0 flex-col">
-                  <span className="flex items-center gap-1.5 truncate font-medium">
-                    {getDisplayName(user)}
+                  <span className="flex min-w-0 items-center gap-1.5 font-medium">
+                    <span className="truncate">{getDisplayName(user)}</span>
                     {user.id === currentUser.id && (
                       <Badge size="sm" variant="outline">
                         {t('you')}

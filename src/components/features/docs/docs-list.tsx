@@ -183,7 +183,9 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
                   >
                     <Card className="h-full gap-1.5 p-4 transition-colors hover:bg-surface-hover">
                       <span className="type-label text-fg-1">{pickLocale(article.title, locale) ?? article.slug}</span>
-                      <span className="line-clamp-3 text-sm text-fg-2">{pickLocale(article.excerpt, locale)}</span>
+                      <span className="line-clamp-4 text-sm text-pretty text-fg-2">
+                        {pickLocale(article.excerpt, locale)}
+                      </span>
                     </Card>
                   </Link>
                 ))}

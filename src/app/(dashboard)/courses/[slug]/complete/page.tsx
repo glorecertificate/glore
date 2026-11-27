@@ -25,7 +25,7 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]/complet
 
 const CompleteHeader = async (props: PageProps<'/courses/[slug]/complete'>) => {
   const { result } = await resolveCompletion(props)
-  if (result.status !== 'ok') return <DashboardHeader parent="courses" />
+  if (result.status !== 'ok') return <DashboardHeader parent="courses" width="prose" />
   return <CourseCompleteHeader overview={result.overview} />
 }
 
@@ -41,7 +41,7 @@ const CompletePage = (props: PageProps<'/courses/[slug]/complete'>) => (
   <DashboardPage
     overlap
     header={
-      <Suspense fallback={<DashboardHeader parent="courses" />}>
+      <Suspense fallback={<DashboardHeader parent="courses" width="prose" />}>
         <CompleteHeader {...props} />
       </Suspense>
     }

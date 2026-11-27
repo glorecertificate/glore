@@ -84,7 +84,7 @@ export const SheetFooter = ({ className, ...props }: React.ComponentProps<'div'>
 
 export const SheetTitle = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) => (
   <DialogPrimitive.Title
-    className={cn('font-semibold text-foreground', className)}
+    className={cn('type-heading text-foreground', className)}
     data-slot="sheet-title"
     suppressHydrationWarning
     {...props}

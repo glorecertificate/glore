@@ -1,3 +1,4 @@
+import { MAIN_WIDTHS, type MainWidth } from '@/components/ui/main'
 import { cn } from '@/lib/utils'
 
 export const PageBandGlobe = ({ className, ...props }: React.ComponentProps<'svg'>) => (
@@ -23,7 +24,12 @@ export const PageBandGlobe = ({ className, ...props }: React.ComponentProps<'svg
   </svg>
 )
 
-export const PageBand = ({ children, className, ...props }: React.ComponentProps<'header'>) => (
+export const PageBand = ({
+  children,
+  className,
+  width = 'full',
+  ...props
+}: React.ComponentProps<'header'> & { width?: MainWidth }) => (
   <header
     className={cn(
       'relative isolate shrink-0 overflow-hidden bg-band text-band-foreground band-scope has-[+main:not([data-overlap])]:[&>div]:pb-10',
@@ -32,6 +38,8 @@ export const PageBand = ({ children, className, ...props }: React.ComponentProps
     data-slot="page-band"
     {...props}
   >
-    <div className="relative mx-auto flex w-full max-w-320 flex-col gap-3 px-page pt-4 pb-24">{children}</div>
+    <div className="relative mx-auto w-full max-w-320 px-page pt-4 pb-24">
+      <div className={cn('flex w-full flex-col gap-3', MAIN_WIDTHS[width])}>{children}</div>
+    </div>
   </header>
 )

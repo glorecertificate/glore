@@ -80,6 +80,7 @@ export const ChartRenderer = ({ data, series, variant = 'area' }: Pick<ChartProp
         <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
         <XAxis axisLine={false} dataKey="label" minTickGap={8} tick={AXIS_TICK} tickLine={false} />
         <YAxis
+          allowDecimals={false}
           tickFormatter={value => number(Number(value))}
           axisLine={false}
           tick={AXIS_TICK}

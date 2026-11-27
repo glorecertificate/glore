@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 export const InputGroup = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'group/input-group relative flex w-full items-center rounded-md border border-border bg-field transition-[color,border-color] outline-none',
+      'group/input-group relative flex w-full items-center rounded-lg border border-border bg-field transition-[color,border-color] outline-none',
       'h-9 min-w-0 has-[>textarea]:h-auto',
       'has-[>[data-align=inline-start]]:[&>input]:pl-2',
       'has-[>[data-align=inline-end]]:[&>input]:pr-2',

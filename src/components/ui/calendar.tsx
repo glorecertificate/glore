@@ -75,7 +75,7 @@ const Calendar = ({
     disabled: cn('text-muted-foreground opacity-50', defaultClassNames.disabled),
     dropdown: cn('absolute inset-0 bg-popover opacity-0', defaultClassNames.dropdown),
     dropdown_root: cn(
-      'relative rounded-md border border-border bg-field has-focus-visible:focus-ring-inset',
+      'relative rounded-lg border border-border bg-field has-focus-visible:focus-ring-inset',
       defaultClassNames.dropdown_root
     ),
     dropdowns: cn(
@@ -98,12 +98,9 @@ const Calendar = ({
     table: 'w-full border-collapse',
     today: cn('rounded-md bg-accent text-accent-foreground data-[selected=true]:rounded-none', defaultClassNames.today),
     week: cn('mt-2 flex w-full', defaultClassNames.week),
-    week_number: cn('text-[0.8rem] text-muted-foreground select-none', defaultClassNames.week_number),
+    week_number: cn('text-xs text-muted-foreground select-none', defaultClassNames.week_number),
     week_number_header: cn('w-(--cell-size) select-none', defaultClassNames.week_number_header),
-    weekday: cn(
-      'flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none',
-      defaultClassNames.weekday
-    ),
+    weekday: cn('flex-1 rounded-md text-xs font-normal text-muted-foreground select-none', defaultClassNames.weekday),
     weekdays: cn('flex', defaultClassNames.weekdays),
     ...classNames,
   }

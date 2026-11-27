@@ -122,8 +122,8 @@ export const AdminUsers = ({
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex min-w-0 flex-col">
-                  <span className="flex items-center gap-1.5 truncate font-medium">
-                    {userLabel(user)}
+                  <span className="flex min-w-0 items-center gap-1.5 font-medium">
+                    <span className="truncate">{userLabel(user)}</span>
                     {user.id === currentUser.id && (
                       <Badge size="sm" variant="outline">
                         {t('you')}
@@ -134,6 +134,7 @@ export const AdminUsers = ({
                 </div>
               </div>
             ),
+            className: 'max-w-64',
             header: t('columns.user'),
             id: 'user',
           },
@@ -178,7 +179,7 @@ export const AdminUsers = ({
               if (user.organizations.length === 1) return first.name
               return t('organizationsMore', { count: user.organizations.length - 1, name: first.name })
             },
-            className: 'max-w-56 truncate',
+            className: 'max-w-48 truncate',
             header: t('columns.organizations'),
             id: 'organizations',
           },

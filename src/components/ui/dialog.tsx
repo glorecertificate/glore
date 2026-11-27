@@ -143,7 +143,7 @@ export const DialogFooter = ({ className, ...props }: React.ComponentProps<'div'
 
 export const DialogTitle = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) => (
   <DialogPrimitive.Title
-    className={cn('text-lg leading-snug font-semibold group-data-[close=true]/dialog:pr-6', className)}
+    className={cn('type-heading text-foreground group-data-[close=true]/dialog:pr-6', className)}
     data-slot="dialog-title"
     {...props}
   />

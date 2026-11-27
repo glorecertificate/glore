@@ -84,7 +84,7 @@ export const OrganizationCertificates = ({
 
   return (
     <div className={cn('flex flex-col gap-6', reveal && 'animate-reveal')}>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           accent="teal"
           description={t('unassignedCount', { count: waiting })}

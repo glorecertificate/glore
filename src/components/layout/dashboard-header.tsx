@@ -7,6 +7,7 @@ import { NavigationLabel } from '@/components/layout/navigation-label'
 import { HeaderLogo } from '@/components/ui/header'
 import { Link } from '@/components/ui/link'
 import { Logo } from '@/components/ui/logo'
+import { type MainWidth } from '@/components/ui/main'
 import { PageBand } from '@/components/ui/page-band'
 import { APP_ROOT } from '@/lib/constants'
 
@@ -17,6 +18,7 @@ export const DashboardHeader = ({
   heading,
   parent,
   title,
+  width,
 }: {
   actions?: React.ReactNode
   breadcrumb?: React.ReactNode
@@ -24,13 +26,14 @@ export const DashboardHeader = ({
   heading?: React.ReactNode
   parent?: NavigationId
   title?: React.ReactNode
+  width?: MainWidth
 }) => (
-  <PageBand>
+  <PageBand width={width ?? 'full'}>
     <div className="flex h-10 min-w-0 items-center gap-2 text-[13px] text-band-muted">
-      <DashboardMenuButton className="text-band-muted hover:bg-band-scrim hover:text-band-foreground" />
+      <DashboardMenuButton className="text-band-muted hover:bg-band-scrim hover:text-band-foreground [[data-collapsible=icon]~*_&]:hidden" />
       {parent && (
         <>
-          <span aria-hidden className="mr-1.5 h-4 w-px bg-band-border" />
+          <span aria-hidden className="mr-1.5 h-4 w-px bg-band-border [[data-collapsible=icon]~*_&]:hidden" />
           <Link className="text-sm hover:text-band-foreground" href={navigationHref(parent)}>
             <NavigationLabel id={parent} />
           </Link>

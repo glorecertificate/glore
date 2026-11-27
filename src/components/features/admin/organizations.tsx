@@ -344,10 +344,11 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         }}
         getRowId={org => org.id}
         label={t('tableLabel')}
+        rowActionsPlacement="corner"
         rowActions={org => (
           <div className="flex items-center justify-end gap-1">
             {org.isPending && (
-              <Button onClick={() => startReview(org)} size="sm" variant="outline">
+              <Button className="max-sm:hidden" onClick={() => startReview(org)} size="sm" variant="outline">
                 {t('review')}
               </Button>
             )}
@@ -358,6 +359,12 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {org.isPending && (
+                  <DropdownMenuItem className="sm:hidden" onSelect={() => startReview(org)}>
+                    <LucideIcon name="clipboard-check" />
+                    {t('review')}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <Link href={`/admin/organizations/${org.id}`} keepFresh="list">
                     <LucideIcon name="building-2" />

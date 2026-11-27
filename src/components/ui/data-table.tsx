@@ -45,6 +45,9 @@ const MOBILE_SELECT = 'w-10 max-sm:absolute max-sm:top-3 max-sm:right-3 max-sm:b
 
 const MOBILE_ACTIONS = 'max-sm:col-span-2 max-sm:text-left'
 
+const MOBILE_ACTIONS_CORNER =
+  'max-sm:absolute max-sm:top-3 max-sm:right-3 max-sm:block max-sm:w-auto max-sm:p-0 max-sm:before:hidden'
+
 export interface DataTableColumn<T> {
   cell: (row: T) => React.ReactNode
   className?: string
@@ -81,6 +84,7 @@ export const DataTable = <T,>({
   rail,
   refreshing = false,
   rowActions,
+  rowActionsPlacement = 'row',
   rowLabel,
   rows,
   selectable = false,
@@ -104,6 +108,7 @@ export const DataTable = <T,>({
   rail?: FilterRailProps
   refreshing?: boolean
   rowActions?: (row: T) => React.ReactNode
+  rowActionsPlacement?: 'corner' | 'row'
   rows: T[]
   toolbar?: React.ReactNode
   selectedIds?: DataTableRowId[]
@@ -131,6 +136,8 @@ export const DataTable = <T,>({
   const visible = pagination ? sorted : sorted.slice(currentPage * limit, (currentPage + 1) * limit)
   const total = pagination ? pagination.total : rows.length
   const columnCount = columns.length + (rowActions ? 1 : 0) + (selectable ? 1 : 0)
+  const corner = Boolean(rowActions) && rowActionsPlacement === 'corner'
+  const actionsClassName = corner ? cn(MOBILE_ACTIONS_CORNER, selectable && 'max-sm:right-11') : MOBILE_ACTIONS
   const showSkeleton = loading && skeleton
   const storedSelection = selectedIds ?? ownSelection
   const knownIds = pagination ? null : new Set(rows.map(getRowId))
@@ -345,7 +352,12 @@ export const DataTable = <T,>({
                       <TableCell
                         className={cn(
                           MOBILE_CELL,
-                          position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
+                          position === 0 &&
+                            cn(
+                              MOBILE_LEAD,
+                              selectable && 'max-sm:pr-8',
+                              corner && (selectable ? 'max-sm:pr-20' : 'max-sm:pr-11')
+                            ),
                           item.className
                         )}
                         data-label={item.header}
@@ -355,7 +367,7 @@ export const DataTable = <T,>({
                       </TableCell>
                     ))}
                     {rowActions && (
-                      <TableCell className={cn(MOBILE_CELL, MOBILE_ACTIONS)}>
+                      <TableCell className={cn(MOBILE_CELL, actionsClassName)}>
                         <Skeleton className="ml-auto h-5 w-8 max-sm:ml-0" />
                       </TableCell>
                     )}
@@ -389,7 +401,12 @@ export const DataTable = <T,>({
                       <TableCell
                         className={cn(
                           MOBILE_CELL,
-                          position === 0 && cn(MOBILE_LEAD, selectable && 'max-sm:pr-8'),
+                          position === 0 &&
+                            cn(
+                              MOBILE_LEAD,
+                              selectable && 'max-sm:pr-8',
+                              corner && (selectable ? 'max-sm:pr-20' : 'max-sm:pr-11')
+                            ),
                           item.className
                         )}
                         data-label={item.header}
@@ -399,7 +416,9 @@ export const DataTable = <T,>({
                       </TableCell>
                     ))}
                     {rowActions && (
-                      <TableCell className={cn(MOBILE_CELL, 'text-right', MOBILE_ACTIONS)}>{rowActions(row)}</TableCell>
+                      <TableCell className={cn(MOBILE_CELL, 'text-right', actionsClassName)}>
+                        {rowActions(row)}
+                      </TableCell>
                     )}
                   </TableRow>
                 ))

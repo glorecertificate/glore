@@ -86,7 +86,7 @@ export const DatePicker = ({
             onFocus={preloadCalendar}
             onPointerEnter={preloadCalendar}
             type="button"
-            variant="outline"
+            variant="field"
           >
             <LucideIcon name="calendar" className="mr-2 size-4" />
             {formatted ?? placeholder ?? t('selectDate')}

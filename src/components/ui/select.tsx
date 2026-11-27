@@ -33,8 +33,8 @@ export const selectTriggerVariants = cva(
     variants: {
       size: {
         xs: 'h-7 px-2 text-xs',
-        sm: 'h-8 px-2.5',
-        md: 'h-9 px-3',
+        sm: 'h-8 px-2.5 text-base md:text-sm pointer-coarse:text-base',
+        md: 'h-9 px-3 text-base md:text-sm pointer-coarse:text-base',
         lg: 'h-11 px-3.5 text-base',
       },
     },

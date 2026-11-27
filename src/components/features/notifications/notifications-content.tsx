@@ -112,7 +112,7 @@ export const NotificationsContent = () => {
 
   return (
     <Card className="gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+      <div className="flex items-center justify-between gap-x-4 gap-y-3 sm:flex-wrap">
         <FilterBar active={filtering} onClear={clearFilters}>
           <SegmentedControl
             aria-label={t('filterStatus')}
@@ -148,7 +148,7 @@ export const NotificationsContent = () => {
           </Select>
         </FilterBar>
         <Button
-          className="shrink-0"
+          className="shrink-0 max-sm:w-8 max-sm:px-0 max-sm:has-[>svg]:px-0"
           disabled={!hasUnread}
           icon="check-check"
           loading={marking}
@@ -156,7 +156,7 @@ export const NotificationsContent = () => {
           size="sm"
           variant="outline"
         >
-          {t('markAllRead')}
+          <span className="max-sm:sr-only">{t('markAllRead')}</span>
         </Button>
       </div>
 

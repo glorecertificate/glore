@@ -11,11 +11,11 @@ import { cache } from 'react'
 
 import { APIError } from 'better-auth/api'
 import { hashPassword } from 'better-auth/crypto'
-import { eq, or } from 'drizzle-orm'
+import { and, eq, ne, or } from 'drizzle-orm'
 
 import { impersonationLocked } from '@/actions/admin/impersonation-state'
 import { db } from '@/db/client'
-import { users } from '@/db/schema'
+import { sessions, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag, userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
@@ -155,6 +155,18 @@ export const updatePassword = async (token: string, password: string) => {
   }
 }
 
+const endOtherSessions = async (userId: string, currentId: string) => {
+  try {
+    await auth.api.revokeOtherSessions({ headers: await headers() })
+  } catch (e) {
+    console.error(
+      '[auth] revokeOtherSessions failed, deleting the sessions directly',
+      e instanceof Error ? e.message : e
+    )
+    await db.delete(sessions).where(and(eq(sessions.userId, userId), ne(sessions.id, currentId)))
+  }
+}
+
 export const changePassword = async (currentPassword: string, newPassword: string) => {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) throw new Error('User not found')
@@ -168,12 +180,14 @@ export const changePassword = async (currentPassword: string, newPassword: strin
 
   try {
     await auth.api.changePassword({
-      body: { currentPassword, newPassword, revokeOtherSessions: true },
+      body: { currentPassword, newPassword, revokeOtherSessions: false },
       headers: await headers(),
     })
   } catch (e) {
     return { error: passwordError(e) }
   }
+
+  await endOtherSessions(session.user.id, session.session.id)
 
   await sendMail({
     to: session.user.email,

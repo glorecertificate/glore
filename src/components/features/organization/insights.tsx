@@ -207,7 +207,7 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid items-start gap-4 xl:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>{t('insightsTutorsTitle')}</CardTitle>
@@ -218,16 +218,20 @@ const InsightsView = ({ insights, loading = false }: { insights: OrganizationIns
             {!loading && tutors.length === 0 && (
               <p className="text-sm text-muted-foreground">{t('insightsTutorsEmpty')}</p>
             )}
-            <ul className="divide-y">
+            <ul className="space-y-4 text-sm">
               {tutors.map(tutor => (
-                <li
-                  className="flex items-center justify-between gap-3 py-2.5 text-sm first:pt-0 last:pb-0"
-                  key={tutor.tutorId}
-                >
-                  <span className="min-w-0 truncate font-medium">{tutor.name}</span>
-                  <span className="shrink-0 text-muted-foreground tabular-nums">
-                    {t('insightsTutorLoad', { open: tutor.open, reviewed: tutor.reviewed })}
-                  </span>
+                <li className="space-y-1.5" key={tutor.tutorId}>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="min-w-0 truncate">{tutor.name}</span>
+                    <span className="shrink-0 font-medium tabular-nums">
+                      {t('insightsTutorLoad', { open: tutor.open, reviewed: tutor.reviewed })}
+                    </span>
+                  </div>
+                  <Progress
+                    aria-label={tutor.name}
+                    color="brand"
+                    value={tutor.open + tutor.reviewed > 0 ? (tutor.reviewed / (tutor.open + tutor.reviewed)) * 100 : 0}
+                  />
                 </li>
               ))}
             </ul>

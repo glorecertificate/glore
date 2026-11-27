@@ -52,7 +52,9 @@ export const CourseOutline = ({
                   {status === 'completed' ? <LucideIcon className="size-4" name="check" /> : index + 1}
                 </span>
                 <span className="flex min-w-0 grow flex-col gap-0.5">
-                  <span className="truncate text-sm font-medium">{lesson.title}</span>
+                  <span className="truncate text-sm font-medium max-sm:line-clamp-2 max-sm:whitespace-normal">
+                    {lesson.title}
+                  </span>
                   {activities.length > 0 && (
                     <span className="truncate text-xs text-muted-foreground">{activities.join(', ')}</span>
                   )}
@@ -60,7 +62,10 @@ export const CourseOutline = ({
                 {locked && <LucideIcon aria-hidden className="size-4 shrink-0 text-muted-foreground" name="lock" />}
                 {locked && <span className="sr-only">{tPlayer('locked')}</span>}
                 {showStatus && !locked && (
-                  <StatusBadge className="shrink-0" tone={STATUS_TONES[status]}>
+                  <StatusBadge
+                    className={cn('shrink-0', status === 'completed' && 'max-sm:sr-only')}
+                    tone={STATUS_TONES[status]}
+                  >
                     {t(`status.${status}`)}
                   </StatusBadge>
                 )}

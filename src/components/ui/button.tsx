@@ -56,7 +56,7 @@ export const buttonVariants = cva(
         'band-secondary':
           'border border-band-border bg-band-scrim text-band-foreground hover:not-disabled:bg-band-scrim/60',
         field:
-          'border border-border bg-field text-foreground hover:not-disabled:bg-accent/60 focus-visible:focus-ring-inset',
+          'border border-border bg-field text-base text-foreground hover:not-disabled:bg-accent/60 focus-visible:focus-ring-inset md:text-sm pointer-coarse:text-base',
         outline: 'border border-border bg-field text-foreground hover:not-disabled:bg-field/80',
         ghost: 'text-foreground hover:not-disabled:bg-accent/20 dark:hover:not-disabled:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',

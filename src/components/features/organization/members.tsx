@@ -313,6 +313,7 @@ export const OrganizationMembers = ({
           }
           getRowId={member => member.id}
           label={t('membersTitle')}
+          rowActionsPlacement="corner"
           rowActions={member => {
             const isSelf = member.user.id === currentUserId
             const canRemove = !isSelf && canManageMemberRole(managerRole, member.role)

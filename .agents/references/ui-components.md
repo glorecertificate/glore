@@ -14,6 +14,7 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - Without `pagination`, the selection is the stored ids that still exist in `rows`. `onSelectionChange` fires only on user actions, never on a prune, so a controlled parent filters its own ids by the rows it holds before it acts; `bulkActions` always receives the pruned ids. With `pagination`, the caller clears the selection when a filter or the query changes, because the table cannot see the other pages.
 - While rows are selected, the toolbar shows the count, `bulkActions(ids)`, and "Clear selection". Escape inside the table clears the selection. Below `sm`, a labeled checkbox above the list selects the page.
 - Below `sm` each row becomes a labeled card (cells carry `data-label`), so status and actions stay reachable.
+- `rowActionsPlacement="corner"` pins the row actions to the top-right corner of each phone card, beside the checkbox. Use it when the actions are one icon menu. Text buttons keep the default `row`, a full-width last row.
 - Below `sm` a compact sort select plus a direction toggle replaces the hidden column sorts (`data-table-sort.ts`).
 
 ## Chart

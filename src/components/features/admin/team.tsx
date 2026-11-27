@@ -263,6 +263,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: TeamMember[] }) => {
         }
         getRowId={user => user.id}
         label={t('tableLabel')}
+        rowActionsPlacement="corner"
         rowActions={user =>
           user.id === currentUser.id ? null : (
             <TeamMemberActions

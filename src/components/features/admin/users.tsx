@@ -201,6 +201,7 @@ export const AdminUsers = ({
           pageCount: page.pageCount,
           total: page.total,
         }}
+        rowActionsPlacement="corner"
         rowActions={user =>
           user.id === currentUser.id ? null : (
             <UserActions

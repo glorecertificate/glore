@@ -6,12 +6,18 @@ import { Body, Container, Head, Hr, Html, Img, Link, Preview, Section, Tailwind,
 import { EMAIL_CLASSES } from '@/emails/classes'
 import { EMAIL_COLORS, EMAIL_COLORS_DARK } from '@/emails/colors.generated'
 import { type EmailCategory, type EmailTranslator, emailTranslator } from '@/emails/translate'
-import { type AppSettings, DEFAULT_SETTINGS, SOCIAL_LABELS, socialLinks } from '@/lib/app-settings'
+import { type AppSettings, DEFAULT_SETTINGS, SOCIAL_LABELS, type SocialPlatform, socialLinks } from '@/lib/app-settings'
 import { publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
 const countryName = (countries: EmailTranslator, code: string) =>
   countries.has(code) ? countries(code) : code.toUpperCase()
+
+const FOOTER_ORDER: SocialPlatform[] = ['instagram', 'facebook', 'linkedin', 'x', 'youtube']
+
+const unlinked = (text: string) => text.replaceAll(/(\d)(?=\d)/gu, '$1\u2060')
+
+const socialIconStyle: React.CSSProperties = { display: 'block', height: '16px', width: '16px' }
 
 const TOKEN_NAMES = {
   action: 'brand',
@@ -81,7 +87,13 @@ export const EmailLayout = ({
   const isOptional = category !== null && category !== 'mandatory'
   const preferencesUrl = `${process.env.APP_URL}/settings?tab=notifications`
   const { legalEntity, website } = settings
-  const links = socialLinks(settings)
+  const links = socialLinks(settings).toSorted(
+    (a, b) => FOOTER_ORDER.indexOf(a.platform) - FOOTER_ORDER.indexOf(b.platform)
+  )
+  const icons: { href: string; icon: 'glore' | SocialPlatform; label: string }[] = [
+    { href: website, icon: 'glore', label: common('homepage') },
+    ...links.map(({ href, platform }) => ({ href, icon: platform, label: SOCIAL_LABELS[platform] })),
+  ]
 
   return (
     <Html dir="ltr" lang={locale}>
@@ -127,27 +139,30 @@ export const EmailLayout = ({
                   </Text>
                 )}
                 <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>
-                  {common('address', {
-                    address: legalEntity.address,
-                    country: countryName(countries, legalEntity.country),
-                    name: legalEntity.name,
-                  })}
+                  {unlinked(
+                    common('address', {
+                      address: legalEntity.address,
+                      country: countryName(countries, legalEntity.country),
+                      name: legalEntity.name,
+                    })
+                  )}
                 </Text>
                 <Text className={`m-0 ${EMAIL_CLASSES.fine}`}>
                   {common('copyright', { name: legalEntity.name, year: new Date().getFullYear() })}
                 </Text>
-                <Link className={`text-[12px] ${EMAIL_CLASSES.fineLink}`} href={website}>
-                  {common('homepage')}
-                </Link>
-                {links.length > 0 && (
-                  <Text className={`m-0 mt-2 ${EMAIL_CLASSES.fine}`}>
-                    {links.map(({ href, platform }) => (
-                      <Link className={`mx-1.5 ${EMAIL_CLASSES.fineLink}`} href={href} key={platform}>
-                        {SOCIAL_LABELS[platform]}
-                      </Link>
-                    ))}
-                  </Text>
-                )}
+                <Text className="m-0 mt-4 text-center">
+                  {icons.map(({ href, icon, label }) => (
+                    <Link className={EMAIL_CLASSES.socialChip} href={href} key={icon} title={label}>
+                      <Img
+                        alt={label}
+                        height={16}
+                        src={publicFile(`/email/social/${icon}.png`)}
+                        style={socialIconStyle}
+                        width={16}
+                      />
+                    </Link>
+                  ))}
+                </Text>
               </Section>
             </Container>
           </Section>

@@ -3234,7 +3234,7 @@
         "content_translation_reviewed": "{actor} marked the {locale} translation of <link>{target}</link> as reviewed",
         "course_locale_published": "{actor} {published, select, yes {published} other {unpublished}} <link>{target}</link> in {locale}",
         "doc_locale_published": "{actor} {published, select, yes {published} other {unpublished}} <link>{target}</link> in {locale}",
-        "skill_group_updated": "{actor} updated the skill group <link>{target}</link> ({locale})",
+        "skill_group_updated": "{actor} updated the skill group <link>{target}</link>{localeCount, plural, =0 {} other { ({locale})}}",
         "settings_updated": "{actor} updated the <link>site settings</link>"
       },
       "noResults": "No events found",

@@ -42,7 +42,7 @@ export const StatCard = ({
   return (
     <Card className={cn('relative justify-between', STAT_ACCENTS[accent], className)} data-slot="stat-card" {...props}>
       <CardHeader className="gap-2">
-        <div className="flex items-center gap-2.5">
+        <div className="flex min-h-10 items-center gap-2.5">
           {icon && (
             <span
               aria-hidden
@@ -51,7 +51,7 @@ export const StatCard = ({
               <LucideIcon className="size-4" name={icon} />
             </span>
           )}
-          <CardDescription className="text-fg-1">{label}</CardDescription>
+          <CardDescription className="line-clamp-2 leading-5 text-pretty text-fg-1">{label}</CardDescription>
         </div>
         <CardTitle className="type-stat">
           {loading ? (

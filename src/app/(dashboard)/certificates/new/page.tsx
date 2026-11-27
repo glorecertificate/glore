@@ -97,6 +97,7 @@ const CertificatesNewBand = ({ organization }: { organization?: React.ReactNode 
     heading={<PageTitle name="requestCertificate" namespace="CertificateList" />}
     parent="certificates"
     title={<PageTitle name="newRequest" namespace="CertificateWizard" />}
+    width="content"
   />
 )
 

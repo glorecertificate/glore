@@ -17,6 +17,7 @@ export const DashboardPage = ({
   parent,
   provider,
   title,
+  width,
   ...props
 }: Omit<React.ComponentProps<typeof Main>, 'title'> & {
   actions?: React.ReactNode
@@ -40,9 +41,10 @@ export const DashboardPage = ({
           description={description}
           parent={parent}
           title={title}
+          width={width ?? 'full'}
         />
       )}
-      <Main overlap={overlap} {...props}>
+      <Main overlap={overlap} width={width} {...props}>
         {fallback === null ? children : <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>}
       </Main>
       <DynamicMarker />

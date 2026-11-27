@@ -47,7 +47,7 @@ export const TabsList = ({
   const animated = use(TabsContext)
   const { end, ref, scrollable, start } = useScrollEdges<HTMLDivElement>()
   const composedRef = useComposedRefs(forwardedRef, ref)
-  const maskImage = scrollEdgesMask({ end, start })
+  const maskImage = scrollEdgesMask({ end, start }, '2.5rem')
   const classNames = cn(
     'inline-flex h-9 w-fit max-w-full scrollbar-none items-center justify-center rounded-lg bg-muted p-0.5',
     scrollable &&

@@ -2,17 +2,21 @@ import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
+export const MAIN_WIDTHS = {
+  content: 'mx-auto max-w-4xl',
+  full: '',
+  prose: 'mx-auto max-w-3xl',
+  wide: 'mx-auto max-w-6xl',
+} as const
+
+export type MainWidth = keyof typeof MAIN_WIDTHS
+
 const mainWidthVariants = cva('flex w-full flex-1 flex-col', {
   defaultVariants: {
     width: 'full',
   },
   variants: {
-    width: {
-      content: 'mx-auto max-w-4xl',
-      full: '',
-      prose: 'mx-auto max-w-3xl',
-      wide: 'mx-auto max-w-6xl',
-    },
+    width: MAIN_WIDTHS,
   },
 })
 

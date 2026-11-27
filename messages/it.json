@@ -3234,7 +3234,7 @@
         "content_translation_reviewed": "{actor} ha segnato come rivista la traduzione ({locale}) di <link>{target}</link>",
         "course_locale_published": "{actor} ha {published, select, yes {pubblicato} other {ritirato}} <link>{target}</link> in {locale}",
         "doc_locale_published": "{actor} ha {published, select, yes {pubblicato} other {ritirato}} <link>{target}</link> in {locale}",
-        "skill_group_updated": "{actor} ha aggiornato il gruppo di competenze <link>{target}</link> ({locale})",
+        "skill_group_updated": "{actor} ha aggiornato il gruppo di competenze <link>{target}</link>{localeCount, plural, =0 {} other { ({locale})}}",
         "settings_updated": "{actor} ha aggiornato le <link>impostazioni del sito</link>"
       },
       "noResults": "Nessun evento trovato",

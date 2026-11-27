@@ -96,6 +96,7 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
       locale: row.detail.locales
         .map(locale => localeItems.find(({ value }) => value === locale)?.displayLabel ?? locale.toUpperCase())
         .join(', '),
+      localeCount: row.detail.locales.length,
       published: row.detail.published ? 'yes' : 'no',
       role: row.detail.role ?? 'user',
       target: row.target?.label ?? t('unknownTarget'),

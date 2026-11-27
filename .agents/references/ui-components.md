@@ -40,7 +40,8 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - Use `px-page` or `-mx-page` for a page gutter. Never hard-code one.
 - `Header` puts its children in an inner container as wide as `Main`, so the sidebar trigger and the content share one edge. Its `className` styles that inner container.
 - `Main` sets the vertical rhythm: content starts 16px below the header (24px from `sm`), and the page ends with 48px (64px from `sm`). A page root sets no outer padding.
-- `width` on `DashboardPage` sets the content column, and a narrower column centers.
+- `width` on `DashboardPage` sets the content column, and a narrower column centers. The band gets the same `width`, so the breadcrumb, title, actions, and content share one edge. A page with a custom `header` passes that `width` to its `DashboardHeader`.
+- When the desktop sidebar collapses to the icon rail, the band hides its sidebar toggle, and the rail's expand button is the only toggle.
 - Use `full` for lists, tables, and dashboards, `content` for details, forms, and wizards, `prose` for notifications and course completion, and `wide` for the course player. About, help, docs articles, and the course overview use `full`.
 - A `Tabs` provider that wraps the shell sets `gap-0`, so the header keeps its gap to the content.
 

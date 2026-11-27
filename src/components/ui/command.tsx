@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 export const Command = ({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) => (
   <CommandPrimitive
-    className={cn('flex size-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground', className)}
+    className={cn('flex size-full flex-col overflow-hidden rounded-lg bg-popover text-popover-foreground', className)}
     data-slot="command"
     {...props}
   />

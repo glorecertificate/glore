@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { type Certificate } from '@/db/queries/certificate'
+import { cn } from '@/lib/utils'
 
 export const CertificateDetails = ({ certificate }: { certificate: Certificate }) => {
   const t = useTranslations('CertificateCredential')
@@ -25,10 +26,17 @@ export const CertificateDetails = ({ certificate }: { certificate: Certificate }
     {
       key: 'period',
       label: t('period'),
-      value: formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values)),
+      value:
+        certificate.activityStartDate && certificate.activityEndDate
+          ? formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values))
+          : null,
     },
-    { key: 'hours', label: t('hours'), value: tDetail('hoursValue', { hours: certificate.activityDuration }) },
-    { key: 'location', label: t('location'), value: certificate.activityLocation || '-' },
+    {
+      key: 'hours',
+      label: t('hours'),
+      value: certificate.activityDuration > 0 ? tDetail('hoursValue', { hours: certificate.activityDuration }) : null,
+    },
+    { key: 'location', label: t('location'), value: certificate.activityLocation || null },
     ...(issuedAt
       ? [{ key: 'issued', label: tDetail('issued'), value: formatActivityDate(issuedAt.slice(0, 10), formatter) }]
       : []),
@@ -40,15 +48,17 @@ export const CertificateDetails = ({ certificate }: { certificate: Certificate }
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="type-label text-muted-foreground">{tDetail('details')}</CardTitle>
+        <CardTitle>{tDetail('details')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <DescriptionList columns={1}>
           {rows.map(({ key, label, value }) => (
             <DescriptionItem key={key}>
               <DescriptionTerm>{label}</DescriptionTerm>
-              <DescriptionDetails className={key === 'code' ? 'font-mono text-xs' : undefined}>
-                {value}
+              <DescriptionDetails
+                className={cn(key === 'code' && 'font-mono text-xs', value === null && 'text-muted-foreground')}
+              >
+                {value ?? tDetail('notSet')}
               </DescriptionDetails>
             </DescriptionItem>
           ))}
@@ -67,7 +77,7 @@ export const CertificateTasks = ({ certificate }: { certificate: Certificate }) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="type-label text-muted-foreground">{tDetail('tasks')}</CardTitle>
+        <CardTitle>{tDetail('tasks')}</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="list-disc space-y-1 pl-5 text-sm">
@@ -82,15 +92,17 @@ export const CertificateTasks = ({ certificate }: { certificate: Certificate }) 
 
 export const CertificateSkills = ({ certificate }: { certificate: Certificate }) => {
   const t = useTranslations('CertificateCredential')
+  const tDetail = useTranslations('CertificateDetail')
   const { locale, localize } = useI18n()
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="type-label text-muted-foreground">{t('skills')}</CardTitle>
+        <CardTitle>{t('skills')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="flex flex-col gap-4">
+        {certificate.skills.length === 0 && <p className="text-sm text-muted-foreground">{tDetail('skillsEmpty')}</p>}
+        <ul className="flex flex-col gap-4 empty:hidden">
           {certificate.skills
             .toSorted((a, b) => a.sortOrder - b.sortOrder)
             .map(skill => {

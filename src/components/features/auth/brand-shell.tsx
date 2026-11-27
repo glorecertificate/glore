@@ -6,7 +6,7 @@ import { Logo } from '@/components/ui/logo'
 import { PageBandGlobe } from '@/components/ui/page-band'
 import { cn } from '@/lib/utils'
 
-const WIDTHS = { lg: 'max-w-4xl', md: 'max-w-3xl', sm: 'max-w-md', xs: 'max-w-xl' } as const
+const WIDTHS = { lg: 'max-w-4xl', md: 'max-w-3xl', sm: 'max-w-md', xl: 'max-w-5xl', xs: 'max-w-xl' } as const
 
 export const BrandShell = ({
   actions,
@@ -32,7 +32,7 @@ export const BrandShell = ({
           <div className="flex min-h-8 items-center justify-between gap-4">
             <NextLink
               aria-label={t('backToHome')}
-              className="inline-flex rounded-md px-2 py-1"
+              className="-mx-2 inline-flex rounded-md px-2 py-1"
               href="/"
               prefetch={false}
             >

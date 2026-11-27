@@ -1854,6 +1854,8 @@
     "reviewerUnassigned": "Non assegnato",
     "selfRelease": "Rilascia l'assegnazione",
     "selfReleaseSuccess": "L'assegnazione di questo certificato è stata rimossa",
+    "notSet": "Non impostato",
+    "skillsEmpty": "Ancora nessuna competenza. Aggiungile quando modifichi la richiesta.",
     "timeline": "Cronologia della richiesta",
     "previewLabel": "Anteprima del certificato per {organization}",
     "periodValue": "{start} - {end}",

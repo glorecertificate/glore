@@ -37,7 +37,7 @@ export const CertificateShare = ({
   return (
     <Card className={cn(className)}>
       <CardHeader>
-        <CardTitle className="type-label text-muted-foreground">{t('title')}</CardTitle>
+        <CardTitle>{t('title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="flex items-center gap-2 rounded-md border bg-surface-muted px-3 py-2">

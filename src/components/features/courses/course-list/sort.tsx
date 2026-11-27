@@ -69,7 +69,7 @@ export const CourseListSort = ({ className }: { className?: string }) => {
   return (
     <DropdownMenu onOpenChange={setOpen} open={open}>
       <DropdownMenuTrigger asChild>
-        <Button className={cn('group justify-between', className)} variant="outline">
+        <Button className={cn('group justify-between', className)} size="sm" variant="outline">
           <span className="mr-1.5">{t('sortBy')}</span>
           {sort && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{options[sort]}</span>}
           {icon}

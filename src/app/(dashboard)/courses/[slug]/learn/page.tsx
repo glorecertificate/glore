@@ -5,6 +5,7 @@ import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs
 import { loadPlayer } from '@/actions/courses/learner'
 import { CourseStartPrompt } from '@/components/features/courses/course-overview/start-prompt'
 import { CoursePlayer } from '@/components/features/courses/course-player'
+import { LessonBody } from '@/components/features/courses/course-player/lesson-body'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LOCALES } from '@/lib/i18n'
 
@@ -34,7 +35,15 @@ const LearnPageContent = async (props: PageProps<'/courses/[slug]/learn'>) => {
     return redirect(`/courses/${slug}/learn?lang=${result.language}&lesson=${result.lessonId}`)
   }
 
-  return <CoursePlayer access={result.access} lesson={result.lesson} overview={result.overview} />
+  const { access, lesson, overview } = result
+  return (
+    <CoursePlayer
+      access={access}
+      body={lesson.content ? <LessonBody content={lesson.content} /> : null}
+      lesson={lesson}
+      overview={overview}
+    />
+  )
 }
 
 const LearnTitle = async (props: PageProps<'/courses/[slug]/learn'>) => {

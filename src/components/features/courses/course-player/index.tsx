@@ -7,7 +7,6 @@ import { useTranslations } from 'next-intl'
 
 import { completeLesson } from '@/actions/courses/progress'
 import { CourseLanguageSwitch } from '@/components/features/courses/course-overview/language-switch'
-import { LessonReader } from '@/components/features/courses/course-player/lesson-reader'
 import { PlayerOutline } from '@/components/features/courses/course-player/outline'
 import { LessonQuiz } from '@/components/features/courses/course-player/quiz'
 import { LessonSelfAssessment } from '@/components/features/courses/course-player/self-assessment'
@@ -32,10 +31,12 @@ import { cn } from '@/lib/utils'
 
 const PlayerLesson = ({
   access,
+  body,
   lesson,
   overview,
 }: {
   access: CourseAccess
+  body: React.ReactNode
   lesson: LearnerLesson
   overview: CourseOverview
 }) => {
@@ -110,11 +111,7 @@ const PlayerLesson = ({
             <p>{t('fallbackLanguage', { language: fallbackLabel ?? lesson.contentLanguage })}</p>
           </Banner>
         )}
-        {lesson.content ? (
-          <LessonReader content={lesson.content} version={`${lesson.id}-${language}`} />
-        ) : (
-          <p className="text-sm text-muted-foreground">{t('noContent')}</p>
-        )}
+        {body ?? <p className="text-sm text-muted-foreground">{t('noContent')}</p>}
         <LessonQuiz gated={!done} lesson={lesson} progress={progress} />
         <LessonSelfAssessment disabled={done} lesson={lesson} progress={progress} />
       </Card>
@@ -164,12 +161,14 @@ const PlayerLesson = ({
 
 export const CoursePlayer = ({
   access,
+  body,
   className,
   lesson,
   overview,
   ...props
 }: React.ComponentProps<'div'> & {
   access: CourseAccess
+  body: React.ReactNode
   lesson: LearnerLesson
   overview: CourseOverview
 }) => {
@@ -208,7 +207,7 @@ export const CoursePlayer = ({
         </details>
         <PlayerOutline access={access} className="hidden md:flex" currentId={lesson.id} overview={overview} />
       </aside>
-      <PlayerLesson access={access} key={lesson.id} lesson={lesson} overview={overview} />
+      <PlayerLesson access={access} body={body} key={lesson.id} lesson={lesson} overview={overview} />
     </div>
   )
 }

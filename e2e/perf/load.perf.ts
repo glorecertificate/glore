@@ -3,6 +3,7 @@ import { test } from '@playwright/test'
 import {
   PROFILE_NAMES,
   type PerfRole,
+  type ProfileName,
   RUNS,
   expectPath,
   openContext,
@@ -14,18 +15,20 @@ import {
   targetCount,
 } from './vitals'
 
-const PAGES: { path: string; role: PerfRole }[] = [
+const PAGES: { path: string; profiles?: ProfileName[]; role: PerfRole }[] = [
   { path: '/login', role: 'guest' },
   { path: '/verify', role: 'guest' },
   { path: '/dashboard', role: 'volunteer' },
   { path: '/courses', role: 'learner' },
+  { path: '/courses/welcome-to-glore/learn', profiles: ['mobile'], role: 'admin' },
   { path: '/certificates', role: 'tutor' },
   { path: '/organization', role: 'owner' },
   { path: '/admin', role: 'admin' },
 ]
 
 for (const profile of PROFILE_NAMES) {
-  for (const { path, role } of PAGES) {
+  for (const { path, profiles, role } of PAGES) {
+    if (profiles && !profiles.includes(profile)) continue
     test(`load ${profile} ${role} ${path}`, async ({ baseURL, browser }) => {
       test.setTimeout(60_000 * RUNS * targetCount())
       const results = await sampleTargets(baseURL ?? '', async url => {

@@ -88,6 +88,9 @@ Dashboard layout with an extra gate:
 | `/organization`             | org manager | `?tab=` overview, members, invitations, requests, certificates, insights, activity, settings                                                                                                     |
 | `/certificates`             | non-editor  | List (tutors: queue tabs; org owners and representatives: pipeline); `/certificates/new`, `/certificates/[id]`, and `/certificates/[id]/review` share the same gate                              |
 
+- A failed gate calls `notFound()`. In `next dev`, Next 16.4 counts that 404 as a failed instant check: the server logs `Could not validate instant` and the overlay counts issues. Production builds do not run the check.
+- Treat that log as expected on a role-gated 404. Keep `notFound()` and the default `experimental.instantInsights` level.
+
 ## API routes
 
 | Path                            | Method   | Description                                                                                      |

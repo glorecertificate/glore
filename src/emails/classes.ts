@@ -15,6 +15,7 @@ export const EMAIL_CLASSES = {
   divider: 'mx-0 my-6 border-border-subtle dark:border-border-subtle-dark',
   fine: 'text-[12px] leading-5 text-fg-3 dark:text-fg-3-dark',
   fineLink: 'text-fg-3 underline dark:text-fg-3-dark',
+  socialChip: 'mx-1 inline-block rounded-full bg-surface-0 p-2 align-middle dark:bg-sunken-dark',
   link: 'text-link underline dark:text-link-dark',
   manualLink: 'text-[12px] break-all text-link dark:text-link-dark',
   quote: 'my-4 border-0 border-l-[3px] border-solid border-fg-3 pl-3 dark:border-fg-3-dark',

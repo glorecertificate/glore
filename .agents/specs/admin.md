@@ -106,6 +106,7 @@ Layout, lists, dialogs, and focus rules of the admin pages: `.agents/references/
 - `loadSettings()` (`lib/settings.ts`) is a plain cached read with a defaults fallback, so emails and cron use it. The root layout feeds `SettingsProvider`, and client code calls `useSettings()`.
 - The `/emails` preview has a Phone (390 px) and Desktop (640 px) toggle. The sandboxed frame scales down to fit the card, so it never scrolls the page sideways.
 - Emails take `settings` as a prop (`EmailBaseProps`) and default to the config values, so React Email previews work unchanged.
+- The email footer shows the address as plain text, with word joiners between digits so mail clients do not auto-link it. Below it, one row of round icon links: GloRe (`website`), then each filled `social` link in the order Instagram, Facebook, LinkedIn, X, YouTube. The 2x PNG glyphs are in `public/email/social/`.
 
 ## Overview
 

@@ -79,7 +79,8 @@ const INTERACTIONS: Interaction[] = [
     role: 'volunteer',
   },
   {
-    act: async page => await page.locator('[data-sidebar="trigger"]').first().click(),
+    act: async page =>
+      await page.locator('[data-sidebar="trigger"], [data-sidebar="expand"]').filter({ visible: true }).first().click(),
     done: async page => await nextFrame(page),
     name: 'toggle the sidebar',
     path: '/dashboard',

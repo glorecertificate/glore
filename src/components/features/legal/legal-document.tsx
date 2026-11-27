@@ -35,16 +35,16 @@ const LegalDocumentContent = async ({ document }: { document: LegalDocument }) =
           </span>
         )
       }
-      size="lg"
+      size="xl"
       title={<span data-testid="legal-title">{content?.title ?? t(KEYS[document])}</span>}
     >
       {content ? (
         <Card className="gap-0 p-6 sm:p-8">
-          <div className="grid gap-8 lg:grid-cols-4 lg:gap-10">
-            <div className="min-w-0 lg:order-last lg:col-span-1">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-12">
+            <div className="min-w-0 lg:order-last">
               <ReadingToc headings={headings} />
             </div>
-            <div className="max-w-prose min-w-0 lg:col-span-3" data-testid="legal-body">
+            <div className="max-w-prose min-w-0" data-testid="legal-body">
               <LegalMarkdown ids={headingIdsByLine(headings)}>{content.body}</LegalMarkdown>
             </div>
           </div>

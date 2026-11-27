@@ -1854,6 +1854,8 @@
     "reviewerUnassigned": "Sin asignar",
     "selfRelease": "Liberar asignación",
     "selfReleaseSuccess": "Ya no tienes asignado este certificado",
+    "notSet": "Sin definir",
+    "skillsEmpty": "Todavía no hay habilidades. Añádelas al editar la solicitud.",
     "timeline": "Historial de la solicitud",
     "previewLabel": "Vista previa del certificado de {organization}",
     "periodValue": "{start} - {end}",

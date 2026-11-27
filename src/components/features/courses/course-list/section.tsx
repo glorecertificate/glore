@@ -24,11 +24,11 @@ export const CourseListSection = () => {
       <FilterRailPanel {...rail} className="max-lg:hidden" />
       <div className="flex min-w-0 flex-1 flex-col gap-4 p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <FilterRailToolbar {...rail} />
+          <FilterRailToolbar {...rail} className="max-sm:contents" />
           <span aria-live="polite" className="text-sm text-muted-foreground max-sm:order-last max-sm:w-full lg:mr-auto">
             {t('showing', { shown: Math.min(limit, displayCourses.length), total: displayCourses.length })}
           </span>
-          <CourseListSort />
+          <CourseListSort className="max-sm:ml-auto" />
         </div>
         <FilterRailChips groups={rail.groups} />
         <CourseList limit={limit} />

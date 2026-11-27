@@ -37,8 +37,10 @@ export const DashboardHeader = ({
           <Link className="text-sm hover:text-band-foreground" href={navigationHref(parent)}>
             <NavigationLabel id={parent} />
           </Link>
-          <LucideIcon className="size-3.5" name="chevron-right" />
-          <span className="truncate text-sm text-band-foreground">{title && <Suspense>{title}</Suspense>}</span>
+          <LucideIcon className="size-3.5 max-sm:hidden" name="chevron-right" />
+          <span className="truncate text-sm text-band-foreground max-sm:hidden">
+            {title && <Suspense>{title}</Suspense>}
+          </span>
         </>
       )}
       <HeaderLogo className="ml-auto inline-flex md:hidden" href={APP_ROOT} prefetch={false}>

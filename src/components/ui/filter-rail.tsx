@@ -46,6 +46,7 @@ export interface FilterRailGroup {
 }
 
 export interface FilterRailProps {
+  className?: string
   extra?: React.ReactNode
   groups: FilterRailGroup[]
   onReset: () => void
@@ -211,13 +212,23 @@ export const FilterRailPanel = ({
   )
 }
 
-export const FilterRailToolbar = ({ extra, groups, onReset, search, searchActive = false }: FilterRailProps) => {
+export const FilterRailToolbar = ({
+  className,
+  extra,
+  groups,
+  onReset,
+  search,
+  searchActive = false,
+}: FilterRailProps) => {
   const t = useTranslations('Common')
   const tDialog = useTranslations('Components.Dialog')
   const count = activeCount(groups)
 
   return (
-    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 lg:hidden" data-slot="filter-rail-toolbar">
+    <div
+      className={cn('flex min-w-0 flex-1 flex-wrap items-center gap-2 lg:hidden', className)}
+      data-slot="filter-rail-toolbar"
+    >
       <div className="min-w-0 basis-full *:w-full sm:flex-1 sm:basis-0 [&_input]:w-full">{search?.('toolbar')}</div>
       <Sheet>
         <SheetTrigger asChild>

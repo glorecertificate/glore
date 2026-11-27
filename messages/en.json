@@ -1854,6 +1854,8 @@
     "reviewerUnassigned": "Unassigned",
     "selfRelease": "Release assignment",
     "selfReleaseSuccess": "You are no longer assigned to this certificate",
+    "notSet": "Not set",
+    "skillsEmpty": "No skills yet. Add them when you edit the request.",
     "timeline": "Request history",
     "previewLabel": "Preview of the certificate for {organization}",
     "periodValue": "{start} to {end}",

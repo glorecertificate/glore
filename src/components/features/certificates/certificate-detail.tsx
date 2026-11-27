@@ -81,7 +81,7 @@ export const CertificateDetail = ({
         <CertificateTasks certificate={certificate} />
         <Card>
           <CardHeader>
-            <CardTitle className="type-label text-muted-foreground">{tDetail('timeline')}</CardTitle>
+            <CardTitle>{tDetail('timeline')}</CardTitle>
           </CardHeader>
           <CardContent>
             <CertificateTimeline certificate={certificate} events={events} />

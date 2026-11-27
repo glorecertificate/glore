@@ -12,37 +12,29 @@ export const ApplicationSteps = () => {
   const { stepIndex: current } = useApplicationStep()
 
   return (
-    <>
-      <p className="flex flex-wrap gap-x-2 text-sm text-muted-foreground lg:hidden">
-        <span>{t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}</span>
-        <span className="font-medium text-foreground">
-          {t(`step_${APPLICATION_STEPS[current] ?? APPLICATION_STEPS[0]}`)}
-        </span>
-      </p>
-      <ol
-        aria-label={t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}
-        className="hidden items-center gap-3 lg:flex"
-      >
-        {APPLICATION_STEPS.map((step, index) => {
-          const done = index < current
-          const active = index === current
-          return (
-            <li aria-current={active ? 'step' : undefined} className="flex items-center gap-2" key={step}>
-              <span
-                className={cn(
-                  'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium text-muted-foreground',
-                  (done || active) && 'border-primary bg-primary text-primary-foreground'
-                )}
-              >
-                {done ? <LucideIcon className="size-3.5" name="check" /> : index + 1}
-              </span>
-              <span className={cn('text-sm', active ? 'font-semibold text-foreground' : 'sr-only')}>
-                {t(`step_${step}`)}
-              </span>
-            </li>
-          )
-        })}
-      </ol>
-    </>
+    <ol
+      aria-label={t('stepOf', { current: current + 1, total: APPLICATION_STEPS.length })}
+      className="flex items-center gap-3"
+    >
+      {APPLICATION_STEPS.map((step, index) => {
+        const done = index < current
+        const active = index === current
+        return (
+          <li aria-current={active ? 'step' : undefined} className="flex items-center gap-2" key={step}>
+            <span
+              className={cn(
+                'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium text-muted-foreground',
+                (done || active) && 'border-primary bg-primary text-primary-foreground'
+              )}
+            >
+              {done ? <LucideIcon className="size-3.5" name="check" /> : index + 1}
+            </span>
+            <span className={cn('text-sm', active ? 'font-semibold text-foreground' : 'sr-only')}>
+              {t(`step_${step}`)}
+            </span>
+          </li>
+        )
+      })}
+    </ol>
   )
 }

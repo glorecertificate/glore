@@ -57,9 +57,9 @@ export const OrganizationInviteButton = () => {
   const open = use(OrganizationInviteContext)
 
   return (
-    <Button onClick={() => open?.()} variant="band">
+    <Button className="shrink-0 max-sm:w-9 max-sm:px-0 max-sm:has-[>svg]:px-0" onClick={() => open?.()} variant="band">
       <LucideIcon name="user-plus" />
-      {t('inviteMember')}
+      <span className="max-sm:sr-only">{t('inviteMember')}</span>
     </Button>
   )
 }

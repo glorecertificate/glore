@@ -114,7 +114,7 @@ export const AttentionList = ({
             const { action, context, title } = row(item)
             return (
               <li
-                className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5 sm:flex-nowrap"
+                className="flex flex-wrap items-start gap-x-3 gap-y-2.5 px-5 py-3.5 sm:flex-nowrap sm:items-center sm:gap-x-4"
                 key={`${item.kind}-${item.id}`}
               >
                 <span
@@ -127,7 +127,7 @@ export const AttentionList = ({
                   <p className="truncate text-sm font-medium text-fg-title max-sm:whitespace-normal">{title}</p>
                   <p className="truncate type-caption text-fg-2 max-sm:whitespace-normal">{context}</p>
                 </div>
-                <div className="shrink-0 max-sm:w-full max-sm:pl-12 max-sm:*:w-full">{action}</div>
+                <div className="shrink-0 max-sm:basis-full max-sm:pl-11">{action}</div>
               </li>
             )
           })}

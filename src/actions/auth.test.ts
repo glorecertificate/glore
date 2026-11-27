@@ -37,7 +37,7 @@ vi.mock('@/lib/email', async importOriginal => ({
 }))
 
 const PASSWORD = 'Password1!'
-const KEYS = ['changer', 'limited', 'notified', 'resetter', 'wrong'] as const
+const KEYS = ['changer', 'fallback', 'limited', 'notified', 'resetter', 'wrong'] as const
 
 describe.skipIf(!isLocalDatabase)('password and session security', () => {
   let fixture: Awaited<ReturnType<typeof createAdminFixture<(typeof KEYS)[number]>>>
@@ -95,6 +95,22 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     expect(before).toContain(after[0])
     const kept = await fixture.auth.api.getSession({ headers: jar.headers(), query: { disableCookieCache: true } })
     expect(kept?.session.id).toBe(after[0])
+  })
+
+  it('still ends the other sessions when the library revoke fails', async () => {
+    const jar = await fixture.signIn('fallback')
+    await fixture.signIn('fallback')
+    expect((await sessionIds(fixture.ids.fallback)).length).toBeGreaterThanOrEqual(2)
+    const revoke = vi.spyOn(fixture.auth.api, 'revokeOtherSessions').mockRejectedValueOnce(new Error('db down'))
+
+    as(jar)
+    const result = await actions.changePassword(PASSWORD, 'Password3!')
+    revoke.mockRestore()
+
+    expect(result.error).toBeUndefined()
+    const kept = await fixture.auth.api.getSession({ headers: jar.headers(), query: { disableCookieCache: true } })
+    expect(await sessionIds(fixture.ids.fallback)).toEqual([kept?.session.id])
+    expect(sent.map(({ template }) => template.name)).toContain('account/password-changed')
   })
 
   it('limits password changes per user before any hashing or mail', async () => {

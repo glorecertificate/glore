@@ -4,7 +4,7 @@ import { AuthLogo } from '@/components/features/auth/auth-logo'
 
 export const AuthAside = () => (
   <aside
-    className="relative flex flex-col overflow-hidden bg-sidebar px-page pt-3 pb-4 text-sidebar-foreground band-scope lg:sticky lg:top-0 lg:h-svh lg:bg-auth-aside lg:p-10"
+    className="relative flex flex-col overflow-hidden bg-sidebar px-page pt-3 pb-4 text-sidebar-foreground aside-scope band-scope lg:sticky lg:top-0 lg:h-svh lg:bg-auth-aside lg:p-10"
     data-slot="auth-aside"
   >
     <div className="absolute auth-globe max-lg:hidden">

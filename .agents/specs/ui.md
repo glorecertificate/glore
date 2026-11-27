@@ -31,28 +31,27 @@ The owner set this bar on 2026-11-18. It is binding for every run and every lane
 - `accessibility.spec.ts` runs axe (`e2e/axe.ts`) with the WCAG 2.2 AA tags on the main pages of each role, in light and dark. A serious or critical issue fails the test. Add each new page to its `PAGES` list.
 - A lane may change the shared kit in `src/components/ui/` when the bar needs it. It keeps the kit consistent and documents the change here and in `/dev/ui`.
 
-## Direction B: brand-forward
+## Direction A: B evolved
 
-The owner chose this look on 2026-11-18, with direction E (light blue) as the dark base. Dark keeps B's action gradient, glows, green band action, highlight and earned gradients. `.agents/references/design.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
+A (2026-11-27) evolves B (2026-11-18): its navy sidebar, teal, fonts, and logo, but no gradient band, button, glow, or colored fill. Gradients stay only on the auth aside and the earned panel. Dark derives from E's dark palette, also flat. `.agents/references/design.md` holds the visual rules. Values live in `config/theme.json` (`system.palette`). `pnpm run theme` writes the tokens.
 
 - Shell: a navy `--sidebar` (full height, no margin) with `sidebar-*` text, a `bg-sidebar-active` item (white at 12%, `sidebar-ring` icon), and `Logo onNavy` with no chip (`/icon-on-navy.png`).
 - The bell sits in the logo row. `SidebarCount` shows a plain number, or a white badge when `floating`. `Sidebar` adds `dark sidebar-scope` to its root, so kit components inside it read the dark token set in both themes.
-- Auth aside: one 32rem aside for every auth screen (`AuthFrame` in `features/auth/`) with a 165deg gradient of the `band-*` tokens, the white logo, a `type-display` headline and one subline (`Auth.asideTitle`, `Auth.asideMessage`), and 40px padding.
-- The live `AuthGlobe` (about 760px, left -188px, masked toward the bottom) sits behind the text. The text is `pointer-events-none` so a drag reaches the canvas.
-- The globe color follows `AuthGlobeContext` (`errored`, `view`), and `AuthFlow` resets it on unmount.
+- Auth aside: one 32rem aside for every auth screen (`AuthFrame` in `features/auth/`) with a 165deg `aside-*` gradient (`aside-scope` remaps `band-*`), the white logo, a `type-display` headline and one subline (`Auth.asideTitle`, `Auth.asideMessage`), and 40px padding.
+- The live `AuthGlobe` sits behind the text: `ui-components.md`, "Auth globe".
 - In the pane, the language select is top right and the legal links and theme switch sit at the bottom, all 40px from the edges. The register step list renders above the form (`AuthMain` `header`).
 - Below `lg`, the aside is the logo bar.
 
 ### Canvas, band, and controls
 
-- Canvas: the page sits on `canvas` (`#e9f1f6`, dark `#0b1826`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
-- `DashboardHeader` renders `PageBand`: gradient `bg-band` (four stops from the sidebar navy to teal and green, no globe), `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`).
+- Canvas: the page sits on `canvas` (`#f3f6f9`, dark `#0b1826`). Cards are `surface-1` with `shadow-card`. `--radius` is 10px, so cards are `rounded-xl` (14px) and controls `rounded-lg`.
+- `DashboardHeader` renders `PageBand`: flat on the canvas (every `band-*` stop is `canvas`, globe opacity 0), a navy `type-band` title (`h1`), description, `actions`, and a `breadcrumb` slot for tabs (`band-tabs`).
 - The band is a token scope (`band-scope`): `foreground`, `muted-foreground`, `fg-*`, `border`, `input`, and `ring` read band tokens inside it.
 - With `overlap`, `Main` is pulled up 64px over the band and its first block MUST be an opaque card. Without it, the band ends with a clean gap.
-- `Button` `primary` and `brand` are the teal gradient with white text. `band` (green, navy text) and `band-secondary` (scrim) sit on the band. Press scales to `.98` in 80 ms.
+- `Button` `primary` and `brand` are flat teal (`action-from` is `action-to`), white text, no glow. `band` is the same teal, `band-secondary` a bordered scrim. Press scales to `.98` in 80 ms.
 - `StatCard` takes `accent` (`teal`, `navy`, `green`, `amber`) and `icon`: a flat 32px tile with accent-colored icon. `stat-accent-*` classes set the `--stat-*` variables for any element that needs them.
 - `Badge` status variants (`success`, `warning`, `destructive`, `info`, `muted`, and the certificate ones such as `approved`) render an 8px dot and a neutral label, never a filled pill.
-- `outline` is for neutral labels such as a role. `highlight` (`bg-highlight`) is the navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
+- `outline` is for neutral labels such as a role. `highlight` (`bg-highlight`) is the flat navy card, and `bg-earned-panel` with `shadow-deep` is the earned certificate panel.
 - Text on a gradient passes 4.5:1 on its darkest stop in each theme. `check:theme` enforces every pair, and the table lives in `PALETTE_PAIRS` in `scripts/theme/tokens.ts`.
 
 ## Migrate a page to the band

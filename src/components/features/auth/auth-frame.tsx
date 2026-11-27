@@ -48,7 +48,7 @@ export const AuthMain = ({
 }) => (
   <>
     {language && (
-      <div className="absolute top-3.5 right-page z-10 lg:top-10 lg:right-10">
+      <div className="absolute top-3.5 right-page z-10 aside-scope lg:top-10 lg:right-10">
         <AuthLanguageSelect className="max-lg:border-band-border max-lg:bg-band-scrim max-lg:text-band-foreground max-lg:hover:not-disabled:bg-band-scrim/60" />
       </div>
     )}

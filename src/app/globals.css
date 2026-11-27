@@ -359,11 +359,23 @@
 @utility bg-auth-aside {
   background-image: linear-gradient(
     165deg,
-    var(--band-from) 0%,
-    var(--band-via) 40%,
-    var(--band-via-2) 72%,
-    var(--band-to) 100%
+    var(--aside-from) 0%,
+    var(--aside-via) 40%,
+    var(--aside-via-2) 72%,
+    var(--aside-to) 100%
   );
+}
+
+@utility aside-scope {
+  --band-from: var(--aside-from);
+  --band-via: var(--aside-via);
+  --band-via-2: var(--aside-via-2);
+  --band-to: var(--aside-to);
+  --band-foreground: var(--aside-foreground);
+  --band-muted: var(--aside-muted);
+  --band-text: var(--aside-text);
+  --band-scrim: var(--aside-scrim);
+  --band-border: var(--aside-border);
 }
 
 @utility auth-globe {
@@ -413,7 +425,7 @@
 }
 
 @utility bg-avatar {
-  background-image: linear-gradient(135deg, var(--band-action), var(--earned-via));
+  background-color: var(--band-action);
 }
 
 @utility bg-stat-tile {

@@ -74,9 +74,14 @@ Detail moved out of `.agents/specs/ui.md` to keep that spec within its token bud
 - `title` and `description` go in the band. The content column overlaps the band by 4rem, so its first block must be an opaque card.
 - Pages with the sidebar use `DashboardPage` instead.
 
+## Auth globe
+
+- The live `AuthGlobe` (about 760px, left -188px, masked toward the bottom) sits behind the aside text. The text is `pointer-events-none` so a drag reaches the canvas.
+- The globe color follows `AuthGlobeContext` (`errored`, `view`), and `AuthFlow` resets it on unmount.
+
 ## Email colors
 
-- Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`: `EMAIL_COLORS` (light) and `EMAIL_COLORS_DARK`, each with `action`, `actionText`, `border`, `canvas`, `danger`, `faint`, `muted`, `onDanger`, `onFill`, `sunken`, `surface`, `text`, and `title`. Dark names carry a `-dark` suffix and apply through `dark:` classes. Class strings live in `src/emails/classes.ts` (`EMAIL_CLASSES`), so a template never writes a hex value. The `brand` color is the `action` blue, because email buttons carry white text.
+- Email templates use their own Tailwind config in `src/emails/layout.tsx`, with hex values from `colors.generated.ts`: `EMAIL_COLORS` (light) and `EMAIL_COLORS_DARK`, each with `action`, `actionText`, `border`, `canvas`, `danger`, `faint`, `muted`, `onDanger`, `onFill`, `sunken`, `surface`, `text`, and `title`. Dark names carry a `-dark` suffix and apply through `dark:` classes. Class strings live in `src/emails/classes.ts` (`EMAIL_CLASSES`), so a template never writes a hex value. The `brand` color is the `action` blue, because email buttons carry white text. `bandFrom`, `bandVia`, `bandVia2`, and `bandTo` read the `aside-*` tokens, so the email header keeps the brand gradient.
 
 ## Loading states
 

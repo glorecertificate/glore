@@ -39,7 +39,7 @@ export const DashboardHeader = ({
         </>
       )}
       <HeaderLogo className="ml-auto inline-flex md:hidden" href={APP_ROOT} prefetch={false}>
-        <Logo className="h-5 w-auto" onNavy />
+        <Logo className="h-5 w-auto" />
       </HeaderLogo>
     </div>
     <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">

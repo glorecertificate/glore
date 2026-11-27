@@ -168,12 +168,14 @@ export const changePassword = async (currentPassword: string, newPassword: strin
 
   try {
     await auth.api.changePassword({
-      body: { currentPassword, newPassword, revokeOtherSessions: true },
+      body: { currentPassword, newPassword, revokeOtherSessions: false },
       headers: await headers(),
     })
   } catch (e) {
     return { error: passwordError(e) }
   }
+
+  await auth.api.revokeOtherSessions({ headers: await headers() })
 
   await sendMail({
     to: session.user.email,

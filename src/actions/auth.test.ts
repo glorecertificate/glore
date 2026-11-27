@@ -80,7 +80,7 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     vi.unstubAllEnvs()
   })
 
-  it('revokes every other session when the password changes', async () => {
+  it('revokes every other session and keeps the current one when the password changes', async () => {
     const jar = await fixture.signIn('changer')
     await fixture.signIn('changer')
     const before = await sessionIds(fixture.ids.changer)
@@ -92,7 +92,9 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
 
     const after = await sessionIds(fixture.ids.changer)
     expect(after).toHaveLength(1)
-    expect(before).not.toContain(after[0])
+    expect(before).toContain(after[0])
+    const kept = await fixture.auth.api.getSession({ headers: jar.headers(), query: { disableCookieCache: true } })
+    expect(kept?.session.id).toBe(after[0])
   })
 
   it('limits password changes per user before any hashing or mail', async () => {

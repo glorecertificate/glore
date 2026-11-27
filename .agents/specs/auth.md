@@ -40,7 +40,8 @@ Better Auth setup, cookies, the sign-up guard, hardening, and fresh session read
 - Rate limits share the `rate_limits` table: Better Auth through `rateLimit.storage: 'database'`, app keys through `src/lib/rate-limit.ts`.
 - `rateLimit.customRules` keys are endpoint paths without the `/api/auth` base path (`/request-password-reset`, `/reset-password`, `/change-password`), because Better Auth strips the base path before matching.
 - `src/lib/auth.test.ts` fails when a key stops matching a real endpoint.
-- `emailAndPassword.revokeSessionsOnPasswordReset` is `true`, and `changePassword` passes `revokeOtherSessions: true`, so a password reset or change ends every other session.
+- `emailAndPassword.revokeSessionsOnPasswordReset` is `true`, so a password reset ends every session.
+- `changePassword` passes `revokeOtherSessions: false`, then calls `auth.api.revokeOtherSessions`: every other session ends, and the current one keeps its token. The library flag would rotate the current token inside the action, and the action's refresh render still reads the old token, so `getViewer` sends the browser into a redirect loop (`e2e/password-change.spec.ts`).
 - Actions that send mail for a signed-in user have per-user limits through `isRateLimited`: `org-invite:<id>` (10 batches an hour), `email-change:<id>` (3 an hour), and `change-password:<id>` (10 an hour).
 - They answer `RATE_LIMITED`, and `useActionError` shows `Common.rateLimited`.
 

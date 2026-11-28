@@ -67,7 +67,7 @@ export const loadRawMessages = async (input: string | null | undefined) => {
 export const usesPrecompiledMessages = async () => isPrecompiled(await importCatalog(DEFAULT_LOCALE))
 
 const queryOverrides = async (locale: Locale) => {
-  'use cache'
+  'use cache: remote'
   cacheLife('max')
   cacheTag(messagesTag(locale), messagesTag(DEFAULT_LOCALE))
 

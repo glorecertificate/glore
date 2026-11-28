@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.7.5](https://github.com/glorecertificate/glore/compare/v0.7.4...v0.7.5) (2026-11-28)
+
+### Features
+
+- Align page bands with their content and polish shared controls (#258) ([e06c81e](https://github.com/glorecertificate/glore/commit/e06c81e9251e88ad6c9ef6abff06bb164f9ba0ca)), references [#258](https://github.com/glorecertificate/glore/issues/258)
+- Polish attention rows, organization tab bar, tutor workload and registration stepper (#260) ([f82b0eb](https://github.com/glorecertificate/glore/commit/f82b0eb2a32f57cf723f27fc71443402665a5154)), references [#260](https://github.com/glorecertificate/glore/issues/260)
+- Polish certificate detail cards, phone toolbars and public pages (#259) ([6892399](https://github.com/glorecertificate/glore/commit/6892399ae133b8dfed288d6be6476caa0215376b)), references [#259](https://github.com/glorecertificate/glore/issues/259)
+- Polish phone form fields, row menus, course meta and notifications toolbar (#261) ([fb5bdf1](https://github.com/glorecertificate/glore/commit/fb5bdf1a57421e14d2e5c9806721d4b575e4a4ee)), references [#261](https://github.com/glorecertificate/glore/issues/261)
+- Show social icons and an unlinked address in the email footer (#257) ([2db8ea6](https://github.com/glorecertificate/glore/commit/2db8ea6ffc7d67dc7a58ed48604a2a00584588fe)), references [#257](https://github.com/glorecertificate/glore/issues/257)
+
+### Fixes
+
+- Keep the current session when the password changes (#255) ([22a4d2a](https://github.com/glorecertificate/glore/commit/22a4d2aebf795b4fab65ae4f0659ab2a4bbf1c36)), references [#255](https://github.com/glorecertificate/glore/issues/255)
+- Lift toasts above the save bar and open invitations in their language (#248) ([e6cd13f](https://github.com/glorecertificate/glore/commit/e6cd13fd83d865f9cef092bfedccb5d8dc536911)), references [#248](https://github.com/glorecertificate/glore/issues/248)
+- Load the vercel analytics for guests and drop the homepage canonical from every page (#250) ([4efc871](https://github.com/glorecertificate/glore/commit/4efc87150754a93a7a57fe1df3174343c0f52858)), references [#250](https://github.com/glorecertificate/glore/issues/250)
+- Match the insights and notification loading states to their content (#249) ([a8eabc3](https://github.com/glorecertificate/glore/commit/a8eabc39e13782cf94518252a96f7bb391db7bd6)), references [#249](https://github.com/glorecertificate/glore/issues/249)
+- Name the course player progress bar and fix the course card heading level (#251) ([d5f9460](https://github.com/glorecertificate/glore/commit/d5f9460f514268f5420306fa668c2bd53041d90a)), closes [#251](https://github.com/glorecertificate/glore/issues/251)
+- Resolve the mobile review findings in editors, sheets, lists and charts (#262) ([4b1a621](https://github.com/glorecertificate/glore/commit/4b1a621585fa55b4d295b462f48f5af8c22e89b3)), closes [#262](https://github.com/glorecertificate/glore/issues/262)
+
+### Performance
+
+- Render the lesson body on the server (#253) ([f57f25c](https://github.com/glorecertificate/glore/commit/f57f25c8cc0bed8d42a7aa8ddab2175c17837681)), references [#253](https://github.com/glorecertificate/glore/issues/253)
+- Scope client messages by route group (#247) ([aea746e](https://github.com/glorecertificate/glore/commit/aea746e83c42643be1ff3830bb8d880da95b7316)), references [#247](https://github.com/glorecertificate/glore/issues/247)
+
+### CI
+
+- Check production every 15 minutes (#245) ([0e6bf75](https://github.com/glorecertificate/glore/commit/0e6bf75a16991f12b12ada17e7c98352ffb55da7)), references [#245](https://github.com/glorecertificate/glore/issues/245)
+
+### Docs
+
+- Add the restore drill to the runbook (#246) ([8ba39ae](https://github.com/glorecertificate/glore/commit/8ba39aec104c921b401bce642b4999025f48069a)), references [#246](https://github.com/glorecertificate/glore/issues/246)
+- Note the dev instant check log on role-gated 404 pages (#254) ([ab26e00](https://github.com/glorecertificate/glore/commit/ab26e0066d2746c64ae33720b69f65e8307952af)), references [#254](https://github.com/glorecertificate/glore/issues/254)
+
 ## [0.7.4](https://github.com/glorecertificate/glore/compare/v0.7.3...v0.7.4) (2026-11-25)
 
 ### Fixes

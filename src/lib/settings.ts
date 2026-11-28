@@ -10,7 +10,7 @@ import { CacheTag } from '@/lib/cache'
 const queryRows = async () => await db.select({ key: appSettings.key, value: appSettings.value }).from(appSettings)
 
 const fetchRows = async () => {
-  'use cache'
+  'use cache: remote'
   cacheLife('max')
   cacheTag(CacheTag.Settings)
 

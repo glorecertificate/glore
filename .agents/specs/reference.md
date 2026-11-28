@@ -92,6 +92,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 - Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `legalTag`, `certificates*Tag`, `messagesTag`) in `src/lib/cache.ts`. Read it for the current set and owners.
 - Put `'use cache'` (with `cacheLife('max')` for long-lived data) on the inner fetch function, never on the exported one.
+- Data that every request reads in the root layout (settings, message overrides) uses `'use cache: remote'`. A new Vercel instance then reads it from the shared Runtime Cache, not the database.
 - The exported function takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
 - In a server action whose caller must see its own write, use `updateTag(tag)`. `updateTag` throws outside server actions.
 - A read in a later request (a client reload after a mutation, or a live work queue) passes `{ cache: false }`: dev can serve that request the pre-write entry.

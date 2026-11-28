@@ -9,6 +9,7 @@ import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { EditorPreload } from '@/components/layout/editor-preload'
 import { LiveRefresh } from '@/components/layout/live-refresh'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { NavigationProgress } from '@/components/layout/navigation-progress'
 import { OrganizationContent } from '@/components/layout/organization-content'
 import { PhoneAppBar } from '@/components/layout/phone-app-bar'
 import { PrefetchKeeper } from '@/components/layout/prefetch-keeper'
@@ -47,6 +48,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
           <PhoneAppBar />
           <LiveRefresh />
           <PrefetchKeeper />
+          <NavigationProgress />
           {user.canEdit && <EditorPreload />}
           <ImpersonationBanner />
         </SessionProvider>

@@ -671,6 +671,26 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+@utility progress-bar {
+  top: env(safe-area-inset-top, 0px);
+  transform-origin: left;
+  transition-property: transform, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: var(--ease-out);
+
+  &[data-state="done"] {
+    transition-delay: 0ms, 200ms;
+  }
+
+  &[data-state="idle"] {
+    transition-property: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: opacity;
+  }
+}
+
 @utility px-page-safe {
   padding-left: max(--spacing(4), env(safe-area-inset-left));
   padding-right: max(--spacing(4), env(safe-area-inset-right));

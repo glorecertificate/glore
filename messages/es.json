@@ -1448,6 +1448,20 @@
       "tagline": "Da valor a tus experiencias de voluntariado.",
       "body": "GloRe es una red abierta de organizaciones de voluntariado. Las personas voluntarias hacen cursos en línea y valoran sus propias habilidades blandas. Un tutor de la organización de acogida revisa el resultado y un certificado recoge las horas, las tareas y las habilidades."
     },
+    "facts": {
+      "founded": {
+        "value": "2003",
+        "label": "Se funda Associazione Joint en Milán"
+      },
+      "erasmus": {
+        "value": "2016",
+        "label": "GloRe nace como proyecto Erasmus+"
+      },
+      "free": {
+        "value": "Gratis",
+        "label": "Para las personas voluntarias y las organizaciones miembro"
+      }
+    },
     "sections": {
       "mission": {
         "title": "Nuestra misión",

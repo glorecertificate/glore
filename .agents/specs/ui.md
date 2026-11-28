@@ -191,7 +191,7 @@ Reference: `DataTable`, `Chart`, shell layout, page container, page titles, and 
 
 - A loading state either reproduces its content exactly, or it is a `Spinner`. Never ship an approximate `Skeleton`.
 - Nothing moves when content arrives. The swap is a short fade, and instant with reduced motion.
-- The header band never waits for data. A layout fallback is `DashboardLoading`, never a full-page spinner. Its spinner is centered under the header and fades in after 100 ms.
+- The header band never waits for data. A layout fallback is `DashboardLoading`, never a full-page spinner. It leaves the content area empty and drives the top progress bar (`performance.md`).
 - When a page knows its header before its data loads, it renders `DashboardPage` once, outside its `Suspense`, so its fallback holds no second bar.
 - A header part that needs data, such as the `/organization` tabs, gets its own `Suspense` with a small `Spinner`.
 - Detail (exact skeletons, `loading` props, `InstantReveal`): `.agents/references/ui-components.md`, "Loading states".

@@ -54,7 +54,7 @@ src/
 │   │                   #   dashboard (`DashboardHero`, `DashboardEmpty`, `CourseRow` and one view per role), dev (UI catalog), docs, help, legal, notifications, onboarding, organization, translations, users
 │   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-header, dashboard-loading, dashboard-menu-button, dashboard-sidebar, dynamic-marker,
-│   │                   #   error-actions, error-fallback, instant-reveal, loading-fallback, offline-fallback, organization-switcher, page-title, phone-app-bar, pwa-install-prompt,
+│   │                   #   error-actions, error-fallback, instant-reveal, loading-fallback, navigation-progress, route-loading, offline-fallback, organization-switcher, page-title, phone-app-bar, pwa-install-prompt,
 │   │                   #   search-command (palette), sidebar-count (`SidebarCount`: pill count, dot when collapsed), navigation (pure per-role entries), use-menu-indicator, use-navigation-labels
 │   ├── providers/      # Flat single-file providers: i18n, messages-scope, motion, search-params, session, settings, theme
 │   └── ui/             # shadcn/ui + release kit (ui.md); vendored rich-text-editor/
@@ -157,7 +157,7 @@ src/
 - Layout guards (admin, certificates) are server components that call `notFound()`.
 - A page that fetches data is a sync page that renders `DashboardPage` and puts an inner async component in it. `DashboardPage` wraps its children in Suspense, so the header bar renders at once.
 - A record title that needs data is an async component passed as `title`. The bar streams it.
-- Keep `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the bar and a spinner, for a segment that still awaits uncached data.
+- Keep `(dashboard)/loading.tsx`: it renders `DashboardLoading`, the header band and the top progress bar, for a segment that still awaits uncached data.
 - `LoadingFallback` fades in after 300 ms (`delay-300`), and after 100 ms with `size="page"`, so a wait that reads as instant shows nothing. A route with its data behind cached loaders never reaches it.
 - `next dev` logs a blocking-route error when a navigation would wait on uncached data.
 

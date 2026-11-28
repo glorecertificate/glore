@@ -1027,7 +1027,8 @@
     "moreActions": "More actions",
     "descriptionLearner": "Short courses on how GloRe works and on practical topics. Skill courses and certificates are for volunteers.",
     "showing": "Showing {shown} of {total, plural, one {# course} other {# courses}}",
-    "showMore": "Show more courses"
+    "showMore": "Show more courses",
+    "untitled": "Untitled"
   },
   "Dashboard": {
     "greeting": "Welcome back, {name}",
@@ -3937,6 +3938,7 @@
       "finish": "Finish course",
       "backToOverview": "Back to the course",
       "previewNote": "You are previewing this course. Answers are checked, but nothing is saved.",
+      "backToEditor": "Back to editing",
       "fallbackLanguage": "This lesson is not available in your language yet. You are reading it in {language}.",
       "noContent": "This lesson has no content yet.",
       "locked": "Finish the previous lesson to open this one.",

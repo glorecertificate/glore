@@ -49,7 +49,7 @@ export const CourseLanguageSwitch = ({
           <span aria-hidden className="flex h-3 items-center">
             {active?.icon}
           </span>
-          {active?.displayLabel}
+          {active?.label}
         </span>
       </SelectTrigger>
       <SelectContent align="end" position="popper">
@@ -59,7 +59,7 @@ export const CourseLanguageSwitch = ({
               <span aria-hidden className="flex h-3 items-center">
                 {item.icon}
               </span>
-              {item.displayLabel}
+              {item.label}
             </span>
           </SelectItem>
         ))}

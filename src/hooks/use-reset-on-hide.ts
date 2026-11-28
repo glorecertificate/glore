@@ -10,8 +10,12 @@ export const useResetOnHide = (reset: () => void) => {
 
   useLayoutEffect(() => {
     clearTimeout(pending.current)
+    const pathname = window.location.pathname
     return () => {
-      pending.current = setTimeout(() => latest.current())
+      pending.current = setTimeout(() => {
+        if (window.location.pathname === pathname) return
+        latest.current()
+      })
     }
   }, [])
 }

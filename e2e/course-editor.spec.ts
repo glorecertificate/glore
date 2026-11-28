@@ -162,6 +162,13 @@ test.describe('course editor AI menu', () => {
     await page.getByRole('option', { name: 'Improve writing' }).click()
     await expect(page.getByText('Culture is a lens, not a label.')).toBeVisible()
     await page.getByRole('option', { name: 'Discard' }).click()
+    await expect(page.getByText('Culture is a lens, not a label.')).toBeHidden()
+
+    await paragraph.click()
+    await page.keyboard.press('End')
+    await page.keyboard.press('ControlOrMeta+j')
+    await page.getByRole('option', { name: 'Continue writing' }).click()
+    await expect(page.locator('[data-slate-editor]').getByText('Culture is a lens, not a label.')).toBeVisible()
   })
 })
 

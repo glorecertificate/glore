@@ -1027,7 +1027,8 @@
     "moreActions": "Altre azioni",
     "descriptionLearner": "Corsi brevi su come funziona GloRe e su argomenti pratici. I corsi sulle competenze e i certificati sono per i volontari.",
     "showing": "{shown} di {total, plural, one {# corso} other {# corsi}}",
-    "showMore": "Mostra altri corsi"
+    "showMore": "Mostra altri corsi",
+    "untitled": "Senza titolo"
   },
   "Dashboard": {
     "greeting": "Ciao, {name}",
@@ -3937,6 +3938,7 @@
       "finish": "Termina il corso",
       "backToOverview": "Torna al corso",
       "previewNote": "Stai visualizzando l'anteprima di questo corso. Le risposte vengono controllate, ma non viene salvato nulla.",
+      "backToEditor": "Torna alla modifica",
       "fallbackLanguage": "Questa lezione non è ancora disponibile nella tua lingua. La stai leggendo in {language}.",
       "noContent": "Questa lezione non ha ancora contenuti.",
       "locked": "Completa la lezione precedente per aprire questa.",

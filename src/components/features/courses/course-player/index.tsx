@@ -55,6 +55,7 @@ const PlayerLesson = ({
   const saves = access === 'learner'
   const done = lesson.completed || !saves
   const lessonHref = (id: number) => `/courses/${slug}/learn?lang=${language}&lesson=${id}` as const
+  const editHref = `/courses/${slug}?lang=${language}&lesson=${index + 1}` as const
   const finishHref = saves
     ? (`/courses/${slug}/complete?lang=${language}` as const)
     : (`/courses/${slug}?lang=${language}` as const)
@@ -101,9 +102,17 @@ const PlayerLesson = ({
           />
         </header>
         {!saves && (
-          <Banner variant="info">
+          <Banner className="flex-wrap" variant="info">
             <LucideIcon className="mt-0.5 size-4 shrink-0" name="eye" />
-            <p>{t('previewNote')}</p>
+            <p className="min-w-0 flex-1 basis-56">{t('previewNote')}</p>
+            {access === 'editor' && (
+              <Button asChild className="-my-1 ml-auto shrink-0" size="sm" variant="outline">
+                <Link href={editHref}>
+                  <LucideIcon className="size-3.5" name="pencil" />
+                  {t('backToEditor')}
+                </Link>
+              </Button>
+            )}
           </Banner>
         )}
         {lesson.contentLanguage && lesson.contentLanguage !== language && (

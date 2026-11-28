@@ -152,14 +152,14 @@ export const CourseListCard = ({
                   </span>
                 </Tooltip>
                 <Link
-                  className="type-heading transition-none"
+                  className={cn('type-heading transition-none', !title && 'text-muted-foreground')}
                   href={coursePath}
                   keepFresh="list"
                   prefetch
                   title={t('viewCourse')}
                   suppressHydrationWarning
                 >
-                  <SearchHighlight query={search} value={title} />
+                  <SearchHighlight query={search} value={title || t('untitled')} />
                 </Link>
               </div>
               <div className="flex items-center gap-1.5">
@@ -191,14 +191,14 @@ export const CourseListCard = ({
                 />
               )}
               <Link
-                className="type-heading transition-none"
+                className={cn('type-heading transition-none', !title && 'text-muted-foreground')}
                 href={coursePath}
                 keepFresh="list"
                 prefetch
                 title={t('viewCourse')}
                 suppressHydrationWarning
               >
-                <SearchHighlight query={search} value={title} />
+                <SearchHighlight query={search} value={title || t('untitled')} />
               </Link>
             </div>
             {(course.skillGroup || course.completed) && (

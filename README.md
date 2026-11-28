@@ -5,9 +5,7 @@
 [![](https://shieldcn.dev/github/ci/glorecertificate/glore.svg?size=xs)](https://github.com/glorecertificate/glore/actions/workflows/ci.yml)
 [![](https://shieldcn.dev/github/checks/glorecertificate/glore/main/Analyze%20%28javascript-typescript%29.svg?label=CodeQL&size=xs)](https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql)
 [![](https://shieldcn.dev/github/license/glorecertificate/glore.svg?size=xs)](LICENSE)
-
 </div>
-<br>
 
 **GloRe** is a multilingual e-learning platform that certifies soft skills gained through volunteering and international mobility.
 

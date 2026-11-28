@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.6](https://github.com/glorecertificate/glore/compare/v0.7.5...v0.7.6) (2026-11-28)
+
+### Features
+
+- Show a top progress bar for page loads instead of the route spinner (#265) ([3b949c7](https://github.com/glorecertificate/glore/commit/3b949c7f6bd21a5800297a5be72d80a51324d148)), references [#265](https://github.com/glorecertificate/glore/issues/265)
+
+### Fixes
+
+- Reset left pages, restore touch block drag, and tighten phone stat cards (#264) ([e006bb4](https://github.com/glorecertificate/glore/commit/e006bb46f39ddd3a9fa134abd9ff6d89b9ecb967)), references [#264](https://github.com/glorecertificate/glore/issues/264)
+
+### Other
+
+- Log cold start timings on qa for one measurement (#266) ([a05da2b](https://github.com/glorecertificate/glore/commit/a05da2b50736200fdda635df9bbe5e74a0f2276f)), references [#266](https://github.com/glorecertificate/glore/issues/266)
+
 ## [0.7.5](https://github.com/glorecertificate/glore/compare/v0.7.4...v0.7.5) (2026-11-28)
 
 ### Features

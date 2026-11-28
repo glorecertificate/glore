@@ -42,10 +42,20 @@ export interface SkillGroupDraft {
 
 const emptyRecord = () => LOCALES.reduce((record, locale) => ({ ...record, [locale]: '' }), {} as IntlRecord)
 
-export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ group?: SkillGroupDraft }>) => {
+export const SkillGroupDialog = ({
+  children,
+  group,
+  onOpenChange,
+  open: openProp,
+}: React.PropsWithChildren<{ group?: SkillGroupDraft; onOpenChange?: (open: boolean) => void; open?: boolean }>) => {
   const t = useTranslations('Learning.framework')
   const { refresh } = useRouter()
-  const [open, setOpen] = useState(false)
+  const [openState, setOpenState] = useState(false)
+  const open = openProp ?? openState
+  const setOpen = (value: boolean) => {
+    setOpenState(value)
+    onOpenChange?.(value)
+  }
   const [saving, setSaving] = useState(false)
   const [language, setLanguage] = useState<Locale>(DEFAULT_LOCALE)
   const [translating, setTranslating] = useState<Record<GroupField, boolean>>({ description: false, name: false })
@@ -121,7 +131,7 @@ export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ 
               </IconPicker>
             </div>
             <Tabs className="gap-4" onValueChange={value => setLanguage(value as Locale)} value={language}>
-              <GroupLanguageTabs status={status} />
+              <GroupLanguageTabs className="max-sm:w-full" status={status} />
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-2">
                   <Label htmlFor="group-name">{t('nameLabel')}</Label>

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 
 import { useFormatter, useTranslations } from 'next-intl'
 
+import { ChartList } from '@/components/ui/chart-list'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
@@ -21,6 +22,7 @@ interface ChartDatum {
 }
 
 export interface ChartProps extends Omit<React.ComponentProps<'div'>, 'children'> {
+  categorical?: boolean
   data: ChartDatum[]
   label: string
   loading?: boolean
@@ -52,7 +54,16 @@ export const preloadChart = async () => {
 
 const ChartRenderer = dynamic(loadChartRenderer, { loading: () => <DelayedSkeleton />, ssr: false })
 
-export const Chart = ({ className, data, label, loading = false, series, variant = 'area', ...props }: ChartProps) => {
+export const Chart = ({
+  categorical = false,
+  className,
+  data,
+  label,
+  loading = false,
+  series,
+  variant = 'area',
+  ...props
+}: ChartProps) => {
   const t = useTranslations('Components.Chart')
   const { number } = useFormatter()
 
@@ -65,8 +76,13 @@ export const Chart = ({ className, data, label, loading = false, series, variant
   }
 
   return (
-    <div className={cn('min-w-0', className)} data-slot="chart" {...props}>
-      <div aria-hidden className="h-64 w-full">
+    <div className={cn('@container/chart min-w-0', className)} data-slot="chart" {...props}>
+      {categorical && data.length > 0 && (
+        <div aria-hidden className="hidden @max-md/chart:block">
+          <ChartList data={data} series={series} />
+        </div>
+      )}
+      <div aria-hidden className={cn('h-64 w-full', categorical && data.length > 0 && '@max-md/chart:hidden')}>
         {data.length > 0 ? (
           <ChartRenderer data={data} series={series} variant={variant} />
         ) : (

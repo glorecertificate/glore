@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useAutoFocus } from '@/hooks/use-auto-focus'
 import { cn } from '@/lib/utils'
 
 const toISODate = (date: Date) =>
@@ -21,6 +22,8 @@ export const BirthdayField = ({ disabled }: { disabled: boolean }) => {
   const format = useFormatter()
   const form = useFormContext<OnboardingFormValues>()
   const [open, setOpen] = useState(false)
+
+  useAutoFocus('[data-birthday-trigger]')
 
   return (
     <FormField
@@ -33,8 +36,8 @@ export const BirthdayField = ({ disabled }: { disabled: boolean }) => {
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
-                  autoFocus
                   className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
+                  data-birthday-trigger
                   disabled={disabled}
                   variant="outline"
                 >

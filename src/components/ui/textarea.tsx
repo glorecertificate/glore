@@ -2,6 +2,7 @@
 
 import { useEffect, useEffectEvent, useRef } from 'react'
 
+import { finePointer } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
 interface TextareaProps extends React.ComponentProps<'textarea'> {
@@ -18,16 +19,16 @@ export const Textarea = ({ autoFocus, className, ring = true, ...props }: Textar
   })
 
   useEffect(() => {
-    if (!autoFocus) return
+    if (!autoFocus || !finePointer()) return
+    ref.current?.focus({ preventScroll: true })
     const timeout = setTimeout(focusTextarea, 100)
     return () => clearTimeout(timeout)
   }, [autoFocus])
 
   return (
     <textarea
-      autoFocus={autoFocus}
       className={cn(
-        'flex field-sizing-content min-h-16 w-full rounded-lg border border-border bg-field px-3 py-2 text-base transition-[color,border-color] outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm pointer-coarse:text-base',
+        'flex field-sizing-content min-h-16 w-full rounded-lg border border-border bg-field px-3 py-2 text-base transition-[color,border-color] outline-none placeholder:text-fg-placeholder disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm pointer-coarse:text-base',
         ring && 'focus-visible:focus-ring-inset',
         className
       )}

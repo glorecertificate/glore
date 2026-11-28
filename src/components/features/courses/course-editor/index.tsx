@@ -1,7 +1,9 @@
 'use client'
 
+import { AskAIProvider } from '@/components/features/courses/course-editor/ask-ai-provider'
 import { CourseContent } from '@/components/features/courses/course-editor/content'
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { EditorActions } from '@/components/features/courses/course-editor/editor-actions'
 import { CourseFooter } from '@/components/features/courses/course-editor/footer'
 import { CourseLanguageTabs } from '@/components/features/courses/course-editor/language-tabs'
 import { CourseLessonPicker } from '@/components/features/courses/course-editor/lesson-picker'
@@ -9,32 +11,39 @@ import { CourseSidebar } from '@/components/features/courses/course-editor/sideb
 import { CourseTranslation } from '@/components/features/courses/course-editor/translation'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useNavigationGuard } from '@/hooks/use-navigation-guard'
+import { useScrollReset } from '@/hooks/use-scroll-reset'
 
 const COURSE_SIDEBAR_WIDTH = '18rem'
 const sidebarStyle = { width: COURSE_SIDEBAR_WIDTH }
 
 export const CourseEditor = () => {
-  const { course, hasAnyUpdates, language } = useCourse()
+  const { course, hasAnyUpdates, language, step } = useCourse()
   const hasFooter = course.lessons && course.lessons.length > 1
 
   useMetadata({ title: course.title[language] })
 
   useNavigationGuard(hasAnyUpdates)
 
+  useScrollReset(step)
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2 pb-24 md:pb-0 xl:flex-row">
-        <CourseSidebar className="hidden shrink-0 xl:block" style={sidebarStyle} />
-        <div className="flex min-w-0 grow flex-col">
-          <CourseLessonPicker className="mb-4 xl:hidden" />
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <CourseLanguageTabs />
-            <CourseTranslation />
+    <AskAIProvider>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 pb-24 md:pb-0 xl:flex-row">
+          <CourseSidebar className="hidden shrink-0 xl:block" style={sidebarStyle} />
+          <div className="flex min-w-0 grow flex-col">
+            <CourseLessonPicker className="mb-4 xl:hidden" />
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <CourseLanguageTabs />
+              <EditorActions>
+                <CourseTranslation />
+              </EditorActions>
+            </div>
+            <CourseContent />
+            {hasFooter && <CourseFooter />}
           </div>
-          <CourseContent />
-          {hasFooter && <CourseFooter />}
         </div>
       </div>
-    </div>
+    </AskAIProvider>
   )
 }

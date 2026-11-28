@@ -54,6 +54,7 @@ import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/toast'
 import { type Certificate } from '@/db/queries/certificate'
 import { useDebounce } from '@/hooks/use-debounce'
+import { useScrollReset } from '@/hooks/use-scroll-reset'
 import appConfig from '~/config/app.json'
 
 type SaveState = 'error' | 'idle' | 'limit' | 'saved' | 'saving'
@@ -135,8 +136,10 @@ export const CertificateWizard = ({
     resolver: zodResolver(wizardSchema(missing)),
   })
 
+  useScrollReset(step)
+
   useEffect(() => {
-    if (moved.current) heading.current?.focus()
+    if (moved.current) heading.current?.focus({ preventScroll: true })
   }, [step])
 
   const skillsError: unknown = form.formState.errors.skills

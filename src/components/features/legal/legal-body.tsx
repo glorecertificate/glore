@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import { useTranslations } from 'next-intl'
+
 import { RichContentEditor } from '@/components/features/courses/course-editor/content'
 import { articleValueToMarkdown, markdownToArticleValue } from '@/components/features/docs/article-markdown'
 
@@ -14,6 +16,7 @@ interface LegalBodyProps {
 }
 
 export const LegalBody = ({ flushRef, labelledBy, markdown, onChange, version }: LegalBodyProps) => {
+  const t = useTranslations('LegalAdmin')
   const [initialValue] = useState(() => markdownToArticleValue(markdown))
 
   return (
@@ -23,6 +26,7 @@ export const LegalBody = ({ flushRef, labelledBy, markdown, onChange, version }:
       labelledBy={labelledBy}
       markdownSafe
       onChange={value => onChange(articleValueToMarkdown(value))}
+      placeholder={t('bodyPlaceholder')}
       readOnly={false}
       version={version}
     />

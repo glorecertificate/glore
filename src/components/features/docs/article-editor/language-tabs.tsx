@@ -14,7 +14,7 @@ export const ArticleLanguageTabs = ({ className, ...props }: React.ComponentProp
   const { status } = useArticle()
 
   return (
-    <TabsList className={cn('min-w-0', className)} {...props}>
+    <TabsList className={cn('min-w-0 max-sm:w-full', className)} {...props}>
       {localeItems.map(({ label, value }) => {
         const { hasUpdates, published } = status[value]
 

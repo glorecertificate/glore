@@ -24,7 +24,7 @@ export const LegalTabsList = () => {
   const t = useTranslations('LegalAdmin')
 
   return (
-    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto">
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto overflow-y-hidden">
       {ORDER.map(slug => (
         <TabsTrigger key={slug} value={slug}>
           {t(`documents.${KEYS[slug]}`)}

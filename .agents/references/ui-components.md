@@ -177,6 +177,12 @@ Owner decisions, 2026-11-18. Controls keep their visible size on every device.
 - Inputs, textareas, and the command input use 16px on coarse pointers. A caller that sets `text-sm` on a field breaks this rule.
 - `viewportFit: 'cover'` and `interactiveWidget: 'resizes-content'` are set in `lib/metadata.ts`. `pt-safe`, `pb-safe`, and `px-page-safe` add the safe-area insets to fixed bars.
 - `Dialog` and `AlertDialog` are bottom sheets below `sm`. The body scrolls, the footer sticks, and the confirm action is last and at the bottom.
+- Bottom sheets (`Dialog` and `AlertDialog` below `sm`, `Sheet side="bottom"`) show a handle and close on a drag down through `useDragDismiss`: past 25% of the height or on a fast flick. Fields, sliders, scrolled content, and `[data-drag-dismiss=off]` keep their own gestures.
+- No field takes focus on open on coarse pointers, because iOS does not open the keyboard for script focus. `Input`, `Textarea`, `useAutoFocus`, `MultiSelect`, `Popover`, `Dialog`, `Sheet`, and `AlertDialog` focus a field only when `finePointer()` (`lib/pointer.ts`) is true. On touch they focus the content root.
+- Pages open at the top. The sidebar resets the scroll on a pathname change, and `useScrollReset(key)` does it for steps and lessons kept in a search param.
+- Horizontal scrollers also set `overflow-y-hidden`, so they never scroll vertically.
+- Stat card grids are one column below `sm`. `Chart` with `categorical` shows a labeled bar list when it is narrower than 28rem.
+- Placeholders use `fg-placeholder`: `fg-3` (4.5:1) on surfaces, so they read lighter than `fg-2` and values. On the band it is `band-muted` at 80%, 3.4:1 or more on every stop.
 - `DropdownMenu` and `Popover` cap their height with the Radix available-height variable and scroll inside.
 - `InfoTip` opens a popover on tap. Use it instead of a tooltip for text that has no other path on touch. Pass `nested` inside another button. The nested form is hidden from assistive technology and adds the label as screen-reader text, because a control cannot sit inside a button.
 
@@ -199,6 +205,7 @@ Owner decisions, 2026-11-18. Controls keep their visible size on every device.
 ## Course editor on phones and tablets
 
 - Below `xl` (1280px, because the full sidebar takes 256px at 1024px) the lesson picker opens a bottom `Sheet` with `CourseSidebar variant="sheet"`. The same component serves the inline sidebar from `lg`. On coarse pointers each row adds Move up, Move down, and Delete, next to the drag handle. Choosing a lesson closes the sheet.
-- Below `md` the band shows the title, the status chips, and the language tabs. Settings, analytics, and preview sit in a More menu. Save and the Draft or Published switch sit in a bottom bar portalled to `body` with the safe-area inset. The description shows 2 lines and expands on tap.
-- `course-editor/block-actions.tsx` is a touch-only Block menu (Move up, Move down, Duplicate, Turn into, Ask AI, Delete). It acts on the top-level block at the caret through the Plate editor API and replaces the context menu that `block-context-menu.tsx` turns off on touch.
+- Below `md` the band shows the title, the status chips, and the language tabs. Settings, analytics, and preview sit in a More menu. Save and the Draft or Published switch sit in a bottom bar portalled to `body` with the safe-area inset. A read-only description shows 2 lines and expands on tap. The editable field shows in full.
+- All editors (course, docs, legal) put `EditorActions` next to the language tabs. Below `sm` the tabs take a full row and Translate and Ask AI share the next row, half each. Ask AI shows only on coarse pointers and opens the AI menu at the caret (`AskAIProvider`). The toolbar AI button is hidden on coarse pointers.
+- `useTouchBlockDrag` moves a top-level block from its grip on touch, with a drop line and auto-scroll near the viewport edges. The grip shows on the block that holds the caret.
 - `lesson-editor.tsx` wraps the vendored editor. Below `xl` the fixed toolbar is one row that scrolls sideways and sticks to the viewport. On coarse pointers the floating selection toolbar is hidden.

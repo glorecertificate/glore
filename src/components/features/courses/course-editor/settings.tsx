@@ -3,13 +3,15 @@
 import { useEffect, useId, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
+import { type Locale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { checkSlugAvailable } from '@/actions/courses/management'
 import { useCourses } from '@/components/features/courses/context'
 import { courseIconVariants } from '@/components/features/courses/course-list/icon-variants'
+import { GroupFieldTranslate } from '@/components/features/courses/skill-framework/group-field-translate'
+import { GroupLanguageTabs } from '@/components/features/courses/skill-framework/group-language-tabs'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
@@ -25,9 +27,12 @@ import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course, type CourseSummary }
 import { OUTCOMES_MAX, parseOutcomesText, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { useDebounce } from '@/hooks/use-debounce'
 import { SLUG_REGEX } from '@/lib/constants'
-import { LOCALES } from '@/lib/i18n'
+import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
+import { hasText } from '@/lib/translate'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
+
+const COURSE_PATH_PREFIX = '/courses/'
 
 const courseSettingsSchema = z.object({
   icon: z.string().nullable(),
@@ -64,7 +69,7 @@ export const CourseSettings = ({
 }) => {
   const { skillGroups, createCourse, updateCourse } = useCourses()
 
-  const { localeItems, localize } = useI18n()
+  const { localize } = useI18n()
   const t = useTranslations('CourseEditor')
   const tCommon = useTranslations('CourseCommon')
   const tEditor = useTranslations('Learning.editor')
@@ -130,7 +135,22 @@ export const CourseSettings = ({
   }, [course?.id, course?.slug, debouncedSlug, form, t])
 
   const slugId = useId()
-  const slugPrefix = `${window.location.origin}/courses/`
+  const outcomesId = useId()
+  const [outcomesLanguage, setOutcomesLanguage] = useState<Locale>(DEFAULT_LOCALE)
+  const [translatingOutcomes, setTranslatingOutcomes] = useState(false)
+  const outcomeValues = form.getValues('outcomes')
+  const outcomesStatus = Object.fromEntries(
+    LOCALES.map(locale => [
+      locale,
+      { complete: hasText(outcomeValues[locale]), hasUpdates: Boolean(form.formState.dirtyFields.outcomes?.[locale]) },
+    ])
+  )
+
+  const applyOutcomes = (_field: string, locale: Locale, value: string, seen: string) => {
+    const current = form.getValues(`outcomes.${locale}`)
+    if (hasText(current) && current !== seen) return
+    form.setValue(`outcomes.${locale}`, value, { shouldDirty: true, shouldValidate: true })
+  }
   const isIntro = form.getValues('type') === 'intro'
   const errors = Object.values(form.formState.errors).flatMap(error => (error.message ? [error.message] : []))
 
@@ -290,10 +310,13 @@ export const CourseSettings = ({
                 <div className="space-y-1.5">
                   <InputGroup>
                     <InputGroupAddon>
-                      <InputGroupText className="font-mono text-sm text-muted-foreground">{slugPrefix}</InputGroupText>
+                      <InputGroupText className="gap-0 font-mono text-sm text-muted-foreground pointer-coarse:text-base">
+                        <span className="max-sm:hidden">{window.location.origin}</span>
+                        <span>{COURSE_PATH_PREFIX}</span>
+                      </InputGroupText>
                     </InputGroupAddon>
                     <InputGroupInput
-                      className="pl-0.5! font-mono text-sm"
+                      className="pl-0.5! font-mono text-sm pointer-coarse:text-base"
                       disabled={form.formState.isSubmitting}
                       id={slugId}
                       onChange={onSlugChange(onChange)}
@@ -316,32 +339,46 @@ export const CourseSettings = ({
           />
           <div className="space-y-3">
             <div className="flex flex-col gap-y-1">
-              <Label>{tEditor('outcomesLabel')}</Label>
+              <Label htmlFor={outcomesId}>{tEditor('outcomesLabel')}</Label>
               <FormDescription>{tEditor('outcomesDescription', { max: OUTCOMES_MAX })}</FormDescription>
             </div>
-            <div className="space-y-3">
-              {localeItems.map(({ label, value }) => (
-                <FormField
-                  control={form.control}
-                  key={value}
-                  name={`outcomes.${value}`}
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel className="text-xs text-muted-foreground">{label}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          className="min-h-20 resize-none"
-                          onBlur={field.onBlur}
-                          onChange={field.onChange}
-                          placeholder={tEditor('outcomesPlaceholder')}
-                          value={field.value}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
+            <Tabs
+              className="gap-3"
+              onValueChange={value => setOutcomesLanguage(value as Locale)}
+              value={outcomesLanguage}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <GroupLanguageTabs className="max-sm:w-full" status={outcomesStatus} />
+                <GroupFieldTranslate
+                  field="outcomes"
+                  language={outcomesLanguage}
+                  onApply={applyOutcomes}
+                  onRunningChange={setTranslatingOutcomes}
+                  values={outcomeValues}
                 />
-              ))}
-            </div>
+              </div>
+              <FormField
+                control={form.control}
+                key={outcomesLanguage}
+                name={`outcomes.${outcomesLanguage}`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea
+                        aria-busy={translatingOutcomes}
+                        className="min-h-24 resize-none"
+                        id={outcomesId}
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        placeholder={tEditor('outcomesPlaceholder')}
+                        readOnly={translatingOutcomes}
+                        value={field.value}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </Tabs>
           </div>
         </div>
         <div className="sticky -bottom-8 -mx-8 -mb-8 flex flex-col gap-2 border-t bg-background px-8 py-4">

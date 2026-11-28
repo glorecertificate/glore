@@ -12,15 +12,16 @@ interface GroupLanguageStatus {
 }
 
 interface GroupLanguageTabsProps {
+  className?: string
   status: Record<string, GroupLanguageStatus>
 }
 
-export const GroupLanguageTabs = ({ status }: GroupLanguageTabsProps) => {
+export const GroupLanguageTabs = ({ className, status }: GroupLanguageTabsProps) => {
   const t = useTranslations('Learning.framework')
   const { localeItems } = useI18n()
 
   return (
-    <TabsList className="min-w-0">
+    <TabsList className={cn('min-w-0', className)}>
       {localeItems.map(({ label, value }) => {
         const { complete, hasUpdates } = status[value]
 

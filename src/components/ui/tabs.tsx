@@ -51,7 +51,7 @@ export const TabsList = ({
   const classNames = cn(
     'inline-flex h-9 w-fit max-w-full scrollbar-none items-center justify-center rounded-lg bg-muted p-0.5',
     scrollable &&
-      'justify-start overflow-x-auto tabs-scroll-band pointer-coarse:-my-1 pointer-coarse:h-11 pointer-coarse:rounded-xl pointer-coarse:py-1.5',
+      'justify-start overflow-x-auto overflow-y-hidden tabs-scroll-band pointer-coarse:-my-1 pointer-coarse:h-11 pointer-coarse:rounded-xl pointer-coarse:py-1.5',
     className
   )
   const listStyle = { ...style, maskImage, WebkitMaskImage: maskImage }

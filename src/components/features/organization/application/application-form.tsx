@@ -87,7 +87,8 @@ export const ApplicationForm = () => {
   useEffect(() => {
     if (previousStep.current === stepIndex) return
     previousStep.current = stepIndex
-    headingRef.current?.focus()
+    window.scrollTo(0, 0)
+    headingRef.current?.focus({ preventScroll: true })
   }, [stepIndex])
 
   const goTo = (target: ApplicationStep) => {

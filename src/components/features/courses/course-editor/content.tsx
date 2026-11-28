@@ -35,6 +35,7 @@ export const RichContentEditor = ({
   labelledBy,
   markdownSafe,
   onChange,
+  placeholder,
   readOnly,
   version,
   flushRef,
@@ -43,6 +44,7 @@ export const RichContentEditor = ({
   labelledBy?: string
   markdownSafe?: boolean
   onChange: (value: Value) => void
+  placeholder?: string
   readOnly: boolean
   version: string
   flushRef: React.RefObject<(() => unknown) | null>
@@ -86,7 +88,7 @@ export const RichContentEditor = ({
       value={initialValue}
       version={version}
     >
-      <LessonEditor aria-labelledby={labelledBy} variant="fullWidth" />
+      <LessonEditor aria-labelledby={labelledBy} variant="fullWidth" {...(placeholder ? { placeholder } : {})} />
     </RichTextEditorProvider>
   )
 }

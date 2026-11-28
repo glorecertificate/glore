@@ -83,107 +83,113 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
         <SheetHeader>
           <SheetTitle>{t('categories.manage')}</SheetTitle>
         </SheetHeader>
-
-        {/* Existing categories */}
-        <div className="mt-4 space-y-3">
-          <p className="text-sm font-medium">{t('categories.existing')}</p>
-          {categories.length === 0 ? (
-            <Empty className="py-8">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <LucideIcon name="folder-open" />
-                </EmptyMedia>
-                <EmptyTitle>{t('categories.empty')}</EmptyTitle>
-              </EmptyHeader>
-            </Empty>
-          ) : (
-            <ul className="divide-y rounded-md border">
-              <AnimatedList>
-                {categories.map(cat => (
-                  <AnimatedListItem asChild key={cat.id} variant="row">
-                    <li className="flex items-center justify-between gap-3 px-3 py-2.5">
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{localize(cat.title as IntlRecord)}</p>
-                        <p className="truncate text-xs text-muted-foreground">{cat.slug}</p>
-                      </div>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            aria-label={t('categories.delete')}
-                            className="shrink-0 text-destructive-text hover:text-destructive-text"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <LucideIcon name="trash-2" className="size-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{t('categories.deleteConfirmTitle')}</AlertDialogTitle>
-                            <AlertDialogDescription>{t('categories.deleteConfirmMessage')}</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>{t('editor.cancel')}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(cat.id)}>
-                              {t('categories.delete')}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </li>
-                  </AnimatedListItem>
-                ))}
-              </AnimatedList>
-            </ul>
-          )}
-        </div>
-
-        <Separator className="my-5" />
-
-        {/* Add new category */}
-        <div className="space-y-4">
-          <p className="text-sm font-medium">{t('categories.addNew')}</p>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="cat-slug">{t('editor.slug')}</Label>
-            <Input id="cat-slug" placeholder="category-slug" value={slug} onChange={e => setSlug(e.target.value)} />
+        <div className="px-4 pb-6">
+          {/* Existing categories */}
+          <div className="mt-4 space-y-3">
+            <p className="text-sm font-medium">{t('categories.existing')}</p>
+            {categories.length === 0 ? (
+              <Empty className="py-8">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <LucideIcon name="folder-open" />
+                  </EmptyMedia>
+                  <EmptyTitle>{t('categories.empty')}</EmptyTitle>
+                </EmptyHeader>
+              </Empty>
+            ) : (
+              <ul className="divide-y rounded-md border">
+                <AnimatedList>
+                  {categories.map(cat => (
+                    <AnimatedListItem asChild key={cat.id} variant="row">
+                      <li className="flex items-center justify-between gap-3 px-3 py-2.5">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium">{localize(cat.title as IntlRecord)}</p>
+                          <p className="truncate text-xs text-muted-foreground">{cat.slug}</p>
+                        </div>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              aria-label={t('categories.delete')}
+                              className="shrink-0 text-destructive-text hover:text-destructive-text"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <LucideIcon name="trash-2" className="size-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>{t('categories.deleteConfirmTitle')}</AlertDialogTitle>
+                              <AlertDialogDescription>{t('categories.deleteConfirmMessage')}</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>{t('editor.cancel')}</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(cat.id)}>
+                                {t('categories.delete')}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </li>
+                    </AnimatedListItem>
+                  ))}
+                </AnimatedList>
+              </ul>
+            )}
           </div>
 
-          <Tabs defaultValue={DEFAULT_LOCALE}>
-            <TabsList>
+          <Separator className="my-5" />
+
+          {/* Add new category */}
+          <div className="space-y-4">
+            <p className="text-sm font-medium">{t('categories.addNew')}</p>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="cat-slug">{t('editor.slug')}</Label>
+              <Input
+                id="cat-slug"
+                placeholder={t('categories.slugPlaceholder')}
+                value={slug}
+                onChange={e => setSlug(e.target.value)}
+              />
+            </div>
+
+            <Tabs defaultValue={DEFAULT_LOCALE}>
+              <TabsList className="max-sm:w-full">
+                {LOCALE_ITEMS.map(item => (
+                  <TabsTrigger key={item.value} value={item.value}>
+                    {item.icon} {item.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
               {LOCALE_ITEMS.map(item => (
-                <TabsTrigger key={item.value} value={item.value}>
-                  {item.icon} {item.label}
-                </TabsTrigger>
+                <TabsContent key={item.value} className="grid gap-3 pt-2" value={item.value}>
+                  <div className="space-y-1.5">
+                    <Label>{t('categories.name')}</Label>
+                    <Input
+                      placeholder={t('categories.namePlaceholder')}
+                      value={names[item.value] ?? ''}
+                      onChange={e => setNames(prev => ({ ...prev, [item.value]: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>{t('categories.description')}</Label>
+                    <Textarea
+                      placeholder={t('categories.descriptionPlaceholder')}
+                      value={descriptions[item.value] ?? ''}
+                      onChange={e => setDescriptions(prev => ({ ...prev, [item.value]: e.target.value }))}
+                    />
+                  </div>
+                </TabsContent>
               ))}
-            </TabsList>
+            </Tabs>
 
-            {LOCALE_ITEMS.map(item => (
-              <TabsContent key={item.value} className="grid gap-3 pt-2" value={item.value}>
-                <div className="space-y-1.5">
-                  <Label>{t('categories.name')}</Label>
-                  <Input
-                    placeholder={t('categories.namePlaceholder')}
-                    value={names[item.value] ?? ''}
-                    onChange={e => setNames(prev => ({ ...prev, [item.value]: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{t('categories.description')}</Label>
-                  <Textarea
-                    placeholder={t('categories.descriptionPlaceholder')}
-                    value={descriptions[item.value] ?? ''}
-                    onChange={e => setDescriptions(prev => ({ ...prev, [item.value]: e.target.value }))}
-                  />
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
-
-          <Button className="w-full" disabled={adding} size="sm" onClick={handleAdd}>
-            <LucideIcon name="plus" className="size-4" />
-            {t('categories.add')}
-          </Button>
+            <Button className="w-full" disabled={adding} size="sm" onClick={handleAdd}>
+              <LucideIcon name="plus" className="size-4" />
+              {t('categories.add')}
+            </Button>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

@@ -34,6 +34,7 @@ export const SkillGroupControls = ({
   const t = useTranslations('Learning.framework')
   const { refresh } = useRouter()
   const [confirming, setConfirming] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [busy, setBusy] = useState(false)
 
   const move = (direction: 'down' | 'up') => {
@@ -66,8 +67,10 @@ export const SkillGroupControls = ({
 
   return (
     <div className="flex items-center gap-1">
-      <SkillGroupDialog group={group}>
-        <Button variant="outline">{t('editGroup')}</Button>
+      <SkillGroupDialog group={group} onOpenChange={setEditing} open={editing}>
+        <Button className="max-sm:hidden" variant="outline">
+          {t('editGroup')}
+        </Button>
       </SkillGroupDialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -76,6 +79,10 @@ export const SkillGroupControls = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-48">
+          <DropdownMenuItem className="sm:hidden" onSelect={() => setEditing(true)}>
+            <LucideIcon aria-hidden name="pencil" />
+            {t('editGroup')}
+          </DropdownMenuItem>
           <DropdownMenuItem disabled={!canMoveUp} onSelect={() => move('up')}>
             <LucideIcon aria-hidden name="arrow-up" />
             {t('moveUp')}

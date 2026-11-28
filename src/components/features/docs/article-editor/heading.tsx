@@ -48,7 +48,7 @@ export const ArticleHeading = ({ children }: { children: (parts: ArticleHeadingP
       <InlineInput
         aria-busy={excerptBusy}
         aria-label={t('excerpt')}
-        className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text group-has-[[aria-expanded=true]]/field:bg-band-scrim placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
+        className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text group-has-[[aria-expanded=true]]/field:bg-band-scrim placeholder:text-fg-placeholder hover:bg-band-scrim focus-visible:bg-band-scrim"
         keepFilled={false}
         maxLength={EXCERPT_MAX_LENGTH}
         onChange={event => setExcerpt(language, event.target.value)}

@@ -2,6 +2,7 @@
 
 import * as PopoverPrimitive from '@radix-ui/react-popover'
 
+import { focusRootOnTouch } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
 export const Popover = (props: React.ComponentProps<typeof PopoverPrimitive.Root>) => (
@@ -15,6 +16,7 @@ export const PopoverTrigger = (props: React.ComponentProps<typeof PopoverPrimiti
 export const PopoverContent = ({
   align = 'center',
   className,
+  onOpenAutoFocus,
   portal = true,
   sideOffset = 4,
   style,
@@ -32,6 +34,11 @@ export const PopoverContent = ({
         className
       )}
       data-slot="popover-content"
+      onOpenAutoFocus={event => {
+        onOpenAutoFocus?.(event)
+        if (event.defaultPrevented) return
+        focusRootOnTouch(event)
+      }}
       sideOffset={sideOffset}
       style={{
         ...style,

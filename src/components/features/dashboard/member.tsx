@@ -57,7 +57,7 @@ export const MemberDashboard = ({
         title={t('checklist.title')}
       />
 
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatLink accent="teal" href="/courses" icon="book-open" label={t('stats.enrolled')} value={courses.enrolled} />
         <StatLink accent="amber" href="/courses" icon="play" label={t('stats.inProgress')} value={courses.inProgress} />
         <StatLink

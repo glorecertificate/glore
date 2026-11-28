@@ -107,7 +107,7 @@ export const AdminOrganizationTabsList = ({
   const tInvitations = useTranslations('Invitations')
 
   return (
-    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto">
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto overflow-y-hidden">
       {hasApplication && <TabsTrigger value="application">{tAdmin('app_tab')}</TabsTrigger>}
       <TabsTrigger count={members} showZero value="members">
         {t('members')}

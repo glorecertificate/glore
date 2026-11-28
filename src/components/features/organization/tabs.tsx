@@ -104,7 +104,11 @@ export const OrganizationTabsList = ({
   return (
     <OrganizationInviteHost isOrgAdmin={isOrgAdmin}>
       <div className="flex w-full min-w-0 items-center justify-between gap-3 sm:flex-wrap">
-        <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" ref={listRef} {...props}>
+        <TabsList
+          className="max-w-full min-w-0 justify-start overflow-x-auto overflow-y-hidden"
+          ref={listRef}
+          {...props}
+        >
           <OrganizationTabTrigger value="overview">{t('overview')}</OrganizationTabTrigger>
           <OrganizationTabTrigger value="members">{t('members')}</OrganizationTabTrigger>
           <OrganizationTabTrigger count={invitationCount} value="invitations">

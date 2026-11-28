@@ -230,13 +230,16 @@ export const CourseListCard = ({
           {user.canEdit && languageItems.length > 1 && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
               <LucideIcon name="languages" className="size-3.5 text-muted-foreground" />
-              <div className="flex items-center gap-2 pointer-coarse:gap-6">
+              <div className="flex items-center gap-2 pointer-coarse:-mx-1.5 pointer-coarse:gap-0">
                 {languageItems.map(({ active, displayLabel, icon, published, value }) => (
                   <div className="flex flex-col items-center gap-0" key={value}>
                     <Tooltip delayDuration={300}>
                       <TooltipTrigger asChild>
                         <Button
-                          className={cn('touch-hit relative text-base', active && 'pointer-events-none cursor-default')}
+                          className={cn(
+                            'touch-hit-y relative text-base pointer-coarse:px-1.5',
+                            active && 'pointer-events-none cursor-default'
+                          )}
                           onClick={() => {
                             if (!active) {
                               setLanguage(value)

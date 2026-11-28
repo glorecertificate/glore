@@ -74,10 +74,10 @@ export const AdminOverview = ({
       <AdminOverviewDecisions loading={loading} overview={overview} />
 
       <Card className="gap-0 p-0" data-slot="admin-figures">
-        <dl className="grid grid-cols-2 divide-border-subtle max-lg:divide-y lg:grid-cols-4 lg:divide-x">
+        <dl className="grid grid-cols-1 divide-border-subtle max-lg:divide-y sm:grid-cols-2 lg:grid-cols-4 lg:divide-x">
           {figures.map(({ caption, label, value }) => (
             <div
-              className="flex min-w-0 flex-col gap-1 p-5 max-lg:nth-[2n]:border-l max-lg:nth-[2n]:border-border-subtle"
+              className="flex min-w-0 flex-col gap-1 p-5 sm:max-lg:nth-[2n]:border-l sm:max-lg:nth-[2n]:border-border-subtle"
               key={label}
             >
               <dt className="type-label text-fg-2 uppercase">{label}</dt>
@@ -96,13 +96,8 @@ export const AdminOverview = ({
             <CardDescription>{t('certificatesChartDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <section
-              aria-label={t('certificatesChartTitle')}
-              className="focus-visible:focus-ring-inset max-sm:overflow-x-auto"
-              tabIndex={0}
-            >
+            <section aria-label={t('certificatesChartTitle')}>
               <Chart
-                className="max-sm:min-w-lg"
                 data={issuance ? chartData : []}
                 label={t('certificatesChartTitle')}
                 loading={loading}

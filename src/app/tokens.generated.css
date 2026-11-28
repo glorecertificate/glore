@@ -16,6 +16,7 @@
     --fg-1: oklch(0.227 0.039 254);
     --fg-2: oklch(0.467 0.02 256);
     --fg-3: oklch(0.533 0.017 256);
+    --fg-placeholder: var(--fg-3);
     --fg-disabled: oklch(0.72 0.011 256);
     --fg-title: oklch(0.306 0.065 254.1);
     --fg-on-fill: oklch(1 0 0);
@@ -232,6 +233,7 @@
     --fg-1: oklch(0.95 0.014 238);
     --fg-2: oklch(0.77 0.013 256);
     --fg-3: oklch(0.691 0.013 256);
+    --fg-placeholder: var(--fg-3);
     --fg-disabled: oklch(0.46 0.014 256);
     --fg-title: oklch(0.935 0.022 254.1);
     --fg-on-fill: oklch(0.17 0.014 256);

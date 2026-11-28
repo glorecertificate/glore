@@ -6,6 +6,8 @@ import { useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { discardDraft, saveTranslation } from '@/actions/legal/manage'
+import { AskAIProvider } from '@/components/features/courses/course-editor/ask-ai-provider'
+import { EditorActions } from '@/components/features/courses/course-editor/editor-actions'
 import { LegalBody } from '@/components/features/legal/legal-body'
 import { LegalPublishDialog } from '@/components/features/legal/legal-publish-dialog'
 import {
@@ -142,78 +144,82 @@ export const LegalDraftEditor = ({
         <CardDescription>{t('draftDescription')}</CardDescription>
       </CardHeader>
       <CardContent className="min-w-0 space-y-6">
-        <Tabs onValueChange={setLocale} value={locale}>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <TabsList>
-              {LOCALE_ITEMS.map(item => (
-                <TabsTrigger key={item.value} value={item.value}>
-                  {item.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            <TranslateMenu
-              beforeRun={flushBody}
-              empty={t('translateEmpty')}
-              onApply={applyTranslated}
-              plan={source => planFor(locale, source, LEGAL_FIELDS)}
-              sources={legalSources(values, LEGAL_FIELDS, LOCALE_CODES, locale)}
-              target={locale}
-            />
-          </div>
-          {LOCALE_ITEMS.map(item => {
-            const own = values[item.value] ?? EMPTY
-            const translation = draft.translations.find(row => row.locale === item.value)
-            return (
-              <TabsContent className="mt-4 min-w-0 space-y-4" key={item.value} value={item.value}>
-                <div className="grid gap-2">
-                  <Label htmlFor={`legal-title-${item.value}`}>{t('titleLabel')}</Label>
-                  <div className="group/field flex items-center gap-2">
-                    <Input
-                      aria-busy={titleBusy}
-                      disabled={pending}
-                      id={`legal-title-${item.value}`}
-                      maxLength={200}
-                      onChange={event => update(item.value, { title: event.target.value })}
-                      readOnly={titleBusy}
-                      value={own.title}
-                    />
-                    <FieldTranslateButton
-                      beforeRun={flushBody}
-                      onApply={applyTranslated}
-                      onRunningChange={setTitleBusy}
-                      plan={source => planFor(item.value, source, ['title'])}
-                      sources={legalSources(values, ['title'], LOCALE_CODES, item.value)}
-                      target={item.value}
+        <AskAIProvider>
+          <Tabs onValueChange={setLocale} value={locale}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <TabsList className="max-sm:w-full">
+                {LOCALE_ITEMS.map(item => (
+                  <TabsTrigger key={item.value} value={item.value}>
+                    {item.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              <EditorActions>
+                <TranslateMenu
+                  beforeRun={flushBody}
+                  empty={t('translateEmpty')}
+                  onApply={applyTranslated}
+                  plan={source => planFor(locale, source, LEGAL_FIELDS)}
+                  sources={legalSources(values, LEGAL_FIELDS, LOCALE_CODES, locale)}
+                  target={locale}
+                />
+              </EditorActions>
+            </div>
+            {LOCALE_ITEMS.map(item => {
+              const own = values[item.value] ?? EMPTY
+              const translation = draft.translations.find(row => row.locale === item.value)
+              return (
+                <TabsContent className="mt-4 min-w-0 space-y-4" key={item.value} value={item.value}>
+                  <div className="grid gap-2">
+                    <Label htmlFor={`legal-title-${item.value}`}>{t('titleLabel')}</Label>
+                    <div className="group/field flex items-center gap-2">
+                      <Input
+                        aria-busy={titleBusy}
+                        disabled={pending}
+                        id={`legal-title-${item.value}`}
+                        maxLength={200}
+                        onChange={event => update(item.value, { title: event.target.value })}
+                        readOnly={titleBusy}
+                        value={own.title}
+                      />
+                      <FieldTranslateButton
+                        beforeRun={flushBody}
+                        onApply={applyTranslated}
+                        onRunningChange={setTitleBusy}
+                        plan={source => planFor(item.value, source, ['title'])}
+                        sources={legalSources(values, ['title'], LOCALE_CODES, item.value)}
+                        target={item.value}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex min-w-0 flex-col gap-2">
+                    <p className="text-sm leading-none font-medium" id={`legal-body-${item.value}`}>
+                      {t('bodyLabel')}
+                    </p>
+                    <LegalBody
+                      flushRef={flushRef}
+                      key={`${item.value}-${bodyVersion}`}
+                      labelledBy={`legal-body-${item.value}`}
+                      markdown={own.body}
+                      onChange={body => update(item.value, { body })}
+                      version={`${item.value}-${bodyVersion}`}
                     />
                   </div>
-                </div>
-                <div className="flex min-w-0 flex-col gap-2">
-                  <p className="text-sm leading-none font-medium" id={`legal-body-${item.value}`}>
-                    {t('bodyLabel')}
-                  </p>
-                  <LegalBody
-                    flushRef={flushRef}
-                    key={`${item.value}-${bodyVersion}`}
-                    labelledBy={`legal-body-${item.value}`}
-                    markdown={own.body}
-                    onChange={body => update(item.value, { body })}
-                    version={`${item.value}-${bodyVersion}`}
-                  />
-                </div>
-                {translation?.outdated && <p className="text-sm text-warning-text">{t('outdated')}</p>}
-                <Button
-                  disabled={!isDirty(item.value) || !own.title.trim() || !own.body.trim()}
-                  loading={pending}
-                  onClick={() => handleSave(item.value)}
-                  type="button"
-                  variant="outline"
-                >
-                  {t('save', { language: item.label })}
-                </Button>
-              </TabsContent>
-            )
-          })}
-        </Tabs>
+                  {translation?.outdated && <p className="text-sm text-warning-text">{t('outdated')}</p>}
+                  <Button
+                    disabled={!isDirty(item.value) || !own.title.trim() || !own.body.trim()}
+                    loading={pending}
+                    onClick={() => handleSave(item.value)}
+                    type="button"
+                    variant="outline"
+                  >
+                    {t('save', { language: item.label })}
+                  </Button>
+                </TabsContent>
+              )
+            })}
+          </Tabs>
+        </AskAIProvider>
 
         <div className="flex flex-wrap items-center gap-3 border-t pt-4">
           {canPublish ? (

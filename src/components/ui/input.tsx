@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { type VariantProps, cva } from 'class-variance-authority'
 
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { useMounted } from '@/hooks/use-mounted'
 import { useShortcut } from '@/hooks/use-shortcut'
+import { finePointer } from '@/lib/pointer'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -27,7 +28,7 @@ export interface InputProps
 export const inputVariants = cva(
   [
     'flex w-full min-w-0 rounded-lg border border-border bg-field transition-[color,background-color,border-color] outline-none',
-    'placeholder:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive',
+    'placeholder:text-fg-placeholder disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive',
     'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',
   ],
   {
@@ -57,6 +58,7 @@ const ICON_CLASS_NAME =
   'absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground peer-focus/input:text-foreground'
 
 export const Input = ({
+  autoFocus,
   blurOnEscape,
   className,
   defaultOpen,
@@ -79,6 +81,11 @@ export const Input = ({
   const IconComponent = typeof icon === 'function' ? icon : null
 
   useShortcut(hotkey ? { key: hotkey } : undefined, () => inputRef.current?.focus())
+
+  useEffect(() => {
+    if (!autoFocus || !finePointer()) return
+    inputRef.current?.focus({ preventScroll: true })
+  }, [autoFocus])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (blurOnEscape && e.key === 'Escape') inputRef.current?.blur()

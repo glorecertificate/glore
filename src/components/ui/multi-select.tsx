@@ -12,6 +12,7 @@ import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/compon
 import { Spinner } from '@/components/ui/spinner'
 import { type ExternalToast, toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { finePointer } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
 const MultiSelectContext = createContext<{
@@ -346,7 +347,7 @@ export const MultiSelectContent = ({
   return (
     <PopoverContent className={cn('w-fit p-0', className)} {...props}>
       <Command>
-        {enableSearch && <CommandInput autoFocus placeholder={searchPlaceholder ?? t('searchItems')} />}
+        {enableSearch && <CommandInput autoFocus={finePointer()} placeholder={searchPlaceholder ?? t('searchItems')} />}
         <CommandList>
           <CommandEmpty className="p-0">
             {loading ? (

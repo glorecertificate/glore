@@ -15,6 +15,7 @@ import { activityTab, invitationsTab, membersTab, settingsTab } from '@/componen
 import { TabSlot } from '@/components/features/organization/tab-slot'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { whenIdle } from '@/lib/prefetch'
+import { cn } from '@/lib/utils'
 
 import { ApplicationSummary } from './application-summary'
 import { type AdminOrganizationStatus } from './organization-band'
@@ -107,7 +108,7 @@ export const AdminOrganizationTabsList = ({
   const tInvitations = useTranslations('Invitations')
 
   return (
-    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto">
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto overflow-y-hidden">
       {hasApplication && <TabsTrigger value="application">{tAdmin('app_tab')}</TabsTrigger>}
       <TabsTrigger count={members} showZero value="members">
         {t('members')}
@@ -136,6 +137,7 @@ export const AdminOrganizationDetail = ({
   status: AdminOrganizationStatus
 }) => {
   const { refresh: routerRefresh } = useRouter()
+  const tab = use(AdminOrganizationTabContext)
   const tAdmin = useTranslations('Admin.organizations')
   const { hasApplication } = organizationState(initialData)
   const request = initialData.joinRequests.find(item => item.role === 'admin') ?? null
@@ -187,6 +189,7 @@ export const AdminOrganizationDetail = ({
             <TabSlot
               lazy={settingsTab}
               key={initialData.updatedAt}
+              aside={<AdminOrganizationRail className="@5xl/detail:hidden" data={initialData} status={status} />}
               hasCertificates={Object.values(initialData.pipeline).some(count => count > 0)}
               members={initialData.memberships}
               onRefresh={refresh}
@@ -195,7 +198,11 @@ export const AdminOrganizationDetail = ({
             />
           </AdminOrganizationPanel>
         </div>
-        <AdminOrganizationRail data={initialData} status={status} />
+        <AdminOrganizationRail
+          className={cn(tab === 'settings' && '@max-5xl/detail:hidden')}
+          data={initialData}
+          status={status}
+        />
       </div>
     </div>
   )

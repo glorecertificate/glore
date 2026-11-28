@@ -25,6 +25,7 @@ import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/toast'
 import { type OnboardingNextStep } from '@/db/queries/onboarding'
+import { useScrollReset } from '@/hooks/use-scroll-reset'
 
 const LAST_STEP = STEP_NAMES.length - 1
 
@@ -49,6 +50,8 @@ export const OnboardingForm = ({
   const [step, setStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [completed, setCompleted] = useState<Completed | null>(null)
+
+  useScrollReset(step)
 
   const form = useForm<OnboardingFormValues>({
     defaultValues: {

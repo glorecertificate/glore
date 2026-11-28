@@ -51,7 +51,13 @@ export const CourseRowMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button aria-label={t('assignLabel', { course: courseTitle })} disabled={busy} size="icon" variant="ghost">
+        <Button
+          aria-label={t('assignLabel', { course: courseTitle })}
+          className="ml-auto"
+          disabled={busy}
+          size="icon"
+          variant="ghost"
+        >
           <LucideIcon name="ellipsis" />
         </Button>
       </DropdownMenuTrigger>

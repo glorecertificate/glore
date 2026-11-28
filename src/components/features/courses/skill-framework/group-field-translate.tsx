@@ -14,23 +14,23 @@ import { hasText } from '@/lib/translate'
 
 export type GroupField = 'description' | 'name'
 
-interface GroupFieldTranslateProps {
-  field: GroupField
+interface GroupFieldTranslateProps<F extends string> {
+  field: F
   language: Locale
-  onApply: (field: GroupField, locale: Locale, value: string, seen: string) => void
+  onApply: (field: F, locale: Locale, value: string, seen: string) => void
   onRunningChange: (running: boolean) => void
   values: IntlRecord
 }
 
-const fieldKey = (field: GroupField) => `skill_groups:draft:${field}`
+const fieldKey = (field: string) => `draft:${field}`
 
-export const GroupFieldTranslate = ({
+export const GroupFieldTranslate = <F extends string>({
   field,
   language,
   onApply,
   onRunningChange,
   values,
-}: GroupFieldTranslateProps) => {
+}: GroupFieldTranslateProps<F>) => {
   const t = useTranslations('CourseTranslate')
   const tGroup = useTranslations('Learning.framework')
   const { localeItems } = useI18n()

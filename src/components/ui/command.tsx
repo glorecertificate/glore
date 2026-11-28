@@ -45,7 +45,7 @@ export const CommandInput = ({ className, ...props }: React.ComponentProps<typeo
     <LucideIcon name="search" className="size-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       className={cn(
-        'flex h-10 w-full rounded-md bg-transparent py-3 text-base outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pointer-coarse:text-base',
+        'flex h-10 w-full rounded-md bg-transparent py-3 text-base outline-hidden placeholder:text-fg-placeholder disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pointer-coarse:text-base',
         className
       )}
       data-slot="command-input"

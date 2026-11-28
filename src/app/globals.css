@@ -130,6 +130,7 @@
   --color-fg-1: var(--fg-1);
   --color-fg-2: var(--fg-2);
   --color-fg-3: var(--fg-3);
+  --color-fg-placeholder: var(--fg-placeholder);
   --color-fg-disabled: var(--fg-disabled);
   --color-fg-title: var(--fg-title);
   --color-fg-on-fill: var(--fg-on-fill);
@@ -479,6 +480,7 @@
   --fg-1: var(--band-foreground);
   --fg-2: var(--band-text);
   --fg-3: var(--band-muted);
+  --fg-placeholder: color-mix(in oklab, var(--band-muted) 80%, transparent);
   --border: var(--band-border);
   --input: var(--band-border);
   --ring: var(--band-foreground);

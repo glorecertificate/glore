@@ -27,6 +27,7 @@ import {
   type LearnerLesson,
   REFLECTION_MIN_LENGTH,
 } from '@/db/queries/learning'
+import { useScrollReset } from '@/hooks/use-scroll-reset'
 import { cn } from '@/lib/utils'
 
 const PlayerLesson = ({
@@ -175,6 +176,8 @@ export const CoursePlayer = ({
   const t = useTranslations('Learning.player')
   const { progress } = overview
   const progressLabelId = useId()
+
+  useScrollReset(lesson.id)
 
   useEffect(() => {
     void preloadMarkdown()

@@ -96,7 +96,7 @@ export const CourseListSort = ({ className }: { className?: string }) => {
                 </span>
                 <Button
                   className={cn(
-                    "relative size-5 opacity-0 pointer-coarse:opacity-100 pointer-coarse:before:absolute pointer-coarse:before:-inset-3 pointer-coarse:before:content-[''] group-hover/sort-menu-item:[&>svg]:text-foreground",
+                    'relative size-5 opacity-0 group-hover/sort-menu-item:[&>svg]:text-foreground',
                     sort === option && 'opacity-100'
                   )}
                   size="icon"

@@ -62,13 +62,13 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
 
   useEffect(() => {
     const element = descriptionWrapperRef.current
-    if (!element || descriptionExpanded) return
+    if (!element || descriptionExpanded || canEdit) return
     const measure = () => setDescriptionOverflowing(element.scrollHeight > element.clientHeight + 1)
     measure()
     const observer = new ResizeObserver(measure)
     observer.observe(element)
     return () => observer.disconnect()
-  }, [description, descriptionExpanded, draftDescription])
+  }, [canEdit, description, descriptionExpanded, draftDescription])
 
   const languageRef = useRef(language)
   languageRef.current = language
@@ -176,7 +176,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
   const descriptionField = canEdit ? (
     <InlineInput
       aria-label={t('updateDescription')}
-      className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text group-has-[[aria-expanded=true]]/field:bg-band-scrim placeholder:text-band-muted hover:bg-band-scrim focus-visible:bg-band-scrim"
+      className="-mx-1.5 -my-0.5 max-w-prose px-1.5 py-0.5 text-base text-band-text group-has-[[aria-expanded=true]]/field:bg-band-scrim placeholder:text-fg-placeholder hover:bg-band-scrim focus-visible:bg-band-scrim"
       aria-busy={descriptionBusy}
       keepFilled={false}
       onBlur={onDescriptionBlur}
@@ -195,11 +195,9 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
       <span
         className={cn(
           'block',
-          !descriptionExpanded && 'max-md:max-h-13 max-md:overflow-hidden',
-          !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2',
+          !(descriptionExpanded || canEdit) && 'max-md:line-clamp-2 max-md:max-h-13',
           canEdit && 'group/field flex items-center gap-3'
         )}
-        onFocusCapture={() => setDescriptionExpanded(true)}
         ref={descriptionWrapperRef}
       >
         {descriptionField}
@@ -211,7 +209,7 @@ export const CourseHeading = ({ children }: { children: (parts: CourseHeadingPar
           />
         )}
       </span>
-      {(descriptionOverflowing || descriptionExpanded) && (
+      {!canEdit && (descriptionOverflowing || descriptionExpanded) && (
         <button
           aria-expanded={descriptionExpanded}
           className="mt-1 type-caption text-band-text underline underline-offset-2 md:hidden"

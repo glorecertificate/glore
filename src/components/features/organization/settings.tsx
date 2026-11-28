@@ -49,6 +49,7 @@ type Values = z.infer<ReturnType<typeof organizationSettingsSchema>>
 type Locale = keyof IntlRecord
 
 interface OrganizationSettingsProps {
+  aside?: React.ReactNode
   hasCertificates?: boolean
   members: OrganizationPanelData['members']
   onRefresh: () => void
@@ -58,6 +59,7 @@ interface OrganizationSettingsProps {
 }
 
 export const OrganizationSettings = ({
+  aside,
   hasCertificates = false,
   members,
   onRefresh,
@@ -449,6 +451,8 @@ export const OrganizationSettings = ({
               </SettingsSection>
             </form>
           </Form>
+
+          {aside}
 
           <Separator />
 

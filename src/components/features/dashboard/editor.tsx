@@ -34,7 +34,7 @@ export const EditorDashboard = ({
         title={t('greeting', { name: firstName })}
       />
 
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatLink
           accent="teal"
           description={t('editor.coursesDescription')}
@@ -115,6 +115,7 @@ export const EditorDashboard = ({
           <CardContent>
             {top.length > 0 ? (
               <Chart
+                categorical
                 data={top.map(course => ({
                   completions: course.completions,
                   enrollments: course.enrollments,

@@ -87,7 +87,7 @@ const AnalyticsContent = ({
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {statCards.map(({ icon, key, label, value }) => (
           <Card key={key}>
             <CardHeader className="p-3 pb-1.5">

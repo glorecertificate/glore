@@ -8,6 +8,7 @@ import { countryCodeToFlag } from '@/components/ui/country-select'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { useCountryName } from '@/hooks/use-country-name'
 import { isHttpUrl } from '@/lib/url'
+import { cn } from '@/lib/utils'
 
 import { type AdminOrganizationStatus } from './organization-band'
 
@@ -20,9 +21,11 @@ const STATUS_LABEL = {
 } as const
 
 export const AdminOrganizationRail = ({
+  className,
   data,
   status,
 }: {
+  className?: string
   data: AdminOrganizationData
   status: AdminOrganizationStatus
 }) => {
@@ -38,7 +41,7 @@ export const AdminOrganizationRail = ({
   const none = <span className="text-muted-foreground">{t('aboutNone')}</span>
 
   return (
-    <aside className="flex min-w-0 flex-col gap-4" data-slot="organization-rail">
+    <aside className={cn('flex min-w-0 flex-col gap-4', className)} data-slot="organization-rail">
       <Card>
         <CardHeader>
           <CardTitle className="type-heading">{t('about')}</CardTitle>

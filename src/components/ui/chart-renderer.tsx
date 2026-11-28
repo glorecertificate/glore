@@ -19,6 +19,8 @@ import {
 } from 'recharts'
 
 import { type ChartProps } from '@/components/ui/chart'
+import { ChartLegend } from '@/components/ui/chart-legend'
+import { CHART_LINES, chartLineColor, chartPaletteIndex } from '@/components/ui/chart-palette'
 
 const AXIS_TICK = { fill: 'var(--muted-foreground)', fontSize: 12 }
 
@@ -29,24 +31,6 @@ const PALETTES = [
   { from: 'var(--chart-4)', to: 'var(--chart-4)' },
   { from: 'var(--chart-5)', to: 'var(--chart-5)' },
 ]
-
-const LINES = ['var(--chart-teal)', 'var(--chart-green)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)']
-
-const paletteIndex = (color: string | undefined, index: number) => {
-  const match = color?.match(/--chart-(\d)/u)
-  return match ? Number(match[1]) - 1 : index
-}
-
-const ChartLegend = ({ items }: { items: { color: string; label: string }[] }) => (
-  <ul className="flex flex-wrap items-center justify-end gap-x-4 gap-y-1 pt-3 text-xs text-muted-foreground">
-    {items.map(({ color, label }) => (
-      <li className="flex items-center gap-1.5" key={label}>
-        <span className="size-2 rounded-full" style={{ backgroundColor: color }} />
-        {label}
-      </li>
-    ))}
-  </ul>
-)
 
 export const ChartRenderer = ({ data, series, variant = 'area' }: Pick<ChartProps, 'data' | 'series' | 'variant'>) => {
   const { number } = useFormatter()
@@ -59,7 +43,7 @@ export const ChartRenderer = ({ data, series, variant = 'area' }: Pick<ChartProp
       <Plot accessibilityLayer={false} data={data} margin={{ bottom: 0, left: 0, right: 12, top: 12 }}>
         <defs>
           {series.map((item, index) => {
-            const palette = PALETTES[paletteIndex(item.color, index) % PALETTES.length]
+            const palette = PALETTES[chartPaletteIndex(item.color, index) % PALETTES.length]
             return (
               <linearGradient id={`${id}-${item.key}`} key={item.key} x1="0" x2="0" y1="0" y2="1">
                 {filled ? (
@@ -78,14 +62,22 @@ export const ChartRenderer = ({ data, series, variant = 'area' }: Pick<ChartProp
           })}
         </defs>
         <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
-        <XAxis axisLine={false} dataKey="label" minTickGap={8} tick={AXIS_TICK} tickLine={false} />
+        <XAxis
+          axisLine={false}
+          dataKey="label"
+          interval="preserveStartEnd"
+          minTickGap={12}
+          padding={variant === 'bar' ? undefined : { left: 12, right: 12 }}
+          tick={AXIS_TICK}
+          tickLine={false}
+        />
         <YAxis
           allowDecimals={false}
           tickFormatter={value => number(Number(value))}
           axisLine={false}
           tick={AXIS_TICK}
           tickLine={false}
-          width={40}
+          width={32}
         />
         <Tooltip
           formatter={(value, name) => [typeof value === 'number' ? number(value) : value, name]}
@@ -101,15 +93,12 @@ export const ChartRenderer = ({ data, series, variant = 'area' }: Pick<ChartProp
         <Legend
           content={
             <ChartLegend
-              items={series.map((item, index) => ({
-                color: LINES[paletteIndex(item.color, index) % LINES.length],
-                label: item.label,
-              }))}
+              items={series.map((item, index) => ({ color: chartLineColor(item.color, index), label: item.label }))}
             />
           }
         />
         {series.map((item, index) => {
-          const slot = paletteIndex(item.color, index) % PALETTES.length
+          const slot = chartPaletteIndex(item.color, index) % PALETTES.length
           if (variant === 'bar') {
             return (
               <Bar
@@ -133,7 +122,7 @@ export const ChartRenderer = ({ data, series, variant = 'area' }: Pick<ChartProp
                 isAnimationActive={false}
                 key={item.key}
                 name={item.label}
-                stroke={LINES[slot]}
+                stroke={CHART_LINES[slot]}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={3}
@@ -148,7 +137,7 @@ export const ChartRenderer = ({ data, series, variant = 'area' }: Pick<ChartProp
               isAnimationActive={false}
               key={item.key}
               name={item.label}
-              stroke={LINES[slot]}
+              stroke={CHART_LINES[slot]}
               strokeWidth={3}
             />
           )

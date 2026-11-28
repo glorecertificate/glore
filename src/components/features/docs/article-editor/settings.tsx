@@ -45,7 +45,7 @@ export const ArticleSettings = () => {
           value={draft.categoryId?.toString() ?? ''}
         >
           <SelectTrigger id="article-category">
-            <SelectValue />
+            <SelectValue placeholder={t('categoryPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {categories.map(category => (

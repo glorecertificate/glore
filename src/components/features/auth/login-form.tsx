@@ -15,6 +15,7 @@ import { PasswordInput } from '@/components/ui/password-input'
 import { toast } from '@/components/ui/toast'
 import { useAutoFocus } from '@/hooks/use-auto-focus'
 import { PASSWORD_REGEX } from '@/lib/constants'
+import { finePointer } from '@/lib/pointer'
 import { AuthView } from '@/lib/types'
 import { cn, isValidUsername } from '@/lib/utils'
 
@@ -106,19 +107,11 @@ export const LoginForm = ({
   }
 
   useEffect(() => {
-    if (username) {
-      form.setFocus('password')
-      return
-    }
-    form.setFocus('username')
-  }, [form, username])
-
-  useEffect(() => {
     if (!loggedOut) return
     const frame = requestAnimationFrame(() => {
       setPasswordReadOnly(false)
       form.setValue('password', '')
-      if (username) form.setFocus('password')
+      if (username && finePointer()) form.setFocus('password')
     })
     return () => cancelAnimationFrame(frame)
   }, [form, loggedOut, username])

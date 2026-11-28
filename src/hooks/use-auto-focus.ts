@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 
+import { finePointer } from '@/lib/pointer'
+
 export const useAutoFocus = (selector: string, enabled = true) => {
   useEffect(() => {
-    if (!enabled || !window.matchMedia('(pointer: fine)').matches) return
-    document.querySelector<HTMLElement>(selector)?.focus()
+    if (!enabled || !finePointer()) return
+    document.querySelector<HTMLElement>(selector)?.focus({ preventScroll: true })
   }, [enabled, selector])
 }

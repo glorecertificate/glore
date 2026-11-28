@@ -1,14 +1,19 @@
 'use client'
 
+import { useState } from 'react'
+
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { type VariantProps, cva } from 'class-variance-authority'
 import { useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { useComposedRefs } from '@/hooks/use-composed-refs'
+import { useDragDismiss } from '@/hooks/use-drag-dismiss'
+import { finePointer } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
 export const dialogSheetClassName =
-  'max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-w-none max-sm:translate-0 max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-0 max-sm:data-[state=closed]:slide-out-to-bottom max-sm:data-[state=closed]:zoom-out-100 max-sm:data-[state=open]:slide-in-from-bottom max-sm:data-[state=open]:zoom-in-100 motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none'
+  "max-sm:before:absolute max-sm:before:top-2 max-sm:before:left-1/2 max-sm:before:h-1 max-sm:before:w-10 max-sm:before:-translate-x-1/2 max-sm:before:rounded-full max-sm:before:bg-border-strong max-sm:before:content-[''] max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-w-none max-sm:translate-0 max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-0 max-sm:data-[state=closed]:slide-out-to-bottom max-sm:data-[state=closed]:zoom-out-100 max-sm:data-[state=open]:slide-in-from-bottom max-sm:data-[state=open]:zoom-in-100 motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none"
 
 export const dialogFooterClassName =
   'flex flex-col gap-2 max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-6 max-sm:border-t max-sm:bg-background max-sm:px-6 max-sm:pt-3 max-sm:pb-sheet-footer sm:flex-row sm:justify-end'
@@ -25,6 +30,7 @@ const FIELDS = [
 const focusInitial = (root: HTMLElement) => {
   const active = document.activeElement
   if (active && active !== root && root.contains(active)) return
+  if (!finePointer()) return root.focus({ preventScroll: true })
   const field = [...root.querySelectorAll<HTMLElement>(FIELDS)].find(
     element => (element.checkVisibility?.() ?? true) && !element.closest('[data-slot=dialog-footer]')
   )
@@ -73,6 +79,7 @@ export const DialogContent = ({
   portal = true,
   showClose = true,
   onOpenAutoFocus,
+  ref,
   size,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> &
@@ -82,6 +89,11 @@ export const DialogContent = ({
     showClose?: boolean
   }) => {
   const t = useTranslations('Components.Dialog')
+  const [node, setNode] = useState<HTMLDivElement | null>(null)
+  const composedRef = useComposedRefs(setNode, ref)
+
+  useDragDismiss(node)
+
   const content = (
     <>
       {overlay && <DialogOverlay opacity={overlay} />}
@@ -96,6 +108,7 @@ export const DialogContent = ({
           event.preventDefault()
           focusInitial(event.currentTarget as HTMLElement)
         }}
+        ref={composedRef}
         {...props}
       >
         {showClose && (

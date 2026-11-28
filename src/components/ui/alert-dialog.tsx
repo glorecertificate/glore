@@ -1,11 +1,15 @@
 'use client'
 
+import { useState } from 'react'
+
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 import { type VariantProps } from 'class-variance-authority'
 
 import { type Button, buttonVariants } from '@/components/ui/button'
 import { dialogFooterClassName, dialogSheetClassName } from '@/components/ui/dialog'
 import { Spinner } from '@/components/ui/spinner'
+import { useComposedRefs } from '@/hooks/use-composed-refs'
+import { useDragDismiss } from '@/hooks/use-drag-dismiss'
 import { cn } from '@/lib/utils'
 
 export const AlertDialog = (props: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => (
@@ -37,10 +41,16 @@ export const AlertDialogOverlay = ({
 export const AlertDialogContent = ({
   className,
   portal = true,
+  ref,
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {
   portal?: boolean
 }) => {
+  const [node, setNode] = useState<HTMLDivElement | null>(null)
+  const composedRef = useComposedRefs(setNode, ref)
+
+  useDragDismiss(node)
+
   const content = (
     <>
       <AlertDialogOverlay />
@@ -51,6 +61,7 @@ export const AlertDialogContent = ({
           className
         )}
         data-slot="alert-dialog-content"
+        ref={composedRef}
         {...props}
       />
     </>

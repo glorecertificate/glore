@@ -373,7 +373,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            align="start"
+            align="center"
             onCloseAutoFocus={event => {
               if (!keepFocusRef.current) return
               keepFocusRef.current = false

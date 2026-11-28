@@ -1,9 +1,14 @@
 'use client'
 
+import { useState } from 'react'
+
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { useComposedRefs } from '@/hooks/use-composed-refs'
+import { useDragDismiss } from '@/hooks/use-drag-dismiss'
+import { focusRootOnTouch } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
 export const Sheet = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) => (
@@ -37,6 +42,8 @@ export const SheetContent = ({
   children,
   className,
   closeSrText,
+  onOpenAutoFocus,
+  ref,
   side = 'right',
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
@@ -44,6 +51,10 @@ export const SheetContent = ({
   side?: 'top' | 'right' | 'bottom' | 'left'
 }) => {
   const t = useTranslations('Components.Dialog')
+  const [node, setNode] = useState<HTMLDivElement | null>(null)
+  const composedRef = useComposedRefs(setNode, ref)
+
+  useDragDismiss(node, { enabled: side === 'bottom' })
 
   return (
     <SheetPortal>
@@ -62,8 +73,21 @@ export const SheetContent = ({
           className
         )}
         data-slot="sheet-content"
+        onOpenAutoFocus={event => {
+          onOpenAutoFocus?.(event)
+          if (event.defaultPrevented) return
+          focusRootOnTouch(event)
+        }}
+        ref={composedRef}
         {...props}
       >
+        {side === 'bottom' && (
+          <span
+            aria-hidden
+            className="absolute top-2 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-border-strong"
+            data-slot="sheet-handle"
+          />
+        )}
         {children}
         <DialogPrimitive.Close className="touch-hit absolute top-3 right-3 flex size-8 items-center justify-center rounded-md text-muted-foreground transition-[color,background-color] duration-150 hover:bg-accent hover:text-foreground focus-visible:focus-ring disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
           <LucideIcon name="x" />

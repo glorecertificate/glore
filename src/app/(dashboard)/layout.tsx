@@ -19,15 +19,13 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { LEGAL_ACCEPT_ROOT } from '@/lib/constants'
 import { cookies } from '@/lib/cookie-store'
 import { getPendingLegal } from '@/lib/legal'
+import { timed } from '@/lib/timing'
 import { cn } from '@/lib/utils'
 
 const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => {
-  const [user, { get }, pending, impersonation] = await Promise.all([
-    getCurrentUser(),
-    cookies(),
-    getPendingCounts(),
-    getImpersonation(),
-  ])
+  const [user, { get }, pending, impersonation] = await timed('dashboard.layout', () =>
+    Promise.all([getCurrentUser(), cookies(), getPendingCounts(), getImpersonation()])
+  )
   if (!impersonation && (await getPendingLegal(user.id))) redirect(LEGAL_ACCEPT_ROOT)
 
   const org = get('org')

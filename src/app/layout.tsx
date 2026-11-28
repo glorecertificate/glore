@@ -22,6 +22,7 @@ import { DEFAULT_LOCALE, pickMessages } from '@/lib/i18n'
 import { MESSAGE_SCOPES } from '@/lib/message-scopes'
 import { APP_NAME, appTitle, metadata } from '@/lib/metadata'
 import { loadSettings } from '@/lib/settings'
+import { timed } from '@/lib/timing'
 import { cn, publicFile, serializeJsonLd } from '@/lib/utils'
 
 export const generateMetadata = async () => {
@@ -57,7 +58,10 @@ const geistMono = Geist_Mono({
 
 const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
   const locale = (await getLocaleCookie()) ?? DEFAULT_LOCALE
-  const [messages, settings] = await Promise.all([getMessages({ locale }), loadSettings()])
+  const [messages, settings] = await Promise.all([
+    timed('layout.messages', () => getMessages({ locale })),
+    timed('layout.settings', () => loadSettings()),
+  ])
 
   const jsonLd = {
     '@context': 'https://schema.org',

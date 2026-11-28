@@ -83,6 +83,7 @@ const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'>
 - Add `use-params.ts` ONLY when a slice has client param hooks worth extracting. `certificates/` and `courses/course-list/` have one.
 - `auth/` has none because its parsers run server-side. `courses/course-editor/` has none because its param hooks live in that slice's `context.tsx`.
 - Never create an empty `use-params.ts` for symmetry.
+- Only page tabs push a history entry (settings, organization, admin organization). Editor state, filters, sort, search, and paging replace it.
 
 ### Performance patterns (React Compiler)
 
@@ -99,11 +100,10 @@ const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'>
 - Prefer derived state over a syncing effect.
 - Use `useDeferredValue` to gate expensive recomputation (see `src/hooks/use-search.ts`), or set state during render to mirror a prop, instead of a `useEffect` that copies props into state.
 - Stabilize interval and listener callbacks that close over fresh values with a ref or `useEffectEvent`, so a long-lived `setInterval` or subscription does not restart every render.
-- Write no dead cleanup: setting state in an unmount cleanup is a no-op. Reserve `return () => { ... }` for real teardown (`clearTimeout`, `removeEventListener`).
-- Lazy-load only heavy, conditional UI with `next/dynamic`.
-- Lazy candidates: the editor sortable grid, course settings, account and organization tabs, the image crop dialog, the calendar, and the search palette.
-- Keep small pieces that render on every card static: lazy per-card actions moved hydration into one 150ms task (4x CPU) to save 3KB.
-- `next/dynamic` without `loading` adds no Suspense boundary while `ssr` is on, so it suspends to the nearest parent and can show a page skeleton. Wrap it in a local `<Suspense>` or pass `loading`.
+- Cache Components keep a left route under a hidden `<Activity>`: effects clean up, but state stays for the return.
+- Reset transient UI (an open overlay, an edit mode, a success screen, a typed password) with `useResetOnHide`. Never reset unsaved form values.
+- The `ui/` overlay roots (dialog, sheet, alert dialog, dropdown menu, popover, select, tooltip, hover card) close on hide through `useOverlayOpen`.
+- Lazy-load only heavy, conditional UI with `next/dynamic` (candidates and traps: `performance.md`, "Rules for UI work").
 - Use `ssr: false` for client-only widgets and inside `notFound()` renders, where an SSR dynamic import caused React error #419.
 - Render `m.*` components inside `MotionFeatures` (`src/components/ui/motion-features.tsx`, a scoped `LazyMotion` with synchronous `domMax`), never `motion.*`.
 - Never add a root `LazyMotion` (11KB on routes without animation). Never load features asynchronously (their activation lands in one long task after hydration).

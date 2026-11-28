@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useFormErrored } from '@/hooks/use-form-disabled'
+import { useResetOnHide } from '@/hooks/use-reset-on-hide'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { AuthView } from '@/lib/types'
 
@@ -46,6 +47,8 @@ export const PasswordResetForm = ({
     },
     resolver: zodResolver(formSchema),
   })
+
+  useResetOnHide(() => form.reset())
 
   const errored = useFormErrored(form.control)
 

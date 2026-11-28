@@ -170,6 +170,7 @@ After (the first block is a `DataTable` card, so `overlap` is set):
 Owner decisions, 2026-11-18. Controls keep their visible size on every device.
 
 - `touch-hit` adds a centered 44px pseudo-element hit area on coarse pointers. `touch-hit-y` extends only the height, for controls that sit edge to edge.
+- A touch on that hit area targets the control itself, never its children. A touch handler matches the control or an ancestor, as `useTouchBlockDrag` matches `.slate-blockToolbar`.
 - Button, select trigger, checkbox, switch, rating item, tabs trigger, toolbar button, sidebar menu button, dialog close, sheet close, and password toggle carry it.
 - Neighbouring hit areas must not overlap. `SidebarMenu` and `ToolbarGroup` add gap on coarse pointers. `ButtonGroup` children use the height-only form.
 - Touch growth is exactly 44px and never more. A touch gap is the smallest step that keeps neighbouring hit areas apart: 44px minus the control height. A 32px control gets 12px, a 36px control gets 8px.

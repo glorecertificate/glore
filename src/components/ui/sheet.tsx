@@ -8,12 +8,20 @@ import { useTranslations } from 'next-intl'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { useDragDismiss } from '@/hooks/use-drag-dismiss'
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { focusRootOnTouch } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
-export const Sheet = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) => (
-  <DialogPrimitive.Root data-slot="sheet" {...props} />
-)
+export const Sheet = ({
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Root>) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return <DialogPrimitive.Root data-slot="sheet" {...props} {...overlay} />
+}
 
 export const SheetTrigger = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) => (
   <DialogPrimitive.Trigger data-slot="sheet-trigger" {...props} />

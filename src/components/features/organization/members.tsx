@@ -74,8 +74,8 @@ export const OrganizationMembers = ({
   const { remember, restore } = useReturnFocus()
 
   const [search, setSearch] = useState('')
-  const [roleParam, setRoleParam] = useQueryState('role', { ...roleParser, history: 'push' })
-  const [statusParam, setStatusParam] = useQueryState('status', { ...statusParser, history: 'push' })
+  const [roleParam, setRoleParam] = useQueryState('role', roleParser)
+  const [statusParam, setStatusParam] = useQueryState('status', statusParser)
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const [drawer, setDrawer] = useState<{
     data: MemberDetail | null

@@ -58,7 +58,6 @@ interface CourseStatus {
 
 const paramOptions = {
   clearOnDefault: false,
-  history: 'push',
   shallow: true,
 } as const
 

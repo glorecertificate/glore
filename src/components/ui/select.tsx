@@ -4,11 +4,19 @@ import * as SelectPrimitive from '@radix-ui/react-select'
 import { type VariantProps, cva } from 'class-variance-authority'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { cn } from '@/lib/utils'
 
-export const Select = (props: React.ComponentProps<typeof SelectPrimitive.Select>) => (
-  <SelectPrimitive.Root data-slot="select" {...props} />
-)
+export const Select = ({
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Root>) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return <SelectPrimitive.Root data-slot="select" {...props} {...overlay} />
+}
 
 export const SelectGroup = (props: React.ComponentProps<typeof SelectPrimitive.SelectGroup>) => (
   <SelectPrimitive.Group data-slot="select-group" {...props} />

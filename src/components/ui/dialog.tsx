@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { useDragDismiss } from '@/hooks/use-drag-dismiss'
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { finePointer } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
@@ -37,9 +38,16 @@ const focusInitial = (root: HTMLElement) => {
   ;(field ?? root).focus({ preventScroll: true })
 }
 
-export const Dialog = (props: React.ComponentProps<typeof DialogPrimitive.Root>) => (
-  <DialogPrimitive.Root data-slot="dialog" {...props} />
-)
+export const Dialog = ({
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Root>) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return <DialogPrimitive.Root data-slot="dialog" {...props} {...overlay} />
+}
 
 export const DialogTrigger = (props: React.ComponentProps<typeof DialogPrimitive.Trigger>) => (
   <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />

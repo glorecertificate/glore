@@ -265,7 +265,7 @@ export const IconPicker = ({
     if (!tooltips) {
       return (
         <Button
-          className="aspect-square w-full"
+          className="aspect-square h-auto w-full min-w-0 p-0 has-[>svg]:px-0"
           key={icon.name}
           onClick={handleIconClick(icon.name)}
           variant="ghost"
@@ -280,7 +280,7 @@ export const IconPicker = ({
       <TooltipProvider key={icon.name}>
         <Tooltip>
           <TooltipTrigger
-            className="flex aspect-square w-full items-center justify-center rounded-md border p-2 transition hover:bg-foreground/10"
+            className="flex aspect-square w-full min-w-0 items-center justify-center rounded-md border p-2 transition hover:bg-foreground/10"
             onClick={handleIconClick(icon.name)}
           >
             <IconRenderer name={icon.name as IconName} />
@@ -378,7 +378,7 @@ export const IconPicker = ({
           </div>
         )}
         <div
-          className="h-60 overflow-y-auto overscroll-contain"
+          className="h-60 overflow-x-hidden overflow-y-auto overscroll-contain"
           ref={parentRef}
           style={{
             scrollbarColor: 'var(--color-brand)',

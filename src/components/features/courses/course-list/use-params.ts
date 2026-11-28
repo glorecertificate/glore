@@ -37,7 +37,7 @@ const skillGroupsParser = parseAsArrayOf(parseAsString)
 const sortParser = parseAsStringEnum(COURSE_LIST_SORTS)
 const sortDirectionParser = parseAsStringEnum<CourseListSortDirection>(['asc', 'desc']).withDefault('asc')
 
-const paramsOptions = { history: 'push', startTransition } as const
+const paramsOptions = { startTransition } as const
 
 export const useCourseListTab = () => {
   const [tab, setTabRaw] = useQueryState(COURSE_LIST_PARAMS.TAB, { ...tabParser, ...paramsOptions })

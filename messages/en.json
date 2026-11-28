@@ -387,7 +387,6 @@
       "selectAtLeastOne": "You must select at least one {item}"
     },
     "PasswordInput": {
-      "label": "Password",
       "show": "Show password",
       "hide": "Hide password"
     },

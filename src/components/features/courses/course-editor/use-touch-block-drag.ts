@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { type useEditorRef } from 'platejs/react'
 
-const HANDLE = '.slate-blockToolbar [role=button]'
+const HANDLE = '.slate-blockToolbar'
 const CONTAINER = '.group\\/container'
 const EDGE = 96
 const SCROLL_STEP = 12

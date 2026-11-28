@@ -15,7 +15,7 @@ import {
   type TutorQueueTab,
 } from '@/components/features/certificates/params'
 
-const paramsOptions = { history: 'push', startTransition } as const
+const paramsOptions = { startTransition } as const
 
 const statusParser = parseAsArrayOf(parseAsStringEnum([...CERT_LIST_STATUS_VALUES]))
 const orgParser = parseAsArrayOf(parseAsInteger)

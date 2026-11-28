@@ -98,10 +98,10 @@ const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'>
 #### Effects and loading
 
 - Prefer derived state over a syncing effect.
-- Use `useDeferredValue` to gate expensive recomputation (see `src/hooks/use-search.ts`), or set state during render to mirror a prop, instead of a `useEffect` that copies props into state.
-- Stabilize interval and listener callbacks that close over fresh values with a ref or `useEffectEvent`, so a long-lived `setInterval` or subscription does not restart every render.
-- Cache Components keep a left route under a hidden `<Activity>`: effects clean up, but state stays for the return.
-- Reset transient UI (an open overlay, an edit mode, a success screen, a typed password) with `useResetOnHide`. Never reset unsaved form values.
+- Gate expensive recomputation with `useDeferredValue` (`src/hooks/use-search.ts`), or set state during render to mirror a prop. Never copy props into state in a `useEffect`.
+- Keep interval and listener callbacks that read fresh values in a ref or `useEffectEvent`, so a long-lived `setInterval` or subscription never restarts on each render.
+- Cache Components keep a left route under a hidden `<Activity>`: effects clean up, and state stays.
+- Reset transient UI (an open overlay, an edit mode, a success screen, a typed password) with `useResetOnHide`. It fires on a pathname change, never on a deliberate unmount. Never reset unsaved form values.
 - The `ui/` overlay roots (dialog, sheet, alert dialog, dropdown menu, popover, select, tooltip, hover card) close on hide through `useOverlayOpen`.
 - Lazy-load only heavy, conditional UI with `next/dynamic` (candidates and traps: `performance.md`, "Rules for UI work").
 - Use `ssr: false` for client-only widgets and inside `notFound()` renders, where an SSR dynamic import caused React error #419.

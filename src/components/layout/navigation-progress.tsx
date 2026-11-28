@@ -108,7 +108,7 @@ export const NavigationProgress = () => {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 progress-bar z-60 h-0.75 bg-brand opacity-0 data-[state=active]:opacity-100"
+      className="pointer-events-none fixed inset-x-0 progress-bar z-60 h-0.75 bg-brand-secondary opacity-0 data-[state=active]:opacity-100"
       data-slot="navigation-progress"
       data-state="idle"
       ref={ref}

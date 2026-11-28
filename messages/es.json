@@ -623,7 +623,6 @@
     },
     "PasswordInput": {
       "hide": "Ocultar contraseña",
-      "label": "Contraseña",
       "show": "Mostrar contraseña"
     },
     "PhoneInput": {

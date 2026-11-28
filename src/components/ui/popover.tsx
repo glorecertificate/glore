@@ -2,12 +2,20 @@
 
 import * as PopoverPrimitive from '@radix-ui/react-popover'
 
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { focusRootOnTouch } from '@/lib/pointer'
 import { cn } from '@/lib/utils'
 
-export const Popover = (props: React.ComponentProps<typeof PopoverPrimitive.Root>) => (
-  <PopoverPrimitive.Root data-slot="popover" {...props} />
-)
+export const Popover = ({
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Root>) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return <PopoverPrimitive.Root data-slot="popover" {...props} {...overlay} />
+}
 
 export const PopoverTrigger = (props: React.ComponentProps<typeof PopoverPrimitive.Trigger>) => (
   <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />

@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { toast } from '@/components/ui/toast'
 import { useAutoFocus } from '@/hooks/use-auto-focus'
+import { useResetOnHide } from '@/hooks/use-reset-on-hide'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { finePointer } from '@/lib/pointer'
 import { AuthView } from '@/lib/types'
@@ -67,6 +68,11 @@ export const LoginForm = ({
     resolver: zodResolver(formSchema),
   })
   const formDisabled = errored || loading
+
+  useResetOnHide(() => {
+    form.resetField('password')
+    setLoading(false)
+  })
 
   const setPasswordInvalid = () => {
     form.setError('password', { message: t('passwordInvalid'), type: 'validate' }, { shouldFocus: true })

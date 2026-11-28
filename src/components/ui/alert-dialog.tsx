@@ -10,11 +10,19 @@ import { dialogFooterClassName, dialogSheetClassName } from '@/components/ui/dia
 import { Spinner } from '@/components/ui/spinner'
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { useDragDismiss } from '@/hooks/use-drag-dismiss'
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { cn } from '@/lib/utils'
 
-export const AlertDialog = (props: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => (
-  <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />
-)
+export const AlertDialog = ({
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} {...overlay} />
+}
 
 export const AlertDialogTrigger = (props: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) => (
   <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />

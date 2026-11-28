@@ -23,6 +23,7 @@ import {
   type ApplicationStep,
   applicationSchema,
 } from '@/db/queries/organization-application'
+import { useResetOnHide } from '@/hooks/use-reset-on-hide'
 import { AUTH_ROOT } from '@/lib/constants'
 
 import { MotivationStep } from './motivation-step'
@@ -79,6 +80,13 @@ export const ApplicationForm = () => {
     defaultValues: DEFAULT_VALUES,
     mode: 'onTouched',
     resolver,
+  })
+
+  useResetOnHide(() => {
+    setLoading(false)
+    if (!submittedEmail) return
+    form.reset(DEFAULT_VALUES)
+    setSubmittedEmail(null)
   })
 
   const step = APPLICATION_STEPS[stepIndex] ?? 'organization'

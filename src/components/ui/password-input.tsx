@@ -13,7 +13,6 @@ export const PasswordInput = ({
   className,
   disabled,
   hideLabel,
-  placeholder,
   showLabel,
   ...props
 }: Omit<InputProps, 'type'> & {
@@ -25,20 +24,13 @@ export const PasswordInput = ({
   const [passwordVisible, setPasswordVisible] = useState(false)
 
   const inputType = passwordVisible ? 'text' : 'password'
-  const inputPlaceholder = placeholder ?? t('label')
   const textShow = showLabel ?? t('show')
   const textHide = hideLabel ?? t('hide')
   const textToggle = passwordVisible ? textHide : textShow
 
   return (
     <div className="relative">
-      <Input
-        className={cn('pr-10', className)}
-        disabled={disabled}
-        placeholder={inputPlaceholder}
-        type={inputType}
-        {...props}
-      />
+      <Input className={cn('pr-10', className)} disabled={disabled} type={inputType} {...props} />
       <Button
         className="touch-hit absolute top-1/2 right-1.5 size-6 -translate-y-1/2 rounded-full p-0 has-[>svg]:px-3"
         disabled={disabled}

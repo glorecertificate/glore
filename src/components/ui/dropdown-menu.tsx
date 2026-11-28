@@ -3,13 +3,16 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { cn } from '@/lib/utils'
 
 export interface DropdownMenuProps extends React.ComponentProps<typeof DropdownMenuPrimitive.Root> {}
 
-export const DropdownMenu = (props: DropdownMenuProps) => (
-  <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
-)
+export const DropdownMenu = ({ defaultOpen, onOpenChange, open, ...props }: DropdownMenuProps) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} {...overlay} />
+}
 
 export const DropdownMenuPortal = (props: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) => (
   <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />

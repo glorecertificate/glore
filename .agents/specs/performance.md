@@ -113,6 +113,9 @@ The report goes to `.playwright/perf/report.md`. A ✓ meets the target, a ✗ m
 - Never add `InstantReveal` to `AppLayoutFallback`. The client renders that fallback during navigations, and React warns about a script that the client renders. The copy in `AppLayoutContent` runs before each reveal, so the fallback does not need one.
 - When a React update fails `instant-reveal.test.ts`, read the new reveal runtime in `react-dom-server` and update the script or remove it.
 - A loading state follows "Loading states" in `ui.md`. Its navigation cases keep `Shift` at 0.
+- Lazy candidates: the editor sortable grid, course settings, account and organization tabs, the image crop dialog, the calendar, and the search palette.
+- Keep small pieces that render on every card static: lazy per-card actions moved hydration into one 150ms task (4x CPU) to save 3KB.
+- `next/dynamic` without `loading` adds no Suspense boundary while `ssr` is on, so it suspends to the nearest parent and can show a page skeleton. Wrap it in a local `<Suspense>` or pass `loading`.
 
 ## Navigation freshness
 

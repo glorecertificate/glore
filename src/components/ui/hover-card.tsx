@@ -2,11 +2,19 @@
 
 import * as HoverCardPrimitive from '@radix-ui/react-hover-card'
 
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { cn } from '@/lib/utils'
 
-export const HoverCard = (props: React.ComponentProps<typeof HoverCardPrimitive.Root>) => (
-  <HoverCardPrimitive.Root data-slot="hover-card" {...props} />
-)
+export const HoverCard = ({
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof HoverCardPrimitive.Root>) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return <HoverCardPrimitive.Root data-slot="hover-card" {...props} {...overlay} />
+}
 
 export const HoverCardTrigger = (props: React.ComponentProps<typeof HoverCardPrimitive.Trigger>) => (
   <HoverCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />

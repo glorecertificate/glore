@@ -34,6 +34,7 @@ import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
 import { toast } from '@/components/ui/toast'
 import { type OrganizationMembershipRole, timestampMillis } from '@/db/queries/organization'
+import { useResetOnHide } from '@/hooks/use-reset-on-hide'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { isNavigationError } from '@/lib/navigation-error'
 
@@ -78,6 +79,8 @@ export const InvitationCard = ({
   const passwordRef = useRef<HTMLInputElement>(null)
   const [declineOpen, setDeclineOpen] = useState(false)
   const [proofSent, setProofSent] = useState(false)
+
+  useResetOnHide(() => setPassword(''))
 
   const roleLabel = tRoles(`role_${role}`)
   const expires = new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(timestampMillis(expiresAt)))

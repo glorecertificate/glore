@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DescriptionDetails, DescriptionItem, DescriptionList, DescriptionTerm } from '@/components/ui/description-list'
 import { StatusBadge } from '@/components/ui/status-badge'
+import { useResetOnHide } from '@/hooks/use-reset-on-hide'
 
 const Row = ({ label, stacked, value }: { label: string; stacked?: boolean; value: React.ReactNode }) => (
   <DescriptionItem
@@ -49,6 +50,8 @@ export const RequestPanel = ({
   const { control } = useFormContext<ReviewFormValues>()
   const values = useWatch({ control })
   const [editing, setEditing] = useState(false)
+
+  useResetOnHide(() => setEditing(false))
   const period = {
     activityDuration: Number(values.activityDuration) || 0,
     activityEndDate: values.activityEndDate ?? '',

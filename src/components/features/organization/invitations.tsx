@@ -97,7 +97,7 @@ export const OrganizationInvitations = ({
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [search, setSearch] = useState('')
-  const [filterParam, setFilterParam] = useQueryState('state', { ...filterParser, history: 'push' })
+  const [filterParam, setFilterParam] = useQueryState('state', filterParser)
   const [activeId, setActiveId] = useState<number | null>(null)
   const [revokeTarget, setRevokeTarget] = useState<Invitation | null>(null)
 

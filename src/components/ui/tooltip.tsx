@@ -3,6 +3,7 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import { type VariantProps, cva } from 'class-variance-authority'
 
+import { useOverlayOpen } from '@/hooks/use-overlay-open'
 import { cn } from '@/lib/utils'
 
 export const TooltipPortal = TooltipPrimitive.Portal
@@ -14,11 +15,20 @@ export const TooltipProvider = ({
   <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
 )
 
-export const Tooltip = (props: React.ComponentProps<typeof TooltipPrimitive.Root>) => (
-  <TooltipProvider>
-    <TooltipPrimitive.Root data-slot="tooltip" {...props} />
-  </TooltipProvider>
-)
+export const Tooltip = ({
+  defaultOpen,
+  onOpenChange,
+  open,
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Root>) => {
+  const overlay = useOverlayOpen({ defaultOpen, onOpenChange, open })
+
+  return (
+    <TooltipProvider>
+      <TooltipPrimitive.Root data-slot="tooltip" {...props} {...overlay} />
+    </TooltipProvider>
+  )
+}
 
 export const TooltipTrigger = ({
   className,

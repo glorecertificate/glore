@@ -5,6 +5,10 @@ import { authFile } from './helpers'
 
 const slug = `e2e-course-${Date.now().toString(36)}`
 
+interface NextWindow {
+  next: { router: { push: (href: string) => void } }
+}
+
 test.describe('course editor', () => {
   test.use({ storageState: authFile('editor') })
   test.describe.configure({ mode: 'serial' })
@@ -63,6 +67,54 @@ test.describe('course editor', () => {
     await page.goto('/courses/skills')
     await expect(page.getByRole('heading', { name: 'Skill framework' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Add group' })).toBeVisible()
+  })
+})
+
+test.describe('course editor menus', () => {
+  test.use({ storageState: authFile('editor') })
+
+  test('closes an open menu when the page is left', async ({ page }) => {
+    await page.goto('/courses/volunteer-wellbeing-and-safety?lang=en')
+    const translate = page.getByRole('button', { name: 'Translate' }).first()
+    await translate.click()
+    await expect(page.getByRole('menu')).toBeVisible()
+
+    await page.evaluate(() => (window as unknown as NextWindow).next.router.push('/courses'))
+    await expect(page).toHaveURL(/\/courses$/u)
+    await page.goBack()
+    await expect(translate).toBeVisible()
+    await expect(page.getByRole('menu')).toHaveCount(0)
+  })
+})
+
+test.describe('course editor on touch', () => {
+  test.use({ hasTouch: true, isMobile: true, storageState: authFile('editor'), viewport: { height: 844, width: 390 } })
+
+  test('moves a block by dragging its handle', async ({ context, page }) => {
+    await page.goto('/courses/volunteer-wellbeing-and-safety?lang=en')
+    const blocks = page.locator('[data-slate-editor] .group\\/container')
+    await expect(blocks.nth(1)).toBeVisible()
+    const first = (await blocks.first().textContent()) ?? ''
+    await blocks.first().evaluate(block => window.scrollBy(0, block.getBoundingClientRect().top - 200))
+    await blocks.first().tap()
+
+    const handle = await page.locator('.slate-blockToolbar').first().boundingBox()
+    const target = await blocks.nth(1).boundingBox()
+    if (!handle || !target) throw new Error('The block handle is not on screen.')
+    const x = handle.x + handle.width / 2
+    const y = handle.y + handle.height / 2
+    const end = target.y + (target.height * 3) / 4
+    const cdp = await context.newCDPSession(page)
+    const touch = (type: 'touchEnd' | 'touchMove' | 'touchStart', touchY?: number) =>
+      cdp.send('Input.dispatchTouchEvent', { touchPoints: touchY === undefined ? [] : [{ x, y: touchY }], type })
+
+    await touch('touchStart', y)
+    for (const step of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      await touch('touchMove', y + ((end - y) * step) / 8)
+    }
+    await touch('touchEnd')
+
+    await expect(blocks.nth(1)).toHaveText(first)
   })
 })
 

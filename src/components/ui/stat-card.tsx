@@ -40,9 +40,13 @@ export const StatCard = ({
   const { number } = useFormatter()
 
   return (
-    <Card className={cn('relative justify-between', STAT_ACCENTS[accent], className)} data-slot="stat-card" {...props}>
-      <CardHeader className="gap-2">
-        <div className="flex min-h-10 items-center gap-2.5">
+    <Card
+      className={cn('relative justify-between max-sm:gap-1 max-sm:px-4 max-sm:py-3', STAT_ACCENTS[accent], className)}
+      data-slot="stat-card"
+      {...props}
+    >
+      <CardHeader className="gap-2 max-sm:grid-cols-[minmax(0,1fr)_auto] max-sm:items-center max-sm:gap-3">
+        <div className="flex min-h-10 min-w-0 items-center gap-2.5 max-sm:min-h-8">
           {icon && (
             <span
               aria-hidden
@@ -53,7 +57,7 @@ export const StatCard = ({
           )}
           <CardDescription className="line-clamp-2 leading-5 text-pretty text-fg-1">{label}</CardDescription>
         </div>
-        <CardTitle className="type-stat">
+        <CardTitle className="type-stat max-sm:text-2xl max-sm:leading-8">
           {loading ? (
             <SkeletonText>{PLACEHOLDER_VALUE}</SkeletonText>
           ) : (
@@ -62,7 +66,7 @@ export const StatCard = ({
         </CardTitle>
       </CardHeader>
       {(description || children) && (
-        <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
+        <CardContent className={cn('flex flex-col gap-2 text-sm text-muted-foreground', icon && 'max-sm:pl-10.5')}>
           {loading && description ? <SkeletonText>{description}</SkeletonText> : description}
           {children}
         </CardContent>

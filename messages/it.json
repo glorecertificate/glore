@@ -632,7 +632,6 @@
     },
     "PasswordInput": {
       "hide": "Nascondi password",
-      "label": "Password",
       "show": "Mostra password"
     },
     "PhoneInput": {

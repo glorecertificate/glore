@@ -13,6 +13,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { PasswordInput } from '@/components/ui/password-input'
 import { toast } from '@/components/ui/toast'
 import { useActionError } from '@/hooks/use-action-error'
+import { useResetOnHide } from '@/hooks/use-reset-on-hide'
 import { PASSWORD_REGEX } from '@/lib/constants'
 
 export const PasswordForm = () => {
@@ -39,6 +40,8 @@ export const PasswordForm = () => {
     mode: 'onTouched',
     resolver: zodResolver(schema),
   })
+
+  useResetOnHide(() => form.reset())
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
     try {

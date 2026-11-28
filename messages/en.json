@@ -1447,6 +1447,20 @@
       "tagline": "Give value to your volunteering experiences.",
       "body": "GloRe is an open network of volunteering organizations. Volunteers take online courses and rate their own soft skills. A tutor from the host organization checks the result, and a certificate records the hours, tasks, and skills."
     },
+    "facts": {
+      "founded": {
+        "value": "2003",
+        "label": "Associazione Joint is founded in Milan"
+      },
+      "erasmus": {
+        "value": "2016",
+        "label": "GloRe starts as an Erasmus+ project"
+      },
+      "free": {
+        "value": "Free",
+        "label": "For volunteers and member organizations"
+      }
+    },
     "sections": {
       "mission": {
         "title": "Our mission",

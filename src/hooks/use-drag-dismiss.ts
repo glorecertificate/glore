@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 
+import { START_SLOP, dragIntent, shouldDismiss } from '@/lib/drag-dismiss'
+
 const PHONE_QUERY = '(max-width: 639px)'
 const SKIP = 'input, textarea, select, [contenteditable=true], [role=slider], [data-drag-dismiss=off]'
-const START_SLOP = 6
-const DISMISS_RATIO = 0.25
-const DISMISS_VELOCITY = 0.5
 
 const scrolledAbove = (target: HTMLElement, root: HTMLElement) => {
   for (let node: HTMLElement | null = target; node && node !== root.parentElement; node = node.parentElement) {
@@ -50,9 +49,9 @@ export const useDragDismiss = (
     const move = (event: TouchEvent) => {
       if (!drag.tracking) return
       const delta = event.touches[0].clientY - drag.startY
-      const sideways = Math.abs(event.touches[0].clientX - drag.startX)
-      if (!drag.active && Math.max(sideways, Math.abs(delta)) < START_SLOP) return
-      if (!drag.active && (delta < 0 || sideways > delta)) {
+      const intent = drag.active ? 'drag' : dragIntent(event.touches[0].clientX - drag.startX, delta)
+      if (intent === 'pending') return
+      if (intent === 'cancel') {
         drag.tracking = false
         return
       }
@@ -68,8 +67,8 @@ export const useDragDismiss = (
       drag.tracking = false
       if (!drag.active) return
       drag.active = false
-      const velocity = drag.delta / Math.max(1, performance.now() - drag.startTime)
-      if (drag.delta > node.offsetHeight * DISMISS_RATIO || velocity > DISMISS_VELOCITY) return dismiss()
+      const elapsed = performance.now() - drag.startTime
+      if (shouldDismiss({ delta: drag.delta, elapsed, height: node.offsetHeight })) return dismiss()
       reset()
     }
 

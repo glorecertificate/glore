@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.7.7](https://github.com/glorecertificate/glore/compare/v0.7.6...v0.7.7) (2026-11-28)
+
+### Features
+
+- Redesign the about page with a facts hero, a step timeline, and contact actions (#270) ([b279e8d](https://github.com/glorecertificate/glore/commit/b279e8d530ba945df354cd2bbd051fbc6447c3fd)), references [#270](https://github.com/glorecertificate/glore/issues/270)
+
+### Fixes
+
+- Keep editor ai insert commands running while their menu hides (#271) ([3d47660](https://github.com/glorecertificate/glore/commit/3d476600c85e04ccf540e027f39d9ee6ed8eb492)), references [#271](https://github.com/glorecertificate/glore/issues/271)
+- Show untitled courses, capitalize preview languages, and link the preview back to the editor (#268) ([439f691](https://github.com/glorecertificate/glore/commit/439f691e4bc7bc3af3b33e5966963c4c5ed036bc)), references [#268](https://github.com/glorecertificate/glore/issues/268)
+
+### Docs
+
+- Remove the extra space under the readme badges (#269) ([fbef8f1](https://github.com/glorecertificate/glore/commit/fbef8f15f2df887f7bb6bda3546f602388e8d75a)), references [#269](https://github.com/glorecertificate/glore/issues/269)
+
 ## [0.7.6](https://github.com/glorecertificate/glore/compare/v0.7.5...v0.7.6) (2026-11-28)
 
 ### Features

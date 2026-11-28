@@ -180,6 +180,7 @@ Owner decisions, 2026-11-18. Controls keep their visible size on every device.
 - Bottom sheets (`Dialog` and `AlertDialog` below `sm`, `Sheet side="bottom"`) show a handle and close on a drag down through `useDragDismiss`: past 25% of the height or on a fast flick. Fields, sliders, scrolled content, and `[data-drag-dismiss=off]` keep their own gestures.
 - No field takes focus on open on coarse pointers, because iOS does not open the keyboard for script focus. `Input`, `Textarea`, `useAutoFocus`, `MultiSelect`, `Popover`, `Dialog`, `Sheet`, and `AlertDialog` focus a field only when `finePointer()` (`lib/pointer.ts`) is true. On touch they focus the content root.
 - Pages open at the top. The sidebar resets the scroll on a pathname change, and `useScrollReset(key)` does it for steps and lessons kept in a search param.
+- A destructive action is the last thing on a phone screen. When a rail stacks below a danger zone, render it before the zone instead, as the admin organization settings do with the `aside` slot of `OrganizationSettings`.
 - Horizontal scrollers also set `overflow-y-hidden`, so they never scroll vertically.
 - Stat card grids are one column below `sm`. `Chart` with `categorical` shows a labeled bar list when it is narrower than 28rem.
 - Placeholders use `fg-placeholder`: `fg-3` (4.5:1) on surfaces, so they read lighter than `fg-2` and values. On the band it is `band-muted` at 80%, 3.4:1 or more on every stop.

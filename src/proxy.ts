@@ -23,6 +23,7 @@ import {
 import { COOKIE_OPTIONS, prefixCookieName } from '@/lib/cookies'
 import { LOCALES, LOCALE_COOKIE } from '@/lib/i18n'
 import { safeNextPath } from '@/lib/next-path'
+import { timed } from '@/lib/timing'
 import { isReservedUsername } from '@/lib/username'
 
 export const config: ProxyConfig = {
@@ -124,7 +125,7 @@ export const proxy: NextProxy = async request => {
   const isOnboarding = nextUrl.pathname.startsWith(ONBOARDING_ROOT)
 
   try {
-    const session = await auth.api.getSession({ headers })
+    const session = await timed('proxy.session', () => auth.api.getSession({ headers }))
 
     if (!session?.user) return isPublic ? response : expireSession(request, { returnTo: true })
     if (session.user.banned) return revokeSession(request)
